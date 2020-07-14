@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "package": "com.gamesense.api.mixin.mixins",
+  "refmap": "mixins.gamesense.refmap.json",
+  "mixins": [
+    "MixinNetworkManager",
+    "MixinEntity",
+    "MixinGuiNewChat",
+    "MixinMovementInputFromOptions",
+    "MixinEntityRenderer",
+    "MixinAbstractClientPlayer",
+    "MixinLayerBipedArmor",
+    "MixinPlayerControllerMP",
+    "MixinEntityPlayer",
+    "MixinBlockSoulSand",
+    "MixinEntityPlayerSP",
+    "MixinMinecraft",
+    "MixinGuiPlayerTabOverlay",
+    "MixinGuiMainMenu",
+    "MixinBlockLiquid"
+  ]
+}
