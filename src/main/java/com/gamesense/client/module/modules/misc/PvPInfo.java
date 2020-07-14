@@ -71,7 +71,7 @@ public class PvPInfo extends Module {
 
          if (popList.get(event.getEntity().getName()) == null) {
              popList.put(event.getEntity().getName(), 1);
-             Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + ChatColor.getValue() + " totem!");
+             Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
          } else if (!(popList.get(event.getEntity().getName()) == null)) {
              int popCounter = popList.get(event.getEntity().getName());
              int newPopCounter = popCounter += 1;
