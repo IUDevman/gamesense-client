@@ -7,7 +7,6 @@ import com.gamesense.api.util.GameSenseTessellator;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.hud.ColorMain;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 import java.awt.*;
@@ -29,7 +28,6 @@ public class LogoutSpots extends Module {
 
     Map<Entity, String> loggedPlayers = new ConcurrentHashMap<>();
     List<Entity> lastTickEntities;
-    Color c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue());
 
     @EventHandler
     private Listener<PlayerJoinEvent> listener1 = new Listener<>(event -> {
@@ -64,7 +62,7 @@ public class LogoutSpots extends Module {
         loggedPlayers.forEach((e, time) -> {
             if(mc.player.getDistance(e) < 500) {
                 GameSenseTessellator.prepareGL();
-                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1f, c.getRGB());
+                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1f, Color.RED.getRGB());
                 GlStateManager.enableTexture2D();
                 GlStateManager.disableLighting();
                 GlStateManager.disableDepth();
@@ -152,8 +150,8 @@ public class LogoutSpots extends Module {
         GlStateManager.enableTexture2D();
 
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-        fontRendererIn.drawStringWithShadow(line1, -i, 10, c.getRGB());
-        fontRendererIn.drawStringWithShadow(line2, -ii, 20, c.getRGB());
+        fontRendererIn.drawStringWithShadow(line1, -i, 10, Color.RED.darker().getRGB());
+        fontRendererIn.drawStringWithShadow(line2, -ii, 20, Color.RED.darker().getRGB());
         GlStateManager.glNormal3f(0.0F, 0.0F, 0.0F);
 
         GlStateManager.popMatrix();
