@@ -106,7 +106,7 @@ public class AutoCrystal extends Module {
 
     public void onUpdate() {
         isActive = false;
-        if(mc.player == null || mc.player.isDead) return; // bruh
+        if (mc.player == null || mc.player.isDead) return; // bruh
         EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityEnderCrystal)
                 .filter(e -> mc.player.getDistance(e) <= range.getValue())
@@ -275,67 +275,70 @@ public class AutoCrystal extends Module {
                 resetRotation();
                 return;
             }
-        }
-        render = q;
 
-        if (place.getValue()) {
-            if (mc.player == null) return;
-            isActive = true;
-            if (rotate.getValue() && q != null) {
-                lookAtPacket(q.getX() + .5, q.getY() - .5, q.getZ() + .5, mc.player);
-            }
-            if (q != null) {
-                RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + mc.player.getEyeHeight(), mc.player.posZ), new Vec3d(q.getX() + .5, q.getY() - .5d, q.getZ() + .5));
-                if (raytrace.getValue()) {
-                    if (result == null || result.sideHit == null) {
-                        q = null;
-                        f = null;
-                        render = null;
-                        resetRotation();
-                        isActive = false;
-                        return;
-                    } else {
-                        f = result.sideHit;
-                    }
-                }
-            }
+            //}
+            render = q;
 
-            if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
-                if (autoSwitch.getValue()) {
-                    if (noGappleSwitch.getValue() && isEatingGap()) {
-                        isActive = false;
-                        resetRotation();
-                        return;
-                    } else {
-                        isActive = true;
-                        mc.player.inventory.currentItem = crystalSlot;
-                        resetRotation();
-                        switchCooldown = true;
-                    }
-                }
-                return;
-            }
-            // return after we did an autoswitch
-            if (switchCooldown) {
-                switchCooldown = false;
-                return;
-            }
-            //TODO: find better way of doing PlaceDelay as our previous method fucked up placements.
-            //mc.playerController.processRightClickBlock(mc.player, mc.world, q, f, new Vec3d(0, 0, 0), EnumHand.MAIN_HAND);
-            if (q != null && mc.player != null) {
+            if (place.getValue()) {
+                if (mc.player == null) return;
                 isActive = true;
-                if (raytrace.getValue() && f != null) {
-                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, f, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
-                } else if (q.getY() == 255) {
-                    // For Hoosiers. This is how we do buildheight. If the target block (q) is at Y 255. Then we send a placement packet to the bottom part of the block. Thus the EnumFacing.DOWN.
-                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.DOWN, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
-                } else {
-                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+                if (rotate.getValue() && q != null) {
+                    lookAtPacket(q.getX() + .5, q.getY() - .5, q.getZ() + .5, mc.player);
                 }
-                if (ModuleManager.isModuleEnabled("AutoGG"))
-                    AutoGG.INSTANCE.addTargetedPlayer(renderEnt.getName());
+                if (q != null) {
+                    RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + mc.player.getEyeHeight(), mc.player.posZ), new Vec3d(q.getX() + .5, q.getY() - .5d, q.getZ() + .5));
+                    if (raytrace.getValue()) {
+                        if (result == null || result.sideHit == null) {
+                            q = null;
+                            f = null;
+                            render = null;
+                            resetRotation();
+                            isActive = false;
+                            return;
+                        } else {
+                            f = result.sideHit;
+                        }
+                    }
+                }
+
+                if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
+                    if (autoSwitch.getValue()) {
+                        if (noGappleSwitch.getValue() && isEatingGap()) {
+                            isActive = false;
+                            resetRotation();
+                            return;
+                        } else {
+                            isActive = true;
+                            mc.player.inventory.currentItem = crystalSlot;
+                            resetRotation();
+                            switchCooldown = true;
+                        }
+                    }
+                    return;
+                }
+                // return after we did an autoswitch
+                if (switchCooldown) {
+                    switchCooldown = false;
+                    return;
+                }
+
+                //TODO: find better way of doing PlaceDelay as our previous method fucked up placements.
+                //mc.playerController.processRightClickBlock(mc.player, mc.world, q, f, new Vec3d(0, 0, 0), EnumHand.MAIN_HAND);
+                if (q != null && mc.player != null) {
+                    isActive = true;
+                    if (raytrace.getValue() && f != null) {
+                        mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, f, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+                    } else if (q.getY() == 255) {
+                        // For Hoosiers. This is how we do buildheight. If the target block (q) is at Y 255. Then we send a placement packet to the bottom part of the block. Thus the EnumFacing.DOWN.
+                        mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.DOWN, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+                    } else {
+                        mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+                    }
+                    if (ModuleManager.isModuleEnabled("AutoGG"))
+                        AutoGG.INSTANCE.addTargetedPlayer(renderEnt.getName());
+                }
+                isActive = false;
             }
-            isActive = false;
         }
     }
 
@@ -570,3 +573,4 @@ public class AutoCrystal extends Module {
         }
     }
 }
+
