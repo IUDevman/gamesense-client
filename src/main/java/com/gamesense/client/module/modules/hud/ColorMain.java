@@ -21,7 +21,7 @@ public class ColorMain extends Module {
         Blue = this.registerI("Blue", 42, 0, 255);
     }
 
-    public void onDisable(){
-        this.enable();
+    public void onEnable(){
+        this.disable();
     }
 }
