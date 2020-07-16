@@ -43,6 +43,7 @@ public class ModuleManager {
         addMod(new SelfTrap());
         //Exploits
         addMod(new FastBreak());
+        addMod(new MobOwner());
         addMod(new NoInteract());
         addMod(new NoSwing());
         addMod(new PortalGodMode());
