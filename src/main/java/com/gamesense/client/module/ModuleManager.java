@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -43,7 +42,6 @@ public class ModuleManager {
         addMod(new SelfTrap());
         //Exploits
         addMod(new FastBreak());
-        addMod(new MobOwner());
         addMod(new NoInteract());
         addMod(new NoSwing());
         addMod(new PortalGodMode());
@@ -80,7 +78,7 @@ public class ModuleManager {
         addMod(new Fullbright());
         addMod(new HitSpheres());
         addMod(new HoleESP());
-        addMod(new LowOffhand());
+        addMod(new MobOwner());
         addMod(new NoRender());
         addMod(new StorageESP());
         //HUD
