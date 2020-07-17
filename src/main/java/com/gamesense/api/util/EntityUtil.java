@@ -1,5 +1,6 @@
 package com.gamesense.api.util;
 
+import com.google.gson.JsonParser;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -18,6 +19,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class EntityUtil {
 
@@ -48,6 +53,19 @@ public class EntityUtil {
                 (entity.posY - entity.lastTickPosY) * y,
                 (entity.posZ - entity.lastTickPosZ) * z
         );
+    }
+
+    public static String getNameFromUUID(String uuid) {
+        try {
+            String jsonUrl = IOUtils.toString(new URL("https://api.mojang.com/user/profiles/" + uuid.replace("-", "") + "/names"));
+
+            JsonParser parser = new JsonParser();
+
+            return parser.parse(jsonUrl).getAsJsonArray().get(parser.parse(jsonUrl).getAsJsonArray().size() - 1).getAsJsonObject().get("name").toString();
+        } catch (IOException ex) {
+        }
+
+        return null;
     }
 
     public static Block isColliding(double posX, double posY, double posZ) {

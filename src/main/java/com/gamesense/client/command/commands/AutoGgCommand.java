@@ -2,7 +2,6 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.modules.misc.AutoGG;
-//import com.gamesense.client.module.modules.chat.AutoGG;
 
 public class AutoGgCommand extends Command {
     @Override
