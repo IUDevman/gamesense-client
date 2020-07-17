@@ -23,6 +23,7 @@ public class ChatSuffix extends Module {
 
         ArrayList<String> Separators = new ArrayList<>();
         Separators.add(">>");
+        Separators.add("<<");
         Separators.add("|");
 
         Separator = registerMode("Separator", Separators, "|");
@@ -38,7 +39,11 @@ public class ChatSuffix extends Module {
             String Separator2 = null;
             if (Separator.getValue().equalsIgnoreCase(">>")) {
                 Separator2 = " \u300b";
-            } else if (Separator.getValue().equalsIgnoreCase("|")) {
+            }
+            if (Separator.getValue().equalsIgnoreCase("<<")) {
+                Separator2 = " \u300a";
+            }
+            else if (Separator.getValue().equalsIgnoreCase("|")) {
                 Separator2 = " \u23D0 ";
             }
             String old = ((CPacketChatMessage) event.getPacket()).getMessage();

@@ -21,7 +21,7 @@ public class StorageESP extends Module {
 
     public void setup(){
         a = registerI("Alpha", 150 , 0 ,255);
-        w = registerI("Width", 1 , 1 ,10);
+        w = registerI("Width", 2 , 1 ,10);
 
     }
 
