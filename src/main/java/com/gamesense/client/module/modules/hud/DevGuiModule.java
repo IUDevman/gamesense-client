@@ -32,6 +32,7 @@ public class DevGuiModule extends Module {
             } else {
                 mc.player.sendChatMessage(Announcer.guiMessage);
             }
+        this.disable();
     }
 
 
@@ -40,9 +41,5 @@ public class DevGuiModule extends Module {
             GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
         else
             mc.fontRenderer.drawStringWithShadow(text, x, y, color);
-    }
-
-    public void onDisable(){
-        this.enable();
     }
 }
