@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -35,8 +34,6 @@ public class OffhandCrystal extends Module {
     public void setup() {
         health = this.registerI("Health", 15, 0, 36);
     }
-
-
 
     public void onDisable() {
         if (OffhandCrystal.mc.currentScreen instanceof GuiContainer) {

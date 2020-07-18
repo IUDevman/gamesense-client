@@ -4,6 +4,7 @@ import com.gamesense.api.util.FontUtils;
 import com.gamesense.client.devgui.DevComponent;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.DevGuiModule;
+import com.gamesense.client.module.modules.hud.HUD;
 import org.lwjgl.input.Keyboard;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.Gui;
@@ -36,7 +37,7 @@ public class DevKeybind extends DevComponent
         Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 15, this.hovered ? new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).darker().darker().getRGB() : new Color(30, 30, 30, devGuiModule.opacity.getValue()-50).getRGB());
         Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB());
         Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 15, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, new Color(0, 0, 0, devGuiModule.opacity.getValue()).getRGB());
-        mc.fontRenderer.drawStringWithShadow(this.binding ? "Key..." : ("Key: " + ChatFormatting.GRAY + Keyboard.getKeyName(this.parent.mod.getBind())), (float)(this.parent.parent.getX() + 2), (float)(this.parent.parent.getY() + this.offset + 4), -1);
+        FontUtils.drawKeyStringWithShadow(HUD.customFont.getValue(), this.binding ? "Key..." : ("Key: " + ChatFormatting.GRAY + Keyboard.getKeyName(this.parent.mod.getBind())), (this.parent.parent.getX() + 2), (this.parent.parent.getY() + this.offset + 4), -1);
     }
     
     @Override
@@ -58,6 +59,9 @@ public class DevKeybind extends DevComponent
         if (this.binding) {
             if (key == 211) {
                 this.parent.mod.setBind(0);
+            }
+            if (key == Keyboard.KEY_ESCAPE){
+                this.binding = false;
             }
             else {
                 this.parent.mod.setBind(key);

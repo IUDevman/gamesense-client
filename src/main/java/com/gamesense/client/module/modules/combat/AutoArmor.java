@@ -83,10 +83,8 @@ public class AutoArmor extends Module {
                         ClickType.QUICK_MOVE, mc.player);
                 mc.playerController.windowClick(0, slot, 0,
                         ClickType.QUICK_MOVE, mc.player);
-
                 break;
             }
         }
-
     }
 }

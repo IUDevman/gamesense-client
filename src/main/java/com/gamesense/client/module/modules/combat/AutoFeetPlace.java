@@ -2,10 +2,7 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.BlockUtils;
-import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -22,8 +19,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.ArrayList;
 
 import static com.gamesense.api.util.BlockUtils.canBeClicked;
 import static com.gamesense.api.util.BlockUtils.faceVectorPacketInstant;
@@ -269,8 +264,6 @@ public class AutoFeetPlace extends Module {
         }
         return slot;
     }
-
-
 
     private static class Offsets {
         private static final Vec3d[] SURROUND = {

@@ -75,7 +75,7 @@ public class MobOwner extends Module {
         return invalidText;
     }
 
-    public void  onDisable(){
+    public void onDisable(){
         cachedUUIDs.clear();
         for (final Entity entity : MobOwner.mc.world.loadedEntityList){
             if (!(entity instanceof EntityTameable)){

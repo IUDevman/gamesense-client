@@ -5,7 +5,6 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.BlockUtils;
 import com.gamesense.api.util.EntityUtil;
 import com.gamesense.client.module.Module;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -73,7 +72,6 @@ public class AutoTrap extends Module {
         // save initial player hand
         playerHotbarSlot = mc.player.inventory.currentItem;
         lastHotbarSlot = -1;
-
     }
 
     @Override
@@ -94,8 +92,6 @@ public class AutoTrap extends Module {
 
         playerHotbarSlot = -1;
         lastHotbarSlot = -1;
-
-
     }
 
     @Override
@@ -104,8 +100,6 @@ public class AutoTrap extends Module {
         if (mc.player == null) {
             return;
         }
-
-
 
         if (!firstRun) {
             if (delayStep < tickDelay.getValue()) {
@@ -143,7 +137,6 @@ public class AutoTrap extends Module {
             Collections.addAll(placeTargets, Offsets.TRAPFULLROOF);
         }
 
-
         // TODO: dont use static bridging in offset but calculate them on the fly
         //  based on view direction (or relative direction of target to player)
         //  (add full/half n/e/s/w patterns to append dynamically)
@@ -168,9 +161,7 @@ public class AutoTrap extends Module {
             }
 
             offsetStep++;
-
         }
-
 
         if (blocksPlaced > 0) {
 
@@ -183,9 +174,7 @@ public class AutoTrap extends Module {
                 mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
                 isSneaking = false;
             }
-
         }
-
     }
 
     private boolean placeBlockInRange(BlockPos pos, double range) {
@@ -250,7 +239,6 @@ public class AutoTrap extends Module {
         mc.rightClickDelayTimer = 4;
 
         return true;
-
     }
 
     private int findObiInHotbar() {
@@ -271,11 +259,8 @@ public class AutoTrap extends Module {
                 slot = i;
                 break;
             }
-
         }
-
         return slot;
-
     }
 
     private void findClosestTarget() {
@@ -310,9 +295,7 @@ public class AutoTrap extends Module {
             if (mc.player.getDistance(target) < mc.player.getDistance(closestTarget)) {
                 closestTarget = target;
             }
-
         }
-
     }
 
     private static class Offsets {
@@ -350,8 +333,6 @@ public class AutoTrap extends Module {
                 new Vec3d(0, 3, -1),
                 new Vec3d(0, 3, 0),
                 new Vec3d(0, 4, 0)
-
         };
     }
-
 }

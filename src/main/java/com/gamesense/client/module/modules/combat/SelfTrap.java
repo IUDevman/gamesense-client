@@ -54,7 +54,6 @@ public class SelfTrap extends Module {
         rotate = this.registerB("Rotate", true);
         blocksPerTick = this.registerI("BlockPerTick", 5, 0, 10);
         tickDelay = this.registerI("Delay", 0, 0, 10);
-
     }
 
     protected void onEnable() {
@@ -69,7 +68,6 @@ public class SelfTrap extends Module {
         // save initial player hand
         playerHotbarSlot = mc.player.inventory.currentItem;
         lastHotbarSlot = -1;
-
     }
 
     @Override
@@ -90,7 +88,6 @@ public class SelfTrap extends Module {
 
         playerHotbarSlot = -1;
         lastHotbarSlot = -1;
-
 
     }
 
@@ -139,14 +136,6 @@ public class SelfTrap extends Module {
             Collections.addAll(placeTargets, SelfTrap.Offsets.TRAPFULLROOF);
         }
 
-
-        // TODO: dont use static bridging in offset but calculate them on the fly
-        //  based on view direction (or relative direction of target to player)
-        //  (add full/half n/e/s/w patterns to append dynamically)
-
-        // TODO: sort offsetList by optimal caging success factor ->
-        // sort them by pos y up AND start building behind target
-
         int blocksPlaced = 0;
 
         while (blocksPlaced < blocksPerTick.getValue()) {
@@ -164,7 +153,6 @@ public class SelfTrap extends Module {
             }
 
             offsetStep++;
-
         }
 
 
@@ -179,9 +167,7 @@ public class SelfTrap extends Module {
                 mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
                 isSneaking = false;
             }
-
         }
-
     }
 
     private boolean placeBlockInRange(BlockPos pos) {
@@ -242,7 +228,6 @@ public class SelfTrap extends Module {
         mc.rightClickDelayTimer = 4;
 
         return true;
-
     }
 
     private int findObiInHotbar() {
@@ -315,7 +300,6 @@ public class SelfTrap extends Module {
                 new Vec3d(0, 3, -1),
                 new Vec3d(0, 3, 0),
                 new Vec3d(0, 4, 0)
-
         };
     }
 }
