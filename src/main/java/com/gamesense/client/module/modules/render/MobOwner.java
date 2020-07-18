@@ -22,7 +22,7 @@ public class MobOwner extends Module {
 
     private Map<String, String> cachedUUIDs = new HashMap<String, String>(){{ }};
     private int apiRequests = 0;
-    private String invalidText = "Offline or invalid UUID!";
+    private String invalidText = "Servers offline!";
 
     public void setup(){
         requestTime = this.registerI("Reset Ticks", 10, 0, 20);
