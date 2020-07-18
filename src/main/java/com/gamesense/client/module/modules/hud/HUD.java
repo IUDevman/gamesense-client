@@ -5,6 +5,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.ColourHolder;
 import com.gamesense.api.util.FontUtils;
 import com.gamesense.api.util.Rainbow;
+import com.gamesense.api.util.TpsUtils;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -27,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -43,6 +46,7 @@ public class HUD extends Module {
     }
 
     public static Setting.b customFont;
+    Setting.b PotionEffects;
     Setting.b Watermark;
     Setting.b Welcomer;
     Setting.b Inventory;
@@ -50,12 +54,16 @@ public class HUD extends Module {
     Setting.mode Type;
     Setting.b ArrayList;
     Setting.b ArmorHud;
+    Setting.i potionx;
+    Setting.i potiony;
     Setting.i welcomex;
     Setting.i welcomey;
     Setting.i infox;
     Setting.i infoy;
     Setting.b sortUp;
     Setting.b right;
+    Setting.b psortUp;
+    Setting.b pright;
     Setting.i arrayx;
     Setting.i arrayy;
     private BlockPos[] surroundOffset;
@@ -63,6 +71,9 @@ public class HUD extends Module {
     Color c;
     int sort;
     int modCount;
+    int count;
+    DecimalFormat format1 = new DecimalFormat("0");
+    DecimalFormat format2 = new DecimalFormat("00");
 
 
     private static RenderItem itemRender = Minecraft.getMinecraft()
@@ -81,11 +92,16 @@ public class HUD extends Module {
         GameSenseInfo = this.registerB("Information", false);
         ArmorHud = this.registerB("Armor Hud", false);
         ArrayList = this.registerB("ArrayList", false);
-        sortUp = registerB("Sort Up", false);
-        right = registerB("Right", false);
+        sortUp = registerB("Array Sort Up", false);
+        right = registerB("Array Right", false);
         arrayx = registerI("Array X", 0, 0, 1000);
         arrayy = registerI("Array Y", 0 , 0 ,1000);
         Inventory = this.registerB("Inventory", false);
+        PotionEffects = this.registerB("Potion Effects", false);
+        potionx = this.registerI("Potion X", 0, 0, 1000);
+        potiony = this.registerI("Potion Y", 0, 0, 1000);
+        psortUp = registerB("Potion Sort Up", false);
+        pright = registerB("Potion Right", false);
         Watermark = this.registerB("Watermark", false);
         Welcomer = this.registerB("Welcomer", false);
         welcomex = this.registerI("Welcomer X", 0, 0, 1000);
@@ -98,6 +114,38 @@ public class HUD extends Module {
             c = Rainbow.getColor();
         else c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue());
 
+        if (PotionEffects.getValue()){
+            count = 0;
+            try {
+                mc.player.getActivePotionEffects().forEach(effect -> {
+                    String name = I18n.format(effect.getPotion().getName());
+                    double duration = effect.getDuration() / TpsUtils.getTickRate();
+                    int amplifier = effect.getAmplifier() + 1;
+                    double p1 = duration % 60;
+                    double p2 = duration / 60;
+                    double p3 = p2 % 60;
+                    String minutes = format1.format(p3);
+                    String seconds = format2.format(p1);
+                    String s = name + " " + amplifier + ChatFormatting.GRAY + " " + minutes + ":" + seconds;
+                    if (psortUp.getValue()) {
+                        if (pright.getValue()) {
+                            drawStringWithShadow(s, potionx.getValue() - getWidth(s),potiony.getValue() + (count * 10), c.getRGB());
+                        } else {
+                            drawStringWithShadow(s, potionx.getValue(), potiony.getValue() + (count * 10), c.getRGB());
+                        }
+                        count++;
+                    } else {
+                        if (pright.getValue()) {
+                            drawStringWithShadow(s, potionx.getValue() - getWidth(s),  potiony.getValue() + (count * -10), c.getRGB());
+                        } else {
+                            drawStringWithShadow(s, potionx.getValue(), potiony.getValue() + (count * -10), c.getRGB());
+                        }
+                        count++;
+                    }
+                });
+            } catch(NullPointerException e){e.printStackTrace();}
+        }
+
         if (Watermark.getValue()) {
             drawStringWithShadow("GameSense " + GameSenseMod.MODVER + "-ALPHA", 0, 0, c.getRGB());
         }
@@ -109,8 +157,6 @@ public class HUD extends Module {
         if (Inventory.getValue()) {
             drawInventory(0, 12);
         }
-
-
 
         if (GameSenseInfo.getValue()) {
             if (Type.getValue().equalsIgnoreCase("PvP")) {
@@ -340,4 +386,9 @@ public class HUD extends Module {
             else
                 mc.fontRenderer.drawStringWithShadow(text, x, y, color);
         }
+
+    private int getWidth(String s){
+        if(customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
+        else return mc.fontRenderer.getStringWidth(s);
+    }
 }

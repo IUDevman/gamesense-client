@@ -139,12 +139,12 @@ public class PvPInfo extends Module {
                   EntityPlayer ent = (EntityPlayer) var1.next();
                   if (EntityUtil.isLiving(ent) && ent.getHealth() > 0.0F) {
                       if (ent.isPotionActive(MobEffects.STRENGTH) && !this.strengthedPlayers.contains(ent)) {
-                          Command.sendRawMessage(getTextColor() + ent.getDisplayNameString() + " has (drank) strength!");
+                          Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " has (drank) strength!");
                           this.strengthedPlayers.add(ent);
                       }
 
                       if (this.strengthedPlayers.contains(ent) && !ent.isPotionActive(MobEffects.STRENGTH)) {
-                          Command.sendRawMessage(getTextColor() + ent.getDisplayNameString() + " no longer has strength!");
+                          Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " no longer has strength!");
                           this.strengthedPlayers.remove(ent);
                       }
 
