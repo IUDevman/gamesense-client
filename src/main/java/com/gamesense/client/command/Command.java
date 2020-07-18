@@ -51,5 +51,4 @@ public abstract class Command {
     public static void setPrefix(String p){
         prefix = p;
     }
-
 }

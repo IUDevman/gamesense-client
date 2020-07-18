@@ -61,5 +61,4 @@ public class CommandManager {
         });
         if(!b) Command.sendClientMessage(ChatFormatting.DARK_RED + "Unknown command!");
     }
-
 }

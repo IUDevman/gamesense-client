@@ -12,8 +12,8 @@ import com.gamesense.client.module.modules.hud.HUD;
 import net.minecraft.client.gui.Gui;
 import java.awt.Color;
 
-public class DevCheckBox extends DevComponent
-{
+public class DevCheckBox extends DevComponent{
+
     private boolean hovered;
     private Setting.b op;
     private DevButton parent;

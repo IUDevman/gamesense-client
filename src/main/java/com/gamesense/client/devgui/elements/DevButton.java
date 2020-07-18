@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public class DevButton extends DevComponent {
+
     public Module mod;
     public DevFrame parent;
     public int offset;

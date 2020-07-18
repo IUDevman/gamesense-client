@@ -10,8 +10,8 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.Gui;
 import java.awt.Color;
 
-public class DevKeybind extends DevComponent
-{
+public class DevKeybind extends DevComponent{
+
     private boolean hovered;
     private boolean binding;
     private DevButton parent;

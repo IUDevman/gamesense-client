@@ -16,8 +16,8 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.Gui;
 import java.awt.Color;
 
-public class DevDoubleSlider extends DevComponent
-{
+public class DevDoubleSlider extends DevComponent{
+
     private boolean hovered;
     private Setting.d set;
     private DevButton parent;

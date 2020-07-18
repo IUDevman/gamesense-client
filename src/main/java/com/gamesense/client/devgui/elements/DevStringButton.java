@@ -10,8 +10,8 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.Gui;
 import java.awt.Color;
 
-public class DevStringButton extends DevComponent
-{
+public class DevStringButton extends DevComponent{
+
     private Setting.s op;
     private DevButton parent;
     private int offset;

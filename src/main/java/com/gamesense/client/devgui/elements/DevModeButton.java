@@ -14,8 +14,8 @@ import net.minecraftforge.common.ForgeHooks;
 
 import java.awt.Color;
 
-public class DevModeButton extends DevComponent
-{
+public class DevModeButton extends DevComponent{
+
     private boolean hovered;
     private DevButton parent;
     private Setting.mode set;
@@ -70,6 +70,4 @@ public class DevModeButton extends DevComponent
     public boolean isMouseOnButton(final int x, final int y) {
         return x > this.x && x < this.x + 88 && y > this.y && y < this.y + 16;
     }
-
-
 }
