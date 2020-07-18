@@ -60,6 +60,7 @@ public class DevKeybind extends DevComponent
             if (key == 211) {
                 this.parent.mod.setBind(0);
             }
+            //prevents you from binding to the escape key
             if (key == Keyboard.KEY_ESCAPE){
                 this.binding = false;
             }
