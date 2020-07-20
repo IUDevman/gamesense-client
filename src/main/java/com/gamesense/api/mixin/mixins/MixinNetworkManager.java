@@ -3,6 +3,7 @@ package com.gamesense.api.mixin.mixins;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.NoKick;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -58,7 +59,7 @@ public class MixinNetworkManager {
 
     @Inject(method = "exceptionCaught", at = @At("HEAD"), cancellable = true)
     private void exceptionCaught(ChannelHandlerContext p_exceptionCaught_1_, Throwable p_exceptionCaught_2_, CallbackInfo info) {
-        if (p_exceptionCaught_2_ instanceof IOException && ModuleManager.isModuleEnabled("NoPacketKick")) info.cancel();
+        if (p_exceptionCaught_2_ instanceof IOException && ModuleManager.isModuleEnabled("NoKick") && ((NoKick)ModuleManager.getModuleByName("NoKick")).noPacketKick.getValue()) info.cancel();
     }
 
 }

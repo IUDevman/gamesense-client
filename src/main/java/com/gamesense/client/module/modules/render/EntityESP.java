@@ -4,6 +4,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.GameSenseTessellator;
 import com.gamesense.api.util.GeometryMasks;
+import com.gamesense.api.util.Rainbow;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.ColorMain;
@@ -33,7 +34,6 @@ public class EntityESP extends Module {
         RenderMode = registerMode("Mode", Modes, "Box");
     }
 
-
     Setting.mode RenderMode;
     Setting.b exp;
     Setting.b epearls;
@@ -45,10 +45,14 @@ public class EntityESP extends Module {
 
     public void onWorldRender(RenderEvent event) {
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), a.getValue()).getRGB();
-
-            if (RenderMode.getValue().equalsIgnoreCase("Box")) {
-                mc.world.loadedEntityList.stream()
+        if (colorMain.Rainbow.getValue()){
+            c = Rainbow.getColorWithOpacity(a.getValue()).getRGB();
+        }
+        else {
+            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), a.getValue()).getRGB();
+        }
+        if (RenderMode.getValue().equalsIgnoreCase("Box")) {
+            mc.world.loadedEntityList.stream()
                         .filter(entity -> entity != mc.player)
                         .forEach(e -> {
                             GameSenseTessellator.prepare(GL11.GL_QUADS);

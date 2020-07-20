@@ -60,7 +60,6 @@ public class DevGUI extends GuiScreen {
                 }
             }
         }
-
     }
 
     protected void mouseReleased(final int mouseX, final int mouseY, final int state){

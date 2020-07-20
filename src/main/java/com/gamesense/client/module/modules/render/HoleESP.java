@@ -65,10 +65,6 @@ public class HoleESP extends Module {
         modes.add("Box");
 
         mode = registerMode("Mode", modes, "Box");
-
-
-
-
     }
 
     private ConcurrentHashMap<BlockPos, Boolean> safeHoles;

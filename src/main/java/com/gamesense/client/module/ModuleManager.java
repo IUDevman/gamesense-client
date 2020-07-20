@@ -66,7 +66,7 @@ public class ModuleManager {
         addMod(new MCF());
         addMod(new MultiTask());
         addMod(new NoEntityTrace());
-        addMod(new NoPacketKick());
+        addMod(new NoKick());
         addMod(new PvPInfo());
         addMod(new ToggleMsgs());
         //Render
@@ -82,6 +82,7 @@ public class ModuleManager {
         addMod(new NekoAnimation());
         addMod(new NoRender());
         addMod(new StorageESP());
+        addMod(new ViewClip());
         //HUD
         addMod(new DevGuiModule());
         addMod(new ColorMain());

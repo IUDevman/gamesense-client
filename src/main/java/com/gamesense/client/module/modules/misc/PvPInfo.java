@@ -147,11 +147,9 @@ public class PvPInfo extends Module {
                           Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " no longer has strength!");
                           this.strengthedPlayers.remove(ent);
                       }
-
                       this.checkRender();
                   }
               }
-
           }
       }
     }
@@ -168,9 +166,7 @@ public class PvPInfo extends Module {
                     this.renderPlayers.add(ent);
                 }
             }
-
             var1 = this.strengthedPlayers.iterator();
-
             while (var1.hasNext()) {
                 ent = (EntityPlayer) var1.next();
                 if (!this.renderPlayers.contains(ent)) {
@@ -188,7 +184,6 @@ public class PvPInfo extends Module {
         if (mc.world == null || mc.player == null) {
             return;
         }
-
         if (event.getPacket() instanceof SPacketEntityStatus) {
             SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
             if (packet.getOpCode() == 35) {
@@ -251,6 +246,9 @@ public class PvPInfo extends Module {
         }
         if (ChatColor.getValue().equalsIgnoreCase("White")){
             return ChatFormatting.WHITE;
+        }
+        if (ChatColor.getValue().equalsIgnoreCase("Aqua")){
+            return ChatFormatting.GREEN.AQUA;
         }
         return null;
     }
