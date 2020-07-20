@@ -83,12 +83,12 @@ public class DevButton extends DevComponent {
         DevGuiModule devGuiModule= ((DevGuiModule) ModuleManager.getModuleByName("DevGUI"));
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         if (colorMain.Rainbow.getValue()){
-            DevGUI.color = Rainbow.getColor().getRGB();
+            DevGUI.color = Rainbow.getColorWithOpacity(devGuiModule.opacity.getValue()).getRGB();
         }
         else {
             DevGUI.color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), devGuiModule.opacity.getValue()).getRGB();
         }
-        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, this.isHovered ? (this.mod.isEnabled() ? new Color(DevGUI.color).getRGB() : new Color(195, 195, 195, devGuiModule.opacity.getValue() -50).darker().darker().getRGB()) : (this.mod.isEnabled() ? new Color(DevGUI.color).getRGB() : new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB()));
+        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, this.isHovered ? (this.mod.isEnabled() ? DevGUI.color : new Color(195, 195, 195, devGuiModule.opacity.getValue() -50).darker().darker().getRGB()) : (this.mod.isEnabled() ? DevGUI.color : new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB()));
         Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB());
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, -1);
         if (this.subcomponents.size() > 1) {

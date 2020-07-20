@@ -1,12 +1,12 @@
 package com.gamesense.client.module.modules.render;
 
+import com.gamesense.api.event.events.BossbarEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.init.MobEffects;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
@@ -23,6 +23,7 @@ public class NoRender extends Module {
     Setting.b nausea;
     public Setting.b hurtCam;
     Setting.b noOverlay;
+    Setting.b noBossBar;
 
     public void setup() {
         armor = registerB("Armor", false);
@@ -30,7 +31,8 @@ public class NoRender extends Module {
         blind = registerB("Blind", false);
         nausea = registerB("Nausea", false);
         hurtCam = registerB("HurtCam", false);
-        noOverlay = registerB("No Overlay", false);
+        noOverlay = registerB("No Overlay", false); //need to make sure this works better
+        noBossBar = registerB("No Boss Bar", false);
     }
 
     public void onUpdate(){
@@ -41,15 +43,19 @@ public class NoRender extends Module {
     @EventHandler
     public Listener<RenderBlockOverlayEvent> blockOverlayEventListener = new Listener<>(event -> {
         if(fire.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.FIRE) event.setCanceled(true);
+        if(noOverlay.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.WATER) event.setCanceled(true);
+        if(noOverlay.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.BLOCK) event.setCanceled(true);
     });
 
     // Disable Water and lava fog
     @EventHandler
     private Listener<EntityViewRenderEvent.FogDensity> fogDensityListener = new Listener<>(event -> {
-       if (event.getState().getMaterial().equals(Material.WATER)
-           || event.getState().getMaterial().equals(Material.LAVA)) {
-           event.setDensity(0);
-           event.setCanceled(true);
+        if (noOverlay.getValue()) {
+            if (event.getState().getMaterial().equals(Material.WATER)
+                    || event.getState().getMaterial().equals(Material.LAVA)) {
+                event.setDensity(0);
+                event.setCanceled(true);
+            }
         }
     });
 
@@ -59,13 +65,24 @@ public class NoRender extends Module {
         event.setCanceled(true);
     });
 
-
     @EventHandler
     private Listener<RenderGameOverlayEvent> renderGameOverlayEventListener = new Listener<>(event -> {
-       if (event.getType().equals(RenderGameOverlayEvent.ElementType.HELMET)
-           || event.getType().equals(RenderGameOverlayEvent.ElementType.PORTAL)) {
-           event.setCanceled(true);
-       }
+        if (noOverlay.getValue()) {
+            if (event.getType().equals(RenderGameOverlayEvent.ElementType.HELMET)){
+                event.setCanceled(true);
+            }
+            if (event.getType().equals(RenderGameOverlayEvent.ElementType.PORTAL)){
+                event.setCanceled(true);
+            }
+        }
+    });
+
+    // Bossbar
+    @EventHandler
+    private Listener<BossbarEvent> bossbarEventListener = new Listener<>(event -> {
+        if (noBossBar.getValue()) {
+            event.cancel();
+        }
     });
 
     public void onEnable(){

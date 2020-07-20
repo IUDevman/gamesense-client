@@ -29,7 +29,7 @@ public class BlockHighlight extends Module {
         g = registerI("Green", 255, 0 , 255);
         b = registerI("Blue", 255, 0 ,255);
         a = registerI("Alpha", 255, 0 ,255);
-        w = registerI("Width", 1, 1, 10);
+        w = registerI("Width", 2, 1, 10);
         rainbow = registerB("Rainbow", false);
     }
 

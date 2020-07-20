@@ -30,7 +30,7 @@ public class DevGUI extends GuiScreen {
         DevGuiModule devGuiModule = ((DevGuiModule) ModuleManager.getModuleByName("DevGUI"));
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         if (colorMain.Rainbow.getValue()){
-            DevGUI.color = Rainbow.getColor().getRGB();
+            DevGUI.color = Rainbow.getColorWithOpacity(devGuiModule.opacity.getValue()).getRGB();
         }
         else {
             DevGUI.color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), devGuiModule.opacity.getValue()).getRGB();

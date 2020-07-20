@@ -1,10 +1,10 @@
-package com.gamesense.client.module.modules.misc;
+package com.gamesense.client.module.modules.render;
 
 import com.gamesense.client.module.Module;
 import net.minecraft.item.ItemSword;
 
 public class NekoAnimation extends Module {
-    public NekoAnimation() {super("NekoAnimation", Category.Misc);}
+    public NekoAnimation() {super("NekoAnimation", Category.Render);}
 
     @Override
     public void onUpdate() {

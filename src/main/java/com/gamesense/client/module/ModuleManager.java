@@ -41,12 +41,14 @@ public class ModuleManager {
         addMod(new OffhandGap());
         addMod(new SelfTrap());
         //Exploits
+        addMod(new CoordExploit());
         addMod(new FastBreak());
         addMod(new NoInteract());
         addMod(new NoSwing());
         addMod(new PortalGodMode());
         //Movement
         addMod(new HoleTP());
+        addMod(new PlayerTweaks());
         addMod(new ReverseStep());
         addMod(new Speed());
         addMod(new Sprint());
@@ -57,14 +59,12 @@ public class ModuleManager {
         addMod(new AutoReply());
         addMod(new ChatModifier());
         addMod(new ChatSuffix());
-        addMod(new CoordExploit());
         addMod(new FastPlace());
         addMod(new HoosiersDupe());
         addMod(new LiquidInteract());
         addMod(new LogoutSpots());
         addMod(new MCF());
         addMod(new MultiTask());
-        addMod(new NekoAnimation());
         addMod(new NoEntityTrace());
         addMod(new NoPacketKick());
         addMod(new PvPInfo());
@@ -79,6 +79,7 @@ public class ModuleManager {
         addMod(new HitSpheres());
         addMod(new HoleESP());
         addMod(new MobOwner());
+        addMod(new NekoAnimation());
         addMod(new NoRender());
         addMod(new StorageESP());
         //HUD
@@ -189,5 +190,4 @@ public class ModuleManager {
                 (entity.posZ - entity.lastTickPosZ) * z
         );
     }
-
 }

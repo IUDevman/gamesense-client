@@ -16,7 +16,7 @@ public class MixinLayerBipedArmor {
 
    @Inject(method = "setModelSlotVisible", at = @At(value = "HEAD"), cancellable = true)
     protected void setModelSlotVisible(ModelBiped model, EntityEquipmentSlot slotIn, CallbackInfo info) {
-        if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).armor.getValBoolean()) {
+        if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).armor.getValue()) {
            info.cancel();
            switch (slotIn) {
                case HEAD:

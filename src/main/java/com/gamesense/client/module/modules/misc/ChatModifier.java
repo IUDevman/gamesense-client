@@ -1,14 +1,17 @@
 package com.gamesense.client.module.modules.misc;
 
 
+import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.friends.Friend;
 import com.gamesense.api.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
+import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -24,13 +27,12 @@ public class ChatModifier extends Module {
     }
 
     public Setting.b clearBkg;
-    Setting.b nameHighlight;
-    Setting.b friendHighlight;
     Setting.b chattimestamps;
     Setting.mode format;
     Setting.mode color;
     Setting.mode decoration;
     Setting.b space;
+    Setting.b greentext;
 
     public void setup(){
 
@@ -48,8 +50,7 @@ public class ChatModifier extends Module {
         }
 
         clearBkg = registerB("ClearChat", false);
-        nameHighlight = registerB("NameHighlight", false);
-        friendHighlight = registerB("FriendHighlight", false);
+        greentext = registerB("Green Text", false);
         chattimestamps = registerB("ChatTimeStamps", false);
         format = registerMode("Format", formats, "H24:mm");
         decoration = registerMode("Deco", deco, "[ ]");
@@ -71,22 +72,20 @@ public class ChatModifier extends Module {
           TextComponentString time = new TextComponentString(ChatFormatting.getByName(color.getValue()) + decoLeft + date + decoRight + ChatFormatting.RESET);
           event.setMessage(time.appendSibling(event.getMessage()));
       }
-        if(mc.player == null) return;
-        String name = mc.player.getName().toLowerCase();
-        if(friendHighlight.getValue()){
-            if(!event.getMessage().getUnformattedText().startsWith("<"+mc.player.getName()+">")){
-                Friends.getFriends().forEach(f -> {
-                    if(event.getMessage().getUnformattedText().contains(f.getName())){
-                        event.getMessage().setStyle(event.getMessage().getStyle().setColor(TextFormatting.AQUA));
-                    }
-                });
-            }
-        }
-        if(nameHighlight.getValue()){
-            String s = ChatFormatting.GOLD + "" + ChatFormatting.BOLD + mc.player.getName() + ChatFormatting.RESET;
-            Style style = event.getMessage().getStyle();
-            if(!event.getMessage().getUnformattedText().startsWith("<"+mc.player.getName()+">") && event.getMessage().getUnformattedText().toLowerCase().contains(name)) {
-                event.getMessage().getStyle().setParentStyle(style.setBold(true).setColor(TextFormatting.GOLD));
+    });
+
+    @EventHandler
+    private Listener<PacketEvent.Send> listener = new Listener<>(event -> {
+        if (greentext.getValue()) {
+            if (event.getPacket() instanceof CPacketChatMessage) {
+                if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(Command.getPrefix()))
+                    return;
+                String message = ((CPacketChatMessage) event.getPacket()).getMessage();
+                String prefix = "";
+                prefix = ">";
+                String s = prefix + message;
+                if (s.length() > 255) return;
+                ((CPacketChatMessage) event.getPacket()).message = s;
             }
         }
     });

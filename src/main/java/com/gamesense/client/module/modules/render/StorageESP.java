@@ -33,7 +33,7 @@ public class StorageESP extends Module {
 
     public void onWorldRender(RenderEvent event){
         Color c1 = new Color(255, 255, 0, (int)a.getValue());
-        Color c2 = new Color(100, 0, 100, (int)a.getValue());
+        Color c2 = new Color(180, 70, 200, (int)a.getValue());
         Color c3 = new Color(150, 150, 150, (int)a.getValue());
         Color c4 = new Color(255,0,0, (int)a.getValue());
         if(chests != null && chests.size() > 0){
