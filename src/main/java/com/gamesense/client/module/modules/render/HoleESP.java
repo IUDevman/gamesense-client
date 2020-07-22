@@ -20,24 +20,34 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HoleESP extends Module {
 
 
-    public HoleESP() {
+    public HoleESP(){
         super("HoleESP", Category.Render);
     }
 
+    //settings
     public static Setting.i rangeS;
-    Setting.i r;
-    Setting.i g;
-    Setting.i b;
-    Setting.i a;
-    Setting.i r2;
-    Setting.i g2;
-    Setting.i b2;
+    Setting.i alpha;
     Setting.b rainbow;
-    Setting.mode mode;
-    Setting.i width;
     Setting.b hideOwn;
     Setting.b flatOwn;
+    Setting.mode mode;
 
+    //load settings
+    public void setup(){
+        rangeS = registerI("Range", 5, 1, 20);
+        alpha = registerI("Alpha", 50 , 0, 255);
+        rainbow = registerB("Rainbow", false);
+        hideOwn = registerB("Hide Own", false);
+        flatOwn = registerB("Flat Own", false);
+
+        ArrayList<String> modes = new ArrayList<>();
+        modes.add("Air");
+        modes.add("Ground");
+
+        mode = registerMode("Mode", modes, "Air");
+    }
+
+    //defines the render borders
     private final BlockPos[] surroundOffset = {
             new BlockPos(0, -1, 0), // down
             new BlockPos(0, 0, -1), // north
@@ -46,131 +56,10 @@ public class HoleESP extends Module {
             new BlockPos(-1, 0, 0) // west
     };
 
-    public void setup(){
-
-        rangeS = registerI("Range", 5, 1, 20);
-        r = registerI("Red", 255 ,0 ,255);
-        g = registerI("Green", 255, 0 ,255);
-        b = registerI("Blue", 255 ,0 ,255);
-        r2 = registerI("RedObby", 255, 0 ,255);
-        g2 = registerI("GreenObby", 255, 0, 255);
-        b2 = registerI("BlueObby", 255 ,0 ,255);
-        a = registerI("Alpha", 50 , 0, 255);
-        hideOwn = registerB("HideOwn", false);
-        flatOwn = registerB("FlatOwn", false);
-        rainbow = registerB("Rainbow", false);
-        width = registerI("Width", 3 , 1, 10);
-
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Box");
-
-        mode = registerMode("Mode", modes, "Box");
-    }
-
+    //used to register safe holes for rendering
     private ConcurrentHashMap<BlockPos, Boolean> safeHoles;
 
-    @Override
-    public void onUpdate() {
-
-        if (safeHoles == null) {
-            safeHoles = new ConcurrentHashMap<>();
-        } else {
-            safeHoles.clear();
-        }
-
-        int range = (int) Math.ceil(rangeS.getValue());
-
-        List<BlockPos> blockPosList = getSphere(getPlayerPos(), range, range, false, true, 0);
-
-        for (BlockPos pos : blockPosList) {
-
-            // block gotta be air
-            if (!mc.world.getBlockState(pos).getBlock().equals(Blocks.AIR)) {
-                continue;
-            }
-
-            // block 1 above gotta be air
-            if (!mc.world.getBlockState(pos.add(0, 1, 0)).getBlock().equals(Blocks.AIR)) {
-                continue;
-            }
-
-            // block 2 above gotta be air
-            if (!mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals(Blocks.AIR)) {
-                continue;
-            }
-
-            if (this.hideOwn.getValue() && pos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
-                continue;
-            }
-
-            boolean isSafe = true;
-            boolean isBedrock = true;
-
-            for (BlockPos offset : surroundOffset) {
-                Block block = mc.world.getBlockState(pos.add(offset)).getBlock();
-                if (block != Blocks.BEDROCK) {
-                    isBedrock = false;
-                }
-                if (block != Blocks.BEDROCK && block != Blocks.OBSIDIAN && block != Blocks.ENDER_CHEST && block != Blocks.ANVIL) {
-                    isSafe = false;
-                    break;
-                }
-            }
-
-            if (isSafe) {
-                safeHoles.put(pos, isBedrock);
-            }
-
-        }
-
-    }
-
-    @Override
-    public void onWorldRender(final RenderEvent event) {
-        if (mc.player == null || safeHoles == null) {
-            return;
-        }
-
-        if (safeHoles.isEmpty()) {
-            return;
-        }
-
-        if(mode.getValue().equalsIgnoreCase("box"))
-            GameSenseTessellator.prepare(GL11.GL_QUADS);
-
-        safeHoles.forEach((blockPos, isBedrock) -> {
-            if(isBedrock) {
-                drawBox(blockPos, (int)r.getValue(), (int)g.getValue(), (int)b.getValue());
-            } else drawBox(blockPos, (int)r2.getValue(), (int)g2.getValue(), (int)b2.getValue());
-
-        });
-
-        if(mode.getValue().equalsIgnoreCase("box"))
-            GameSenseTessellator.release();
-
-    }
-
-    private void drawBox(BlockPos blockPos, int r, int g, int b) {
-        Color color;
-        Color c = Rainbow.getColor();
-        AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-        if(rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int)a.getValue());
-        else color = new Color(r, g, b, (int)a.getValue());
-
-
-        if(mode.getValue().equalsIgnoreCase("box")) {
-            if(this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ)))
-                GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
-            else
-                GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
-        } else {
-                GameSenseTessellator.drawBoundingBox(bb, width.getValue(), color.getRGB());
-        }
-    }
-
-
-
-
+    //defines the area for the client to search
     public List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
         List<BlockPos> circleblocks = new ArrayList<>();
         int cx = loc.getX();
@@ -190,8 +79,112 @@ public class HoleESP extends Module {
         return circleblocks;
     }
 
+    //gets the players location
     public static BlockPos getPlayerPos() {
         return new BlockPos(Math.floor(mc.player.posX), Math.floor(mc.player.posY), Math.floor(mc.player.posZ));
     }
 
+    //finds safe holes to render
+    @Override
+    public void onUpdate(){
+        if (safeHoles == null){
+            safeHoles = new ConcurrentHashMap<>();
+        }
+        else{
+            safeHoles.clear();
+        }
+
+        int range = (int) Math.ceil(rangeS.getValue());
+
+        List<BlockPos> blockPosList = getSphere(getPlayerPos(), range, range, false, true, 0);
+        for (BlockPos pos : blockPosList){
+
+            if (!mc.world.getBlockState(pos).getBlock().equals(Blocks.AIR)){
+                continue;
+            }
+            if (!mc.world.getBlockState(pos.add(0, 1, 0)).getBlock().equals(Blocks.AIR)){
+                continue;
+            }
+            if (!mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals(Blocks.AIR)){
+                continue;
+            }
+            if (this.hideOwn.getValue() && pos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))){
+                continue;
+            }
+
+            boolean isSafe = true;
+            boolean isBedrock = true;
+
+            for (BlockPos offset : surroundOffset){
+                Block block = mc.world.getBlockState(pos.add(offset)).getBlock();
+                if (block != Blocks.BEDROCK){
+                    isBedrock = false;
+                }
+                if (block != Blocks.BEDROCK && block != Blocks.OBSIDIAN && block != Blocks.ENDER_CHEST && block != Blocks.ANVIL){
+                    isSafe = false;
+                    break;
+                }
+            }
+            if (isSafe){
+                safeHoles.put(pos, isBedrock);
+            }
+        }
+    }
+
+    //renders safe holes
+    @Override
+    public void onWorldRender(final RenderEvent event){
+        if (mc.player == null || safeHoles == null){
+            return;
+        }
+        if (safeHoles.isEmpty()){
+            return;
+        }
+        GameSenseTessellator.prepare(GL11.GL_QUADS);
+
+        if(mode.getValue().equalsIgnoreCase("Air")) {
+            safeHoles.forEach((blockPos, isBedrock) -> {
+                if (isBedrock) {
+                    drawBox(blockPos, 0, 255, 0);
+                } else drawBox(blockPos, 255, 0, 0);
+            });
+        }
+        if(mode.getValue().equalsIgnoreCase("Ground")) {
+            safeHoles.forEach((blockPos, isBedrock) -> {
+                if (isBedrock) {
+                    drawBox2(blockPos, 0, 255, 0);
+                } else drawBox2(blockPos, 255, 0, 0);
+            });
+        }
+        GameSenseTessellator.release();
+    }
+
+    //renders air boxes
+    private void drawBox(BlockPos blockPos, int r, int g, int b) {
+        Color color;
+        Color c = Rainbow.getColor();
+        AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
+        if(rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int)alpha.getValue());
+        else color = new Color(r, g, b, (int)alpha.getValue());
+
+        if(mode.getValue().equalsIgnoreCase("Air")) {
+            if(this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ)))
+                GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
+            else
+                GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
+        }
+    }
+
+    //renders ground boxes
+    public void drawBox2(BlockPos blockPos, int r, int g, int b){
+        Color color;
+        Color c = Rainbow.getColor();
+        AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
+        if(rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int)alpha.getValue());
+        else color = new Color(r, g, b, (int)alpha.getValue());
+
+        if (mode.getValue().equalsIgnoreCase("Ground")){
+            GameSenseTessellator.drawBox2(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
+        }
+    }
 }

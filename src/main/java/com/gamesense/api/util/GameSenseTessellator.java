@@ -95,8 +95,63 @@ public class GameSenseTessellator extends Tessellator {
         drawBox(blockPos, r, g, b, a, sides);
     }
 
-    public static void wireframeTest()
-    {
+    public static void drawBox2(BlockPos blockPos, int argb, int sides) {
+        final int a = (argb >>> 24) & 0xFF;
+        final int r = (argb >>> 16) & 0xFF;
+        final int g = (argb >>> 8) & 0xFF;
+        final int b = argb & 0xFF;
+        drawDownBox(blockPos, r, g, b, a, sides);
+    }
+
+    public static void drawDownBox(BlockPos blockPos, int r, int g, int b, int a, int sides) {
+        drawDownBox2(INSTANCE.getBuffer(), blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, 1, 1, r, g, b, a, sides);
+    }
+
+    public static void drawDownBox2(BufferBuilder buffer, float x, float y, float z, float w, float h, float d, int r, int g, int b, int a, int sides) {
+        if ((sides & GeometryMasks.Quad.DOWN) != 0) {
+            buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+        }
+
+        if ((sides & GeometryMasks.Quad.UP) != 0) {
+            buffer.pos(x+w, y-h, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y-h, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y-h, z+d).color(r, g, b, a).endVertex();
+            buffer.pos(x+w, y-h, z+d).color(r, g, b, a).endVertex();
+        }
+
+        if ((sides & GeometryMasks.Quad.NORTH) != 0) {
+            buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y-h, z).color(r, g, b, a).endVertex();
+            buffer.pos(x+w, y-h, z).color(r, g, b, a).endVertex();
+        }
+
+        if ((sides & GeometryMasks.Quad.SOUTH) != 0) {
+            buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
+            buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
+            buffer.pos(x+w, y-h, z+d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y-h, z+d).color(r, g, b, a).endVertex();
+        }
+
+        if ((sides & GeometryMasks.Quad.WEST) != 0) {
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y-h, z+d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y-h, z).color(r, g, b, a).endVertex();
+        }
+
+        if ((sides & GeometryMasks.Quad.EAST) != 0) {
+            buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
+            buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x+w, y-h, z).color(r, g, b, a).endVertex();
+            buffer.pos(x+w, y-h, z+d).color(r, g, b, a).endVertex();
+        }
+    }
+
+    public static void wireframeTest() {
         GlStateManager.pushMatrix();
         glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
         glEnable(GL11.GL_POLYGON_OFFSET_LINE);

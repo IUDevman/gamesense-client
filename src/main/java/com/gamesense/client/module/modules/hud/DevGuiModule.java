@@ -8,6 +8,8 @@ import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.Announcer;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
+
 public class DevGuiModule extends Module {
     public DevGuiModule INSTANCE;
     public DevGuiModule(){
@@ -19,9 +21,14 @@ public class DevGuiModule extends Module {
 
     public Setting.b customFont;
     public static Setting.i opacity;
+    public static Setting.mode icon;
 
     public void setup(){
+        ArrayList<String> icons = new ArrayList<>();
+        icons.add("Font");
+        icons.add("Image");
         opacity = this.registerI("Opacity",200,50,255);
+        icon = this.registerMode("Icon", icons, "Image");
     }
 
     public void onEnable(){

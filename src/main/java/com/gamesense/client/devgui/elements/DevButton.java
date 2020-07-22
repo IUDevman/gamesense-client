@@ -13,6 +13,10 @@ import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.DevGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -26,7 +30,11 @@ public class DevButton extends DevComponent {
     public boolean open;
     private int height;
 
+    private static final ResourceLocation opengui = new ResourceLocation("minecraft:opengui.png");
+    private static final ResourceLocation closedgui = new ResourceLocation("minecraft:closedgui.png");
+
     public DevButton(final Module mod, final DevFrame parent, final int offset) {
+
         this.mod = mod;
         this.parent = parent;
         this.offset = offset;
@@ -92,7 +100,19 @@ public class DevButton extends DevComponent {
         Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB());
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, -1);
         if (this.subcomponents.size() > 1) {
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "~" : ">", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, -1);
+            if (devGuiModule.icon.getValue().equalsIgnoreCase("Image")) {
+                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "" : "", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, -1);
+                if (this.open) {
+                    //gif texture
+                    drawOpenRender(this.parent.getX() + this.parent.getWidth() - 13, this.parent.getY() + this.offset + 2 + 2);
+                } else {
+                    //static texture
+                    drawClosedRender(this.parent.getX() + this.parent.getWidth() - 13, this.parent.getY() + this.offset + 2 + 2);
+                }
+            }
+            else {
+                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "~" : ">", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, -1);
+            }
         }
         if (this.open && !this.subcomponents.isEmpty()) {
             for (final DevComponent comp : this.subcomponents) {
@@ -149,5 +169,29 @@ public class DevButton extends DevComponent {
 
     public boolean isMouseOnButton(final int x, final int y) {
         return x > this.parent.getX() && x < this.parent.getX() + this.parent.getWidth() && y > this.parent.getY() + this.offset && y < this.parent.getY() + 16 + this.offset;
+    }
+
+    public void drawOpenRender(int x, int y){
+        GlStateManager.enableAlpha();
+        this.mc.getTextureManager().bindTexture(opengui);
+        GlStateManager.color(1, 1, 1, 1);
+        GL11.glPushMatrix();
+        //Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 10, 10, 10,10);
+        Gui.drawScaledCustomSizeModalRect(x,y,0,0,256,256,10,10,256,256);
+        GL11.glPopMatrix();
+        GlStateManager.disableAlpha();
+        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+    }
+
+    public void drawClosedRender(int x, int y){
+        GlStateManager.enableAlpha();
+        this.mc.getTextureManager().bindTexture(closedgui);
+        GlStateManager.color(1, 1, 1, 1);
+        GL11.glPopMatrix();
+        //Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 10, 10, 10,10);
+        Gui.drawScaledCustomSizeModalRect(x,y,0,0,256,256,10,10,256,256);
+        GL11.glPopMatrix();
+        GlStateManager.disableAlpha();
+        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
     }
 }
