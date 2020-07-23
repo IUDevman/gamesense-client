@@ -393,7 +393,6 @@ public class GameSenseTessellator extends Tessellator {
         drawBoundingBox(bb, width, r, g, b, a);
     }
 
-
     public static void drawBoundingBoxBlockPos(BlockPos bp, float width, int r, int g, int b, int alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();

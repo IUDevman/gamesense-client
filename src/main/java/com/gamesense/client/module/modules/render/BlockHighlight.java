@@ -20,12 +20,10 @@ public class BlockHighlight extends Module {
     }
 
     Setting.i w;
-    Setting.i opacity;
     int c;
 
     public void setup() {
         w = registerI("Width", 2, 1, 10);
-        opacity = registerI("Alpha", 50 , 0, 255);
     }
 
     public void onWorldRender(RenderEvent event) {
@@ -34,10 +32,10 @@ public class BlockHighlight extends Module {
         BlockPos pos;
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         if (colorMain.Rainbow.getValue()){
-            c = Rainbow.getColorWithOpacity(opacity.getValue()).getRGB();
+            c = Rainbow.getColorWithOpacity(255).getRGB();
         }
         else {
-            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), opacity.getValue()).getRGB();
+            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 255).getRGB();
         }
         if (ray != null && ray.typeOfHit == RayTraceResult.Type.BLOCK) {
             pos = ray.getBlockPos();

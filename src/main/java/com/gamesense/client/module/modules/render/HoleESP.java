@@ -26,7 +26,6 @@ public class HoleESP extends Module {
 
     //settings
     public static Setting.i rangeS;
-    Setting.i alpha;
     Setting.b rainbow;
     Setting.b hideOwn;
     Setting.b flatOwn;
@@ -35,7 +34,6 @@ public class HoleESP extends Module {
     //load settings
     public void setup(){
         rangeS = registerI("Range", 5, 1, 20);
-        alpha = registerI("Alpha", 50 , 0, 255);
         rainbow = registerB("Rainbow", false);
         hideOwn = registerB("Hide Own", false);
         flatOwn = registerB("Flat Own", false);
@@ -164,8 +162,8 @@ public class HoleESP extends Module {
         Color color;
         Color c = Rainbow.getColor();
         AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-        if(rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int)alpha.getValue());
-        else color = new Color(r, g, b, (int)alpha.getValue());
+        if(rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
+        else color = new Color(r, g, b, 50);
 
         if(mode.getValue().equalsIgnoreCase("Air")) {
             if(this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ)))
@@ -180,8 +178,8 @@ public class HoleESP extends Module {
         Color color;
         Color c = Rainbow.getColor();
         AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-        if(rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int)alpha.getValue());
-        else color = new Color(r, g, b, (int)alpha.getValue());
+        if(rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
+        else color = new Color(r, g, b, 50);
 
         if (mode.getValue().equalsIgnoreCase("Ground")){
             GameSenseTessellator.drawBox2(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);

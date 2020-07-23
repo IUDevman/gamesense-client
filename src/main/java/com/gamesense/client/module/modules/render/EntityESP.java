@@ -30,7 +30,6 @@ public class EntityESP extends Module {
         crystals = registerB("Crystals", false);
         items = registerB("Items", false);
         orbs = registerB("ExpOrbs", false);
-        a = registerI("Alpha", 50, 0 ,255);
         RenderMode = registerMode("Mode", Modes, "Box");
     }
 
@@ -41,15 +40,21 @@ public class EntityESP extends Module {
     Setting.b orbs;
     Setting.b crystals;
     int c;
-    Setting.i a;
+    int c2;
 
     public void onWorldRender(RenderEvent event) {
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         if (colorMain.Rainbow.getValue()){
-            c = Rainbow.getColorWithOpacity(a.getValue()).getRGB();
+            c = Rainbow.getColorWithOpacity(50).getRGB();
         }
         else {
-            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), a.getValue()).getRGB();
+            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 50).getRGB();
+        }
+        if (colorMain.Rainbow.getValue()){
+            c2 = Rainbow.getColorWithOpacity(255).getRGB();
+        }
+        else {
+            c2 = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 255).getRGB();
         }
         if (RenderMode.getValue().equalsIgnoreCase("Box")) {
             mc.world.loadedEntityList.stream()
@@ -80,19 +85,19 @@ public class EntityESP extends Module {
                         .forEach(e -> {
                             GameSenseTessellator.prepareGL();
                             if (exp.getValue() && e instanceof EntityExpBottle) {
-                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c);
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
                             }
                             if (epearls.getValue() && e instanceof EntityEnderPearl) {
-                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c);
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
                             }
                             if (crystals.getValue() && e instanceof EntityEnderCrystal) {
-                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c);
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
                             }
                             if (items.getValue() && e instanceof EntityItem) {
-                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c);
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
                             }
                             if (orbs.getValue() && e instanceof EntityXPOrb) {
-                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c);
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
                             }
                             GameSenseTessellator.releaseGL();
                         });

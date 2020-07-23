@@ -14,13 +14,11 @@ public class StorageESP extends Module {
         super("StorageESP", Category.Render);
     }
 
-    Setting.i a;
     Setting.i w;
 
     ConcurrentHashMap<TileEntity, String> chests = new ConcurrentHashMap<>();
 
     public void setup(){
-        a = registerI("Alpha", 150 , 0 ,255);
         w = registerI("Width", 2 , 1 ,10);
 
     }
@@ -32,10 +30,10 @@ public class StorageESP extends Module {
     }
 
     public void onWorldRender(RenderEvent event){
-        Color c1 = new Color(255, 255, 0, (int)a.getValue());
-        Color c2 = new Color(180, 70, 200, (int)a.getValue());
-        Color c3 = new Color(150, 150, 150, (int)a.getValue());
-        Color c4 = new Color(255,0,0, (int)a.getValue());
+        Color c1 = new Color(255, 255, 0, 255);
+        Color c2 = new Color(180, 70, 200, 255);
+        Color c3 = new Color(150, 150, 150, 255);
+        Color c4 = new Color(255,0,0, 255);
         if(chests != null && chests.size() > 0){
             GameSenseTessellator.prepareGL();
             chests.forEach((c, t)->{
