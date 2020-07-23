@@ -41,6 +41,7 @@ public class HoleESP extends Module {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Air");
         modes.add("Ground");
+        modes.add("Flat");
 
         mode = registerMode("Mode", modes, "Air");
     }
@@ -152,6 +153,13 @@ public class HoleESP extends Module {
                 if (isBedrock) {
                     drawBox2(blockPos, 0, 255, 0);
                 } else drawBox2(blockPos, 255, 0, 0);
+            });
+        }
+        if (mode.getValue().equalsIgnoreCase("Flat")){
+            safeHoles.forEach((blockPos, isBedrock) -> {
+                if (isBedrock){
+                    GameSenseTessellator.drawBox(blockPos, 0,255,0,50, GeometryMasks.Quad.DOWN);
+                } else GameSenseTessellator.drawBox(blockPos, 255,0,0,50, GeometryMasks.Quad.DOWN);
             });
         }
         GameSenseTessellator.release();
