@@ -2,6 +2,8 @@
 
 Pretty Much Final Dev Build
 
-(New GUI + Cyber Edits + Hoosier Edits)
+Latest as of 7/23/20
 
-Latest as of 7/14/20
+TODO:
+1) Fix logoutspots a bit more (currently renders, but has problems when the module is disabled)
+2) Add cyber's autocrystal.
