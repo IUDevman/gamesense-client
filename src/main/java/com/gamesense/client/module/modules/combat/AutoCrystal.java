@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
 
 public class AutoCrystal extends Module {
     public AutoCrystal() {
-        super("AutoCrystal", Category.Combat);
+        super("AutoCrystalGS", Category.Combat);
     }
 
     private BlockPos render;
