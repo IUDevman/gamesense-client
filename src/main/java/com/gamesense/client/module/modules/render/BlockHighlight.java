@@ -5,6 +5,8 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.GameSenseTessellator;
 import com.gamesense.api.util.Rainbow;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -17,38 +19,32 @@ public class BlockHighlight extends Module {
         super("BlockHighlight", Category.Render);
     }
 
-    Setting.i r;
-    Setting.i g;
-    Setting.i b;
-    Setting.i a;
     Setting.i w;
-    Setting.b rainbow;
+    Setting.i opacity;
+    int c;
 
     public void setup() {
-        r = registerI("Red", 255, 0 ,255);
-        g = registerI("Green", 255, 0 , 255);
-        b = registerI("Blue", 255, 0 ,255);
-        a = registerI("Alpha", 255, 0 ,255);
         w = registerI("Width", 2, 1, 10);
-        rainbow = registerB("Rainbow", false);
+        opacity = registerI("Alpha", 50 , 0, 255);
     }
 
     public void onWorldRender(RenderEvent event) {
         RayTraceResult ray = mc.objectMouseOver;
         AxisAlignedBB bb;
         BlockPos pos;
-        Color c;
-        Color color = Rainbow.getColor();
-        if (rainbow.getValue())
-            c = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) a.getValue());
-        else
-            c = new Color((int) r.getValue(), (int) g.getValue(), (int) b.getValue(), (int) a.getValue());
+        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
+        if (colorMain.Rainbow.getValue()){
+            c = Rainbow.getColorWithOpacity(opacity.getValue()).getRGB();
+        }
+        else {
+            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), opacity.getValue()).getRGB();
+        }
         if (ray != null && ray.typeOfHit == RayTraceResult.Type.BLOCK) {
             pos = ray.getBlockPos();
             bb = mc.world.getBlockState(pos).getSelectedBoundingBox(mc.world, pos);
             if (bb != null && pos != null && mc.world.getBlockState(pos).getMaterial() != Material.AIR) {
                 GameSenseTessellator.prepareGL();
-                GameSenseTessellator.drawBoundingBox(bb, (int) w.getValue(), c.getRGB());
+                GameSenseTessellator.drawBoundingBox(bb, (int) w.getValue(), c);
                 GameSenseTessellator.releaseGL();
             }
         }

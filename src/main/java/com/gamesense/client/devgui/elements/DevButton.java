@@ -187,7 +187,7 @@ public class DevButton extends DevComponent {
         GlStateManager.enableAlpha();
         this.mc.getTextureManager().bindTexture(closedgui);
         GlStateManager.color(1, 1, 1, 1);
-        GL11.glPopMatrix();
+        GL11.glPushMatrix();
         //Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 10, 10, 10,10);
         Gui.drawScaledCustomSizeModalRect(x,y,0,0,256,256,10,10,256,256);
         GL11.glPopMatrix();

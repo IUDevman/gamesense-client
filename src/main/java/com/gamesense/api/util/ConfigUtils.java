@@ -44,7 +44,6 @@ public class ConfigUtils {
         if (!this.GameSense.exists()) {
             this.GameSense.mkdirs();
         }
-
         this.Settings = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Settings");
         if (!this.Settings.exists()) {
             this.Settings.mkdirs();
@@ -127,7 +126,6 @@ public class ConfigUtils {
                 out.write(module.getName() + ":" + Keyboard.getKeyName(module.getBind()));
                 out.write("\r\n");
             }
-
             out.close();
         } catch (Exception var5) {
         }
@@ -152,13 +150,11 @@ public class ConfigUtils {
                     }
                 }
             }
-
             br.close();
         } catch (Exception var11) {
             var11.printStackTrace();
             saveBinds();
         }
-
     }
 
     public void saveMacros() {
@@ -172,11 +168,9 @@ public class ConfigUtils {
                 out.write(Keyboard.getKeyName(m.getKey()) + ":" + m.getValue().replace(" ", "_"));
                 out.write("\r\n");
             }
-
             out.close();
         } catch (Exception var5) {
         }
-
     }
 
     public void loadMacros() {
@@ -193,13 +187,11 @@ public class ConfigUtils {
                 String value = curLine.split(":")[1];
                 GameSenseMod.getInstance().macroManager.addMacro(new Macro(Keyboard.getKeyIndex(bind), value.replace("_", " ")));
             }
-
             br.close();
         } catch (Exception var11) {
             var11.printStackTrace();
             saveMacros();
         }
-
     }
 
     public void saveWaypoints() {
@@ -212,11 +204,9 @@ public class ConfigUtils {
                 Waypoint w = (Waypoint) var3.next();
                 out.write(w.getName() + ":" + (int)w.getX() + ":" + (int)w.getY() + ":" + (int)w.getZ() + ":" + w.getColor());
             }
-
             out.close();
         } catch (Exception var5) {
         }
-
     }
 
     public void loadWaypoints() {
@@ -240,13 +230,11 @@ public class ConfigUtils {
                 int c = Integer.parseInt(color);
                 GameSenseMod.getInstance().waypointManager.addWaypoint(new Waypoint(name, xx, yy, zz, c));
             }
-
             br.close();
         } catch (Exception var11) {
             var11.printStackTrace();
             saveWaypoints();
         }
-
     }
 
     public void saveAnnouncer() {
@@ -271,7 +259,6 @@ public class ConfigUtils {
             out.close();
         } catch (Exception var5) {
         }
-
     }
 
     public void loadAnnouncer() {
@@ -294,13 +281,11 @@ public class ConfigUtils {
                 if(name.equalsIgnoreCase("Eat")) Announcer.eatMessage = message;
                 if(name.equalsIgnoreCase("ClickGUI")) Announcer.guiMessage = message;
             }
-
             br.close();
         } catch (Exception var11) {
             var11.printStackTrace();
             saveAnnouncer();
         }
-
     }
 
     public void saveMods() {
@@ -316,11 +301,9 @@ public class ConfigUtils {
                     out.write("\r\n");
                 }
             }
-
             out.close();
         } catch (Exception var5) {
         }
-
     }
 
     public void saveFriends() {
@@ -334,11 +317,9 @@ public class ConfigUtils {
                 out.write(f.getName());
                 out.write("\r\n");
             }
-
             out.close();
         } catch (Exception var5) {
         }
-
     }
 
     public void loadFriends() {
@@ -353,13 +334,11 @@ public class ConfigUtils {
             while((line = br.readLine()) != null) {
                 GameSenseMod.getInstance().friends.addFriend(line);
             }
-
             br.close();
         } catch (Exception var6) {
             var6.printStackTrace();
             saveFriends();
         }
-
     }
 
     public void saveEnemies() {
@@ -373,7 +352,6 @@ public class ConfigUtils {
                 out.write(e.getName());
                 out.write("\r\n");
             }
-
             out.close();
         } catch (Exception var5) {
         }
@@ -391,7 +369,6 @@ public class ConfigUtils {
             while((line = br.readLine()) != null) {
                 Enemies.addEnemy(line);
             }
-
             br.close();
         } catch (Exception var6) {
             var6.printStackTrace();
@@ -408,7 +385,6 @@ public class ConfigUtils {
             out.close();
         } catch (Exception var3) {
         }
-
     }
 
     public void loadPrefix() {
@@ -422,13 +398,11 @@ public class ConfigUtils {
             while((line = br.readLine()) != null) {
                 Command.setPrefix(line);
             }
-
             br.close();
         } catch (Exception var6) {
             var6.printStackTrace();
             this.savePrefix();
         }
-
     }
 
     public void saveFont() {
@@ -440,7 +414,6 @@ public class ConfigUtils {
             out.close();
         } catch (Exception var3) {
         }
-
     }
 
     public void loadFont() {
@@ -462,13 +435,11 @@ public class ConfigUtils {
                 GameSenseMod.fontRenderer.setFontName(name);
                 GameSenseMod.fontRenderer.setFontSize(sizeInt);
             }
-
             br.close();
         } catch (Exception var6) {
             var6.printStackTrace();
             this.saveFont();
         }
-
     }
 
     public void saveAutoGG() {
@@ -482,7 +453,6 @@ public class ConfigUtils {
             out.close();
         } catch (Exception var3) {
         }
-
     }
 
     public void loadAutoGG() {
@@ -496,13 +466,11 @@ public class ConfigUtils {
             while((line = br.readLine()) != null) {
                     AutoGG.addAutoGgMessage(line);
             }
-
             br.close();
         } catch (Exception var6) {
             var6.printStackTrace();
             this.saveAutoGG();
         }
-
     }
 
     public void saveAutoReply() {
@@ -513,7 +481,6 @@ public class ConfigUtils {
             out.close();
         } catch (Exception var3) {
         }
-
     }
 
     public void loadAutoReply() {
@@ -527,13 +494,11 @@ public class ConfigUtils {
             while((line = br.readLine()) != null) {
                       AutoReply.setReply(line);
             }
-
             br.close();
         } catch (Exception var6) {
             var6.printStackTrace();
             this.saveAutoReply();
         }
-
     }
 
     public void saveRainbow() {
@@ -545,7 +510,6 @@ public class ConfigUtils {
             out.close();
         } catch (Exception var3) {
         }
-
     }
 
     public void loadRainbow() {
@@ -563,7 +527,6 @@ public class ConfigUtils {
             var6.printStackTrace();
             saveRainbow();
         }
-
     }
 
     public void saveMsgs() {
@@ -576,7 +539,6 @@ public class ConfigUtils {
             out.close();
         } catch (Exception var3) {
         }
-
     }
 
     public void loadMsgs() {
@@ -595,15 +557,12 @@ public class ConfigUtils {
                 ChatFormatting c = ChatFormatting.getByName(color);
                 Command.cf = c;
                 Command.MsgWaterMark = w;
-
             }
-
             br.close();
         } catch (Exception var11) {
             var11.printStackTrace();
             this.saveMsgs();
         }
-
     }
 
     public void saveDrawn() {
@@ -617,11 +576,9 @@ public class ConfigUtils {
                 out.write(module.getName() + ":" + module.isDrawn());
                 out.write("\r\n");
             }
-
             out.close();
         } catch (Exception var5) {
         }
-
     }
 
     public void loadDrawn() {
@@ -643,13 +600,11 @@ public class ConfigUtils {
                     }
                 }
             }
-
             br.close();
         } catch (Exception var11) {
             var11.printStackTrace();
             this.saveDrawn();
         }
-
     }
 
     public void loadMods() {
@@ -670,13 +625,11 @@ public class ConfigUtils {
                     }
                 }
             }
-
             br.close();
         } catch (Exception var8) {
             var8.printStackTrace();
             this.saveMods();
         }
-
     }
 
     public void saveSettingsList() {
@@ -698,11 +651,9 @@ public class ConfigUtils {
                     out.write(i.getName() + ":" +((Setting.i) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
-
             out.close();
         } catch (Exception var7) {
         }
-
         try {
             file = new File(Settings.getAbsolutePath(), "Boolean.txt");
             out = new BufferedWriter(new FileWriter(file));
@@ -714,11 +665,9 @@ public class ConfigUtils {
                     out.write(i.getName() + ":" + ((Setting.b) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
-
             out.close();
         } catch (Exception var6) {
         }
-
         try {
             file = new File(Settings.getAbsolutePath(), "String.txt");
             out = new BufferedWriter(new FileWriter(file));
@@ -730,7 +679,6 @@ public class ConfigUtils {
                     out.write(i.getName() + ":" + ((Setting.mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
-
             out.close();
         } catch (Exception var5) {
         }
@@ -771,13 +719,11 @@ public class ConfigUtils {
                     }
                 }
             }
-
             br.close();
         } catch (Exception var13) {
             var13.printStackTrace();
             //saveSettingsList();
         }
-
         try {
             file = new File(Settings.getAbsolutePath(), "Boolean.txt");
             fstream = new FileInputStream(file.getAbsolutePath());
@@ -796,13 +742,11 @@ public class ConfigUtils {
                     }
                 }
             }
-
             br.close();
         } catch (Exception var12) {
             var12.printStackTrace();
             //saveSettingsList();
         }
-
         try {
             file = new File(Settings.getAbsolutePath(), "String.txt");
             fstream = new FileInputStream(file.getAbsolutePath());
@@ -821,12 +765,10 @@ public class ConfigUtils {
                     }
                 }
             }
-
             br.close();
         } catch (Exception var11) {
             var11.printStackTrace();
             //aveSettingsList();
         }
-
     }
 }

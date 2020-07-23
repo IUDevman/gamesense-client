@@ -57,12 +57,12 @@ public class ModuleManager {
         addMod(new Announcer());
         addMod(new AutoGG());
         addMod(new AutoReply());
+        addMod(new AutoTool());
         addMod(new ChatModifier());
         addMod(new ChatSuffix());
         addMod(new FastPlace());
         addMod(new HoosiersDupe());
         addMod(new LiquidInteract());
-        addMod(new LogoutSpots());
         addMod(new MCF());
         addMod(new MultiTask());
         addMod(new NoEntityTrace());
@@ -78,6 +78,7 @@ public class ModuleManager {
         addMod(new Fullbright());
         addMod(new HitSpheres());
         addMod(new HoleESP());
+        addMod(new LogoutSpots());
         addMod(new MobOwner());
         addMod(new NekoAnimation());
         addMod(new NoRender());

@@ -1,4 +1,4 @@
-package com.gamesense.client.module.modules.misc;
+package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
@@ -23,9 +23,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.world.WorldEvent;
+import org.lwjgl.opengl.GL11;
 
 public class LogoutSpots extends Module {
-    public LogoutSpots() {super("LogoutSpots", Category.Misc);}
+    public LogoutSpots() {super("LogoutSpots", Category.Render);}
 
     Map<Entity, String> loggedPlayers = new ConcurrentHashMap<>();
     List<Entity> lastTickEntities;
@@ -37,7 +38,7 @@ public class LogoutSpots extends Module {
             try {
                 if (e.getName().equalsIgnoreCase(event.getName())) {
                     loggedPlayers.remove(e);
-                    Command.sendClientMessage(ChatFormatting.BOLD + event.getName() + " reconnected!");
+                    Command.sendClientMessage(event.getName() + " reconnected!");
                 }
             } catch(ConcurrentModificationException ex){ex.printStackTrace();}
         });
@@ -51,7 +52,7 @@ public class LogoutSpots extends Module {
                 String date = new SimpleDateFormat("k:mm").format(new Date());
                 loggedPlayers.put(e, date);
                 String pos = "x" + e.getPosition().getX() + " y" + e.getPosition().getY() + " z" + e.getPosition().getZ();
-                Command.sendClientMessage(ChatFormatting.BOLD + event.getName() + " disconnected at " + pos + "!");
+                Command.sendClientMessage(event.getName() + " disconnected at " + pos + "!");
             }
         });
     });
@@ -61,9 +62,17 @@ public class LogoutSpots extends Module {
     }
 
     public void onWorldRender(RenderEvent event) {
+        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
+        if (colorMain.Rainbow.getValue()){
+            c = Rainbow.getColor().getRGB();
+        }
+        else {
+            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue()).getRGB();
+        }
         loggedPlayers.forEach((e, time) -> {
             if(mc.player.getDistance(e) < 500) {
-                GameSenseTessellator.prepareGL();
+                GL11.glPushMatrix();
+                GlStateManager.enableAlpha();
                 GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1f, c);
                 GlStateManager.enableTexture2D();
                 GlStateManager.disableLighting();
@@ -72,7 +81,8 @@ public class LogoutSpots extends Module {
                 GlStateManager.disableTexture2D();
                 GlStateManager.enableLighting();
                 GlStateManager.enableDepth();
-                GameSenseTessellator.releaseGL();
+                GlStateManager.disableAlpha();
+                GL11.glPopMatrix();
             }
         });
     }
@@ -101,14 +111,6 @@ public class LogoutSpots extends Module {
         lastTickEntities = new ArrayList<>();
         loggedPlayers.clear();
         GameSenseMod.EVENT_BUS.subscribe(this);
-
-        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (colorMain.Rainbow.getValue()){
-            c = Rainbow.getColor().getRGB();
-        }
-        else {
-            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue()).getRGB();
-        }
     }
 
     public void onDisable() {
@@ -163,7 +165,8 @@ public class LogoutSpots extends Module {
         fontRendererIn.drawStringWithShadow(line1, -i, 10, c);
         fontRendererIn.drawStringWithShadow(line2, -ii, 20, c);
         GlStateManager.glNormal3f(0.0F, 0.0F, 0.0F);
-
+        GlStateManager.disableDepth();
+        GlStateManager.disableTexture2D();
         GlStateManager.popMatrix();
     }
 
