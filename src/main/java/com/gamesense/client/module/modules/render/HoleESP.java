@@ -158,8 +158,8 @@ public class HoleESP extends Module {
         if (mode.getValue().equalsIgnoreCase("Flat")){
             safeHoles.forEach((blockPos, isBedrock) -> {
                 if (isBedrock){
-                    GameSenseTessellator.drawBox(blockPos, 0,255,0,50, GeometryMasks.Quad.DOWN);
-                } else GameSenseTessellator.drawBox(blockPos, 255,0,0,50, GeometryMasks.Quad.DOWN);
+                    drawFlat(blockPos, 0, 255, 0);
+                } else drawFlat(blockPos, 255, 0, 0);
             });
         }
         GameSenseTessellator.release();
@@ -191,6 +191,17 @@ public class HoleESP extends Module {
 
         if (mode.getValue().equalsIgnoreCase("Ground")){
             GameSenseTessellator.drawBox2(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
+        }
+    }
+
+    public void drawFlat(BlockPos blockPos, int r, int g, int b) {
+        Color color;
+        Color c = Rainbow.getColor();
+        AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
+        if (mode.getValue().equalsIgnoreCase("Flat")) {
+            if (rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
+            else color = new Color(r, g, b, 50);
+            GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
         }
     }
 }
