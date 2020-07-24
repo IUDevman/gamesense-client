@@ -69,7 +69,6 @@ public class ModuleManager {
         addMod(new PvPInfo());
         addMod(new ToggleMsgs());
         //Render
-        addMod(new AntiChainPop());
         addMod(new BlockHighlight());
         addMod(new CapesModule());
         addMod(new EntityESP());

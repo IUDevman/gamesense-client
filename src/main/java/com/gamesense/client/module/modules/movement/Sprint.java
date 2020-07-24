@@ -4,7 +4,6 @@ import com.gamesense.api.event.events.JumpEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.MotionUtils;
 import com.gamesense.client.module.Module;
-import javafx.scene.control.TextInputControl;
 
 import java.util.ArrayList;
 

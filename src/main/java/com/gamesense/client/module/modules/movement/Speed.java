@@ -15,8 +15,6 @@ import net.minecraft.block.*;
 import net.minecraft.init.MobEffects;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 
