@@ -19,7 +19,7 @@ public class OpenFolderCommand extends Command {
     @Override
     public void onCommand(String command, String[] args) throws Exception {
         try {
-            Desktop.getDesktop().open(new File("Osiris"));
+            Desktop.getDesktop().open(new File("GameSense"));
         } catch(Exception e){sendClientMessage("Error: " + e.getMessage());}
     }
 }

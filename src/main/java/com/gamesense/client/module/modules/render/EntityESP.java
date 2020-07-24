@@ -77,6 +77,23 @@ public class EntityESP extends Module {
                                 GameSenseTessellator.drawBox(e.getRenderBoundingBox(), c, GeometryMasks.Quad.ALL);
                             }
                             GameSenseTessellator.release();
+                            GameSenseTessellator.prepareGL();
+                            if (exp.getValue() && e instanceof EntityExpBottle) {
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
+                            }
+                            if (epearls.getValue() && e instanceof EntityEnderPearl) {
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
+                            }
+                            if (crystals.getValue() && e instanceof EntityEnderCrystal) {
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
+                            }
+                            if (items.getValue() && e instanceof EntityItem) {
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
+                            }
+                            if (orbs.getValue() && e instanceof EntityXPOrb) {
+                                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
+                            }
+                            GameSenseTessellator.releaseGL();
                         });
             }
             if (RenderMode.getValue().equalsIgnoreCase("Outline")) {
