@@ -21,6 +21,7 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.world.WorldEvent;
 import org.lwjgl.opengl.GL11;
@@ -30,7 +31,6 @@ public class LogoutSpots extends Module {
 
     Map<Entity, String> loggedPlayers = new ConcurrentHashMap<>();
     List<Entity> lastTickEntities;
-    int c;
 
     @EventHandler
     private Listener<PlayerJoinEvent> listener1 = new Listener<>(event -> {
@@ -62,29 +62,23 @@ public class LogoutSpots extends Module {
     }
 
     public void onWorldRender(RenderEvent event) {
-        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (colorMain.Rainbow.getValue()){
-            c = Rainbow.getColor().getRGB();
-        }
-        else {
-            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue()).getRGB();
-        }
         loggedPlayers.forEach((e, time) -> {
             if(mc.player.getDistance(e) < 500) {
                 GL11.glPushMatrix();
-                GlStateManager.enableAlpha();
-                GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1f, c);
-                GlStateManager.enableTexture2D();
-                GlStateManager.disableLighting();
-                GlStateManager.disableDepth();
+                drawLogoutBox(e.getRenderBoundingBox(), 1, 0, 0, 0, 255);
                 drawNametag(e, time);
-                GlStateManager.disableTexture2D();
-                GlStateManager.enableLighting();
-                GlStateManager.enableDepth();
-                GlStateManager.disableAlpha();
                 GL11.glPopMatrix();
             }
         });
+    }
+
+    public void drawLogoutBox(AxisAlignedBB bb, int width, int r, int b, int g, int a){
+        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
+        Color color;
+        Color c = Rainbow.getColor();
+        if(colorMain.Rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+        else color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 255);
+        GameSenseTessellator.drawBoundingBox(bb, width, color.getRGB());
     }
 
     @EventHandler
@@ -114,8 +108,6 @@ public class LogoutSpots extends Module {
     }
 
     public void onDisable() {
-        loggedPlayers.clear();
-        lastTickEntities.clear();
         GameSenseMod.EVENT_BUS.unsubscribe(this);
     }
 
@@ -162,8 +154,13 @@ public class LogoutSpots extends Module {
         GlStateManager.enableTexture2D();
 
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-        fontRendererIn.drawStringWithShadow(line1, -i, 10, c);
-        fontRendererIn.drawStringWithShadow(line2, -ii, 20, c);
+        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
+        Color color;
+        Color c = Rainbow.getColor();
+        if(colorMain.Rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+        else color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 255);
+        fontRendererIn.drawStringWithShadow(line1, -i, 10, color.getRGB());
+        fontRendererIn.drawStringWithShadow(line2, -ii, 20, color.getRGB());
         GlStateManager.glNormal3f(0.0F, 0.0F, 0.0F);
         GlStateManager.disableDepth();
         GlStateManager.disableTexture2D();
@@ -188,5 +185,4 @@ public class LogoutSpots extends Module {
     public static Vec3d getInterpolatedAmount(Entity entity, double ticks) {
         return getInterpolatedAmount(entity, ticks, ticks, ticks);
     }
-
 }
