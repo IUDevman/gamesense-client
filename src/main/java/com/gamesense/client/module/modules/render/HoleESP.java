@@ -6,6 +6,7 @@ import com.gamesense.api.util.GameSenseTessellator;
 import com.gamesense.api.util.GeometryMasks;
 import com.gamesense.api.util.Rainbow;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -163,6 +164,29 @@ public class HoleESP extends Module {
             });
         }
         GameSenseTessellator.release();
+        GameSenseTessellator.prepare(7);
+        if (mode.getValue().equalsIgnoreCase("Air")){
+            safeHoles.forEach((blockPos, isBedrock) -> {
+                if (isBedrock) {
+                    drawOutline(blockPos,1,0,255,0);
+                } else drawOutline(blockPos,1,255,0,0);
+            });
+        }
+        if (mode.getValue().equalsIgnoreCase("Ground")){
+            safeHoles.forEach((blockPos, isBedrock) -> {
+                if (isBedrock) {
+                    drawOutline(blockPos,1,0,255,0);
+                } else drawOutline(blockPos,1,255,0,0);
+            });
+        }
+        if (mode.getValue().equalsIgnoreCase("Flat")){
+            safeHoles.forEach((blockPos, isBedrock) -> {
+                if (isBedrock) {
+                    drawOutline(blockPos,1,0,255,0);
+                } else drawOutline(blockPos,1,255,0,0);
+            });
+        }
+        GameSenseTessellator.release();
     }
 
     //renders air boxes
@@ -202,6 +226,47 @@ public class HoleESP extends Module {
             if (rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
             else color = new Color(r, g, b, 50);
             GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
+        }
+    }
+
+    public void drawOutline(BlockPos blockPos, int width, int r, int g, int b) {
+        final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
+        int rgb = Color.HSBtoRGB(hue[0], 1, 1);
+        int r1 = (rgb >> 16) & 0xFF;
+        int g2 = (rgb >> 8) & 0xFF;
+        int b3 = rgb & 0xFF;
+        hue[0] +=.02f;
+        if (mode.getValue().equalsIgnoreCase("Air")) {
+            if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
+                if (rainbow.getValue()){
+                    GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r1, g2, b3, 255);
+                }
+                else {
+                    GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r, g, b, 255);
+                }
+            } else {
+                if (rainbow.getValue()) {
+                    GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r1, g2, b3, 255);
+                } else {
+                    GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r, g, b, 255);
+                }
+            }
+        }
+        if (mode.getValue().equalsIgnoreCase("Flat")) {
+            if (rainbow.getValue()){
+                GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r1, g2, b3, 255);
+            }
+            else {
+                GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r, g, b, 255);
+            }
+        }
+        if (mode.getValue().equalsIgnoreCase("Ground")){
+            if (rainbow.getValue()){
+                GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, r1, g2, b3, 255);
+            }
+            else {
+                GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, r, g, b, 255);
+            }
         }
     }
 }
