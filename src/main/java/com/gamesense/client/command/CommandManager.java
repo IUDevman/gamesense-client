@@ -18,7 +18,6 @@ public class CommandManager {
         addCommand(new ModsCommand());
         addCommand(new PrefixCommand());
         addCommand(new FriendCommand());
-        addCommand(new RainbowSpeedCommand());
         addCommand(new MacroCommand());
         addCommand(new ConfigCommand());
         addCommand(new ClientMsgsCommand());
@@ -27,7 +26,6 @@ public class CommandManager {
         addCommand(new LoadSpammerCommand());
         addCommand(new AutoReplyCommand());
         addCommand(new MiddleXCommand());
-        addCommand(new LoadAnnouncerCommand());
         addCommand(new WaypointCommand());
         addCommand(new FontCommand());
         addCommand(new EnemyCommand());

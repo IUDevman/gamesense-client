@@ -56,7 +56,6 @@ public class ConfigUtils {
         loadFriends();
         loadDevGUI();
         loadPrefix();
-        loadRainbow();
         loadMacros();
         loadMsgs();
         loadAutoGG();
@@ -234,57 +233,6 @@ public class ConfigUtils {
         } catch (Exception var11) {
             var11.printStackTrace();
             saveWaypoints();
-        }
-    }
-
-    public void saveAnnouncer() {
-        try {
-            File file = new File(this.GameSense.getAbsolutePath(), "Announcer.txt");
-            BufferedWriter out = new BufferedWriter(new FileWriter(file));
-                out.write("Walk:" + Announcer.walkMessage);
-                out.write("\r\n");
-                out.write("Place:" + Announcer.placeMessage);
-                out.write("\r\n");
-                out.write("Jump:" + Announcer.jumpMessage);
-                out.write("\r\n");
-                out.write("Break:" + Announcer.breakMessage);
-                out.write("\r\n");
-                out.write("Attack:" + Announcer.attackMessage);
-                out.write("\r\n");
-                out.write("Eat:" + Announcer.eatMessage);
-                out.write("\r\n");
-                out.write("ClickGUI:" + Announcer.guiMessage);
-                out.write("\r\n");
-
-            out.close();
-        } catch (Exception var5) {
-        }
-    }
-
-    public void loadAnnouncer() {
-        try {
-            File file = new File(this.GameSense.getAbsolutePath(), "Announcer.txt");
-            FileInputStream fstream = new FileInputStream(file.getAbsolutePath());
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-
-            String line;
-            while((line = br.readLine()) != null) {
-                String curLine = line.trim();
-                String name = curLine.split(":")[0];
-                String message = curLine.split(":")[1];
-                if(name.equalsIgnoreCase("Walk")) Announcer.walkMessage = message;
-                if(name.equalsIgnoreCase("Place")) Announcer.placeMessage = message;
-                if(name.equalsIgnoreCase("Jump")) Announcer.jumpMessage = message;
-                if(name.equalsIgnoreCase("Break")) Announcer.breakMessage = message;
-                if(name.equalsIgnoreCase("Attack")) Announcer.attackMessage = message;
-                if(name.equalsIgnoreCase("Eat")) Announcer.eatMessage = message;
-                if(name.equalsIgnoreCase("ClickGUI")) Announcer.guiMessage = message;
-            }
-            br.close();
-        } catch (Exception var11) {
-            var11.printStackTrace();
-            saveAnnouncer();
         }
     }
 
@@ -498,34 +446,6 @@ public class ConfigUtils {
         } catch (Exception var6) {
             var6.printStackTrace();
             this.saveAutoReply();
-        }
-    }
-
-    public void saveRainbow() {
-        try {
-            File file = new File(this.GameSense.getAbsolutePath(), "RainbowSpeed.txt");
-            BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            out.write(EventProcessor.INSTANCE.getRainbowSpeed() + "");
-            //out.write("\r\n");
-            out.close();
-        } catch (Exception var3) {
-        }
-    }
-
-    public void loadRainbow() {
-        try {
-            File file = new File(this.GameSense.getAbsolutePath(), "RainbowSpeed.txt");
-            FileInputStream fstream = new FileInputStream(file.getAbsolutePath());
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String line;
-            while((line = br.readLine()) != null) {
-                EventProcessor.INSTANCE.setRainbowSpeed(Integer.parseInt(line));
-            }
-            br.close();
-        } catch (Exception var6) {
-            var6.printStackTrace();
-            saveRainbow();
         }
     }
 
