@@ -26,8 +26,8 @@ public class DesyncAura extends Module {
 
         hitRange = registerD("Hit Range", 4, 1, 6);
         delay = registerI("Delay", 6, 0 , 10);
-        switchTo32k = registerB("SwitchTo32k", true);
-        onlyUse32k = registerB("Only32k", true);
+        switchTo32k = registerB("Switch To 32k", true);
+        onlyUse32k = registerB("Only 32k", true);
     }
     private int hasWaited = 0;
 

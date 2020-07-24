@@ -25,11 +25,11 @@ public class EntityESP extends Module {
         Modes.add("Outline");
         Modes.add("Glow");
 
-        exp = registerB("ExpBottles", false);
-        epearls = registerB("EnderPearls", false);
+        exp = registerB("Exp Bottles", false);
+        epearls = registerB("Ender Pearls", false);
         crystals = registerB("Crystals", false);
         items = registerB("Items", false);
-        orbs = registerB("ExpOrbs", false);
+        orbs = registerB("Exp Orbs", false);
         RenderMode = registerMode("Mode", Modes, "Box");
     }
 

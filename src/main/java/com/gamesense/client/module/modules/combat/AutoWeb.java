@@ -41,9 +41,9 @@ public class AutoWeb extends Module
     public void setup() {
         this.rotate = this.registerB("Rotate", false);
         this.range = this.registerD("Range", 4.0, 0.0, 6.0);
-        this.bpt = this.registerI("BlocksPerTick", 8, 1, 15);
-        this.spoofRotations = this.registerB("SpoofRotations", false);
-        this.spoofHotbar = this.registerB("SilentSwitch", false);
+        this.bpt = this.registerI("Blocks Per Tick", 8, 1, 15);
+        this.spoofRotations = this.registerB("Spoof Rotations", false);
+        this.spoofHotbar = this.registerB("Silent Switch", false);
     }
 
     @Override

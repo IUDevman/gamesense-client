@@ -51,7 +51,7 @@ public class ChatModifier extends Module {
 
         clearBkg = registerB("ClearChat", false);
         greentext = registerB("Green Text", false);
-        chattimestamps = registerB("ChatTimeStamps", false);
+        chattimestamps = registerB("Chat Time Stamps", false);
         format = registerMode("Format", formats, "H24:mm");
         decoration = registerMode("Deco", deco, "[ ]");
         color = registerMode("Color", colors, ChatFormatting.GRAY.getName());

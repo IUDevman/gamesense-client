@@ -23,10 +23,10 @@ public class NotificationsHud extends Module {
     static List<TextComponentString> list = new ArrayList<>();
 
     public void setup(){
-        x = this.registerI("NotX", 2, 0,1000);
-        y = this.registerI("NotY", 2, 0,1000);
-        sortUp = this.registerB("SortUp", true);
-        right = this.registerB("AlignRight", false);
+        x = this.registerI("X", 2, 0,1000);
+        y = this.registerI("Y", 2, 0,1000);
+        sortUp = this.registerB("Sort Up", true);
+        right = this.registerB("Align Right", false);
 
     }
 

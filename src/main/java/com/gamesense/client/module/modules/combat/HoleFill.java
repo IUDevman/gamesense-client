@@ -47,12 +47,12 @@ public class HoleFill extends Module {
     private int waitCounter;
 
     public void setup() {
-        range = registerD("PlaceRange", 5, 0, 10);
-        yRange = registerI("YRange", 2 , 0 ,10);
-        waitTick = registerI("TickDelay", 1 , 0, 20);
+        range = registerD("Place Range", 5, 0, 10);
+        yRange = registerI("Y Range", 2 , 0 ,10);
+        waitTick = registerI("Tick Delay", 1 , 0, 20);
         rotate = registerB("Rotate", false);
-        ec = registerB("UseEnderChests", false);
-        chat = registerB("ToggleMsg", false);
+        ec = registerB("Use EChests", false);
+        chat = registerB("Toggle Msg", false);
     }
 
     public void onUpdate() {

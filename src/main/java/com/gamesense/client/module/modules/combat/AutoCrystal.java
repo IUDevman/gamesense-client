@@ -90,21 +90,21 @@ public class AutoCrystal extends Module {
 
     public void setup() {
         explode = this.registerB("Break", true);
-        waitTick = this.registerI("HitDelay", 1, 0, 20);
-        range = this.registerD("HitRange", 5.0, 0.0, 10.0);
-        walls = this.registerD("WallsRange", 3.5, 0.0, 10.0);
-        antiWeakness = this.registerB("AntiWeakness", true);
-        showDamage = this.registerB("ShowDamage", false);
+        waitTick = this.registerI("Hit Delay", 1, 0, 20);
+        range = this.registerD("Hit Range", 5.0, 0.0, 10.0);
+        walls = this.registerD("Walls Range", 3.5, 0.0, 10.0);
+        antiWeakness = this.registerB("Anti Weakness", true);
+        showDamage = this.registerB("Show Damage", false);
         place = this.registerB("Place", true);
-        autoSwitch = this.registerB("AutoSwitch", true);
-        placeRange = this.registerD("PlaceRange", 5.0, 0.0, 10.0);
-        minDmg = this.registerD("MinDamage", 5, 0, 36);
-        maxSelfDmg = this.registerD("MaxSelfDmg", 10, 1, 36);
-        facePlace = this.registerI("FacePlaceHP", 8, 0, 36);
+        autoSwitch = this.registerB("Auto Switch", true);
+        placeRange = this.registerD("Place Range", 5.0, 0.0, 10.0);
+        minDmg = this.registerD("Min Damage", 5, 0, 36);
+        maxSelfDmg = this.registerD("Max Self Dmg", 10, 1, 36);
+        facePlace = this.registerI("FacePlace HP", 8, 0, 36);
         raytrace = this.registerB("Raytrace", false);
         rotate = this.registerB("Rotate", true);
-        spoofRotations = this.registerB("SpoofAngles", true);
-        chat = this.registerB("ToggleMsg", true);
+        spoofRotations = this.registerB("Spoof Angles", true);
+        chat = this.registerB("Toggle Msg", true);
     }
 
     public void onUpdate() {

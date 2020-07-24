@@ -2,8 +2,10 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.BlockUtils;
+import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
-import me.zero.alpine.listener.EventHandler;
+import com.gamesense.client.module.ModuleManager;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -20,20 +22,14 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.fml.common.eventhandler.Event;
+
+import java.util.ArrayList;
 
 import static com.gamesense.api.util.BlockUtils.canBeClicked;
 import static com.gamesense.api.util.BlockUtils.faceVectorPacketInstant;
 
-/**
- * Cyber is fat
- */
-
 public class AutoFeetPlace extends Module {
-    public AutoFeetPlace() {
-        super("AutoFeetPlace", Category.Combat);
-    }
+    public AutoFeetPlace() {super("AutoFeetPlace", Category.Combat);}
 
     Setting.b triggerable;
     Setting.i timeoutTicks;
@@ -41,14 +37,16 @@ public class AutoFeetPlace extends Module {
     Setting.i tickDelay;
     Setting.b rotate;
     Setting.i blocksPerTick;
+    Setting.b disableOnJump;
 
     public void setup() {
         triggerable = registerB("Triggerable", false);
-        timeoutTicks = registerI("TimeoutTicks", 40, 1, 100);
-        disableNone = registerB("DisableNoObby", false);
-        tickDelay = registerI("TickDelay", 5, 0, 10);
+        disableNone = registerB("Disable No Obby", false);
+        disableOnJump = registerB("Disable on Jump", false);
         rotate = registerB("Rotate", false);
-        blocksPerTick = registerI("BlocksPerTick", 4, 0, 8);
+        tickDelay = registerI("Tick Delay", 5, 0, 10);
+        timeoutTicks = registerI("Timeout Ticks", 40, 1, 100);
+        blocksPerTick = registerI("Blocks Per Tick", 4, 0, 8);
     }
 
     private int offsetStep = 0;
@@ -115,9 +113,7 @@ public class AutoFeetPlace extends Module {
     @Override
     public void onUpdate() {
 
-        /*if (mc.player == null || ModuleManager.isModuleEnabled("Freecam")) {
-            return;
-        } */
+        if (!(mc.player.onGround) && disableOnJump.getValue()) return;
 
         if (mc.player == null) {
             return;
@@ -144,112 +140,111 @@ public class AutoFeetPlace extends Module {
                 missingObiDisable = true;
             }
         }
-            if (mc.player.onGround) {
-                Vec3d[] offsetPattern = new Vec3d[0];
-                int maxSteps = 0;
-                offsetPattern = Offsets.SURROUND;
-                maxSteps = Offsets.SURROUND.length;
+
+        Vec3d[] offsetPattern = new Vec3d[0];
+        int maxSteps = 0;
+        offsetPattern = Offsets.SURROUND;
+        maxSteps = Offsets.SURROUND.length;
 
 
-                int blocksPlaced = 0;
+        int blocksPlaced = 0;
 
-                while (blocksPlaced < blocksPerTick.getValue()) {
-                    if (offsetStep >= maxSteps) {
-                        offsetStep = 0;
-                        break;
-                    }
+        while (blocksPlaced < blocksPerTick.getValue()) {
+            if (offsetStep >= maxSteps) {
+                offsetStep = 0;
+                break;
+            }
 
-                    BlockPos offsetPos = new BlockPos(offsetPattern[offsetStep]);
-                    BlockPos targetPos = new BlockPos(mc.player.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+            BlockPos offsetPos = new BlockPos(offsetPattern[offsetStep]);
+            BlockPos targetPos = new BlockPos(mc.player.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
-                    if (placeBlock(targetPos)) {
-                        blocksPlaced++;
-                    }
+            if (placeBlock(targetPos)) {
+                blocksPlaced++;
+            }
 
-                    offsetStep++;
-                }
+            offsetStep++;
+        }
 
-                if (blocksPlaced > 0) {
-                    if (lastHotbarSlot != playerHotbarSlot && playerHotbarSlot != -1) {
-                        mc.player.inventory.currentItem = playerHotbarSlot;
-                        lastHotbarSlot = playerHotbarSlot;
-                    }
+        if (blocksPlaced > 0) {
+            if (lastHotbarSlot != playerHotbarSlot && playerHotbarSlot != -1) {
+                mc.player.inventory.currentItem = playerHotbarSlot;
+                lastHotbarSlot = playerHotbarSlot;
+            }
 
-                    if (isSneaking) {
-                        mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-                        isSneaking = false;
-                    }
-                }
-
-                totalTicksRunning++;
-
-                if (missingObiDisable && disableNone.getValue()) {
-                    missingObiDisable = false;
-                    disable();
-                }
+            if (isSneaking) {
+                mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+                isSneaking = false;
             }
         }
+
+        totalTicksRunning++;
+
+        if (missingObiDisable && disableNone.getValue()) {
+            missingObiDisable = false;
+            disable();
+        }
+    }
 
     private boolean placeBlock(BlockPos pos) {
         // check if block is already placed
-            Block block = mc.world.getBlockState(pos).getBlock();
-            if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
-                return false;
-            }
-
-            // check if entity blocks placing
-            for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos))) {
-                if (!(entity instanceof EntityItem) && !(entity instanceof EntityXPOrb)) {
-                    return false;
-                }
-            }
-
-            EnumFacing side = getPlaceableSide(pos);
-
-            // check if we have a block adjacent to blockpos to click at
-            if (side == null) {
-                return false;
-            }
-
-            BlockPos neighbour = pos.offset(side);
-            EnumFacing opposite = side.getOpposite();
-
-            // check if neighbor can be right clicked
-            if (!canBeClicked(neighbour)) {
-                return false;
-            }
-
-            Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-            Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
-
-            int obiSlot = findObiInHotbar();
-
-            if (obiSlot == -1) {
-                missingObiDisable = true;
-                return false;
-            }
-
-            if (lastHotbarSlot != obiSlot) {
-                mc.player.inventory.currentItem = obiSlot;
-                lastHotbarSlot = obiSlot;
-            }
-
-            if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)) {
-                mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
-                isSneaking = true;
-            }
-
-            if (rotate.getValue()) {
-                faceVectorPacketInstant(hitVec);
-            }
-
-            mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-            mc.player.swingArm(EnumHand.MAIN_HAND);
-            mc.rightClickDelayTimer = 4;
-
-
-            return true;
+        Block block = mc.world.getBlockState(pos).getBlock();
+        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
+            return false;
         }
+
+        // check if entity blocks placing
+        for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos))) {
+            if (!(entity instanceof EntityItem) && !(entity instanceof EntityXPOrb)) {
+                return false;
+            }
+        }
+
+        EnumFacing side = getPlaceableSide(pos);
+
+        // check if we have a block adjacent to blockpos to click at
+        if (side == null) {
+            return false;
+        }
+
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
+
+        // check if neighbor can be right clicked
+        if (!canBeClicked(neighbour)) {
+            return false;
+        }
+
+        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
+
+        int obiSlot = findObiInHotbar();
+
+        if (obiSlot == -1) {
+            missingObiDisable = true;
+            return false;
+        }
+
+        if (lastHotbarSlot != obiSlot) {
+            mc.player.inventory.currentItem = obiSlot;
+            lastHotbarSlot = obiSlot;
+        }
+
+        if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)) {
+            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
+            isSneaking = true;
+        }
+
+        if (rotate.getValue()) {
+            faceVectorPacketInstant(hitVec);
+        }
+
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.rightClickDelayTimer = 4;
+
+
+        return true;
+    }
 
     private int findObiInHotbar() {
         // search blocks in hotbar

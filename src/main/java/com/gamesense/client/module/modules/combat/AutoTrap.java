@@ -55,7 +55,7 @@ public class AutoTrap extends Module {
         mode = this.registerMode("Mode", modes, "Normal");
         rotate = this.registerB("Rotate", true);
         range = this.registerI("Range", 6, 0, 6);
-        blocksPerTick = this.registerI("BlockPerTick", 5, 0, 10);
+        blocksPerTick = this.registerI("Blocks Per Tick", 5, 0, 10);
         tickDelay = this.registerI("Delay", 0, 0, 10);
 
     }
