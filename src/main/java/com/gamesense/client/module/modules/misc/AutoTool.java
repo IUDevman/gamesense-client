@@ -18,6 +18,8 @@ public class AutoTool extends Module {
     }
 
     Setting.b switchBack;
+
+
     boolean shouldMoveBack = false;
     int lastSlot = 0;
     long lastChange = 0L;
@@ -32,8 +34,10 @@ public class AutoTool extends Module {
     });
 
     public void onUpdate() {
+
         if (!switchBack.getValue())
             shouldMoveBack = false;
+
         if (mc.currentScreen != null || !switchBack.getValue()) return;
 
         boolean mouse = Mouse.isButtonDown(0);
@@ -47,7 +51,10 @@ public class AutoTool extends Module {
             mc.player.inventory.currentItem = lastSlot;
             mc.playerController.syncCurrentPlayItem();
         }
+
     }
+
+
 
     private void equipBestTool(IBlockState blockState) {
         int bestSlot = -1;
@@ -68,10 +75,12 @@ public class AutoTool extends Module {
         if (bestSlot != -1) equip(bestSlot);
     }
 
+
     private static void equip(int slot) {
         mc.player.inventory.currentItem = slot;
         mc.playerController.syncCurrentPlayItem();
     }
+
 
     public void onEnable() {
         GameSenseMod.EVENT_BUS.subscribe(this);

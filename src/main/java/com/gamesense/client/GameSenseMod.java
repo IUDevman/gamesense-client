@@ -65,7 +65,7 @@ public class GameSenseMod {
     public void init(FMLInitializationEvent event){
         eventProcessor = new EventProcessor();
         eventProcessor.init();
-        fontRenderer = new CFontRenderer(new Font("Verdana", Font.PLAIN, 20), true, false);
+        fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true, false);
         TpsUtils tpsUtils = new TpsUtils();
 
         settingsManager = new SettingsManager();
