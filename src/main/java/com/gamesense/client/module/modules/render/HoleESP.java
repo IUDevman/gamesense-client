@@ -6,7 +6,6 @@ import com.gamesense.api.util.GameSenseTessellator;
 import com.gamesense.api.util.GeometryMasks;
 import com.gamesense.api.util.Rainbow;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -31,6 +30,7 @@ public class HoleESP extends Module {
     Setting.b hideOwn;
     Setting.b flatOwn;
     Setting.mode mode;
+    Setting.mode type;
 
     //load settings
     public void setup(){
@@ -39,11 +39,17 @@ public class HoleESP extends Module {
         hideOwn = registerB("Hide Own", false);
         flatOwn = registerB("Flat Own", false);
 
+        ArrayList<String> render = new ArrayList<>();
+        render.add("Outline");
+        render.add("Fill");
+        render.add("Both");
+
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Air");
         modes.add("Ground");
         modes.add("Flat");
 
+        type = registerMode("Render", render, "Both");
         mode = registerMode("Mode", modes, "Air");
     }
 
@@ -191,81 +197,86 @@ public class HoleESP extends Module {
 
     //renders air boxes
     private void drawBox(BlockPos blockPos, int r, int g, int b) {
-        Color color;
-        Color c = Rainbow.getColor();
-        AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-        if(rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
-        else color = new Color(r, g, b, 50);
+        if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
+            Color color;
+            Color c = Rainbow.getColor();
+            AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
+            if (rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
+            else color = new Color(r, g, b, 50);
 
-        if(mode.getValue().equalsIgnoreCase("Air")) {
-            if(this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ)))
-                GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
-            else
-                GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
+            if (mode.getValue().equalsIgnoreCase("Air")) {
+                if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ)))
+                    GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
+                else
+                    GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
+            }
         }
     }
 
     //renders ground boxes
     public void drawBox2(BlockPos blockPos, int r, int g, int b){
-        Color color;
-        Color c = Rainbow.getColor();
-        AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-        if(rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
-        else color = new Color(r, g, b, 50);
+        if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
+            Color color;
+            Color c = Rainbow.getColor();
+            AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
+            if (rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
+            else color = new Color(r, g, b, 50);
 
-        if (mode.getValue().equalsIgnoreCase("Ground")){
-            GameSenseTessellator.drawBox2(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
+            if (mode.getValue().equalsIgnoreCase("Ground")) {
+                GameSenseTessellator.drawBox2(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
+            }
         }
     }
 
     public void drawFlat(BlockPos blockPos, int r, int g, int b) {
-        Color color;
-        Color c = Rainbow.getColor();
-        AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-        if (mode.getValue().equalsIgnoreCase("Flat")) {
-            if (rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
-            else color = new Color(r, g, b, 50);
-            GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
+        if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
+            Color color;
+            Color c = Rainbow.getColor();
+            AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
+            if (mode.getValue().equalsIgnoreCase("Flat")) {
+                if (rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
+                else color = new Color(r, g, b, 50);
+                GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
+            }
         }
     }
 
     public void drawOutline(BlockPos blockPos, int width, int r, int g, int b) {
-        final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
-        int rgb = Color.HSBtoRGB(hue[0], 1, 1);
-        int r1 = (rgb >> 16) & 0xFF;
-        int g2 = (rgb >> 8) & 0xFF;
-        int b3 = rgb & 0xFF;
-        hue[0] +=.02f;
-        if (mode.getValue().equalsIgnoreCase("Air")) {
-            if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
-                if (rainbow.getValue()){
-                    GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r1, g2, b3, 255);
+        if (type.getValue().equalsIgnoreCase("Outline") || type.getValue().equalsIgnoreCase("Both")) {
+            final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
+            int rgb = Color.HSBtoRGB(hue[0], 1, 1);
+            int r1 = (rgb >> 16) & 0xFF;
+            int g2 = (rgb >> 8) & 0xFF;
+            int b3 = rgb & 0xFF;
+            hue[0] += .02f;
+            if (mode.getValue().equalsIgnoreCase("Air")) {
+                if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
+                    if (rainbow.getValue()) {
+                        GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r1, g2, b3, 255);
+                    } else {
+                        GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r, g, b, 255);
+                    }
+                } else {
+                    if (rainbow.getValue()) {
+                        GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r1, g2, b3, 255);
+                    } else {
+                        GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r, g, b, 255);
+                    }
                 }
-                else {
+            }
+            if (mode.getValue().equalsIgnoreCase("Flat")) {
+                if (rainbow.getValue()) {
+                    GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r1, g2, b3, 255);
+                } else {
                     GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r, g, b, 255);
                 }
-            } else {
+            }
+            if (mode.getValue().equalsIgnoreCase("Ground")) {
                 if (rainbow.getValue()) {
-                    GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r1, g2, b3, 255);
+                    GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, r1, g2, b3, 255);
                 } else {
-                    GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r, g, b, 255);
+                    GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, r, g, b, 255);
                 }
-            }
-        }
-        if (mode.getValue().equalsIgnoreCase("Flat")) {
-            if (rainbow.getValue()){
-                GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r1, g2, b3, 255);
-            }
-            else {
-                GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r, g, b, 255);
-            }
-        }
-        if (mode.getValue().equalsIgnoreCase("Ground")){
-            if (rainbow.getValue()){
-                GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, r1, g2, b3, 255);
-            }
-            else {
-                GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, r, g, b, 255);
             }
         }
     }

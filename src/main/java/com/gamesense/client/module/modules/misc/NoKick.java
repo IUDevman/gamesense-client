@@ -11,8 +11,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 
 /**
- * CyberTF2 forever on top!
- * Hoosiers @see com.gamesense.api.mixin.mixins.MixinNetworkManager :^)
+ *   @see //com.gamesense.api.mixin.mixins.MixinNetworkManager :^)
  * PacketKick
  *
  */
