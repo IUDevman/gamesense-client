@@ -77,6 +77,7 @@ public class ModuleManager {
         addMod(new HitSpheres());
         addMod(new HoleESP());
         addMod(new LogoutSpots());
+        addMod(new LowOffhand());
         addMod(new MobOwner());
         addMod(new NekoAnimation());
         addMod(new NoRender());
