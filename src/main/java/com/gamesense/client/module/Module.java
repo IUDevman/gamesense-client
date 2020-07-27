@@ -69,13 +69,13 @@ public class Module {
 
     public void enable(){
         setEnabled(true);
-        if(ModuleManager.isModuleEnabled("ToggleMsgs") && !getName().equalsIgnoreCase("DevGUI")) Command.sendRawMessage(getName() + ChatFormatting.GREEN + " enabled!");
+        //if(ModuleManager.isModuleEnabled("ToggleMsgs") && !getName().equalsIgnoreCase("DevGUI")) Command.sendRawMessage(getName() + ChatFormatting.GREEN + " enabled!");
         onEnable();
     }
 
     public void disable(){
         setEnabled(false);
-        if(ModuleManager.isModuleEnabled("ToggleMsgs") && !getName().equalsIgnoreCase("DevGUI")) Command.sendRawMessage(getName() + ChatFormatting.RED + " disabled!");
+        //if(ModuleManager.isModuleEnabled("ToggleMsgs") && !getName().equalsIgnoreCase("DevGUI")) Command.sendRawMessage(getName() + ChatFormatting.RED + " disabled!");
         onDisable();
     }
 
@@ -101,32 +101,32 @@ public class Module {
         drawn = d;
     }
 
-    protected Setting.i registerI(final String name, final int value, final int min, final int max) {
-        final Setting.i s = new Setting.i(name, this, value, min, max);
+    protected Setting.i registerI(final String name, final String configname, final int value, final int min, final int max) {
+        final Setting.i s = new Setting.i(name, configname, this, value, min, max);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }
 
-    protected Setting.d registerD(final String name, final double value, final double min, final double max) {
-        final Setting.d s = new Setting.d(name, this, value, min, max);
+    protected Setting.d registerD(final String name, final String configname, final double value, final double min, final double max) {
+        final Setting.d s = new Setting.d(name, configname, this, value, min, max);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }
 
-    protected Setting.b registerB(final String name, final boolean value) {
-        final Setting.b s = new Setting.b(name, this, value);
+    protected Setting.b registerB(final String name, final String configname, final boolean value) {
+        final Setting.b s = new Setting.b(name, configname, this, value);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }
 
-    protected Setting.s registerS(final String name, final String value) {
-        final Setting.s s = new Setting.s(name, this, value);
+    protected Setting.s registerS(final String name, final String configname, final String value) {
+        final Setting.s s = new Setting.s(name, configname,this, value);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }
 
-    protected Setting.mode registerMode(final String name, final List<String> modes, final String value) {
-        final Setting.mode s = new Setting.mode(name, this, modes, value);
+    protected Setting.mode registerMode(final String name, final String configname, final List<String> modes, final String value) {
+        final Setting.mode s = new Setting.mode(name, configname, this, modes, value);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }

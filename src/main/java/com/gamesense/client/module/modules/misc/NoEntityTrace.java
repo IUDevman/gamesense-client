@@ -12,7 +12,7 @@ public class NoEntityTrace extends Module {
     Setting.b pickaxeOnly;
 
     public void setup() {
-        pickaxeOnly = registerB("Pickaxe Only", true);
+        pickaxeOnly = registerB("Pickaxe Only", "NETPickaxeOnly", true);
     }
 
     boolean isHoldingPickaxe = false;

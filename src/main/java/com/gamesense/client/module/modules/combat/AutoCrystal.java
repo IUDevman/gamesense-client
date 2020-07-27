@@ -89,22 +89,22 @@ public class AutoCrystal extends Module {
     public boolean isActive = false;
 
     public void setup() {
-        explode = this.registerB("Break", true);
-        waitTick = this.registerI("Hit Delay", 1, 0, 20);
-        range = this.registerD("Hit Range", 5.0, 0.0, 10.0);
-        walls = this.registerD("Walls Range", 3.5, 0.0, 10.0);
-        antiWeakness = this.registerB("Anti Weakness", true);
-        showDamage = this.registerB("Show Damage", false);
-        place = this.registerB("Place", true);
-        autoSwitch = this.registerB("Auto Switch", true);
-        placeRange = this.registerD("Place Range", 5.0, 0.0, 10.0);
-        minDmg = this.registerD("Min Damage", 5, 0, 36);
-        maxSelfDmg = this.registerD("Max Self Dmg", 10, 1, 36);
-        facePlace = this.registerI("FacePlace HP", 8, 0, 36);
-        raytrace = this.registerB("Raytrace", false);
-        rotate = this.registerB("Rotate", true);
-        spoofRotations = this.registerB("Spoof Angles", true);
-        chat = this.registerB("Toggle Msg", true);
+        explode = this.registerB("Break", "ACBreak", true);
+        waitTick = this.registerI("Hit Delay", "ACHitDelay", 1, 0, 20);
+        range = this.registerD("Hit Range", "ACHitRange",5.0, 0.0, 10.0);
+        walls = this.registerD("Walls Range", "ACWallsRange", 3.5, 0.0, 10.0);
+        antiWeakness = this.registerB("Anti Weakness", "ACAntiWeakness", true);
+        showDamage = this.registerB("Show Damage", "ACShowDamage",false);
+        place = this.registerB("Place", "ACPlace", true);
+        autoSwitch = this.registerB("Auto Switch", "ACAutoSwitch", true);
+        placeRange = this.registerD("Place Range", "ACPlaceRange", 5.0, 0.0, 10.0);
+        minDmg = this.registerD("Min Damage", "ACMinDamage", 5, 0, 36);
+        maxSelfDmg = this.registerD("Max Self Dmg", "ACMaxSelfDmg", 10, 1, 36);
+        facePlace = this.registerI("FacePlace HP", "ACFacePlaceHP", 8, 0, 36);
+        raytrace = this.registerB("Raytrace", "ACRaytrace", false);
+        rotate = this.registerB("Rotate", "ACRotate", true);
+        spoofRotations = this.registerB("Spoof Angles", "ACSpoofAngles", true);
+        chat = this.registerB("Toggle Msg", "ACToggleMsg", true);
     }
 
     public void onUpdate() {

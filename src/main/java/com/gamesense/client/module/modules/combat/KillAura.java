@@ -30,10 +30,10 @@ public class KillAura extends Module {
     private Setting.d range;
 
     public void setup(){
-        range = this.registerD("Range",5,0,10);
-        swordOnly = this.registerB("Sword Only",true);
-        criticals = this.registerB("Criticals",true);
-        caCheck = this.registerB("AC Check",false);
+        range = this.registerD("Range", "KARange", 5,0,10);
+        swordOnly = this.registerB("Sword Only", "KASwordOnly",true);
+        criticals = this.registerB("Criticals", "KACriticals",true);
+        caCheck = this.registerB("AC Check", "KAACCheck",false);
     }
 
     private boolean isAttacking = false;

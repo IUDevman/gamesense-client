@@ -34,10 +34,10 @@ public class HoleESP extends Module {
 
     //load settings
     public void setup(){
-        rangeS = registerI("Range", 5, 1, 20);
-        rainbow = registerB("Rainbow", false);
-        hideOwn = registerB("Hide Own", false);
-        flatOwn = registerB("Flat Own", false);
+        rangeS = registerI("Range", "HESPRange", 5, 1, 20);
+        rainbow = registerB("Rainbow", "HESPRainbow", false);
+        hideOwn = registerB("Hide Own", "HESPHideOwn", false);
+        flatOwn = registerB("Flat Own", "HESPFlatOwn", false);
 
         ArrayList<String> render = new ArrayList<>();
         render.add("Outline");
@@ -49,8 +49,8 @@ public class HoleESP extends Module {
         modes.add("Ground");
         modes.add("Flat");
 
-        type = registerMode("Render", render, "Both");
-        mode = registerMode("Mode", modes, "Air");
+        type = registerMode("Render", "HESPRender", render, "Both");
+        mode = registerMode("Mode", "HESPMode", modes, "Air");
     }
 
     //defines the render borders

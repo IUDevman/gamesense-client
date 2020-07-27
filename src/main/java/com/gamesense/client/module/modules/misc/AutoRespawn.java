@@ -18,7 +18,7 @@ public class AutoRespawn extends Module {
     Setting.b coords;
 
     public void setup(){
-        coords = registerB("Coords", false);
+        coords = registerB("Coords", "ARCoords", false);
     }
 
     @EventHandler

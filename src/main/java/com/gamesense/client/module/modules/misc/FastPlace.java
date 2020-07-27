@@ -12,9 +12,9 @@ public class FastPlace extends Module {
     Setting.b everything;
 
     public void setup() {
-        exp = registerB("Exp", false);
-        crystals = registerB("Crystals", false);
-        everything = registerB("Eveything", false);
+        exp = registerB("Exp", "FPExp", false);
+        crystals = registerB("Crystals", "FPCrystals", false);
+        everything = registerB("Eveything", "FPEverything",false);
     }
 
     public void onUpdate() {

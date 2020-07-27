@@ -1,37 +1,28 @@
 package com.gamesense.api.util;
 
+
+import com.gamesense.api.enemy.Enemies;
+import com.gamesense.api.enemy.Enemy;
+import com.gamesense.api.friends.Friend;
+import com.gamesense.api.friends.Friends;
+import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.command.Command;
 import com.gamesense.client.devgui.DevFrame;
 import com.gamesense.client.devgui.DevGUI;
+import com.gamesense.client.macro.Macro;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
-import com.mojang.realmsclient.gui.ChatFormatting;
-import com.gamesense.client.command.Command;
-import com.gamesense.api.friends.Friend;
-import com.gamesense.api.friends.Friends;
 import com.gamesense.client.waypoint.Waypoint;
-import com.gamesense.api.enemy.Enemies;
-import com.gamesense.api.enemy.Enemy;
-import com.gamesense.api.settings.Setting;
-import com.gamesense.api.event.EventProcessor;
-import com.gamesense.client.macro.Macro;
-import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.misc.Announcer;
-import com.gamesense.api.util.font.CFontRenderer;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.*;
 import java.util.Iterator;
 
 public class ConfigUtils {
@@ -548,7 +539,7 @@ public class ConfigUtils {
             br.close();
         } catch (Exception var8) {
             var8.printStackTrace();
-            this.saveMods();
+            //this.saveMods();
         }
     }
 
@@ -565,10 +556,10 @@ public class ConfigUtils {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.DOUBLE) {
-                    out.write(i.getName() + ":" +((Setting.d) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.d) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
                 if (i.getType() == Setting.Type.INT) {
-                    out.write(i.getName() + ":" +((Setting.i) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.i) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -582,7 +573,7 @@ public class ConfigUtils {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.BOOLEAN) {
-                    out.write(i.getName() + ":" + ((Setting.b) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.b) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -596,7 +587,7 @@ public class ConfigUtils {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.MODE) {
-                    out.write(i.getName() + ":" + ((Setting.mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -611,7 +602,7 @@ public class ConfigUtils {
         BufferedReader br;
         String line;
         String curLine;
-        String name;
+        String configname;
         String isOn;
         String m;
         Setting mod;
@@ -624,12 +615,12 @@ public class ConfigUtils {
 
             while((line = br.readLine()) != null) {
                 curLine = line.trim();
-                name = curLine.split(":")[0];
+                configname = curLine.split(":")[0];
                 isOn = curLine.split(":")[1];
                 m = curLine.split(":")[2];
                 for(Module mm : ModuleManager.getModules()) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
-                        mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(name, mm);
+                        mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndModConfig(configname, mm);
 
                         if (mod instanceof Setting.i) {
                             ((Setting.i) mod).setValue(Integer.parseInt(isOn));
@@ -652,12 +643,12 @@ public class ConfigUtils {
 
             while((line = br.readLine()) != null) {
                 curLine = line.trim();
-                name = curLine.split(":")[0];
+                configname = curLine.split(":")[0];
                 isOn = curLine.split(":")[1];
                 m = curLine.split(":")[2];
                 for(Module mm : ModuleManager.getModules()) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
-                        mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(name, mm);
+                        mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
                         ((Setting.b) mod).setValue(Boolean.parseBoolean(isOn));
                     }
                 }
@@ -675,12 +666,12 @@ public class ConfigUtils {
 
             while((line = br.readLine()) != null) {
                 curLine = line.trim();
-                name = curLine.split(":")[0];
+                configname = curLine.split(":")[0];
                 isOn = curLine.split(":")[1];
                 m = curLine.split(":")[2];
                 for(Module mm : ModuleManager.getModules()) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
-                        mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(name, mm);
+                        mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
                         ((Setting.mode) mod).setValue(isOn);
                     }
                 }

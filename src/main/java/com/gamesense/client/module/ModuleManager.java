@@ -67,7 +67,6 @@ public class ModuleManager {
         addMod(new NoEntityTrace());
         addMod(new NoKick());
         addMod(new PvPInfo());
-        addMod(new ToggleMsgs());
         //Render
         addMod(new BlockHighlight());
         addMod(new CapesModule());

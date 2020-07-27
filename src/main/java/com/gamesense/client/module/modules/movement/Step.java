@@ -25,10 +25,10 @@ public class Step extends Module {
         modes.add("Normal");
         modes.add("Vanilla");
 
-        height = registerD("Height", 2.5, 0.5, 2.5);
-        timer = registerB("Timer", false);
-        reverse = registerB("Reverse", false);
-        mode = registerMode("Modes", modes, "Normal");
+        height = registerD("Height", "SHeight", 2.5, 0.5, 2.5);
+        timer = registerB("Timer", "STimer", false);
+        reverse = registerB("Reverse", "SReverse", false);
+        mode = registerMode("Modes", "SModes", modes, "Normal");
     }
 
     public void onUpdate() {

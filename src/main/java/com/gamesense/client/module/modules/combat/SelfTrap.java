@@ -50,10 +50,10 @@ public class SelfTrap extends Module {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Normal");
         modes.add("NoStep");
-        mode = this.registerMode("Mode", modes, "Normal");
-        rotate = this.registerB("Rotate", true);
-        blocksPerTick = this.registerI("Blocks Per Tick", 5, 0, 10);
-        tickDelay = this.registerI("Delay", 0, 0, 10);
+        mode = this.registerMode("Mode", "STMode", modes, "Normal");
+        rotate = this.registerB("Rotate", "STRotate", true);
+        blocksPerTick = this.registerI("Blocks Per Tick", "STBlocksPerTick", 5, 0, 10);
+        tickDelay = this.registerI("Delay", "STDelay", 0, 0, 10);
     }
 
     protected void onEnable() {

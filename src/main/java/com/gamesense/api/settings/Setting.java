@@ -7,20 +7,26 @@ import com.gamesense.client.module.Module;
 public class Setting {
 
 	private final String name;
+	private final String configname;
 	private final Module parent;
 	private final Type type;
 	private boolean bval;
 	private double dval;
 	private boolean onlyint = false;
 
-	public Setting(final String name, final Module parent, final Type type) {
+	public Setting(final String name, final String configname, final Module parent, final Type type) {
 		this.name = name;
+		this.configname = configname;
 		this.parent = parent;
 		this.type = type;
 	}
 
 	public String getName() {
 		return this.name;
+	}
+
+	public String getConfigName(){
+		return this.configname;
 	}
 
 	public Module getParent() {
@@ -57,8 +63,8 @@ public class Setting {
 		private final int min;
 		private final int max;
 
-		public i(final String name, final Module parent, final int value, final int min, final int max) {
-			super(name, parent, Type.INT);
+		public i(final String name, final String configname, final Module parent, final int value, final int min, final int max) {
+			super(name, configname, parent, Type.INT);
 			this.value = value;
 			this.min = min;
 			this.max = max;
@@ -87,8 +93,8 @@ public class Setting {
 		private final double min;
 		private final double max;
 
-		public d(final String name, final Module parent, final double value, final double min, final double max) {
-			super(name, parent, Type.DOUBLE);
+		public d(final String name, final String configname, final Module parent, final double value, final double min, final double max) {
+			super(name, configname, parent, Type.DOUBLE);
 			this.value = value;
 			this.min = min;
 			this.max = max;
@@ -115,8 +121,8 @@ public class Setting {
 	{
 		private boolean value;
 
-		public b(final String name, final Module parent, final boolean value) {
-			super(name, parent, Type.BOOLEAN);
+		public b(final String name, final String configname, final Module parent, final boolean value) {
+			super(name, configname, parent, Type.BOOLEAN);
 			this.value = value;
 		}
 
@@ -133,8 +139,8 @@ public class Setting {
 	{
 		private String value;
 
-		public s(final String name, final Module parent, final String value) {
-			super(name, parent, Type.STRING);
+		public s(final String name, final String configname, final Module parent, final String value) {
+			super(name, configname, parent, Type.STRING);
 			this.value = value;
 		}
 
@@ -152,8 +158,8 @@ public class Setting {
 		private String value;
 		private final java.util.List<String> modes;
 
-		public mode(final String name, final Module parent, final java.util.List<String> modes, final String value) {
-			super(name, parent, Type.MODE);
+		public mode(final String name, final String configname, final Module parent, final java.util.List<String> modes, final String value) {
+			super(name, configname, parent, Type.MODE);
 			this.value = value;
 			this.modes = modes;
 		}

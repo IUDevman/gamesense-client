@@ -32,7 +32,7 @@ public class OffhandCrystal extends Module {
 
     @Override
     public void setup() {
-        health = this.registerI("Health", 15, 0, 36);
+        health = this.registerI("Health", "OCHealth", 15, 0, 36);
     }
 
     public void onDisable() {

@@ -35,7 +35,7 @@ public class Speed extends Module {
     Setting.d speed;
 
     public void setup() {
-        ice = registerB("Ice", true);
+        ice = registerB("Ice", "SpeedIce", true);
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Strafe");
         modes.add("YPort");
@@ -43,8 +43,8 @@ public class Speed extends Module {
         modes.add("Packet2");
         modes.add("FakeStrafe");
 
-        speed =registerD("Speed", 8.0, 0.0, 10.0);
-        Mode = registerMode("Modes", modes, "Strafe");
+        speed =registerD("Speed", "SpeedSpeed", 8.0, 0.0, 10.0);
+        Mode = registerMode("Modes", "SpeedModes", modes, "Strafe");
     }
 
     @Override

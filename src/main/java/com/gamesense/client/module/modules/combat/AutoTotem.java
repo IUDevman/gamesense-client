@@ -16,7 +16,7 @@ public class AutoTotem extends Module {
     Setting.b soft;
 
     public void setup() {
-        soft = registerB("Soft", true);
+        soft = registerB("Soft", "TotemSoft", true);
     }
 
     @Override

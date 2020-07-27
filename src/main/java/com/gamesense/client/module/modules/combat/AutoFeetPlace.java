@@ -40,13 +40,13 @@ public class AutoFeetPlace extends Module {
     Setting.b disableOnJump;
 
     public void setup() {
-        triggerable = registerB("Triggerable", false);
-        disableNone = registerB("Disable No Obby", false);
-        disableOnJump = registerB("Disable on Jump", false);
-        rotate = registerB("Rotate", false);
-        tickDelay = registerI("Tick Delay", 5, 0, 10);
-        timeoutTicks = registerI("Timeout Ticks", 40, 1, 100);
-        blocksPerTick = registerI("Blocks Per Tick", 4, 0, 8);
+        triggerable = registerB("Triggerable", "AFPTroggerable", false);
+        disableNone = registerB("Disable No Obby", "AFPDisableNoObby", false);
+        disableOnJump = registerB("Disable on Jump", "AFPDisableOnJump", false);
+        rotate = registerB("Rotate","AFPRotate", false);
+        tickDelay = registerI("Tick Delay", "AFPTickDelay", 5, 0, 10);
+        timeoutTicks = registerI("Timeout Ticks", "AFPTimeoutTicks", 40, 1, 100);
+        blocksPerTick = registerI("Blocks Per Tick", "AFPBlocksPerTick", 4, 0, 8);
     }
 
     private int offsetStep = 0;

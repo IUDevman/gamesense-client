@@ -23,7 +23,11 @@ public class SettingsManager {
 	}
 
 	public Setting getSettingByNameAndMod(final String name, final Module parent) {
-		return this.settings.stream().filter(s -> s.getParent().equals(parent)).filter(s -> s.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+		return this.settings.stream().filter(s -> s.getParent().equals(parent)).filter(s -> s.getConfigName().equalsIgnoreCase(name)).findFirst().orElse(null);
+	}
+
+	public Setting getSettingByNameAndModConfig(final String configname, final Module parent) {
+		return this.settings.stream().filter(s -> s.getParent().equals(parent)).filter(s -> s.getConfigName().equalsIgnoreCase(configname)).findFirst().orElse(null);
 	}
 
 	public List<Setting> getSettingsForMod(final Module parent) {

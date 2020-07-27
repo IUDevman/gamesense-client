@@ -55,11 +55,11 @@ public class PvPInfo extends Module {
         colors.add("Aqua");
         colors.add("Light Purple");
         colors.add("White");
-        visualrange = registerB("Visual Range", false);
-        pearlalert = registerB("Pearl Alert", false);
-        popcounter = registerB("Pop Counter", false);
-        strengthdetect = registerB("Strength Detect", false);
-        ChatColor = registerMode("Color", colors, "Light Purple");
+        visualrange = registerB("Visual Range", "PvPVisualRange", false);
+        pearlalert = registerB("Pearl Alert", "PvPPearlAlert",false);
+        popcounter = registerB("Pop Counter", "PvPPopCounter", false);
+        strengthdetect = registerB("Strength Detect", "PvPStrengthDetect", false);
+        ChatColor = registerMode("Color", "PvPColor", colors, "Light Purple");
     }
 
     @EventHandler

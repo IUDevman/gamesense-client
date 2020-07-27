@@ -15,10 +15,10 @@ public class ColorMain extends Module {
     public static Setting.i Green;
 
     public void setup() {
-        Rainbow = this.registerB("Rainbow", false);
-        Red = this.registerI("Red", 255, 0, 255);
-        Green = this.registerI("Green", 26, 0, 255);
-        Blue = this.registerI("Blue", 42, 0, 255);
+        Rainbow = this.registerB("Rainbow", "CMRainbow", false);
+        Red = this.registerI("Red", "CMRed", 255, 0, 255);
+        Green = this.registerI("Green", "CMGreen", 26, 0, 255);
+        Blue = this.registerI("Blue", "CMBlue", 42, 0, 255);
     }
 
     public void onEnable(){

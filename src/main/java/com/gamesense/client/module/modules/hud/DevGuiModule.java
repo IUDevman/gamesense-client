@@ -27,8 +27,8 @@ public class DevGuiModule extends Module {
         ArrayList<String> icons = new ArrayList<>();
         icons.add("Font");
         icons.add("Image");
-        opacity = this.registerI("Opacity",200,50,255);
-        icon = this.registerMode("Icon", icons, "Image");
+        opacity = this.registerI("Opacity", "DOpacity", 200,50,255);
+        icon = this.registerMode("Icon", "DIcons", icons, "Image");
     }
 
     public void onEnable(){

@@ -21,7 +21,7 @@ public class Fullbright extends Module {
         modes.add("Gamma");
         modes.add("Potion");
 
-        Mode = registerMode("Modes", modes, "Gamma");
+        Mode = registerMode("Mode", "FBMode", modes, "Gamma");
     }
 
     public void onEnable(){

@@ -86,27 +86,27 @@ public class HUD extends Module {
         ArrayList<String> Modes = new ArrayList<>();
         Modes.add("PvP");
         Modes.add("Combat");
-        Type = this.registerMode("Info Type", Modes, "PvP");
-        infox = this.registerI("Information X", 0, 0, 1000);
-        infoy = this.registerI("Information Y", 0, 0, 1000);
-        GameSenseInfo = this.registerB("Information", false);
-        ArmorHud = this.registerB("Armor Hud", false);
-        ArrayList = this.registerB("ArrayList", false);
-        sortUp = registerB("Array Sort Up", false);
-        right = registerB("Array Right", false);
-        arrayx = registerI("Array X", 0, 0, 1000);
-        arrayy = registerI("Array Y", 0 , 0 ,1000);
-        Inventory = this.registerB("Inventory", false);
-        PotionEffects = this.registerB("Potion Effects", false);
-        potionx = this.registerI("Potion X", 0, 0, 1000);
-        potiony = this.registerI("Potion Y", 0, 0, 1000);
-        psortUp = registerB("Potion Sort Up", false);
-        pright = registerB("Potion Right", false);
-        Watermark = this.registerB("Watermark", false);
-        Welcomer = this.registerB("Welcomer", false);
-        welcomex = this.registerI("Welcomer X", 0, 0, 1000);
-        welcomey = this.registerI("Welcomer Y", 0, 0, 1000);
-        customFont = this.registerB("Custom Font", false);
+        Type = this.registerMode("Info Type", "HInfoType", Modes, "PvP");
+        infox = this.registerI("Information X", "HInformationX", 0, 0, 1000);
+        infoy = this.registerI("Information Y", "HInformationY",  0, 0, 1000);
+        GameSenseInfo = this.registerB("Information", "HInformation", false);
+        ArmorHud = this.registerB("Armor Hud", "HArmorHud", false);
+        ArrayList = this.registerB("ArrayList", "HArrayList",  false);
+        sortUp = registerB("Array Sort Up", "HArraySortUp", false);
+        right = registerB("Array Right", "HArrayRight", false);
+        arrayx = registerI("Array X", "HArrayX", 0, 0, 1000);
+        arrayy = registerI("Array Y", "HArrayY",0 , 0 ,1000);
+        Inventory = this.registerB("Inventory", "HInventory", false);
+        PotionEffects = this.registerB("Potion Effects", "HPotionEffects",false);
+        potionx = this.registerI("Potion X", "HPotionX", 0, 0, 1000);
+        potiony = this.registerI("Potion Y", "HPotionY", 0, 0, 1000);
+        psortUp = registerB("Potion Sort Up", "HPotionSortUp", false);
+        pright = registerB("Potion Right", "HPotionRight", false);
+        Watermark = this.registerB("Watermark", "HWatermark", false);
+        Welcomer = this.registerB("Welcomer", "HWelcomer", false);
+        welcomex = this.registerI("Welcomer X", "HWelcomerX", 0, 0, 1000);
+        welcomey = this.registerI("Welcomer Y", "HWelcomerY", 0, 0, 1000);
+        customFont = this.registerB("Custom Font", "HCustomFont", false);
     }
 
     public void onRender() {

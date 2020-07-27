@@ -22,7 +22,7 @@ public class Sprint extends Module {
         sprintModes.add("Legit");
         sprintModes.add("Rage");
 
-        Mode = registerMode("Mode", sprintModes, "Legit");
+        Mode = registerMode("Mode", "SPMode", sprintModes, "Legit");
 
     }
 

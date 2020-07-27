@@ -52,11 +52,11 @@ public class AutoTrap extends Module {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Normal");
         modes.add("NoStep");
-        mode = this.registerMode("Mode", modes, "Normal");
-        rotate = this.registerB("Rotate", true);
-        range = this.registerI("Range", 6, 0, 6);
-        blocksPerTick = this.registerI("Blocks Per Tick", 5, 0, 10);
-        tickDelay = this.registerI("Delay", 0, 0, 10);
+        mode = this.registerMode("Mode", "ATMode", modes, "Normal");
+        rotate = this.registerB("Rotate", "ATRotate", true);
+        range = this.registerI("Range", "ATRange", 6, 0, 6);
+        blocksPerTick = this.registerI("Blocks Per Tick", "ATBlocksPerTick", 5, 0, 10);
+        tickDelay = this.registerI("Delay", "ATDelay", 0, 0, 10);
 
     }
 
