@@ -1,10 +1,9 @@
 # GameSense Client
 
-Pretty Much Final Dev Build
+####Current version: 2.0
 
-Latest as of 7/25/20
+Changelog (for next version):
 
-TODO for src:
-1) Move the "Velocity" option out of PlayerTweaks and into it's own module. Add a mode: "normal" and "smart" to it.
-
-2) Smart offhand gap???
+1) New mode for Selftrap: "Simple"
+2) Smart velocity mode to PlayerTweaks
+3) X/Y slider for "Inventory" in HUD
