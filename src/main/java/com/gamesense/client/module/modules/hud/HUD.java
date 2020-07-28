@@ -50,6 +50,8 @@ public class HUD extends Module {
     Setting.b Watermark;
     Setting.b Welcomer;
     Setting.b Inventory;
+    Setting.i InventoryX;
+    Setting.i InventoryY;
     Setting.b GameSenseInfo;
     Setting.mode Type;
     Setting.b ArrayList;
@@ -97,6 +99,8 @@ public class HUD extends Module {
         arrayx = registerI("Array X", "HArrayX", 0, 0, 1000);
         arrayy = registerI("Array Y", "HArrayY",0 , 0 ,1000);
         Inventory = this.registerB("Inventory", "HInventory", false);
+        InventoryX = this.registerI("Inventory X", "HInventoryX", 0,0,1000);
+        InventoryY = this.registerI("Inventory Y", "HInventoryY", 12,0,1000);
         PotionEffects = this.registerB("Potion Effects", "HPotionEffects",false);
         potionx = this.registerI("Potion X", "HPotionX", 0, 0, 1000);
         potiony = this.registerI("Potion Y", "HPotionY", 0, 0, 1000);
@@ -155,7 +159,7 @@ public class HUD extends Module {
         }
 
         if (Inventory.getValue()) {
-            drawInventory(0, 12);
+            drawInventory(InventoryX.getValue(), InventoryY.getValue());
         }
 
         if (GameSenseInfo.getValue()) {
