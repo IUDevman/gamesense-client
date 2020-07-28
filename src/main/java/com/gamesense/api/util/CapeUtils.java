@@ -11,7 +11,7 @@ public class CapeUtils {
     List<UUID> uuids = new ArrayList<>();
     public CapeUtils(){
         try {
-            URL pastebin = new URL("https://pastebin.com/raw/JhARJEZA");
+            URL pastebin = new URL("https://pastebin.com/raw/1CjwdKYZ");
             BufferedReader in = new BufferedReader(new InputStreamReader(pastebin.openStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
