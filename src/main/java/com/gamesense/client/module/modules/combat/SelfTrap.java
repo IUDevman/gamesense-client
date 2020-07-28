@@ -50,6 +50,7 @@ public class SelfTrap extends Module {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Normal");
         modes.add("NoStep");
+        modes.add("Simple");
         mode = this.registerMode("Mode", "STMode", modes, "Normal");
         rotate = this.registerB("Rotate", "STRotate", true);
         blocksPerTick = this.registerI("Blocks Per Tick", "STBlocksPerTick", 5, 0, 10);
@@ -134,6 +135,9 @@ public class SelfTrap extends Module {
         }
         if(mode.getValue().equalsIgnoreCase("NoStep")) {
             Collections.addAll(placeTargets, SelfTrap.Offsets.TRAPFULLROOF);
+        }
+        if(mode.getValue().equalsIgnoreCase("Simple")) {
+            Collections.addAll(placeTargets, SelfTrap.Offsets.TRAPSIMPLE);
         }
 
         int blocksPlaced = 0;
@@ -300,6 +304,20 @@ public class SelfTrap extends Module {
                 new Vec3d(0, 3, -1),
                 new Vec3d(0, 3, 0),
                 new Vec3d(0, 4, 0)
+        };
+
+        private static final Vec3d[] TRAPSIMPLE = {
+                new Vec3d(-1, 0, 0),
+                new Vec3d(1, 0,0),
+                new Vec3d(0,0,-1),
+                new Vec3d(0,0,1),
+                new Vec3d(1, 1,0),
+                new Vec3d(0,1,-1),
+                new Vec3d(0,1,1),
+                new Vec3d(-1, 1, 0),
+                new Vec3d(-1, 2, 0),
+                new Vec3d(-1, 3, 0),
+                new Vec3d(0, 3, 0)
         };
     }
 }
