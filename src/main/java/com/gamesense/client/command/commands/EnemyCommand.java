@@ -22,13 +22,13 @@ public class EnemyCommand extends Command {
         if(args[0].equalsIgnoreCase("add")) {
             if (!Enemies.getEnemies().contains(Enemies.getEnemyByName(args[1]))){
                 Enemies.addEnemy(args[1]);
-                sendClientMessage(ChatFormatting.GREEN + "Added enemy with name " + args[1]);
+                sendClientMessage(ChatFormatting.GRAY + "Added enemy with name " + args[1]);
             } else {
-                sendClientMessage(ChatFormatting.DARK_RED + args[1] + " is already an enemy!");
+                sendClientMessage(ChatFormatting.GRAY + args[1] + " is already an enemy!");
             }
         } else if(args[0].equalsIgnoreCase("del") || (args[0].equalsIgnoreCase("remove"))){
             Enemies.delEnemy(args[1]);
-            sendClientMessage(ChatFormatting.RED + "Removed enemy with name " + args[1]);
+            sendClientMessage(ChatFormatting.GRAY + "Removed enemy with name " + args[1]);
         } else {
             sendClientMessage(getSyntax());
         }

@@ -85,11 +85,20 @@ public class AutoCrystal extends Module {
     Setting.b spoofRotations;
     Setting.b chat;
     Setting.b showDamage;
+    Setting.mode handbreak;
+    Setting.i attackSpeed;
 
     public boolean isActive = false;
 
+    private long breakSystemTime;
+
     public void setup() {
         explode = this.registerB("Break", "ACBreak", true);
+        ArrayList<String> bmodes = new ArrayList<>();
+        bmodes.add("Main");
+        bmodes.add("Offhand");
+        handbreak = this.registerMode("Hand Break", "ACHandBreak", bmodes, "Main");
+        attackSpeed = this.registerI("Attack Speed", "ACAttackSpeed", 12, 1, 20);
         waitTick = this.registerI("Hit Delay", "ACHitDelay", 1, 0, 20);
         range = this.registerD("Hit Range", "ACHitRange",5.0, 0.0, 10.0);
         walls = this.registerD("Walls Range", "ACWallsRange", 3.5, 0.0, 10.0);
@@ -120,16 +129,15 @@ public class AutoCrystal extends Module {
             if (!mc.player.canEntityBeSeen(crystal) && mc.player.getDistance(crystal) > walls.getValue()) return;
 
             //TODO: Add Smart break sometime. Only attack crystals that will hurt targets. Not Friends nor ourselves.
-            // Hit delay in Ticks. :O (Skidded from Heph but after searching this is how most people do it)
 
-            if (waitTick.getValue() > 0) {
+           /* if (waitTick.getValue() > 0) {
                 if (waitCounter < waitTick.getValue()) {
                     waitCounter++;
                     return;
                 } else {
                     waitCounter = 0;
                 }
-            }
+            } */
 
             if (antiWeakness.getValue() && mc.player.isPotionActive(MobEffects.WEAKNESS)) {
                 if (!isAttacking) {
@@ -160,13 +168,38 @@ public class AutoCrystal extends Module {
                 }
             }
 
-            isActive = true;
-            if (rotate.getValue()) {
-                lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+            if (System.nanoTime() / 1000000L - breakSystemTime >= 420 - attackSpeed.getValue() * 20) {
+
+
+                isActive = true;
+
+                if (rotate.getValue()) {
+                    lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+                }
+
+                mc.playerController.attackEntity(mc.player, crystal);
+                if (handbreak.getValue().equalsIgnoreCase("Offhand") && mc.player.getHeldItemOffhand().getItem() != null) {
+                    mc.player.swingArm(EnumHand.OFF_HAND);
+                } else {
+                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                }
+                isActive = false;
+                breakSystemTime = System.nanoTime() / 1000000L;
+                //return;
+
+                //TODO: Add Proper Toggleable Multiplace
+               /* if (multiPlace.getValue() && places >= 2) {
+                    resetRotation();
+
+                    places = 0;
+                    return;
+                } else if (!multiPlace.getValue() && places >= 1) {
+                    resetRotation();
+
+                    places = 0;
+                    return;
+                } */
             }
-            mc.playerController.attackEntity(mc.player, crystal);
-            mc.player.swingArm(EnumHand.MAIN_HAND);
-            isActive = false;
             return;
         } else {
             resetRotation();
@@ -353,19 +386,19 @@ public class AutoCrystal extends Module {
         }
 
         if(showDamage.getValue()){
-        if (this.render != null && this.renderEnt != null) {
-            GlStateManager.pushMatrix();
-            GameSenseTessellator.glBillboardDistanceScaled((float) render.getX() + 0.5f, (float) render.getY() + 0.5f, (float) render.getZ() + 0.5f, mc.player, 1);
-            double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
-            String damageText = (Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
-            GlStateManager.disableDepth();
-            GlStateManager.translate(-(mc.fontRenderer.getStringWidth(damageText) / 2.0d), 0, 0);
-            //mc.fontRenderer.drawStringWithShadow(damageText, 0, 0, 0xFFffffff);
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), damageText, 0, 0, 0xFFffffff);
-            GlStateManager.popMatrix();
+            if (this.render != null && this.renderEnt != null) {
+                GlStateManager.pushMatrix();
+                GameSenseTessellator.glBillboardDistanceScaled((float) render.getX() + 0.5f, (float) render.getY() + 0.5f, (float) render.getZ() + 0.5f, mc.player, 1);
+                double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
+                String damageText = (Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
+                GlStateManager.disableDepth();
+                GlStateManager.translate(-(mc.fontRenderer.getStringWidth(damageText) / 2.0d), 0, 0);
+                //mc.fontRenderer.drawStringWithShadow(damageText, 0, 0, 0xFFffffff);
+                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), damageText, 0, 0, 0xFFffffff);
+                GlStateManager.popMatrix();
+            }
         }
     }
-}
 
     private void lookAtPacket(double px, double py, double pz, EntityPlayer me) {
         double[] v = calculateLookAt(px, py, pz, me);

@@ -2,6 +2,7 @@ package com.gamesense.api.mixin.mixins;
 
 import com.gamesense.api.enemy.Enemies;
 import com.gamesense.api.friends.Friends;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.scoreboard.ScorePlayerTeam;
@@ -22,8 +23,8 @@ public class MixinGuiPlayerTabOverlay {
 
     public String getPlayerName(NetworkPlayerInfo networkPlayerInfoIn) {
         String dname = networkPlayerInfoIn.getDisplayName() != null ? networkPlayerInfoIn.getDisplayName().getFormattedText() : ScorePlayerTeam.formatPlayerName(networkPlayerInfoIn.getPlayerTeam(), networkPlayerInfoIn.getGameProfile().getName());
-        if (Friends.isFriend(dname)) return TextFormatting.AQUA + dname;
-        else if (Enemies.isEnemy(dname)) return TextFormatting.RED + dname;
+        if (Friends.isFriend(dname)) return ColorMain.getFriendColor() + dname;
+        else if (Enemies.isEnemy(dname)) return ColorMain.getEnemyColor() + dname;
         else return dname;
     }
 
