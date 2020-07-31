@@ -18,6 +18,7 @@
     "MixinMinecraft",
     "MixinGuiPlayerTabOverlay",
     "MixinGuiBossOverlay",
+    "MixinShulkerViewer",
     "MixinBlockLiquid"
   ]
 }

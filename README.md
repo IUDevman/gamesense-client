@@ -8,5 +8,6 @@ Changelog (for next version):
 2) X/Y slider for "Inventory" in HUD
 3) Updated Pastebin link
 4) Added color option to friend/enemy color in tab
+5) Added ShulkerViewer module
 
 ///Bug fixes///

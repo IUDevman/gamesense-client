@@ -80,6 +80,7 @@ public class ModuleManager {
         addMod(new MobOwner());
         addMod(new NekoAnimation());
         addMod(new NoRender());
+        addMod(new ShulkerViewer());
         addMod(new StorageESP());
         addMod(new ViewClip());
         //HUD
