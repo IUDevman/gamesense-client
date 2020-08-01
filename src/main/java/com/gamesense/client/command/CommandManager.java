@@ -11,24 +11,21 @@ public class CommandManager {
 
     public static void initCommands(){
         commands = new ArrayList<>();
-        addCommand(new BindCommand());
-        addCommand(new ToggleCommand());
-        addCommand(new DrawnCommand());
-        addCommand(new CmdsCommand());
-        addCommand(new ModsCommand());
-        addCommand(new PrefixCommand());
-        addCommand(new FriendCommand());
-        addCommand(new MacroCommand());
-        addCommand(new ConfigCommand());
-        addCommand(new ClientMsgsCommand());
         addCommand(new AutoGgCommand());
-        addCommand(new OpenFolderCommand());
-        addCommand(new LoadSpammerCommand());
         addCommand(new AutoReplyCommand());
-        addCommand(new MiddleXCommand());
-        addCommand(new WaypointCommand());
-        addCommand(new FontCommand());
+        addCommand(new BindCommand());
+        addCommand(new CmdsCommand());
+        addCommand(new DrawnCommand());
         addCommand(new EnemyCommand());
+        addCommand(new FontCommand());
+        addCommand(new FriendCommand());
+        addCommand(new LoadSpammerCommand());
+        addCommand(new MacroCommand());
+        addCommand(new ModsCommand());
+        addCommand(new OpenFolderCommand());
+        addCommand(new PrefixCommand());
+        addCommand(new ConfigCommand());
+        addCommand(new ToggleCommand());
         addCommand(new VanishCommand());
     }
 
@@ -52,11 +49,11 @@ public class CommandManager {
                     try {
                         c.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
                     } catch (Exception e) {
-                        Command.sendClientMessage(ChatFormatting.DARK_RED + c.getSyntax());
+                        Command.sendClientMessage(ChatFormatting.GRAY + c.getSyntax());
                     }
                 }
             }
         });
-        if(!b) Command.sendClientMessage(ChatFormatting.DARK_RED + "Unknown command!");
+        if(!b) Command.sendClientMessage(ChatFormatting.GRAY + "Unknown command!");
     }
 }

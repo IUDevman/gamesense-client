@@ -18,6 +18,9 @@ public class AutoReply extends Module {
         if (event.getMessage().getUnformattedText().contains("whispers: ") && !event.getMessage().getUnformattedText().startsWith(mc.player.getName())) {
             mc.player.sendChatMessage("/r " + reply);
         }
+        if (event.getMessage().getUnformattedText().contains("whispers: " + reply) && !event.getMessage().getUnformattedText().startsWith(mc.player.getName())) {
+            return; //should prevent most instances of users spam replying back to eachother in a loop, this is for you mini :P
+        }
     });
 
     public static String getReply() {

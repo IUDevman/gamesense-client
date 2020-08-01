@@ -28,5 +28,8 @@ public class AutoGgCommand extends Command {
             AutoGG.getAutoGgMessages().remove(s);
             Command.sendClientMessage("Removed AutoGG message: " + s);
        }
+        else {
+            Command.sendClientMessage(getSyntax());
+        }
     }
 }

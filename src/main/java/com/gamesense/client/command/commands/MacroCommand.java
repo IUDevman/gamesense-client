@@ -29,7 +29,7 @@ public class MacroCommand extends Command {
                 GameSenseMod.getInstance().macroManager.delMacro(GameSenseMod.getInstance().macroManager.getMacroByKey(Keyboard.getKeyIndex(args[1].toUpperCase())));
                 Command.sendClientMessage(ChatFormatting.RED + "Removed " + ChatFormatting.GRAY + "macro for key \"" + args[1].toUpperCase() + "\".");
             }else {
-                Command.sendClientMessage(ChatFormatting.RED + "That macro doesn't exist!");
+                Command.sendClientMessage(ChatFormatting.GRAY + "That macro doesn't exist!");
             }
         }
     }

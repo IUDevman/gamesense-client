@@ -1,6 +1,5 @@
 package com.gamesense.api.util;
 
-
 import com.gamesense.api.enemy.Enemies;
 import com.gamesense.api.enemy.Enemy;
 import com.gamesense.api.friends.Friend;
@@ -16,7 +15,6 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
-import com.gamesense.client.waypoint.Waypoint;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
@@ -51,7 +49,6 @@ public class ConfigUtils {
         loadMsgs();
         loadAutoGG();
         loadAutoReply();
-        loadWaypoints();
         loadFont();
         loadEnemies();
     }
@@ -181,49 +178,6 @@ public class ConfigUtils {
         } catch (Exception var11) {
             var11.printStackTrace();
             saveMacros();
-        }
-    }
-
-    public void saveWaypoints() {
-        try {
-            File file = new File(this.GameSense.getAbsolutePath(), "Waypoints.txt");
-            BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            Iterator var3 = GameSenseMod.getInstance().waypointManager.getWaypoints().iterator();
-
-            while(var3.hasNext()) {
-                Waypoint w = (Waypoint) var3.next();
-                out.write(w.getName() + ":" + (int)w.getX() + ":" + (int)w.getY() + ":" + (int)w.getZ() + ":" + w.getColor());
-            }
-            out.close();
-        } catch (Exception var5) {
-        }
-    }
-
-    public void loadWaypoints() {
-        try {
-            File file = new File(this.GameSense.getAbsolutePath(), "Waypoints.txt");
-            FileInputStream fstream = new FileInputStream(file.getAbsolutePath());
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-
-            String line;
-            while((line = br.readLine()) != null) {
-                String curLine = line.trim();
-                String name = curLine.split(":")[0];
-                String x = curLine.split(":")[1];
-                int xx = Integer.parseInt(x);
-                String y = curLine.split(":")[2];
-                int yy = Integer.parseInt(y);
-                String z = curLine.split(":")[3];
-                int zz = Integer.parseInt(z);
-                String color = curLine.split(":")[4];
-                int c = Integer.parseInt(color);
-                GameSenseMod.getInstance().waypointManager.addWaypoint(new Waypoint(name, xx, yy, zz, c));
-            }
-            br.close();
-        } catch (Exception var11) {
-            var11.printStackTrace();
-            saveWaypoints();
         }
     }
 

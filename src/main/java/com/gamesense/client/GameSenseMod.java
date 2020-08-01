@@ -4,7 +4,6 @@ import com.gamesense.api.Stopper;
 import com.gamesense.client.devgui.DevGUI;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.api.friends.Friends;
-import com.gamesense.client.waypoint.WaypointManager;
 import com.gamesense.api.enemy.Enemies;
 import com.gamesense.api.settings.SettingsManager;
 import com.gamesense.api.event.EventProcessor;
@@ -42,7 +41,6 @@ public class GameSenseMod {
     public CapeUtils capeUtils;
     public MacroManager macroManager;
     EventProcessor eventProcessor;
-    public WaypointManager waypointManager;
     public static CFontRenderer fontRenderer;
     public static Enemies enemies;
 
@@ -90,9 +88,6 @@ public class GameSenseMod {
 
         CommandManager.initCommands();
         log.info("Commands initialized!");
-
-        waypointManager = new WaypointManager();
-        log.info("Waypoints initialized!");
 
         log.info("Initialization complete!\n");
     }

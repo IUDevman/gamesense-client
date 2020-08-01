@@ -20,7 +20,6 @@ public class Stopper extends Thread {
         GameSenseMod.getInstance().configUtils.saveMsgs();
         GameSenseMod.getInstance().configUtils.saveAutoGG();
         GameSenseMod.getInstance().configUtils.saveAutoReply();
-        GameSenseMod.getInstance().configUtils.saveWaypoints();
         GameSenseMod.getInstance().configUtils.saveFont();
         GameSenseMod.getInstance().configUtils.saveEnemies();
     }

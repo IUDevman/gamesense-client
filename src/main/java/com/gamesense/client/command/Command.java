@@ -20,7 +20,7 @@ public abstract class Command {
     public static void sendClientMessage(String message){
             NotificationsHud.addMessage(new TextComponentString(cf + message));
         if(MsgWaterMark)
-            mc.player.sendMessage(new TextComponentString("[Game" + ChatFormatting.DARK_GREEN + "Sense] " + ChatFormatting.RESET + cf + message));
+            mc.player.sendMessage(new TextComponentString(ChatFormatting.GRAY + "[" + ChatFormatting.WHITE + "Game" + ChatFormatting.DARK_GREEN + "Sense" + ChatFormatting.GRAY + "]" + ChatFormatting.RESET + cf + message));
         else
             mc.player.sendMessage(new TextComponentString(cf + message));
     }

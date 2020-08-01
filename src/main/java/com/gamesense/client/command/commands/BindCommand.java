@@ -23,6 +23,9 @@ public class BindCommand extends Command {
                 m.setBind(key);
                 Command.sendClientMessage(args[0] + " bound to " + args[1].toUpperCase());
             }
+            else {
+                Command.sendClientMessage("Module not found!");
+            }
         });
     }
 }
