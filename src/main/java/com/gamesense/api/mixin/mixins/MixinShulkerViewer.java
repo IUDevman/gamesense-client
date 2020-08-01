@@ -50,10 +50,12 @@ public class MixinShulkerViewer {
                     int y1 = y - 30;
                     this.itemRender.zLevel = 300.0F;
 
+                    //renders shulker gui
                     Minecraft.getMinecraft().renderEngine.bindTexture(resource);
                     GlStateManager.color(1, 1, 1, 1);
                     Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(x1, y1, 7, 5, 162, 66);
 
+                    //renders name
                     fontRenderer.drawString(stack.getDisplayName(), x +6 , y - 28, Color.DARK_GRAY.getRGB());
 
                     GlStateManager.enableBlend();
@@ -62,6 +64,7 @@ public class MixinShulkerViewer {
                     GlStateManager.enableLighting();
                     GlStateManager.enableDepth();
                     RenderHelper.enableGUIStandardItemLighting();
+                    //renders items
                     for (int i = 0; i < nonnulllist.size(); i++) {
                         int iX = x + 5 + i % 9 * 18;
                         int iY = y + 1 + (i / 9 - 1) * 18;

@@ -9,5 +9,6 @@ Changelog (for next version):
 3) Updated Pastebin link
 4) Added color option to friend/enemy color in tab
 5) Added ShulkerViewer module
+6) CaptchaSolver (works for most bukkit/spigot/waterfall servers)
 
 ///Bug fixes///

@@ -40,6 +40,7 @@ public class ModuleManager {
         addMod(new OffhandGap());
         addMod(new SelfTrap());
         //Exploits
+        addMod(new CaptchaSolver());
         addMod(new CoordExploit());
         addMod(new FastBreak());
         addMod(new NoInteract());
