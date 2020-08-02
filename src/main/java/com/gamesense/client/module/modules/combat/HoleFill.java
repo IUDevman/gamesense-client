@@ -36,6 +36,11 @@ public class HoleFill extends Module {
             Blocks.OBSIDIAN
     });
 
+    private List<Block> blackList = Arrays.asList(new Block[]{
+            Blocks.OBSIDIAN,
+            Blocks.ENDER_CHEST
+    });
+
     Setting.d range;
     Setting.i yRange;
     Setting.i waitTick;
@@ -57,14 +62,12 @@ public class HoleFill extends Module {
 
     public void onUpdate() {
         holes = new ArrayList();
-        if (ec.getValue()) {
-            if (!whiteList.contains(Blocks.ENDER_CHEST))
-                whiteList.add(Blocks.ENDER_CHEST);
-        } else {
-            if (whiteList.contains(Blocks.ENDER_CHEST))
-                whiteList.remove(Blocks.ENDER_CHEST);
+        if (ec.getValue()){
+            whiteList = blackList;
         }
-
+        else {
+            whiteList = whiteList;
+        }
         Iterable<BlockPos> blocks = BlockPos.getAllInBox(mc.player.getPosition().add(-range.getValue(), -yRange.getValue(), -range.getValue()), mc.player.getPosition().add(range.getValue(), yRange.getValue(), range.getValue()));
         for (BlockPos pos : blocks) {
             if (!mc.world.getBlockState(pos).getMaterial().blocksMovement() && !mc.world.getBlockState(pos.add(0, 1, 0)).getMaterial().blocksMovement()) {

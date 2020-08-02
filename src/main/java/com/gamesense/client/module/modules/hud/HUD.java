@@ -151,7 +151,7 @@ public class HUD extends Module {
         }
 
         if (Watermark.getValue()) {
-            drawStringWithShadow("GameSense " + GameSenseMod.MODVER + "-ALPHA", 0, 0, c.getRGB());
+            drawStringWithShadow("GameSense " + GameSenseMod.MODVER, 0, 0, c.getRGB());
         }
 
         if (Welcomer.getValue()) {
