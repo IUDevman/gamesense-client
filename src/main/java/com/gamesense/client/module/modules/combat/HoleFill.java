@@ -32,13 +32,21 @@ public class HoleFill extends Module {
 
     private ArrayList<BlockPos> holes = new ArrayList();
 
-    private List<Block> whiteList = Arrays.asList(new Block[]{
+    private List<Block> obbyonly = Arrays.asList(new Block[]{
             Blocks.OBSIDIAN
     });
 
-    private List<Block> blackList = Arrays.asList(new Block[]{
+    private List<Block> bothonly = Arrays.asList(new Block[]{
             Blocks.OBSIDIAN,
             Blocks.ENDER_CHEST
+    });
+
+    private List<Block> echestonly = Arrays.asList(new Block[]{
+            Blocks.ENDER_CHEST
+    });
+
+    private List<Block> webonly = Arrays.asList(new Block[]{
+            Blocks.WEB
     });
 
     private List<Block> list = Arrays.asList(new Block[]{
@@ -49,27 +57,38 @@ public class HoleFill extends Module {
     Setting.i waitTick;
     Setting.b chat;
     Setting.b rotate;
-    Setting.b ec;
+    Setting.mode type;
 
     BlockPos pos;
     private int waitCounter;
 
     public void setup() {
+        ArrayList<String> blockmode = new ArrayList<>();
+        blockmode.add("Obby");
+        blockmode.add("EChest");
+        blockmode.add("Both");
+        blockmode.add("Web");
+        type = registerMode("Block", "HFBlockMode", blockmode, "Obby");
         range = registerD("Place Range", "HFPlaceRange", 5, 0, 10);
         yRange = registerI("Y Range", "HFYRange", 2 , 0 ,10);
         waitTick = registerI("Tick Delay", "HFTickDelay", 1 , 0, 20);
         rotate = registerB("Rotate", "HFRotate", false);
-        ec = registerB("Use EChests", "HFUseEchests", false);
         chat = registerB("Toggle Msg", "HFToggleMsg", false);
     }
 
     public void onUpdate() {
         holes = new ArrayList();
-        if (ec.getValue()){
-            list = blackList;
+        if (type.getValue().equalsIgnoreCase("Obby")){
+            list = obbyonly;
         }
-        else {
-            list = whiteList;
+        if (type.getValue().equalsIgnoreCase("EChest")){
+            list = echestonly;
+        }
+        if (type.getValue().equalsIgnoreCase("Both")){
+            list = bothonly;
+        }
+        if (type.getValue().equalsIgnoreCase("Web")){
+            list = webonly;
         }
         Iterable<BlockPos> blocks = BlockPos.getAllInBox(mc.player.getPosition().add(-range.getValue(), -yRange.getValue(), -range.getValue()), mc.player.getPosition().add(range.getValue(), yRange.getValue(), range.getValue()));
         for (BlockPos pos : blocks) {
@@ -127,8 +146,6 @@ public class HoleFill extends Module {
                 waitCounter = 0;
             }
         }
-
-        //  holes.forEach(blockPos -> BlockInteractionHelper.placeBlockScaffold(blockPos));
     }
 
     public void onEnable() {
