@@ -41,6 +41,9 @@ public class HoleFill extends Module {
             Blocks.ENDER_CHEST
     });
 
+    private List<Block> list = Arrays.asList(new Block[]{
+    });
+
     Setting.d range;
     Setting.i yRange;
     Setting.i waitTick;
@@ -63,10 +66,10 @@ public class HoleFill extends Module {
     public void onUpdate() {
         holes = new ArrayList();
         if (ec.getValue()){
-            whiteList = blackList;
+            list = blackList;
         }
         else {
-            whiteList = whiteList;
+            list = whiteList;
         }
         Iterable<BlockPos> blocks = BlockPos.getAllInBox(mc.player.getPosition().add(-range.getValue(), -yRange.getValue(), -range.getValue()), mc.player.getPosition().add(range.getValue(), yRange.getValue(), range.getValue()));
         for (BlockPos pos : blocks) {
@@ -97,7 +100,7 @@ public class HoleFill extends Module {
             }
             // only use whitelisted blocks
             Block block = ((ItemBlock) stack.getItem()).getBlock();
-            if (!whiteList.contains(block)) {
+            if (!list.contains(block)) {
                 continue;
             }
 
@@ -157,25 +160,12 @@ public class HoleFill extends Module {
             BlockPos neighbor = pos.offset(side);
             EnumFacing side2 = side.getOpposite();
 
-            // check if side is visible (facing away from player)
-            //if(eyesPos.squareDistanceTo(
-            //        new Vec3d(pos).add(0.5, 0.5, 0.5)) >= eyesPos
-            //        .squareDistanceTo(
-            //                new Vec3d(neighbor).add(0.5, 0.5, 0.5)))
-            //    continue;
-
-            // check if neighbor can be right clicked
             if(!canBeClicked(neighbor))
                 continue;
 
             Vec3d hitVec = new Vec3d(neighbor).add(0.5, 0.5, 0.5)
                     .add(new Vec3d(side2.getDirectionVec()).scale(0.5));
 
-            // check if hitVec is within range (4.25 blocks)
-            //if(eyesPos.squareDistanceTo(hitVec) > 18.0625)
-            //continue;
-
-            // place block
             if(rotate)
                 faceVectorPacketInstant(hitVec);
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
