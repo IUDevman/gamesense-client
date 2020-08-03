@@ -1,7 +1,7 @@
 package com.gamesense.client.command.commands;
 
-import com.gamesense.client.command.Command;
 import com.gamesense.api.Stopper;
+import com.gamesense.client.command.Command;
 
 public class ConfigCommand extends Command {
     @Override

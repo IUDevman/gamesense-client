@@ -9,16 +9,18 @@ public class Setting {
 	private final String name;
 	private final String configname;
 	private final Module parent;
+	private final Module.Category category;
 	private final Type type;
 	private boolean bval;
 	private double dval;
 	private boolean onlyint = false;
 
-	public Setting(final String name, final String configname, final Module parent, final Type type) {
+	public Setting(final String name, final String configname, final Module parent, final Module.Category category, final Type type) {
 		this.name = name;
 		this.configname = configname;
 		this.parent = parent;
 		this.type = type;
+		this.category = category;
 	}
 
 	public String getName() {
@@ -37,7 +39,11 @@ public class Setting {
 		return this.type;
 	}
 
-	public enum Type
+    public Module.Category getCategory() {
+		return this.category;
+    }
+
+    public enum Type
 	{
 		INT,
 		DOUBLE,
@@ -63,8 +69,8 @@ public class Setting {
 		private final int min;
 		private final int max;
 
-		public i(final String name, final String configname, final Module parent, final int value, final int min, final int max) {
-			super(name, configname, parent, Type.INT);
+		public i(final String name, final String configname, final Module parent, final Module.Category category, final int value, final int min, final int max) {
+			super(name, configname, parent, category, Type.INT);
 			this.value = value;
 			this.min = min;
 			this.max = max;
@@ -93,8 +99,8 @@ public class Setting {
 		private final double min;
 		private final double max;
 
-		public d(final String name, final String configname, final Module parent, final double value, final double min, final double max) {
-			super(name, configname, parent, Type.DOUBLE);
+		public d(final String name, final String configname, final Module parent, final Module.Category category, final double value, final double min, final double max) {
+			super(name, configname, parent, category, Type.DOUBLE);
 			this.value = value;
 			this.min = min;
 			this.max = max;
@@ -121,8 +127,8 @@ public class Setting {
 	{
 		private boolean value;
 
-		public b(final String name, final String configname, final Module parent, final boolean value) {
-			super(name, configname, parent, Type.BOOLEAN);
+		public b(final String name, final String configname, final Module parent, final Module.Category category, final boolean value) {
+			super(name, configname, parent, category, Type.BOOLEAN);
 			this.value = value;
 		}
 
@@ -139,8 +145,8 @@ public class Setting {
 	{
 		private String value;
 
-		public s(final String name, final String configname, final Module parent, final String value) {
-			super(name, configname, parent, Type.STRING);
+		public s(final String name, final String configname, final Module parent, final Module.Category category, final String value) {
+			super(name, configname, parent, category, Type.STRING);
 			this.value = value;
 		}
 
@@ -158,8 +164,8 @@ public class Setting {
 		private String value;
 		private final java.util.List<String> modes;
 
-		public mode(final String name, final String configname, final Module parent, final java.util.List<String> modes, final String value) {
-			super(name, configname, parent, Type.MODE);
+		public mode(final String name, final String configname, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value) {
+			super(name, configname, parent, category, Type.MODE);
 			this.value = value;
 			this.modes = modes;
 		}

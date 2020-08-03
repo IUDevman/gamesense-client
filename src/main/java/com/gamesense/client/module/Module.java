@@ -102,31 +102,31 @@ public class Module {
     }
 
     protected Setting.i registerI(final String name, final String configname, final int value, final int min, final int max) {
-        final Setting.i s = new Setting.i(name, configname, this, value, min, max);
+        final Setting.i s = new Setting.i(name, configname, this, getCategory(), value, min, max);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }
 
     protected Setting.d registerD(final String name, final String configname, final double value, final double min, final double max) {
-        final Setting.d s = new Setting.d(name, configname, this, value, min, max);
+        final Setting.d s = new Setting.d(name, configname, this, getCategory(), value, min, max);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }
 
     protected Setting.b registerB(final String name, final String configname, final boolean value) {
-        final Setting.b s = new Setting.b(name, configname, this, value);
+        final Setting.b s = new Setting.b(name, configname, this, getCategory(), value);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }
 
     protected Setting.s registerS(final String name, final String configname, final String value) {
-        final Setting.s s = new Setting.s(name, configname,this, value);
+        final Setting.s s = new Setting.s(name, configname,this, getCategory(), value);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }
 
     protected Setting.mode registerMode(final String name, final String configname, final List<String> modes, final String value) {
-        final Setting.mode s = new Setting.mode(name, configname, this, modes, value);
+        final Setting.mode s = new Setting.mode(name, configname, this, getCategory(), modes, value);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }

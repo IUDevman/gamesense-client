@@ -1,6 +1,10 @@
 package com.gamesense.client;
 
 import com.gamesense.api.Stopper;
+import com.gamesense.api.util.config.LoadConfiguration;
+import com.gamesense.api.util.config.LoadModules;
+import com.gamesense.api.util.config.SaveConfiguration;
+import com.gamesense.api.util.config.SaveModules;
 import com.gamesense.client.devgui.DevGUI;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.api.friends.Friends;
@@ -10,7 +14,6 @@ import com.gamesense.api.event.EventProcessor;
 import com.gamesense.client.macro.MacroManager;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.api.util.CapeUtils;
-import com.gamesense.api.util.ConfigUtils;
 import com.gamesense.api.util.TpsUtils;
 import com.gamesense.api.util.font.CFontRenderer;
 import me.zero.alpine.EventBus;
@@ -37,7 +40,10 @@ public class GameSenseMod {
     public SettingsManager settingsManager;
     public Friends friends;
     public ModuleManager moduleManager;
-    public ConfigUtils configUtils;
+    public SaveConfiguration saveConfiguration;
+    public LoadConfiguration loadConfiguration;
+    public SaveModules saveModules;
+    public LoadModules loadModules;
     public CapeUtils capeUtils;
     public MacroManager macroManager;
     EventProcessor eventProcessor;
@@ -82,9 +88,19 @@ public class GameSenseMod {
         macroManager = new MacroManager();
         log.info("Macros initialized!");
 
-        configUtils = new ConfigUtils();
+        saveConfiguration = new SaveConfiguration();
         Runtime.getRuntime().addShutdownHook(new Stopper());
-        log.info("Config loaded!");
+        log.info("Config Saved!");
+
+        loadConfiguration = new LoadConfiguration();
+        log.info("Config Loaded!");
+
+        saveModules = new SaveModules();
+        Runtime.getRuntime().addShutdownHook(new Stopper());
+        log.info("Modules Saved!");
+
+        loadModules = new LoadModules();
+        log.info("Modules Loaded!");
 
         CommandManager.initCommands();
         log.info("Commands initialized!");
