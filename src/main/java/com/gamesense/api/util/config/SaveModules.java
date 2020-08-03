@@ -9,6 +9,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Iterator;
 
+/**
+ * Made by Hoosiers on 08/02/20 for GameSense, some functions were modified and ported from the original ConfigUtils
+ */
+
 public class SaveModules {
 
     //saves module settings for each category

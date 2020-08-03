@@ -7,6 +7,10 @@ import com.gamesense.client.module.ModuleManager;
 
 import java.io.*;
 
+/**
+ * Made by Hoosiers on 08/02/20 for GameSense, some functions were modified and ported from the original ConfigUtils
+ */
+
 public class LoadModules {
 
     //loads all functions for modules
