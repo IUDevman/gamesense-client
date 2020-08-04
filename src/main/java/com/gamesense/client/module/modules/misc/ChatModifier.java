@@ -2,8 +2,6 @@ package com.gamesense.client.module.modules.misc;
 
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.friends.Friend;
-import com.gamesense.api.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
@@ -12,9 +10,7 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.network.play.client.CPacketChatMessage;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import java.text.SimpleDateFormat;
@@ -64,13 +60,13 @@ public class ChatModifier extends Module {
         //Chat Time Stamps
 
       if (chattimestamps.getValue()) {
-          String decoLeft = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[0];
-          String decoRight = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[1];
-          if (space.getValue()) decoRight += " ";
-          String dateFormat = format.getValue().replace("H24", "k").replace("H12", "h");
-          String date = new SimpleDateFormat(dateFormat).format(new Date());
-          TextComponentString time = new TextComponentString(ChatFormatting.getByName(color.getValue()) + decoLeft + date + decoRight + ChatFormatting.RESET);
-          event.setMessage(time.appendSibling(event.getMessage()));
+              String decoLeft = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[0];
+              String decoRight = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[1];
+              if (space.getValue()) decoRight += " ";
+              String dateFormat = format.getValue().replace("H24", "k").replace("H12", "h");
+              String date = new SimpleDateFormat(dateFormat).format(new Date());
+              TextComponentString time = new TextComponentString(ChatFormatting.getByName(color.getValue()) + decoLeft + date + decoRight + ChatFormatting.RESET);
+              event.setMessage(time.appendSibling(event.getMessage()));
       }
     });
 

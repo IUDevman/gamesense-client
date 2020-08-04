@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.event.events.PacketEvent;
+import com.gamesense.api.event.events.WaterPushEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
@@ -70,8 +71,16 @@ public class PlayerTweaks extends Module {
                 if (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId())
                     event.cancel();
             }
-            if (event.getPacket() instanceof SPacketExplosion)
+            if (event.getPacket() instanceof SPacketExplosion) {
                 event.cancel();
+            }
+        }
+    });
+
+    @EventHandler
+    private Listener<WaterPushEvent> waterPushEventListener = new Listener<>(event -> {
+        if (noPush.getValue()){
+            event.cancel();
         }
     });
 
