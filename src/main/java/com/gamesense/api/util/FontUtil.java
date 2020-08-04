@@ -12,6 +12,7 @@ import net.minecraft.util.StringUtils;
  *
  *  @author HeroCode
  */
+
 public class FontUtil {
 	private static FontRenderer fontRenderer;
 

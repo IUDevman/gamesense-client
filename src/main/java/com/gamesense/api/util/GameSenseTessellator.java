@@ -1,6 +1,5 @@
 package com.gamesense.api.util;
 
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -17,6 +16,7 @@ import org.lwjgl.util.glu.Sphere;
 import static org.lwjgl.opengl.GL11.*;
 
 //Credit 086
+
 public class GameSenseTessellator extends Tessellator {
 
     public static GameSenseTessellator INSTANCE = new GameSenseTessellator();
@@ -29,8 +29,7 @@ public class GameSenseTessellator extends Tessellator {
     public static double renderPosY;
     public static double renderPosZ;
 
-    public void setRenderPosition(double renderPosXIn, double renderPosYIn, double renderPosZIn)
-    {
+    public void setRenderPosition(double renderPosXIn, double renderPosYIn, double renderPosZIn) {
         this.renderPosX = renderPosXIn;
         this.renderPosY = renderPosYIn;
         this.renderPosZ = renderPosZIn;
@@ -42,7 +41,6 @@ public class GameSenseTessellator extends Tessellator {
     }
 
     public static void prepareGL() {
-//        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.glLineWidth(1.5F);
@@ -114,35 +112,30 @@ public class GameSenseTessellator extends Tessellator {
             buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x, y, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.UP) != 0) {
             buffer.pos(x+w, y-h, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y-h, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y-h, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y-h, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.NORTH) != 0) {
             buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y-h, z).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y-h, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.SOUTH) != 0) {
             buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y-h, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x, y-h, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.WEST) != 0) {
             buffer.pos(x, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x, y-h, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x, y-h, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.EAST) != 0) {
             buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
@@ -212,35 +205,30 @@ public class GameSenseTessellator extends Tessellator {
             buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x, y, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.UP) != 0) {
             buffer.pos(x+w, y+h, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y+h, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y+h, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y+h, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.NORTH) != 0) {
             buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y+h, z).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y+h, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.SOUTH) != 0) {
             buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y+h, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x, y+h, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.WEST) != 0) {
             buffer.pos(x, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x, y+h, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x, y+h, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.EAST) != 0) {
             buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
@@ -256,35 +244,30 @@ public class GameSenseTessellator extends Tessellator {
             buffer.pos(bb.minX, bb.minY, bb.maxZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.minX, bb.minY, bb.minZ).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.UP) != 0) {
             buffer.pos(bb.maxX, bb.maxY, bb.minZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.minX, bb.maxY, bb.minZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.minX, bb.maxY, bb.maxZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.maxX, bb.maxY, bb.maxZ).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.NORTH) != 0) {
             buffer.pos(bb.maxX, bb.minY, bb.minZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.minX, bb.minY, bb.minZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.minX, bb.maxY, bb.minZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.maxX, bb.maxY, bb.minZ).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.SOUTH) != 0) {
             buffer.pos(bb.minX, bb.minY, bb.maxZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.maxX, bb.minY, bb.maxZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.maxX, bb.maxY, bb.maxZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.minX, bb.maxY, bb.maxZ).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.WEST) != 0) {
             buffer.pos(bb.minX, bb.minY, bb.minZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.minX, bb.minY, bb.maxZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.minX, bb.maxY, bb.maxZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.minX, bb.maxY, bb.minZ).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Quad.EAST) != 0) {
             buffer.pos(bb.maxX, bb.minY, bb.maxZ).color(r, g, b, a).endVertex();
             buffer.pos(bb.maxX, bb.minY, bb.minZ).color(r, g, b, a).endVertex();
@@ -293,12 +276,9 @@ public class GameSenseTessellator extends Tessellator {
         }
     }
 
-
-
     public static void drawSmallBox(Vec3d vec3d, int r, int g, int b, int a, int sides) {
         drawBox(INSTANCE.getBuffer(), (float)vec3d.x, (float)vec3d.y, (float)vec3d.z, 0.3f, 0.3f, 0.3f, r, g, b, a, sides);
     }
-
 
     private static Minecraft mc = Wrapper.getMinecraft();
 
@@ -322,63 +302,51 @@ public class GameSenseTessellator extends Tessellator {
         GL11.glPopMatrix();
     }
 
-
     public static void drawLines(final BufferBuilder buffer, float x, float y, float z, float w, float h, float d, int r, int g, int b, int a, int sides) {
         if ((sides & GeometryMasks.Line.DOWN_WEST) != 0) {
             buffer.pos(x, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.UP_WEST) != 0) {
             buffer.pos(x, y+h, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y+h, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.DOWN_EAST) != 0) {
             buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.UP_EAST) != 0) {
             buffer.pos(x+w, y+h, z).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y+h, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.DOWN_NORTH) != 0) {
             buffer.pos(x, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.UP_NORTH) != 0) {
             buffer.pos(x, y+h, z).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y+h, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.DOWN_SOUTH) != 0) {
             buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.UP_SOUTH) != 0) {
             buffer.pos(x, y+h, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y+h, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.NORTH_WEST) != 0) {
             buffer.pos(x, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x, y+h, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.NORTH_EAST) != 0) {
             buffer.pos(x+w, y, z).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y+h, z).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.SOUTH_WEST) != 0) {
             buffer.pos(x, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x, y+h, z+d).color(r, g, b, a).endVertex();
         }
-
         if ((sides & GeometryMasks.Line.SOUTH_EAST) != 0) {
             buffer.pos(x+w, y, z+d).color(r, g, b, a).endVertex();
             buffer.pos(x+w, y+h, z+d).color(r, g, b, a).endVertex();
@@ -545,8 +513,6 @@ public class GameSenseTessellator extends Tessellator {
         GlStateManager.scale(scaleDistance, scaleDistance, scaleDistance);
     }
 
-
-
     public static void drawBoundingBox(final AxisAlignedBB bb, final float width, final int red, final int green, final int blue, final int alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
@@ -555,8 +521,6 @@ public class GameSenseTessellator extends Tessellator {
         GlStateManager.disableTexture2D();
         GlStateManager.depthMask(false);
         GlStateManager.glLineWidth(width);
-        //final Tessellator tessellator = Tessellator.getInstance();
-        //final BufferBuilder bufferbuilder = tessellator.getBuffer();
         final BufferBuilder bufferbuilder = INSTANCE.getBuffer();
         bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
         bufferbuilder.pos(bb.minX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
@@ -575,7 +539,6 @@ public class GameSenseTessellator extends Tessellator {
         bufferbuilder.pos(bb.maxX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
         bufferbuilder.pos(bb.maxX, bb.maxY, bb.minZ).color(red, green, blue, alpha).endVertex();
         bufferbuilder.pos(bb.minX, bb.maxY, bb.minZ).color(red, green, blue, alpha).endVertex();
-        //tessellator.draw();
         render();
         GlStateManager.depthMask(true);
         GlStateManager.enableDepth();
@@ -600,8 +563,6 @@ public class GameSenseTessellator extends Tessellator {
         GlStateManager.disableTexture2D();
         GlStateManager.depthMask(false);
         GlStateManager.glLineWidth(width);
-        //final Tessellator tessellator = Tessellator.getInstance();
-        //final BufferBuilder bufferbuilder = tessellator.getBuffer();
         final BufferBuilder bufferbuilder = INSTANCE.getBuffer();
         bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
         bufferbuilder.pos(bb.minX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
@@ -637,8 +598,6 @@ public class GameSenseTessellator extends Tessellator {
         GlStateManager.disableTexture2D();
         GlStateManager.depthMask(false);
         GlStateManager.glLineWidth(width);
-        //final Tessellator tessellator = Tessellator.getInstance();
-        //final BufferBuilder bufferbuilder = tessellator.getBuffer();
         final BufferBuilder bufferbuilder = INSTANCE.getBuffer();
         bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
         bufferbuilder.pos(bb.minX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
@@ -657,7 +616,6 @@ public class GameSenseTessellator extends Tessellator {
         bufferbuilder.pos(bb.maxX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
         bufferbuilder.pos(bb.maxX, bb.maxY - 0.5, bb.minZ).color(red, green, blue, alpha).endVertex();
         bufferbuilder.pos(bb.minX, bb.maxY - 0.5, bb.minZ).color(red, green, blue, alpha).endVertex();
-        //tessellator.draw();
         render();
         GlStateManager.depthMask(true);
         GlStateManager.enableDepth();
@@ -665,6 +623,4 @@ public class GameSenseTessellator extends Tessellator {
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
     }
-
-
 }

@@ -1,9 +1,7 @@
 package com.gamesense.client.module;
 
 import com.gamesense.client.GameSenseMod;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.client.command.Command;
 import com.gamesense.api.event.events.RenderEvent;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
@@ -51,12 +49,14 @@ public class Module {
         bind = b;
     }
 
-    protected void onEnable(){
-    }
-    protected void onDisable(){
-    }
+    protected void onEnable(){ }
+
+    protected void onDisable(){ }
+
     public void onUpdate(){}
+
     public void onRender(){}
+
     public void onWorldRender(RenderEvent event) {}
 
     public boolean isEnabled(){
@@ -69,20 +69,19 @@ public class Module {
 
     public void enable(){
         setEnabled(true);
-        //if(ModuleManager.isModuleEnabled("ToggleMsgs") && !getName().equalsIgnoreCase("DevGUI")) Command.sendRawMessage(getName() + ChatFormatting.GREEN + " enabled!");
         onEnable();
     }
 
     public void disable(){
         setEnabled(false);
-        //if(ModuleManager.isModuleEnabled("ToggleMsgs") && !getName().equalsIgnoreCase("DevGUI")) Command.sendRawMessage(getName() + ChatFormatting.RED + " disabled!");
         onDisable();
     }
 
     public void toggle(){
         if(isEnabled()) {
             disable();
-        } else if(!isEnabled()){
+        }
+        else if(!isEnabled()){
             enable();
         }
     }

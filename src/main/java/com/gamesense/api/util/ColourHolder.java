@@ -7,8 +7,8 @@ import java.awt.*;
 /**
  * Created by Gebruiker on 18/04/2017.
  */
-public class ColourHolder {
 
+public class ColourHolder {
     int r;
     int g;
     int b;

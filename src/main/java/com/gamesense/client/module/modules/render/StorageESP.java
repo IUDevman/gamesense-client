@@ -15,12 +15,10 @@ public class StorageESP extends Module {
     }
 
     Setting.i w;
-
     ConcurrentHashMap<TileEntity, String> chests = new ConcurrentHashMap<>();
 
     public void setup(){
         w = registerI("Width", "SESPWidth", 2 , 1 ,10);
-
     }
 
     public void onUpdate(){

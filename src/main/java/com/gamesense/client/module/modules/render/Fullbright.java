@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.module.Module;
-import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 

@@ -78,8 +78,6 @@ public class EventProcessor {
         int blue = rgb & 0xFF;
         hue[0] += .02f;
 
-
-
         c = new Color(red,green,blue);
 
         //Module updates
@@ -263,5 +261,4 @@ public class EventProcessor {
         GameSenseMod.EVENT_BUS.subscribe(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
-
 }

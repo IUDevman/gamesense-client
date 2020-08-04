@@ -13,7 +13,6 @@ public class LowOffhand extends Module {
 
     public void setup(){
         off = registerD("Height", "LOHeight", 1.0, 0.1 ,1.0);
-
     }
 
     public void onUpdate(){

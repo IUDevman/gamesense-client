@@ -10,7 +10,7 @@ public class HoosiersDupe extends Module {
 
     public void onEnable(){
         if(mc.player != null)
-            mc.player.sendChatMessage("I just used the Go_Hoosiers Dupe and got " + new Random().nextInt(15) + " shulkers thanks to GameSense!");
+            mc.player.sendChatMessage("I just used the Go_Hoosiers Dupe and got " + new Random().nextInt(15) + 1 + " shulkers thanks to GameSense!");
         disable();
     }
 }

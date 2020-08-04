@@ -18,7 +18,6 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 
-
 public class Speed extends Module {
     public Speed() {
         super("Speed", Category.Movement);
@@ -139,42 +138,8 @@ public class Speed extends Module {
 
     });
 
-   /* public void onUpdate() {
-
-        boolean icee = this.ice.getValue() && (mc.world.getBlockState(new BlockPos(mc.player.posX, mc.player.posY - 1, mc.player.posZ)).getBlock() instanceof BlockIce || mc.world.getBlockState(new BlockPos(mc.player.posX, mc.player.posY - 1, mc.player.posZ)).getBlock() instanceof BlockPackedIce);
-        if (icee)
-            return;
-        if (Mode.getValue().equalsIgnoreCase("Strafe")) {
-            double motionY = 0.42f;
-            if (mc.player.onGround && MotionUtils.isMoving(mc.player) && waitTimer.hasReached(300)) {
-                if (mc.player.isPotionActive(MobEffects.JUMP_BOOST)) {
-                    motionY += (mc.player.getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1f;
-                }
-                event.setY(mc.player.motionY = motionY);
-                moveSpeed = MotionUtils.getBaseMoveSpeed() * (EntityUtil.isColliding(0, -0.5, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid() ? 0.9 : 1.901);
-                doSlow = true;
-                waitTimer.reset();
-            } else {
-                if (doSlow || mc.player.collidedHorizontally) {
-                    moveSpeed -= (EntityUtil.isColliding(0, -0.8, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid()) ? 0.4 : 0.7 * (moveSpeed = MotionUtils.getBaseMoveSpeed());
-                    doSlow = false;
-                } else {
-                    moveSpeed -= moveSpeed / 159.0;
-                }
-            }
-            moveSpeed = Math.max(moveSpeed, MotionUtils.getBaseMoveSpeed());
-            double[] dir = MotionUtils.forward(moveSpeed);
-            event.setX(dir[0]);
-            event.setZ(dir[1]);
-        }
-    } */
-
-
-
     @Override
     public void onDisable() {
-      //if (!Mode.getValue().equalsIgnoreCase("Strafe") || !Mode.getValue().equalsIgnoreCase("FakeStrafe"))
-        // mc.player.setVelocity(0,0,0);
         GameSenseMod.EVENT_BUS.unsubscribe(this);
         EntityUtil.resetTimer();
     }

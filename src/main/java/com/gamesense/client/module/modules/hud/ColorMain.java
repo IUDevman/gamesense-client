@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.module.Module;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;

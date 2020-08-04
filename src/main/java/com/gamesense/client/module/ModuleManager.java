@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class ModuleManager {
+
     public static ArrayList<Module> modules;
 
     public ModuleManager(){
@@ -103,18 +104,18 @@ public class ModuleManager {
     }
 
     public static void onWorldRender(RenderWorldLastEvent event) {
-        Minecraft.getMinecraft().profiler.startSection("gamesense");
 
+        Minecraft.getMinecraft().profiler.startSection("gamesense");
         Minecraft.getMinecraft().profiler.startSection("setup");
-//        GlStateManager.pushMatrix();
+
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableDepth();
-
         GlStateManager.glLineWidth(1f);
+
         Vec3d renderPos = getInterpolatedPos(Minecraft.getMinecraft().player, event.getPartialTicks());
 
         RenderEvent e = new RenderEvent(GameSenseTessellator.INSTANCE, renderPos, event.getPartialTicks());
@@ -128,21 +129,19 @@ public class ModuleManager {
         });
 
         Minecraft.getMinecraft().profiler.startSection("release");
-        GlStateManager.glLineWidth(1f);
 
+        GlStateManager.glLineWidth(1f);
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
         GlStateManager.enableDepth();
         GlStateManager.enableCull();
-//        GlStateManager.popMatrix();
         GameSenseTessellator.releaseGL();
-        Minecraft.getMinecraft().profiler.endSection();
 
+        Minecraft.getMinecraft().profiler.endSection();
         Minecraft.getMinecraft().profiler.endSection();
     }
-
 
     public static ArrayList<Module> getModules() {
         return modules;

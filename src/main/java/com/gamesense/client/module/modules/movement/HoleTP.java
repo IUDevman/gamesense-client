@@ -46,7 +46,6 @@ public class HoleTP extends Module {
             }
         }
 
-
     private boolean isInHole() {
         final BlockPos blockPos = new BlockPos(HoleTP.mc.player.posX, HoleTP.mc.player.posY, HoleTP.mc.player.posZ);
         final IBlockState blockState = HoleTP.mc.world.getBlockState(blockPos);

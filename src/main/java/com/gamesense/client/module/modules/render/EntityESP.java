@@ -19,12 +19,10 @@ public class EntityESP extends Module {
     public EntityESP() {super("EntityESP", Category.Render);}
 
     public void setup() {
-
         ArrayList<String> Modes = new ArrayList<>();
         Modes.add("Box");
         Modes.add("Outline");
         Modes.add("Glow");
-
         exp = registerB("Exp Bottles", "EESPExPBottles", false);
         epearls = registerB("Ender Pearls", "EESPEnderPearls", false);
         crystals = registerB("Crystals", "EESPCrystals", false);

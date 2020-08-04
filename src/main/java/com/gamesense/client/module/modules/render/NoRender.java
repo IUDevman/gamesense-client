@@ -12,7 +12,6 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-
 public class NoRender extends Module {
     public NoRender() {
         super("NoRender", Category.Render);

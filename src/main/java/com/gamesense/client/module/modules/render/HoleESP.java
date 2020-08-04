@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HoleESP extends Module {
 
-
     public HoleESP(){
         super("HoleESP", Category.Render);
     }

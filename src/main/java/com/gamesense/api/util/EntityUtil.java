@@ -44,9 +44,7 @@ public class EntityUtil {
         return entity != null && entity.getEntityId() == -100 && Wrapper.getPlayer() != entity;
     }
 
-    /**
-     * Find the entities interpolated amount
-     */
+    //Finds the entities interpolated amount
     public static Vec3d getInterpolatedAmount(Entity entity, double x, double y, double z) {
         return new Vec3d(
                 (entity.posX - entity.lastTickPosX) * x,
@@ -64,7 +62,6 @@ public class EntityUtil {
             return parser.parse(jsonUrl).getAsJsonArray().get(parser.parse(jsonUrl).getAsJsonArray().size() - 1).getAsJsonObject().get("name").toString();
         } catch (IOException ex) {
         }
-
         return null;
     }
 
@@ -88,10 +85,8 @@ public class EntityUtil {
             final int amplifier = mc.player.getActivePotionEffect(Potion.getPotionById(1)).getAmplifier();
             baseSpeed *= 1.0 + 0.2 * (amplifier + 1);
         }
-
         return baseSpeed;
     }
-
 
     public static boolean isInLiquid() {
         if (mc.player != null) {
@@ -148,18 +143,14 @@ public class EntityUtil {
         return isHostileMob(entity);
     }
 
-    /**
-     * If the mob by default wont attack the player, but will if the player attacks it
-     */
+    //If the mob by default wont attack the player, but will if the player attacks it
     public static boolean isNeutralMob(Entity entity) {
         return entity instanceof EntityPigZombie ||
                 entity instanceof EntityWolf ||
                 entity instanceof EntityEnderman;
     }
 
-    /**
-     * If the mob is friendly (not aggressive)
-     */
+    //If the mob is friendly (not aggressive)
     public static boolean isFriendlyMob(Entity entity) {
         return (entity.isCreatureType(EnumCreatureType.CREATURE, false) && !EntityUtil.isNeutralMob(entity)) ||
                 (entity.isCreatureType(EnumCreatureType.AMBIENT, false)) ||
@@ -168,16 +159,12 @@ public class EntityUtil {
                 (isNeutralMob(entity) && !EntityUtil.isMobAggressive(entity));
     }
 
-    /**
-     * If the mob is hostile
-     */
+    //If the mob is hostile
     public static boolean isHostileMob(Entity entity) {
         return (entity.isCreatureType(EnumCreatureType.MONSTER, false) && !EntityUtil.isNeutralMob(entity));
     }
 
-    /**
-     * Find the entities interpolated position
-     */
+    //Find the entities interpolated position
     public static Vec3d getInterpolatedPos(Entity entity, float ticks) {
         return new Vec3d(entity.lastTickPosX, entity.lastTickPosY, entity.lastTickPosZ).add(getInterpolatedAmount(entity, ticks));
     }
@@ -194,10 +181,8 @@ public class EntityUtil {
         for (int x = MathHelper.floor(entity.posX); x < MathHelper.ceil(entity.posX); x++)
             for (int z = MathHelper.floor(entity.posZ); z < MathHelper.ceil(entity.posZ); z++) {
                 BlockPos pos = new BlockPos(x, (int) y, z);
-
                 if (Wrapper.getWorld().getBlockState(pos).getBlock() instanceof BlockLiquid) return true;
             }
-
         return false;
     }
 
@@ -211,16 +196,13 @@ public class EntityUtil {
 
     public static boolean isAboveWater(Entity entity, boolean packet) {
         if (entity == null) return false;
-
         double y = entity.posY - (packet ? 0.03 : (EntityUtil.isPlayer(entity) ? 0.2 : 0.5)); // increasing this seems to flag more in NCP but needs to be increased so the player lands on solid water
-
         for (int x = MathHelper.floor(entity.posX); x < MathHelper.ceil(entity.posX); x++)
             for (int z = MathHelper.floor(entity.posZ); z < MathHelper.ceil(entity.posZ); z++) {
                 BlockPos pos = new BlockPos(x, MathHelper.floor(y), z);
 
                 if (Wrapper.getWorld().getBlockState(pos).getBlock() instanceof BlockLiquid) return true;
             }
-
         return false;
     }
 
@@ -241,7 +223,6 @@ public class EntityUtil {
         // to degree
         pitch = pitch * 180.0d / Math.PI;
         yaw = yaw * 180.0d / Math.PI;
-
         yaw += 90f;
 
         return new double[]{yaw, pitch};

@@ -47,7 +47,6 @@ public class WorldUtils {
                 }
             }
         }
-
     }
 
     public static int findBlock(Block block) {
@@ -64,7 +63,6 @@ public class WorldUtils {
             }
         } catch (Exception var3) {
         }
-
         return -1;
     }
 
@@ -110,7 +108,6 @@ public class WorldUtils {
         } else {
             pos = new BlockPos(playerCoords[0] + ChangeX, playerCoords[1] + ChangeY, playerCoords[2] + ChangeZ);
         }
-
         return pos;
     }
 
@@ -124,7 +121,6 @@ public class WorldUtils {
             builder.append((int)Math.floor(vector.y));
             builder.append(", ");
         }
-
         builder.append((int)Math.floor(vector.z));
         builder.append(")");
         return builder.toString();

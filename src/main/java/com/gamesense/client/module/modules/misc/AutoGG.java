@@ -1,7 +1,6 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.util.GameSenseTessellator;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;

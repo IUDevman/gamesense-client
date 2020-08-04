@@ -79,7 +79,6 @@ public class BlockUtils {
 
             return true;
         }
-
         return false;
     }
 
@@ -144,8 +143,7 @@ public class BlockUtils {
                 rotations[1], mc.player.onGround));
     }
 
-    private static float[] getNeededRotations2(Vec3d vec)
-    {
+    private static float[] getNeededRotations2(Vec3d vec) {
         Vec3d eyesPos = getEyesPos();
 
         double diffX = vec.x - eyesPos.x;
@@ -258,7 +256,6 @@ public class BlockUtils {
         }
 
         return null;
-
     }
 }
 

@@ -10,7 +10,6 @@ import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.ColorMain;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.*;

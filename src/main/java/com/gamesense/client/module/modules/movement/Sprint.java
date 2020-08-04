@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class Sprint extends Module {
 
-
     public Sprint() {
         super("Sprint", Category.Movement);
     }
@@ -17,13 +16,10 @@ public class Sprint extends Module {
     Setting.mode Mode;
 
     public void setup() {
-
         ArrayList<String> sprintModes = new ArrayList<>();
         sprintModes.add("Legit");
         sprintModes.add("Rage");
-
         Mode = registerMode("Mode", "SPMode", sprintModes, "Legit");
-
     }
 
     public void onUpdate() {
@@ -42,5 +38,4 @@ public class Sprint extends Module {
             event.getLocation().setZ(dir[1] * 0.2f);
         }
     }
-
 }

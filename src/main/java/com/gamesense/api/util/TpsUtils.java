@@ -9,9 +9,10 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Arrays;
 
-/*
+/**
  * @author 086
  */
+
 public class TpsUtils {
     private static float[] tickRates = new float[20];
     private int nextIndex = 0;

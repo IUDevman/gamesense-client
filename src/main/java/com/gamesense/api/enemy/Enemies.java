@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Enemies {
+
     public static List<Enemy> enemies;
     public Enemies(){
         enemies = new ArrayList<>();

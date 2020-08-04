@@ -9,7 +9,6 @@ public class MotionUtils {
         return entity.moveForward != 0 || entity.moveStrafing != 0;
     }
 
-
     public static void setSpeed(final EntityLivingBase entity, final double speed) {
         double dir[] = forward(speed);
         entity.motionX = dir[0];
@@ -22,7 +21,6 @@ public class MotionUtils {
             final int amplifier = Minecraft.getMinecraft().player.getActivePotionEffect(Potion.getPotionById(1)).getAmplifier();
             baseSpeed *= 1.0 + 0.2 * (amplifier + 1);
         }
-
         return baseSpeed;
     }
 

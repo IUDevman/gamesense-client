@@ -9,7 +9,6 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.network.play.server.SPacketSoundEffect;
-import net.minecraft.world.EnumSkyBlock;
 
 /**
  *   @see //com.gamesense.api.mixin.mixins.MixinNetworkManager :^)

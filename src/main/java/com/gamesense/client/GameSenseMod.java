@@ -36,6 +36,7 @@ public class GameSenseMod {
     public static final String FORGENAME = "GameSense";
 
     public static final Logger log = LogManager.getLogger(MODNAME);
+
     public DevGUI devGUI;
     public SettingsManager settingsManager;
     public Friends friends;
@@ -61,15 +62,15 @@ public class GameSenseMod {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
-        //log.info("PreInitialization complete!\n");
-
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event){
         eventProcessor = new EventProcessor();
         eventProcessor.init();
+
         fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true, false);
+
         TpsUtils tpsUtils = new TpsUtils();
 
         settingsManager = new SettingsManager();
@@ -115,13 +116,10 @@ public class GameSenseMod {
         capeUtils = new CapeUtils();
         log.info("Capes initialised!");
 
-        //WelcomeWindow ww = new WelcomeWindow();
-        //ww.setVisible(false);
         log.info("PostInitialization complete!\n");
     }
 
     public static GameSenseMod getInstance(){
         return INSTANCE;
     }
-
 }
