@@ -24,10 +24,10 @@ public class PlayerTweaks extends Module {
     Setting.b antiKnockBack;
 
     public void setup(){
-        guiMove = this.registerB("Gui Move", "PTGuiMove", false);
-        noPush = this.registerB("No Push", "PTNoPush", false);
-        noSlow = this.registerB("No Slow", "PTNoSlow", false);
-        antiKnockBack = this.registerB("Velocity", "PTVelocity", false);
+        guiMove = this.registerB("Gui Move", "GuiMove", false);
+        noPush = this.registerB("No Push", "NoPush", false);
+        noSlow = this.registerB("No Slow", "NoSlow", false);
+        antiKnockBack = this.registerB("Velocity", "Velocity", false);
     }
 
     //No Slow

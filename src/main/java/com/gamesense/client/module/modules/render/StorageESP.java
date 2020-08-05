@@ -18,7 +18,7 @@ public class StorageESP extends Module {
     ConcurrentHashMap<TileEntity, String> chests = new ConcurrentHashMap<>();
 
     public void setup(){
-        w = registerI("Width", "SESPWidth", 2 , 1 ,10);
+        w = registerI("Width", "Width", 2 , 1 ,10);
     }
 
     public void onUpdate(){

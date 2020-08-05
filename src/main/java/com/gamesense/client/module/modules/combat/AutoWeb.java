@@ -39,11 +39,11 @@ public class AutoWeb extends Module
 
     @Override
     public void setup() {
-        this.rotate = this.registerB("Rotate", "AWRotate", false);
-        this.range = this.registerD("Range", "AWRotate", 4.0, 0.0, 6.0);
-        this.bpt = this.registerI("Blocks Per Tick", "AWBlocksPerTick", 8, 1, 15);
-        this.spoofRotations = this.registerB("Spoof Rotations", "AWSpoofRotations", false);
-        this.spoofHotbar = this.registerB("Silent Switch", "AWSilentSwitch", false);
+        this.rotate = this.registerB("Rotate", "Rotate", false);
+        this.range = this.registerD("Range", "Range", 4.0, 0.0, 6.0);
+        this.bpt = this.registerI("Blocks Per Tick", "BlocksPerTick", 8, 1, 15);
+        this.spoofRotations = this.registerB("Spoof Rotations", "SpoofRotations", false);
+        this.spoofHotbar = this.registerB("Silent Switch", "SilentSwitch", false);
     }
 
     @Override

@@ -20,10 +20,10 @@ public class ColorMain extends Module {
     public static Setting.mode enemycolor;
 
     public void setup() {
-        Rainbow = this.registerB("Rainbow", "CMRainbow", false);
-        Red = this.registerI("Red", "CMRed", 255, 0, 255);
-        Green = this.registerI("Green", "CMGreen", 26, 0, 255);
-        Blue = this.registerI("Blue", "CMBlue", 42, 0, 255);
+        Rainbow = this.registerB("Rainbow", "Rainbow", false);
+        Red = this.registerI("Red", "Red", 255, 0, 255);
+        Green = this.registerI("Green", "Green", 26, 0, 255);
+        Blue = this.registerI("Blue", "Blue", 42, 0, 255);
 
         ArrayList<String> tab = new ArrayList<>();
         tab.add("Black");
@@ -42,8 +42,8 @@ public class ColorMain extends Module {
         tab.add("Aqua");
         tab.add("Light Purple");
         tab.add("White");
-        friendcolor = this.registerMode("Friend", "CMFriendColor", tab, "Blue");
-        enemycolor = this.registerMode("Enemy", "CMEnemyColor", tab, "Red");
+        friendcolor = this.registerMode("Friend", "FriendColor", tab, "Blue");
+        enemycolor = this.registerMode("Enemy", "EnemyColor", tab, "Red");
     }
 
     public void onEnable(){

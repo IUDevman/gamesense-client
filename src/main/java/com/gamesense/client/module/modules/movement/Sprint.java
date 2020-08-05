@@ -19,7 +19,7 @@ public class Sprint extends Module {
         ArrayList<String> sprintModes = new ArrayList<>();
         sprintModes.add("Legit");
         sprintModes.add("Rage");
-        Mode = registerMode("Mode", "SPMode", sprintModes, "Legit");
+        Mode = registerMode("Mode", "Mode", sprintModes, "Legit");
     }
 
     public void onUpdate() {

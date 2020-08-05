@@ -68,12 +68,12 @@ public class HoleFill extends Module {
         blockmode.add("EChest");
         blockmode.add("Both");
         blockmode.add("Web");
-        type = registerMode("Block", "HFBlockMode", blockmode, "Obby");
-        range = registerD("Place Range", "HFPlaceRange", 5, 0, 10);
-        yRange = registerI("Y Range", "HFYRange", 2 , 0 ,10);
-        waitTick = registerI("Tick Delay", "HFTickDelay", 1 , 0, 20);
-        rotate = registerB("Rotate", "HFRotate", false);
-        chat = registerB("Toggle Msg", "HFToggleMsg", false);
+        type = registerMode("Block", "BlockMode", blockmode, "Obby");
+        range = registerD("Place Range", "PlaceRange", 5, 0, 10);
+        yRange = registerI("Y Range", "YRange", 2 , 0 ,10);
+        waitTick = registerI("Tick Delay", "TickDelay", 1 , 0, 20);
+        rotate = registerB("Rotate", "Rotate", false);
+        chat = registerB("Toggle Msg", "ToggleMsg", false);
     }
 
     public void onUpdate() {

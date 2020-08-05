@@ -12,7 +12,7 @@ public class LowOffhand extends Module {
     ItemRenderer itemRenderer = mc.entityRenderer.itemRenderer;
 
     public void setup(){
-        off = registerD("Height", "LOHeight", 1.0, 0.1 ,1.0);
+        off = registerD("Height", "Height", 1.0, 0.1 ,1.0);
     }
 
     public void onUpdate(){

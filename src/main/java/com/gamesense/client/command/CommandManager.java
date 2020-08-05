@@ -24,7 +24,8 @@ public class CommandManager {
         addCommand(new ModsCommand());
         addCommand(new OpenFolderCommand());
         addCommand(new PrefixCommand());
-        addCommand(new ConfigCommand());
+        addCommand(new SaveConfigCommand());
+        addCommand(new SetSetting());
         addCommand(new ToggleCommand());
         addCommand(new VanishCommand());
     }

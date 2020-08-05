@@ -24,10 +24,10 @@ public class DesyncAura extends Module {
 
     public void setup() {
 
-        hitRange = registerD("Hit Range", "DAHitRange", 4, 1, 6);
-        delay = registerI("Delay", "DADelay", 6, 0 , 10);
-        switchTo32k = registerB("Switch To 32k", "DaSwitchTo32k", true);
-        onlyUse32k = registerB("Only 32k", "DAOnly32k", true);
+        hitRange = registerD("Hit Range", "HitRange", 4, 1, 6);
+        delay = registerI("Delay", "Delay", 6, 0 , 10);
+        switchTo32k = registerB("Switch To 32k", "SwitchTo32k", true);
+        onlyUse32k = registerB("Only 32k", "Only32k", true);
     }
     private int hasWaited = 0;
 

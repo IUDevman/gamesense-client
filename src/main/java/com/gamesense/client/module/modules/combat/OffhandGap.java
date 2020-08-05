@@ -32,7 +32,7 @@ public class OffhandGap extends Module {
 
     @Override
     public void setup() {
-        health = this.registerI("Health", "OGHealth", 15, 0, 36);
+        health = this.registerI("Health", "Health", 15, 0, 36);
     }
 
     public void onDisable() {

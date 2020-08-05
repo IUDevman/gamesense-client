@@ -25,8 +25,8 @@ public class MobOwner extends Module {
     private String invalidText = "Servers offline!";
 
     public void setup(){
-        requestTime = this.registerI("Reset Ticks", "MOResetTicks", 10, 0, 20);
-        debug = this.registerB("Debug", "MODebug", false);
+        requestTime = this.registerI("Reset Ticks", "ResetTicks", 10, 0, 20);
+        debug = this.registerB("Debug", "Debug", false);
     }
 
     public void onUpdate(){

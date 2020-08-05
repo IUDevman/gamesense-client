@@ -1,6 +1,5 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.event.GameSenseEvent;
 import com.gamesense.api.event.events.GuiScreenDisplayedEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
@@ -18,13 +17,13 @@ public class AutoRespawn extends Module {
     Setting.b coords;
 
     public void setup(){
-        coords = registerB("Coords", "ARCoords", false);
+        coords = registerB("Coords", "Coords", false);
     }
 
     @EventHandler
     private Listener<GuiScreenDisplayedEvent> listener = new Listener<>(event -> {
         if(event.getScreen() instanceof GuiGameOver) {
-            if(coords.getValBoolean())
+            if(coords.getValue())
                 Command.sendClientMessage(String.format("You died at x%d y%d z%d", (int)mc.player.posX, (int)mc.player.posY, (int)mc.player.posZ));
             if(mc.player != null)
                 mc.player.respawnPlayer();

@@ -45,13 +45,13 @@ public class ChatModifier extends Module {
             colors.add(cf.getName());
         }
 
-        clearBkg = registerB("Clear Chat", "CMClearChat", false);
-        greentext = registerB("Green Text", "CMGreenText", false);
-        chattimestamps = registerB("Chat Time Stamps", "CMChatTimeStamps", false);
-        format = registerMode("Format", "CMFormat", formats, "H24:mm");
-        decoration = registerMode("Deco", "CMDeco", deco, "[ ]");
-        color = registerMode("Color", "CMColors", colors, ChatFormatting.GRAY.getName());
-        space = registerB("Space", "CMSpace", false);
+        clearBkg = registerB("Clear Chat", "ClearChat", false);
+        greentext = registerB("Green Text", "GreenText", false);
+        chattimestamps = registerB("Chat Time Stamps", "ChatTimeStamps", false);
+        format = registerMode("Format", "Format", formats, "H24:mm");
+        decoration = registerMode("Deco", "Deco", deco, "[ ]");
+        color = registerMode("Color", "Colors", colors, ChatFormatting.GRAY.getName());
+        space = registerB("Space", "Space", false);
 
     }
 

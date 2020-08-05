@@ -72,15 +72,15 @@ public class Announcer extends Module {
 
     public void setup(){
 
-        clientSide = this.registerB("Client Side", "AClientSide", false);
-        walk = this.registerB("Walk", "AWalk",  true);
-        place = this.registerB("Place", "APlace", true);
-        jump = this.registerB("Jump", "AJump", true);
-        breaking = this.registerB("Breaking", "ABreaking", true);
-        attack = this.registerB("Attack", "AAttack",true);
-        eat = this.registerB("Eat", "AEat",true);
-        clickGui = this.registerB("DevGUI", "ADEVGUI",true);
-        delay = this.registerI("Delay", "ADelay",1,1,20);
+        clientSide = this.registerB("Client Side", "ClientSide", false);
+        walk = this.registerB("Walk", "Walk",  true);
+        place = this.registerB("Place", "Place", true);
+        jump = this.registerB("Jump", "Jump", true);
+        breaking = this.registerB("Breaking", "Breaking", true);
+        attack = this.registerB("Attack", "Attack",true);
+        eat = this.registerB("Eat", "Eat",true);
+        clickGui = this.registerB("DevGUI", "DevGUI",true);
+        delay = this.registerI("Delay", "Delay",1,1,20);
     }
 
 

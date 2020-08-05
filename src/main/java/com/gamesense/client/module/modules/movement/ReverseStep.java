@@ -10,7 +10,7 @@ public class ReverseStep extends Module {
     Setting.d height;
 
     public void setup() {
-        height = registerD("Height", "RSHeight", 2.5, 0.5, 2.5);
+        height = registerD("Height", "Height", 2.5, 0.5, 2.5);
     }
 
     public void onUpdate() {

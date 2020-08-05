@@ -22,9 +22,9 @@ public class NoKick extends Module {
     Setting.b noOffhandCrash;
 
     public void setup(){
-        noPacketKick = this.registerB("Packet", "NKPacket", true);
-        noSlimeCrash = this.registerB("Slime", "NKSlime", false);
-        noOffhandCrash = this.registerB("Offhand", "NKOffhand", false);
+        noPacketKick = this.registerB("Packet", "Packet", true);
+        noSlimeCrash = this.registerB("Slime", "Slime", false);
+        noOffhandCrash = this.registerB("Offhand", "Offhand", false);
     }
 
     //slime

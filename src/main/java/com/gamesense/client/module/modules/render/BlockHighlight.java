@@ -27,8 +27,8 @@ public class BlockHighlight extends Module {
     int c2; //fill
 
     public void setup() {
-        shade = registerB("Fill", "BHFill", false);
-        w = registerI("Width", "BHWidth", 2, 1, 10);
+        shade = registerB("Fill", "Fill", false);
+        w = registerI("Width", "Width", 2, 1, 10);
     }
 
     public void onWorldRender(RenderEvent event) {

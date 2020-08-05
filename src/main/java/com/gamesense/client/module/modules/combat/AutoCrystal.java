@@ -93,27 +93,27 @@ public class AutoCrystal extends Module {
     private long breakSystemTime;
 
     public void setup() {
-        explode = this.registerB("Break", "ACBreak", true);
+        explode = this.registerB("Break", "Break", true);
         ArrayList<String> bmodes = new ArrayList<>();
         bmodes.add("Main");
         bmodes.add("Offhand");
-        handbreak = this.registerMode("Hand Break", "ACHandBreak", bmodes, "Main");
-        attackSpeed = this.registerI("Attack Speed", "ACAttackSpeed", 12, 1, 20);
-        waitTick = this.registerI("Hit Delay", "ACHitDelay", 1, 0, 20);
-        range = this.registerD("Hit Range", "ACHitRange",5.0, 0.0, 10.0);
-        walls = this.registerD("Walls Range", "ACWallsRange", 3.5, 0.0, 10.0);
-        antiWeakness = this.registerB("Anti Weakness", "ACAntiWeakness", true);
-        showDamage = this.registerB("Show Damage", "ACShowDamage",false);
-        place = this.registerB("Place", "ACPlace", true);
-        autoSwitch = this.registerB("Auto Switch", "ACAutoSwitch", true);
-        placeRange = this.registerD("Place Range", "ACPlaceRange", 5.0, 0.0, 10.0);
-        minDmg = this.registerD("Min Damage", "ACMinDamage", 5, 0, 36);
-        maxSelfDmg = this.registerD("Max Self Dmg", "ACMaxSelfDmg", 10, 1, 36);
-        facePlace = this.registerI("FacePlace HP", "ACFacePlaceHP", 8, 0, 36);
-        raytrace = this.registerB("Raytrace", "ACRaytrace", false);
-        rotate = this.registerB("Rotate", "ACRotate", true);
-        spoofRotations = this.registerB("Spoof Angles", "ACSpoofAngles", true);
-        chat = this.registerB("Toggle Msg", "ACToggleMsg", true);
+        handbreak = this.registerMode("Hand Break", "HandBreak", bmodes, "Main");
+        attackSpeed = this.registerI("Attack Speed", "AttackSpeed", 12, 1, 20);
+        waitTick = this.registerI("Hit Delay", "HitDelay", 1, 0, 20);
+        range = this.registerD("Hit Range", "HitRange",5.0, 0.0, 10.0);
+        walls = this.registerD("Walls Range", "WallsRange", 3.5, 0.0, 10.0);
+        antiWeakness = this.registerB("Anti Weakness", "AntiWeakness", true);
+        showDamage = this.registerB("Show Damage", "ShowDamage",false);
+        place = this.registerB("Place", "Place", true);
+        autoSwitch = this.registerB("Auto Switch", "AutoSwitch", true);
+        placeRange = this.registerD("Place Range", "PlaceRange", 5.0, 0.0, 10.0);
+        minDmg = this.registerD("Min Damage", "MinDamage", 5, 0, 36);
+        maxSelfDmg = this.registerD("Max Self Dmg", "MaxSelfDmg", 10, 1, 36);
+        facePlace = this.registerI("FacePlace HP", "FacePlaceHP", 8, 0, 36);
+        raytrace = this.registerB("Raytrace", "Raytrace", false);
+        rotate = this.registerB("Rotate", "Rotate", true);
+        spoofRotations = this.registerB("Spoof Angles", "SpoofAngles", true);
+        chat = this.registerB("Toggle Msg", "ToggleMsg", true);
     }
 
     public void onUpdate() {

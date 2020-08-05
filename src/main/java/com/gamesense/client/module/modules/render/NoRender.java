@@ -26,13 +26,13 @@ public class NoRender extends Module {
     Setting.b noBossBar;
 
     public void setup() {
-        armor = registerB("Armor", "NRArmor", false);
-        fire = registerB("Fire", "NRFire", false);
-        blind = registerB("Blind", "NRBlind", false);
-        nausea = registerB("Nausea", "NRNausea", false);
-        hurtCam = registerB("HurtCam", "NRHurtCam", false);
-        noOverlay = registerB("No Overlay", "NRNoOverlay", false); //need to make sure this works better
-        noBossBar = registerB("No Boss Bar", "NRNoBossBar", false);
+        armor = registerB("Armor", "Armor", false);
+        fire = registerB("Fire", "Fire", false);
+        blind = registerB("Blind", "Blind", false);
+        nausea = registerB("Nausea", "Nausea", false);
+        hurtCam = registerB("HurtCam", "HurtCam", false);
+        noOverlay = registerB("No Overlay", "NoOverlay", false); //need to make sure this works better
+        noBossBar = registerB("No Boss Bar", "NoBossBar", false);
     }
 
     public void onUpdate(){

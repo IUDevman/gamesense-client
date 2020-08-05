@@ -20,7 +20,7 @@ public class Freecam extends Module {
     Setting.d speed;
 
     public void setup() {
-        speed = registerD("Speed", "FCSpeed", 5, 0, 10);
+        speed = registerD("Speed", "Speed", 5, 0, 10);
     }
 
     private double posX, posY, posZ;
