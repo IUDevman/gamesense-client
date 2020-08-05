@@ -77,13 +77,11 @@ public class ModuleManager {
         addMod(new HitSpheres());
         addMod(new HoleESP());
         addMod(new LogoutSpots());
-        addMod(new LowOffhand());
         addMod(new MobOwner());
-        addMod(new NekoAnimation());
         addMod(new NoRender());
+        addMod(new RenderTweaks());
         addMod(new ShulkerViewer());
         addMod(new StorageESP());
-        addMod(new ViewClip());
         //HUD
         addMod(new DevGuiModule());
         addMod(new ColorMain());
