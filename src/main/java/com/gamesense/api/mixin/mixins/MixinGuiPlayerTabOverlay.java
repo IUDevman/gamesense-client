@@ -27,5 +27,4 @@ public class MixinGuiPlayerTabOverlay {
         else if (Enemies.isEnemy(dname)) return ColorMain.getEnemyColor() + dname;
         else return dname;
     }
-
 }

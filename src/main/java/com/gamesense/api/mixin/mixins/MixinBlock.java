@@ -17,5 +17,4 @@ public abstract class MixinBlock {
     public void preGetRenderLayer(CallbackInfoReturnable<BlockRenderLayer> cir){
         if(this.getLocalizedName().equalsIgnoreCase("hmmm")){}
     }
-
 }

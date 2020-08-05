@@ -11,9 +11,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 
 /**
- *   @see //com.gamesense.api.mixin.mixins.MixinNetworkManager :^)
- * PacketKick
- *
+ *   @see //com.gamesense.api.mixin.mixins.MixinNetworkManager for PacketKick
  */
 
 public class NoKick extends Module {

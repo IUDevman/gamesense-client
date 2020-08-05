@@ -19,3 +19,4 @@ Changelog (for next version):
 3) Tweaked a few misc modules
 4) Bug Fixes
 5) Made NoPush prevent water from pushing the player.
+6) Made AutoReply cancel sending a message back to its default.

@@ -25,6 +25,4 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
         }
         super.move(type, moveEvent.x, moveEvent.y, moveEvent.z);
     }
-
-
 }
