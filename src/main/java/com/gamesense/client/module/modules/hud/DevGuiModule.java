@@ -42,7 +42,6 @@ public class DevGuiModule extends Module {
         this.disable();
     }
 
-
     private void drawStringWithShadow(String text, int x, int y, int color){
         if(customFont.getValue())
             GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);

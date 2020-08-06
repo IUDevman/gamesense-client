@@ -43,6 +43,7 @@ public class ModuleManager {
         //Exploits
         addMod(new CoordExploit());
         addMod(new FastBreak());
+        addMod(new LiquidInteract());
         addMod(new NoInteract());
         addMod(new NoSwing());
         addMod(new PortalGodMode());
@@ -62,7 +63,6 @@ public class ModuleManager {
         addMod(new ChatSuffix());
         addMod(new FastPlace());
         addMod(new HoosiersDupe());
-        addMod(new LiquidInteract());
         addMod(new MCF());
         addMod(new MultiTask());
         addMod(new NoEntityTrace());

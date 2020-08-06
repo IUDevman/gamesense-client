@@ -22,6 +22,7 @@ X/Y slider for "Inventory" in HUD
 2) Made AutoReply cancel sending a message back to its default.
 3) Modified command format, removed unused commands
 4) Removed waypoints (unused)
+5) Moved LiquidInteract to Exploits
 
 ##Bug Fixes
 1) Fixed NoEntityTrace, NoInteract, and NoSwing
