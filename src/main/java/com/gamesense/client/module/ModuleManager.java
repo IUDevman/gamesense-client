@@ -5,7 +5,6 @@ import com.gamesense.api.util.GameSenseTessellator;
 import com.gamesense.client.module.modules.combat.*;
 import com.gamesense.client.module.modules.exploits.*;
 import com.gamesense.client.module.modules.hud.*;
-import com.gamesense.client.module.modules.hud.NotificationsHud;
 import com.gamesense.client.module.modules.misc.*;
 import com.gamesense.client.module.modules.movement.*;
 import com.gamesense.client.module.modules.render.*;
@@ -86,7 +85,8 @@ public class ModuleManager {
         addMod(new DevGuiModule());
         addMod(new ColorMain());
         addMod(new HUD());
-        addMod(new NotificationsHud());
+        addMod(new Notifications());
+        addMod(new TextRadar());
     }
 
     public static void addMod(Module m){

@@ -10,7 +10,7 @@ import com.gamesense.client.module.ModuleManager;
  * Made by Hoosiers on 8/4/20 for GameSense
  */
 
-public class SetSetting extends Command {
+public class SetSettingCommand extends Command {
 
     @Override
     public String[] getAlias() {

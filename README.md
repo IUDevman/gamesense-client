@@ -10,6 +10,8 @@ Changelog (for next version):
 3) Settings and Config were revamped/rewritten
 4) Added RenderTweaks module, combined LowOffhand, ViewClip, FOV, and NekoAnimation
 5) Added set command
+6) Added TextRadar
+7) Rewrote NotificationsHud
 
 ##Minor Additions
 1) Holefill modes: Obby, Echest, both, and web
@@ -28,3 +30,4 @@ X/Y slider for "Inventory" in HUD
 1) Fixed NoEntityTrace, NoInteract, and NoSwing
 2) Reduced chances of an entire config being corrupted
 3) Cleaned up code on some modules and files
+4) Fixed pressing the "DEL" not clearing a bind in the GUI

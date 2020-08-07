@@ -1,7 +1,7 @@
 package com.gamesense.client.command;
 
+import com.gamesense.client.module.modules.hud.Notifications;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import com.gamesense.client.module.modules.hud.NotificationsHud;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 
@@ -18,11 +18,16 @@ public abstract class Command {
     public static ChatFormatting cf = ChatFormatting.GRAY;
 
     public static void sendClientMessage(String message){
-            NotificationsHud.addMessage(new TextComponentString(cf + message));
-        if(MsgWaterMark)
-            mc.player.sendMessage(new TextComponentString(ChatFormatting.GRAY + "[" + ChatFormatting.WHITE + "Game" + ChatFormatting.DARK_GREEN + "Sense" + ChatFormatting.GRAY + "] " + ChatFormatting.RESET + cf + message));
-        else
-            mc.player.sendMessage(new TextComponentString(cf + message));
+            Notifications.addMessage(new TextComponentString(cf + message));
+        if (Notifications.disableChat.getValue()){
+            return;
+        }
+        else {
+            if (MsgWaterMark)
+                mc.player.sendMessage(new TextComponentString(ChatFormatting.GRAY + "[" + ChatFormatting.WHITE + "Game" + ChatFormatting.DARK_GREEN + "Sense" + ChatFormatting.GRAY + "] " + ChatFormatting.RESET + cf + message));
+            else
+                mc.player.sendMessage(new TextComponentString(cf + message));
+        }
     }
 
     public static Color getColorFromChatFormatting(ChatFormatting cf){
