@@ -1,5 +1,6 @@
 package com.gamesense.client.command;
 
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.Notifications;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,7 @@ public abstract class Command {
 
     public static void sendClientMessage(String message){
             Notifications.addMessage(new TextComponentString(cf + message));
-        if (Notifications.disableChat.getValue()){
+        if (Notifications.disableChat.getValue() && ModuleManager.isModuleEnabled("Notifications")){
             return;
         }
         else {
