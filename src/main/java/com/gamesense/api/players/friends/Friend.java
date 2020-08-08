@@ -1,4 +1,4 @@
-package com.gamesense.api.friends;
+package com.gamesense.api.players.friends;
 
 public class Friend {
     String name;

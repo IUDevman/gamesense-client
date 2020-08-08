@@ -1,8 +1,7 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.enemy.Enemies;
-import com.gamesense.api.friends.Friend;
-import com.gamesense.api.friends.Friends;
+import com.gamesense.api.players.enemy.Enemies;
+import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;

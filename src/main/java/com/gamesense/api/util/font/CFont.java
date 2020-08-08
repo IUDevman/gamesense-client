@@ -1,4 +1,5 @@
 package com.gamesense.api.util.font;
+
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import org.lwjgl.opengl.GL11;
 

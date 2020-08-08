@@ -1,7 +1,6 @@
 package com.gamesense.api.mixin.mixins;
 
 import com.gamesense.client.module.ModuleManager;
-//import com.gamesense.client.module.modules.render.NoRender;
 import com.gamesense.client.module.modules.render.NoRender;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;

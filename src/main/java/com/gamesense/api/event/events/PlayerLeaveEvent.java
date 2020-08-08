@@ -14,6 +14,4 @@ public class PlayerLeaveEvent extends GameSenseEvent {
     public String getName(){
         return name;
     }
-
-
 }

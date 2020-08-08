@@ -10,7 +10,7 @@ import net.minecraft.util.*;
 import net.minecraft.network.play.client.*;
 import net.minecraft.item.*;
 import net.minecraft.block.*;
-import com.gamesense.api.friends.*;
+import com.gamesense.api.players.friends.*;
 import com.gamesense.api.util.*;
 import java.util.*;
 

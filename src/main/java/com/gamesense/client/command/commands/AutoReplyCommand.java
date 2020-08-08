@@ -2,7 +2,6 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.modules.misc.AutoReply;
-//import com.gamesense.client.module.modules.chat.AutoReply;
 
 public class AutoReplyCommand extends Command {
     @Override

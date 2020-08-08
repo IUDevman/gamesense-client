@@ -15,5 +15,4 @@ public class TotemPopEvent extends GameSenseEvent {
     public Entity getEntity() {
         return entity;
     }
-
 }

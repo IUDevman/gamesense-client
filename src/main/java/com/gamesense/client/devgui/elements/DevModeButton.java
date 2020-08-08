@@ -2,7 +2,6 @@ package com.gamesense.client.devgui.elements;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.FontUtils;
-import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.devgui.DevComponent;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -10,7 +9,6 @@ import com.gamesense.client.module.modules.hud.DevGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.Gui;
-import net.minecraftforge.common.ForgeHooks;
 
 import java.awt.Color;
 

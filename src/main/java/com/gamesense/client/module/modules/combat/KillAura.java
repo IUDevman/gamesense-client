@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.friends.Friends;
+import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;

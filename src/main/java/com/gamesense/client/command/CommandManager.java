@@ -19,7 +19,6 @@ public class CommandManager {
         addCommand(new EnemyCommand());
         addCommand(new FontCommand());
         addCommand(new FriendCommand());
-        addCommand(new LoadSpammerCommand());
         addCommand(new MacroCommand());
         addCommand(new ModsCommand());
         addCommand(new OpenFolderCommand());

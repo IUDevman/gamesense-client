@@ -36,7 +36,6 @@ public class ModsCommand extends Command {
                                 .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Command.getPrefix() + "toggle" + " " + mod.getName()))));
             }
         }
-
         Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(msg);
     }
 }

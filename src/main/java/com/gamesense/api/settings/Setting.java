@@ -11,9 +11,6 @@ public class Setting {
 	private final Module parent;
 	private final Module.Category category;
 	private final Type type;
-	private boolean bval;
-	private double dval;
-	private boolean onlyint = false;
 
 	public Setting(final String name, final String configname, final Module parent, final Module.Category category, final Type type) {
 		this.name = name;
@@ -43,24 +40,12 @@ public class Setting {
 		return this.category;
     }
 
-    public enum Type
-	{
+    public enum Type {
 		INT,
 		DOUBLE,
 		BOOLEAN,
 		STRING,
 		MODE;
-	}
-
-	public double getValDouble(){
-		if(this.onlyint){
-			this.dval = (int)dval;
-		}
-		return this.dval;
-	}
-
-	public boolean getValBoolean(){
-		return this.bval;
 	}
 
 	public static class i extends Setting
@@ -93,8 +78,7 @@ public class Setting {
 		}
 	}
 
-	public static class d extends Setting
-	{
+	public static class d extends Setting {
 		private double value;
 		private final double min;
 		private final double max;
@@ -123,8 +107,7 @@ public class Setting {
 		}
 	}
 
-	public static class b extends Setting
-	{
+	public static class b extends Setting {
 		private boolean value;
 
 		public b(final String name, final String configname, final Module parent, final Module.Category category, final boolean value) {
@@ -141,8 +124,7 @@ public class Setting {
 		}
 	}
 
-	public static class s extends Setting
-	{
+	public static class s extends Setting {
 		private String value;
 
 		public s(final String name, final String configname, final Module parent, final Module.Category category, final String value) {
@@ -159,8 +141,7 @@ public class Setting {
 		}
 	}
 
-	public static class mode extends Setting
-	{
+	public static class mode extends Setting {
 		private String value;
 		private final java.util.List<String> modes;
 

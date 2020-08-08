@@ -30,5 +30,4 @@ public class MacroManager {
     public void delMacro(Macro m){
         macros.remove(m);
     }
-
 }

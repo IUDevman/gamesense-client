@@ -54,10 +54,8 @@ public class MixinShulkerViewer {
                     Minecraft.getMinecraft().renderEngine.bindTexture(resource);
                     GlStateManager.color(1, 1, 1, 1);
                     Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(x1, y1, 7, 5, 162, 66);
-
                     //renders name
                     fontRenderer.drawString(stack.getDisplayName(), x +6 , y - 28, Color.DARK_GRAY.getRGB());
-
                     GlStateManager.enableBlend();
                     GlStateManager.enableAlpha();
                     GlStateManager.enableTexture2D();

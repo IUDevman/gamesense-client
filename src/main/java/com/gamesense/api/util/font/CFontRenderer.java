@@ -320,13 +320,11 @@ public class CFontRenderer extends CFont {
             if (index == 6) {
                 red += 85;
             }
-
             if (index >= 16) {
                 red /= 4;
                 green /= 4;
                 blue /= 4;
             }
-
             this.colorCode[index] = ((red & 0xFF) << 16 | (green & 0xFF) << 8 | blue & 0xFF);
         }
     }

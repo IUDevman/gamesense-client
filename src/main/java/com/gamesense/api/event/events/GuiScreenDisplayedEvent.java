@@ -13,5 +13,4 @@ public class GuiScreenDisplayedEvent extends GameSenseEvent {
     public GuiScreen getScreen(){
         return guiScreen;
     }
-
 }

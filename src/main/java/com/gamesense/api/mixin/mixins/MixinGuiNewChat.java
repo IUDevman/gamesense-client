@@ -1,7 +1,6 @@
 package com.gamesense.api.mixin.mixins;
 
 import com.gamesense.client.module.ModuleManager;
-//import com.gamesense.client.module.modules.chat.BetterChat;
 import com.gamesense.client.module.modules.misc.ChatModifier;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.Gui;

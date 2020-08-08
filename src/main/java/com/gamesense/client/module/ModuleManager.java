@@ -82,8 +82,8 @@ public class ModuleManager {
         addMod(new ShulkerViewer());
         addMod(new StorageESP());
         //HUD
-        addMod(new DevGuiModule());
         addMod(new ColorMain());
+        addMod(new DevGuiModule());
         addMod(new HUD());
         addMod(new Notifications());
         addMod(new TextRadar());

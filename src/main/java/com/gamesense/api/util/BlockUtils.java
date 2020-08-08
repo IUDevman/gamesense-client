@@ -87,9 +87,7 @@ public class BlockUtils {
         return mc.playerController;
     }
 
-    public static void processRightClickBlock(BlockPos pos, EnumFacing side,
-                                              Vec3d hitVec)
-    {
+    public static void processRightClickBlock(BlockPos pos, EnumFacing side, Vec3d hitVec) {
         getPlayerController().processRightClickBlock(mc.player,
                 mc.world, pos, side, hitVec, EnumHand.MAIN_HAND);
     }
@@ -135,8 +133,7 @@ public class BlockUtils {
         return getBlock(pos).canCollideCheck(getState(pos), false);
     }
 
-    public static void faceVectorPacketInstant(Vec3d vec)
-    {
+    public static void faceVectorPacketInstant(Vec3d vec) {
         float[] rotations = getNeededRotations2(vec);
 
         mc.player.connection.sendPacket(new CPacketPlayer.Rotation(rotations[0],
@@ -162,8 +159,7 @@ public class BlockUtils {
                         .wrapDegrees(pitch - mc.player.rotationPitch)};
     }
 
-    public static Vec3d getEyesPos()
-    {
+    public static Vec3d getEyesPos() {
         return new Vec3d(mc.player.posX,
                 mc.player.posY + mc.player.getEyeHeight(),
                 mc.player.posZ);

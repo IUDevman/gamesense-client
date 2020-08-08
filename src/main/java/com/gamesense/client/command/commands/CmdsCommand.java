@@ -32,7 +32,6 @@ public class CmdsCommand extends Command {
                                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(c.getSyntax())))));
             }
         }
-
         Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(msg);
     }
 }

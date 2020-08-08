@@ -112,5 +112,4 @@ public class DevGUI extends GuiScreen {
     static{
         DevGUI.color = -1;
     }
-
 }

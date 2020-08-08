@@ -4,10 +4,10 @@ import com.gamesense.api.event.GameSenseEvent;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.ResourceLocation;
 
-public class PlayerSkin extends GameSenseEvent {
+public class PlayerSkinEvent extends GameSenseEvent {
     private final NetworkPlayerInfo networkPlayerInfo;
 
-    public PlayerSkin(NetworkPlayerInfo networkPlayerInfo) {
+    public PlayerSkinEvent(NetworkPlayerInfo networkPlayerInfo) {
         this.networkPlayerInfo = networkPlayerInfo;
     }
 
@@ -15,7 +15,7 @@ public class PlayerSkin extends GameSenseEvent {
         return this.networkPlayerInfo;
     }
 
-    public static class GetSkin extends PlayerSkin {
+    public static class GetSkin extends PlayerSkinEvent {
         public ResourceLocation skinLocation;
 
         public GetSkin(NetworkPlayerInfo networkPlayerInfo, ResourceLocation skinLocation) {
@@ -24,7 +24,7 @@ public class PlayerSkin extends GameSenseEvent {
         }
     }
 
-    public static class HasSkin extends PlayerSkin {
+    public static class HasSkin extends PlayerSkinEvent {
         public boolean result;
 
         public HasSkin(NetworkPlayerInfo networkPlayerInfo, boolean result) {

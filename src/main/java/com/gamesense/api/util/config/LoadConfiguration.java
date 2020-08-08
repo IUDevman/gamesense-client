@@ -1,7 +1,7 @@
 package com.gamesense.api.util.config;
 
-import com.gamesense.api.enemy.Enemies;
-import com.gamesense.api.friends.Friends;
+import com.gamesense.api.players.enemy.Enemies;
+import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
