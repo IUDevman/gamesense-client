@@ -115,32 +115,32 @@ public class AutoCrystalDev extends Module {
         breakModes.add("Smart");
         breakModes.add("Only Own");
 
-        explode = this.registerB("Break", "Break", true);
-        place = registerB("Place", "Place",true);
-        breakMode = registerMode("Break Modes","BreakModes", breakModes, "All");
-        handBreak = registerMode("Hand", "Hand", hands, "Main");
+        explode = this.registerB("Break", "DevBreak", true);
+        place = registerB("Place", "DevPlace",true);
+        breakMode = registerMode("Break Modes","DevBreakModes", breakModes, "All");
+        handBreak = registerMode("Hand", "DevHand", hands, "Main");
         //antiSuicide = registerB("Anti Suicide", false);
-        attackSpeed = registerI("Attack Speed", "Attack Speed",12, 1, 20);
-        waitTick = this.registerI("Place Delay", "PlaceDelay", 1, 0, 20);
-        placeRange = this.registerD("Place Range", "PlaceRange", 6.0, 0.0, 6.0);
-        placeWallsRange = this.registerD("Place Walls Range", "PlaceWallsRange", 6.0, 0.0, 6.0);
-        range = this.registerD("Hit Range", "HitRange", 5.0, 0.0, 10.0);
-        walls = this.registerD("Break Walls Range", "BreakWallsRange", 3.5, 0.0, 10.0);
-        enemyRange = this.registerD("Enemy Range", "EnemyRange", 6.0, 0.5, 6.0);
-        antiWeakness = this.registerB("Anti Weakness", "AntiWeakness", true);
-        showDamage = this.registerB("Show Damage", "ShowDamage", false);
-        endCrystalMode = registerB("1.13 Mode", "1.13Mode", false);
-        singlePlace = registerB("MultiPlace", "MultiPlace", false);
-        autoSwitch = this.registerB("Auto Switch", "AutoSwitch",true);
-        minDmg = this.registerD("Min Damage", "MinDamage", 5, 0, 36);
-        minBreakDmg = this.registerD("Min Break Dmg", "MinBreakDmg", 10, 1.0, 36.0);
-        maxSelfDmg = this.registerD("Max Self Dmg", "MaxSelfDmg",10, 1.0, 36.0);
-        facePlace = this.registerI("FacePlace HP", "FacePlaceHP",8, 0, 36);
+        attackSpeed = registerI("Attack Speed", "DevAttackSpeed",12, 1, 20);
+        waitTick = this.registerI("Place Delay", "DevPlaceDelay", 1, 0, 20);
+        placeRange = this.registerD("Place Range", "DevPlaceRange", 6.0, 0.0, 6.0);
+        placeWallsRange = this.registerD("Place Walls Range", "DevPlaceWallsRange", 6.0, 0.0, 6.0);
+        range = this.registerD("Hit Range", "DevHitRange", 5.0, 0.0, 10.0);
+        walls = this.registerD("Break Walls Range", "DevBreakWallsRange", 3.5, 0.0, 10.0);
+        enemyRange = this.registerD("Enemy Range", "DevEnemyRange", 6.0, 0.5, 6.0);
+        antiWeakness = this.registerB("Anti Weakness", "DevAntiWeakness", true);
+        showDamage = this.registerB("Show Damage", "DevShowDamage", false);
+        endCrystalMode = registerB("1.13 Mode", "Dev1.13Mode", false);
+        singlePlace = registerB("MultiPlace", "DevMultiPlace", false);
+        autoSwitch = this.registerB("Auto Switch", "DevAutoSwitch",true);
+        minDmg = this.registerD("Min Damage", "DevMinDamage", 5, 0, 36);
+        minBreakDmg = this.registerD("Min Break Dmg", "DevMinBreakDmg", 10, 1.0, 36.0);
+        maxSelfDmg = this.registerD("Max Self Dmg", "DevMaxSelfDmg",10, 1.0, 36.0);
+        facePlace = this.registerI("FacePlace HP", "DevFacePlaceHP",8, 0, 36);
         //armorDuraToFacePlace = registerI("ArmorDura", 10, 1, 100);
-        raytrace = this.registerB("Raytrace", "Raytrace", false);
-        rotate = this.registerB("Rotate", "Rotate", true);
-        spoofRotations = this.registerB("Spoof Angles", "SpoofAngles", true);
-        chat = this.registerB("Toggle Msg","ToggleMsg", true);
+        raytrace = this.registerB("Raytrace", "DevRaytrace", false);
+        rotate = this.registerB("Rotate", "DevRotate", true);
+        spoofRotations = this.registerB("Spoof Angles", "DevSpoofAngles", true);
+        chat = this.registerB("Toggle Msg","DevToggleMsg", true);
     }
 
     public void onUpdate() {
