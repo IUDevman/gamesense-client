@@ -9,7 +9,7 @@
   "updateUrl": "",
   "authorList": ["CyberTF2", "Go_Hoosiers", "A2H"],
   "credits": "A lot of great devs.",
-  "logoFile": "",
+  "logoFile": "assets/gamesense/textures/gamesense.png",
   "screenshots": [],
   "dependencies": []
 }

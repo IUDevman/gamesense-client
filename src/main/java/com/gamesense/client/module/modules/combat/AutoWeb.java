@@ -14,8 +14,8 @@ import com.gamesense.api.players.friends.*;
 import com.gamesense.api.util.*;
 import java.util.*;
 
-public class AutoWeb extends Module
-{
+public class AutoWeb extends Module {
+
     Setting.b rotate;
     Setting.d range;
     Setting.i bpt;
@@ -100,7 +100,7 @@ public class AutoWeb extends Module
         if (needSneak) {
             AutoWeb.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoWeb.mc.player, CPacketEntityAction.Action.START_SNEAKING));
         }
-        final int obiSlot = this.findObiInHotbar();
+        final int obiSlot = this.findWebInHotBar();
         if (obiSlot == -1) {
             this.disable();
             return;
@@ -121,7 +121,7 @@ public class AutoWeb extends Module
         }
     }
 
-    private int findObiInHotbar() {
+    private int findWebInHotBar() {
         int slot = -1;
         for (int i = 0; i < 9; ++i) {
             final ItemStack stack = Wrapper.getPlayer().inventory.getStackInSlot(i);

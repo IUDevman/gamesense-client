@@ -4,6 +4,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.client.module.Module;
 import net.minecraft.util.text.TextFormatting;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class ColorMain extends Module {
@@ -152,5 +153,109 @@ public class ColorMain extends Module {
             return TextFormatting.GREEN.AQUA;
         }
         return null;
+    }
+
+    public static int getFriendColorInt(){
+        if (friendcolor.getValue().equalsIgnoreCase("Black")){
+            return Color.BLACK.getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Dark Green")){
+            return Color.GREEN.darker().getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Dark Red")){
+            return Color.RED.darker().getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Gold")){
+            return Color.yellow.darker().getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Dark Gray")){
+            return Color.DARK_GRAY.getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Green")){
+            return Color.green.getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Red")){
+            return Color.red.getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Yellow")){
+            return Color.yellow.getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Dark Blue")){
+            return Color.blue.darker().getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Dark Aqua")){
+            return Color.CYAN.darker().getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Dark Purple")){
+            return Color.MAGENTA.darker().getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Gray")){
+            return Color.GRAY.getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Blue")){
+            return Color.blue.getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Light Purple")){
+            return Color.magenta.getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("White")){
+            return Color.WHITE.getRGB();
+        }
+        if (friendcolor.getValue().equalsIgnoreCase("Aqua")){
+            return Color.cyan.getRGB();
+        }
+        return Color.WHITE.getRGB();
+    }
+
+    public static int getEnemyColorInt(){
+        if (enemycolor.getValue().equalsIgnoreCase("Black")){
+            return Color.BLACK.getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Dark Green")){
+            return Color.GREEN.darker().getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Dark Red")){
+            return Color.RED.darker().getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Gold")){
+            return Color.yellow.darker().getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Dark Gray")){
+            return Color.DARK_GRAY.getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Green")){
+            return Color.green.getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Red")){
+            return Color.red.getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Yellow")){
+            return Color.yellow.getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Dark Blue")){
+            return Color.blue.darker().getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Dark Aqua")){
+            return Color.CYAN.darker().getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Dark Purple")){
+            return Color.MAGENTA.darker().getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Gray")){
+            return Color.GRAY.getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Blue")){
+            return Color.blue.getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Light Purple")){
+            return Color.magenta.getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("White")){
+            return Color.WHITE.getRGB();
+        }
+        if (enemycolor.getValue().equalsIgnoreCase("Aqua")){
+            return Color.cyan.getRGB();
+        }
+        return Color.WHITE.getRGB();
     }
 }
