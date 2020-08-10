@@ -28,6 +28,7 @@ public class ModuleManager {
         //Combat
         addMod(new AutoArmor());
         addMod(new AutoCrystal());
+        addMod(new AutoCrystalDev());
         addMod(new AutoFeetPlace());
         addMod(new AutoTotem());
         addMod(new AutoTrap());
