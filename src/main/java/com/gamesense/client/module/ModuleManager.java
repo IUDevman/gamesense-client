@@ -28,6 +28,7 @@ public class ModuleManager {
         //Combat
         addMod(new AutoArmor());
         addMod(new AutoCrystal());
+        addMod(new AutoCrystalDev());
         addMod(new AutoFeetPlace());
         addMod(new AutoTotem());
         addMod(new AutoTrap());
@@ -39,7 +40,6 @@ public class ModuleManager {
         addMod(new OffhandCrystal());
         addMod(new OffhandGap());
         addMod(new SelfTrap());
-        addMod(new AutoCrystalDev());
         //Exploits
         addMod(new CoordExploit());
         addMod(new FastBreak());
