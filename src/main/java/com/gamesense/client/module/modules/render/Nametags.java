@@ -452,21 +452,20 @@ public class Nametags extends Module {
             return s;
         }
         final double ceil;
-        String s2;
+        String s2 = TextFormatting.GREEN.toString();
         if ((ceil = Math.ceil(entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount())) > 0.0) {
-            s2 = TextFormatting.GREEN.toString();
-        }
-        else if (ceil > 0.0) {
-            s2 = TextFormatting.DARK_GREEN.toString();
-        }
-        else if (ceil > 0.0) {
-            s2 = TextFormatting.YELLOW.toString();
-        }
-        else if (ceil > 0.0) {
-            s2 = TextFormatting.GOLD.toString();
-        }
-        else if (ceil > 0.0) {
-            s2 = TextFormatting.RED.toString();
+
+            if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) <= 5) {
+                s2 = TextFormatting.RED.toString();
+            } else if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) > 5 && (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) <= 10) {
+                s2 = TextFormatting.GOLD.toString();
+            } else if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) > 10 && (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) <= 15) {
+                s2 = TextFormatting.YELLOW.toString();
+            } else if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) > 15 && (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) <= 20) {
+                s2 = TextFormatting.DARK_GREEN.toString();
+            } else if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) > 20) {
+                s2 = TextFormatting.GREEN.toString();
+            }
         }
         else {
             s2 = TextFormatting.DARK_RED.toString();
