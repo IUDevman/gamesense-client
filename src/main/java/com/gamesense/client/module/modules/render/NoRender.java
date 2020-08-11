@@ -22,8 +22,9 @@ public class NoRender extends Module {
     Setting.b blind;
     Setting.b nausea;
     public Setting.b hurtCam;
-    Setting.b noOverlay;
+    public Setting.b noOverlay;
     Setting.b noBossBar;
+    public Setting.b noSkylight;
 
     public void setup() {
         armor = registerB("Armor", "Armor", false);
@@ -31,6 +32,7 @@ public class NoRender extends Module {
         blind = registerB("Blind", "Blind", false);
         nausea = registerB("Nausea", "Nausea", false);
         hurtCam = registerB("HurtCam", "HurtCam", false);
+        noSkylight = registerB("Skylight", "Skylight", false);
         noOverlay = registerB("No Overlay", "NoOverlay", false); //need to make sure this works better
         noBossBar = registerB("No Boss Bar", "NoBossBar", false);
     }

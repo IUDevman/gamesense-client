@@ -30,6 +30,7 @@ import java.util.Iterator;
 /**
  * Author: CyberTF2
  * Check com.gamesense.api.mixin.mixins.MixinNametags
+ * Edited by Hoosiers :D
  */
 
 public class Nametags extends Module {

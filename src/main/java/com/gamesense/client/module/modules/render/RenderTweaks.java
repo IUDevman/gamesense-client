@@ -5,10 +5,6 @@ import com.gamesense.client.module.Module;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemSword;
 
-/**
- * TODO: ViewModel changer
- */
-
 public class RenderTweaks extends Module {
     public RenderTweaks(){
         super("RenderTweaks", Category.Render);

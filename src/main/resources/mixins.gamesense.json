@@ -20,6 +20,8 @@
     "MixinGuiBossOverlay",
     "MixinShulkerViewer",
     "MixinNametags",
+    "MixinWorld",
+    "MixinPlayerOverlay",
     "MixinBlockLiquid"
   ]
 }
