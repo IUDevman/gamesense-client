@@ -40,6 +40,7 @@ public class Nametags extends Module {
 
     Setting.b durability;
     Setting.b armor;
+    Setting.b enchantnames;
     Setting.b itemName;
     Setting.b gamemode;
     Setting.b health;
@@ -50,6 +51,7 @@ public class Nametags extends Module {
     public void setup() {
         durability = registerB("Durability", "Durability", true);
         armor = registerB("Armor", "Armor", true);
+        enchantnames = registerB("Enchants", "Enchants", true);
         itemName = registerB("Item Name", "ItemName", false);
         gamemode = registerB("Gamemode", "Gamemode", false);
         health = registerB("Health", "Health", true);
@@ -117,7 +119,12 @@ public class Nametags extends Module {
             }
             else {
                 final Enchantment enchantment3 = enchantment;
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.stringForEnchants(enchantment3, EnchantmentHelper.getEnchantmentLevel(enchantment3, itemStack)), (x * 2), y, n3);
+                if (enchantnames.getValue()) {
+                    FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.stringForEnchants(enchantment3, EnchantmentHelper.getEnchantmentLevel(enchantment3, itemStack)), (x * 2), y, n3);
+                }
+                else {
+                    return;
+                }
                 y += 8;
                 iterator = iterator2;
             }
