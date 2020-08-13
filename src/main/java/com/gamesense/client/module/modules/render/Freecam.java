@@ -20,7 +20,7 @@ public class Freecam extends Module {
     Setting.d speed;
 
     public void setup() {
-        speed = registerD("Speed", "Speed", 5, 0, 10);
+        speed = registerD("Speed", "Speed", 5.0D, 0.0D, 10.0D);
     }
 
     private double posX, posY, posZ;
@@ -69,7 +69,7 @@ public class Freecam extends Module {
             clonedPlayer = null;
             posX = posY = posZ = 0.D;
             pitch = yaw = 0.f;
-            mc.player.capabilities.isFlying = false; //getModManager().getMod("ElytraFlight").isEnabled();
+            mc.player.capabilities.isFlying = false;
             mc.player.capabilities.setFlySpeed(0.05f);
             mc.player.noClip = false;
             mc.player.motionX = mc.player.motionY = mc.player.motionZ = 0.f;

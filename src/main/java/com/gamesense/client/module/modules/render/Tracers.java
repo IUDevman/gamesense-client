@@ -66,11 +66,11 @@ public class Tracers extends Module {
                                 tracerColor = Color.GREEN.getRGB();
                             }
                         }
-                        if (pointsTo.getValue().equalsIgnoreCase("Head")) {
-                            drawLineToEntityPlayer(e, tracerColor, 255);
-                        } else if (pointsTo.getValue().equalsIgnoreCase("Feet")) {
-                            drawLineToEntityPlayer(e, tracerColor, 255);
-                        }
+                    }
+                    if (pointsTo.getValue().equalsIgnoreCase("Head")) {
+                        drawLineToEntityPlayer(e, tracerColor, 255);
+                    } else if (pointsTo.getValue().equalsIgnoreCase("Feet")) {
+                        drawLineToEntityPlayer(e, tracerColor, 255);
                     }
                 });
     }
