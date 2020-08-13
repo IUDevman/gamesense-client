@@ -83,6 +83,7 @@ public class ModuleManager {
         addMod(new RenderTweaks());
         addMod(new ShulkerViewer());
         addMod(new StorageESP());
+        addMod(new Tracers());
         //HUD
         addMod(new ColorMain());
         addMod(new DevGuiModule());

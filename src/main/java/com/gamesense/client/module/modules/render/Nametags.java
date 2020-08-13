@@ -420,7 +420,7 @@ public class Nametags extends Module {
             return ColorMain.getEnemyColorInt();
         }
         if (entityPlayer.isInvisible()) {
-            return Color.DARK_GRAY.getRGB();
+            return Color.GRAY.getRGB();
         }
         if (mc.getConnection() != null && mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()) == null) {
             return -1113785;
