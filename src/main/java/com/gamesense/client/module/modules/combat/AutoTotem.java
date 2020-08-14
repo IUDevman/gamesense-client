@@ -2,6 +2,7 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.module.Module;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
@@ -65,6 +66,12 @@ public class AutoTotem extends Module {
                 mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, mc.player);
             }
         }
+    }
+
+    @Override
+    public String getHudInfo(){
+        String t = "[" + ChatFormatting.WHITE + totems + ChatFormatting.GRAY + "]";
+        return t;
     }
 }
 
