@@ -27,8 +27,6 @@ public class DevGUI extends GuiScreen {
     }
 
     public void drawScreen(final int mouseX, final int mouseY, final float partialTicks){
-        DevGuiModule devGuiModule = ((DevGuiModule) ModuleManager.getModuleByName("DevGUI"));
-        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         if (ColorMain.Rainbow.getValue()){
             DevGUI.color = Rainbow.getColorWithOpacity(DevGuiModule.opacity.getValue()).getRGB();
         }

@@ -38,8 +38,6 @@ public class DevIntSlider extends DevComponent{
     
     @Override
     public void renderComponent() {
-        DevGuiModule devGuiModule= ((DevGuiModule) ModuleManager.getModuleByName("DevGUI"));
-        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         if (ColorMain.Rainbow.getValue()){
             DevGUI.color = Rainbow.getColorWithOpacity(DevGuiModule.opacity.getValue()).getRGB();
         }
