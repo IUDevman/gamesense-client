@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class PvPInfo extends Module {
     public PvPInfo() {super("PvPInfo", Category.Misc);}
 
-    List<Entity> knownPlayers = new ArrayList<>();;
+    List<Entity> knownPlayers = new ArrayList<>();
     List<Entity> antipearlspamplz = new ArrayList<>();
     List<Entity> players;
     List<Entity> pearls;
@@ -248,7 +248,7 @@ public class PvPInfo extends Module {
             return ChatFormatting.WHITE;
         }
         if (ChatColor.getValue().equalsIgnoreCase("Aqua")){
-            return ChatFormatting.GREEN.AQUA;
+            return ChatFormatting.AQUA;
         }
         return null;
     }

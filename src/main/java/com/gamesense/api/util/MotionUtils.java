@@ -10,7 +10,7 @@ public class MotionUtils {
     }
 
     public static void setSpeed(final EntityLivingBase entity, final double speed) {
-        double dir[] = forward(speed);
+        double[] dir = forward(speed);
         entity.motionX = dir[0];
         entity.motionZ = dir[1];
     }

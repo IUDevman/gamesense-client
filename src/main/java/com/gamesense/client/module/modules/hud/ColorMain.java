@@ -98,7 +98,7 @@ public class ColorMain extends Module {
             return TextFormatting.WHITE;
         }
         if (friendcolor.getValue().equalsIgnoreCase("Aqua")){
-            return TextFormatting.GREEN.AQUA;
+            return TextFormatting.AQUA;
         }
         return null;
     }
@@ -150,7 +150,7 @@ public class ColorMain extends Module {
             return TextFormatting.WHITE;
         }
         if (enemycolor.getValue().equalsIgnoreCase("Aqua")) {
-            return TextFormatting.GREEN.AQUA;
+            return TextFormatting.AQUA;
         }
         return null;
     }

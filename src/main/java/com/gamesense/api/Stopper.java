@@ -1,5 +1,6 @@
 package com.gamesense.api;
 
+import com.gamesense.api.util.config.SaveConfiguration;
 import com.gamesense.client.GameSenseMod;
 
 public class Stopper extends Thread {
@@ -13,17 +14,17 @@ public class Stopper extends Thread {
 
         GameSenseMod.getInstance().saveModules.saveModules();
 
-        GameSenseMod.getInstance().saveConfiguration.saveAutoGG();
-        GameSenseMod.getInstance().saveConfiguration.saveAutoReply();
-        GameSenseMod.getInstance().saveConfiguration.saveBinds();
-        GameSenseMod.getInstance().saveConfiguration.saveDrawn();
-        GameSenseMod.getInstance().saveConfiguration.saveEnabled();
-        GameSenseMod.getInstance().saveConfiguration.saveEnemies();
-        GameSenseMod.getInstance().saveConfiguration.saveFont();
-        GameSenseMod.getInstance().saveConfiguration.saveFriends();
-        GameSenseMod.getInstance().saveConfiguration.saveGUI();
-        GameSenseMod.getInstance().saveConfiguration.saveMacros();
-        GameSenseMod.getInstance().saveConfiguration.saveMessages();
-        GameSenseMod.getInstance().saveConfiguration.savePrefix();
+        SaveConfiguration.saveAutoGG();
+        SaveConfiguration.saveAutoReply();
+        SaveConfiguration.saveBinds();
+        SaveConfiguration.saveDrawn();
+        SaveConfiguration.saveEnabled();
+        SaveConfiguration.saveEnemies();
+        SaveConfiguration.saveFont();
+        SaveConfiguration.saveFriends();
+        SaveConfiguration.saveGUI();
+        SaveConfiguration.saveMacros();
+        SaveConfiguration.saveMessages();
+        SaveConfiguration.savePrefix();
     }
 }

@@ -33,7 +33,7 @@ public class DesyncAura extends Module {
 
     public void onUpdate() {
         if (this.isEnabled() && !mc.player.isDead && mc.world != null) {
-            if (this.hasWaited < (Integer)this.delay.getValue()) {
+            if (this.hasWaited < this.delay.getValue()) {
                 ++this.hasWaited;
             } else {
                 this.hasWaited = 0;
@@ -55,11 +55,11 @@ public class DesyncAura extends Module {
                                                 entity = (Entity)var1.next();
                                             } while(!(entity instanceof EntityLivingBase));
                                         } while(entity == mc.player);
-                                    } while((double)mc.player.getDistance(entity) > (Double)this.hitRange.getValue());
+                                    } while((double)mc.player.getDistance(entity) > this.hitRange.getValue());
                                 } while(((EntityLivingBase)entity).getHealth() <= 0.0F);
                             } while(!(entity instanceof EntityPlayer));
                         } while(entity instanceof EntityPlayer && Friends.isFriend(entity.getName()));
-                    } while(!this.checkSharpness(mc.player.getHeldItemMainhand()) && (Boolean)this.onlyUse32k.getValue());
+                    } while(!this.checkSharpness(mc.player.getHeldItemMainhand()) && this.onlyUse32k.getValue());
 
                     this.attack(entity);
                 }
@@ -97,7 +97,7 @@ public class DesyncAura extends Module {
             holding32k = true;
         }
 
-        if ((Boolean)this.switchTo32k.getValue() && !holding32k) {
+        if (this.switchTo32k.getValue() && !holding32k) {
             int newSlot = -1;
 
             for(int i = 0; i < 9; ++i) {
@@ -114,7 +114,7 @@ public class DesyncAura extends Module {
             }
         }
 
-        if (!(Boolean)this.onlyUse32k.getValue() || holding32k) {
+        if (!this.onlyUse32k.getValue() || holding32k) {
             mc.playerController.attackEntity(mc.player, e);
             mc.player.swingArm(EnumHand.MAIN_HAND);
         }

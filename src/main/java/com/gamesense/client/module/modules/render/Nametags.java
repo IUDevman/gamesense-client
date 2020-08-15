@@ -71,7 +71,7 @@ public class Nametags extends Module {
                 double x = interpolate(entity.lastTickPosX, entity.posX, event.getPartialTicks()) - mc.getRenderManager().renderPosX;
                 double y = interpolate(entity.lastTickPosY, entity.posY, event.getPartialTicks()) - mc.getRenderManager().renderPosY;
                 double z = interpolate(entity.lastTickPosZ, entity.posZ, event.getPartialTicks()) - mc.getRenderManager().renderPosZ;
-                Vec3d m = renderPosEntity((Entity)entity);
+                Vec3d m = renderPosEntity(entity);
                 renderNameTagsFor((EntityPlayer) entity, m.x, m.y, m.z);
             }
         }
@@ -137,7 +137,7 @@ public class Nametags extends Module {
     //I dont know
     private String stringForEnchants(final Enchantment enchantment, final int n) {
         final ResourceLocation resourceLocation;
-        String substring = ((resourceLocation = (ResourceLocation)Enchantment.REGISTRY.getNameForObject((Enchantment) enchantment)) == null) ? enchantment.getName() : resourceLocation.toString();
+        String substring = ((resourceLocation = Enchantment.REGISTRY.getNameForObject(enchantment)) == null) ? enchantment.getName() : resourceLocation.toString();
         final int n2 = (n > 1) ? 12 : 13;
         if (substring.length() > n2) {
             substring = substring.substring(10, n2);
@@ -167,7 +167,7 @@ public class Nametags extends Module {
         final float n5 = 0.5f;
         GlStateManager.scale(n5, n4, n5);
         GlStateManager.disableDepth();
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(),new StringBuilder().insert(0, String.valueOf((int)(n3 * 100.0f))).append('%').toString(), (x * 2), y, Color);
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(),new StringBuilder().insert(0, (int) (n3 * 100.0f)).append('%').toString(), (x * 2), y, Color);
         GlStateManager.enableDepth();
         final float n6 = 2.0f;
         final int n7 = 2;
@@ -219,7 +219,7 @@ public class Nametags extends Module {
     }
 
     public static Vec3d location5(final Entity entity, final float n) {
-        return new Vec3d(entity.lastTickPosX, entity.lastTickPosY, entity.lastTickPosZ).add(location3(entity, (double)n));
+        return new Vec3d(entity.lastTickPosX, entity.lastTickPosY, entity.lastTickPosZ).add(location3(entity, n));
     }
 
     public static void M(final float n) {
@@ -242,7 +242,7 @@ public class Nametags extends Module {
         double tempY = distance;
         tempY += (entityPlayer.isSneaking() ? 0.5 : 0.7);
         final Entity entity2;
-        final Entity entity = entity2 = (Entity)((mc.getRenderViewEntity() == null) ? mc.player : mc.getRenderViewEntity());
+        final Entity entity = entity2 = (mc.getRenderViewEntity() == null) ? mc.player : mc.getRenderViewEntity();
         final double posX = entity2.posX;
         final double posY = entity2.posY;
         final double posZ = entity2.posZ;
@@ -303,7 +303,7 @@ public class Nametags extends Module {
         int n12 = 3;
         while (i >= 0) {
             final ItemStack itemStack;
-            if (!(itemStack = (ItemStack)entityPlayer.inventory.armorInventory.get(n12)).isEmpty()) {
+            if (!(itemStack = entityPlayer.inventory.armorInventory.get(n12)).isEmpty()) {
                 final Boolean j = this.durability.getValue();
                 n10 -= 8;
                 if (j) {
@@ -366,7 +366,7 @@ public class Nametags extends Module {
         int n16 = 3;
         while (l >= 0) {
             final ItemStack itemStack3;
-            if (!(itemStack3 = (ItemStack)entityPlayer.inventory.armorInventory.get(n16)).isEmpty()) {
+            if (!(itemStack3 = entityPlayer.inventory.armorInventory.get(n16)).isEmpty()) {
                 int m2 = this.armorValue(n11);
                 if (this.armor.getValue()) {
                     final ItemStack itemStack4 = itemStack3;

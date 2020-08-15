@@ -40,7 +40,7 @@ public class BlockUtils {
         double difX = to.x - from.x;
         double difY = (to.y - from.y) * -1.0D;
         double difZ = to.z - from.z;
-        double dist = (double)MathHelper.sqrt(difX * difX + difZ * difZ);
+        double dist = MathHelper.sqrt(difX * difX + difZ * difZ);
         return new float[]{(float)MathHelper.wrapDegrees(Math.toDegrees(Math.atan2(difZ, difX)) - 90.0D), (float)MathHelper.wrapDegrees(Math.toDegrees(Math.atan2(difY, dist)))};
     }
 
@@ -190,7 +190,7 @@ public class BlockUtils {
                         break;
                     }
 
-                    double dist = (double)((cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0));
+                    double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
                     if (dist < (double)(r * r) && (!hollow || dist >= (double)((r - 1.0F) * (r - 1.0F)))) {
                         BlockPos l = new BlockPos(x, y + plus_y, z);
                         circleblocks.add(l);

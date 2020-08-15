@@ -32,7 +32,7 @@ public class LogoutSpots extends Module {
     List<Entity> lastTickEntities;
 
     @EventHandler
-    private Listener<PlayerJoinEvent> listener1 = new Listener<>(event -> {
+    private final Listener<PlayerJoinEvent> listener1 = new Listener<>(event -> {
         loggedPlayers.forEach((e, s) -> {
             try {
                 if (e.getName().equalsIgnoreCase(event.getName())) {
@@ -44,7 +44,7 @@ public class LogoutSpots extends Module {
     });
 
     @EventHandler
-    private Listener<PlayerLeaveEvent> listener2 = new Listener<>(event -> {
+    private final Listener<PlayerLeaveEvent> listener2 = new Listener<>(event -> {
         if (mc.world == null) return;
         lastTickEntities.forEach(e ->{
             if(e.getName().equalsIgnoreCase(event.getName())){
@@ -75,13 +75,13 @@ public class LogoutSpots extends Module {
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         Color color;
         Color c = Rainbow.getColor();
-        if(colorMain.Rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
-        else color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 255);
+        if(ColorMain.Rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+        else color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
         GameSenseTessellator.drawBoundingBox(bb, width, color.getRGB());
     }
 
     @EventHandler
-    private Listener<WorldEvent.Unload> listener3 = new Listener<>(event -> {
+    private final Listener<WorldEvent.Unload> listener3 = new Listener<>(event -> {
         lastTickEntities.clear();
         if(mc.player == null)
             loggedPlayers.clear();
@@ -91,7 +91,7 @@ public class LogoutSpots extends Module {
     });
 
     @EventHandler
-    private Listener<WorldEvent.Load> listener4 = new Listener<>(event -> {
+    private final Listener<WorldEvent.Load> listener4 = new Listener<>(event -> {
         lastTickEntities.clear();
         if (mc.player == null) {
             loggedPlayers.clear();
@@ -156,8 +156,8 @@ public class LogoutSpots extends Module {
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         Color color;
         Color c = Rainbow.getColor();
-        if(colorMain.Rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
-        else color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 255);
+        if(ColorMain.Rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+        else color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
         fontRendererIn.drawStringWithShadow(line1, -i, 10, color.getRGB());
         fontRendererIn.drawStringWithShadow(line2, -ii, 20, color.getRGB());
         GlStateManager.glNormal3f(0.0F, 0.0F, 0.0F);

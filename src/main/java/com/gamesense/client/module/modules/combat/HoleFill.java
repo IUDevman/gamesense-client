@@ -32,22 +32,14 @@ public class HoleFill extends Module {
 
     private ArrayList<BlockPos> holes = new ArrayList();
 
-    private List<Block> obbyonly = Arrays.asList(new Block[]{
-            Blocks.OBSIDIAN
-    });
+    private final List<Block> obbyonly = Arrays.asList(Blocks.OBSIDIAN);
 
-    private List<Block> bothonly = Arrays.asList(new Block[]{
-            Blocks.OBSIDIAN,
-            Blocks.ENDER_CHEST
-    });
+    private final List<Block> bothonly = Arrays.asList(Blocks.OBSIDIAN,
+            Blocks.ENDER_CHEST);
 
-    private List<Block> echestonly = Arrays.asList(new Block[]{
-            Blocks.ENDER_CHEST
-    });
+    private final List<Block> echestonly = Arrays.asList(Blocks.ENDER_CHEST);
 
-    private List<Block> webonly = Arrays.asList(new Block[]{
-            Blocks.WEB
-    });
+    private final List<Block> webonly = Arrays.asList(Blocks.WEB);
 
     private List<Block> list = Arrays.asList(new Block[]{
     });

@@ -45,8 +45,8 @@ public class Setting {
 		DOUBLE,
 		BOOLEAN,
 		STRING,
-		MODE;
-	}
+		MODE
+    }
 
 	public static class i extends Setting
 	{

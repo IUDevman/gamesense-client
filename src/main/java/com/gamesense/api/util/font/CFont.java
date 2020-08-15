@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 public class CFont {
 
-    private float imgSize = 512;
+    private final float imgSize = 512;
     protected CharData[] charData = new CharData[256];
     protected Font font;
     protected boolean antiAlias;

@@ -10,6 +10,7 @@ import com.gamesense.client.devgui.DevFrame;
 import com.gamesense.client.devgui.DevGUI;
 import com.gamesense.client.macro.Macro;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
 import net.minecraft.client.Minecraft;
@@ -47,45 +48,45 @@ public class SaveConfiguration {
         //Files inside the modules folder, houses module configs per category
 
     public SaveConfiguration(){
-        this.GameSenseDev = new File(mc.gameDir + File.separator + "GameSense");
-        if (!this.GameSenseDev.exists()){
-            this.GameSenseDev.mkdirs();
+        GameSenseDev = new File(mc.gameDir + File.separator + "GameSense");
+        if (!GameSenseDev.exists()){
+            GameSenseDev.mkdirs();
         }
-        this.Modules = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules");
-        if (!this.Modules.exists()){
-            this.Modules.mkdirs();
+        Modules = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules");
+        if (!Modules.exists()){
+            Modules.mkdirs();
         }
-        this.Messages = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Messages");
-        if (!this.Messages.exists()){
-            this.Messages.mkdirs();
+        Messages = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Messages");
+        if (!Messages.exists()){
+            Messages.mkdirs();
         }
-        this.Miscellaneous = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Miscellaneous");
-        if (!this.Miscellaneous.exists()){
-            this.Miscellaneous.mkdirs();
+        Miscellaneous = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Miscellaneous");
+        if (!Miscellaneous.exists()){
+            Miscellaneous.mkdirs();
         }
-        this.Combat = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Combat");
-        if (!this.Combat.exists()){
-            this.Combat.mkdirs();
+        Combat = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Combat");
+        if (!Combat.exists()){
+            Combat.mkdirs();
         }
-        this.Exploits = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Exploits");
-        if (!this.Exploits.exists()){
-            this.Exploits.mkdirs();
+        Exploits = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Exploits");
+        if (!Exploits.exists()){
+            Exploits.mkdirs();
         }
-        this.Hud = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Hud");
-        if (!this.Hud.exists()){
-            this.Hud.mkdirs();
+        Hud = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Hud");
+        if (!Hud.exists()){
+            Hud.mkdirs();
         }
-        this.Misc = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Misc");
-        if (!this.Misc.exists()){
-            this.Misc.mkdirs();
+        Misc = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Misc");
+        if (!Misc.exists()){
+            Misc.mkdirs();
         }
-        this.Movement = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Movement");
-        if (!this.Movement.exists()){
-            this.Movement.mkdirs();
+        Movement = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Movement");
+        if (!Movement.exists()){
+            Movement.mkdirs();
         }
-        this.Render = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Render");
-        if (!this.Render.exists()){
-            this.Render.mkdirs();
+        Render = new File(mc.gameDir + File.separator + "GameSense" + File.separator + "Modules" + File.separator + "Render");
+        if (!Render.exists()){
+            Render.mkdirs();
         }
     }
 
@@ -229,7 +230,7 @@ public class SaveConfiguration {
         try {
             File file = new File(Miscellaneous.getAbsolutePath(), "DrawnModules.json");
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            Iterator var3 = GameSenseMod.getInstance().moduleManager.getModules().iterator();
+            Iterator var3 = ModuleManager.getModules().iterator();
             while(var3.hasNext()) {
                 Module module = (Module)var3.next();
                 out.write(module.getName() + ":" + module.isDrawn());
@@ -246,7 +247,7 @@ public class SaveConfiguration {
         try {
             File file = new File(Miscellaneous.getAbsolutePath(), "EnabledModules.json");
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            Iterator var3 = GameSenseMod.getInstance().moduleManager.getModules().iterator();
+            Iterator var3 = ModuleManager.getModules().iterator();
             while(var3.hasNext()) {
                 Module module = (Module)var3.next();
                 if (module.isEnabled()) {
@@ -265,7 +266,7 @@ public class SaveConfiguration {
         try {
             File file = new File(Miscellaneous.getAbsolutePath(), "ModuleBinds.json");
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            Iterator var3 = GameSenseMod.getInstance().moduleManager.getModules().iterator();
+            Iterator var3 = ModuleManager.getModules().iterator();
             while(var3.hasNext()) {
                 Module module = (Module)var3.next();
                 out.write(module.getName() + ":" + Keyboard.getKeyName(module.getBind()));

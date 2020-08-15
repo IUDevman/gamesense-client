@@ -44,7 +44,7 @@ public class NoKick extends Module {
 
     //Offhand
     @EventHandler
-    private Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (noOffhandCrash.getValue()) {
             if (event.getPacket() instanceof SPacketSoundEffect) {
                 if (((SPacketSoundEffect) event.getPacket()).getSound() == SoundEvents.ITEM_ARMOR_EQUIP_GENERIC) {

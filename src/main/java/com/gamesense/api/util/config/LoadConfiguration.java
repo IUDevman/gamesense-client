@@ -9,6 +9,7 @@ import com.gamesense.client.devgui.DevFrame;
 import com.gamesense.client.devgui.DevGUI;
 import com.gamesense.client.macro.Macro;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -257,7 +258,7 @@ public class LoadConfiguration {
                 String name = curLine.split(":")[0];
                 String isOn = curLine.split(":")[1];
                 boolean drawn = Boolean.parseBoolean(isOn);
-                for(Module m : GameSenseMod.getInstance().moduleManager.getModules()) {
+                for(Module m : ModuleManager.getModules()) {
                     if (m.getName().equalsIgnoreCase(name)) {
                         m.setDrawn(drawn);
                     }
@@ -280,7 +281,7 @@ public class LoadConfiguration {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String line;
             while((line = br.readLine()) != null) {
-                Iterator var6 = GameSenseMod.getInstance().moduleManager.getModules().iterator();
+                Iterator var6 = ModuleManager.getModules().iterator();
                 while(var6.hasNext()) {
                     Module m = (Module)var6.next();
                     if (m.getName().equals(line)) {
@@ -308,7 +309,7 @@ public class LoadConfiguration {
                 String curLine = line.trim();
                 String name = curLine.split(":")[0];
                 String bind = curLine.split(":")[1];
-                for(Module m : GameSenseMod.getInstance().moduleManager.getModules()) {
+                for(Module m : ModuleManager.getModules()) {
                     if (m != null && m.getName().equalsIgnoreCase(name)) {
                         m.setBind(Keyboard.getKeyIndex(bind));
                     }

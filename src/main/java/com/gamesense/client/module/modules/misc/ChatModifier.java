@@ -56,7 +56,7 @@ public class ChatModifier extends Module {
     }
 
     @EventHandler
-    private Listener<ClientChatReceivedEvent> chatReceivedEventListener = new Listener<>(event -> {
+    private final Listener<ClientChatReceivedEvent> chatReceivedEventListener = new Listener<>(event -> {
         //Chat Time Stamps
 
       if (chattimestamps.getValue()) {
@@ -71,7 +71,7 @@ public class ChatModifier extends Module {
     });
 
     @EventHandler
-    private Listener<PacketEvent.Send> listener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
         if (greentext.getValue()) {
             if (event.getPacket() instanceof CPacketChatMessage) {
                 if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(Command.getPrefix()))

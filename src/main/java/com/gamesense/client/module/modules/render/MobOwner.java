@@ -20,9 +20,9 @@ public class MobOwner extends Module {
     private Setting.i requestTime;
     private Setting.b debug;
 
-    private Map<String, String> cachedUUIDs = new HashMap<String, String>(){{ }};
+    private final Map<String, String> cachedUUIDs = new HashMap<String, String>(){{ }};
     private int apiRequests = 0;
-    private String invalidText = "Servers offline!";
+    private final String invalidText = "Servers offline!";
 
     public void setup(){
         requestTime = this.registerI("Reset Ticks", "ResetTicks", 10, 0, 20);

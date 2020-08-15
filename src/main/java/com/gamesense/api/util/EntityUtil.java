@@ -26,14 +26,13 @@ import java.net.URL;
 
 public class EntityUtil {
 
-    private static Minecraft mc = Minecraft.getMinecraft();
+    private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static boolean isPassive(Entity e) {
         if (e instanceof EntityWolf && ((EntityWolf) e).isAngry()) return false;
         if (e instanceof EntityAnimal || e instanceof EntityAgeable || e instanceof EntityTameable || e instanceof EntityAmbientCreature || e instanceof EntitySquid)
             return true;
-        if (e instanceof EntityIronGolem && ((EntityIronGolem) e).getRevengeTarget() == null) return true;
-        return false;
+        return e instanceof EntityIronGolem && ((EntityIronGolem) e).getRevengeTarget() == null;
     }
 
     public static boolean isLiving(Entity e) {
@@ -233,11 +232,10 @@ public class EntityUtil {
     }
 
     public static double getRelativeX(float yaw) {
-        return (double) (MathHelper.sin(-yaw * 0.017453292F));
+        return MathHelper.sin(-yaw * 0.017453292F);
     }
 
     public static double getRelativeZ(float yaw) {
-        return (double) (MathHelper.cos(yaw * 0.017453292F));
+        return MathHelper.cos(yaw * 0.017453292F);
     }
-
 }

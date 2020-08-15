@@ -54,9 +54,9 @@ public class OffhandCrystal extends Module {
             if (t == -1) {
                 return;
             }
-            OffhandCrystal.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer) OffhandCrystal.mc.player);
-            OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, (EntityPlayer) OffhandCrystal.mc.player);
-            OffhandCrystal.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer) OffhandCrystal.mc.player);
+            OffhandCrystal.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, OffhandCrystal.mc.player);
+            OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, OffhandCrystal.mc.player);
+            OffhandCrystal.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, OffhandCrystal.mc.player);
         }
     }
 
@@ -77,7 +77,7 @@ public class OffhandCrystal extends Module {
             if (t == -1) {
                 return;
             }
-            OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, (EntityPlayer) OffhandCrystal.mc.player);
+            OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, OffhandCrystal.mc.player);
             this.returnI = false;
         }
         this.totems = OffhandCrystal.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
@@ -88,7 +88,7 @@ public class OffhandCrystal extends Module {
             this.crystals += OffhandCrystal.mc.player.getHeldItemOffhand().getCount();
         } else {
             if (this.moving) {
-                OffhandCrystal.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, (EntityPlayer) OffhandCrystal.mc.player);
+                OffhandCrystal.mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, OffhandCrystal.mc.player);
                 this.moving = false;
                 this.returnI = true;
                 return;
@@ -114,7 +114,7 @@ public class OffhandCrystal extends Module {
                     if (t == -1) {
                         return;
                     }
-                    OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, (EntityPlayer) OffhandCrystal.mc.player);
+                    OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, OffhandCrystal.mc.player);
                     this.moving = true;
                 } else {
                     if (this.totems == 0) {
@@ -130,7 +130,7 @@ public class OffhandCrystal extends Module {
                     if (t == -1) {
                         return;
                     }
-                    OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, (EntityPlayer) OffhandCrystal.mc.player);
+                    OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, OffhandCrystal.mc.player);
                     this.moving = true;
                 }
             } else {
@@ -144,7 +144,7 @@ public class OffhandCrystal extends Module {
                 if (t == -1) {
                     return;
                 }
-                OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, (EntityPlayer) OffhandCrystal.mc.player);
+                OffhandCrystal.mc.playerController.windowClick(0, (t < 9) ? (t + 36) : t, 0, ClickType.PICKUP, OffhandCrystal.mc.player);
             }
         }
     }
@@ -156,7 +156,7 @@ public class OffhandCrystal extends Module {
     }
 
     private boolean isEmpty(final BlockPos pos) {
-        final List<Entity> crystalsInAABB = (List<Entity>) OffhandCrystal.mc.world.getEntitiesWithinAABBExcludingEntity((Entity) null, new AxisAlignedBB(pos)).stream().filter(e -> e instanceof EntityEnderCrystal).collect(Collectors.toList());
+        final List<Entity> crystalsInAABB = OffhandCrystal.mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos)).stream().filter(e -> e instanceof EntityEnderCrystal).collect(Collectors.toList());
         return crystalsInAABB.isEmpty();
     }
 

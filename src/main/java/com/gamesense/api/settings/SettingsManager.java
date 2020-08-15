@@ -8,7 +8,7 @@ import com.gamesense.client.module.Module;
 
 public class SettingsManager {
 
-	private List<Setting> settings;
+	private final List<Setting> settings;
 
 	public SettingsManager() {
 		this.settings = new ArrayList<Setting>();

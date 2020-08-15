@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 
 public class TpsUtils {
-    private static float[] tickRates = new float[20];
+    private static final float[] tickRates = new float[20];
     private int nextIndex = 0;
     private long timeLastTimeUpdate;
 

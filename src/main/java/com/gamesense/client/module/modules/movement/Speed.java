@@ -105,7 +105,7 @@ public class Speed extends Module {
     }
 
     @EventHandler
-    private Listener<PlayerMoveEvent> listener = new Listener<>(event -> {
+    private final Listener<PlayerMoveEvent> listener = new Listener<>(event -> {
 
         boolean icee = this.ice.getValue() && (mc.world.getBlockState(new BlockPos(mc.player.posX, mc.player.posY - 1, mc.player.posZ)).getBlock() instanceof BlockIce || mc.world.getBlockState(new BlockPos(mc.player.posX, mc.player.posY - 1, mc.player.posZ)).getBlock() instanceof BlockPackedIce);
         if (icee)

@@ -38,9 +38,9 @@ public class HoleTP extends Module {
                 if (!HoleTP.mc.player.onGround && !HoleTP.mc.player.isInsideOfMaterial(Material.WATER) && !HoleTP.mc.player.isInsideOfMaterial(Material.LAVA) && !HoleTP.mc.gameSettings.keyBindJump.isKeyDown() && !HoleTP.mc.player.isOnLadder() && this.packets > 0) {
                     final BlockPos blockPos = new BlockPos(HoleTP.mc.player.posX, HoleTP.mc.player.posY, HoleTP.mc.player.posZ);
                     for (final double position : this.oneblockPositions) {
-                        HoleTP.mc.player.connection.sendPacket((Packet)new CPacketPlayer.Position((double)(blockPos.getX() + 0.5f), HoleTP.mc.player.posY - position, (double)(blockPos.getZ() + 0.5f), true));
+                        HoleTP.mc.player.connection.sendPacket(new CPacketPlayer.Position(blockPos.getX() + 0.5f, HoleTP.mc.player.posY - position, blockPos.getZ() + 0.5f, true));
                     }
-                    HoleTP.mc.player.setPosition((double)(blockPos.getX() + 0.5f), this.getNearestBlockBelow() + 0.1, (double)(blockPos.getZ() + 0.5f));
+                    HoleTP.mc.player.setPosition(blockPos.getX() + 0.5f, this.getNearestBlockBelow() + 0.1, blockPos.getZ() + 0.5f);
                     this.packets = 0;
                 }
             }
@@ -54,7 +54,7 @@ public class HoleTP extends Module {
 
     private double getNearestBlockBelow() {
         for (double y = HoleTP.mc.player.posY; y > 0.0; y -= 0.001) {
-            if (!(HoleTP.mc.world.getBlockState(new BlockPos(HoleTP.mc.player.posX, y, HoleTP.mc.player.posZ)).getBlock() instanceof BlockSlab) && HoleTP.mc.world.getBlockState(new BlockPos(HoleTP.mc.player.posX, y, HoleTP.mc.player.posZ)).getBlock().getDefaultState().getCollisionBoundingBox((IBlockAccess)HoleTP.mc.world, new BlockPos(0, 0, 0)) != null) {
+            if (!(HoleTP.mc.world.getBlockState(new BlockPos(HoleTP.mc.player.posX, y, HoleTP.mc.player.posZ)).getBlock() instanceof BlockSlab) && HoleTP.mc.world.getBlockState(new BlockPos(HoleTP.mc.player.posX, y, HoleTP.mc.player.posZ)).getBlock().getDefaultState().getCollisionBoundingBox(HoleTP.mc.world, new BlockPos(0, 0, 0)) != null) {
                 return y;
             }
         }

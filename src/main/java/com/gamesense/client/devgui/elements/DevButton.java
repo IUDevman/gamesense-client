@@ -26,9 +26,9 @@ public class DevButton extends DevComponent {
     public DevFrame parent;
     public int offset;
     private boolean isHovered;
-    private ArrayList<DevComponent> subcomponents;
+    private final ArrayList<DevComponent> subcomponents;
     public boolean open;
-    private int height;
+    private final int height;
 
     private static final ResourceLocation opengui = new ResourceLocation("minecraft:opengui.png");
     private static final ResourceLocation closedgui = new ResourceLocation("minecraft:closedgui.png");
@@ -90,17 +90,17 @@ public class DevButton extends DevComponent {
     public void renderComponent() {
         DevGuiModule devGuiModule= ((DevGuiModule) ModuleManager.getModuleByName("DevGUI"));
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (colorMain.Rainbow.getValue()){
-            DevGUI.color = Rainbow.getColorWithOpacity(devGuiModule.opacity.getValue()).getRGB();
+        if (ColorMain.Rainbow.getValue()){
+            DevGUI.color = Rainbow.getColorWithOpacity(DevGuiModule.opacity.getValue()).getRGB();
         }
         else {
-            DevGUI.color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), devGuiModule.opacity.getValue()).getRGB();
+            DevGUI.color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), DevGuiModule.opacity.getValue()).getRGB();
         }
-        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, this.isHovered ? (this.mod.isEnabled() ? DevGUI.color : new Color(195, 195, 195, devGuiModule.opacity.getValue() -50).darker().darker().getRGB()) : (this.mod.isEnabled() ? DevGUI.color : new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB()));
-        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB());
+        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, this.isHovered ? (this.mod.isEnabled() ? DevGUI.color : new Color(195, 195, 195, DevGuiModule.opacity.getValue() -50).darker().darker().getRGB()) : (this.mod.isEnabled() ? DevGUI.color : new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB()));
+        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB());
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, -1);
         if (this.subcomponents.size() > 1) {
-            if (devGuiModule.icon.getValue().equalsIgnoreCase("Image")) {
+            if (DevGuiModule.icon.getValue().equalsIgnoreCase("Image")) {
                 FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "" : "", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, -1);
                 if (this.open) {
                     //gif texture

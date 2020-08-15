@@ -93,7 +93,7 @@ public class WorldUtils {
     }
 
     public static void lookAtBlock(BlockPos blockToLookAt) {
-        rotate(calculateLookAt((double)blockToLookAt.getX(), (double)blockToLookAt.getY(), (double)blockToLookAt.getZ(), Minecraft.getMinecraft().player));
+        rotate(calculateLookAt(blockToLookAt.getX(), blockToLookAt.getY(), blockToLookAt.getZ(), Minecraft.getMinecraft().player));
     }
 
     public static BlockPos getRelativeBlockPos(EntityPlayer player, int ChangeX, int ChangeY, int ChangeZ) {

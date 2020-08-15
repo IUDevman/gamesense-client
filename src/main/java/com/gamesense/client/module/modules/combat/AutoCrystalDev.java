@@ -98,7 +98,7 @@ public class AutoCrystalDev extends Module {
     Setting.b antiSuicide;
     Setting.b endCrystalMode;
     Setting.d enemyRange;
-    private ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
+    private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
     Setting.i armorDuraToFacePlace;
 
     public boolean isActive = false;
@@ -400,12 +400,12 @@ public class AutoCrystalDev extends Module {
                                     // } while (b >= 169.0D);
                                 } while (entity.getDistanceSq(x, y , z) >= enemyRange.getValue() * enemyRange.getValue());
 
-                                d = (double) calculateDamage((double) blockPos.getX() + 0.5D, (double) (blockPos.getY() + 1), (double) blockPos.getZ() + 0.5D, entity);
+                                d = calculateDamage((double) blockPos.getX() + 0.5D, blockPos.getY() + 1, (double) blockPos.getZ() + 0.5D, entity);
                             } while (d <= damage);
                             targetDamage = calculateDamage(blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5, entity);
                             targetHealth = ((EntityPlayer) entity).getHealth() + ((EntityPlayer) entity).getAbsorptionAmount();
                         } while (targetDamage < minDmg.getValue() && targetHealth > facePlace.getValue());
-                        self = (double) calculateDamage((double) blockPos.getX() + 0.5D, (double) (blockPos.getY() + 1), (double) blockPos.getZ() + 0.5D, mc.player);
+                        self = calculateDamage((double) blockPos.getX() + 0.5D, blockPos.getY() + 1, (double) blockPos.getZ() + 0.5D, mc.player);
                     } while (self >= maxSelfDmg.getValue());
                 } while(self >= mc.player.getHealth() + mc.player.getAbsorptionAmount());
 
@@ -499,8 +499,7 @@ public class AutoCrystalDev extends Module {
             /*if (targetDmg >= minDmg.getValue() && selfDmg < maxSelfDmgB.getValue())
                 return true; */
 
-            if (targetDmg >= minBreakDmg.getValue() || (targetDmg > minBreakDmg.getValue()) && target.getHealth() > facePlace.getValue())
-                return true;
+            return targetDmg >= minBreakDmg.getValue() || (targetDmg > minBreakDmg.getValue()) && target.getHealth() > facePlace.getValue();
         }
 
         return false;
@@ -520,10 +519,7 @@ public class AutoCrystalDev extends Module {
             return false;
 
         if (entity instanceof EntityPlayer) {
-            if (entity == mc.player)
-                return false;
-
-            return true;
+            return entity != mc.player;
         }
 
         return false;
@@ -558,8 +554,7 @@ public class AutoCrystalDev extends Module {
 
         if (placeWallsRange.getValue() > 0) {
             if (!CanSeeBlock(blockPos)) {
-                if (blockPos.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ) > placeWallsRange.getValue())
-                    return false;
+                return !(blockPos.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ) > placeWallsRange.getValue());
             }
         }
         return true;
@@ -617,7 +612,7 @@ public class AutoCrystalDev extends Module {
         float doubleExplosionSize = 12.0F;
         double distancedsize = entity.getDistance(posX, posY, posZ) / (double) doubleExplosionSize;
         Vec3d vec3d = new Vec3d(posX, posY, posZ);
-        double blockDensity = (double) entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
+        double blockDensity = entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
         double v = (1.0D - distancedsize) * blockDensity;
         float damage = (float) ((int) ((v * v + v) / 2.0D * 7.0D * (double) doubleExplosionSize + 1.0D));
         double finald = 1.0D;
@@ -705,7 +700,7 @@ public class AutoCrystalDev extends Module {
     }
 
     @EventHandler
-    private Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
         Packet packet = event.getPacket();
         if (packet instanceof CPacketPlayer && spoofRotations.getValue()) {
             if (isSpoofingAngles) {
@@ -716,7 +711,7 @@ public class AutoCrystalDev extends Module {
     });
 
     @EventHandler
-    private Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
         if (event.getPacket() instanceof SPacketSoundEffect) {
             final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
             if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {

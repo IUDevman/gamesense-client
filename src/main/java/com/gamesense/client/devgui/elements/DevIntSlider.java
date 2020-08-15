@@ -19,8 +19,8 @@ import java.awt.Color;
 public class DevIntSlider extends DevComponent{
 
     private boolean hovered;
-    private Setting.i set;
-    private DevButton parent;
+    private final Setting.i set;
+    private final DevButton parent;
     private int offset;
     private int x;
     private int y;
@@ -40,16 +40,16 @@ public class DevIntSlider extends DevComponent{
     public void renderComponent() {
         DevGuiModule devGuiModule= ((DevGuiModule) ModuleManager.getModuleByName("DevGUI"));
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (colorMain.Rainbow.getValue()){
-            DevGUI.color = Rainbow.getColorWithOpacity(devGuiModule.opacity.getValue()).getRGB();
+        if (ColorMain.Rainbow.getValue()){
+            DevGUI.color = Rainbow.getColorWithOpacity(DevGuiModule.opacity.getValue()).getRGB();
         }
         else {
-            DevGUI.color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), devGuiModule.opacity.getValue()).getRGB();
+            DevGUI.color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), DevGuiModule.opacity.getValue()).getRGB();
         }
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, this.hovered ? new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).darker().darker().getRGB() : new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, this.hovered ? new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).darker().darker().getRGB() : new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB());
         final int drag = this.set.getValue() / this.set.getMax() * this.parent.parent.getWidth();
         Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + (int)this.renderWidth, this.parent.parent.getY() + this.offset + 16, this.hovered ? DevGUI.color : DevGUI.color);
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB());
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, -1);
     }
     

@@ -122,7 +122,7 @@ public class Announcer extends Module {
     }
 
     @EventHandler
-    private Listener<LivingEntityUseItemEvent.Finish> eatListener = new Listener<>(event -> {
+    private final Listener<LivingEntityUseItemEvent.Finish> eatListener = new Listener<>(event -> {
         int randomNum = ThreadLocalRandom.current().nextInt(1, 10 + 1);
         if(event.getEntity() == mc.player){
             if(event.getItem().getItem() instanceof ItemFood || event.getItem().getItem() instanceof ItemAppleGold){
@@ -146,7 +146,7 @@ public class Announcer extends Module {
     });
 
     @EventHandler
-    private Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
         if (event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock && mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemBlock) {
             blocksPlaced++;
             int randomNum = ThreadLocalRandom.current().nextInt(1, 10 + 1);
@@ -167,7 +167,7 @@ public class Announcer extends Module {
     });
 
     @EventHandler
-    private Listener<DestroyBlockEvent> destroyListener = new Listener<>(event -> {
+    private final Listener<DestroyBlockEvent> destroyListener = new Listener<>(event -> {
         blocksBroken++;
         int randomNum = ThreadLocalRandom.current().nextInt(1, 10 + 1);
         if (blockBrokeDelay >= 300 * delay.getValue()) {
@@ -188,7 +188,7 @@ public class Announcer extends Module {
     });
 
     @EventHandler
-    private Listener<AttackEntityEvent> attackListener = new Listener<>(event -> {
+    private final Listener<AttackEntityEvent> attackListener = new Listener<>(event -> {
         if (attack.getValue() && !(event.getTarget() instanceof EntityEnderCrystal)) {
             if (attackDelay >= 300 * delay.getValue()) {
                 String msg = attackMessage.replace("{name}", event.getTarget().getName()).replace("{item}", mc.player.getHeldItemMainhand().getDisplayName());
@@ -203,7 +203,7 @@ public class Announcer extends Module {
     });
 
     @EventHandler
-    private Listener<PlayerJumpEvent> jumpListener = new Listener<>(event -> {
+    private final Listener<PlayerJumpEvent> jumpListener = new Listener<>(event -> {
         if (jump.getValue()) {
             if (jumpDelay >= 300 * delay.getValue()) {
                 if(clientSide.getValue()){

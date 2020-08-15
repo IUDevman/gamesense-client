@@ -37,7 +37,7 @@ public class MixinShulkerViewer {
                 if (blockEntityTag.hasKey("Items", 9)) {
                     info.cancel();
 
-                    NonNullList<ItemStack> nonnulllist = NonNullList.<ItemStack>withSize(27, ItemStack.EMPTY);
+                    NonNullList<ItemStack> nonnulllist = NonNullList.withSize(27, ItemStack.EMPTY);
                     ItemStackHelper.loadAllItems(blockEntityTag, nonnulllist);
 
                     GlStateManager.enableBlend();

@@ -15,8 +15,8 @@ import java.awt.Color;
 public class DevCheckBox extends DevComponent{
 
     private boolean hovered;
-    private Setting.b op;
-    private DevButton parent;
+    private final Setting.b op;
+    private final DevButton parent;
     private int offset;
     private int x;
     private int y;
@@ -34,14 +34,14 @@ public class DevCheckBox extends DevComponent{
     public void renderComponent() {
         DevGuiModule devGuiModule= ((DevGuiModule) ModuleManager.getModuleByName("DevGUI"));
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (colorMain.Rainbow.getValue()){
-            DevGUI.color = Rainbow.getColorWithOpacity(devGuiModule.opacity.getValue()).getRGB();
+        if (ColorMain.Rainbow.getValue()){
+            DevGUI.color = Rainbow.getColorWithOpacity(DevGuiModule.opacity.getValue()).getRGB();
         }
         else {
-            DevGUI.color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), devGuiModule.opacity.getValue()).getRGB();
+            DevGUI.color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), DevGuiModule.opacity.getValue()).getRGB();
         }
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, this.hovered ? (this.op.getValue() ? DevGUI.color : new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).darker().darker().getRGB()) : (this.op.getValue() ? DevGUI.color : new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB()));
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, this.hovered ? (this.op.getValue() ? DevGUI.color : new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).darker().darker().getRGB()) : (this.op.getValue() ? DevGUI.color : new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB()));
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB());
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.op.getName(),this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, -1);
     }
 

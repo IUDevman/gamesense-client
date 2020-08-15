@@ -21,7 +21,7 @@ public class AutoRespawn extends Module {
     }
 
     @EventHandler
-    private Listener<GuiScreenDisplayedEvent> listener = new Listener<>(event -> {
+    private final Listener<GuiScreenDisplayedEvent> listener = new Listener<>(event -> {
         if(event.getScreen() instanceof GuiGameOver) {
             if(coords.getValue())
                 Command.sendClientMessage(String.format("You died at x%d y%d z%d", (int)mc.player.posX, (int)mc.player.posY, (int)mc.player.posZ));

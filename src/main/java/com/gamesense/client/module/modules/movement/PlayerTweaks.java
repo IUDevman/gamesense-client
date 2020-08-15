@@ -32,7 +32,7 @@ public class PlayerTweaks extends Module {
 
     //No Slow
     @EventHandler
-    private Listener<InputUpdateEvent> eventListener = new Listener<>(event -> {
+    private final Listener<InputUpdateEvent> eventListener = new Listener<>(event -> {
         if (noSlow.getValue()) {
             if (mc.player.isHandActive() && !mc.player.isRiding()) {
                 event.getMovementInput().moveStrafe *= 5;
@@ -65,7 +65,7 @@ public class PlayerTweaks extends Module {
 
     //Velocity
     @EventHandler
-    private Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (antiKnockBack.getValue()) {
             if (event.getPacket() instanceof SPacketEntityVelocity) {
                 if (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId())
@@ -78,7 +78,7 @@ public class PlayerTweaks extends Module {
     });
 
     @EventHandler
-    private Listener<WaterPushEvent> waterPushEventListener = new Listener<>(event -> {
+    private final Listener<WaterPushEvent> waterPushEventListener = new Listener<>(event -> {
         if (noPush.getValue()){
             event.cancel();
         }

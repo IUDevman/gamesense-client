@@ -55,7 +55,7 @@ public class Step extends Module {
                     }
                 }
             }
-            double dir[] = MotionUtils.forward(0.1);
+            double[] dir = MotionUtils.forward(0.1);
             boolean twofive = false;
             boolean two = false;
             boolean onefive = false;

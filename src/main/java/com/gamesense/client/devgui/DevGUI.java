@@ -29,11 +29,11 @@ public class DevGUI extends GuiScreen {
     public void drawScreen(final int mouseX, final int mouseY, final float partialTicks){
         DevGuiModule devGuiModule = ((DevGuiModule) ModuleManager.getModuleByName("DevGUI"));
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (colorMain.Rainbow.getValue()){
-            DevGUI.color = Rainbow.getColorWithOpacity(devGuiModule.opacity.getValue()).getRGB();
+        if (ColorMain.Rainbow.getValue()){
+            DevGUI.color = Rainbow.getColorWithOpacity(DevGuiModule.opacity.getValue()).getRGB();
         }
         else {
-            DevGUI.color = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), devGuiModule.opacity.getValue()).getRGB();
+            DevGUI.color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), DevGuiModule.opacity.getValue()).getRGB();
         }
         for (final DevFrame devFrame : DevGUI.devframes){
             devFrame.renderDevFrame(this.fontRenderer);
@@ -84,7 +84,7 @@ public class DevGUI extends GuiScreen {
             }
         }
         if (keyCode == 1) {
-            this.mc.displayGuiScreen((GuiScreen)null);
+            this.mc.displayGuiScreen(null);
         }
     }
 

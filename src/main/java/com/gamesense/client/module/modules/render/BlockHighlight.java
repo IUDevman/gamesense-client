@@ -36,20 +36,20 @@ public class BlockHighlight extends Module {
         AxisAlignedBB bb;
         BlockPos pos;
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (colorMain.Rainbow.getValue()){
+        if (ColorMain.Rainbow.getValue()){
             c = Rainbow.getColorWithOpacity(255).getRGB();
             c2 = Rainbow.getColorWithOpacity(50).getRGB();
         }
         else {
-            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 255).getRGB();
-            c2 = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 50).getRGB();
+            c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255).getRGB();
+            c2 = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 50).getRGB();
         }
         if (ray != null && ray.typeOfHit == RayTraceResult.Type.BLOCK) {
             pos = ray.getBlockPos();
             bb = mc.world.getBlockState(pos).getSelectedBoundingBox(mc.world, pos);
             if (bb != null && pos != null && mc.world.getBlockState(pos).getMaterial() != Material.AIR) {
                 GameSenseTessellator.prepareGL();
-                GameSenseTessellator.drawBoundingBox(bb, (int) w.getValue(), c);
+                GameSenseTessellator.drawBoundingBox(bb, w.getValue(), c);
                 GameSenseTessellator.releaseGL();
                 if (shade.getValue()) {
                     GameSenseTessellator.prepare(GL11.GL_QUADS);

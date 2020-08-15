@@ -17,8 +17,8 @@ public class DevFrame{
 
     public ArrayList<DevComponent> devcomponents;
     public Module.Category category;
-    private int width;
-    private int barHeight;
+    private final int width;
+    private final int barHeight;
     private int height;
     public int x;
     public int y;

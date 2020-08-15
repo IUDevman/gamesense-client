@@ -90,17 +90,17 @@ public class Freecam extends Module {
     }
 
     @EventHandler
-    private Listener<PlayerMoveEvent> moveListener = new Listener<>(event -> {
+    private final Listener<PlayerMoveEvent> moveListener = new Listener<>(event -> {
         mc.player.noClip = true;
     });
 
     @EventHandler
-    private Listener<PlayerSPPushOutOfBlocksEvent> pushListener = new Listener<>(event -> {
+    private final Listener<PlayerSPPushOutOfBlocksEvent> pushListener = new Listener<>(event -> {
         event.setCanceled(true);
     });
 
     @EventHandler
-    private Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
         if (event.getPacket() instanceof CPacketPlayer || event.getPacket() instanceof CPacketInput) {
             event.cancel();
         }

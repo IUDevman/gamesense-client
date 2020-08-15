@@ -78,7 +78,7 @@ public class HUD extends Module {
     DecimalFormat format2 = new DecimalFormat("00");
 
 
-    private static RenderItem itemRender = Minecraft.getMinecraft()
+    private static final RenderItem itemRender = Minecraft.getMinecraft()
             .getRenderItem();
     int totems;
 
@@ -185,29 +185,29 @@ public class HUD extends Module {
                         .orElse(null);
                 final AutoCrystal a = (AutoCrystal) ModuleManager.getModuleByName("AutocrystalGS");
                 this.surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};
-                final List<EntityPlayer> entities = new ArrayList<EntityPlayer>((Collection<? extends EntityPlayer>) mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
+                final List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
                 if (Type.getValue().equalsIgnoreCase("PvP")) {
-                    drawStringWithShadow("gamesense.cc", (int) infox.getValue(), (int) infoy.getValue(), c.getRGB());
+                    drawStringWithShadow("gamesense.cc", infox.getValue(), infoy.getValue(), c.getRGB());
                     if (players != null && mc.player.getDistance(players) <= AutoCrystal.range.getValue()) {
-                        drawStringWithShadow("HTR", (int) infox.getValue(), (int) infoy.getValue() + 10, on.getRGB());
+                        drawStringWithShadow("HTR", infox.getValue(), infoy.getValue() + 10, on.getRGB());
                     } else {
-                        drawStringWithShadow("HTR", (int) infox.getValue(), (int) infoy.getValue() + 10, off.getRGB());
+                        drawStringWithShadow("HTR", infox.getValue(), infoy.getValue() + 10, off.getRGB());
                     }
                     if (players != null && mc.player.getDistance(players) <= AutoCrystal.placeRange.getValue()) {
-                        drawStringWithShadow("PLR", (int) infox.getValue(), (int) infoy.getValue() + 20, on.getRGB());
+                        drawStringWithShadow("PLR", infox.getValue(), infoy.getValue() + 20, on.getRGB());
                     } else {
-                        drawStringWithShadow("PLR", (int) infox.getValue(), (int) infoy.getValue() + 20, off.getRGB());
+                        drawStringWithShadow("PLR", infox.getValue(), infoy.getValue() + 20, off.getRGB());
                     }
                     if (totems > 0 && ModuleManager.isModuleEnabled("AutoTotem")) {
-                        drawStringWithShadow(totems + "", (int) infox.getValue(), (int) infoy.getValue() + 30, on.getRGB());
+                        drawStringWithShadow(totems + "", infox.getValue(), infoy.getValue() + 30, on.getRGB());
                     } else {
-                        drawStringWithShadow(totems + "", (int) infox.getValue(), (int) infoy.getValue() + 30, off.getRGB());
+                        drawStringWithShadow(totems + "", infox.getValue(), infoy.getValue() + 30, off.getRGB());
                     }
 
                     if (getPing() > 100) {
-                        drawStringWithShadow("PING " + getPing(), (int) infox.getValue(), (int) infoy.getValue() + 40, off.getRGB());
+                        drawStringWithShadow("PING " + getPing(), infox.getValue(), infoy.getValue() + 40, off.getRGB());
                     } else {
-                        drawStringWithShadow("PING " + getPing(), (int) infox.getValue(), (int) infoy.getValue() + 40, on.getRGB());
+                        drawStringWithShadow("PING " + getPing(), infox.getValue(), infoy.getValue() + 40, on.getRGB());
 
                     }
                     for (final EntityPlayer e : entities) {
@@ -217,19 +217,19 @@ public class HUD extends Module {
                             final BlockPos o = new BlockPos(e.getPositionVector().x, e.getPositionVector().y, e.getPositionVector().z).add(add.getX(), add.getY(), add.getZ());
                             if (mc.world.getBlockState(o).getBlock() == Blocks.OBSIDIAN) {
                                 if (i == 1 && a.canPlaceCrystal(o.north(1).down())) {
-                                    drawStringWithShadow("LBY", (int) infox.getValue(), (int) infoy.getValue() + 50, on.getRGB());
+                                    drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on.getRGB());
                                 }
                                 if (i == 2 && a.canPlaceCrystal(o.east(1).down())) {
-                                    drawStringWithShadow("LBY", (int) infox.getValue(), (int) infoy.getValue() + 50, on.getRGB());
+                                    drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on.getRGB());
                                 }
                                 if (i == 3 && a.canPlaceCrystal(o.south(1).down())) {
-                                    drawStringWithShadow("LBY", (int) infox.getValue(), (int) infoy.getValue() + 50, on.getRGB());
+                                    drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on.getRGB());
                                 }
                                 if (i == 4 && a.canPlaceCrystal(o.west(1).down())) {
-                                    drawStringWithShadow("LBY", (int) infox.getValue(), (int) infoy.getValue() + 50, on.getRGB());
+                                    drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on.getRGB());
                                 }
                             } else
-                                drawStringWithShadow("LBY", (int) infox.getValue(), (int) infoy.getValue() + 50, off.getRGB());
+                                drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, off.getRGB());
                         }
                     }
                 }
@@ -289,23 +289,23 @@ public class HUD extends Module {
                             }
                             if(sortUp.getValue()) {
                                 if (right.getValue()) {
-                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), (int) arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), (int) arrayy.getValue() + (modCount * 10), c.getRGB());
+                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), c.getRGB());
                                     hue[0] +=.02f;
 
                                 } else {
 
-                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), (int) arrayx.getValue(), (int) arrayy.getValue() + (modCount * 10), c.getRGB());
+                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * 10), c.getRGB());
                                     hue[0] +=.02f;
 
                                 }
                                 modCount++;
                             } else {
                                 if (right.getValue()) {
-                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), (int) arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(),m.getName() + ChatFormatting.GRAY + " " + m.getHudInfo()), (int) arrayy.getValue() + (modCount * -10), c.getRGB());
+                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(),m.getName() + ChatFormatting.GRAY + " " + m.getHudInfo()), arrayy.getValue() + (modCount * -10), c.getRGB());
                                     hue[0] +=.02f;
 
                                 } else {
-                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), (int) arrayx.getValue(), (int) arrayy.getValue() + (modCount * -10), c.getRGB());
+                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * -10), c.getRGB());
                                     hue[0] +=.02f;
 
                                 }

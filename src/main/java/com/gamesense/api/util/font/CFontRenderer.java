@@ -299,7 +299,7 @@ public class CFontRenderer extends CFont {
                 currentWord = currentWord + c;
             } else {
                 finalWords.add(currentWord);
-                currentWord = "\u00A7" + lastColorCode + String.valueOf(c);
+                currentWord = "\u00A7" + lastColorCode + c;
             }
         }
 

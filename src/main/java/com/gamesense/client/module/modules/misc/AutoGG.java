@@ -31,7 +31,7 @@ public class AutoGG extends Module {
     int index = -1;
 
     @EventHandler
-    private Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
         if (mc.player != null) {
             if (this.targetedPlayers == null) {
                 this.targetedPlayers = new ConcurrentHashMap();
@@ -49,7 +49,7 @@ public class AutoGG extends Module {
         }
     });
     @EventHandler
-    private Listener<LivingDeathEvent> livingDeathEventListener = new Listener<>(event -> {
+    private final Listener<LivingDeathEvent> livingDeathEventListener = new Listener<>(event -> {
         if (mc.player != null) {
             if (this.targetedPlayers == null) {
                 this.targetedPlayers = new ConcurrentHashMap();

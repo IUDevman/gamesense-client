@@ -12,8 +12,8 @@ import java.awt.Color;
 
 public class DevStringButton extends DevComponent{
 
-    private Setting.s op;
-    private DevButton parent;
+    private final Setting.s op;
+    private final DevButton parent;
     private int offset;
     
     public DevStringButton(final Setting.s option, final DevButton button, final int offset) {
@@ -25,8 +25,8 @@ public class DevStringButton extends DevComponent{
     @Override
     public void renderComponent() {
         DevGuiModule devGuiModule= ((DevGuiModule) ModuleManager.getModuleByName("DevGUI"));
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB());
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, devGuiModule.opacity.getValue()-50).getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB());
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.op.getName() + " " + ChatFormatting.GRAY + "-set", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, -1);
     }
     

@@ -42,17 +42,17 @@ public class EntityESP extends Module {
 
     public void onWorldRender(RenderEvent event) {
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (colorMain.Rainbow.getValue()){
+        if (ColorMain.Rainbow.getValue()){
             c = Rainbow.getColorWithOpacity(50).getRGB();
         }
         else {
-            c = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 50).getRGB();
+            c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 50).getRGB();
         }
-        if (colorMain.Rainbow.getValue()){
+        if (ColorMain.Rainbow.getValue()){
             c2 = Rainbow.getColorWithOpacity(255).getRGB();
         }
         else {
-            c2 = new Color(colorMain.Red.getValue(), colorMain.Green.getValue(), colorMain.Blue.getValue(), 255).getRGB();
+            c2 = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255).getRGB();
         }
         if (RenderMode.getValue().equalsIgnoreCase("Box")) {
             mc.world.loadedEntityList.stream()

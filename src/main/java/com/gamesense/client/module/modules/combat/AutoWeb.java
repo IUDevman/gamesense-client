@@ -88,8 +88,8 @@ public class AutoWeb extends Module {
         final EnumFacing side = values[n];
         final BlockPos neighbor = pos.offset(side);
         final EnumFacing side2 = side.getOpposite();
-        final Vec3d hitVec = new Vec3d((Vec3i)neighbor).add(0.5, 0.5, 0.5).add(new Vec3d(side2.getDirectionVec()).scale(0.5));
-        if ((boolean)this.spoofRotations.getValue()) {
+        final Vec3d hitVec = new Vec3d(neighbor).add(0.5, 0.5, 0.5).add(new Vec3d(side2.getDirectionVec()).scale(0.5));
+        if (this.spoofRotations.getValue()) {
             BlockUtils.faceVectorPacketInstant(hitVec);
         }
         boolean needSneak = false;
@@ -98,7 +98,7 @@ public class AutoWeb extends Module {
             needSneak = true;
         }
         if (needSneak) {
-            AutoWeb.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoWeb.mc.player, CPacketEntityAction.Action.START_SNEAKING));
+            AutoWeb.mc.player.connection.sendPacket(new CPacketEntityAction(AutoWeb.mc.player, CPacketEntityAction.Action.START_SNEAKING));
         }
         final int obiSlot = this.findWebInHotBar();
         if (obiSlot == -1) {
@@ -106,8 +106,8 @@ public class AutoWeb extends Module {
             return;
         }
         if (this.lastHotbarSlot != obiSlot) {
-            if ((boolean)this.spoofHotbar.getValue()) {
-                AutoWeb.mc.player.connection.sendPacket((Packet)new CPacketHeldItemChange(obiSlot));
+            if (this.spoofHotbar.getValue()) {
+                AutoWeb.mc.player.connection.sendPacket(new CPacketHeldItemChange(obiSlot));
             }
             else {
                 Wrapper.getPlayer().inventory.currentItem = obiSlot;
@@ -115,9 +115,9 @@ public class AutoWeb extends Module {
             this.lastHotbarSlot = obiSlot;
         }
         AutoWeb.mc.playerController.processRightClickBlock(Wrapper.getPlayer(), AutoWeb.mc.world, neighbor, side2, hitVec, EnumHand.MAIN_HAND);
-        AutoWeb.mc.player.connection.sendPacket((Packet)new CPacketAnimation(EnumHand.MAIN_HAND));
+        AutoWeb.mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
         if (needSneak) {
-            AutoWeb.mc.player.connection.sendPacket((Packet)new CPacketEntityAction((Entity)AutoWeb.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+            AutoWeb.mc.player.connection.sendPacket(new CPacketEntityAction(AutoWeb.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
         }
     }
 
@@ -137,7 +137,7 @@ public class AutoWeb extends Module {
     }
 
     private void findTarget() {
-        final List<EntityPlayer> playerList = (List<EntityPlayer>)Wrapper.getWorld().playerEntities;
+        final List<EntityPlayer> playerList = Wrapper.getWorld().playerEntities;
         for (final EntityPlayer target : playerList) {
             if (target == AutoWeb.mc.player) {
                 continue;
@@ -145,13 +145,13 @@ public class AutoWeb extends Module {
             if (Friends.isFriend(target.getName())) {
                 continue;
             }
-            if (!EntityUtil.isLiving((Entity)target)) {
+            if (!EntityUtil.isLiving(target)) {
                 continue;
             }
             if (target.getHealth() <= 0.0f) {
                 continue;
             }
-            final double currentDistance = Wrapper.getPlayer().getDistance((Entity)target);
+            final double currentDistance = Wrapper.getPlayer().getDistance(target);
             if (currentDistance > this.range.getValue()) {
                 continue;
             }
@@ -159,7 +159,7 @@ public class AutoWeb extends Module {
                 this.closestTarget = target;
             }
             else {
-                if (currentDistance >= Wrapper.getPlayer().getDistance((Entity)this.closestTarget)) {
+                if (currentDistance >= Wrapper.getPlayer().getDistance(this.closestTarget)) {
                     continue;
                 }
                 this.closestTarget = target;
@@ -193,8 +193,8 @@ public class AutoWeb extends Module {
             return;
         }
         if (this.lastHotbarSlot != this.playerHotbarSlot && this.playerHotbarSlot != -1) {
-            if ((boolean)this.spoofHotbar.getValue()) {
-                AutoWeb.mc.player.connection.sendPacket((Packet)new CPacketHeldItemChange(this.playerHotbarSlot));
+            if (this.spoofHotbar.getValue()) {
+                AutoWeb.mc.player.connection.sendPacket(new CPacketHeldItemChange(this.playerHotbarSlot));
             }
             else {
                 Wrapper.getPlayer().inventory.currentItem = this.playerHotbarSlot;
