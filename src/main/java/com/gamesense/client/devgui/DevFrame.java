@@ -117,9 +117,4 @@ public class DevFrame{
         }
         this.height = off;
     }
-
-    private void doStuff() {
-
-        font = mod.customFont.getValue();
-    }
 }
