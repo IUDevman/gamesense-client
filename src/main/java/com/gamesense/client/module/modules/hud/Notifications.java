@@ -9,12 +9,6 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO: 1) Add integer to control the maximum number of notifications on screen
- *
- *  TODO: 2) Add boolean to disable notifications from being sent in chat
- */
-
 public class Notifications extends Module {
     public Notifications(){
         super("Notifications", Category.HUD);

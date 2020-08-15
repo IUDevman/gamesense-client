@@ -77,12 +77,9 @@ public class HUD extends Module {
     DecimalFormat format1 = new DecimalFormat("0");
     DecimalFormat format2 = new DecimalFormat("00");
 
-
     private static final RenderItem itemRender = Minecraft.getMinecraft()
             .getRenderItem();
     int totems;
-
-
 
     public void setup() {
         ArrayList<String> Modes = new ArrayList<>();
@@ -265,7 +262,6 @@ public class HUD extends Module {
 
         final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
 
-
         if (ArrayList.getValue()) {
 
                 if(sortUp.getValue()){ sort = -1;
@@ -314,7 +310,6 @@ public class HUD extends Module {
                         });
             }
 
-
             if (ArmorHud.getValue()) {
 
                 GlStateManager.enableTexture2D();
@@ -351,7 +346,6 @@ public class HUD extends Module {
             }
 
         }
-
 
         public void drawInventory ( int x, int y){
             if (Inventory.getValue()) {
