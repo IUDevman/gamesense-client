@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer {
+
     @Shadow public abstract String getName();
 
     @Inject(method = "jump", at = @At("HEAD"), cancellable = true)

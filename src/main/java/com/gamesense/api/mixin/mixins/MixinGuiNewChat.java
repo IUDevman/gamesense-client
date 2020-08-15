@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.List;
 
-
 @Mixin(GuiNewChat.class)
 public abstract class MixinGuiNewChat {
 

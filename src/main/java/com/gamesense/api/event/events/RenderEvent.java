@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.math.Vec3d;
 
 public class RenderEvent extends GameSenseEvent {
+
         private final Tessellator tessellator;
         private final Vec3d renderPos;
         private final float partialTicks;

@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @Mixin(NetHandlerPlayClient.class)
 public abstract class MixinNetHandlerPlayClient {
+
     @Shadow
     private final Map<UUID, NetworkPlayerInfo> playerInfoMap = Maps.newHashMap();
 

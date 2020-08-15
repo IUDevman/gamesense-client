@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 public class GameSenseMixinLoader implements IFMLLoadingPlugin {
+
     private static boolean isObfuscatedEnvironment = false;
 
     public GameSenseMixinLoader() {

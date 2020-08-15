@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @Mixin(AbstractClientPlayer.class)
 public abstract class MixinAbstractClientPlayer {
+
     @Shadow @Nullable protected abstract NetworkPlayerInfo getPlayerInfo();
 
     @Inject(method = "getLocationCape", at = @At("HEAD"), cancellable = true)

@@ -4,6 +4,7 @@ import com.gamesense.api.event.GameSenseEvent;
 import net.minecraft.entity.MoverType;
 
 public class PlayerMoveEvent extends GameSenseEvent {
+
     MoverType type;
     public double x;
     public double y;

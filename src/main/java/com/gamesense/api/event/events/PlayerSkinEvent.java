@@ -5,6 +5,7 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.ResourceLocation;
 
 public class PlayerSkinEvent extends GameSenseEvent {
+
     private final NetworkPlayerInfo networkPlayerInfo;
 
     public PlayerSkinEvent(NetworkPlayerInfo networkPlayerInfo) {

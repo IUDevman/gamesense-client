@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GuiBossOverlay.class)
 public class MixinGuiBossOverlay {
+
     @Inject(method = "renderBossHealth", at = @At("HEAD"), cancellable = true)
     private void renderBossHealth(CallbackInfo ci) {
         BossbarEvent event = new BossbarEvent();
