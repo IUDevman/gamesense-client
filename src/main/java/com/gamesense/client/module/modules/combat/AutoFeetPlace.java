@@ -1,11 +1,8 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.BlockUtils;
-import com.gamesense.client.command.Command;
+import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -23,10 +20,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
-
-import static com.gamesense.api.util.BlockUtils.canBeClicked;
-import static com.gamesense.api.util.BlockUtils.faceVectorPacketInstant;
+import static com.gamesense.api.util.world.BlockUtils.canBeClicked;
+import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
 
 public class AutoFeetPlace extends Module {
     public AutoFeetPlace() {super("AutoFeetPlace", Category.Combat);}

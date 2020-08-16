@@ -118,12 +118,6 @@ public class Module {
         return s;
     }
 
-    protected Setting.s registerS(final String name, final String configname, final String value) {
-        final Setting.s s = new Setting.s(name, configname,this, getCategory(), value);
-        GameSenseMod.getInstance().settingsManager.addSetting(s);
-        return s;
-    }
-
     protected Setting.mode registerMode(final String name, final String configname, final List<String> modes, final String value) {
         final Setting.mode s = new Setting.mode(name, configname, this, getCategory(), modes, value);
         GameSenseMod.getInstance().settingsManager.addSetting(s);

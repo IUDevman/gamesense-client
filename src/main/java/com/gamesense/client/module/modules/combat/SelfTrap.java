@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.BlockUtils;
+import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.client.module.Module;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gamesense.api.util.BlockUtils.canBeClicked;
-import static com.gamesense.api.util.BlockUtils.faceVectorPacketInstant;
+import static com.gamesense.api.util.world.BlockUtils.canBeClicked;
+import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
 
 public class SelfTrap extends Module {
     public SelfTrap() {

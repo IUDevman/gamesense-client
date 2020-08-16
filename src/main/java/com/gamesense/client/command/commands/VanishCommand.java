@@ -23,7 +23,6 @@ public class VanishCommand extends Command {
     private static Entity vehicle;
     Minecraft mc = Minecraft.getMinecraft();
 
-
     @Override
     public void onCommand(String command, String[] args) throws Exception {
         if (mc.player.getRidingEntity() != null && vehicle == null) {

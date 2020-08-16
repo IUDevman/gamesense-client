@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.event.events.JumpEvent;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.MotionUtils;
+import com.gamesense.api.util.world.MotionUtils;
 import com.gamesense.client.module.Module;
 
 import java.util.ArrayList;

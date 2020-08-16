@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.players.friends.Friends;
-import com.gamesense.api.util.GameSenseTessellator;
+import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.Wrapper;
 import com.gamesense.client.module.Module;
 import net.minecraft.client.entity.EntityPlayerSP;

@@ -1,4 +1,4 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.color;
 
 import com.gamesense.api.event.EventProcessor;
 

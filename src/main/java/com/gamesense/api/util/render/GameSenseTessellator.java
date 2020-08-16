@@ -1,5 +1,7 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.render;
 
+import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.api.util.Wrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;

@@ -1,25 +1,25 @@
-package com.gamesense.client.devgui.elements;
+package com.gamesense.client.clickgui.buttons;
 
-import com.gamesense.api.util.FontUtils;
-import com.gamesense.client.devgui.DevComponent;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.DevGuiModule;
+import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.client.clickgui.frame.Buttons;
+import com.gamesense.client.clickgui.frame.Component;
+import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
 import org.lwjgl.input.Keyboard;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.Gui;
 import java.awt.Color;
 
-public class DevKeybind extends DevComponent{
+public class KeybindComponent extends Component {
 
     private boolean hovered;
     private boolean binding;
-    private final DevButton parent;
+    private final Buttons parent;
     private int offset;
     private int x;
     private int y;
     
-    public DevKeybind(final DevButton button, final int offset) {
+    public KeybindComponent(final Buttons button, final int offset) {
         this.parent = button;
         this.x = button.parent.getX() + button.parent.getWidth();
         this.y = button.parent.getY() + button.offset;
@@ -33,9 +33,9 @@ public class DevKeybind extends DevComponent{
     
     @Override
     public void renderComponent() {
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 15, this.hovered ? new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).darker().darker().getRGB() : new Color(30, 30, 30, DevGuiModule.opacity.getValue()-50).getRGB());
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB());
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 15, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, new Color(0, 0, 0, DevGuiModule.opacity.getValue()).getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 15, this.hovered ? new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).darker().darker().getRGB() : new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).darker().darker().getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 15, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).darker().darker().getRGB());
         FontUtils.drawKeyStringWithShadow(HUD.customFont.getValue(), this.binding ? "Key..." : ("Key: " + ChatFormatting.GRAY + Keyboard.getKeyName(this.parent.mod.getBind())), (this.parent.parent.getX() + 2), (this.parent.parent.getY() + this.offset + 4), -1);
     }
     
@@ -59,7 +59,6 @@ public class DevKeybind extends DevComponent{
             if (key == 211) {
                 this.parent.mod.setBind(0);
             }
-            //prevents you from binding to the escape key
             else {
                 if (key == Keyboard.KEY_ESCAPE){
                     this.binding = false;

@@ -19,7 +19,7 @@ public abstract class Command {
     public static ChatFormatting cf = ChatFormatting.GRAY;
 
     public static void sendClientMessage(String message){
-            Notifications.addMessage(new TextComponentString(cf + message));
+        Notifications.addMessage(new TextComponentString(cf + message));
         if (Notifications.disableChat.getValue() && ModuleManager.isModuleEnabled("Notifications")){
             return;
         }

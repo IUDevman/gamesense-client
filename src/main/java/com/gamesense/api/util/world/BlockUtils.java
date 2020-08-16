@@ -1,5 +1,6 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.world;
 
+import com.gamesense.api.util.Wrapper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

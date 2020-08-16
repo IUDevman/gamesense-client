@@ -1,4 +1,4 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.color;
 
 import org.lwjgl.opengl.GL11;
 

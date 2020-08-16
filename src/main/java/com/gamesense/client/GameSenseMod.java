@@ -5,7 +5,7 @@ import com.gamesense.api.util.config.LoadConfiguration;
 import com.gamesense.api.util.config.LoadModules;
 import com.gamesense.api.util.config.SaveConfiguration;
 import com.gamesense.api.util.config.SaveModules;
-import com.gamesense.client.devgui.DevGUI;
+import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.players.enemy.Enemies;
@@ -13,8 +13,8 @@ import com.gamesense.api.settings.SettingsManager;
 import com.gamesense.api.event.EventProcessor;
 import com.gamesense.client.macro.MacroManager;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.api.util.CapeUtils;
-import com.gamesense.api.util.TpsUtils;
+import com.gamesense.api.util.render.CapeUtils;
+import com.gamesense.api.util.world.TpsUtils;
 import com.gamesense.api.util.font.CFontRenderer;
 import me.zero.alpine.EventBus;
 import me.zero.alpine.EventManager;
@@ -37,7 +37,7 @@ public class GameSenseMod {
 
     public static final Logger log = LogManager.getLogger(MODNAME);
 
-    public DevGUI devGUI;
+    public ClickGUI clickGUI;
     public SettingsManager settingsManager;
     public Friends friends;
     public ModuleManager moduleManager;
@@ -83,8 +83,8 @@ public class GameSenseMod {
         moduleManager = new ModuleManager();
         log.info("Modules initialized!");
 
-        devGUI = new DevGUI();
-        log.info("DevGUI initialized!");
+        clickGUI = new ClickGUI();
+        log.info("ClickGUI initialized!");
 
         macroManager = new MacroManager();
         log.info("Macros initialized!");

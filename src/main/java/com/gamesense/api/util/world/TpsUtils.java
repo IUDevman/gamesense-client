@@ -1,4 +1,4 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.world;
 
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.api.event.events.PacketEvent;

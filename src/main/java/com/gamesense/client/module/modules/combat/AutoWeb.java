@@ -1,11 +1,11 @@
 package com.gamesense.client.module.modules.combat;
 
+import com.gamesense.api.util.world.BlockUtils;
+import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.module.*;
 import com.gamesense.api.settings.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.util.math.*;
-import net.minecraft.entity.*;
-import net.minecraft.network.*;
 import net.minecraft.util.*;
 import net.minecraft.network.play.client.*;
 import net.minecraft.item.*;

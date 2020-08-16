@@ -1,4 +1,4 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.font;
 
 import com.gamesense.client.GameSenseMod;
 import net.minecraft.client.Minecraft;

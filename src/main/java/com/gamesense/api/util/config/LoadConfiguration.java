@@ -4,9 +4,9 @@ import com.gamesense.api.players.enemy.Enemies;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.command.Command;
-import com.gamesense.client.devgui.DevFrame;
-import com.gamesense.client.devgui.DevGUI;
+import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.macro.Macro;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -45,7 +45,7 @@ public class LoadConfiguration {
     //loads gui settings
     public void loadGUI(){
         try {
-            File file = new File(SaveConfiguration.Miscellaneous.getAbsolutePath(), "DevGUI.json");
+            File file = new File(SaveConfiguration.Miscellaneous.getAbsolutePath(), "ClickGUI.json");
             FileInputStream fstream = new FileInputStream(file.getAbsolutePath());
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -59,11 +59,11 @@ public class LoadConfiguration {
                 int x1 = Integer.parseInt(x);
                 int y1 = Integer.parseInt(y);
                 boolean open = Boolean.parseBoolean(e);
-                DevFrame devFrame = DevGUI.getFrameByName(name);
-                if (devFrame != null) {
-                    devFrame.x = x1;
-                    devFrame.y = y1;
-                    devFrame.open = open;
+                Frames frames = ClickGUI.getFrameByName(name);
+                if (frames != null) {
+                    frames.x = x1;
+                    frames.y = y1;
+                    frames.open = open;
                 }
             }
             br.close();

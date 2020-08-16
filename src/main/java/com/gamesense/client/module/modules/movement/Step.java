@@ -1,8 +1,8 @@
 package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.EntityUtil;
-import com.gamesense.api.util.MotionUtils;
+import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.MotionUtils;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;

@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.TotemPopEvent;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.EntityUtil;
+import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;

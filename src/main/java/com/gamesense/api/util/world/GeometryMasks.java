@@ -1,4 +1,4 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.world;
 
 import net.minecraft.util.EnumFacing;
 

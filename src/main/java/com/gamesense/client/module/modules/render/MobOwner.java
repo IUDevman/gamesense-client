@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.EntityUtil;
+import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import net.minecraft.entity.Entity;

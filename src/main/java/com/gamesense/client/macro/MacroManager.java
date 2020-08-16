@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MacroManager {
+
     List<Macro> macros;
     public MacroManager(){
         macros = new ArrayList<>();

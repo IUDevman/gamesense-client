@@ -5,9 +5,9 @@ import com.gamesense.api.players.enemy.Enemy;
 import com.gamesense.api.players.friends.Friend;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.command.Command;
-import com.gamesense.client.devgui.DevFrame;
-import com.gamesense.client.devgui.DevGUI;
+import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.macro.Macro;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -93,12 +93,12 @@ public class SaveConfiguration {
     //saves gui settings
     public static void saveGUI(){
         try {
-            File file = new File(Miscellaneous.getAbsolutePath(),"DevGUI.json");
+            File file = new File(Miscellaneous.getAbsolutePath(),"ClickGUI.json");
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            Iterator var3 = DevGUI.devframes.iterator();
+            Iterator var3 = ClickGUI.frames.iterator();
             while (var3.hasNext()){
-                DevFrame devFrame = (DevFrame)var3.next();
-                out.write(devFrame.category + ":" + devFrame.getX() + ":" + devFrame.getY() + ":" + devFrame.isOpen());
+                Frames frames = (Frames)var3.next();
+                out.write(frames.category + ":" + frames.getX() + ":" + frames.getY() + ":" + frames.isOpen());
                 out.write("\r\n");
             }
             out.close();

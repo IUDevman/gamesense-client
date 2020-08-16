@@ -1,21 +1,19 @@
-package com.gamesense.client.devgui;
+package com.gamesense.client.clickgui.frame;
 
-import com.gamesense.api.util.FontUtils;
+import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.devgui.elements.DevButton;
+import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.DevGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 
 import java.util.ArrayList;
 
-public class DevFrame{
+public class Frames {
 
-    public ArrayList<DevComponent> devcomponents;
+    public ArrayList<Component> guicomponents;
     public Module.Category category;
     private final int width;
     private final int barHeight;
@@ -28,10 +26,8 @@ public class DevFrame{
     public boolean open;
     boolean font;
 
-    DevGuiModule mod = ((DevGuiModule) ModuleManager.getModuleByName("DevGuiModule"));
-
-    public DevFrame(final Module.Category catg){
-        this.devcomponents = new ArrayList<DevComponent>();
+    public Frames(final Module.Category catg){
+        this.guicomponents = new ArrayList<Component>();
         this.category = catg;
         this.open = true;
         this.isDragging = false;
@@ -43,15 +39,15 @@ public class DevFrame{
         int tY = this.barHeight;
 
         for (final Module mod : ModuleManager.getModulesInCategory(catg)){
-            final DevButton devmodButton = new DevButton(mod, this, tY);
-            this.devcomponents.add(devmodButton);
+            final Buttons devmodButton = new Buttons(mod, this, tY);
+            this.guicomponents.add(devmodButton);
             tY += 16;
         }
         this.refresh();
     }
 
-    public ArrayList<DevComponent> getComponents() {
-        return this.devcomponents;
+    public ArrayList<Component> getComponents() {
+        return this.guicomponents;
     }
 
     public int getWidth() {
@@ -74,14 +70,13 @@ public class DevFrame{
         this.y = newY;
     }
 
-    public void renderDevFrame(final FontRenderer fontRenderer){
-        Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.barHeight, DevGUI.color);
-        Minecraft mc = Minecraft.getMinecraft();
+    public void renderGUIFrame(final FontRenderer fontRenderer){
+        Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.barHeight, ClickGUI.color);
         if(font) GameSenseMod.fontRenderer.drawStringWithShadow(this.category.name(), (float)(this.x + 2), (float)(this.y + 3), -1);
         else FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.category.name(), this.x + 2, this.y + 3, -1);
-        if (this.open && !this.devcomponents.isEmpty()){
-            for (final DevComponent devComponent : this.devcomponents){
-                devComponent.renderComponent();
+        if (this.open && !this.guicomponents.isEmpty()){
+            for (final Component component : this.guicomponents){
+                component.renderComponent();
             }
         }
     }
@@ -111,7 +106,7 @@ public class DevFrame{
 
     public void refresh(){
         int off = this.barHeight;
-        for (final DevComponent comp : this.devcomponents){
+        for (final Component comp : this.guicomponents){
             comp.setOff(off);
             off += comp.getHeight();
         }

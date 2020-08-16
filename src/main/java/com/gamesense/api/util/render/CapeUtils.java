@@ -1,4 +1,4 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.render;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

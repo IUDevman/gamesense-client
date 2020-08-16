@@ -10,10 +10,10 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 
-public class DevGuiModule extends Module {
-    public DevGuiModule INSTANCE;
-    public DevGuiModule(){
-        super("DevGUI", Category.HUD);
+public class ClickGuiModule extends Module {
+    public ClickGuiModule INSTANCE;
+    public ClickGuiModule(){
+        super("ClickGUI", Category.HUD);
         setBind(Keyboard.KEY_O);
         setDrawn(false);
         INSTANCE = this;
@@ -32,7 +32,7 @@ public class DevGuiModule extends Module {
     }
 
     public void onEnable(){
-        mc.displayGuiScreen(GameSenseMod.getInstance().devGUI);
+        mc.displayGuiScreen(GameSenseMod.getInstance().clickGUI);
         if(((Announcer) ModuleManager.getModuleByName("Announcer")).clickGui.getValue() && ModuleManager.isModuleEnabled("Announcer") && mc.player != null)
             if(((Announcer)ModuleManager.getModuleByName("Announcer")).clientSide.getValue()){
                 Command.sendClientMessage(Announcer.guiMessage);

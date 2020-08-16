@@ -1,4 +1,4 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.world;
 
 public class Timer {
     private long current;

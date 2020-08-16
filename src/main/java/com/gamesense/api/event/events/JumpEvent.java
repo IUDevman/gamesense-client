@@ -1,7 +1,7 @@
 package com.gamesense.api.event.events;
 
 import com.gamesense.api.event.GameSenseEvent;
-import com.gamesense.api.util.Location;
+import com.gamesense.api.util.world.Location;
 
 public class JumpEvent extends GameSenseEvent {
     private Location location;

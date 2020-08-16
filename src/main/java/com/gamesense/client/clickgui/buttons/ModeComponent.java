@@ -1,21 +1,21 @@
-package com.gamesense.client.devgui.elements;
+package com.gamesense.client.clickgui.buttons;
 
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.FontUtils;
-import com.gamesense.client.devgui.DevComponent;
+import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.client.clickgui.frame.Buttons;
+import com.gamesense.client.clickgui.frame.Component;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.DevGuiModule;
+import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.Gui;
 
 import java.awt.Color;
 
-public class DevModeButton extends DevComponent{
+public class ModeComponent extends Component {
 
     private boolean hovered;
-    private final DevButton parent;
+    private final Buttons parent;
     private final Setting.mode set;
     private int offset;
     private int x;
@@ -23,7 +23,7 @@ public class DevModeButton extends DevComponent{
     private final Module mod;
     private int modeIndex;
     
-    public DevModeButton(final Setting.mode set, final DevButton button, final Module mod, final int offset) {
+    public ModeComponent(final Setting.mode set, final Buttons button, final Module mod, final int offset) {
         this.set = set;
         this.parent = button;
         this.mod = mod;
@@ -40,8 +40,8 @@ public class DevModeButton extends DevComponent{
     
     @Override
     public void renderComponent() {
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, this.hovered ? new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).darker().darker().getRGB() : new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB());
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, DevGuiModule.opacity.getValue()-50).getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, this.hovered ? new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).darker().darker().getRGB() : new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).getRGB());
+        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).getRGB());
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, -1);
     }
     

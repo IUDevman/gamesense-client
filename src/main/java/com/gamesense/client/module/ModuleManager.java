@@ -1,7 +1,7 @@
 package com.gamesense.client.module;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.util.GameSenseTessellator;
+import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.module.modules.combat.*;
 import com.gamesense.client.module.modules.exploits.*;
 import com.gamesense.client.module.modules.hud.*;
@@ -86,8 +86,8 @@ public class ModuleManager {
         addMod(new Tracers());
         addMod(new VoidESP());
         //HUD
+        addMod(new ClickGuiModule());
         addMod(new ColorMain());
-        addMod(new DevGuiModule());
         addMod(new HUD());
         addMod(new Notifications());
         addMod(new TextRadar());

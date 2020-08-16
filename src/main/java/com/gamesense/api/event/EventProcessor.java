@@ -41,6 +41,7 @@ import java.net.URL;
 import java.util.Map;
 
 public class EventProcessor {
+
     public static EventProcessor INSTANCE;
     Minecraft mc = Minecraft.getMinecraft();
     CommandManager commandManager = new CommandManager();
