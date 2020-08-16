@@ -14,10 +14,10 @@ public class AutoTotem extends Module {
     int totems;
     boolean moving = false;
     boolean returnI = false;
-    Setting.b soft;
+    Setting.Boolean soft;
 
     public void setup() {
-        soft = registerB("Soft", "Soft", true);
+        soft = registerBoolean("Soft", "Soft", true);
     }
 
     @Override

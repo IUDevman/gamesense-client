@@ -15,11 +15,11 @@ public class TextRadar extends Module {
         super("TextRadar", Category.HUD);
     }
 
-    Setting.b sortUp;
-    Setting.b sortRight;
-    Setting.i radarX;
-    Setting.i radarY;
-    Setting.mode display;
+    Setting.Boolean sortUp;
+    Setting.Boolean sortRight;
+    Setting.Integer radarX;
+    Setting.Integer radarY;
+    Setting.Mode display;
 
     public void setup(){
         ArrayList<String> displayModes = new ArrayList<>();
@@ -27,10 +27,10 @@ public class TextRadar extends Module {
         displayModes.add("Friend");
         displayModes.add("Enemy");
         display = registerMode("Display", "Display", displayModes, "All");
-        sortUp = registerB("Sort Up", "SortUp", false);
-        sortRight = registerB("Sort Right", "SortRight", false);
-        radarX = registerI("X", "X", 0,0,1000);
-        radarY = registerI("Y", "Y", 50, 0 , 1000);
+        sortUp = registerBoolean("Sort Up", "SortUp", false);
+        sortRight = registerBoolean("Sort Right", "SortRight", false);
+        radarX = registerInteger("X", "X", 0,0,1000);
+        radarY = registerInteger("Y", "Y", 50, 0 , 1000);
     }
 
     int sort;

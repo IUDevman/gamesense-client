@@ -15,18 +15,18 @@ public class Step extends Module {
     public Step() {super("Step", Category.Movement);}
 
     private int ticks = 0;
-    Setting.d height;
-    Setting.b timer;
-    Setting.b reverse;
-    Setting.mode mode;
+    Setting.Double height;
+    Setting.Boolean timer;
+    Setting.Boolean reverse;
+    Setting.Mode mode;
 
     public void setup() {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Normal");
         modes.add("Vanilla");
-        height = registerD("Height", "Height", 2.5, 0.5, 2.5);
-        timer = registerB("Timer", "Timer", false);
-        reverse = registerB("Reverse", "Reverse", false);
+        height = registerDouble("Height", "Height", 2.5, 0.5, 2.5);
+        timer = registerBoolean("Timer", "Timer", false);
+        reverse = registerBoolean("Reverse", "Reverse", false);
         mode = registerMode("Modes", "Modes", modes, "Normal");
     }
 

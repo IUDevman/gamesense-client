@@ -17,17 +17,17 @@ public class DesyncAura extends Module {
     public DesyncAura() {super ("DesyncAura", Category.Combat);
     }
 
-    Setting.d hitRange;
-    Setting.i delay;
-    Setting.b switchTo32k;
-    Setting.b onlyUse32k;
+    Setting.Double hitRange;
+    Setting.Integer delay;
+    Setting.Boolean switchTo32k;
+    Setting.Boolean onlyUse32k;
 
     public void setup() {
 
-        hitRange = registerD("Hit Range", "HitRange", 4, 1, 6);
-        delay = registerI("Delay", "Delay", 6, 0 , 10);
-        switchTo32k = registerB("Switch To 32k", "SwitchTo32k", true);
-        onlyUse32k = registerB("Only 32k", "Only32k", true);
+        hitRange = registerDouble("Hit Range", "HitRange", 4, 1, 6);
+        delay = registerInteger("Delay", "Delay", 6, 0 , 10);
+        switchTo32k = registerBoolean("Switch To 32k", "SwitchTo32k", true);
+        onlyUse32k = registerBoolean("Only 32k", "Only32k", true);
     }
     private int hasWaited = 0;
 

@@ -73,33 +73,33 @@ public class AutoCrystalDev extends Module {
     EnumFacing f;
     private static boolean togglePitch = false;
 
-    Setting.b explode;
-    Setting.i waitTick;
-    Setting.d maxSelfDmg;
-    public static Setting.d range;
-    Setting.d walls;
-    Setting.b antiWeakness;
-    public static Setting.d placeWallsRange;
-    Setting.b place;
-    Setting.b autoSwitch;
-    public static Setting.d placeRange;
-    Setting.d minDmg;
-    Setting.i facePlace;
-    Setting.b raytrace;
-    Setting.b rotate;
-    Setting.b spoofRotations;
-    Setting.b chat;
-    Setting.b showDamage;
-    Setting.i attackSpeed;
-    Setting.b singlePlace;
-    Setting.mode handBreak;
-    Setting.mode breakMode;
-    Setting.d minBreakDmg;
-    Setting.b antiSuicide;
-    Setting.b endCrystalMode;
-    Setting.d enemyRange;
+    Setting.Boolean explode;
+    Setting.Integer waitTick;
+    Setting.Double maxSelfDmg;
+    public static Setting.Double range;
+    Setting.Double walls;
+    Setting.Boolean antiWeakness;
+    public static Setting.Double placeWallsRange;
+    Setting.Boolean place;
+    Setting.Boolean autoSwitch;
+    public static Setting.Double placeRange;
+    Setting.Double minDmg;
+    Setting.Integer facePlace;
+    Setting.Boolean raytrace;
+    Setting.Boolean rotate;
+    Setting.Boolean spoofRotations;
+    Setting.Boolean chat;
+    Setting.Boolean showDamage;
+    Setting.Integer attackSpeed;
+    Setting.Boolean singlePlace;
+    Setting.Mode handBreak;
+    Setting.Mode breakMode;
+    Setting.Double minBreakDmg;
+    Setting.Boolean antiSuicide;
+    Setting.Boolean endCrystalMode;
+    Setting.Double enemyRange;
     private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
-    Setting.i armorDuraToFacePlace;
+    Setting.Integer armorDuraToFacePlace;
 
     public boolean isActive = false;
     private long breakSystemTime;
@@ -115,32 +115,32 @@ public class AutoCrystalDev extends Module {
         breakModes.add("Smart");
         breakModes.add("Only Own");
 
-        explode = this.registerB("Break", "DevBreak", true);
-        place = registerB("Place", "DevPlace",true);
+        explode = registerBoolean("Break", "DevBreak", true);
+        place = registerBoolean("Place", "DevPlace",true);
         breakMode = registerMode("Break Modes","DevBreakModes", breakModes, "All");
         handBreak = registerMode("Hand", "DevHand", hands, "Main");
         //antiSuicide = registerB("Anti Suicide", false);
-        attackSpeed = registerI("Attack Speed", "DevAttackSpeed",12, 1, 20);
-        waitTick = this.registerI("Place Delay", "DevPlaceDelay", 1, 0, 20);
-        placeRange = this.registerD("Place Range", "DevPlaceRange", 6.0, 0.0, 6.0);
-        placeWallsRange = this.registerD("Place Walls Range", "DevPlaceWallsRange", 6.0, 0.0, 6.0);
-        range = this.registerD("Hit Range", "DevHitRange", 5.0, 0.0, 10.0);
-        walls = this.registerD("Break Walls Range", "DevBreakWallsRange", 3.5, 0.0, 10.0);
-        enemyRange = this.registerD("Enemy Range", "DevEnemyRange", 6.0, 0.5, 6.0);
-        antiWeakness = this.registerB("Anti Weakness", "DevAntiWeakness", true);
-        showDamage = this.registerB("Show Damage", "DevShowDamage", false);
-        endCrystalMode = registerB("1.13 Mode", "Dev1.13Mode", false);
-        singlePlace = registerB("MultiPlace", "DevMultiPlace", false);
-        autoSwitch = this.registerB("Auto Switch", "DevAutoSwitch",true);
-        minDmg = this.registerD("Min Damage", "DevMinDamage", 5, 0, 36);
-        minBreakDmg = this.registerD("Min Break Dmg", "DevMinBreakDmg", 10, 1.0, 36.0);
-        maxSelfDmg = this.registerD("Max Self Dmg", "DevMaxSelfDmg",10, 1.0, 36.0);
-        facePlace = this.registerI("FacePlace HP", "DevFacePlaceHP",8, 0, 36);
+        attackSpeed = registerInteger("Attack Speed", "DevAttackSpeed",12, 1, 20);
+        waitTick = registerInteger("Place Delay", "DevPlaceDelay", 1, 0, 20);
+        placeRange = registerDouble("Place Range", "DevPlaceRange", 6.0, 0.0, 6.0);
+        placeWallsRange = registerDouble("Place Walls Range", "DevPlaceWallsRange", 6.0, 0.0, 6.0);
+        range = registerDouble("Hit Range", "DevHitRange", 5.0, 0.0, 10.0);
+        walls = registerDouble("Break Walls Range", "DevBreakWallsRange", 3.5, 0.0, 10.0);
+        enemyRange = registerDouble("Enemy Range", "DevEnemyRange", 6.0, 0.5, 6.0);
+        antiWeakness = registerBoolean("Anti Weakness", "DevAntiWeakness", true);
+        showDamage = registerBoolean("Show Damage", "DevShowDamage", false);
+        endCrystalMode = registerBoolean("1.13 Mode", "Dev1.13Mode", false);
+        singlePlace = registerBoolean("MultiPlace", "DevMultiPlace", false);
+        autoSwitch = registerBoolean("Auto Switch", "DevAutoSwitch",true);
+        minDmg = registerDouble("Min Damage", "DevMinDamage", 5, 0, 36);
+        minBreakDmg = registerDouble("Min Break Dmg", "DevMinBreakDmg", 10, 1.0, 36.0);
+        maxSelfDmg = registerDouble("Max Self Dmg", "DevMaxSelfDmg",10, 1.0, 36.0);
+        facePlace = registerInteger("FacePlace HP", "DevFacePlaceHP",8, 0, 36);
         //armorDuraToFacePlace = registerI("ArmorDura", 10, 1, 100);
-        raytrace = this.registerB("Raytrace", "DevRaytrace", false);
-        rotate = this.registerB("Rotate", "DevRotate", true);
-        spoofRotations = this.registerB("Spoof Angles", "DevSpoofAngles", true);
-        chat = this.registerB("Toggle Msg","DevToggleMsg", true);
+        raytrace = registerBoolean("Raytrace", "DevRaytrace", false);
+        rotate = registerBoolean("Rotate", "DevRotate", true);
+        spoofRotations = registerBoolean("Spoof Angles", "DevSpoofAngles", true);
+        chat = registerBoolean("Toggle Msg","DevToggleMsg", true);
     }
 
     public void onUpdate() {
@@ -431,7 +431,7 @@ public class AutoCrystalDev extends Module {
             int b = rgb & 0xFF;
             hue[0] +=.02f;
 
-            if (ColorMain.Rainbow.getValue()) {
+            if (ColorMain.rainbow.getValue()) {
                 GameSenseTessellator.prepare(7);
                 GameSenseTessellator.drawBox(this.render, r, g, b, 50, 63);
                 GameSenseTessellator.release();

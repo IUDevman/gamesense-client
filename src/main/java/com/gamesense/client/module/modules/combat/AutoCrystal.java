@@ -65,51 +65,51 @@ public class AutoCrystal extends Module {
     EnumFacing f;
     private static boolean togglePitch = false;
 
-    Setting.b explode;
-    Setting.i waitTick;
-    Setting.d maxSelfDmg;
-    public static Setting.d range;
-    Setting.d walls;
-    Setting.b antiWeakness;
-    Setting.b place;
-    Setting.b autoSwitch;
-    public static Setting.d placeRange;
-    Setting.d minDmg;
-    Setting.i facePlace;
-    Setting.b raytrace;
-    Setting.b rotate;
-    Setting.b spoofRotations;
-    Setting.b chat;
-    Setting.b showDamage;
-    Setting.mode handbreak;
-    Setting.i attackSpeed;
+    Setting.Boolean explode;
+    Setting.Integer waitTick;
+    Setting.Double maxSelfDmg;
+    public static Setting.Double range;
+    Setting.Double walls;
+    Setting.Boolean antiWeakness;
+    Setting.Boolean place;
+    Setting.Boolean autoSwitch;
+    public static Setting.Double placeRange;
+    Setting.Double minDmg;
+    Setting.Integer facePlace;
+    Setting.Boolean raytrace;
+    Setting.Boolean rotate;
+    Setting.Boolean spoofRotations;
+    Setting.Boolean chat;
+    Setting.Boolean showDamage;
+    Setting.Mode handbreak;
+    Setting.Integer attackSpeed;
 
     public boolean isActive = false;
 
     private long breakSystemTime;
 
     public void setup() {
-        explode = this.registerB("Break", "Break", true);
+        explode = registerBoolean("Break", "Break", true);
         ArrayList<String> bmodes = new ArrayList<>();
         bmodes.add("Main");
         bmodes.add("Offhand");
-        handbreak = this.registerMode("Hand Break", "HandBreak", bmodes, "Main");
-        attackSpeed = this.registerI("Attack Speed", "AttackSpeed", 12, 1, 20);
-        waitTick = this.registerI("Hit Delay", "HitDelay", 1, 0, 20);
-        range = this.registerD("Hit Range", "HitRange",5.0, 0.0, 10.0);
-        walls = this.registerD("Walls Range", "WallsRange", 3.5, 0.0, 10.0);
-        antiWeakness = this.registerB("Anti Weakness", "AntiWeakness", true);
-        showDamage = this.registerB("Show Damage", "ShowDamage",false);
-        place = this.registerB("Place", "Place", true);
-        autoSwitch = this.registerB("Auto Switch", "AutoSwitch", true);
-        placeRange = this.registerD("Place Range", "PlaceRange", 5.0, 0.0, 10.0);
-        minDmg = this.registerD("Min Damage", "MinDamage", 5, 0, 36);
-        maxSelfDmg = this.registerD("Max Self Dmg", "MaxSelfDmg", 10, 1, 36);
-        facePlace = this.registerI("FacePlace HP", "FacePlaceHP", 8, 0, 36);
-        raytrace = this.registerB("Raytrace", "Raytrace", false);
-        rotate = this.registerB("Rotate", "Rotate", true);
-        spoofRotations = this.registerB("Spoof Angles", "SpoofAngles", true);
-        chat = this.registerB("Toggle Msg", "ToggleMsg", true);
+        handbreak = registerMode("Hand Break", "HandBreak", bmodes, "Main");
+        attackSpeed = registerInteger("Attack Speed", "AttackSpeed", 12, 1, 20);
+        waitTick = registerInteger("Hit Delay", "HitDelay", 1, 0, 20);
+        range = registerDouble("Hit Range", "HitRange",5.0, 0.0, 10.0);
+        walls = registerDouble("Walls Range", "WallsRange", 3.5, 0.0, 10.0);
+        antiWeakness = registerBoolean("Anti Weakness", "AntiWeakness", true);
+        showDamage = registerBoolean("Show Damage", "ShowDamage",false);
+        place = registerBoolean("Place", "Place", true);
+        autoSwitch = registerBoolean("Auto Switch", "AutoSwitch", true);
+        placeRange = registerDouble("Place Range", "PlaceRange", 5.0, 0.0, 10.0);
+        minDmg = registerDouble("Min Damage", "MinDamage", 5, 0, 36);
+        maxSelfDmg = registerDouble("Max Self Dmg", "MaxSelfDmg", 10, 1, 36);
+        facePlace = registerInteger("FacePlace HP", "FacePlaceHP", 8, 0, 36);
+        raytrace = registerBoolean("Raytrace", "Raytrace", false);
+        rotate = registerBoolean("Rotate", "Rotate", true);
+        spoofRotations = registerBoolean("Spoof Angles", "SpoofAngles", true);
+        chat = registerBoolean("Toggle Msg", "ToggleMsg", true);
     }
 
     public void onUpdate() {
@@ -365,7 +365,7 @@ public class AutoCrystal extends Module {
             int b = rgb & 0xFF;
             hue[0] +=.02f;
 
-            if (ColorMain.Rainbow.getValue()) {
+            if (ColorMain.rainbow.getValue()) {
                 GameSenseTessellator.prepare(7);
                 GameSenseTessellator.drawBox(this.render, r, g, b, 50, 63);
                 GameSenseTessellator.release();

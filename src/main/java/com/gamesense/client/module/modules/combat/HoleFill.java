@@ -44,12 +44,12 @@ public class HoleFill extends Module {
     private List<Block> list = Arrays.asList(new Block[]{
     });
 
-    Setting.d range;
-    Setting.i yRange;
-    Setting.i waitTick;
-    Setting.b chat;
-    Setting.b rotate;
-    Setting.mode type;
+    Setting.Double range;
+    Setting.Integer yRange;
+    Setting.Integer waitTick;
+    Setting.Boolean chat;
+    Setting.Boolean rotate;
+    Setting.Mode type;
 
     BlockPos pos;
     private int waitCounter;
@@ -61,11 +61,11 @@ public class HoleFill extends Module {
         blockmode.add("Both");
         blockmode.add("Web");
         type = registerMode("Block", "BlockMode", blockmode, "Obby");
-        range = registerD("Place Range", "PlaceRange", 5, 0, 10);
-        yRange = registerI("Y Range", "YRange", 2 , 0 ,10);
-        waitTick = registerI("Tick Delay", "TickDelay", 1 , 0, 20);
-        rotate = registerB("Rotate", "Rotate", false);
-        chat = registerB("Toggle Msg", "ToggleMsg", false);
+        range = registerDouble("Place Range", "PlaceRange", 5, 0, 10);
+        yRange = registerInteger("Y Range", "YRange", 2 , 0 ,10);
+        waitTick = registerInteger("Tick Delay", "TickDelay", 1 , 0, 20);
+        rotate = registerBoolean("Rotate", "Rotate", false);
+        chat = registerBoolean("Toggle Msg", "ToggleMsg", false);
     }
 
     public void onUpdate() {

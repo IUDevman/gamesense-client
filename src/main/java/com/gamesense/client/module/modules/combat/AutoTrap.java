@@ -33,10 +33,10 @@ public class AutoTrap extends Module {
     public AutoTrap() {
         super("AutoTrap", Category.Combat);
     }
-    private Setting.i range;
-    private Setting.i blocksPerTick;
-    private Setting.i tickDelay;
-    private Setting.b rotate;
+    private Setting.Integer range;
+    private Setting.Integer blocksPerTick;
+    private Setting.Integer tickDelay;
+    private Setting.Boolean rotate;
     private EntityPlayer closestTarget;
     private String lastTickTargetName;
     private int playerHotbarSlot = -1;
@@ -45,18 +45,18 @@ public class AutoTrap extends Module {
     private boolean isSneaking = false;
     private int offsetStep = 0;
     private boolean firstRun;
-    Setting.mode mode;
+    Setting.Mode mode;
 
 
     public void setup() {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Normal");
         modes.add("NoStep");
-        mode = this.registerMode("Mode", "Mode", modes, "Normal");
-        rotate = this.registerB("Rotate", "Rotate", true);
-        range = this.registerI("Range", "Range", 6, 0, 6);
-        blocksPerTick = this.registerI("Blocks Per Tick", "BlocksPerTick", 5, 0, 10);
-        tickDelay = this.registerI("Delay", "Delay", 0, 0, 10);
+        mode = registerMode("Mode", "Mode", modes, "Normal");
+        rotate = registerBoolean("Rotate", "Rotate", true);
+        range = registerInteger("Range", "Range", 6, 0, 6);
+        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 5, 0, 10);
+        tickDelay = registerInteger("Delay", "Delay", 0, 0, 10);
 
     }
 

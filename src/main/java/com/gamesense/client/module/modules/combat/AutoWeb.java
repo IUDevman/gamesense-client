@@ -16,11 +16,11 @@ import java.util.*;
 
 public class AutoWeb extends Module {
 
-    Setting.b rotate;
-    Setting.d range;
-    Setting.i bpt;
-    Setting.b spoofRotations;
-    Setting.b spoofHotbar;
+    Setting.Boolean rotate;
+    Setting.Double range;
+    Setting.Integer bpt;
+    Setting.Boolean spoofRotations;
+    Setting.Boolean spoofHotbar;
     private final Vec3d[] offsetList;
     private boolean slowModeSwitch;
     private int playerHotbarSlot;
@@ -39,11 +39,11 @@ public class AutoWeb extends Module {
 
     @Override
     public void setup() {
-        this.rotate = this.registerB("Rotate", "Rotate", false);
-        this.range = this.registerD("Range", "Range", 4.0, 0.0, 6.0);
-        this.bpt = this.registerI("Blocks Per Tick", "BlocksPerTick", 8, 1, 15);
-        this.spoofRotations = this.registerB("Spoof Rotations", "SpoofRotations", false);
-        this.spoofHotbar = this.registerB("Silent Switch", "SilentSwitch", false);
+        this.rotate = registerBoolean("Rotate", "Rotate", false);
+        this.range = registerDouble("Range", "Range", 4.0, 0.0, 6.0);
+        this.bpt = registerInteger("Blocks Per Tick", "BlocksPerTick", 8, 1, 15);
+        this.spoofRotations = registerBoolean("Spoof Rotations", "SpoofRotations", false);
+        this.spoofHotbar = registerBoolean("Silent Switch", "SilentSwitch", false);
     }
 
     @Override

@@ -12,13 +12,13 @@ public class CapesModule extends Module {
         setDrawn(false);
     }
 
-    public Setting.mode CapeMode;
+    public Setting.Mode capeMode;
 
     public void setup() {
         ArrayList<String> CapeType = new ArrayList<>();
         CapeType.add("Black");
         CapeType.add("White");
 
-        CapeMode = this.registerMode("Type", "Type", CapeType, "Black");
+        capeMode = registerMode("Type", "Type", CapeType, "Black");
     }
 }

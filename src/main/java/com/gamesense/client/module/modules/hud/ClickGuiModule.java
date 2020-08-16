@@ -19,16 +19,16 @@ public class ClickGuiModule extends Module {
         INSTANCE = this;
     }
 
-    public Setting.b customFont;
-    public static Setting.i opacity;
-    public static Setting.mode icon;
+    public Setting.Boolean customFont;
+    public static Setting.Integer opacity;
+    public static Setting.Mode icon;
 
     public void setup(){
         ArrayList<String> icons = new ArrayList<>();
         icons.add("Font");
         icons.add("Image");
-        opacity = this.registerI("Opacity", "Opacity", 200,50,255);
-        icon = this.registerMode("Icon", "Icons", icons, "Image");
+        opacity = registerInteger("Opacity", "Opacity", 200,50,255);
+        icon = registerMode("Icon", "Icons", icons, "Image");
     }
 
     public void onEnable(){

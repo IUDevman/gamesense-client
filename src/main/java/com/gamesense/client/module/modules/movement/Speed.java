@@ -29,12 +29,12 @@ public class Speed extends Module {
     public static boolean doSlow;
     public Timer waitTimer = new Timer();
 
-    Setting.b ice;
-    Setting.mode Mode;
-    Setting.d speed;
+    Setting.Boolean ice;
+    Setting.Mode Mode;
+    Setting.Double speed;
 
     public void setup() {
-        ice = registerB("Ice", "Ice", true);
+        ice = registerBoolean("Ice", "Ice", true);
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Strafe");
         modes.add("YPort");
@@ -42,7 +42,7 @@ public class Speed extends Module {
         modes.add("Packet2");
         modes.add("FakeStrafe");
 
-        speed =registerD("Speed", "Speed", 8.0, 0.0, 10.0);
+        speed = registerDouble("Speed", "Speed", 8.0, 0.0, 10.0);
         Mode = registerMode("Modes", "Modes", modes, "Strafe");
     }
 

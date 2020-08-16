@@ -28,17 +28,17 @@ public class Tracers extends Module {
         super("Tracers", Category.Render);
     }
 
-    Setting.i renderDistance;
-    Setting.mode pointsTo;
+    Setting.Integer renderDistance;
+    Setting.Mode pointsTo;
 
     public void setup(){
-        renderDistance = this.registerI("Distance", "Distance", 100, 10, 260);
+        renderDistance = registerInteger("Distance", "Distance", 100, 10, 260);
 
         ArrayList<String> link = new ArrayList<>();
         link.add("Head");
         link.add("Feet");
 
-        pointsTo = this.registerMode("Draw To", "DrawTo", link, "Feet");
+        pointsTo = registerMode("Draw To", "DrawTo", link, "Feet");
     }
 
     int tracerColor;

@@ -14,11 +14,11 @@ public class StorageESP extends Module {
         super("StorageESP", Category.Render);
     }
 
-    Setting.i w;
+    Setting.Integer w;
     ConcurrentHashMap<TileEntity, String> chests = new ConcurrentHashMap<>();
 
     public void setup(){
-        w = registerI("Width", "Width", 2 , 1 ,10);
+        w = registerInteger("Width", "Width", 2 , 1 ,10);
     }
 
     public void onUpdate(){

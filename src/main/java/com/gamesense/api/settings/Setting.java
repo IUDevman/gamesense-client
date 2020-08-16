@@ -48,13 +48,12 @@ public class Setting {
 		MODE
     }
 
-	public static class i extends Setting
-	{
+	public static class Integer extends Setting {
 		private int value;
 		private final int min;
 		private final int max;
 
-		public i(final String name, final String configname, final Module parent, final Module.Category category, final int value, final int min, final int max) {
+		public Integer(final String name, final String configname, final Module parent, final Module.Category category, final int value, final int min, final int max) {
 			super(name, configname, parent, category, Type.INT);
 			this.value = value;
 			this.min = min;
@@ -78,12 +77,12 @@ public class Setting {
 		}
 	}
 
-	public static class d extends Setting {
+	public static class Double extends Setting {
 		private double value;
 		private final double min;
 		private final double max;
 
-		public d(final String name, final String configname, final Module parent, final Module.Category category, final double value, final double min, final double max) {
+		public Double(final String name, final String configname, final Module parent, final Module.Category category, final double value, final double min, final double max) {
 			super(name, configname, parent, category, Type.DOUBLE);
 			this.value = value;
 			this.min = min;
@@ -107,10 +106,10 @@ public class Setting {
 		}
 	}
 
-	public static class b extends Setting {
+	public static class Boolean extends Setting {
 		private boolean value;
 
-		public b(final String name, final String configname, final Module parent, final Module.Category category, final boolean value) {
+		public Boolean(final String name, final String configname, final Module parent, final Module.Category category, final boolean value) {
 			super(name, configname, parent, category, Type.BOOLEAN);
 			this.value = value;
 		}
@@ -124,28 +123,11 @@ public class Setting {
 		}
 	}
 
-	public static class s extends Setting {
-		private String value;
-
-		public s(final String name, final String configname, final Module parent, final Module.Category category, final String value) {
-			super(name, configname, parent, category, Type.STRING);
-			this.value = value;
-		}
-
-		public String getValue() {
-			return this.value;
-		}
-
-		public void setValue(final String value) {
-			this.value = value;
-		}
-	}
-
-	public static class mode extends Setting {
+	public static class Mode extends Setting {
 		private String value;
 		private final java.util.List<String> modes;
 
-		public mode(final String name, final String configname, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value) {
+		public Mode(final String name, final String configname, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value) {
 			super(name, configname, parent, category, Type.MODE);
 			this.value = value;
 			this.modes = modes;
@@ -164,4 +146,3 @@ public class Setting {
 		}
 	}
 }
-

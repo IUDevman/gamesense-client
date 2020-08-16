@@ -17,7 +17,7 @@ public class AutoTool extends Module {
         super("AutoTool", Category.Misc);
     }
 
-    Setting.b switchBack;
+    Setting.Boolean switchBack;
 
 
     boolean shouldMoveBack = false;
@@ -25,7 +25,7 @@ public class AutoTool extends Module {
     long lastChange = 0L;
 
     public void setup() {
-        switchBack = registerB("Switch Back", "SwitchBack", false);
+        switchBack = registerBoolean("Switch Back", "SwitchBack", false);
     }
 
     @EventHandler

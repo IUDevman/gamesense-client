@@ -32,9 +32,9 @@ public class SelfTrap extends Module {
         super("SelfTrap", Category.Combat);
     }
 
-    private Setting.i blocksPerTick;
-    private Setting.i tickDelay;
-    private Setting.b rotate;
+    private Setting.Integer blocksPerTick;
+    private Setting.Integer tickDelay;
+    private Setting.Boolean rotate;
     private EntityPlayer closestTarget;
     private String lastTickTargetName;
     private int playerHotbarSlot = -1;
@@ -43,18 +43,17 @@ public class SelfTrap extends Module {
     private boolean isSneaking = false;
     private int offsetStep = 0;
     private boolean firstRun;
-    Setting.mode mode;
-
+    Setting.Mode mode;
 
     public void setup() {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Normal");
         modes.add("NoStep");
         modes.add("Simple");
-        mode = this.registerMode("Mode", "Mode", modes, "Normal");
-        rotate = this.registerB("Rotate", "Rotate", true);
-        blocksPerTick = this.registerI("Blocks Per Tick", "BlocksPerTick", 5, 0, 10);
-        tickDelay = this.registerI("Delay", "Delay", 0, 0, 10);
+        mode = registerMode("Mode", "Mode", modes, "Normal");
+        rotate = registerBoolean("Rotate", "Rotate", true);
+        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 5, 0, 10);
+        tickDelay = registerInteger("Delay", "Delay", 0, 0, 10);
     }
 
     protected void onEnable() {
@@ -63,7 +62,6 @@ public class SelfTrap extends Module {
             this.disable();
             return;
         }
-
         firstRun = true;
 
         // save initial player hand
@@ -89,7 +87,6 @@ public class SelfTrap extends Module {
 
         playerHotbarSlot = -1;
         lastHotbarSlot = -1;
-
     }
 
     @Override

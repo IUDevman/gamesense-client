@@ -30,39 +30,39 @@ public class SetSettingCommand extends Command {
             if (m.getName().equalsIgnoreCase(args[0])) {
                 GameSenseMod.getInstance().settingsManager.getSettingsForMod(m).stream().filter(s -> s.getConfigName().equalsIgnoreCase(args[1])).forEach(s -> {
                     if (s.getType().equals(Setting.Type.BOOLEAN)) {
-                            ((Setting.b) s).setValue(Boolean.parseBoolean(args[2]));
-                            Command.sendClientMessage(s.getConfigName() + " set to " + ((Setting.b) s).getValue() + "!");
+                            ((Setting.Boolean) s).setValue(java.lang.Boolean.parseBoolean(args[2]));
+                            Command.sendClientMessage(s.getConfigName() + " set to " + ((Setting.Boolean) s).getValue() + "!");
                     }
                     if (s.getType().equals(Setting.Type.INT)) {
-                        if (Integer.parseInt(args[2]) > ((Setting.i) s).getMax()) {
-                            ((Setting.i) s).setValue(((Setting.i) s).getMax());
+                        if (java.lang.Integer.parseInt(args[2]) > ((Setting.Integer) s).getMax()) {
+                            ((Setting.Integer) s).setValue(((Setting.Integer) s).getMax());
                         }
-                        if (Integer.parseInt(args[2]) < ((Setting.i) s).getMin()) {
-                            ((Setting.i) s).setValue(((Setting.i) s).getMin());
+                        if (java.lang.Integer.parseInt(args[2]) < ((Setting.Integer) s).getMin()) {
+                            ((Setting.Integer) s).setValue(((Setting.Integer) s).getMin());
                         }
-                        if (Integer.parseInt(args[2]) < ((Setting.i) s).getMax() && Integer.parseInt(args[2]) > ((Setting.i) s).getMin()) {
-                            ((Setting.i) s).setValue(Integer.parseInt(args[2]));
+                        if (java.lang.Integer.parseInt(args[2]) < ((Setting.Integer) s).getMax() && java.lang.Integer.parseInt(args[2]) > ((Setting.Integer) s).getMin()) {
+                            ((Setting.Integer) s).setValue(java.lang.Integer.parseInt(args[2]));
                         }
-                        Command.sendClientMessage(s.getConfigName() + " set to " + ((Setting.i) s).getValue() + "!");
+                        Command.sendClientMessage(s.getConfigName() + " set to " + ((Setting.Integer) s).getValue() + "!");
                     }
                     if (s.getType().equals(Setting.Type.DOUBLE)) {
-                        if (Double.parseDouble(args[2]) > ((Setting.d) s).getMax()) {
-                            ((Setting.d) s).setValue(((Setting.d) s).getMax());
+                        if (java.lang.Double.parseDouble(args[2]) > ((Setting.Double) s).getMax()) {
+                            ((Setting.Double) s).setValue(((Setting.Double) s).getMax());
                         }
-                        if (Double.parseDouble(args[2]) < ((Setting.d) s).getMin()) {
-                            ((Setting.d) s).setValue(((Setting.d) s).getMin());
+                        if (java.lang.Double.parseDouble(args[2]) < ((Setting.Double) s).getMin()) {
+                            ((Setting.Double) s).setValue(((Setting.Double) s).getMin());
                         }
-                        if (Double.parseDouble(args[2]) < ((Setting.d) s).getMax() && Double.parseDouble(args[2]) > ((Setting.d) s).getMin()) {
-                            ((Setting.d) s).setValue(Double.parseDouble(args[2]));
+                        if (java.lang.Double.parseDouble(args[2]) < ((Setting.Double) s).getMax() && java.lang.Double.parseDouble(args[2]) > ((Setting.Double) s).getMin()) {
+                            ((Setting.Double) s).setValue(java.lang.Double.parseDouble(args[2]));
                         }
-                        Command.sendClientMessage(s.getConfigName() + " set to " + ((Setting.d) s).getValue() + "!");
+                        Command.sendClientMessage(s.getConfigName() + " set to " + ((Setting.Double) s).getValue() + "!");
                     }
                     if (s.getType().equals(Setting.Type.MODE)) {
-                        if (!((Setting.mode) s).getModes().contains(args[2])) {
+                        if (!((Setting.Mode) s).getModes().contains(args[2])) {
                             Command.sendClientMessage("Invalid input!");
                         } else {
-                            ((Setting.mode) s).setValue(args[2]);
-                            Command.sendClientMessage(s.getConfigName() + " set to " + ((Setting.mode) s).getValue() + "!");
+                            ((Setting.Mode) s).setValue(args[2]);
+                            Command.sendClientMessage(s.getConfigName() + " set to " + ((Setting.Mode) s).getValue() + "!");
                         }
                     }
                 });

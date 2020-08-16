@@ -17,16 +17,16 @@ public class MobOwner extends Module {
         super("MobOwner", Category.Render);
     }
 
-    private Setting.i requestTime;
-    private Setting.b debug;
+    private Setting.Integer requestTime;
+    private Setting.Boolean debug;
 
     private final Map<String, String> cachedUUIDs = new HashMap<String, String>(){{ }};
     private int apiRequests = 0;
     private final String invalidText = "Servers offline!";
 
     public void setup(){
-        requestTime = this.registerI("Reset Ticks", "ResetTicks", 10, 0, 20);
-        debug = this.registerB("Debug", "Debug", false);
+        requestTime = registerInteger("Reset Ticks", "ResetTicks", 10, 0, 20);
+        debug = registerBoolean("Debug", "Debug", false);
     }
 
     public void onUpdate(){

@@ -13,7 +13,7 @@ public class Sprint extends Module {
         super("Sprint", Category.Movement);
     }
 
-    Setting.mode Mode;
+    Setting.Mode Mode;
 
     public void setup() {
         ArrayList<String> sprintModes = new ArrayList<>();

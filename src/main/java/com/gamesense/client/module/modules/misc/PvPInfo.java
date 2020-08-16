@@ -31,11 +31,11 @@ public class PvPInfo extends Module {
     public Set renderPlayers;
 
 
-    Setting.b visualrange;
-    Setting.b pearlalert;
-    Setting.b popcounter;
-    Setting.b strengthdetect;
-    Setting.mode ChatColor;
+    Setting.Boolean visualrange;
+    Setting.Boolean pearlalert;
+    Setting.Boolean popcounter;
+    Setting.Boolean strengthdetect;
+    Setting.Mode ChatColor;
 
     public void setup() {
         ArrayList<String> colors = new ArrayList<>();
@@ -55,10 +55,10 @@ public class PvPInfo extends Module {
         colors.add("Aqua");
         colors.add("Light Purple");
         colors.add("White");
-        visualrange = registerB("Visual Range", "VisualRange", false);
-        pearlalert = registerB("Pearl Alert", "PearlAlert",false);
-        popcounter = registerB("Pop Counter", "PopCounter", false);
-        strengthdetect = registerB("Strength Detect", "StrengthDetect", false);
+        visualrange = registerBoolean("Visual Range", "VisualRange", false);
+        pearlalert = registerBoolean("Pearl Alert", "PearlAlert",false);
+        popcounter = registerBoolean("Pop Counter", "PopCounter", false);
+        strengthdetect = registerBoolean("Strength Detect", "StrengthDetect", false);
         ChatColor = registerMode("Color", "Color", colors, "Light Purple");
     }
 

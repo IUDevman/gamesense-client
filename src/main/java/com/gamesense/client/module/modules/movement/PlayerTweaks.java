@@ -18,16 +18,16 @@ public class PlayerTweaks extends Module {
         super("PlayerTweaks", Category.Movement);
     }
 
-    public Setting.b guiMove;
-    public Setting.b noPush;
-    public Setting.b noSlow;
-    Setting.b antiKnockBack;
+    public Setting.Boolean guiMove;
+    public Setting.Boolean noPush;
+    public Setting.Boolean noSlow;
+    Setting.Boolean antiKnockBack;
 
     public void setup(){
-        guiMove = this.registerB("Gui Move", "GuiMove", false);
-        noPush = this.registerB("No Push", "NoPush", false);
-        noSlow = this.registerB("No Slow", "NoSlow", false);
-        antiKnockBack = this.registerB("Velocity", "Velocity", false);
+        guiMove = registerBoolean("Gui Move", "GuiMove", false);
+        noPush = registerBoolean("No Push", "NoPush", false);
+        noSlow = registerBoolean("No Slow", "NoSlow", false);
+        antiKnockBack = registerBoolean("Velocity", "Velocity", false);
     }
 
     //No Slow

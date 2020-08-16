@@ -14,10 +14,10 @@ public class AutoRespawn extends Module {
         super("AutoRespawn", Category.Misc);
     }
 
-    Setting.b coords;
+    Setting.Boolean coords;
 
     public void setup(){
-        coords = registerB("Coords", "Coords", false);
+        coords = registerBoolean("Coords", "Coords", false);
     }
 
     @EventHandler

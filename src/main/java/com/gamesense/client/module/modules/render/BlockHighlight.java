@@ -21,14 +21,14 @@ public class BlockHighlight extends Module {
         super("BlockHighlight", Category.Render);
     }
 
-    Setting.i w;
-    Setting.b shade;
+    Setting.Integer w;
+    Setting.Boolean shade;
     int c; //outline
     int c2; //fill
 
     public void setup() {
-        shade = registerB("Fill", "Fill", false);
-        w = registerI("Width", "Width", 2, 1, 10);
+        shade = registerBoolean("Fill", "Fill", false);
+        w = registerInteger("Width", "Width", 2, 1, 10);
     }
 
     public void onWorldRender(RenderEvent event) {
@@ -36,7 +36,7 @@ public class BlockHighlight extends Module {
         AxisAlignedBB bb;
         BlockPos pos;
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (ColorMain.Rainbow.getValue()){
+        if (ColorMain.rainbow.getValue()){
             c = Rainbow.getColorWithOpacity(255).getRGB();
             c2 = Rainbow.getColorWithOpacity(50).getRGB();
         }

@@ -10,24 +10,24 @@ public class RenderTweaks extends Module {
         super("RenderTweaks", Category.Render);
     }
 
-    public Setting.b viewClip;
-    Setting.b nekoAnimation;
-    Setting.b lowOffhand;
-    Setting.b fovChanger;
-    Setting.d lowOffhandSlider;
-    Setting.i fovChangerSlider;
+    public Setting.Boolean viewClip;
+    Setting.Boolean nekoAnimation;
+    Setting.Boolean lowOffhand;
+    Setting.Boolean fovChanger;
+    Setting.Double lowOffhandSlider;
+    Setting.Integer fovChangerSlider;
 
     ItemRenderer itemRenderer = mc.entityRenderer.itemRenderer;
 
     private float oldFOV;
 
     public void setup(){
-        viewClip = this.registerB("View Clip", "ViewClip", false);
-        nekoAnimation = this.registerB("Neko Animation", "NekoAnimation", false);
-        lowOffhand = this.registerB("Low Offhand", "LowOffhand", false);
-        lowOffhandSlider = this.registerD("Offhand Height", "OffhandHeight", 1.0, 0.1, 1.0);
-        fovChanger = this.registerB("FOV", "FOV", false);
-        fovChangerSlider = this.registerI("FOV Slider", "FOVSlider", 90, 70, 200);
+        viewClip = registerBoolean("View Clip", "ViewClip", false);
+        nekoAnimation = registerBoolean("Neko Animation", "NekoAnimation", false);
+        lowOffhand = registerBoolean("Low Offhand", "LowOffhand", false);
+        lowOffhandSlider = registerDouble("Offhand Height", "OffhandHeight", 1.0, 0.1, 1.0);
+        fovChanger = registerBoolean("FOV", "FOV", false);
+        fovChangerSlider = registerInteger("FOV Slider", "FOVSlider", 90, 70, 200);
     }
 
     @Override

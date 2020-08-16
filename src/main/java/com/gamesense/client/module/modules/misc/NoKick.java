@@ -17,14 +17,14 @@ import net.minecraft.network.play.server.SPacketSoundEffect;
 public class NoKick extends Module {
     public NoKick() {super("NoKick", Category.Misc);}
 
-    public Setting.b noPacketKick;
-    Setting.b noSlimeCrash;
-    Setting.b noOffhandCrash;
+    public Setting.Boolean noPacketKick;
+    Setting.Boolean noSlimeCrash;
+    Setting.Boolean noOffhandCrash;
 
     public void setup(){
-        noPacketKick = this.registerB("Packet", "Packet", true);
-        noSlimeCrash = this.registerB("Slime", "Slime", false);
-        noOffhandCrash = this.registerB("Offhand", "Offhand", false);
+        noPacketKick = registerBoolean("Packet", "Packet", true);
+        noSlimeCrash = registerBoolean("Slime", "Slime", false);
+        noOffhandCrash = registerBoolean("Offhand", "Offhand", false);
     }
 
     //slime

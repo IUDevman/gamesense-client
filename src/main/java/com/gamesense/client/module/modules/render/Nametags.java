@@ -38,25 +38,25 @@ public class Nametags extends Module {
         super("Nametags", Category.Render);
     }
 
-    Setting.b durability;
-    Setting.b armor;
-    Setting.b enchantnames;
-    Setting.b itemName;
-    Setting.b gamemode;
-    Setting.b health;
-    Setting.b ping;
-    Setting.b entityId;
-    Setting.mode borderColor;
+    Setting.Boolean durability;
+    Setting.Boolean armor;
+    Setting.Boolean enchantnames;
+    Setting.Boolean itemName;
+    Setting.Boolean gamemode;
+    Setting.Boolean health;
+    Setting.Boolean ping;
+    Setting.Boolean entityId;
+    Setting.Mode borderColor;
 
     public void setup() {
-        durability = registerB("Durability", "Durability", true);
-        armor = registerB("Armor", "Armor", true);
-        enchantnames = registerB("Enchants", "Enchants", true);
-        itemName = registerB("Item Name", "ItemName", false);
-        gamemode = registerB("Gamemode", "Gamemode", false);
-        health = registerB("Health", "Health", true);
-        ping = registerB("Ping", "Ping", false);
-        entityId = registerB("Entity Id", "EntityId", false);
+        durability = registerBoolean("Durability", "Durability", true);
+        armor = registerBoolean("Armor", "Armor", true);
+        enchantnames = registerBoolean("Enchants", "Enchants", true);
+        itemName = registerBoolean("Item Name", "ItemName", false);
+        gamemode = registerBoolean("Gamemode", "Gamemode", false);
+        health = registerBoolean("Health", "Health", true);
+        ping = registerBoolean("Ping", "Ping", false);
+        entityId = registerBoolean("Entity Id", "EntityId", false);
         ArrayList<String> borderColorModes = new ArrayList<>();
         borderColorModes.add("Normal");
         borderColorModes.add("Rainbow");

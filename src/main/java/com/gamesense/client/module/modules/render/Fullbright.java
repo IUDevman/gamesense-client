@@ -13,7 +13,7 @@ public class Fullbright extends Module {
     }
 
     float old;
-    Setting.mode Mode;
+    Setting.Mode Mode;
 
     public void setup() {
         ArrayList<String> modes = new ArrayList<>();

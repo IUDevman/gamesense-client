@@ -24,19 +24,19 @@ public class HoleESP extends Module {
     }
 
     //settings
-    public static Setting.i rangeS;
-    Setting.b rainbow;
-    Setting.b hideOwn;
-    Setting.b flatOwn;
-    Setting.mode mode;
-    Setting.mode type;
+    public static Setting.Integer rangeS;
+    Setting.Boolean rainbow;
+    Setting.Boolean hideOwn;
+    Setting.Boolean flatOwn;
+    Setting.Mode mode;
+    Setting.Mode type;
 
     //load settings
     public void setup(){
-        rangeS = registerI("Range", "Range", 5, 1, 20);
-        rainbow = registerB("Rainbow", "Rainbow", false);
-        hideOwn = registerB("Hide Own", "HideOwn", false);
-        flatOwn = registerB("Flat Own", "FlatOwn", false);
+        rangeS = registerInteger("Range", "Range", 5, 1, 20);
+        rainbow = registerBoolean("Rainbow", "Rainbow", false);
+        hideOwn = registerBoolean("Hide Own", "HideOwn", false);
+        flatOwn = registerBoolean("Flat Own", "FlatOwn", false);
 
         ArrayList<String> render = new ArrayList<>();
         render.add("Outline");

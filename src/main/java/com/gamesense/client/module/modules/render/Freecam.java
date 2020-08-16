@@ -17,10 +17,10 @@ import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 public class Freecam extends Module {
     public Freecam() {super("Freecam", Category.Render);}
 
-    Setting.d speed;
+    Setting.Double speed;
 
     public void setup() {
-        speed = registerD("Speed", "Speed", 5.0D, 0.0D, 10.0D);
+        speed = registerDouble("Speed", "Speed", 5.0D, 0.0D, 10.0D);
     }
 
     private double posX, posY, posZ;

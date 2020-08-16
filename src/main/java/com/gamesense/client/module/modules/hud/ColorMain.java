@@ -13,18 +13,18 @@ public class ColorMain extends Module {
         setDrawn(false);
     }
 
-    public static Setting.b Rainbow;
-    public static Setting.i Red;
-    public static Setting.i Blue;
-    public static Setting.i Green;
-    public static Setting.mode friendcolor;
-    public static Setting.mode enemycolor;
+    public static Setting.Boolean rainbow;
+    public static Setting.Integer Red;
+    public static Setting.Integer Blue;
+    public static Setting.Integer Green;
+    public static Setting.Mode friendcolor;
+    public static Setting.Mode enemycolor;
 
     public void setup() {
-        Rainbow = this.registerB("Rainbow", "Rainbow", false);
-        Red = this.registerI("Red", "Red", 255, 0, 255);
-        Green = this.registerI("Green", "Green", 26, 0, 255);
-        Blue = this.registerI("Blue", "Blue", 42, 0, 255);
+        rainbow = registerBoolean("Rainbow", "Rainbow", false);
+        Red = registerInteger("Red", "Red", 255, 0, 255);
+        Green = registerInteger("Green", "Green", 26, 0, 255);
+        Blue = registerInteger("Blue", "Blue", 42, 0, 255);
 
         ArrayList<String> tab = new ArrayList<>();
         tab.add("Black");
@@ -43,8 +43,8 @@ public class ColorMain extends Module {
         tab.add("Aqua");
         tab.add("Light Purple");
         tab.add("White");
-        friendcolor = this.registerMode("Friend", "FriendColor", tab, "Blue");
-        enemycolor = this.registerMode("Enemy", "EnemyColor", tab, "Red");
+        friendcolor = registerMode("Friend", "FriendColor", tab, "Blue");
+        enemycolor = registerMode("Enemy", "EnemyColor", tab, "Red");
     }
 
     public void onEnable(){

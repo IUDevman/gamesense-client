@@ -75,7 +75,7 @@ public class LogoutSpots extends Module {
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         Color color;
         Color c = Rainbow.getColor();
-        if(ColorMain.Rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+        if(ColorMain.rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
         else color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
         GameSenseTessellator.drawBoundingBox(bb, width, color.getRGB());
     }
@@ -156,7 +156,7 @@ public class LogoutSpots extends Module {
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
         Color color;
         Color c = Rainbow.getColor();
-        if(ColorMain.Rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+        if(ColorMain.rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
         else color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
         fontRendererIn.drawStringWithShadow(line1, -i, 10, color.getRGB());
         fontRendererIn.drawStringWithShadow(line2, -ii, 20, color.getRGB());

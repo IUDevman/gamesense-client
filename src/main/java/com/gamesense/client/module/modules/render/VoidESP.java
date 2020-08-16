@@ -26,11 +26,11 @@ public class VoidESP extends Module {
         super("VoidESP", Category.Render);
     }
 
-    Setting.b rainbow;
-    Setting.i renderDistance;
-    Setting.i activeYValue;
-    Setting.mode renderType;
-    Setting.mode renderMode;
+    Setting.Boolean rainbow;
+    Setting.Integer renderDistance;
+    Setting.Integer activeYValue;
+    Setting.Mode renderType;
+    Setting.Mode renderMode;
 
     public void setup(){
         ArrayList<String> render = new ArrayList<>();
@@ -42,9 +42,9 @@ public class VoidESP extends Module {
         modes.add("Box");
         modes.add("Flat");
 
-        rainbow = this.registerB("Rainbow", "Rainbow", false);
-        renderDistance = this.registerI("Distance", "Distance", 10, 1, 40);
-        activeYValue = this.registerI("Activate Y", "ActivateY", 20, 0, 256);
+        rainbow = registerBoolean("Rainbow", "Rainbow", false);
+        renderDistance = registerInteger("Distance", "Distance", 10, 1, 40);
+        activeYValue = registerInteger("Activate Y", "ActivateY", 20, 0, 256);
         renderType = registerMode("Render", "Render", render, "Both");
         renderMode = registerMode("Mode", "Mode", modes, "Flat");
     }

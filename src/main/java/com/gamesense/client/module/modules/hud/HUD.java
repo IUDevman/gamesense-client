@@ -44,29 +44,29 @@ public class HUD extends Module {
         resource = new ResourceLocation("minecraft:inventory_viewer.png");
     }
 
-    public static Setting.b customFont;
-    Setting.b PotionEffects;
-    Setting.b Watermark;
-    Setting.b Welcomer;
-    Setting.b Inventory;
-    Setting.i InventoryX;
-    Setting.i InventoryY;
-    Setting.b GameSenseInfo;
-    Setting.mode Type;
-    Setting.b ArrayList;
-    Setting.b ArmorHud;
-    Setting.i potionx;
-    Setting.i potiony;
-    Setting.i welcomex;
-    Setting.i welcomey;
-    Setting.i infox;
-    Setting.i infoy;
-    Setting.b sortUp;
-    Setting.b right;
-    Setting.b psortUp;
-    Setting.b pright;
-    Setting.i arrayx;
-    Setting.i arrayy;
+    public static Setting.Boolean customFont;
+    Setting.Boolean PotionEffects;
+    Setting.Boolean Watermark;
+    Setting.Boolean Welcomer;
+    Setting.Boolean Inventory;
+    Setting.Integer inventoryX;
+    Setting.Integer inventoryY;
+    Setting.Boolean GameSenseInfo;
+    Setting.Mode Type;
+    Setting.Boolean ArrayList;
+    Setting.Boolean ArmorHud;
+    Setting.Integer potionx;
+    Setting.Integer potiony;
+    Setting.Integer welcomex;
+    Setting.Integer welcomey;
+    Setting.Integer infox;
+    Setting.Integer infoy;
+    Setting.Boolean sortUp;
+    Setting.Boolean right;
+    Setting.Boolean psortUp;
+    Setting.Boolean pright;
+    Setting.Integer arrayx;
+    Setting.Integer arrayy;
     private BlockPos[] surroundOffset;
     ResourceLocation resource;
     Color c;
@@ -84,33 +84,33 @@ public class HUD extends Module {
         ArrayList<String> Modes = new ArrayList<>();
         Modes.add("PvP");
         Modes.add("Combat");
-        Type = this.registerMode("Info Type", "InfoType", Modes, "PvP");
-        infox = this.registerI("Information X", "InformationX", 0, 0, 1000);
-        infoy = this.registerI("Information Y", "InformationY",  0, 0, 1000);
-        GameSenseInfo = this.registerB("Information", "Information", false);
-        ArmorHud = this.registerB("Armor Hud", "ArmorHud", false);
-        ArrayList = this.registerB("ArrayList", "ArrayList",  false);
-        sortUp = registerB("Array Sort Up", "ArraySortUp", false);
-        right = registerB("Array Right", "ArrayRight", false);
-        arrayx = registerI("Array X", "ArrayX", 0, 0, 1000);
-        arrayy = registerI("Array Y", "ArrayY",0 , 0 ,1000);
-        Inventory = this.registerB("Inventory", "Inventory", false);
-        InventoryX = this.registerI("Inventory X", "InventoryX", 0,0,1000);
-        InventoryY = this.registerI("Inventory Y", "InventoryY", 12,0,1000);
-        PotionEffects = this.registerB("Potion Effects", "PotionEffects",false);
-        potionx = this.registerI("Potion X", "PotionX", 0, 0, 1000);
-        potiony = this.registerI("Potion Y", "PotionY", 0, 0, 1000);
-        psortUp = registerB("Potion Sort Up", "PotionSortUp", false);
-        pright = registerB("Potion Right", "PotionRight", false);
-        Watermark = this.registerB("Watermark", "Watermark", false);
-        Welcomer = this.registerB("Welcomer", "Welcomer", false);
-        welcomex = this.registerI("Welcomer X", "WelcomerX", 0, 0, 1000);
-        welcomey = this.registerI("Welcomer Y", "WelcomerY", 0, 0, 1000);
-        customFont = this.registerB("Custom Font", "CustomFont", false);
+        Type = registerMode("Info Type", "InfoType", Modes, "PvP");
+        infox = registerInteger("Information X", "InformationX", 0, 0, 1000);
+        infoy = registerInteger("Information Y", "InformationY",  0, 0, 1000);
+        GameSenseInfo = registerBoolean("Information", "Information", false);
+        ArmorHud = registerBoolean("Armor Hud", "ArmorHud", false);
+        ArrayList = registerBoolean("ArrayList", "ArrayList",  false);
+        sortUp = registerBoolean("Array Sort Up", "ArraySortUp", false);
+        right = registerBoolean("Array Right", "ArrayRight", false);
+        arrayx = registerInteger("Array X", "ArrayX", 0, 0, 1000);
+        arrayy = registerInteger("Array Y", "ArrayY",0 , 0 ,1000);
+        Inventory = registerBoolean("Inventory", "Inventory", false);
+        inventoryX = registerInteger("Inventory X", "InventoryX", 0,0,1000);
+        inventoryY = registerInteger("Inventory Y", "InventoryY", 12,0,1000);
+        PotionEffects = registerBoolean("Potion Effects", "PotionEffects",false);
+        potionx = registerInteger("Potion X", "PotionX", 0, 0, 1000);
+        potiony = registerInteger("Potion Y", "PotionY", 0, 0, 1000);
+        psortUp = registerBoolean("Potion Sort Up", "PotionSortUp", false);
+        pright = registerBoolean("Potion Right", "PotionRight", false);
+        Watermark = registerBoolean("Watermark", "Watermark", false);
+        Welcomer = registerBoolean("Welcomer", "Welcomer", false);
+        welcomex = registerInteger("Welcomer X", "WelcomerX", 0, 0, 1000);
+        welcomey = registerInteger("Welcomer Y", "WelcomerY", 0, 0, 1000);
+        customFont = registerBoolean("Custom Font", "CustomFont", false);
     }
 
     public void onRender() {
-        if (ColorMain.Rainbow.getValue())
+        if (ColorMain.rainbow.getValue())
             c = Rainbow.getColor();
         else c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue());
 
@@ -155,7 +155,7 @@ public class HUD extends Module {
         }
 
         if (Inventory.getValue()) {
-            drawInventory(InventoryX.getValue(), InventoryY.getValue());
+            drawInventory(inventoryX.getValue(), inventoryY.getValue());
         }
 
         if (GameSenseInfo.getValue()) {
@@ -272,7 +272,7 @@ public class HUD extends Module {
                         .filter(Module::isDrawn)
                         .sorted(Comparator.comparing(module -> FontUtils.getStringWidth(customFont.getValue(), module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo()) * (-1)))
                         .forEach(m -> {
-                            if (ColorMain.Rainbow.getValue()) {
+                            if (ColorMain.rainbow.getValue()) {
                                 int rgb = Color.HSBtoRGB(hue[0], 1f, 1f);
                                 int r = (rgb >> 16) & 0xFF;
                                 int g = (rgb >> 8) & 0xFF;

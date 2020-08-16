@@ -16,14 +16,14 @@ public class ModeComponent extends Component {
 
     private boolean hovered;
     private final Buttons parent;
-    private final Setting.mode set;
+    private final Setting.Mode set;
     private int offset;
     private int x;
     private int y;
     private final Module mod;
     private int modeIndex;
     
-    public ModeComponent(final Setting.mode set, final Buttons button, final Module mod, final int offset) {
+    public ModeComponent(final Setting.Mode set, final Buttons button, final Module mod, final int offset) {
         this.set = set;
         this.parent = button;
         this.mod = mod;

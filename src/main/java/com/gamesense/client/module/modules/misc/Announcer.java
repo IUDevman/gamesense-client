@@ -43,15 +43,15 @@ public class Announcer extends Module {
     int blocksBroken = 0;
     int eaten = 0;
 
-    public Setting.b clientSide;
-    Setting.b walk;
-    Setting.b place;
-    Setting.b jump;
-    Setting.b breaking;
-    Setting.b attack;
-    Setting.b eat;
-    public Setting.b clickGui;
-    Setting.i delay;
+    public Setting.Boolean clientSide;
+    Setting.Boolean walk;
+    Setting.Boolean place;
+    Setting.Boolean jump;
+    Setting.Boolean breaking;
+    Setting.Boolean attack;
+    Setting.Boolean eat;
+    public Setting.Boolean clickGui;
+    Setting.Integer delay;
 
     //TODO: Multilingual announcer :D
     public static String walkMessage = "I just walked {blocks} meters thanks to GameSense!";
@@ -72,15 +72,15 @@ public class Announcer extends Module {
 
     public void setup(){
 
-        clientSide = this.registerB("Client Side", "ClientSide", false);
-        walk = this.registerB("Walk", "Walk",  true);
-        place = this.registerB("Place", "Place", true);
-        jump = this.registerB("Jump", "Jump", true);
-        breaking = this.registerB("Breaking", "Breaking", true);
-        attack = this.registerB("Attack", "Attack",true);
-        eat = this.registerB("Eat", "Eat",true);
-        clickGui = this.registerB("DevGUI", "DevGUI",true);
-        delay = this.registerI("Delay", "Delay",1,1,20);
+        clientSide = registerBoolean("Client Side", "ClientSide", false);
+        walk = registerBoolean("Walk", "Walk",  true);
+        place = registerBoolean("Place", "Place", true);
+        jump = registerBoolean("Jump", "Jump", true);
+        breaking = registerBoolean("Breaking", "Breaking", true);
+        attack = registerBoolean("Attack", "Attack",true);
+        eat = registerBoolean("Eat", "Eat",true);
+        clickGui = registerBoolean("DevGUI", "DevGUI",true);
+        delay = registerInteger("Delay", "Delay",1,1,20);
     }
 
 

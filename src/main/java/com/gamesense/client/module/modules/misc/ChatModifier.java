@@ -22,13 +22,13 @@ public class ChatModifier extends Module {
         super("ChatModifier", Category.Misc);
     }
 
-    public Setting.b clearBkg;
-    Setting.b chattimestamps;
-    Setting.mode format;
-    Setting.mode color;
-    Setting.mode decoration;
-    Setting.b space;
-    Setting.b greentext;
+    public Setting.Boolean clearBkg;
+    Setting.Boolean chattimestamps;
+    Setting.Mode format;
+    Setting.Mode color;
+    Setting.Mode decoration;
+    Setting.Boolean space;
+    Setting.Boolean greentext;
 
     public void setup(){
 
@@ -45,13 +45,13 @@ public class ChatModifier extends Module {
             colors.add(cf.getName());
         }
 
-        clearBkg = registerB("Clear Chat", "ClearChat", false);
-        greentext = registerB("Green Text", "GreenText", false);
-        chattimestamps = registerB("Chat Time Stamps", "ChatTimeStamps", false);
+        clearBkg = registerBoolean("Clear Chat", "ClearChat", false);
+        greentext = registerBoolean("Green Text", "GreenText", false);
+        chattimestamps = registerBoolean("Chat Time Stamps", "ChatTimeStamps", false);
         format = registerMode("Format", "Format", formats, "H24:mm");
         decoration = registerMode("Deco", "Deco", deco, "[ ]");
         color = registerMode("Color", "Colors", colors, ChatFormatting.GRAY.getName());
-        space = registerB("Space", "Space", false);
+        space = registerBoolean("Space", "Space", false);
 
     }
 

@@ -49,10 +49,10 @@ public class LoadModules {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndModConfig(configname, mm);
 
-                        if (mod instanceof Setting.i) {
-                            ((Setting.i) mod).setValue(Integer.parseInt(isOn));
-                        } else if (mod instanceof Setting.d){
-                            ((Setting.d) mod).setValue(Double.parseDouble(isOn));
+                        if (mod instanceof Setting.Integer) {
+                            ((Setting.Integer) mod).setValue(java.lang.Integer.parseInt(isOn));
+                        } else if (mod instanceof Setting.Double){
+                            ((Setting.Double) mod).setValue(java.lang.Double.parseDouble(isOn));
                         }
                     }
                 }
@@ -75,7 +75,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Combat)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.b) mod).setValue(Boolean.parseBoolean(isOn));
+                        ((Setting.Boolean) mod).setValue(java.lang.Boolean.parseBoolean(isOn));
                     }
                 }
             }
@@ -96,7 +96,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Combat)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.mode) mod).setValue(isOn);
+                        ((Setting.Mode) mod).setValue(isOn);
                     }
                 }
             }
@@ -132,10 +132,10 @@ public class LoadModules {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndModConfig(configname, mm);
 
-                        if (mod instanceof Setting.i) {
-                            ((Setting.i) mod).setValue(Integer.parseInt(isOn));
-                        } else if (mod instanceof Setting.d){
-                            ((Setting.d) mod).setValue(Double.parseDouble(isOn));
+                        if (mod instanceof Setting.Integer) {
+                            ((Setting.Integer) mod).setValue(java.lang.Integer.parseInt(isOn));
+                        } else if (mod instanceof Setting.Double){
+                            ((Setting.Double) mod).setValue(java.lang.Double.parseDouble(isOn));
                         }
                     }
                 }
@@ -158,7 +158,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Exploits)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.b) mod).setValue(Boolean.parseBoolean(isOn));
+                        ((Setting.Boolean) mod).setValue(java.lang.Boolean.parseBoolean(isOn));
                     }
                 }
             }
@@ -179,7 +179,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Exploits)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.mode) mod).setValue(isOn);
+                        ((Setting.Mode) mod).setValue(isOn);
                     }
                 }
             }
@@ -215,10 +215,10 @@ public class LoadModules {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndModConfig(configname, mm);
 
-                        if (mod instanceof Setting.i) {
-                            ((Setting.i) mod).setValue(Integer.parseInt(isOn));
-                        } else if (mod instanceof Setting.d){
-                            ((Setting.d) mod).setValue(Double.parseDouble(isOn));
+                        if (mod instanceof Setting.Integer) {
+                            ((Setting.Integer) mod).setValue(java.lang.Integer.parseInt(isOn));
+                        } else if (mod instanceof Setting.Double){
+                            ((Setting.Double) mod).setValue(java.lang.Double.parseDouble(isOn));
                         }
                     }
                 }
@@ -241,7 +241,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.HUD)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.b) mod).setValue(Boolean.parseBoolean(isOn));
+                        ((Setting.Boolean) mod).setValue(java.lang.Boolean.parseBoolean(isOn));
                     }
                 }
             }
@@ -262,7 +262,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.HUD)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.mode) mod).setValue(isOn);
+                        ((Setting.Mode) mod).setValue(isOn);
                     }
                 }
             }
@@ -298,10 +298,10 @@ public class LoadModules {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndModConfig(configname, mm);
 
-                        if (mod instanceof Setting.i) {
-                            ((Setting.i) mod).setValue(Integer.parseInt(isOn));
-                        } else if (mod instanceof Setting.d){
-                            ((Setting.d) mod).setValue(Double.parseDouble(isOn));
+                        if (mod instanceof Setting.Integer) {
+                            ((Setting.Integer) mod).setValue(java.lang.Integer.parseInt(isOn));
+                        } else if (mod instanceof Setting.Double){
+                            ((Setting.Double) mod).setValue(java.lang.Double.parseDouble(isOn));
                         }
                     }
                 }
@@ -324,7 +324,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Misc)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.b) mod).setValue(Boolean.parseBoolean(isOn));
+                        ((Setting.Boolean) mod).setValue(java.lang.Boolean.parseBoolean(isOn));
                     }
                 }
             }
@@ -345,7 +345,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Misc)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.mode) mod).setValue(isOn);
+                        ((Setting.Mode) mod).setValue(isOn);
                     }
                 }
             }
@@ -381,10 +381,10 @@ public class LoadModules {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndModConfig(configname, mm);
 
-                        if (mod instanceof Setting.i) {
-                            ((Setting.i) mod).setValue(Integer.parseInt(isOn));
-                        } else if (mod instanceof Setting.d){
-                            ((Setting.d) mod).setValue(Double.parseDouble(isOn));
+                        if (mod instanceof Setting.Integer) {
+                            ((Setting.Integer) mod).setValue(java.lang.Integer.parseInt(isOn));
+                        } else if (mod instanceof Setting.Double){
+                            ((Setting.Double) mod).setValue(java.lang.Double.parseDouble(isOn));
                         }
                     }
                 }
@@ -407,7 +407,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Movement)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.b) mod).setValue(Boolean.parseBoolean(isOn));
+                        ((Setting.Boolean) mod).setValue(java.lang.Boolean.parseBoolean(isOn));
                     }
                 }
             }
@@ -428,7 +428,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Movement)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.mode) mod).setValue(isOn);
+                        ((Setting.Mode) mod).setValue(isOn);
                     }
                 }
             }
@@ -464,10 +464,10 @@ public class LoadModules {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndModConfig(configname, mm);
 
-                        if (mod instanceof Setting.i) {
-                            ((Setting.i) mod).setValue(Integer.parseInt(isOn));
-                        } else if (mod instanceof Setting.d){
-                            ((Setting.d) mod).setValue(Double.parseDouble(isOn));
+                        if (mod instanceof Setting.Integer) {
+                            ((Setting.Integer) mod).setValue(java.lang.Integer.parseInt(isOn));
+                        } else if (mod instanceof Setting.Double){
+                            ((Setting.Double) mod).setValue(java.lang.Double.parseDouble(isOn));
                         }
                     }
                 }
@@ -490,7 +490,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Render)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.b) mod).setValue(Boolean.parseBoolean(isOn));
+                        ((Setting.Boolean) mod).setValue(java.lang.Boolean.parseBoolean(isOn));
                     }
                 }
             }
@@ -511,7 +511,7 @@ public class LoadModules {
                 for(Module mm : ModuleManager.getModulesInCategory(Module.Category.Render)) {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.mode) mod).setValue(isOn);
+                        ((Setting.Mode) mod).setValue(isOn);
                     }
                 }
             }

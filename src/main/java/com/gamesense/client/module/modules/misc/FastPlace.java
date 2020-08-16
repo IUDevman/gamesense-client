@@ -7,14 +7,14 @@ import net.minecraft.init.Items;
 public class FastPlace extends Module {
     public FastPlace() {super("FastPlace", Category.Misc);}
 
-    Setting.b exp;
-    Setting.b crystals;
-    Setting.b everything;
+    Setting.Boolean exp;
+    Setting.Boolean crystals;
+    Setting.Boolean everything;
 
     public void setup() {
-        exp = registerB("Exp", "Exp", false);
-        crystals = registerB("Crystals", "Crystals", false);
-        everything = registerB("Eveything", "Everything",false);
+        exp = registerBoolean("Exp", "Exp", false);
+        crystals = registerBoolean("Crystals", "Crystals", false);
+        everything = registerBoolean("Eveything", "Everything",false);
     }
 
     public void onUpdate() {

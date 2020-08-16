@@ -15,14 +15,14 @@ import java.awt.Color;
 public class BooleanComponent extends Component {
 
     private boolean hovered;
-    private final Setting.b op;
+    private final Setting.Boolean op;
     private final Buttons parent;
     private int offset;
     private int x;
     private int y;
 
 
-    public BooleanComponent(final Setting.b option, final Buttons button, final int offset) {
+    public BooleanComponent(final Setting.Boolean option, final Buttons button, final int offset) {
         this.op = option;
         this.parent = button;
         this.x = button.parent.getX() + button.parent.getWidth();
@@ -32,7 +32,7 @@ public class BooleanComponent extends Component {
     
     @Override
     public void renderComponent() {
-        if (ColorMain.Rainbow.getValue()){
+        if (ColorMain.rainbow.getValue()){
             ClickGUI.color = Rainbow.getColorWithOpacity(ClickGuiModule.opacity.getValue()).getRGB();
         }
         else {

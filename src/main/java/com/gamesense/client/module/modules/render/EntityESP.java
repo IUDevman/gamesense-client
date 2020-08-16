@@ -23,38 +23,38 @@ public class EntityESP extends Module {
         Modes.add("Box");
         Modes.add("Outline");
         Modes.add("Glow");
-        exp = registerB("Exp Bottles", "ExpBottles", false);
-        epearls = registerB("Ender Pearls", "EnderPearls", false);
-        crystals = registerB("Crystals", "Crystals", false);
-        items = registerB("Items", "Items", false);
-        orbs = registerB("Exp Orbs", "ExpOrbs", false);
-        RenderMode = registerMode("Mode", "Mode", Modes, "Box");
+        exp = registerBoolean("Exp Bottles", "ExpBottles", false);
+        epearls = registerBoolean("Ender Pearls", "EnderPearls", false);
+        crystals = registerBoolean("Crystals", "Crystals", false);
+        items = registerBoolean("Items", "Items", false);
+        orbs = registerBoolean("Exp Orbs", "ExpOrbs", false);
+        renderMode = registerMode("Mode", "Mode", Modes, "Box");
     }
 
-    Setting.mode RenderMode;
-    Setting.b exp;
-    Setting.b epearls;
-    Setting.b items;
-    Setting.b orbs;
-    Setting.b crystals;
+    Setting.Mode renderMode;
+    Setting.Boolean exp;
+    Setting.Boolean epearls;
+    Setting.Boolean items;
+    Setting.Boolean orbs;
+    Setting.Boolean crystals;
     int c;
     int c2;
 
     public void onWorldRender(RenderEvent event) {
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (ColorMain.Rainbow.getValue()){
+        if (ColorMain.rainbow.getValue()){
             c = Rainbow.getColorWithOpacity(50).getRGB();
         }
         else {
             c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 50).getRGB();
         }
-        if (ColorMain.Rainbow.getValue()){
+        if (ColorMain.rainbow.getValue()){
             c2 = Rainbow.getColorWithOpacity(255).getRGB();
         }
         else {
             c2 = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255).getRGB();
         }
-        if (RenderMode.getValue().equalsIgnoreCase("Box")) {
+        if (renderMode.getValue().equalsIgnoreCase("Box")) {
             mc.world.loadedEntityList.stream()
                         .filter(entity -> entity != mc.player)
                         .forEach(e -> {
@@ -94,7 +94,7 @@ public class EntityESP extends Module {
                             GameSenseTessellator.releaseGL();
                         });
             }
-            if (RenderMode.getValue().equalsIgnoreCase("Outline")) {
+            if (renderMode.getValue().equalsIgnoreCase("Outline")) {
                 mc.world.loadedEntityList.stream()
                         .filter(entity -> entity != mc.player)
                         .forEach(e -> {
@@ -117,7 +117,7 @@ public class EntityESP extends Module {
                             GameSenseTessellator.releaseGL();
                         });
             }
-            if (RenderMode.getValue().equalsIgnoreCase("Glow")) {
+            if (renderMode.getValue().equalsIgnoreCase("Glow")) {
                 mc.world.loadedEntityList.stream()
                         .filter(e -> e != mc.player)
                         .forEach(e -> {
@@ -144,7 +144,7 @@ public class EntityESP extends Module {
             mc.world.loadedEntityList.stream()
                     .filter(e -> e != mc.player)
                     .forEach(e -> {
-                        if (RenderMode.getValue().equalsIgnoreCase("Glow") == false) {
+                        if (renderMode.getValue().equalsIgnoreCase("Glow") == false) {
                             if (e instanceof EntityExpBottle) {
                                 e.setGlowing(false);
                             }
@@ -180,7 +180,7 @@ public class EntityESP extends Module {
         }
 
     public void onDisable(){
-        if (RenderMode.getValue().equalsIgnoreCase("Glow")) {
+        if (renderMode.getValue().equalsIgnoreCase("Glow")) {
             mc.world.loadedEntityList.stream()
                     .filter(e -> e != mc.player)
                     .forEach(e -> {
@@ -205,13 +205,13 @@ public class EntityESP extends Module {
 
     public String getHudInfo() {
         String t = "";
-        if(RenderMode.getValue().equalsIgnoreCase("Box")) {
+        if(renderMode.getValue().equalsIgnoreCase("Box")) {
             t = "[" + ChatFormatting.WHITE + "Box" + ChatFormatting.GRAY + "]";
         }
-        if (RenderMode.getValue().equalsIgnoreCase("Outline")) {
+        if (renderMode.getValue().equalsIgnoreCase("Outline")) {
             t = "[" + ChatFormatting.WHITE + "Outline" + ChatFormatting.GRAY + "]";
         }
-        if (RenderMode.getValue().equalsIgnoreCase("Glow")) {
+        if (renderMode.getValue().equalsIgnoreCase("Glow")) {
             t = "[" + ChatFormatting.WHITE + "Glow" + ChatFormatting.GRAY + "]";
         }
         return t;

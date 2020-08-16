@@ -38,10 +38,10 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.DOUBLE) {
-                    out.write(i.getConfigName() + ":" +((Setting.d) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Double) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
                 if (i.getType() == Setting.Type.INT) {
-                    out.write(i.getConfigName() + ":" +((Setting.i) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Integer) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -54,7 +54,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.BOOLEAN) {
-                    out.write(i.getConfigName() + ":" + ((Setting.b) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Boolean) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -67,7 +67,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.MODE) {
-                    out.write(i.getConfigName() + ":" + ((Setting.mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -88,10 +88,10 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.DOUBLE) {
-                    out.write(i.getConfigName() + ":" +((Setting.d) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Double) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
                 if (i.getType() == Setting.Type.INT) {
-                    out.write(i.getConfigName() + ":" +((Setting.i) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Integer) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -104,7 +104,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.BOOLEAN) {
-                    out.write(i.getConfigName() + ":" + ((Setting.b) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Boolean) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -117,7 +117,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.MODE) {
-                    out.write(i.getConfigName() + ":" + ((Setting.mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -138,10 +138,10 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.DOUBLE) {
-                    out.write(i.getConfigName() + ":" +((Setting.d) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Double) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
                 if (i.getType() == Setting.Type.INT) {
-                    out.write(i.getConfigName() + ":" +((Setting.i) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Integer) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -154,7 +154,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.BOOLEAN) {
-                    out.write(i.getConfigName() + ":" + ((Setting.b) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Boolean) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -167,7 +167,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.MODE) {
-                    out.write(i.getConfigName() + ":" + ((Setting.mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -188,10 +188,10 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.DOUBLE) {
-                    out.write(i.getConfigName() + ":" +((Setting.d) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Double) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
                 if (i.getType() == Setting.Type.INT) {
-                    out.write(i.getConfigName() + ":" +((Setting.i) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Integer) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -204,7 +204,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.BOOLEAN) {
-                    out.write(i.getConfigName() + ":" + ((Setting.b) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Boolean) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -217,7 +217,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.MODE) {
-                    out.write(i.getConfigName() + ":" + ((Setting.mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -238,10 +238,10 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.DOUBLE) {
-                    out.write(i.getConfigName() + ":" +((Setting.d) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Double) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
                 if (i.getType() == Setting.Type.INT) {
-                    out.write(i.getConfigName() + ":" +((Setting.i) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Integer) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -254,7 +254,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.BOOLEAN) {
-                    out.write(i.getConfigName() + ":" + ((Setting.b) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Boolean) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -267,7 +267,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.MODE) {
-                    out.write(i.getConfigName() + ":" + ((Setting.mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -288,10 +288,10 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.DOUBLE) {
-                    out.write(i.getConfigName() + ":" +((Setting.d) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Double) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
                 if (i.getType() == Setting.Type.INT) {
-                    out.write(i.getConfigName() + ":" +((Setting.i) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" +((Setting.Integer) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -304,7 +304,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.BOOLEAN) {
-                    out.write(i.getConfigName() + ":" + ((Setting.b) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Boolean) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();
@@ -317,7 +317,7 @@ public class SaveModules {
             while(var3.hasNext()) {
                 i = (Setting)var3.next();
                 if (i.getType() == Setting.Type.MODE) {
-                    out.write(i.getConfigName() + ":" + ((Setting.mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
+                    out.write(i.getConfigName() + ":" + ((Setting.Mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
                 }
             }
             out.close();

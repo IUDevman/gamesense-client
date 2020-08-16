@@ -7,10 +7,10 @@ import com.gamesense.client.module.ModuleManager;
 public class ReverseStep extends Module {
     public ReverseStep() {super("ReverseStep", Category.Movement);}
 
-    Setting.d height;
+    Setting.Double height;
 
     public void setup() {
-        height = registerD("Height", "Height", 2.5, 0.5, 2.5);
+        height = registerDouble("Height", "Height", 2.5, 0.5, 2.5);
     }
 
     public void onUpdate() {

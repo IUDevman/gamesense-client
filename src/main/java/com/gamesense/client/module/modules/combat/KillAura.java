@@ -24,16 +24,16 @@ public class KillAura extends Module {
         super("KillAura", Category.Combat);
     }
 
-    private Setting.b swordOnly;
-    private Setting.b caCheck;
-    private Setting.b criticals;
-    private Setting.d range;
+    private Setting.Boolean swordOnly;
+    private Setting.Boolean caCheck;
+    private Setting.Boolean criticals;
+    private Setting.Double range;
 
     public void setup(){
-        range = this.registerD("Range", "Range", 5,0,10);
-        swordOnly = this.registerB("Sword Only", "SwordOnly",true);
-        criticals = this.registerB("Criticals", "Criticals",true);
-        caCheck = this.registerB("AC Check", "ACCheck",false);
+        range = registerDouble("Range", "Range", 5,0,10);
+        swordOnly = registerBoolean("Sword Only", "SwordOnly",true);
+        criticals = registerBoolean("Criticals", "Criticals",true);
+        caCheck = registerBoolean("AC Check", "ACCheck",false);
     }
 
     private boolean isAttacking = false;

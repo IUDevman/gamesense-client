@@ -5,7 +5,6 @@ import com.gamesense.client.module.Module;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.Item;
@@ -22,7 +21,7 @@ public class OffhandCrystal extends Module {
     boolean moving;
     boolean returnI;
     Item item;
-    Setting.i health;
+    Setting.Integer health;
 
     public OffhandCrystal() {
         super("OffhandCrystal", Category.Combat);
@@ -32,7 +31,7 @@ public class OffhandCrystal extends Module {
 
     @Override
     public void setup() {
-        health = this.registerI("Health", "Health", 15, 0, 36);
+        health = registerInteger("Health", "Health", 15, 0, 36);
     }
 
     public void onDisable() {

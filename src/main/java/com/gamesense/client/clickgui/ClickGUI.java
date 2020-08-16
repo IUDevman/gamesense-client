@@ -28,7 +28,7 @@ public class ClickGUI extends GuiScreen {
     }
 
     public void drawScreen(final int mouseX, final int mouseY, final float partialTicks){
-        if (ColorMain.Rainbow.getValue()){
+        if (ColorMain.rainbow.getValue()){
             ClickGUI.color = Rainbow.getColorWithOpacity(ClickGuiModule.opacity.getValue()).getRGB();
         }
         else {

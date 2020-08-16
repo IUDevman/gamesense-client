@@ -44,22 +44,22 @@ public class Buttons extends Component {
             for (final Setting s : GameSenseMod.getInstance().settingsManager.getSettingsForMod(mod)) {
                 switch (s.getType()) {
                     case MODE: {
-                        this.subcomponents.add(new ModeComponent((Setting.mode)s, this, mod, opY));
+                        this.subcomponents.add(new ModeComponent((Setting.Mode)s, this, mod, opY));
                         opY += 16;
                         continue;
                     }
                     case BOOLEAN: {
-                        this.subcomponents.add(new BooleanComponent((Setting.b)s, this, opY));
+                        this.subcomponents.add(new BooleanComponent((Setting.Boolean)s, this, opY));
                         opY += 16;
                         continue;
                     }
                     case DOUBLE: {
-                        this.subcomponents.add(new DoubleComponent((Setting.d)s, this, opY));
+                        this.subcomponents.add(new DoubleComponent((Setting.Double)s, this, opY));
                         opY += 16;
                         continue;
                     }
                     case INT: {
-                        this.subcomponents.add(new IntegerComponent((Setting.i)s, this, opY));
+                        this.subcomponents.add(new IntegerComponent((Setting.Integer)s, this, opY));
                         opY += 16;
                         continue;
                     }
@@ -81,7 +81,7 @@ public class Buttons extends Component {
 
     @Override
     public void renderComponent() {
-        if (ColorMain.Rainbow.getValue()){
+        if (ColorMain.rainbow.getValue()){
             ClickGUI.color = Rainbow.getColorWithOpacity(ClickGuiModule.opacity.getValue()).getRGB();
         }
         else {

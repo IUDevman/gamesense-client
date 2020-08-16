@@ -14,18 +14,18 @@ public class Notifications extends Module {
         super("Notifications", Category.HUD);
     }
 
-    Setting.i notX;
-    Setting.i notY;
-    Setting.b sortUp;
-    Setting.b sortRight;
-    public static Setting.b disableChat;
+    Setting.Integer notX;
+    Setting.Integer notY;
+    Setting.Boolean sortUp;
+    Setting.Boolean sortRight;
+    public static Setting.Boolean disableChat;
 
     public void setup(){
-        disableChat = registerB("No Chat Msg", "NoChatMsg", true);
-        sortUp = registerB("Sort Up", "SortUp", false);
-        sortRight = registerB("Sort Right", "SortRight", false);
-        notX = registerI("X", "X", 0,0,1000);
-        notY = registerI("Y", "Y", 50, 0 , 1000);
+        disableChat = registerBoolean("No Chat Msg", "NoChatMsg", true);
+        sortUp = registerBoolean("Sort Up", "SortUp", false);
+        sortRight = registerBoolean("Sort Right", "SortRight", false);
+        notX = registerInteger("X", "X", 0,0,1000);
+        notY = registerInteger("Y", "Y", 50, 0 , 1000);
     }
 
     int sort;

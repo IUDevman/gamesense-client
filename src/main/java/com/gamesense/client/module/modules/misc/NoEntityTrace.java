@@ -9,10 +9,10 @@ public class NoEntityTrace extends Module {
         super("NoEntityTrace", Category.Misc);
     }
 
-    Setting.b pickaxeOnly;
+    Setting.Boolean pickaxeOnly;
 
     public void setup() {
-        pickaxeOnly = registerB("Pickaxe Only", "PickaxeOnly", true);
+        pickaxeOnly = registerBoolean("Pickaxe Only", "PickaxeOnly", true);
     }
 
     boolean isHoldingPickaxe = false;

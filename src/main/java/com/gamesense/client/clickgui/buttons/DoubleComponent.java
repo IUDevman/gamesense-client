@@ -19,7 +19,7 @@ import java.awt.Color;
 public class DoubleComponent extends Component {
 
     private boolean hovered;
-    private final Setting.d set;
+    private final Setting.Double set;
     private final Buttons parent;
     private int offset;
     private int x;
@@ -27,7 +27,7 @@ public class DoubleComponent extends Component {
     private boolean dragging;
     private double renderWidth;
     
-    public DoubleComponent(final Setting.d value, final Buttons button, final int offset) {
+    public DoubleComponent(final Setting.Double value, final Buttons button, final int offset) {
         this.dragging = false;
         this.set = value;
         this.parent = button;
@@ -38,7 +38,7 @@ public class DoubleComponent extends Component {
     
     @Override
     public void renderComponent() {
-        if (ColorMain.Rainbow.getValue()){
+        if (ColorMain.rainbow.getValue()){
             ClickGUI.color = Rainbow.getColorWithOpacity(ClickGuiModule.opacity.getValue()).getRGB();
         }
         else {

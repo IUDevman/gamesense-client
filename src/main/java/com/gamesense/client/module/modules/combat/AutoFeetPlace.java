@@ -26,22 +26,22 @@ import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
 public class AutoFeetPlace extends Module {
     public AutoFeetPlace() {super("AutoFeetPlace", Category.Combat);}
 
-    Setting.b triggerable;
-    Setting.i timeoutTicks;
-    Setting.b disableNone;
-    Setting.i tickDelay;
-    Setting.b rotate;
-    Setting.i blocksPerTick;
-    Setting.b disableOnJump;
+    Setting.Boolean triggerable;
+    Setting.Integer timeoutTicks;
+    Setting.Boolean disableNone;
+    Setting.Integer tickDelay;
+    Setting.Boolean rotate;
+    Setting.Integer blocksPerTick;
+    Setting.Boolean disableOnJump;
 
     public void setup() {
-        triggerable = registerB("Triggerable", "Troggerable", false);
-        disableNone = registerB("Disable No Obby", "DisableNoObby", false);
-        disableOnJump = registerB("Disable on Jump", "DisableOnJump", false);
-        rotate = registerB("Rotate","Rotate", false);
-        tickDelay = registerI("Tick Delay", "TickDelay", 5, 0, 10);
-        timeoutTicks = registerI("Timeout Ticks", "TimeoutTicks", 40, 1, 100);
-        blocksPerTick = registerI("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
+        triggerable = registerBoolean("Triggerable", "Troggerable", false);
+        disableNone = registerBoolean("Disable No Obby", "DisableNoObby", false);
+        disableOnJump = registerBoolean("Disable on Jump", "DisableOnJump", false);
+        rotate = registerBoolean("Rotate","Rotate", false);
+        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
+        timeoutTicks = registerInteger("Timeout Ticks", "TimeoutTicks", 40, 1, 100);
+        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
     }
 
     private int offsetStep = 0;

@@ -17,24 +17,24 @@ public class NoRender extends Module {
         super("NoRender", Category.Render);
     }
 
-    public Setting.b armor;
-    Setting.b fire;
-    Setting.b blind;
-    Setting.b nausea;
-    public Setting.b hurtCam;
-    public Setting.b noOverlay;
-    Setting.b noBossBar;
-    public Setting.b noSkylight;
+    public Setting.Boolean armor;
+    Setting.Boolean fire;
+    Setting.Boolean blind;
+    Setting.Boolean nausea;
+    public Setting.Boolean hurtCam;
+    public Setting.Boolean noOverlay;
+    Setting.Boolean noBossBar;
+    public Setting.Boolean noSkylight;
 
     public void setup() {
-        armor = registerB("Armor", "Armor", false);
-        fire = registerB("Fire", "Fire", false);
-        blind = registerB("Blind", "Blind", false);
-        nausea = registerB("Nausea", "Nausea", false);
-        hurtCam = registerB("HurtCam", "HurtCam", false);
-        noSkylight = registerB("Skylight", "Skylight", false);
-        noOverlay = registerB("No Overlay", "NoOverlay", false); //need to make sure this works better
-        noBossBar = registerB("No Boss Bar", "NoBossBar", false);
+        armor = registerBoolean("Armor", "Armor", false);
+        fire = registerBoolean("Fire", "Fire", false);
+        blind = registerBoolean("Blind", "Blind", false);
+        nausea = registerBoolean("Nausea", "Nausea", false);
+        hurtCam = registerBoolean("HurtCam", "HurtCam", false);
+        noSkylight = registerBoolean("Skylight", "Skylight", false);
+        noOverlay = registerBoolean("No Overlay", "NoOverlay", false); //need to make sure this works better
+        noBossBar = registerBoolean("No Boss Bar", "NoBossBar", false);
     }
 
     public void onUpdate(){

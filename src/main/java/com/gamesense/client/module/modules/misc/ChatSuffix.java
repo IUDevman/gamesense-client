@@ -17,7 +17,7 @@ public class ChatSuffix extends Module {
     }
 
 
-    Setting.mode Separator;
+    Setting.Mode Separator;
 
     public void setup() {
 
