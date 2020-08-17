@@ -83,6 +83,7 @@ public class ModuleManager {
         addMod(new ShulkerViewer());
         addMod(new StorageESP());
         addMod(new Tracers());
+        addMod(new ViewmodelChanger());
         addMod(new VoidESP());
         //HUD
         addMod(new ClickGuiModule());
