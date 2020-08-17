@@ -9,8 +9,8 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumHandSide;
 
-public class ViewmodelChanger extends Module {
-    public ViewmodelChanger() {super("ViewmodelChanger", Category.Render);}
+public class ViewModel extends Module {
+    public ViewModel() {super("ViewModel", Category.Render);}
 
     Setting.Double xr;
     Setting.Double yr;
@@ -20,12 +20,12 @@ public class ViewmodelChanger extends Module {
     Setting.Double zl;
 
     public void setup() {
-        xr = registerDouble("x right", "xright", 0.0, -2.0, 2.0);
-        yr = registerDouble("y right", "yright", 0.0, -2.0, 2.0);
-        zr = registerDouble("z right", "zright", 0.0, -2.0, 2.0);
-        xl = registerDouble("x left", "xleft", 0.0, -2.0, 2.0);
-        yl = registerDouble("y left", "yleft", 0.0, -2.0, 2.0);
-        zl = registerDouble("z left", "zleft", 0.0, -2.0, 2.0);
+        xl = registerDouble("Left X", "LeftX", 0.0, -2.0, 2.0);
+        yl = registerDouble("Left Y", "LeftY", 0.2, -2.0, 2.0);
+        zl = registerDouble("Left Z", "LeftZ", -1.2, -2.0, 2.0);
+        xr = registerDouble("Right X", "RightX", 0.0, -2.0, 2.0);
+        yr = registerDouble("Right Y", "RightY", 0.2, -2.0, 2.0);
+        zr = registerDouble("Right Z", "RightZ", -1.2, -2.0, 2.0);
     }
 
     @EventHandler
