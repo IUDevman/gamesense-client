@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class CapesModule extends Module {
     public CapesModule() {
         super("Capes", Category.Render);
-        setEnabled(true);
         setDrawn(false);
     }
 
