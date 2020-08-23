@@ -409,7 +409,6 @@ public class AutoCrystal extends Module {
         }
     }
 
-
     public void onWorldRender(RenderEvent event) {
         if (this.render != null) {
             final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};

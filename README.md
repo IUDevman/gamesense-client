@@ -1,7 +1,8 @@
 # GameSense Client
 
-Current version: 2.0
+Current version: 2.1
 
-Changelog (for next version):
-
-Check discord changelogs channel!
+Developers:
+Cyber
+Hoosiers
+A2H //sorta :/ big leaker
