@@ -128,7 +128,7 @@ public class AutoCrystal extends Module {
         // placeWallsRange = this.registerD("Place Walls Range", 6.0, 0.0, 6.0);
         range = registerDouble("Hit Range", "HitRange", 5.0, 0.0, 10.0);
         walls = registerDouble("Break Walls Range", "BreakWallsRange", 3.5, 0.0, 10.0);
-        enemyRange = registerDouble("Enemy Range", "EnemyRange", 6.0, 0.5, 6.0);
+        enemyRange = registerDouble("Enemy Range", "EnemyRange", 6.0, 0.5, 13.0);
         antiWeakness = registerBoolean("Anti Weakness", "AntiWeakness", true);
         showDamage = registerBoolean("Show Damage", "ShowDamage", false);
         endCrystalMode = registerBoolean("1.13 Mode", "1.13Mode", false);

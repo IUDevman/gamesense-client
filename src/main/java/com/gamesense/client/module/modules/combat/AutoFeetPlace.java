@@ -24,6 +24,7 @@ import static com.gamesense.api.util.world.BlockUtils.canBeClicked;
 import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
 
 public class AutoFeetPlace extends Module {
+
     public AutoFeetPlace() {super("AutoFeetPlace", Category.Combat);}
 
     Setting.Boolean triggerable;

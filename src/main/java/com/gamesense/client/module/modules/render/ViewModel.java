@@ -12,6 +12,7 @@ import net.minecraft.util.EnumHandSide;
 public class ViewModel extends Module {
     public ViewModel() {super("ViewModel", Category.Render);}
 
+    public Setting.Boolean cancelEating;
     Setting.Double xr;
     Setting.Double yr;
     Setting.Double zr;
@@ -20,6 +21,7 @@ public class ViewModel extends Module {
     Setting.Double zl;
 
     public void setup() {
+        cancelEating = registerBoolean("No Eat", "NoEat", false);
         xl = registerDouble("Left X", "LeftX", 0.0, -2.0, 2.0);
         yl = registerDouble("Left Y", "LeftY", 0.2, -2.0, 2.0);
         zl = registerDouble("Left Z", "LeftZ", -1.2, -2.0, 2.0);

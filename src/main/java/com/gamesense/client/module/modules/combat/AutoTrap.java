@@ -47,7 +47,6 @@ public class AutoTrap extends Module {
     private boolean firstRun;
     Setting.Mode mode;
 
-
     public void setup() {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Normal");
@@ -57,7 +56,6 @@ public class AutoTrap extends Module {
         range = registerInteger("Range", "Range", 6, 0, 6);
         blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 5, 0, 10);
         tickDelay = registerInteger("Delay", "Delay", 0, 0, 10);
-
     }
 
     protected void onEnable() {

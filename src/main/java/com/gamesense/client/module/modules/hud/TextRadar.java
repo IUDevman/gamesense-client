@@ -19,6 +19,7 @@ public class TextRadar extends Module {
     Setting.Boolean sortRight;
     Setting.Integer radarX;
     Setting.Integer radarY;
+    Setting.Integer range;
     Setting.Mode display;
 
     public void setup(){
@@ -31,6 +32,7 @@ public class TextRadar extends Module {
         sortRight = registerBoolean("Sort Right", "SortRight", false);
         radarX = registerInteger("X", "X", 0,0,1000);
         radarY = registerInteger("Y", "Y", 50, 0 , 1000);
+        range = registerInteger("Range", "Range", 100, 1, 260);
     }
 
     int sort;
@@ -75,6 +77,9 @@ public class TextRadar extends Module {
                     }
                     if (mc.player.getDistance(e) >= 50){
                         distancecolor = TextFormatting.GREEN;
+                    }
+                    if (mc.player.getDistance(e) > range.getValue()){
+                        return;
                     }
                     if (display.getValue().equalsIgnoreCase("Friend") && !(Friends.isFriend(e.getName()))){
                         return;
