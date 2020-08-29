@@ -13,6 +13,7 @@ import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.gamesense.client.module.modules.misc.AutoGG;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
@@ -97,8 +98,10 @@ public class AutoCrystal extends Module {
     Setting.Mode breakMode;
     Setting.Double minBreakDmg;
     Setting.Boolean antiSuicide;
+    Setting.Integer antiSuicideValue;
     Setting.Boolean endCrystalMode;
     Setting.Double enemyRange;
+    Setting.Mode hudDisplay;
     private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
     Setting.Integer armorDuraToFacePlace;
 
@@ -116,11 +119,16 @@ public class AutoCrystal extends Module {
         breakModes.add("Smart");
         breakModes.add("Only Own");
 
+        ArrayList<String> hudModes = new ArrayList<>();
+        hudModes.add("Mode");
+        hudModes.add("None");
+
         explode = registerBoolean("Break", "Break", true);
         place = registerBoolean("Place", "Place", true);
         breakMode = registerMode("Break Modes", "BreakModes", breakModes, "All");
         handBreak = registerMode("Hand", "Hand", hands, "Main");
-        //antiSuicide = registerB("Anti Suicide", false);
+        antiSuicide = registerBoolean("Anti Suicide", "AntiSuicide", false);
+        antiSuicideValue = registerInteger("Pause Health", "PauseHealth", 10, 0, 36);
         attackSpeed = registerInteger("Attack Speed", "AttackSpeed", 12, 1, 20);
         //breakDelay = registerI("Break Delay", 0, 0 , 1000);
         placeDelay = registerInteger("Place Delay", "PlaceDelay", 0, 0, 20);
@@ -128,7 +136,7 @@ public class AutoCrystal extends Module {
         // placeWallsRange = this.registerD("Place Walls Range", 6.0, 0.0, 6.0);
         range = registerDouble("Hit Range", "HitRange", 5.0, 0.0, 10.0);
         walls = registerDouble("Break Walls Range", "BreakWallsRange", 3.5, 0.0, 10.0);
-        enemyRange = registerDouble("Enemy Range", "EnemyRange", 6.0, 0.5, 6.0);
+        enemyRange = registerDouble("Enemy Range", "EnemyRange", 6.0, 0.5, 13.0);
         antiWeakness = registerBoolean("Anti Weakness", "AntiWeakness", true);
         showDamage = registerBoolean("Show Damage", "ShowDamage", false);
         endCrystalMode = registerBoolean("1.13 Mode", "1.13Mode", false);
@@ -143,6 +151,7 @@ public class AutoCrystal extends Module {
         rotate = registerBoolean("Rotate", "Rotate", true);
         spoofRotations = registerBoolean("Spoof Angles", "SpoofAngles", true);
         chat = registerBoolean("Toggle Msg", "ToggleMsg", true);
+        hudDisplay = registerMode("HUD", "HUD", hudModes, "Mode");
     }
 
     public void onUpdate() {
@@ -158,6 +167,10 @@ public class AutoCrystal extends Module {
                 .min(Comparator.comparing(c -> mc.player.getDistance(c)))
                 .orElse(null);
         if (explode.getValue() && crystal != null) {
+
+            if (antiSuicide.getValue() && mc.player.getHealth() + mc.player.getAbsorptionAmount() < antiSuicideValue.getValue()){
+                return;
+            }
             // Walls Range
             if (!mc.player.canEntityBeSeen(crystal) && mc.player.getDistance(crystal) > walls.getValue()) return;
 
@@ -193,7 +206,6 @@ public class AutoCrystal extends Module {
 
             // APS System.
             if (System.nanoTime() / 1000000L - breakSystemTime >= 420 - attackSpeed.getValue() * 20) {
-
 
                 isActive = true;
                 isBreaking = true;
@@ -284,13 +296,15 @@ public class AutoCrystal extends Module {
 
                         this.render = q;
                         if (this.place.getValue()) {
+                            if (antiSuicide.getValue() && mc.player.getHealth() + mc.player.getAbsorptionAmount() < antiSuicideValue.getValue()){
+                                return;
+                            }
                             if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
                                 if (this.autoSwitch.getValue()) {
                                     mc.player.inventory.currentItem = crystalSlot;
                                     resetRotation();
                                     this.switchCooldown = true;
                                 }
-
                                 return;
                             }
 
@@ -457,7 +471,6 @@ public class AutoCrystal extends Module {
     //Bruh why did I never think of just using booleans, this was so much easier than
     // the previous chinese implementation I did. @Author CyberTF2.
     private boolean crystalCheck(Entity crystal) {
-
 
         if (!(crystal instanceof EntityEnderCrystal))
             return false;
@@ -761,14 +774,23 @@ public class AutoCrystal extends Module {
         }
     }
 
-    // TODO: Do this last thing.
-   /* public String getHudInfo() {
+    @Override
+    public String getHudInfo(){
         String t = "";
-        if (isBreaking) {
-            return t = "[" + ChatFormatting.WHITE + "Attack" + ChatFormatting.GRAY + "]";
-        } else if (isPlacing) {
-            t = "[" + ChatFormatting.WHITE + "Place" + ChatFormatting.GRAY + "]";
+        if (hudDisplay.getValue().equalsIgnoreCase("Mode")){
+            if (breakMode.getValue().equalsIgnoreCase("All")){
+                t = "[" + ChatFormatting.WHITE + "All" + ChatFormatting.GRAY + "]";
+            }
+            if (breakMode.getValue().equalsIgnoreCase("Smart")){
+                t = "[" + ChatFormatting.WHITE + "Smart" + ChatFormatting.GRAY + "]";
+            }
+            if (breakMode.getValue().equalsIgnoreCase("Only Own")){
+                t = "[" + ChatFormatting.WHITE + "Own" + ChatFormatting.GRAY + "]";
+            }
+        }
+        if (hudDisplay.getValue().equalsIgnoreCase("None")){
+            t = "";
         }
         return t;
-    } */
+    }
 }

@@ -22,9 +22,9 @@ public class ColorMain extends Module {
 
     public void setup() {
         rainbow = registerBoolean("Rainbow", "Rainbow", false);
-        Red = registerInteger("Red", "Red", 255, 0, 255);
-        Green = registerInteger("Green", "Green", 26, 0, 255);
-        Blue = registerInteger("Blue", "Blue", 42, 0, 255);
+        Red = registerInteger("Red", "Red", 90, 0, 255);
+        Green = registerInteger("Green", "Green", 145, 0, 255);
+        Blue = registerInteger("Blue", "Blue", 240, 0, 255);
 
         ArrayList<String> tab = new ArrayList<>();
         tab.add("Black");

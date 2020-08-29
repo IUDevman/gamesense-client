@@ -96,8 +96,6 @@ public class SelfTrap extends Module {
             return;
         }
 
-
-
         if (!firstRun) {
             if (delayStep < tickDelay.getValue()) {
                 delayStep++;

@@ -5,8 +5,9 @@
   "description": "1.12.2 Anarchy Client.",
   "version": "${version}",
   "mcversion": "1.12.2",
-  "authorList": ["CyberTF2", "Go_Hoosiers", "A2H"],
-  "credits": "The Boolean God",
+  "url": "https://discord.gg/xfgPw63",
+  "authorList": ["CyberTF2", "Go_Hoosiers"],
+  "credits": "Check the Discord",
   "logoFile": "assets/gamesense/textures/gamesense.png",
   "screenshots": [],
   "dependencies": []
