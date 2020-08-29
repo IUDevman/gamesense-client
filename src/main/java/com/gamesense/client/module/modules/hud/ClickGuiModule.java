@@ -20,6 +20,7 @@ public class ClickGuiModule extends Module {
     }
 
     public Setting.Boolean customFont;
+    public static Setting.Integer scrollSpeed;
     public static Setting.Integer opacity;
     public static Setting.Mode icon;
 
@@ -28,6 +29,7 @@ public class ClickGuiModule extends Module {
         icons.add("Font");
         icons.add("Image");
         opacity = registerInteger("Opacity", "Opacity", 200,50,255);
+        scrollSpeed = registerInteger("Scroll Speed", "Scroll Speed", 10, 1, 20);
         icon = registerMode("Icon", "Icons", icons, "Image");
     }
 

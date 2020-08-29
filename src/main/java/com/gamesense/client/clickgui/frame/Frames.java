@@ -5,9 +5,11 @@ import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 
@@ -31,8 +33,8 @@ public class Frames {
         this.category = catg;
         this.open = true;
         this.isDragging = false;
-        this.x = 5;
-        this.y = 5;
+        this.x = 10;
+        this.y = 30;
         this.dragX = 0;
         this.width = 100;
         this.barHeight = 16;
@@ -111,5 +113,17 @@ public class Frames {
             off += comp.getHeight();
         }
         this.height = off;
+    }
+
+    public void updateMouseWheel() {
+        int scrollWheel = Mouse.getDWheel();
+        for (final Frames frames : ClickGUI.frames) {
+            if (scrollWheel < 0) {
+                frames.setY(frames.getY() - ClickGuiModule.scrollSpeed.getValue());
+            }
+            else if (scrollWheel > 0) {
+                frames.setY(frames.getY() + ClickGuiModule.scrollSpeed.getValue());
+            }
+        }
     }
 }

@@ -18,7 +18,7 @@ public class ClickGUI extends GuiScreen {
 
     public ClickGUI(){
         ClickGUI.frames = new ArrayList<Frames>();
-        int DevFrameX = 5;
+        int DevFrameX = 10;
         for (final Module.Category category : Module.Category.values()){
             final Frames devframe = new Frames(category);
            devframe.setX(DevFrameX);
@@ -37,6 +37,7 @@ public class ClickGUI extends GuiScreen {
         for (final Frames frames : ClickGUI.frames){
             frames.renderGUIFrame(this.fontRenderer);
             frames.updatePosition(mouseX, mouseY);
+            frames.updateMouseWheel();
             for (final Component comp : frames.getComponents()){
                 comp.updateComponent(mouseX, mouseY);
             }
