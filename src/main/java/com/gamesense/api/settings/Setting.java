@@ -1,8 +1,10 @@
 package com.gamesense.api.settings;
 
 import java.util.List;
+import java.awt.Color;
 
 import com.gamesense.client.module.Module;
+import com.gamesense.api.util.color.Rainbow;
 
 public class Setting {
 
@@ -45,7 +47,8 @@ public class Setting {
 		DOUBLE,
 		BOOLEAN,
 		STRING,
-		MODE
+		MODE,
+		COLOR
     }
 
 	public static class Integer extends Setting {
@@ -143,6 +146,28 @@ public class Setting {
 
 		public List<String> getModes() {
 			return this.modes;
+		}
+	}
+	
+	// Color config added by lukflug
+	public static class ColorSetting extends Setting {
+		private boolean rainbow;
+		private Color value;
+		
+		public ColorSetting (final String name, final String configname, final Module parent, final Module.Category category, boolean rainbow, final Color value) {
+			super(name,configname,parent,category,Type.COLOR);
+			this.rainbow=rainbow;
+			this.value=value;
+		}
+		
+		public Color getValue() {
+			if (rainbow) return Rainbow.getColor();
+			return this.value;
+		}
+		
+		public void setValue (boolean rainbow, final Color value) {
+			this.rainbow=rainbow;
+			this.value=value;
 		}
 	}
 }
