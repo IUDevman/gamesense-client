@@ -9,7 +9,6 @@ import org.lwjgl.input.Keyboard;
 import java.util.List;
 
 public abstract class Module {
-
     protected static final Minecraft mc = Minecraft.getMinecraft();
     String name;
     Category category;
