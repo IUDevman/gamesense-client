@@ -1,6 +1,5 @@
 package com.gamesense.client.clickgui;
 
-import com.gamesense.api.util.color.Rainbow;
 import com.gamesense.client.clickgui.frame.Component;
 import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.module.Module;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 
 public class ClickGUI extends GuiScreen {
     public static ArrayList<Frames> frames;
-    public static int color;
 
     public ClickGUI(){
         ClickGUI.frames = new ArrayList<Frames>();
@@ -28,12 +26,6 @@ public class ClickGUI extends GuiScreen {
     }
 
     public void drawScreen(final int mouseX, final int mouseY, final float partialTicks){
-        if (ColorMain.rainbow.getValue()){
-            ClickGUI.color = Rainbow.getColorWithOpacity(ClickGuiModule.opacity.getValue()).getRGB();
-        }
-        else {
-            ClickGUI.color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), ClickGuiModule.opacity.getValue()).getRGB();
-        }
         for (final Frames frames : ClickGUI.frames){
             frames.renderGUIFrame(this.fontRenderer);
             frames.updatePosition(mouseX, mouseY);
@@ -109,7 +101,7 @@ public class ClickGUI extends GuiScreen {
         return frames;
     }
 
-    static{
-        ClickGUI.color = -1;
-    }
+    public static int getColor() {
+		return ColorMain.guiColor.getValue().getRGB();
+	}
 }

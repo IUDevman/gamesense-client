@@ -27,51 +27,42 @@ public class SaveModules {
 
     // Duplicate code reduced by lukflug
     private void saveCategory (File config, Module.Category category) {
-        File file;
-        BufferedWriter out;
-        Iterator var3;
-        Setting i;
-        try {
-            file = new File(config.getAbsolutePath(), "Value.json");
-            out = new BufferedWriter(new FileWriter(file));
-            var3 = GameSenseMod.getInstance().settingsManager.getSettingsByCategory(category).iterator();
-            while(var3.hasNext()) {
-                i = (Setting)var3.next();
-                if (i.getType() == Setting.Type.DOUBLE) {
-                    out.write(i.getConfigName() + ":" +((Setting.Double) i).getValue() + ":" + i.getParent().getName() + "\r\n");
-                }
-                if (i.getType() == Setting.Type.INT) {
-                    out.write(i.getConfigName() + ":" +((Setting.Integer) i).getValue() + ":" + i.getParent().getName() + "\r\n");
-                }
-            }
-            out.close();
-        } catch (Exception var7) {
-        }
-        try {
-            file = new File(config.getAbsolutePath(), "Boolean.json");
-            out = new BufferedWriter(new FileWriter(file));
-            var3 = GameSenseMod.getInstance().settingsManager.getSettingsByCategory(category).iterator();
-            while(var3.hasNext()) {
-                i = (Setting)var3.next();
-                if (i.getType() == Setting.Type.BOOLEAN) {
-                    out.write(i.getConfigName() + ":" + ((Setting.Boolean) i).getValue() + ":" + i.getParent().getName() + "\r\n");
-                }
-            }
-            out.close();
-        } catch (Exception var6) {
-        }
-        try {
-            file = new File(config.getAbsolutePath(), "String.json");
-            out = new BufferedWriter(new FileWriter(file));
-            var3 = GameSenseMod.getInstance().settingsManager.getSettingsByCategory(category).iterator();
-            while(var3.hasNext()) {
-                i = (Setting)var3.next();
-                if (i.getType() == Setting.Type.MODE) {
-                    out.write(i.getConfigName() + ":" + ((Setting.Mode) i).getValue() + ":" + i.getParent().getName() + "\r\n");
-                }
-            }
-            out.close();
-        } catch (Exception var5) {
-        }
+        saveSettings(config,category,"Value.json",Setting.Type.INT);
+        saveSettings(config,category,"Boolean.json",Setting.Type.BOOLEAN);
+        saveSettings(config,category,"String.json",Setting.Type.MODE);
+		saveSettings(config,category,"Color.json",Setting.Type.COLOR);
     }
+	
+	private void saveSettings (File config, Module.Category category, String filename, Setting.Type type) {
+		try {
+            File file = new File(config.getAbsolutePath(),filename);
+            BufferedWriter out = new BufferedWriter(new FileWriter(file));
+            Iterator iter = GameSenseMod.getInstance().settingsManager.getSettingsByCategory(category).iterator();
+            while(iter.hasNext()) {
+                Setting mod = (Setting)iter.next();
+                if (mod.getType()==type || (type==Setting.Type.INT && mod.getType()==Setting.Type.DOUBLE)) {
+                    switch (mod.getType()) {
+					case INT:
+						out.write(mod.getConfigName() + ":" +((Setting.Integer) mod).getValue() + ":" + mod.getParent().getName() + "\r\n");
+						break;
+					case DOUBLE:
+						out.write(mod.getConfigName() + ":" +((Setting.Double) mod).getValue() + ":" + mod.getParent().getName() + "\r\n");
+						break;
+					case BOOLEAN:
+						out.write(mod.getConfigName() + ":" + ((Setting.Boolean) mod).getValue() + ":" + mod.getParent().getName() + "\r\n");
+						break;
+					case MODE:
+						out.write(mod.getConfigName() + ":" + ((Setting.Mode) mod).getValue() + ":" + mod.getParent().getName() + "\r\n");
+						break;
+					case COLOR:
+						out.write(mod.getConfigName()+":"+((Setting.ColorSetting)mod).toInteger()+":"+mod.getParent().getName()+"\r\n");
+						break;
+					}
+                }
+            }
+            out.close();
+        } catch (Exception e) {
+			e.printStackTrace();
+        }
+	}
 }

@@ -46,7 +46,7 @@ public class Nametags extends Module {
     Setting.Boolean health;
     Setting.Boolean ping;
     Setting.Boolean entityId;
-    Setting.Mode borderColor;
+    Setting.ColorSetting borderColor;
 
     public void setup() {
         durability = registerBoolean("Durability", "Durability", true);
@@ -61,7 +61,7 @@ public class Nametags extends Module {
         borderColorModes.add("Normal");
         borderColorModes.add("Rainbow");
         borderColorModes.add("Custom");
-        borderColor = registerMode("Border Color", "BorderColor", borderColorModes, "Custom");
+        borderColor = registerColor("Border Color","BorderColor");
     }
 
     public void onWorldRender(RenderEvent event) {
@@ -273,23 +273,8 @@ public class Nametags extends Module {
         GlStateManager.enableBlend();
         EntityPlayer entityPlayer2;
         GlStateManager.enableBlend();
-        if (borderColor.getValue().equalsIgnoreCase("Normal")) {
-            drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, 855638016);
-        } else if (borderColor.getValue().equalsIgnoreCase("Rainbow")) {
-            final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
-
-            int rgb = java.awt.Color.HSBtoRGB(hue[0], 1f, 1f);
-
-            int red = (rgb >> 16) & 0xFF;
-            int green = (rgb >> 8) & 0xFF;
-            int blue = rgb & 0xFF;
-            hue[0] += .02f;
-            int color2 = ColourHolder.toHex(red, green, blue);
-            drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, color2);
-        } else if (borderColor.getValue().equalsIgnoreCase("Custom")) {
-            int color = ColourHolder.toHex(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue());
-            drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, color);
-        }
+        int color = ColourHolder.toHex(borderColor.getValue().getRed(),borderColor.getValue().getGreen(),borderColor.getValue().getBlue());
+        drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, color);
         GlStateManager.disableBlend();
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.renderEntityName(entityPlayer), (-n4), (-(mc.fontRenderer.FONT_HEIGHT - 1)), this.renderPing(entityPlayer));
         entityPlayer2 = entityPlayer;
