@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.awt.Color;
 
 public abstract class Module {
     protected static final Minecraft mc = Minecraft.getMinecraft();
@@ -123,6 +124,12 @@ public abstract class Module {
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
     }
+	
+	protected Setting.ColorSetting registerColor (final String name, final String configname) {
+		final Setting.ColorSetting s = new Setting.ColorSetting(name, configname, this, getCategory(), false, new Color(90,145,240));
+        GameSenseMod.getInstance().settingsManager.addSetting(s);
+        return s;
+	}
 
     public enum Category{
         Combat,

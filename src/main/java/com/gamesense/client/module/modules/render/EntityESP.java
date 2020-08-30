@@ -4,10 +4,8 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.color.Rainbow;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.ColorMain;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.entity.item.*;
 import org.lwjgl.opengl.GL11;
@@ -29,6 +27,7 @@ public class EntityESP extends Module {
         items = registerBoolean("Items", "Items", false);
         orbs = registerBoolean("Exp Orbs", "ExpOrbs", false);
         renderMode = registerMode("Mode", "Mode", Modes, "Box");
+		color=registerColor("Color","Color");
     }
 
     Setting.Mode renderMode;
@@ -37,23 +36,12 @@ public class EntityESP extends Module {
     Setting.Boolean items;
     Setting.Boolean orbs;
     Setting.Boolean crystals;
-    int c;
-    int c2;
+	Setting.ColorSetting color;
 
     public void onWorldRender(RenderEvent event) {
-        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (ColorMain.rainbow.getValue()){
-            c = Rainbow.getColorWithOpacity(50).getRGB();
-        }
-        else {
-            c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 50).getRGB();
-        }
-        if (ColorMain.rainbow.getValue()){
-            c2 = Rainbow.getColorWithOpacity(255).getRGB();
-        }
-        else {
-            c2 = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255).getRGB();
-        }
+		Color rgbColor=color.getValue();
+        int c=new Color(rgbColor.getRed(),rgbColor.getGreen(),rgbColor.getBlue(),50).getRGB();
+		int c2=new Color(rgbColor.getRed(),rgbColor.getGreen(),rgbColor.getBlue(),255).getRGB();
         if (renderMode.getValue().equalsIgnoreCase("Box")) {
             mc.world.loadedEntityList.stream()
                         .filter(entity -> entity != mc.player)

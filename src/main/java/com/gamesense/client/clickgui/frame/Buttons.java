@@ -2,13 +2,11 @@ package com.gamesense.client.clickgui.frame;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
-import com.gamesense.api.util.color.Rainbow;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.clickgui.buttons.*;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ClickGuiModule;
-import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,35 +36,32 @@ public class Buttons extends Component {
         this.offset = offset;
         this.subcomponents = new ArrayList<Component>();
         this.open = false;
-        this.height = 16;
         int opY = offset + 16;
         if (GameSenseMod.getInstance().settingsManager.getSettingsForMod(mod) != null && !GameSenseMod.getInstance().settingsManager.getSettingsForMod(mod).isEmpty()) {
             for (final Setting s : GameSenseMod.getInstance().settingsManager.getSettingsForMod(mod)) {
                 switch (s.getType()) {
-                    case MODE: {
+                    case MODE:
                         this.subcomponents.add(new ModeComponent((Setting.Mode)s, this, mod, opY));
-                        opY += 16;
-                        continue;
-                    }
-                    case BOOLEAN: {
+                        break;
+                    case BOOLEAN:
                         this.subcomponents.add(new BooleanComponent((Setting.Boolean)s, this, opY));
-                        opY += 16;
-                        continue;
-                    }
-                    case DOUBLE: {
+                        break;
+                    case DOUBLE:
                         this.subcomponents.add(new DoubleComponent((Setting.Double)s, this, opY));
-                        opY += 16;
-                        continue;
-                    }
-                    case INT: {
+                        break;
+                    case INT:
                         this.subcomponents.add(new IntegerComponent((Setting.Integer)s, this, opY));
-                        opY += 16;
-                        continue;
-                    }
+                        break;
+					case COLOR:
+						this.subcomponents.add(new ColorComponent((Setting.ColorSetting)s, this, opY));
+						opY+=64;
+						break;
                 }
+                opY += 16;
             }
         }
         this.subcomponents.add(new KeybindComponent(this, opY));
+		this.height=opY+16-offset;
     }
 
     @Override
@@ -75,20 +70,16 @@ public class Buttons extends Component {
         int opY = this.offset + 16;
         for (final Component comp : this.subcomponents) {
             comp.setOff(opY);
+			if (comp instanceof ColorComponent) opY+=64;
             opY += 16;
         }
     }
 
     @Override
     public void renderComponent() {
-        if (ColorMain.rainbow.getValue()){
-            ClickGUI.color = Rainbow.getColorWithOpacity(ClickGuiModule.opacity.getValue()).getRGB();
-        }
-        else {
-            ClickGUI.color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), ClickGuiModule.opacity.getValue()).getRGB();
-        }
-        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, this.isHovered ? (this.mod.isEnabled() ? ClickGUI.color : new Color(195, 195, 195, ClickGuiModule.opacity.getValue() -50).darker().darker().getRGB()) : (this.mod.isEnabled() ? ClickGUI.color : new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).getRGB()));
-        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).getRGB());
+		Color transColor=new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50);
+        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, mod.isEnabled() ? ClickGUI.getColor() : (isHovered ? transColor.darker().darker().getRGB() : transColor.getRGB()));
+        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, transColor.getRGB());
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, -1);
         if (this.subcomponents.size() > 1) {
             if (ClickGuiModule.icon.getValue().equalsIgnoreCase("Image")) {
@@ -115,7 +106,7 @@ public class Buttons extends Component {
     @Override
     public int getHeight() {
         if (this.open) {
-            return 16 * (this.subcomponents.size() + 1);
+            return height;
         }
         return 16;
     }
