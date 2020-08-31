@@ -78,7 +78,6 @@ public class AutoCrystal extends Module {
     Setting.Boolean raytrace;
     Setting.Boolean rotate;
     Setting.Boolean spoofRotations;
-    Setting.Boolean cancelCrystal;
     Setting.Boolean chat;
     Setting.Boolean showDamage;
     Setting.Boolean singlePlace;
@@ -144,7 +143,6 @@ public class AutoCrystal extends Module {
         raytrace = registerBoolean("Raytrace", "Raytrace", false);
         rotate = registerBoolean("Rotate", "Rotate", true);
         spoofRotations = registerBoolean("Spoof Angles", "SpoofAngles", true);
-        cancelCrystal = registerBoolean("Cancel Crystal", "CancelCrystal", true);
         chat = registerBoolean("Toggle Msg", "ToggleMsg", true);
         hudDisplay = registerMode("HUD", "HUD", hudModes, "Mode");
     }
@@ -212,27 +210,12 @@ public class AutoCrystal extends Module {
                 mc.playerController.attackEntity(mc.player, crystal);
                 if (handBreak.getValue().equalsIgnoreCase("Offhand") && !mc.player.getHeldItemOffhand().isEmpty) {
                     mc.player.swingArm(EnumHand.OFF_HAND);
-                    if (cancelCrystal.getValue()){
-                        crystal.setDead();
-                        mc.world.removeAllEntities();
-                        mc.world.getLoadedEntityList();
-                    }
                 } else {
                     mc.player.swingArm(EnumHand.MAIN_HAND);
-                    if (cancelCrystal.getValue()){
-                        crystal.setDead();
-                        mc.world.removeAllEntities();
-                        mc.world.getLoadedEntityList();
-                    }
                 }
                 if (handBreak.getValue().equalsIgnoreCase("Both")) {
                     mc.player.swingArm(EnumHand.MAIN_HAND);
                     mc.player.swingArm(EnumHand.OFF_HAND);
-                    if (cancelCrystal.getValue()){
-                        crystal.setDead();
-                        mc.world.removeAllEntities();
-                        mc.world.getLoadedEntityList();
-                    }
                 }
                 isActive = false;
                 isBreaking = false;
