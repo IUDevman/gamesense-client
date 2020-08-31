@@ -15,15 +15,17 @@ public class LoadModules {
 
     //loads all functions for modules
     public LoadModules() {
-        loadCategory (SaveConfiguration.Combat,Module.Category.Combat);
-        loadCategory (SaveConfiguration.Exploits,Module.Category.Exploits);
-        loadCategory (SaveConfiguration.Hud,Module.Category.HUD);
-        loadCategory (SaveConfiguration.Misc,Module.Category.Misc);
-        loadCategory (SaveConfiguration.Movement,Module.Category.Movement);
-        loadCategory (SaveConfiguration.Render,Module.Category.Render);
+        loadCategory(SaveConfiguration.Combat, Module.Category.Combat);
+        loadCategory(SaveConfiguration.Exploits, Module.Category.Exploits);
+        loadCategory(SaveConfiguration.Hud, Module.Category.HUD);
+        loadCategory(SaveConfiguration.Misc, Module.Category.Misc);
+        loadCategory(SaveConfiguration.Movement, Module.Category.Movement);
+        loadCategory(SaveConfiguration.Render, Module.Category.Render);
     }
-	
-	// Duplicate code reduced by lukflug
+
+    /**
+     * @Author Lukflug, removed excess code
+     */
 	private void loadCategory (File config, Module.Category category) {
         loadSettings(config,category,"Value.json",Setting.Type.INT);
         loadSettings(config,category,"Boolean.json",Setting.Type.BOOLEAN);
