@@ -269,7 +269,13 @@ public class HUD extends Module {
                         .filter(Module::isDrawn)
                         .sorted(Comparator.comparing(module -> FontUtils.getStringWidth(customFont.getValue(), module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo()) * (-1)))
                         .forEach(m -> {
-                            c=color.getValue();
+							if (color.getRainbow()) {
+								int rgb = Color.HSBtoRGB(hue[0], 1f, 1f);	
+                                int r = (rgb >> 16) & 0xFF;	
+                                int g = (rgb >> 8) & 0xFF;	
+                                int b = rgb & 0xFF;
+								c = new Color(r, g, b);
+							} else c=color.getValue();
                             if(sortUp.getValue()) {
                                 if (right.getValue()) {
                                     drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), c.getRGB());
