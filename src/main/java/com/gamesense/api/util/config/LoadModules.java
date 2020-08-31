@@ -27,85 +27,54 @@ public class LoadModules {
      * @Author Lukflug, removed excess code
      */
 
-    private void loadCategory (File config, Module.Category category) {
-        File file;
-        FileInputStream fstream;
-        DataInputStream in;
-        BufferedReader br;
-        String line;
-        String curLine;
-        String configname;
-        String isOn;
-        String m;
-        Setting mod;
-        try {
-            file = new File(config.getAbsolutePath(), "Value.json");
-            fstream = new FileInputStream(file.getAbsolutePath());
-            in = new DataInputStream(fstream);
-            br = new BufferedReader(new InputStreamReader(in));
-            while((line = br.readLine()) != null) {
-                curLine = line.trim();
-                configname = curLine.split(":")[0];
-                isOn = curLine.split(":")[1];
-                m = curLine.split(":")[2];
-                for(Module mm : ModuleManager.getModulesInCategory(category)) {
-                    if (mm != null && mm.getName().equalsIgnoreCase(m)) {
-                        mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndModConfig(configname, mm);
-
-                        if (mod instanceof Setting.Integer) {
-                            ((Setting.Integer) mod).setValue(java.lang.Integer.parseInt(isOn));
-                        } else if (mod instanceof Setting.Double){
-                            ((Setting.Double) mod).setValue(java.lang.Double.parseDouble(isOn));
-                        }
-                    }
-                }
-            }
-            br.close();
-        } catch (Exception var13) {
-            var13.printStackTrace();
-        }
-        try {
-            file = new File(config.getAbsolutePath(), "Boolean.json");
-            fstream = new FileInputStream(file.getAbsolutePath());
-            in = new DataInputStream(fstream);
-            br = new BufferedReader(new InputStreamReader(in));
-
-            while((line = br.readLine()) != null) {
-                curLine = line.trim();
-                configname = curLine.split(":")[0];
-                isOn = curLine.split(":")[1];
-                m = curLine.split(":")[2];
-                for(Module mm : ModuleManager.getModulesInCategory(category)) {
-                    if (mm != null && mm.getName().equalsIgnoreCase(m)) {
-                        mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.Boolean) mod).setValue(java.lang.Boolean.parseBoolean(isOn));
-                    }
-                }
-            }
-            br.close();
-        } catch (Exception var12) {
-            var12.printStackTrace();
-        }
-        try {
-            file = new File(config.getAbsolutePath(), "String.json");
-            fstream = new FileInputStream(file.getAbsolutePath());
-            in = new DataInputStream(fstream);
-            br = new BufferedReader(new InputStreamReader(in));
-            while((line = br.readLine()) != null) {
-                curLine = line.trim();
-                configname = curLine.split(":")[0];
-                isOn = curLine.split(":")[1];
-                m = curLine.split(":")[2];
-                for(Module mm : ModuleManager.getModulesInCategory(category)) {
-                    if (mm != null && mm.getName().equalsIgnoreCase(m)) {
-                        mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname, mm);
-                        ((Setting.Mode) mod).setValue(isOn);
-                    }
-                }
-            }
-            br.close();
-        } catch (Exception var11) {
-            var11.printStackTrace();
-        }
+	private void loadCategory (File config, Module.Category category) {
+        loadSettings(config,category,"Value.json",Setting.Type.INT);
+        loadSettings(config,category,"Boolean.json",Setting.Type.BOOLEAN);
+        loadSettings(config,category,"String.json",Setting.Type.MODE);
+		//loadSettings(config,category,"Color.json",Setting.Type.COLOR);
     }
+	
+	private void loadSettings (File config, Module.Category category, String filename, Setting.Type type) {
+		try {
+            File file = new File(config.getAbsolutePath(),filename);
+            FileInputStream fstream = new FileInputStream(file.getAbsolutePath());
+            DataInputStream in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String line;
+			String curLine;
+            while((line = br.readLine()) != null) {
+                curLine = line.trim();
+                String configname = curLine.split(":")[0];
+                String isOn = curLine.split(":")[1];
+                String m = curLine.split(":")[2];
+                for (Module mm: ModuleManager.getModulesInCategory(category)) {
+                    if (mm != null && mm.getName().equalsIgnoreCase(m)) {
+                        Setting mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname,mm);
+						if (mod.getType()==type || (type==Setting.Type.INT && mod.getType()==Setting.Type.DOUBLE)) {
+							switch (type) {
+							case INT:
+								((Setting.Integer) mod).setValue(java.lang.Integer.parseInt(isOn));
+								break;
+							case DOUBLE:
+								((Setting.Double) mod).setValue(java.lang.Double.parseDouble(isOn));
+								break;
+							case BOOLEAN:
+								((Setting.Boolean) mod).setValue(java.lang.Boolean.parseBoolean(isOn));
+								break;
+							case MODE:
+								((Setting.Mode) mod).setValue(isOn);
+								break;
+							/*case COLOR:
+								((Setting.ColorSetting)mod).fromInteger(java.lang.Integer.parseInt(isOn));
+								break;*/
+							}
+						}
+                    }
+                }
+            }
+            br.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
 }
