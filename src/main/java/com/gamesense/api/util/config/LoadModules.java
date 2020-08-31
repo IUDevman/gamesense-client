@@ -51,7 +51,7 @@ public class LoadModules {
                     if (mm != null && mm.getName().equalsIgnoreCase(m)) {
                         Setting mod = GameSenseMod.getInstance().settingsManager.getSettingByNameAndMod(configname,mm);
 						if (mod.getType()==type || (type==Setting.Type.INT && mod.getType()==Setting.Type.DOUBLE)) {
-							switch (type) {
+							switch (mod.getType()) {
 							case INT:
 								((Setting.Integer) mod).setValue(java.lang.Integer.parseInt(isOn));
 								break;
