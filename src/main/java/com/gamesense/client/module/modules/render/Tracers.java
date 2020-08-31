@@ -30,6 +30,9 @@ public class Tracers extends Module {
 
     Setting.Integer renderDistance;
     Setting.Mode pointsTo;
+	Setting.ColorSetting nearColor;
+	Setting.ColorSetting midColor;
+	Setting.ColorSetting farColor;
 
     public void setup(){
         renderDistance = registerInteger("Distance", "Distance", 100, 10, 260);
@@ -39,6 +42,9 @@ public class Tracers extends Module {
         link.add("Feet");
 
         pointsTo = registerMode("Draw To", "DrawTo", link, "Feet");
+		nearColor=registerColor("Near Color","NearColor",Color.RED);
+		midColor=registerColor("Middle Color","MidColor",Color.YELLOW);
+		farColor=registerColor("Far Color","FarColor",Color.GREEN);
     }
 
     int tracerColor;
@@ -57,13 +63,13 @@ public class Tracers extends Module {
                             tracerColor = ColorMain.getEnemyColorInt();
                         } else {
                             if (mc.player.getDistance(e) < 20) {
-                                tracerColor = Color.RED.getRGB();
+                                tracerColor = nearColor.getValue().getRGB();
                             }
                             if (mc.player.getDistance(e) >= 20 && mc.player.getDistance(e) < 50) {
-                                tracerColor = Color.YELLOW.getRGB();
+                                tracerColor = midColor.getValue().getRGB();
                             }
                             if (mc.player.getDistance(e) >= 50) {
-                                tracerColor = Color.GREEN.getRGB();
+                                tracerColor = farColor.getValue().getRGB();
                             }
                         }
                     }
