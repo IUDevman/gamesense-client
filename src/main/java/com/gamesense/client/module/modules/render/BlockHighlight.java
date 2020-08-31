@@ -4,10 +4,8 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.color.Rainbow;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -23,27 +21,21 @@ public class BlockHighlight extends Module {
 
     Setting.Integer w;
     Setting.Boolean shade;
-    int c; //outline
-    int c2; //fill
+	Setting.ColorSetting color;
 
     public void setup() {
         shade = registerBoolean("Fill", "Fill", false);
         w = registerInteger("Width", "Width", 2, 1, 10);
+		color = registerColor("Color","Color");
     }
 
     public void onWorldRender(RenderEvent event) {
         RayTraceResult ray = mc.objectMouseOver;
         AxisAlignedBB bb;
         BlockPos pos;
-        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        if (ColorMain.rainbow.getValue()){
-            c = Rainbow.getColorWithOpacity(255).getRGB();
-            c2 = Rainbow.getColorWithOpacity(50).getRGB();
-        }
-        else {
-            c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255).getRGB();
-            c2 = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 50).getRGB();
-        }
+		Color rgbColor=color.getValue();
+        int c=new Color(rgbColor.getRed(),rgbColor.getGreen(),rgbColor.getBlue(),255).getRGB();
+		int c2=new Color(rgbColor.getRed(),rgbColor.getGreen(),rgbColor.getBlue(),50).getRGB();
         if (ray != null && ray.typeOfHit == RayTraceResult.Type.BLOCK) {
             pos = ray.getBlockPos();
             bb = mc.world.getBlockState(pos).getSelectedBoundingBox(mc.world, pos);

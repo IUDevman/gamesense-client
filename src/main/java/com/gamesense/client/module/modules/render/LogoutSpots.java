@@ -4,7 +4,7 @@ import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.render.GameSenseTessellator;
-import com.gamesense.api.util.color.Rainbow;
+import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
@@ -30,6 +30,14 @@ public class LogoutSpots extends Module {
 
     Map<Entity, String> loggedPlayers = new ConcurrentHashMap<>();
     List<Entity> lastTickEntities;
+	
+	Setting.Integer width;
+	Setting.ColorSetting color;
+	
+	public void setup() {
+		width=registerInteger("Width","Width",1,1,10);
+		color=registerColor("Color","Color",new Color(0,0,0));
+	}
 
     @EventHandler
     private final Listener<PlayerJoinEvent> listener1 = new Listener<>(event -> {
@@ -64,20 +72,16 @@ public class LogoutSpots extends Module {
         loggedPlayers.forEach((e, time) -> {
             if(mc.player.getDistance(e) < 500) {
                 GL11.glPushMatrix();
-                drawLogoutBox(e.getRenderBoundingBox(), 1, 0, 0, 0, 255);
+                drawLogoutBox(e.getRenderBoundingBox(), width.getValue());
                 drawNametag(e, time);
                 GL11.glPopMatrix();
             }
         });
     }
 
-    public void drawLogoutBox(AxisAlignedBB bb, int width, int r, int b, int g, int a){
-        ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        Color color;
-        Color c = Rainbow.getColor();
-        if(ColorMain.rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
-        else color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
-        GameSenseTessellator.drawBoundingBox(bb, width, color.getRGB());
+    public void drawLogoutBox(AxisAlignedBB bb, int width){
+        Color c=new Color(color.getValue().getRed(),color.getValue().getGreen(),color.getValue().getBlue(),255);
+        GameSenseTessellator.drawBoundingBox(bb, width, c.getRGB());
     }
 
     @EventHandler
@@ -154,10 +158,7 @@ public class LogoutSpots extends Module {
 
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
-        Color color;
-        Color c = Rainbow.getColor();
-        if(ColorMain.rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
-        else color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
+        Color color=new Color(ColorMain.guiColor.getValue().getRed(),ColorMain.guiColor.getValue().getGreen(),ColorMain.guiColor.getValue().getBlue(),255);
         fontRendererIn.drawStringWithShadow(line1, -i, 10, color.getRGB());
         fontRendererIn.drawStringWithShadow(line2, -ii, 20, color.getRGB());
         GlStateManager.glNormal3f(0.0F, 0.0F, 0.0F);
