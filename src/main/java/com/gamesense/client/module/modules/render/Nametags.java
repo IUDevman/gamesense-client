@@ -46,6 +46,7 @@ public class Nametags extends Module {
     Setting.Boolean health;
     Setting.Boolean ping;
     Setting.Boolean entityId;
+	Setting.Boolean customColor;
     Setting.ColorSetting borderColor;
 
     public void setup() {
@@ -57,10 +58,7 @@ public class Nametags extends Module {
         health = registerBoolean("Health", "Health", true);
         ping = registerBoolean("Ping", "Ping", false);
         entityId = registerBoolean("Entity Id", "EntityId", false);
-        ArrayList<String> borderColorModes = new ArrayList<>();
-        borderColorModes.add("Normal");
-        borderColorModes.add("Rainbow");
-        borderColorModes.add("Custom");
+		customColor = registerBoolean("Custom Color", "CustomColor", true);
         borderColor = registerColor("Border Color","BorderColor");
     }
 
@@ -273,8 +271,11 @@ public class Nametags extends Module {
         GlStateManager.enableBlend();
         EntityPlayer entityPlayer2;
         GlStateManager.enableBlend();
-        int color = ColourHolder.toHex(borderColor.getValue().getRed(),borderColor.getValue().getGreen(),borderColor.getValue().getBlue());
-        drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, color);
+        int color;
+        if (customColor.getValue()) {
+			color = ColourHolder.toHex(borderColor.getValue().getRed(),borderColor.getValue().getGreen(),borderColor.getValue().getBlue());
+		} else color=0x33000000;
+		drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, color);
         GlStateManager.disableBlend();
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.renderEntityName(entityPlayer), (-n4), (-(mc.fontRenderer.FONT_HEIGHT - 1)), this.renderPing(entityPlayer));
         entityPlayer2 = entityPlayer;
@@ -487,7 +488,7 @@ public class Nametags extends Module {
     }
 
     public static void enableGL2D() {
-        GL11.glDisable(2929);
+        GL11.glDisable(2929);					// You should probably replace this by symbolic OpenGL constants like GL_TEXTURE_2D or something
         GL11.glEnable(3042);
         GL11.glDisable(3553);
         GL11.glBlendFunc(770, 771);

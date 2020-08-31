@@ -29,6 +29,7 @@ public class VoidESP extends Module {
     Setting.Integer activeYValue;
     Setting.Mode renderType;
     Setting.Mode renderMode;
+	Setting.Integer width;
 	Setting.ColorSetting color;
 
     public void setup(){
@@ -45,7 +46,8 @@ public class VoidESP extends Module {
         activeYValue = registerInteger("Activate Y", "ActivateY", 20, 0, 256);
         renderType = registerMode("Render", "Render", render, "Both");
         renderMode = registerMode("Mode", "Mode", modes, "Flat");
-		color=registerColor("Color","Color");
+		width=registerInteger("Width","Width",1,1,10);
+		color=registerColor("Color","Color",new Color(255,255,0));
     }
 
     private ConcurrentSet<BlockPos> voidHoles;
@@ -91,13 +93,13 @@ public class VoidESP extends Module {
         voidHoles.forEach(blockPos -> {
             GameSenseTessellator.prepare(GL11.GL_QUADS);
             if (renderMode.getValue().equalsIgnoreCase("Box")){
-                drawBox(blockPos, 255, 255, 0);
+                drawBox(blockPos);
             } else {
-                drawFlat(blockPos, 255, 255, 0);
+                drawFlat(blockPos);
             }
             GameSenseTessellator.release();
             GameSenseTessellator.prepare(7);
-            drawOutline(blockPos,1,255,255,0);
+            drawOutline(blockPos,width.getValue());
             GameSenseTessellator.release();
         });
     }
@@ -122,7 +124,7 @@ public class VoidESP extends Module {
         };
     }
 
-    public void drawFlat(BlockPos blockPos, int r, int g, int b) {
+    private void drawFlat(BlockPos blockPos) {
         if (renderType.getValue().equalsIgnoreCase("Fill") || renderType.getValue().equalsIgnoreCase("Both")) {
             Color c=new Color(color.getValue().getRed(),color.getValue().getGreen(),color.getValue().getBlue(),50);
             AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
@@ -132,7 +134,7 @@ public class VoidESP extends Module {
         }
     }
 
-    private void drawBox(BlockPos blockPos, int r, int g, int b) {
+    private void drawBox(BlockPos blockPos) {
         if (renderType.getValue().equalsIgnoreCase("Fill") || renderType.getValue().equalsIgnoreCase("Both")) {
             Color c=new Color(color.getValue().getRed(),color.getValue().getGreen(),color.getValue().getBlue(),50);
             AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
@@ -140,16 +142,16 @@ public class VoidESP extends Module {
         }
     }
 
-    public void drawOutline(BlockPos blockPos, int width, int r, int g, int b) {
+    private void drawOutline(BlockPos blockPos, int width) {
         if (renderType.getValue().equalsIgnoreCase("Outline") || renderType.getValue().equalsIgnoreCase("Both")) {
-			int r1=color.getValue().getRed();
-			int g1=color.getValue().getGreen();
-			int b1=color.getValue().getBlue();
+			int r=color.getValue().getRed();
+			int g=color.getValue().getGreen();
+			int b=color.getValue().getBlue();
             if (renderMode.getValue().equalsIgnoreCase("Box")) {
-                GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r1, g1, b1, 255);
+                GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r, g, b, 255);
             }
             if (renderMode.getValue().equalsIgnoreCase("Flat")) {
-                GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r1, g1, b1, 255);
+                GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r, g, b, 255);
             }
         }
     }

@@ -125,10 +125,14 @@ public abstract class Module {
         return s;
     }
 	
-	protected Setting.ColorSetting registerColor (final String name, final String configname) {
-		final Setting.ColorSetting s = new Setting.ColorSetting(name, configname, this, getCategory(), false, new Color(90,145,240));
+	protected Setting.ColorSetting registerColor (final String name, final String configname, Color color) {
+		final Setting.ColorSetting s = new Setting.ColorSetting(name, configname, this, getCategory(), false, color);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
+	}
+	
+	protected Setting.ColorSetting registerColor (final String name, final String configname) {
+		return registerColor(name,configname,new Color(90,145,240));
 	}
 
     public enum Category{
