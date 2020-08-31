@@ -13,12 +13,19 @@ public class ColorMain extends Module {
         setDrawn(false);
     }
 
-    public static Setting.ColorSetting guiColor;
+    public static Setting.Boolean rainbow;
+    public static Setting.Integer Red;
+    public static Setting.Integer Blue;
+    public static Setting.Integer Green;
     public static Setting.Mode friendcolor;
     public static Setting.Mode enemycolor;
 
     public void setup() {
-        guiColor=registerColor("ClickGUI Color","Color");
+        rainbow = registerBoolean("Rainbow", "Rainbow", false);
+        Red = registerInteger("Red", "Red", 90, 0, 255);
+        Green = registerInteger("Green", "Green", 145, 0, 255);
+        Blue = registerInteger("Blue", "Blue", 240, 0, 255);
+
         ArrayList<String> tab = new ArrayList<>();
         tab.add("Black");
         tab.add("Dark Green");

@@ -4,6 +4,7 @@ import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.color.ColourHolder;
 import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.color.Rainbow;
 import com.gamesense.api.util.world.TpsUtils;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
@@ -66,7 +67,6 @@ public class HUD extends Module {
     Setting.Boolean pright;
     Setting.Integer arrayx;
     Setting.Integer arrayy;
-	Setting.ColorSetting color;
     private BlockPos[] surroundOffset;
     ResourceLocation resource;
     Color c;
@@ -107,11 +107,13 @@ public class HUD extends Module {
         welcomex = registerInteger("Welcomer X", "WelcomerX", 0, 0, 1000);
         welcomey = registerInteger("Welcomer Y", "WelcomerY", 0, 0, 1000);
         customFont = registerBoolean("Custom Font", "CustomFont", false);
-		color=registerColor("Color","Color");
     }
 
     public void onRender() {
-		c=color.getValue();
+        if (ColorMain.rainbow.getValue())
+            c = Rainbow.getColor();
+        else c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue());
+
         if (PotionEffects.getValue()){
             count = 0;
             try {
@@ -160,6 +162,7 @@ public class HUD extends Module {
             if (Type.getValue().equalsIgnoreCase("PvP")) {
                 Color on = new Color(0, 255, 0);
                 Color off = new Color(255, 0, 0);
+                Color watermark = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue());
                 totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
                 if (mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) totems++;
 
@@ -269,13 +272,16 @@ public class HUD extends Module {
                         .filter(Module::isDrawn)
                         .sorted(Comparator.comparing(module -> FontUtils.getStringWidth(customFont.getValue(), module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo()) * (-1)))
                         .forEach(m -> {
-							if (color.getRainbow()) {
-								int rgb = Color.HSBtoRGB(hue[0], 1f, 1f);	
-                                int r = (rgb >> 16) & 0xFF;	
-                                int g = (rgb >> 8) & 0xFF;	
+                            if (ColorMain.rainbow.getValue()) {
+                                int rgb = Color.HSBtoRGB(hue[0], 1f, 1f);
+                                int r = (rgb >> 16) & 0xFF;
+                                int g = (rgb >> 8) & 0xFF;
                                 int b = rgb & 0xFF;
-								c = new Color(r, g, b);
-							} else c=color.getValue();
+
+                                c = new Color(r, g, b);
+                            } else {
+                                c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue());
+                            }
                             if(sortUp.getValue()) {
                                 if (right.getValue()) {
                                     drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), c.getRGB());

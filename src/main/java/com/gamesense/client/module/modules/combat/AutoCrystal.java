@@ -10,6 +10,7 @@ import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -99,8 +100,6 @@ public class AutoCrystal extends Module {
     Setting.Mode hudDisplay;
 
     private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
-    Setting.Integer armorDuraToFacePlace;
-	Setting.ColorSetting color;
 
     public boolean isActive = false;
     private long breakSystemTime;
@@ -146,7 +145,6 @@ public class AutoCrystal extends Module {
         spoofRotations = registerBoolean("Spoof Angles", "SpoofAngles", true);
         chat = registerBoolean("Toggle Msg", "ToggleMsg", true);
         hudDisplay = registerMode("HUD", "HUD", hudModes, "Mode");
-		color=registerColor("Color","Color");
     }
 
     public void onUpdate() {
@@ -400,14 +398,26 @@ public class AutoCrystal extends Module {
 
     public void onWorldRender(RenderEvent event) {
         if (this.render != null) {
-			int r=color.getValue().getRed();
-			int g=color.getValue().getGreen();
-			int b=color.getValue().getBlue();
-			GameSenseTessellator.prepare(7);
-			GameSenseTessellator.drawBox(this.render, r, g, b, 50, 63);
-			GameSenseTessellator.release();
-			GameSenseTessellator.prepare(7);
-			GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, r, g, b, 255);
+            final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
+            int rgb = Color.HSBtoRGB(hue[0], 1, 1);
+            int r = (rgb >> 16) & 0xFF;
+            int g = (rgb >> 8) & 0xFF;
+            int b = rgb & 0xFF;
+            hue[0] +=.02f;
+
+            if (ColorMain.rainbow.getValue()) {
+                GameSenseTessellator.prepare(7);
+                GameSenseTessellator.drawBox(this.render, r, g, b, 50, 63);
+                GameSenseTessellator.release();
+                GameSenseTessellator.prepare(7);
+                GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, r, g, b, 255);
+            } else {
+                GameSenseTessellator.prepare(7);
+                GameSenseTessellator.drawBox(this.render, ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 50, 63);
+                GameSenseTessellator.release();
+                GameSenseTessellator.prepare(7);
+                GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
+            }
             GameSenseTessellator.release();
         }
 

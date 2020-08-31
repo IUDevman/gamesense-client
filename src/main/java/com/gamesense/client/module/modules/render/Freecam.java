@@ -17,11 +17,9 @@ import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 public class Freecam extends Module {
     public Freecam() {super("Freecam", Category.Render);}
 
-	Setting.Boolean cancelPackets;
     Setting.Double speed;
 
     public void setup() {
-		cancelPackets = registerBoolean("Cancel Packets","CancelPackets",true);
         speed = registerDouble("Speed", "Speed", 5.0D, 0.0D, 10.0D);
     }
 
@@ -103,7 +101,7 @@ public class Freecam extends Module {
 
     @EventHandler
     private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
-        if ((event.getPacket() instanceof CPacketPlayer || event.getPacket() instanceof CPacketInput) && cancelPackets.getValue()) {
+        if (event.getPacket() instanceof CPacketPlayer || event.getPacket() instanceof CPacketInput) {
             event.cancel();
         }
     });
