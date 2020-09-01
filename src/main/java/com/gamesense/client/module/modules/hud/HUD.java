@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.color.ColourHolder;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.world.TpsUtils;
 import com.gamesense.client.GameSenseMod;
@@ -331,7 +330,7 @@ public class HUD extends Module {
                         float green = ((float) is.getMaxDamage() - (float) is.getItemDamage()) / (float) is.getMaxDamage();
                         float red = 1 - green;
                         int dmg = 100 - (int) (red * 100);
-                        drawStringWithShadow(dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, y - 11, ColourHolder.toHex((int) (red * 255), (int) (green * 255), 0));
+                        drawStringWithShadow(dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, y - 11, new Color((int) (red * 255), (int) (green * 255), 0).getRGB());
                 }
 
                 GlStateManager.enableDepth();

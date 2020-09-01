@@ -4,7 +4,6 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.players.enemy.Enemies;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.color.ColourHolder;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.Wrapper;
 import com.gamesense.client.module.Module;
@@ -273,7 +272,7 @@ public class Nametags extends Module {
         GlStateManager.enableBlend();
         int color;
         if (customColor.getValue()) {
-			color = ColourHolder.toHex(borderColor.getValue().getRed(),borderColor.getValue().getGreen(),borderColor.getValue().getBlue());
+			color = new Color(borderColor.getValue().getRed(),borderColor.getValue().getGreen(),borderColor.getValue().getBlue()).getRGB();
 		} else color=0x33000000;
 		drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, color);
         GlStateManager.disableBlend();

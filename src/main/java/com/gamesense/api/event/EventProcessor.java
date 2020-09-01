@@ -45,42 +45,13 @@ public class EventProcessor {
     public static EventProcessor INSTANCE;
     Minecraft mc = Minecraft.getMinecraft();
     CommandManager commandManager = new CommandManager();
-    float hue = 0;
-    Color c;
-    int rgb;
-    int speed = 2;
 
     public EventProcessor(){
         INSTANCE = this;
     }
 
-    public int getRgb(){
-        return rgb;
-    }
-    public Color getC(){
-        return c;
-    }
-    public void setRainbowSpeed(int s){
-        speed = s;
-    }
-    public int getRainbowSpeed(){
-        return speed;
-    }
-
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        //rainbow reee
-        final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
-
-        int rgb = Color.HSBtoRGB(hue[0], 1f, 1f);
-
-        int red = (rgb >> 16) & 0xFF;
-        int green = (rgb >> 8) & 0xFF;
-        int blue = rgb & 0xFF;
-        hue[0] += .02f;
-
-        c = new Color(red,green,blue);
-
         //Module updates
         // #TO CYBER: DONT DELETE THIS AGAIN BY ACCIDENT DUMBASS
         if (mc.player != null)

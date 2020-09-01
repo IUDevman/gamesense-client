@@ -4,7 +4,6 @@ import java.util.List;
 import java.awt.Color;
 
 import com.gamesense.client.module.Module;
-import com.gamesense.api.util.color.Rainbow;
 
 public abstract class Setting {
 
@@ -160,8 +159,9 @@ public abstract class Setting {
 		}
 		
 		public Color getValue() {
-			if (rainbow) return Rainbow.getColor();
-			return value;
+			if (rainbow) {
+				return Color.getHSBColor((System.currentTimeMillis()%(360*32))/(360f * 32),1,1);
+			} return value;
 		}
 		
 		public void setValue (boolean rainbow, final Color value) {
