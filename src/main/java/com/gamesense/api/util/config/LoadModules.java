@@ -26,6 +26,7 @@ public class LoadModules {
     /**
      * @Author Lukflug, removed excess code
      */
+
 	private void loadCategory (File config, Module.Category category) {
         loadSettings(config,category,"Value.json",Setting.Type.INT);
         loadSettings(config,category,"Boolean.json",Setting.Type.BOOLEAN);

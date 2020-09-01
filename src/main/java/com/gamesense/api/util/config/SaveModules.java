@@ -28,6 +28,7 @@ public class SaveModules {
     /**
      * @Author Lukflug, removed excess code
      */
+
     private void saveCategory (File config, Module.Category category) {
         saveSettings(config,category,"Value.json",Setting.Type.INT);
         saveSettings(config,category,"Boolean.json",Setting.Type.BOOLEAN);

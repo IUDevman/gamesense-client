@@ -97,11 +97,9 @@ public class AutoCrystal extends Module {
     Setting.Mode handBreak;
     Setting.Mode breakMode;
     Setting.Mode hudDisplay;
+	Setting.ColorSetting color;
 
     private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
-  
-    Setting.Integer armorDuraToFacePlace;
-	Setting.ColorSetting color;
 
     public boolean isActive = false;
     private long breakSystemTime;
