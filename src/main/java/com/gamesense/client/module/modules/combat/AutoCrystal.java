@@ -399,14 +399,11 @@ public class AutoCrystal extends Module {
 
     public void onWorldRender(RenderEvent event) {
         if (this.render != null) {
-			int r=color.getValue().getRed();
-			int g=color.getValue().getGreen();
-			int b=color.getValue().getBlue();
 			GameSenseTessellator.prepare(7);
-			GameSenseTessellator.drawBox(this.render, r, g, b, 50, 63);
+			GameSenseTessellator.drawBox(this.render, color, 50, 63);
 			GameSenseTessellator.release();
 			GameSenseTessellator.prepare(7);
-			GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, r, g, b, 255);
+			GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, color, 255);
             GameSenseTessellator.release();
         }
 
@@ -431,7 +428,10 @@ public class AutoCrystal extends Module {
     }
 
     //Bruh why did I never think of just using booleans, this was so much easier than
-    // the previous chinese implementation I did. @Author CyberTF2.
+    // the previous chinese implementation I did.
+	/**
+	*@Author CyberTF2.
+	*/
     private boolean crystalCheck(Entity crystal) {
 
         if (!(crystal instanceof EntityEnderCrystal))

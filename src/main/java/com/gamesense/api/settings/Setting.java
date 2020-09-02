@@ -1,8 +1,8 @@
 package com.gamesense.api.settings;
 
 import java.util.List;
-import java.awt.Color;
 
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.module.Module;
 
 public abstract class Setting {
@@ -150,21 +150,21 @@ public abstract class Setting {
 	// Color config added by lukflug
 	public static class ColorSetting extends Setting {
 		private boolean rainbow;
-		private Color value;
+		private GSColor value;
 		
-		public ColorSetting (final String name, final String configname, final Module parent, final Module.Category category, boolean rainbow, final Color value) {
+		public ColorSetting (final String name, final String configname, final Module parent, final Module.Category category, boolean rainbow, final GSColor value) {
 			super(name,configname,parent,category,Type.COLOR);
 			this.rainbow=rainbow;
 			this.value=value;
 		}
 		
-		public Color getValue() {
+		public GSColor getValue() {
 			if (rainbow) {
 				return Color.getHSBColor((System.currentTimeMillis()%(360*32))/(360f * 32),1,1);
 			} return value;
 		}
 		
-		public void setValue (boolean rainbow, final Color value) {
+		public void setValue (boolean rainbow, final GSColor value) {
 			this.rainbow=rainbow;
 			this.value=value;
 		}
@@ -174,11 +174,11 @@ public abstract class Setting {
 		}
 		
 		public void fromInteger (int number) {
-			value=new Color(number&0xFFFFFF);
+			value=new GSColor(number&0xFFFFFF);
 			rainbow=((number&0x1000000)!=0);
 		}
 		
-		public Color getColor() {
+		public GSColor getColor() {
 			return value;
 		}
 		

@@ -4,6 +4,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import net.minecraft.block.material.Material;
@@ -33,15 +34,13 @@ public class BlockHighlight extends Module {
         RayTraceResult ray = mc.objectMouseOver;
         AxisAlignedBB bb;
         BlockPos pos;
-		Color rgbColor=color.getValue();
-        int c=new Color(rgbColor.getRed(),rgbColor.getGreen(),rgbColor.getBlue(),255).getRGB();
-		int c2=new Color(rgbColor.getRed(),rgbColor.getGreen(),rgbColor.getBlue(),50).getRGB();
+		Color c2=new GSColor(color.getValue(),50);
         if (ray != null && ray.typeOfHit == RayTraceResult.Type.BLOCK) {
             pos = ray.getBlockPos();
             bb = mc.world.getBlockState(pos).getSelectedBoundingBox(mc.world, pos);
             if (bb != null && pos != null && mc.world.getBlockState(pos).getMaterial() != Material.AIR) {
                 GameSenseTessellator.prepareGL();
-                GameSenseTessellator.drawBoundingBox(bb, w.getValue(), c);
+                GameSenseTessellator.drawBoundingBox(bb, w.getValue(), color.getValue());
                 GameSenseTessellator.releaseGL();
                 if (shade.getValue()) {
                     GameSenseTessellator.prepare(GL11.GL_QUADS);

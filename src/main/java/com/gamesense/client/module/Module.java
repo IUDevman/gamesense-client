@@ -3,11 +3,11 @@ package com.gamesense.client.module;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.util.GSColor;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
-import java.awt.Color;
 
 public abstract class Module {
     protected static final Minecraft mc = Minecraft.getMinecraft();
@@ -125,14 +125,14 @@ public abstract class Module {
         return s;
     }
 	
-	protected Setting.ColorSetting registerColor (final String name, final String configname, Color color) {
+	protected Setting.ColorSetting registerColor (final String name, final String configname, GSColor color) {
 		final Setting.ColorSetting s = new Setting.ColorSetting(name, configname, this, getCategory(), false, color);
         GameSenseMod.getInstance().settingsManager.addSetting(s);
         return s;
 	}
 	
 	protected Setting.ColorSetting registerColor (final String name, final String configname) {
-		return registerColor(name,configname,new Color(90,145,240));
+		return registerColor(name,configname,new GSColor(90,145,240));
 	}
 
     public enum Category{
