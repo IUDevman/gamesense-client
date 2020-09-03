@@ -1,6 +1,8 @@
 package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import net.minecraft.util.text.TextComponentString;
@@ -57,18 +59,18 @@ public class Notifications extends Module {
 
             if (sortUp.getValue()){
                 if (sortRight.getValue()){
-                    drawStringWithShadow(s.getText(), notX.getValue() - getWidth(s.getText()), notY.getValue() + (notCount * 10), 0xffffffff);
+                    FontUtils.drawStringWithShadow(s.getText(), notX.getValue() - FontUtils.getWidth(s.getText()), notY.getValue() + (notCount * 10), new GSColor(255,255,255));
                 }
                 else {
-                    drawStringWithShadow(s.getText(), notX.getValue(),notY.getValue() + (notCount * 10), 0xffffffff);
+                    FontUtils.drawStringWithShadow(s.getText(), notX.getValue(),notY.getValue() + (notCount * 10), new GSColor(255,255,255));
                 }
             }
             else {
                 if (sortRight.getValue()){
-                    drawStringWithShadow(s.getText(), notX.getValue() - getWidth(s.getText()), notY.getValue() + (notCount * -10), 0xffffffff);
+                    FontUtils.drawStringWithShadow(s.getText(), notX.getValue() - FontUtils.getWidth(s.getText()), notY.getValue() + (notCount * -10), new GSColor(255,255,255));
                 }
                 else {
-                    drawStringWithShadow(s.getText(), notX.getValue(),notY.getValue() + (notCount * -10), 0xffffffff);
+                    FontUtils.drawStringWithShadow(s.getText(), notX.getValue(),notY.getValue() + (notCount * -10), new GSColor(255,255,255));
                 }
             }
         }
@@ -83,19 +85,5 @@ public class Notifications extends Module {
             list.remove(m);
             list.add(m);
         }
-    }
-
-    //bullshit port from HUD
-    private void drawStringWithShadow (String text,int x, int y, int color) {
-        if (HUD.customFont.getValue())
-            GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
-        else
-            mc.fontRenderer.drawStringWithShadow(text, x, y, color);
-    }
-
-    //bullshit port from HUD
-    private int getWidth(String s){
-        if(HUD.customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
-        else return mc.fontRenderer.getStringWidth(s);
     }
 }

@@ -34,7 +34,7 @@ public class BlockHighlight extends Module {
         RayTraceResult ray = mc.objectMouseOver;
         AxisAlignedBB bb;
         BlockPos pos;
-		Color c2=new GSColor(color.getValue(),50);
+		GSColor c2=new GSColor(color.getValue(),50);
         if (ray != null && ray.typeOfHit == RayTraceResult.Type.BLOCK) {
             pos = ray.getBlockPos();
             bb = mc.world.getBlockState(pos).getSelectedBoundingBox(mc.world, pos);

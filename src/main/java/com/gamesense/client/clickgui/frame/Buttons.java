@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
 public class Buttons extends Component {
@@ -77,13 +76,12 @@ public class Buttons extends Component {
 
     @Override
     public void renderComponent() {
-		Color transColor=new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50);
-        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, mod.isEnabled() ? ClickGUI.getColor() : (isHovered ? transColor.darker().darker().getRGB() : transColor.getRGB()));
-        Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, transColor.getRGB());
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, -1);
+        ClickGUI.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, mod.isEnabled()?ClickGUI.getMainColor():ClickGUI.getTransColor(isHovered));
+        ClickGUI.drawRect(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, ClickGUI.getTransColor(false));
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, ClickGUI.getFontColor());
         if (this.subcomponents.size() > 1) {
             if (ClickGuiModule.icon.getValue().equalsIgnoreCase("Image")) {
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "" : "", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, -1);
+                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "" : "", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, ClickGUI.getFontColor());
                 if (this.open) {
                     //gif texture
                     drawOpenRender(this.parent.getX() + this.parent.getWidth() - 13, this.parent.getY() + this.offset + 2 + 2);
@@ -93,7 +91,7 @@ public class Buttons extends Component {
                 }
             }
             else {
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "~" : ">", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, -1);
+                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "~" : ">", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, ClickGUI.getFontColor());
             }
         }
         if (this.open && !this.subcomponents.isEmpty()) {

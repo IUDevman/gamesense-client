@@ -1,10 +1,11 @@
 package com.gamesense.api.util.font;
 
+import com.gamesense.api.util.GSColor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,42 +41,33 @@ public class CFontRenderer extends CFont {
         fontSize = newSize;
     }
 
-    public float drawStringWithShadow(String text, double x, double y, int color) {
+    public float drawStringWithShadow(String text, double x, double y, GSColor color) {
         float shadowWidth = drawString(text, x + 1D, y + 1D, color, true);
         return Math.max(shadowWidth, drawString(text, x, y, color, false));
     }
 
-    public float drawString(String text, float x, float y, int color) {
+    public float drawString(String text, float x, float y, GSColor color) {
         return drawString(text, x, y, color, false);
     }
 
-    public float drawCenteredStringWithShadow(String text, float x, float y, int color) {
+    public float drawCenteredStringWithShadow(String text, float x, float y, GSColor color) {
         return drawStringWithShadow(text, x - getStringWidth(text) / 2, y, color);
     }
 
-    public float drawCenteredString(String text, float x, float y, int color) {
+    public float drawCenteredString(String text, float x, float y, GSColor color) {
         return drawString(text, x - getStringWidth(text) / 2, y, color);
     }
 
-    public float drawString(String text, double x, double y, int color, boolean shadow) {
+    public float drawString(String text, double x, double y, GSColor gsColor, boolean shadow) {
         x -= 1;
         y -= 2;
-        if (text == null) {
-            return 0.0F;
-        }
-        if (color == 553648127) {
-            color = 16777215;
-        }
-        if ((color & 0xFC000000) == 0) {
-            color |= -16777216;
-        }
-
-        if (shadow) {
-            color = (color & 0xFCFCFC) >> 2 | color & 0xFF000000;
-        }
+		GSColor color=new GSColor(gsColor);
+        if (text == null) return 0.0F;
+        if (color.getRed()==255 && color.getGreen()==255 && color.getBlue()==255 && color.getAlpha()==32) color=new GSColor(255,255,255);
+        if (color.getAlpha()<4) color=new GSColor(color,255);
+        if (shadow) color=new GSColor(color.getRed()/4,color.getGreen()/4,color.getBlue()/4,color.getAlpha());
 
         CharData[] currentData = this.charData;
-        float alpha = (color >> 24 & 0xFF) / 255.0F;
         boolean randomCase = false;
         boolean bold = false;
         boolean italic = false;
@@ -89,7 +81,7 @@ public class CFontRenderer extends CFont {
             GlStateManager.scale(0.5D, 0.5D, 0.5D);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(770, 771);
-            GlStateManager.color((color >> 16 & 0xFF) / 255.0F, (color >> 8 & 0xFF) / 255.0F, (color & 0xFF) / 255.0F, alpha);
+            GlStateManager.color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha());
             int size = text.length();
             GlStateManager.enableTexture2D();
             GlStateManager.bindTexture(tex.getGlTextureId());
@@ -115,7 +107,7 @@ public class CFontRenderer extends CFont {
                         if ((colorIndex < 0) || (colorIndex > 15)) colorIndex = 15;
                         if (shadow) colorIndex += 16;
                         int colorcode = this.colorCode[colorIndex];
-                        GlStateManager.color((colorcode >> 16 & 0xFF) / 255.0F, (colorcode >> 8 & 0xFF) / 255.0F, (colorcode & 0xFF) / 255.0F, alpha);
+                        GlStateManager.color((colorcode >> 16 & 0xFF) / 255.0F, (colorcode >> 8 & 0xFF) / 255.0F, (colorcode & 0xFF) / 255.0F, color.getAlpha());
                     } else if (colorIndex == 16) randomCase = true;
                     else if (colorIndex == 17) {
                         bold = true;
@@ -151,7 +143,7 @@ public class CFontRenderer extends CFont {
                         randomCase = false;
                         underline = false;
                         strikethrough = false;
-                        GlStateManager.color((color >> 16 & 0xFF) / 255.0F, (color >> 8 & 0xFF) / 255.0F, (color & 0xFF) / 255.0F, alpha);
+                        GlStateManager.color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha());
                         GlStateManager.bindTexture(tex.getGlTextureId());
                         // GL11.glBindTexture(GL11.GL_TEXTURE_2D,
                         // tex.getGlTextureId());

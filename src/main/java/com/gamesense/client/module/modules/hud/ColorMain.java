@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.module.Module;
 import net.minecraft.util.text.TextFormatting;
 
@@ -13,12 +14,10 @@ public class ColorMain extends Module {
         setDrawn(false);
     }
 
-    public static Setting.ColorSetting guiColor;
     public static Setting.Mode friendcolor;
     public static Setting.Mode enemycolor;
 
     public void setup() {
-        guiColor=registerColor("ClickGUI Color","Color");
         ArrayList<String> tab = new ArrayList<>();
         tab.add("Black");
         tab.add("Dark Green");
@@ -44,7 +43,7 @@ public class ColorMain extends Module {
         this.disable();
     }
 	
-	private static TextFormatitng settingToFormatting (String setting) {
+	private static TextFormatting settingToFormatting (Setting.Mode setting) {
 		if (setting.getValue().equalsIgnoreCase("Black")){
             return TextFormatting.BLACK;
         }
@@ -104,7 +103,7 @@ public class ColorMain extends Module {
         return settingToFormatting(enemycolor);
     }
 	
-	private static Color settingToColor (String setting) {
+	private static Color settingToColor (Setting.Mode setting) {
 		if (setting.getValue().equalsIgnoreCase("Black")){
             return Color.BLACK;
         }
@@ -156,11 +155,11 @@ public class ColorMain extends Module {
         return Color.WHITE;
 	}
 
-    public static int getFriendColorInt(){
-        return settingToColor(friendcolor);
+    public static GSColor getFriendGSColor(){
+        return new GSColor(settingToColor(friendcolor));
     }
 
-    public static int getEnemyColorInt(){
-        return settingToColor(enemycolor);
+    public static GSColor getEnemyGSColor(){
+        return new GSColor(settingToColor(enemycolor));
     }
 }

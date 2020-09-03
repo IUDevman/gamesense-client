@@ -2,37 +2,55 @@ package com.gamesense.api.util;
 
 import java.awt.Color;
 
+import org.lwjgl.opengl.GL11;
+
 /**
 * @author lukflug
 */
 // Why would anyone ever need to use JavaDoc properly?
 
 public class GSColor extends Color {
-	GSColor(int rgb) {
+	public GSColor (int rgb) {
 		super(rgb);
 	}
 	
-	GSColor(int rgba, boolean hasalpha) {
+	public GSColor (int rgba, boolean hasalpha) {
 		super(rgba,hasalpha);
 	}
 	
-	GSColor(int r, int g, int b) {
+	public GSColor (int r, int g, int b) {
 		super(r,g,b);
 	}
 	
-	GSColor(int r, int g, int b, int a) {
+	public GSColor (int r, int g, int b, int a) {
 		super(r,g,b,a);
 	}
 	
-	float getHue() {
+	public GSColor (Color color) {
+		super(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha());
+	}
+	
+	public GSColor (GSColor color, int a) {
+		super(color.getRed(),color.getGreen(),color.getBlue(),a);
+	}
+	
+	public static GSColor fromHSB (float hue, float saturation, float brightness) {
+		return new GSColor(Color.getHSBColor(hue,saturation,brightness));
+	}
+	
+	public float getHue() {
 		return RGBtoHSB(getRed(),getGreen(),getBlue(),null)[0];
 	}
 	
-	float getSaturation() {
+	public float getSaturation() {
 		return RGBtoHSB(getRed(),getGreen(),getBlue(),null)[1];
 	}
 	
-	float getBrightness() {
+	public float getBrightness() {
 		return RGBtoHSB(getRed(),getGreen(),getBlue(),null)[2];
+	}
+	
+	public void glColor() {
+		GL11.glColor4f(getRed()/255.0f,getGreen()/255.0f,getBlue()/255.0f,getAlpha()/255.0f);
 	}
 }

@@ -78,7 +78,7 @@ public class GameSenseTessellator extends Tessellator {
     }
 	
     public static void drawBox(BufferBuilder buffer, AxisAlignedBB bb, GSColor color, int sides) {
-		drawBox(buffer,(float)bb.minX,(float)bb.minY,(float)bb.minZ,(float)bb.maxX-bb.minX,(float)bb.maxY-bb.minZ,(float)bb.maxX-bb.minZ,color,sides);
+		drawBox(buffer,(float)bb.minX,(float)bb.minY,(float)bb.minZ,(float)(bb.maxX-bb.minX),(float)(bb.maxY-bb.minY),(float)(bb.maxZ-bb.minZ),color,sides);
     }
 
     public static void drawDownBox(BlockPos blockPos, GSColor color, int sides) {

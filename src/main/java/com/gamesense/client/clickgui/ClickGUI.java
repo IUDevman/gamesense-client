@@ -1,11 +1,12 @@
 package com.gamesense.client.clickgui;
 
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.clickgui.frame.Component;
 import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ClickGuiModule;
-import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.Gui;
 
 import java.awt.*;
 import java.io.IOException;
@@ -101,7 +102,21 @@ public class ClickGUI extends GuiScreen {
         return frames;
     }
 
-    public static int getColor() {
-		return ColorMain.guiColor.getValue().getRGB();
+    public static GSColor getMainColor() {
+		return ClickGuiModule.guiColor.getValue();
+	}
+	
+	public static GSColor getTransColor (boolean hovered) {
+		GSColor transColor=new GSColor(195, 195, 195, ClickGuiModule.opacity.getValue()-50);
+		if (hovered) return new GSColor(transColor.darker().darker());
+		return transColor;
+	}
+	
+	public static GSColor getFontColor() {
+		return new GSColor(255,255,255);
+	}
+	
+	public static void drawRect (int x1, int y1, int x2, int y2, GSColor color) {
+		Gui.drawRect(x1,y1,x2,y2,color.getRGB());
 	}
 }

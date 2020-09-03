@@ -4,6 +4,7 @@ import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.world.TpsUtils;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -68,7 +69,6 @@ public class HUD extends Module {
 	Setting.ColorSetting color;
     private BlockPos[] surroundOffset;
     ResourceLocation resource;
-    Color c;
     int sort;
     int modCount;
     int count;
@@ -110,7 +110,7 @@ public class HUD extends Module {
     }
 
     public void onRender() {
-		c=color.getValue();
+		GSColor c=color.getValue();
         if (PotionEffects.getValue()){
             count = 0;
             try {
@@ -126,16 +126,16 @@ public class HUD extends Module {
                     String s = name + " " + amplifier + ChatFormatting.GRAY + " " + minutes + ":" + seconds;
                     if (psortUp.getValue()) {
                         if (pright.getValue()) {
-                            drawStringWithShadow(s, potionx.getValue() - getWidth(s),potiony.getValue() + (count * 10), c.getRGB());
+                            FontUtils.drawStringWithShadow(s, potionx.getValue() - getWidth(s),potiony.getValue() + (count * 10), c);
                         } else {
-                            drawStringWithShadow(s, potionx.getValue(), potiony.getValue() + (count * 10), c.getRGB());
+                            FontUtils.drawStringWithShadow(s, potionx.getValue(), potiony.getValue() + (count * 10), c);
                         }
                         count++;
                     } else {
                         if (pright.getValue()) {
-                            drawStringWithShadow(s, potionx.getValue() - getWidth(s),  potiony.getValue() + (count * -10), c.getRGB());
+                            FontUtils.drawStringWithShadow(s, potionx.getValue() - getWidth(s),  potiony.getValue() + (count * -10), c);
                         } else {
-                            drawStringWithShadow(s, potionx.getValue(), potiony.getValue() + (count * -10), c.getRGB());
+                            FontUtils.drawStringWithShadow(s, potionx.getValue(), potiony.getValue() + (count * -10), c);
                         }
                         count++;
                     }
@@ -144,11 +144,11 @@ public class HUD extends Module {
         }
 
         if (Watermark.getValue()) {
-            drawStringWithShadow("GameSense " + GameSenseMod.MODVER, 0, 0, c.getRGB());
+            FontUtils.drawStringWithShadow("GameSense " + GameSenseMod.MODVER, 0, 0, c);
         }
 
         if (Welcomer.getValue()) {
-            drawStringWithShadow("Hello " + mc.player.getName() + " :^)", welcomex.getValue(), welcomey.getValue(), c.getRGB());
+            FontUtils.drawStringWithShadow("Hello " + mc.player.getName() + " :^)", welcomex.getValue(), welcomey.getValue(), c);
         }
 
         if (Inventory.getValue()) {
@@ -179,27 +179,27 @@ public class HUD extends Module {
                 this.surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};
                 final List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
                 if (Type.getValue().equalsIgnoreCase("PvP")) {
-                    drawStringWithShadow("gamesense.cc", infox.getValue(), infoy.getValue(), c.getRGB());
+                    drawStringWithShadow("gamesense.cc", infox.getValue(), infoy.getValue(), c);
                     if (players != null && mc.player.getDistance(players) <= AutoCrystal.range.getValue()) {
-                        drawStringWithShadow("HTR", infox.getValue(), infoy.getValue() + 10, on.getRGB());
+                        FontUtils.drawStringWithShadow("HTR", infox.getValue(), infoy.getValue() + 10, on);
                     } else {
-                        drawStringWithShadow("HTR", infox.getValue(), infoy.getValue() + 10, off.getRGB());
+                        FontUtils.drawStringWithShadow("HTR", infox.getValue(), infoy.getValue() + 10, off);
                     }
                     if (players != null && mc.player.getDistance(players) <= AutoCrystal.placeRange.getValue()) {
-                        drawStringWithShadow("PLR", infox.getValue(), infoy.getValue() + 20, on.getRGB());
+                        FontUtils.drawStringWithShadow("PLR", infox.getValue(), infoy.getValue() + 20, on);
                     } else {
-                        drawStringWithShadow("PLR", infox.getValue(), infoy.getValue() + 20, off.getRGB());
+                        FontUtils.drawStringWithShadow("PLR", infox.getValue(), infoy.getValue() + 20, off);
                     }
                     if (totems > 0 && ModuleManager.isModuleEnabled("AutoTotem")) {
-                        drawStringWithShadow(totems + "", infox.getValue(), infoy.getValue() + 30, on.getRGB());
+                        FontUtils.drawStringWithShadow(totems + "", infox.getValue(), infoy.getValue() + 30, on);
                     } else {
-                        drawStringWithShadow(totems + "", infox.getValue(), infoy.getValue() + 30, off.getRGB());
+                        FontUtils.drawStringWithShadow(totems + "", infox.getValue(), infoy.getValue() + 30, off);
                     }
 
                     if (getPing() > 100) {
-                        drawStringWithShadow("PING " + getPing(), infox.getValue(), infoy.getValue() + 40, off.getRGB());
+                        FontUtils.drawStringWithShadow("PING " + getPing(), infox.getValue(), infoy.getValue() + 40, off);
                     } else {
-                        drawStringWithShadow("PING " + getPing(), infox.getValue(), infoy.getValue() + 40, on.getRGB());
+                        FontUtils.drawStringWithShadow("PING " + getPing(), infox.getValue(), infoy.getValue() + 40, on);
 
                     }
                     for (final EntityPlayer e : entities) {
@@ -209,53 +209,51 @@ public class HUD extends Module {
                             final BlockPos o = new BlockPos(e.getPositionVector().x, e.getPositionVector().y, e.getPositionVector().z).add(add.getX(), add.getY(), add.getZ());
                             if (mc.world.getBlockState(o).getBlock() == Blocks.OBSIDIAN) {
                                 if (i == 1 && a.canPlaceCrystal(o.north(1).down())) {
-                                    drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on.getRGB());
+                                    FontUtils.drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on);
                                 }
                                 if (i == 2 && a.canPlaceCrystal(o.east(1).down())) {
-                                    drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on.getRGB());
+                                    FontUtils.drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on);
                                 }
                                 if (i == 3 && a.canPlaceCrystal(o.south(1).down())) {
-                                    drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on.getRGB());
+                                    FontUtils.drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on);
                                 }
                                 if (i == 4 && a.canPlaceCrystal(o.west(1).down())) {
-                                    drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on.getRGB());
+                                    FontUtils.drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, on);
                                 }
                             } else
-                                drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, off.getRGB());
+                                FontUtils.drawStringWithShadow("LBY", infox.getValue(), infoy.getValue() + 50, off);
                         }
                     }
                 }
             } else if (Type.getValue().equalsIgnoreCase("Combat")) {
-                drawStringWithShadow(" ", infox.getValue(), infoy.getValue(), c.getRGB());
+                FontUtils.drawStringWithShadow(" ", infox.getValue(), infoy.getValue(), c);
                 if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-                    drawStringWithShadow("AC: ENBL", infox.getValue(), infoy.getValue(), Color.green.getRGB());
+                    FontUtils.drawStringWithShadow("AC: ENBL", infox.getValue(), infoy.getValue(), Color.green);
                 } else {
-                    drawStringWithShadow("AC: DSBL", infox.getValue(), infoy.getValue(), Color.red.getRGB());
+                    FontUtils.drawStringWithShadow("AC: DSBL", infox.getValue(), infoy.getValue(), Color.red);
                 }
                 if (ModuleManager.isModuleEnabled("KillAura")) {
-                    drawStringWithShadow("KA: ENBL", infox.getValue(), infoy.getValue() + 10, Color.green.getRGB());
+                    FontUtils.drawStringWithShadow("KA: ENBL", infox.getValue(), infoy.getValue() + 10, Color.green);
                 } else {
-                    drawStringWithShadow("KA: DSBL", infox.getValue(), infoy.getValue() + 10, Color.red.getRGB());
+                    FontUtils.drawStringWithShadow("KA: DSBL", infox.getValue(), infoy.getValue() + 10, Color.red);
                 }
                 if (ModuleManager.isModuleEnabled("AutoFeetPlace")) {
-                    drawStringWithShadow("FP: ENBL", infox.getValue(), infoy.getValue() + 20, Color.green.getRGB());
+                    FontUtils.drawStringWithShadow("FP: ENBL", infox.getValue(), infoy.getValue() + 20, Color.green);
                 } else {
-                    drawStringWithShadow("FP: DSBL", infox.getValue(), infoy.getValue() + 20, Color.red.getRGB());
+                    FontUtils.drawStringWithShadow("FP: DSBL", infox.getValue(), infoy.getValue() + 20, Color.red);
                 }
                 if (ModuleManager.isModuleEnabled("AutoTrap")) {
-                    drawStringWithShadow("AT: ENBL", infox.getValue(), infoy.getValue() + 30, Color.green.getRGB());
+                    FontUtils.drawStringWithShadow("AT: ENBL", infox.getValue(), infoy.getValue() + 30, Color.green);
                 } else {
-                    drawStringWithShadow("AT: DSBL", infox.getValue(), infoy.getValue() + 30, Color.red.getRGB());
+                    FontUtils.drawStringWithShadow("AT: DSBL", infox.getValue(), infoy.getValue() + 30, Color.red);
                 }
                 if (ModuleManager.isModuleEnabled("SelfTrap")) {
-                    drawStringWithShadow("ST: ENBL", infox.getValue(), infoy.getValue() + 40, Color.green.getRGB());
+                    FontUtils.drawStringWithShadow("ST: ENBL", infox.getValue(), infoy.getValue() + 40, Color.green);
                 } else {
-                    drawStringWithShadow("ST: DSBL", infox.getValue(), infoy.getValue() + 40, Color.red.getRGB());
+                    FontUtils.drawStringWithShadow("ST: DSBL", infox.getValue(), infoy.getValue() + 40, Color.red);
                 }
             }
         }
-
-        final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
 
         if (ArrayList.getValue()) {
 
@@ -268,37 +266,22 @@ public class HUD extends Module {
                         .filter(Module::isDrawn)
                         .sorted(Comparator.comparing(module -> FontUtils.getStringWidth(customFont.getValue(), module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo()) * (-1)))
                         .forEach(m -> {
-							if (color.getRainbow()) {
-								int rgb = Color.HSBtoRGB(hue[0], 1f, 1f);	
-                                int r = (rgb >> 16) & 0xFF;	
-                                int g = (rgb >> 8) & 0xFF;	
-                                int b = rgb & 0xFF;
-								c = new Color(r, g, b);
-							} else c=color.getValue();
                             if(sortUp.getValue()) {
                                 if (right.getValue()) {
-                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), c.getRGB());
-                                    hue[0] +=.02f;
-
+                                    FontUtils.drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), c);
                                 } else {
-
-                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * 10), c.getRGB());
-                                    hue[0] +=.02f;
-
+                                    FontUtils.drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * 10), c);
                                 }
                                 modCount++;
                             } else {
                                 if (right.getValue()) {
-                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(),m.getName() + ChatFormatting.GRAY + " " + m.getHudInfo()), arrayy.getValue() + (modCount * -10), c.getRGB());
-                                    hue[0] +=.02f;
-
+                                    FontUtils.drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(),m.getName() + ChatFormatting.GRAY + " " + m.getHudInfo()), arrayy.getValue() + (modCount * -10), c);
                                 } else {
-                                    drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * -10), c.getRGB());
-                                    hue[0] +=.02f;
-
+                                    FontUtils.drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * -10), c);
                                 }
                                 modCount++;
                             }
+							if (color.getRainbow()) c=GSColor.fromHSB(c.getHue()+.02,c.getSaturation(),c.getBrightness());
                         });
             }
 
@@ -326,11 +309,11 @@ public class HUD extends Module {
                     GlStateManager.disableDepth();
 
                     String s = is.getCount() > 1 ? is.getCount() + "" : "";
-                    mc.fontRenderer.drawStringWithShadow(s, x + 19 - 2 - mc.fontRenderer.getStringWidth(s), y + 9, 0xffffff);
+                    mc.fontRenderer.drawStringWithShadow(s, x + 19 - 2 - mc.fontRenderer.getStringWidth(s), y + 9, new GSColor(255,255,255));
                         float green = ((float) is.getMaxDamage() - (float) is.getItemDamage()) / (float) is.getMaxDamage();
                         float red = 1 - green;
                         int dmg = 100 - (int) (red * 100);
-                        drawStringWithShadow(dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, y - 11, new Color((int) (red * 255), (int) (green * 255), 0).getRGB());
+                        FontUtils.drawStringWithShadow(dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, y - 11, new Color((int) (red * 255), (int) (green * 255), 0));
                 }
 
                 GlStateManager.enableDepth();
@@ -369,16 +352,4 @@ public class HUD extends Module {
             }
             return p;
         }
-
-        private void drawStringWithShadow (String text,int x, int y, int color) {
-            if (customFont.getValue())
-                GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
-            else
-                mc.fontRenderer.drawStringWithShadow(text, x, y, color);
-        }
-
-    private int getWidth(String s){
-        if(customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
-        else return mc.fontRenderer.getStringWidth(s);
-    }
 }

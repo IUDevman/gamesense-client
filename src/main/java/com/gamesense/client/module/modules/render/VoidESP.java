@@ -5,6 +5,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.module.Module;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.init.Blocks;
@@ -12,7 +13,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class VoidESP extends Module {
         renderType = registerMode("Render", "Render", render, "Both");
         renderMode = registerMode("Mode", "Mode", modes, "Flat");
 		width=registerInteger("Width","Width",1,1,10);
-		color=registerColor("Color","Color",new Color(255,255,0));
+		color=registerColor("Color","Color",new GSColor(255,255,0));
     }
 
     private ConcurrentSet<BlockPos> voidHoles;
@@ -126,32 +126,29 @@ public class VoidESP extends Module {
 
     private void drawFlat(BlockPos blockPos) {
         if (renderType.getValue().equalsIgnoreCase("Fill") || renderType.getValue().equalsIgnoreCase("Both")) {
-            Color c=new Color(color.getValue().getRed(),color.getValue().getGreen(),color.getValue().getBlue(),50);
+            GSColor c=new GSColor(color.getValue(),50);
             AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
             if (renderMode.getValue().equalsIgnoreCase("Flat")) {
-                GameSenseTessellator.drawBox(blockPos, c.getRGB(), GeometryMasks.Quad.DOWN);
+                GameSenseTessellator.drawBox(blockPos, c, GeometryMasks.Quad.DOWN);
             }
         }
     }
 
     private void drawBox(BlockPos blockPos) {
         if (renderType.getValue().equalsIgnoreCase("Fill") || renderType.getValue().equalsIgnoreCase("Both")) {
-            Color c=new Color(color.getValue().getRed(),color.getValue().getGreen(),color.getValue().getBlue(),50);
+            GSColor c=new GSColor(color.getValue(),50);
             AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-            GameSenseTessellator.drawBox(blockPos, c.getRGB(), GeometryMasks.Quad.ALL);
+            GameSenseTessellator.drawBox(blockPos, c, GeometryMasks.Quad.ALL);
         }
     }
 
     private void drawOutline(BlockPos blockPos, int width) {
         if (renderType.getValue().equalsIgnoreCase("Outline") || renderType.getValue().equalsIgnoreCase("Both")) {
-			int r=color.getValue().getRed();
-			int g=color.getValue().getGreen();
-			int b=color.getValue().getBlue();
             if (renderMode.getValue().equalsIgnoreCase("Box")) {
-                GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r, g, b, 255);
+                GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, color.getValue());
             }
             if (renderMode.getValue().equalsIgnoreCase("Flat")) {
-                GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r, g, b, 255);
+                GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, color.getValue());
             }
         }
     }

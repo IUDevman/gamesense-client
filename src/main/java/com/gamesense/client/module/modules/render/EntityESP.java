@@ -4,6 +4,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -41,9 +42,9 @@ public class EntityESP extends Module {
 	Setting.ColorSetting color;
 
     public void onWorldRender(RenderEvent event) {
-		Color rgbColor=color.getValue();
-        int c=new Color(rgbColor.getRed(),rgbColor.getGreen(),rgbColor.getBlue(),50).getRGB();
-		int c2=new Color(rgbColor.getRed(),rgbColor.getGreen(),rgbColor.getBlue(),255).getRGB();
+		GSColor rgbColor=color.getValue();
+        GSColor c=new GSColor(rgbColor,50);
+		GSColor c2=new GSColor(rgbColor,255);
 		boolean drawBox=renderMode.getValue().equalsIgnoreCase("Box");
 		boolean drawOutline=renderMode.getValue().equalsIgnoreCase("Box") || renderMode.getValue().equalsIgnoreCase("Outline");
 		boolean drawGlow=renderMode.getValue().equalsIgnoreCase("Glow");

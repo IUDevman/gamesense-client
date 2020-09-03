@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.clickgui.frame.Buttons;
 import com.gamesense.client.clickgui.frame.Component;
@@ -12,7 +13,6 @@ import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.Gui;
-import java.awt.Color;
 
 public class IntegerComponent extends Component {
 
@@ -36,12 +36,11 @@ public class IntegerComponent extends Component {
     
     @Override
     public void renderComponent() {
-		Color transColor=new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50);
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, hovered ? transColor.darker().darker().getRGB() : transColor.getRGB());
+        ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, ClickGUI.getTransColor(hovered));
         final int drag = this.set.getValue() / this.set.getMax() * this.parent.parent.getWidth();
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + (int)this.renderWidth, this.parent.parent.getY() + this.offset + 16, ClickGUI.getColor());
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, transColor.getRGB());
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, -1);
+        ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + (int)this.renderWidth, this.parent.parent.getY() + this.offset + 16, ClickGUI.getMainColor());
+        ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, ClickGUI.getTransColor(false));
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, ClickGUI.getFontColor());
     }
     
     @Override

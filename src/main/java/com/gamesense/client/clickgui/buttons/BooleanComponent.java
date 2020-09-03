@@ -2,13 +2,13 @@ package com.gamesense.client.clickgui.buttons;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.clickgui.frame.Buttons;
 import com.gamesense.client.clickgui.frame.Component;
 import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
 import net.minecraft.client.gui.Gui;
-import java.awt.Color;
 
 public class BooleanComponent extends Component {
 
@@ -30,10 +30,9 @@ public class BooleanComponent extends Component {
     
     @Override
     public void renderComponent() {
-		Color transColor=new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50);
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, op.getValue() ? ClickGUI.getColor() : (hovered ? transColor.darker().darker().getRGB() : transColor.getRGB()));
-        Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, transColor.getRGB());
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.op.getName(),this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, -1);
+        ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + 16 + this.offset, op.getValue()?ClickGUI.getMainColor():ClickGUI.getTransColor(hovered));
+        ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, ClickGUI.getTransColor(false));
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.op.getName(),this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, ClickGUI.getFontColor());
     }
 
     @Override

@@ -160,7 +160,7 @@ public abstract class Setting {
 		
 		public GSColor getValue() {
 			if (rainbow) {
-				return Color.getHSBColor((System.currentTimeMillis()%(360*32))/(360f * 32),1,1);
+				return GSColor.fromHSB((System.currentTimeMillis()%(360*32))/(360f * 32),1,1);
 			} return value;
 		}
 		
