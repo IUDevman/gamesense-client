@@ -78,6 +78,8 @@ public class HUD extends Module {
     private static final RenderItem itemRender = Minecraft.getMinecraft()
             .getRenderItem();
     int totems;
+	
+	private static GSColor col;
 
     public void setup() {
         ArrayList<String> Modes = new ArrayList<>();
@@ -260,13 +262,13 @@ public class HUD extends Module {
                 if(sortUp.getValue()){ sort = -1;
                 } else { sort = 1; }
                 modCount = 0;
+				col=c;
                 ModuleManager.getModules()
                         .stream()
                         .filter(Module::isEnabled)
                         .filter(Module::isDrawn)
                         .sorted(Comparator.comparing(module -> FontUtils.getStringWidth(customFont.getValue(), module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo()) * (-1)))
                         .forEach(m -> {
-							GSColor col=c;
                             if(sortUp.getValue()) {
                                 if (right.getValue()) {
                                     FontUtils.drawStringWithShadow(customFont.getValue(), m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), col);
