@@ -158,8 +158,8 @@ public class LogoutSpots extends Module {
         GlStateManager.enableTexture2D();
 
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-        fontRendererIn.drawStringWithShadow(line1, -i, 10, nameColor.getValue());
-        fontRendererIn.drawStringWithShadow(line2, -ii, 20, nameColor.getValue());
+        fontRendererIn.drawStringWithShadow(line1, -i, 10, nameColor.getValue().getRGB());
+        fontRendererIn.drawStringWithShadow(line2, -ii, 20, nameColor.getValue().getRGB());
         GlStateManager.glNormal3f(0.0F, 0.0F, 0.0F);
         GlStateManager.disableDepth();
         GlStateManager.disableTexture2D();

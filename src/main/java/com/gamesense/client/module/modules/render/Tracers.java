@@ -17,9 +17,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-
 /**
  * Made by Hoosiers on 8/12/20, some GL from Osiris/KAMI was referenced.
  */
@@ -114,11 +111,11 @@ public class Tracers extends Module {
 
     public static void renderLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, double up, GSColor color){
         GL11.glPushMatrix();
-        GL11.glBlendFunc(770, 771);
-        GL11.glEnable(GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glEnable(GL11.GL_BLEND);
         GL11.glLineWidth(1.0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL_DEPTH_TEST);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(false);
         color.glColor();
         GlStateManager.disableLighting();

@@ -14,6 +14,7 @@ public class ColorMain extends Module {
         setDrawn(false);
     }
 
+	public static Setting.Mode colorModel;
     public static Setting.Mode friendcolor;
     public static Setting.Mode enemycolor;
 
@@ -37,6 +38,10 @@ public class ColorMain extends Module {
         tab.add("White");
         friendcolor = registerMode("Friend", "FriendColor", tab, "Blue");
         enemycolor = registerMode("Enemy", "EnemyColor", tab, "Red");
+		ArrayList<String> models=new ArrayList<>();
+		models.add("RGB");
+		models.add("HSB");
+		colorModel=registerMode("Color Model","ColorModel",models,"HSB");
     }
 
     public void onEnable(){
