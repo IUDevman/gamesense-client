@@ -132,7 +132,7 @@ public class AutoCrystal extends Module {
         placeDelay = registerInteger("Place Delay", "PlaceDelay", 0, 0, 20);
         placeRange = registerDouble("Place Range", "PlaceRange", 6.0, 0.0, 6.0);
         range = registerDouble("Hit Range", "HitRange", 5.0, 0.0, 10.0);
-        walls = registerDouble("Break Walls Range", "BreakWallsRange", 3.5, 0.0, 10.0);
+        walls = registerDouble("Walls Range", "WallsRange", 3.5, 0.0, 10.0);
         enemyRange = registerDouble("Enemy Range", "EnemyRange", 6.0, 0.5, 13.0);
         antiWeakness = registerBoolean("Anti Weakness", "AntiWeakness", true);
         showDamage = registerBoolean("Show Damage", "ShowDamage", false);

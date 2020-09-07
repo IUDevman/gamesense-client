@@ -8,7 +8,6 @@ import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.Gui;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
