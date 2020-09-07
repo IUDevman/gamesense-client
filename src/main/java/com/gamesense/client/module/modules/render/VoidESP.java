@@ -17,9 +17,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Author: Hoosiers on 08/14/20
- */
+// @Author: Hoosiers on 08/14/20
 
 public class VoidESP extends Module{
 	public VoidESP(){

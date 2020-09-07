@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Iterator;
 
-/**
- * Made by Hoosiers on 08/02/20 for GameSense, some functions were modified and ported from the original ConfigUtils
- */
+// Made by Hoosiers on 08/02/20 for GameSense, some functions were modified and ported from the original ConfigUtils
 
 public class SaveModules{
 
@@ -25,9 +23,7 @@ public class SaveModules{
 		saveCategory (SaveConfiguration.Render,Module.Category.Render);
 	}
 
-	/**
-	 * @Author Lukflug, removed excess code
-	 */
+	// @Author Lukflug, removed excess code
 
 	private void saveCategory (File config, Module.Category category){
 		saveSettings(config,category,"Value.json",Setting.Type.INT);
@@ -57,9 +53,9 @@ public class SaveModules{
 					case MODE:
 						out.write(mod.getConfigName() + ":" + ((Setting.Mode) mod).getValue() + ":" + mod.getParent().getName() + "\r\n");
 						break;
-					/*case COLOR:
+					/* case COLOR:
 						out.write(mod.getConfigName()+":"+((Setting.ColorSetting)mod).toInteger()+":"+mod.getParent().getName()+"\r\n");
-						break;*/
+						break; */
 					}
 				}
 			}

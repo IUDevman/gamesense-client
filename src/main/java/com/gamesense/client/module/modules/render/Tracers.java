@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 
-/**
- * Made by Hoosiers on 8/12/20, some GL from Osiris/KAMI was referenced.
- */
+//Made by Hoosiers on 8/12/20, some GL from Osiris/KAMI was referenced.
 
 public class Tracers extends Module{
 	public Tracers(){

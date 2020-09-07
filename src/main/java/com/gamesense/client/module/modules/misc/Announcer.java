@@ -73,7 +73,7 @@ public class Announcer extends Module{
 	public void setup(){
 
 		clientSide = registerBoolean("Client Side", "ClientSide", false);
-		walk = registerBoolean("Walk", "Walk",  true);
+		walk = registerBoolean("Walk", "Walk", true);
 		place = registerBoolean("Place", "Place", true);
 		jump = registerBoolean("Jump", "Jump", true);
 		breaking = registerBoolean("Breaking", "Breaking", true);
@@ -132,10 +132,10 @@ public class Announcer extends Module{
 						Random random = new Random();
 						if (clientSide.getValue()){
 							Command.sendClientMessage
-									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", eaten + "").replace("{name}",  mc.player.getHeldItemMainhand().getDisplayName()));
+									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", eaten + "").replace("{name}", mc.player.getHeldItemMainhand().getDisplayName()));
 						} else{
 							mc.player.sendChatMessage
-									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", eaten + "").replace("{name}",  mc.player.getHeldItemMainhand().getDisplayName()));
+									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", eaten + "").replace("{name}", mc.player.getHeldItemMainhand().getDisplayName()));
 						}
 						eaten = 0;
 						eattingDelay = 0;

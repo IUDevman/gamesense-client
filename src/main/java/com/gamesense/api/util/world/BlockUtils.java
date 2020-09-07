@@ -29,7 +29,7 @@ public class BlockUtils{
 	static Minecraft mc = Minecraft.getMinecraft();
 
 	public static boolean isEntitiesEmpty(BlockPos pos){
-		List<Entity> entities =  mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos)).stream()
+		List<Entity> entities = mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos)).stream()
 				.filter(e -> !(e instanceof EntityItem))
 				.filter(e -> !(e instanceof EntityXPOrb))
 				.collect(Collectors.toList());

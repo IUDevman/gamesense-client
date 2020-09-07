@@ -4,9 +4,7 @@ import com.gamesense.client.command.Command;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 
-/**
- * Created by d1gress/Qther on 25/11/2017.
- */
+// Created by d1gress/Qther on 25/11/2017.
 
 public class VanishCommand extends Command{
 

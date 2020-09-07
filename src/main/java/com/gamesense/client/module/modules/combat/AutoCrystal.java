@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Author Cyber
- * //Modified by Hoosiers :D
+ * Modified by Hoosiers :D
  */
 
 public class AutoCrystal extends Module{

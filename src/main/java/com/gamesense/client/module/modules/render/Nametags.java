@@ -153,7 +153,7 @@ public class Nametags extends Module{
 	}
 
 	public static int toHex(int r, int g, int b){
-		return  (0xff << 24) | ((r&0xff) << 16) | ((g&0xff) << 8) | (b&0xff);
+		return(0xff << 24) | ((r&0xff) << 16) | ((g&0xff) << 8) | (b&0xff);
 	}
 
 	private void renderItemDurability(final ItemStack itemStack, final int x, final int y){

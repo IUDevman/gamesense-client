@@ -82,72 +82,71 @@ public class PvPInfo extends Module{
 	});
 
 	public void onUpdate(){
-	  if (visualrange.getValue()){
-		  if (mc.player == null) return;
-		  players = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityPlayer).collect(Collectors.toList());
-		  try{
-			  for (Entity e : players){
-				  if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())){
-					  if (!knownPlayers.contains(e)){
-						  knownPlayers.add(e);
-						  Command.sendClientMessage(getTextColor() + e.getName() + " has been spotted thanks to GameSense!");
+	if (visualrange.getValue()){
+		if (mc.player == null) return;
+		players = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityPlayer).collect(Collectors.toList());
+		try{
+			for (Entity e : players){
+				if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())){
+					if (!knownPlayers.contains(e)){
+						knownPlayers.add(e);
+						Command.sendClientMessage(getTextColor() + e.getName() + " has been spotted thanks to GameSense!");
 					}
 				}
 			}
 		} catch (Exception e){
 		} // ez no crasherino
-		  try{
-			  for (Entity e : knownPlayers){
-				  if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())){
-					  if (!players.contains(e)){
-						  knownPlayers.remove(e);
+		try{
+			for (Entity e : knownPlayers){
+				if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())){
+					if (!players.contains(e)){
+						knownPlayers.remove(e);
 					}
 				}
 			}
 		} catch (Exception e){
 		} // ez no crasherino pt.2
 	}
-	  if (pearlalert.getValue()){
-		  pearls = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityEnderPearl).collect(Collectors.toList());
-		  try{
-			  for (Entity e : pearls){
-				  if (e instanceof EntityEnderPearl){
-					  if (!antipearlspamplz.contains(e)){
-						  antipearlspamplz.add(e);
-						  Command.sendClientMessage(getTextColor() + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + " has just thrown a pearl!");
+	if (pearlalert.getValue()){
+		pearls = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityEnderPearl).collect(Collectors.toList());
+		try{
+			for (Entity e : pearls){
+				if (e instanceof EntityEnderPearl){
+					if (!antipearlspamplz.contains(e)){
+						antipearlspamplz.add(e);
+						Command.sendClientMessage(getTextColor() + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + " has just thrown a pearl!");
 					}
 				}
 			}
 		} catch (Exception e){
 		}
 	}
-	  if (popcounter.getValue()){
-		  for (EntityPlayer player : mc.world.playerEntities){
-			  if (player.getHealth() <= 0){
-				  if (popList.containsKey(player.getName())){
-					  Command.sendClientMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popList.get(player.getName()) + getTextColor()  + " totems!");
-					  popList.remove(player.getName(), popList.get(player.getName()));
+	if (popcounter.getValue()){
+		for (EntityPlayer player : mc.world.playerEntities){
+			if (player.getHealth() <= 0){
+				if (popList.containsKey(player.getName())){
+					Command.sendClientMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popList.get(player.getName()) + getTextColor() + " totems!");
+					popList.remove(player.getName(), popList.get(player.getName()));
 				}
 			}
 		}
 	}
-	  if (strengthdetect.getValue()){
-		  if (this.isEnabled() && mc.player != null){
-			  Iterator var1 = mc.world.playerEntities.iterator();
-
-			  while (var1.hasNext()){
-				  EntityPlayer ent = (EntityPlayer) var1.next();
-				  if (EntityUtil.isLiving(ent) && ent.getHealth() > 0.0F){
-					  if (ent.isPotionActive(MobEffects.STRENGTH) && !this.strengthedPlayers.contains(ent)){
-						  Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " has (drank) strength!");
-						  this.strengthedPlayers.add(ent);
+	if (strengthdetect.getValue()){
+		if (this.isEnabled() && mc.player != null){
+			Iterator var1 = mc.world.playerEntities.iterator();
+			while (var1.hasNext()){
+				EntityPlayer ent = (EntityPlayer) var1.next();
+				if (EntityUtil.isLiving(ent) && ent.getHealth() > 0.0F){
+					if (ent.isPotionActive(MobEffects.STRENGTH) && !this.strengthedPlayers.contains(ent)){
+						Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " has (drank) strength!");
+						this.strengthedPlayers.add(ent);
 					}
 
-					  if (this.strengthedPlayers.contains(ent) && !ent.isPotionActive(MobEffects.STRENGTH)){
-						  Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " no longer has strength!");
-						  this.strengthedPlayers.remove(ent);
+					if (this.strengthedPlayers.contains(ent) && !ent.isPotionActive(MobEffects.STRENGTH)){
+						Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " no longer has strength!");
+						this.strengthedPlayers.remove(ent);
 					}
-					  this.checkRender();
+					this.checkRender();
 				}
 			}
 		}

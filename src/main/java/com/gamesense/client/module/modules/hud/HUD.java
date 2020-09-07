@@ -86,10 +86,10 @@ public class HUD extends Module{
 		Modes.add("Combat");
 		Type = registerMode("Info Type", "InfoType", Modes, "PvP");
 		infox = registerInteger("Information X", "InformationX", 0, 0, 1000);
-		infoy = registerInteger("Information Y", "InformationY",  0, 0, 1000);
+		infoy = registerInteger("Information Y", "InformationY", 0, 0, 1000);
 		GameSenseInfo = registerBoolean("Information", "Information", false);
 		ArmorHud = registerBoolean("Armor Hud", "ArmorHud", false);
-		ArrayList = registerBoolean("ArrayList", "ArrayList",  false);
+		ArrayList = registerBoolean("ArrayList", "ArrayList", false);
 		sortUp = registerBoolean("Array Sort Up", "ArraySortUp", false);
 		right = registerBoolean("Array Right", "ArrayRight", false);
 		arrayx = registerInteger("Array X", "ArrayX", 0, 0, 1000);
@@ -136,7 +136,7 @@ public class HUD extends Module{
 						count++;
 					} else{
 						if (pright.getValue()){
-							drawStringWithShadow(s, potionx.getValue() - getWidth(s),  potiony.getValue() + (count * -10), c.getRGB());
+							drawStringWithShadow(s, potionx.getValue() - getWidth(s), potiony.getValue() + (count * -10), c.getRGB());
 						} else{
 							drawStringWithShadow(s, potionx.getValue(), potiony.getValue() + (count * -10), c.getRGB());
 						}
@@ -284,23 +284,23 @@ public class HUD extends Module{
 							}
 							if (sortUp.getValue()){
 								if (right.getValue()){
-									drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), c.getRGB());
+									drawStringWithShadow(m.getName() + ChatFormatting.GRAY + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), c.getRGB());
 									hue[0] +=.02f;
 
 								} else{
 
-									drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * 10), c.getRGB());
+									drawStringWithShadow(m.getName() + ChatFormatting.GRAY + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * 10), c.getRGB());
 									hue[0] +=.02f;
 
 								}
 								modCount++;
 							} else{
 								if (right.getValue()){
-									drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(),m.getName() + ChatFormatting.GRAY + " " + m.getHudInfo()), arrayy.getValue() + (modCount * -10), c.getRGB());
+									drawStringWithShadow(m.getName() + ChatFormatting.GRAY + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(),m.getName() + ChatFormatting.GRAY + " " + m.getHudInfo()), arrayy.getValue() + (modCount * -10), c.getRGB());
 									hue[0] +=.02f;
 
 								} else{
-									drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * -10), c.getRGB());
+									drawStringWithShadow(m.getName() + ChatFormatting.GRAY + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * -10), c.getRGB());
 									hue[0] +=.02f;
 
 								}

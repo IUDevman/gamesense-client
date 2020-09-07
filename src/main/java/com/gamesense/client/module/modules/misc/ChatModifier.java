@@ -58,15 +58,14 @@ public class ChatModifier extends Module{
 	@EventHandler
 	private final Listener<ClientChatReceivedEvent> chatReceivedEventListener = new Listener<>(event ->{
 		//Chat Time Stamps
-
-	  if (chattimestamps.getValue()){
-			  String decoLeft = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[0];
-			  String decoRight = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[1];
-			  if (space.getValue()) decoRight += " ";
-			  String dateFormat = format.getValue().replace("H24", "k").replace("H12", "h");
-			  String date = new SimpleDateFormat(dateFormat).format(new Date());
-			  TextComponentString time = new TextComponentString(ChatFormatting.getByName(color.getValue()) + decoLeft + date + decoRight + ChatFormatting.RESET);
-			  event.setMessage(time.appendSibling(event.getMessage()));
+		if (chattimestamps.getValue()){
+			String decoLeft = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[0];
+			String decoRight = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[1];
+			if (space.getValue()) decoRight += " ";
+			String dateFormat = format.getValue().replace("H24", "k").replace("H12", "h");
+			String date = new SimpleDateFormat(dateFormat).format(new Date());
+			TextComponentString time = new TextComponentString(ChatFormatting.getByName(color.getValue()) + decoLeft + date + decoRight + ChatFormatting.RESET);
+			event.setMessage(time.appendSibling(event.getMessage()));
 	}
 	});
 

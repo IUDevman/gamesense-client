@@ -147,22 +147,22 @@ public class Speed extends Module{
 	@Override
 	public String getHudInfo(){
 		String t = "";
-	  if (Mode.getValue().equalsIgnoreCase("Strafe")){
-		  t = "[" + ChatFormatting.WHITE + "Strafe" + ChatFormatting.GRAY + "]";
+	if (Mode.getValue().equalsIgnoreCase("Strafe")){
+		t = "[" + ChatFormatting.WHITE + "Strafe" + ChatFormatting.GRAY + "]";
 	}
-	  if (Mode.getValue().equalsIgnoreCase("YPort")){
-		  t = "[" + ChatFormatting.WHITE + "YPort" + ChatFormatting.GRAY + "]";
+	if (Mode.getValue().equalsIgnoreCase("YPort")){
+		t = "[" + ChatFormatting.WHITE + "YPort" + ChatFormatting.GRAY + "]";
 	}
-	  if (Mode.getValue().equalsIgnoreCase("Packet")){
-		  t = "[" + ChatFormatting.WHITE + "Packet" + ChatFormatting.GRAY + "]";
+	if (Mode.getValue().equalsIgnoreCase("Packet")){
+		t = "[" + ChatFormatting.WHITE + "Packet" + ChatFormatting.GRAY + "]";
 	}
-	  if (Mode.getValue().equalsIgnoreCase("Packet2")){
-		  t = "[" + ChatFormatting.WHITE + "Packet2" + ChatFormatting.GRAY + "]";
+	if (Mode.getValue().equalsIgnoreCase("Packet2")){
+		t = "[" + ChatFormatting.WHITE + "Packet2" + ChatFormatting.GRAY + "]";
 	}
-	  if (Mode.getValue().equalsIgnoreCase("FakeStrafe")){
-		  t = "[" + ChatFormatting.WHITE + "Strafe" + ChatFormatting.GRAY + "]";
+	if (Mode.getValue().equalsIgnoreCase("FakeStrafe")){
+		t = "[" + ChatFormatting.WHITE + "Strafe" + ChatFormatting.GRAY + "]";
 	}
-	  return t;
+	return t;
 	}
 }
 

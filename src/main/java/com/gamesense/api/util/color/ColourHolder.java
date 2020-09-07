@@ -4,9 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-/**
- * Created by Gebruiker on 18/04/2017.
- */
+// Created by Gebruiker on 18/04/2017.
 
 public class ColourHolder{
 	int r;
@@ -64,7 +62,7 @@ public class ColourHolder{
 	}
 
 	public static int toHex(int r, int g, int b){
-		return  (0xff << 24) | ((r&0xff) << 16) | ((g&0xff) << 8) | (b&0xff);
+		return (0xff << 24) | ((r&0xff) << 16) | ((g&0xff) << 8) | (b&0xff);
 	}
 
 	public int toHex(){

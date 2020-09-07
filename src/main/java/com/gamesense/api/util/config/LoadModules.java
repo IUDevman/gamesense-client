@@ -7,9 +7,7 @@ import com.gamesense.client.module.ModuleManager;
 
 import java.io.*;
 
-/**
- * Made by Hoosiers on 08/02/20 for GameSense, some functions were modified and ported from the original ConfigUtils
- */
+// Made by Hoosiers on 08/02/20 for GameSense, some functions were modified and ported from the original ConfigUtils
 
 public class LoadModules{
 
@@ -23,9 +21,7 @@ public class LoadModules{
 		loadCategory(SaveConfiguration.Render, Module.Category.Render);
 	}
 
-	/**
-	 * @Author Lukflug, removed excess code
-	 */
+	// @Author Lukflug, removed excess code
 
 	private void loadCategory (File config, Module.Category category){
 		loadSettings(config,category,"Value.json",Setting.Type.INT);
@@ -64,9 +60,9 @@ public class LoadModules{
 							case MODE:
 								((Setting.Mode) mod).setValue(isOn);
 								break;
-							/*case COLOR:
+							/* case COLOR:
 								((Setting.ColorSetting)mod).fromInteger(java.lang.Integer.parseInt(isOn));
-								break;*/
+								break; */
 							}
 						}
 					}

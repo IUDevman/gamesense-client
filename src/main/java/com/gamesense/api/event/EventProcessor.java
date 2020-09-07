@@ -107,7 +107,7 @@ public class EventProcessor{
 	 public void onKeyInput(InputEvent.KeyInputEvent event){
 		if (Keyboard.getEventKeyState()){
 			if (Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
-		  ModuleManager.onBind(Keyboard.getEventKey());
+				ModuleManager.onBind(Keyboard.getEventKey());
 			//Macro
 			GameSenseMod.getInstance().macroManager.getMacros().forEach(m ->{
 				if (m.getKey() == Keyboard.getEventKey())

@@ -143,7 +143,7 @@ public class LogoutSpots extends Module{
 		FontRenderer fontRendererIn = mc.fontRenderer;
 		GlStateManager.scale(-0.025F, -0.025F, 0.025F);
 
-		String line1 = entityIn.getName() + "  (" + t + ")";
+		String line1 = entityIn.getName() + "(" + t + ")";
 		String line2 = "x" + entityIn.getPosition().getX() + " y" + entityIn.getPosition().getY() + " z" + entityIn.getPosition().getZ();
 		int i = fontRendererIn.getStringWidth(line1) / 2;
 		int ii = fontRendererIn.getStringWidth(line2) / 2;

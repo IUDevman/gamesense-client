@@ -33,7 +33,7 @@ public abstract class Command{
 
 	public static Color getColorFromChatFormatting(ChatFormatting cf){
 		if (cf == ChatFormatting.BLACK) return Color.BLACK;
-		if (cf == ChatFormatting.GRAY) return  Color.GRAY;
+		if (cf == ChatFormatting.GRAY) return Color.GRAY;
 		if (cf == ChatFormatting.AQUA) return Color.CYAN;
 		if (cf == ChatFormatting.BLUE || cf == ChatFormatting.DARK_BLUE || cf == ChatFormatting.DARK_AQUA) return Color.BLUE;
 		if (cf == ChatFormatting.DARK_GRAY) return Color.DARK_GRAY;

@@ -6,9 +6,7 @@ import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 
-/**
- * Made by Hoosiers on 8/4/20 for GameSense
- */
+// Made by Hoosiers on 8/4/20 for GameSense
 
 public class SetSettingCommand extends Command{
 

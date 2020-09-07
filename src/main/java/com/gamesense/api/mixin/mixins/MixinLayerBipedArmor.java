@@ -19,14 +19,14 @@ public class MixinLayerBipedArmor{
 			info.cancel();
 			switch (slotIn){
 				case HEAD:
-				  model.bipedHead.showModel = false;
+					model.bipedHead.showModel = false;
 					model.bipedHeadwear.showModel = false;
 				case CHEST:
 					model.bipedBody.showModel = false;
 					model.bipedRightArm.showModel = false;
-				  model.bipedLeftArm.showModel = false;
+					model.bipedLeftArm.showModel = false;
 				case LEGS:
-				  model.bipedBody.showModel = false;
+					model.bipedBody.showModel = false;
 					model.bipedRightLeg.showModel = false;
 					model.bipedLeftLeg.showModel = false;
 				case FEET:

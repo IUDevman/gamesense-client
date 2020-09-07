@@ -20,7 +20,7 @@ public class FriendCommand extends Command{
 	public void onCommand(String command, String[] args) throws Exception{
 		if (args[0].equalsIgnoreCase("add")){
 			if (Friends.isFriend(args[1])){
-				Command.sendClientMessage(args[1] + ChatFormatting.GRAY  + " is already a friend!");
+				Command.sendClientMessage(args[1] + ChatFormatting.GRAY + " is already a friend!");
 				return;
 			}
 			if (!Friends.isFriend(args[1])){

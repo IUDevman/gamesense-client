@@ -129,7 +129,7 @@ public class HoleFill extends Module{
 
 		if (waitTick.getValue() > 0){
 			if (waitCounter < waitTick.getValue()){
-				//  waitCounter++;
+				// waitCounter++;
 				mc.player.inventory.currentItem = newSlot;
 				holes.forEach(this::place);
 				mc.player.inventory.currentItem = oldSlot;
@@ -239,8 +239,7 @@ public class HoleFill extends Module{
 				mc.player.posZ);
 	}
 
-	public static void processRightClickBlock(BlockPos pos, EnumFacing side,
-											  Vec3d hitVec)
+	public static void processRightClickBlock(BlockPos pos, EnumFacing side, Vec3d hitVec)
 	{
 		getPlayerController().processRightClickBlock(mc.player,
 				mc.world, pos, side, hitVec, EnumHand.MAIN_HAND);
