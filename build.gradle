@@ -1,20 +1,20 @@
 buildscript {
-    repositories {
-        jcenter()
-        maven {
-            name = 'forge'
-            url = 'http://files.minecraftforge.net/maven'
-        }
-        maven {
-            name = 'SpongePowered'
-            url = 'http://repo.spongepowered.org/maven'
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
-    }
+	repositories {
+		jcenter()
+		maven {
+			name = 'forge'
+			url = 'http://files.minecraftforge.net/maven'
+		}
+		maven {
+			name = 'SpongePowered'
+			url = 'http://repo.spongepowered.org/maven'
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+	}
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -26,107 +26,107 @@ group project.modGroup // http://maven.apache.org/guides/mini/guide-naming-conve
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 compileJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 minecraft {
-    version = project.forgeVersion
-    runDir = 'run'
-    mappings = project.mcpVersion
-    coreMod = 'com.gamesense.client.GameSenseMod'
-    makeObfSourceJar = false
+	version = project.forgeVersion
+	runDir = 'run'
+	mappings = project.mcpVersion
+	coreMod = 'com.gamesense.client.GameSenseMod'
+	makeObfSourceJar = false
 }
 
 repositories {
-    maven {
-        name = 'spongepowered-repo'
-        url = 'http://repo.spongepowered.org/maven/'
-    }
-    maven {
-        name = 'impactdevelopment-repo'
-        url = 'https://impactdevelopment.github.io/maven/'
-    }
-    maven {
-        name = 'swt-repo'
-        url = "http://maven-eclipse.github.io/maven"
-    }
-    maven {
-        name = "jitpack.io"
-        url = "https://jitpack.io"
-    }
-    mavenCentral()
+	maven {
+		name = 'spongepowered-repo'
+		url = 'http://repo.spongepowered.org/maven/'
+	}
+	maven {
+		name = 'impactdevelopment-repo'
+		url = 'https://impactdevelopment.github.io/maven/'
+	}
+	maven {
+		name = 'swt-repo'
+		url = "http://maven-eclipse.github.io/maven"
+	}
+	maven {
+		name = "jitpack.io"
+		url = "https://jitpack.io"
+	}
+	mavenCentral()
 }
 
 dependencies {
-    compile("org.spongepowered:mixin:0.7.4-SNAPSHOT") {
-        exclude module: 'launchwrapper'
-        exclude module: 'guava'
-        exclude module: 'gson'
-        exclude module: 'commons-io'
-    }
-    compile "com.github.ZeroMemes:Alpine:1.5"
-    compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
-    compile group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
+	compile("org.spongepowered:mixin:0.7.4-SNAPSHOT") {
+		exclude module: 'launchwrapper'
+		exclude module: 'guava'
+		exclude module: 'gson'
+		exclude module: 'commons-io'
+	}
+	compile "com.github.ZeroMemes:Alpine:1.5"
+	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
+	compile group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
 }
 
 processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property 'version', project.version
-    inputs.property 'mcversion', project.minecraft.version
+	// this will ensure that this task is redone when the versions change.
+	inputs.property 'version', project.version
+	inputs.property 'mcversion', project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
+	// replace stuff in mcmod.info, nothing else
+	from(sourceSets.main.resources.srcDirs) {
+		include 'mcmod.info'
 
-        // replace version and mcversion
-        expand 'version': project.version, 'mcversion': project.minecraft.version
-    }
+		// replace version and mcversion
+		expand 'version': project.version, 'mcversion': project.minecraft.version
+	}
 
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
+	// copy everything else, thats not the mcmod.info
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'mcmod.info'
+	}
 
-    // move _at.cfg into META-INF
-    rename '(.+_at.cfg)', 'META-INF/$1'
+	// move _at.cfg into META-INF
+	rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
 shadowJar {
-    dependencies {
-        include(dependency('org.spongepowered:mixin'))
-        include(dependency('com.github.ZeroMemes:Alpine'))
-        include(dependency('net.jodah:typetools'))
-        include(dependency('com.googlecode.json-simple:json-simple:1.1.1'))
-    }
-    exclude 'dummyThing'
-    exclude 'LICENSE.txt'
-    classifier = 'release'
+	dependencies {
+		include(dependency('org.spongepowered:mixin'))
+		include(dependency('com.github.ZeroMemes:Alpine'))
+		include(dependency('net.jodah:typetools'))
+		include(dependency('com.googlecode.json-simple:json-simple:1.1.1'))
+	}
+	exclude 'dummyThing'
+	exclude 'LICENSE.txt'
+	classifier = 'release'
 }
 
 mixin {
-    defaultObfuscationEnv searge
-    add sourceSets.main, 'mixins.gamesense.refmap.json'
+	defaultObfuscationEnv searge
+	add sourceSets.main, 'mixins.gamesense.refmap.json'
 }
 
 reobf {
-    shadowJar {
-        mappingType = 'SEARGE'
-        classpath = sourceSets.main.compileClasspath
-    }
+	shadowJar {
+		mappingType = 'SEARGE'
+		classpath = sourceSets.main.compileClasspath
+	}
 }
 
 jar {
-    manifest {
-        attributes(
-                'MixinConfigs': 'mixins.gamesense.json',
-                'tweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                'TweakOrder': 0,
-                'FMLCorePluginContainsFMLMod': 'true',
-                'FMLCorePlugin': 'com.gamesense.client.GameSenseMod',
-                'ForceLoadAsMod': 'true',
-                'FMLAT': 'gamesense_at.cfg'
-        )
-    }
+	manifest {
+		attributes(
+				'MixinConfigs': 'mixins.gamesense.json',
+				'tweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+				'TweakOrder': 0,
+				'FMLCorePluginContainsFMLMod': 'true',
+				'FMLCorePlugin': 'com.gamesense.client.GameSenseMod',
+				'ForceLoadAsMod': 'true',
+				'FMLAT': 'gamesense_at.cfg'
+		)
+	}
 }
 
 build.dependsOn(shadowJar)
