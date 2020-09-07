@@ -87,7 +87,7 @@ public class Tracers extends Module{
 		double posX = interpolate(entity.posX, entity.lastTickPosX) - mc.getRenderManager().renderPosX;
 		double posY = interpolate(entity.posY, entity.lastTickPosY) - mc.getRenderManager().renderPosY;
 		double posZ = interpolate(entity.posZ, entity.lastTickPosZ) - mc.getRenderManager().renderPosZ;
-		return new double[]{ posX, posY, posZ };
+		return new double[]{ posX, posY, posZ};
 	}
 
 	public static double interpolate(double now, double then){

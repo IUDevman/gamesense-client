@@ -50,9 +50,9 @@ public abstract class Module{
 		bind = b;
 	}
 
-	protected void onEnable(){ }
+	protected void onEnable(){}
 
-	protected void onDisable(){ }
+	protected void onDisable(){}
 
 	public void onUpdate(){}
 

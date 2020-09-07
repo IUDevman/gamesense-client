@@ -377,7 +377,7 @@ public class AutoCrystal extends Module{
 									x = blockPos.getX() + 0.0;
 									y = blockPos.getY() + 1.0;
 									z = blockPos.getZ() + 0.0;
-									// } while (b >= 169.0D);
+									//} while (b >= 169.0D);
 								} while (entity.getDistanceSq(x, y , z) >= enemyRange.getValue() * enemyRange.getValue());
 
 								d = calculateDamage((double) blockPos.getX() + 0.5D, blockPos.getY() + 1, (double) blockPos.getZ() + 0.5D, entity);

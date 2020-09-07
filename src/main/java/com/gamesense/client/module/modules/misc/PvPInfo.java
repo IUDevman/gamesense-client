@@ -67,18 +67,18 @@ public class PvPInfo extends Module{
 	 if (popcounter.getValue()){
 		 if (popList == null){
 			 popList = new HashMap<>();
-		 }
+		}
 
 		 if (popList.get(event.getEntity().getName()) == null){
 			 popList.put(event.getEntity().getName(), 1);
 			 Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
-		 } else if (!(popList.get(event.getEntity().getName()) == null)){
+		} else if (!(popList.get(event.getEntity().getName()) == null)){
 			 int popCounter = popList.get(event.getEntity().getName());
 			 int newPopCounter = popCounter += 1;
 			 popList.put(event.getEntity().getName(), newPopCounter);
 			 Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + getTextColor() + " totems!");
-		 }
-	 }
+		}
+	}
 	});
 
 	public void onUpdate(){
@@ -91,22 +91,22 @@ public class PvPInfo extends Module{
 					  if (!knownPlayers.contains(e)){
 						  knownPlayers.add(e);
 						  Command.sendClientMessage(getTextColor() + e.getName() + " has been spotted thanks to GameSense!");
-					  }
-				  }
-			  }
-		  } catch (Exception e){
-		  } // ez no crasherino
+					}
+				}
+			}
+		} catch (Exception e){
+		} // ez no crasherino
 		  try{
 			  for (Entity e : knownPlayers){
 				  if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())){
 					  if (!players.contains(e)){
 						  knownPlayers.remove(e);
-					  }
-				  }
-			  }
-		  } catch (Exception e){
-		  } // ez no crasherino pt.2
-	  }
+					}
+				}
+			}
+		} catch (Exception e){
+		} // ez no crasherino pt.2
+	}
 	  if (pearlalert.getValue()){
 		  pearls = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityEnderPearl).collect(Collectors.toList());
 		  try{
@@ -115,22 +115,22 @@ public class PvPInfo extends Module{
 					  if (!antipearlspamplz.contains(e)){
 						  antipearlspamplz.add(e);
 						  Command.sendClientMessage(getTextColor() + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + " has just thrown a pearl!");
-					  }
-				  }
-			  }
-		  } catch (Exception e){
-		  }
-	  }
+					}
+				}
+			}
+		} catch (Exception e){
+		}
+	}
 	  if (popcounter.getValue()){
 		  for(EntityPlayer player : mc.world.playerEntities){
 			  if (player.getHealth() <= 0){
 				  if (popList.containsKey(player.getName())){
 					  Command.sendClientMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popList.get(player.getName()) + getTextColor()  + " totems!");
 					  popList.remove(player.getName(), popList.get(player.getName()));
-				  }
-			  }
-		  }
-	  }
+				}
+			}
+		}
+	}
 	  if (strengthdetect.getValue()){
 		  if (this.isEnabled() && mc.player != null){
 			  Iterator var1 = mc.world.playerEntities.iterator();
@@ -141,17 +141,17 @@ public class PvPInfo extends Module{
 					  if (ent.isPotionActive(MobEffects.STRENGTH) && !this.strengthedPlayers.contains(ent)){
 						  Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " has (drank) strength!");
 						  this.strengthedPlayers.add(ent);
-					  }
+					}
 
 					  if (this.strengthedPlayers.contains(ent) && !ent.isPotionActive(MobEffects.STRENGTH)){
 						  Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " no longer has strength!");
 						  this.strengthedPlayers.remove(ent);
-					  }
+					}
 					  this.checkRender();
-				  }
-			  }
-		  }
-	  }
+				}
+			}
+		}
+	}
 	}
 
 	public void checkRender(){

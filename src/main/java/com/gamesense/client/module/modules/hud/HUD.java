@@ -264,7 +264,7 @@ public class HUD extends Module{
 		if (ArrayList.getValue()){
 
 				if(sortUp.getValue()){ sort = -1;
-				} else{ sort = 1; }
+				} else{ sort = 1;}
 				modCount = 0;
 				ModuleManager.getModules()
 						.stream()

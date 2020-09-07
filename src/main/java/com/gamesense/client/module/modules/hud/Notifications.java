@@ -47,9 +47,9 @@ public class Notifications extends Module{
 
 	public void onRender(){
 		if (sortUp.getValue()){
-			sort = -1; }
+			sort = -1;}
 		else{
-			sort = 1; }
+			sort = 1;}
 		notCount = 0;
 		for(TextComponentString s : list){
 			notCount = list.indexOf(s) + 1;

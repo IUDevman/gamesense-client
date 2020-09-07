@@ -30,7 +30,7 @@ public class AutoWeb extends Module{
 
 	public AutoWeb(){
 		super("AutoWeb", Category.Combat);
-		this.offsetList = new Vec3d[]{ new Vec3d(0.0, 1.0, 0.0), new Vec3d(0.0, 0.0, 0.0) };
+		this.offsetList = new Vec3d[]{ new Vec3d(0.0, 1.0, 0.0), new Vec3d(0.0, 0.0, 0.0)};
 		this.slowModeSwitch = false;
 		this.playerHotbarSlot = -1;
 		this.lastHotbarSlot = -1;

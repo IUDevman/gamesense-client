@@ -113,7 +113,7 @@ public class EventProcessor{
 				if(m.getKey() == Keyboard.getEventKey())
 					m.onMacro();
 			});
-	  }
+	}
 		}
 
 	@SubscribeEvent
@@ -164,7 +164,7 @@ public class EventProcessor{
 	}
 
 	@SubscribeEvent
-	public void onRenderBlockOverlay(RenderBlockOverlayEvent event){ GameSenseMod.EVENT_BUS.post(event); }
+	public void onRenderBlockOverlay(RenderBlockOverlayEvent event){ GameSenseMod.EVENT_BUS.post(event);}
 
 	@SubscribeEvent
 	public void onLivingDamage(LivingDamageEvent event){

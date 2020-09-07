@@ -14,10 +14,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 
 public class HoleTP extends Module{
-	public HoleTP(){super("HoleTP", Category.Movement); }
+	public HoleTP(){super("HoleTP", Category.Movement);}
 	private int packets;
 	private boolean jumped;
-	private final double[] oneblockPositions = new double[]{ 0.42, 0.75 };
+	private final double[] oneblockPositions = new double[]{ 0.42, 0.75};
 
 	public void onUpdate(){
 		if (HoleTP.mc.world == null || HoleTP.mc.player == null || ModuleManager.isModuleEnabled("Speed")){
@@ -67,7 +67,7 @@ public class HoleTP extends Module{
 
 	private boolean isObbyHole(final BlockPos blockPos){
 		final BlockPos[] array;
-		final BlockPos[] touchingBlocks = array = new BlockPos[]{ blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down() };
+		final BlockPos[] touchingBlocks = array = new BlockPos[]{ blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down()};
 		for (final BlockPos touching : array){
 			final IBlockState touchingState = HoleTP.mc.world.getBlockState(touching);
 			if (touchingState.getBlock() == Blocks.AIR || touchingState.getBlock() != Blocks.OBSIDIAN){
@@ -79,7 +79,7 @@ public class HoleTP extends Module{
 
 	private boolean isBedrockHole(final BlockPos blockPos){
 		final BlockPos[] array;
-		final BlockPos[] touchingBlocks = array = new BlockPos[]{ blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down() };
+		final BlockPos[] touchingBlocks = array = new BlockPos[]{ blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down()};
 		for (final BlockPos touching : array){
 			final IBlockState touchingState = HoleTP.mc.world.getBlockState(touching);
 			if (touchingState.getBlock() == Blocks.AIR || touchingState.getBlock() != Blocks.BEDROCK){
@@ -91,7 +91,7 @@ public class HoleTP extends Module{
 
 	private boolean isBothHole(final BlockPos blockPos){
 		final BlockPos[] array;
-		final BlockPos[] touchingBlocks = array = new BlockPos[]{ blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down() };
+		final BlockPos[] touchingBlocks = array = new BlockPos[]{ blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down()};
 		for (final BlockPos touching : array){
 			final IBlockState touchingState = HoleTP.mc.world.getBlockState(touching);
 			if (touchingState.getBlock() == Blocks.AIR || (touchingState.getBlock() != Blocks.BEDROCK && touchingState.getBlock() != Blocks.OBSIDIAN)){
@@ -103,7 +103,7 @@ public class HoleTP extends Module{
 
 	private boolean isElseHole(final BlockPos blockPos){
 		final BlockPos[] array;
-		final BlockPos[] touchingBlocks = array = new BlockPos[]{ blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down() };
+		final BlockPos[] touchingBlocks = array = new BlockPos[]{ blockPos.north(), blockPos.south(), blockPos.east(), blockPos.west(), blockPos.down()};
 		for (final BlockPos touching : array){
 			final IBlockState touchingState = HoleTP.mc.world.getBlockState(touching);
 			if (touchingState.getBlock() == Blocks.AIR || !touchingState.isFullBlock()){

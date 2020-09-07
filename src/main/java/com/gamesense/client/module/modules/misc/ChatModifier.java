@@ -39,7 +39,7 @@ public class ChatModifier extends Module{
 		formats.add("H24:mm:ss");
 		formats.add("H12:mm:ss");
 		formats.add("H12:mm:ss a");
-		ArrayList<String> deco = new ArrayList<>(); deco.add("< >"); deco.add("[ ]"); deco.add("{ }"); deco.add(" ");
+		ArrayList<String> deco = new ArrayList<>(); deco.add("< >"); deco.add("[ ]"); deco.add("{}"); deco.add(" ");
 		ArrayList<String> colors = new ArrayList<>();
 		for(ChatFormatting cf : ChatFormatting.values()){
 			colors.add(cf.getName());
@@ -67,7 +67,7 @@ public class ChatModifier extends Module{
 			  String date = new SimpleDateFormat(dateFormat).format(new Date());
 			  TextComponentString time = new TextComponentString(ChatFormatting.getByName(color.getValue()) + decoLeft + date + decoRight + ChatFormatting.RESET);
 			  event.setMessage(time.appendSibling(event.getMessage()));
-	  }
+	}
 	});
 
 	@EventHandler

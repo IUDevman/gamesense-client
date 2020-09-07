@@ -31,11 +31,11 @@ public class Fullbright extends Module{
 	  if (Mode.getValue().equalsIgnoreCase("Gamma")){
 		  mc.gameSettings.gammaSetting = 666f;
 		  mc.player.removePotionEffect(Potion.getPotionById(16));
-	  } else if (Mode.getValue().equalsIgnoreCase("Potion")){
+	} else if (Mode.getValue().equalsIgnoreCase("Potion")){
 		  final PotionEffect potionEffect = new PotionEffect(Potion.getPotionById(16), 123456789, 5);
 		  potionEffect.setPotionDurationMax(true);
 		  mc.player.addPotionEffect(potionEffect);
-	  }
+	}
 	}
 
 	public void onDisable(){

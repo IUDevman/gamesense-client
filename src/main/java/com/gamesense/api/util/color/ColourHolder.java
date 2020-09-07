@@ -108,7 +108,7 @@ public class ColourHolder{
 	}
 
 	@Override
-	public ColourHolder clone() {
+	public ColourHolder clone(){
 		return new ColourHolder(r, g, b, a);
 	}
 

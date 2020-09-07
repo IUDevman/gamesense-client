@@ -26,6 +26,6 @@ public abstract class MixinGuiNewChat{
 	private void drawRectBackgroundClean(int left, int top, int right, int bottom, int color){
 			  if(!ModuleManager.isModuleEnabled("ChatModifier") || !((ChatModifier)ModuleManager.getModuleByName("ChatModifier")).clearBkg.getValue()){
 						  Gui.drawRect(left, top, right, bottom, color);
-			 }
+			}
 	}
 }

@@ -43,9 +43,9 @@ public class TextRadar extends Module{
 
 	public void onRender(){
 		if (sortUp.getValue()){
-			sort = -1; }
+			sort = -1;}
 		else{
-			sort = 1; }
+			sort = 1;}
 		playerCount = 0;
 		mc.world.loadedEntityList.stream()
 				.filter(e->e instanceof EntityPlayer)
