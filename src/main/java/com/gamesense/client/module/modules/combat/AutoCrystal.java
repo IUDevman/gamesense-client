@@ -98,7 +98,9 @@ public class AutoCrystal extends Module {
     Setting.Mode handBreak;
     Setting.Mode breakMode;
     Setting.Mode hudDisplay;
+
 	Setting.ColorSetting color;
+    Setting.Boolean cancelCrystal;
 
     private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
 
@@ -144,6 +146,7 @@ public class AutoCrystal extends Module {
         raytrace = registerBoolean("Raytrace", "Raytrace", false);
         rotate = registerBoolean("Rotate", "Rotate", true);
         spoofRotations = registerBoolean("Spoof Angles", "SpoofAngles", true);
+        cancelCrystal = registerBoolean("Cancel Crystal", "Cancel Crystal", true);
         chat = registerBoolean("Toggle Msg", "ToggleMsg", true);
         hudDisplay = registerMode("HUD", "HUD", hudModes, "Mode");
 		color=registerColor("Color","Color");
@@ -163,11 +166,15 @@ public class AutoCrystal extends Module {
                 .orElse(null);
         if (explode.getValue() && crystal != null) {
 
-            if (antiSuicide.getValue() && mc.player.getHealth() + mc.player.getAbsorptionAmount() < antiSuicideValue.getValue()){
-                return;
+            if (antiSuicide.getValue()){
+                if (mc.player.getHealth() + mc.player.getAbsorptionAmount() < antiSuicideValue.getValue()){
+                    return;
+                }
             }
             // Walls Range
-            if (!mc.player.canEntityBeSeen(crystal) && mc.player.getDistance(crystal) > walls.getValue()) return;
+            if (!mc.player.canEntityBeSeen(crystal) && mc.player.getDistance(crystal) > walls.getValue()){
+                return;
+            }
 
             // Anti Weakness
             if (antiWeakness.getValue() && mc.player.isPotionActive(MobEffects.WEAKNESS)) {
@@ -219,6 +226,12 @@ public class AutoCrystal extends Module {
                     mc.player.swingArm(EnumHand.MAIN_HAND);
                     mc.player.swingArm(EnumHand.OFF_HAND);
                 }
+                if (cancelCrystal.getValue()) {
+                    crystal.setDead();
+                    mc.world.removeAllEntities();
+                    mc.world.getLoadedEntityList();
+                }
+
                 isActive = false;
                 isBreaking = false;
                 breakSystemTime = System.nanoTime() / 1000000L;
