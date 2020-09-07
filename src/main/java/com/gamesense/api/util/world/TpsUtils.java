@@ -45,7 +45,7 @@ public class TpsUtils{
 	}
 
 	@EventHandler
-	Listener<PacketEvent.Receive> listener = new Listener<>(event ->{
+	Listener<PacketEvent.Receive> listener = new Listener<>(event -> {
 		if (event.getPacket() instanceof SPacketTimeUpdate){
 			onTimeUpdate();
 		}

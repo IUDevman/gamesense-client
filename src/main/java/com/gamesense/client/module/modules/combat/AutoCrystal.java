@@ -639,7 +639,7 @@ public class AutoCrystal extends Module{
 	}
 
 	@EventHandler
-	private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event ->{
+	private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
 		Packet packet = event.getPacket();
 		if (packet instanceof CPacketPlayer && spoofRotations.getValue()){
 			if (isSpoofingAngles){
@@ -650,7 +650,7 @@ public class AutoCrystal extends Module{
 	});
 
 	@EventHandler
-	private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event ->{
+	private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
 		if (event.getPacket() instanceof SPacketSoundEffect){
 			final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
 			if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE){

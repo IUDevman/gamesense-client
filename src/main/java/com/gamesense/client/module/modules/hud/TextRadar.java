@@ -48,9 +48,9 @@ public class TextRadar extends Module{
 			sort = 1;}
 		playerCount = 0;
 		mc.world.loadedEntityList.stream()
-				.filter(e->e instanceof EntityPlayer)
-				.filter(e->e != mc.player)
-				.forEach(e->{
+				.filter(e -> e instanceof EntityPlayer)
+				.filter(e -> e != mc.player)
+				.forEach(e -> {
 					if (Friends.isFriend(e.getName())){
 						friendcolor = ColorMain.getFriendColor();
 					}

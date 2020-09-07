@@ -29,7 +29,7 @@ public class NoKick extends Module{
 	public void onUpdate(){
 		if (mc.world != null && noSlimeCrash.getValue()){
 			mc.world.loadedEntityList
-					.forEach(entity ->{
+					.forEach(entity -> {
 						if (entity instanceof EntitySlime){
 							EntitySlime slime = (EntitySlime) entity;
 							if (slime.getSlimeSize() > 4){
@@ -42,7 +42,7 @@ public class NoKick extends Module{
 
 	//Offhand
 	@EventHandler
-	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event ->{
+	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
 		if (noOffhandCrash.getValue()){
 			if (event.getPacket() instanceof SPacketSoundEffect){
 				if (((SPacketSoundEffect) event.getPacket()).getSound() == SoundEvents.ITEM_ARMOR_EQUIP_GENERIC){

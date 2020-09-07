@@ -42,7 +42,7 @@ public class CommandManager{
 		String command = split[0];
 		String args = input.substring(command.length()).trim();
 		b = false;
-		commands.forEach(c ->{
+		commands.forEach(c -> {
 			for (String s : c.getAlias()){
 				if (s.equalsIgnoreCase(command)){
 					b = true;

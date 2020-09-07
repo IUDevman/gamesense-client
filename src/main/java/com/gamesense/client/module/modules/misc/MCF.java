@@ -18,7 +18,7 @@ public class MCF extends Module{
 	}
 
 	@EventHandler
-	private final Listener<InputEvent.MouseInputEvent> listener = new Listener<>(event ->{
+	private final Listener<InputEvent.MouseInputEvent> listener = new Listener<>(event -> {
 		if (mc.objectMouseOver.typeOfHit.equals(RayTraceResult.Type.ENTITY) && mc.objectMouseOver.entityHit instanceof EntityPlayer && Mouse.getEventButton() == 2){
 			if (Friends.isFriend(mc.objectMouseOver.entityHit.getName())){
 				GameSenseMod.getInstance().friends.delFriend(mc.objectMouseOver.entityHit.getName());

@@ -32,8 +32,8 @@ public class LogoutSpots extends Module{
 	List<Entity> lastTickEntities;
 
 	@EventHandler
-	private final Listener<PlayerJoinEvent> listener1 = new Listener<>(event ->{
-		loggedPlayers.forEach((e, s) ->{
+	private final Listener<PlayerJoinEvent> listener1 = new Listener<>(event -> {
+		loggedPlayers.forEach((e, s) -> {
 			try{
 				if (e.getName().equalsIgnoreCase(event.getName())){
 					loggedPlayers.remove(e);
@@ -44,9 +44,9 @@ public class LogoutSpots extends Module{
 	});
 
 	@EventHandler
-	private final Listener<PlayerLeaveEvent> listener2 = new Listener<>(event ->{
+	private final Listener<PlayerLeaveEvent> listener2 = new Listener<>(event -> {
 		if (mc.world == null) return;
-		lastTickEntities.forEach(e ->{
+		lastTickEntities.forEach(e -> {
 			if (e.getName().equalsIgnoreCase(event.getName())){
 				String date = new SimpleDateFormat("k:mm").format(new Date());
 				loggedPlayers.put(e, date);
@@ -61,7 +61,7 @@ public class LogoutSpots extends Module{
 	}
 
 	public void onWorldRender(RenderEvent event){
-		loggedPlayers.forEach((e, time) ->{
+		loggedPlayers.forEach((e, time) -> {
 			if (mc.player.getDistance(e) < 500){
 				GL11.glPushMatrix();
 				drawLogoutBox(e.getRenderBoundingBox(), 1, 0, 0, 0, 255);
@@ -81,7 +81,7 @@ public class LogoutSpots extends Module{
 	}
 
 	@EventHandler
-	private final Listener<WorldEvent.Unload> listener3 = new Listener<>(event ->{
+	private final Listener<WorldEvent.Unload> listener3 = new Listener<>(event -> {
 		lastTickEntities.clear();
 		if (mc.player == null)
 			loggedPlayers.clear();
@@ -91,7 +91,7 @@ public class LogoutSpots extends Module{
 	});
 
 	@EventHandler
-	private final Listener<WorldEvent.Load> listener4 = new Listener<>(event ->{
+	private final Listener<WorldEvent.Load> listener4 = new Listener<>(event -> {
 		lastTickEntities.clear();
 		if (mc.player == null){
 			loggedPlayers.clear();

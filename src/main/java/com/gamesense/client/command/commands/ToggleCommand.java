@@ -19,7 +19,7 @@ public class ToggleCommand extends Command{
 	@Override
 	public void onCommand(String command, String[] args) throws Exception{
 		found = false;
-		ModuleManager.getModules().forEach(m ->{
+		ModuleManager.getModules().forEach(m -> {
 			if (m.getName().equalsIgnoreCase(args[0])){
 				if (m.isEnabled()){
 					m.disable();

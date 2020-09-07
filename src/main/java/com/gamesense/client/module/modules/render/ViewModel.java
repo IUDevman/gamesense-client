@@ -31,7 +31,7 @@ public class ViewModel extends Module{
 	}
 
 	@EventHandler
-	private final Listener<TransformSideFirstPersonEvent> eventListener = new Listener<>(event ->{
+	private final Listener<TransformSideFirstPersonEvent> eventListener = new Listener<>(event -> {
 		if (event.getHandSide() == EnumHandSide.RIGHT){
 			GlStateManager.translate(xRight.getValue(), yRight.getValue(), zRight.getValue());
 		} else if (event.getHandSide() == EnumHandSide.LEFT){

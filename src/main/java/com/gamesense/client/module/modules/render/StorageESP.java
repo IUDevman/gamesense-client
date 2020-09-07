@@ -22,7 +22,7 @@ public class StorageESP extends Module{
 	}
 
 	public void onUpdate(){
-		mc.world.loadedTileEntityList.forEach(e->{
+		mc.world.loadedTileEntityList.forEach(e -> {
 			chests.put(e, "");
 		});
 	}
@@ -34,7 +34,7 @@ public class StorageESP extends Module{
 		Color c4 = new Color(255,0,0, 255);
 		if (chests != null && chests.size() > 0){
 			GameSenseTessellator.prepareGL();
-			chests.forEach((c, t)->{
+			chests.forEach((c, t) -> {
 				if (mc.world.loadedTileEntityList.contains(c)){
 					if (c instanceof TileEntityChest)
 							GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(c.getPos()).getSelectedBoundingBox(mc.world, c.getPos()), (float)w.getValue(), c1.getRGB());

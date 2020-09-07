@@ -57,7 +57,7 @@ public class EntityESP extends Module{
 		if (renderMode.getValue().equalsIgnoreCase("Box")){
 			mc.world.loadedEntityList.stream()
 						.filter(entity -> entity != mc.player)
-						.forEach(e ->{
+						.forEach(e -> {
 							GameSenseTessellator.prepare(GL11.GL_QUADS);
 							if (exp.getValue() && e instanceof EntityExpBottle){
 								GameSenseTessellator.drawBox(e.getRenderBoundingBox(), c, GeometryMasks.Quad.ALL);
@@ -97,7 +97,7 @@ public class EntityESP extends Module{
 			if (renderMode.getValue().equalsIgnoreCase("Outline")){
 				mc.world.loadedEntityList.stream()
 						.filter(entity -> entity != mc.player)
-						.forEach(e ->{
+						.forEach(e -> {
 							GameSenseTessellator.prepareGL();
 							if (exp.getValue() && e instanceof EntityExpBottle){
 								GameSenseTessellator.drawBoundingBox(e.getRenderBoundingBox(), 1, c2);
@@ -120,7 +120,7 @@ public class EntityESP extends Module{
 			if (renderMode.getValue().equalsIgnoreCase("Glow")){
 				mc.world.loadedEntityList.stream()
 						.filter(e -> e != mc.player)
-						.forEach(e ->{
+						.forEach(e -> {
 							if (exp.getValue() && e instanceof EntityExpBottle){
 								e.setGlowing(true);
 							}
@@ -143,7 +143,7 @@ public class EntityESP extends Module{
 		public void onUpdate(){
 			mc.world.loadedEntityList.stream()
 					.filter(e -> e != mc.player)
-					.forEach(e ->{
+					.forEach(e -> {
 						if (renderMode.getValue().equalsIgnoreCase("Glow") == false){
 							if (e instanceof EntityExpBottle){
 								e.setGlowing(false);
@@ -183,7 +183,7 @@ public class EntityESP extends Module{
 		if (renderMode.getValue().equalsIgnoreCase("Glow")){
 			mc.world.loadedEntityList.stream()
 					.filter(e -> e != mc.player)
-					.forEach(e ->{
+					.forEach(e -> {
 						if (e instanceof EntityExpBottle){
 							e.setGlowing(false);
 						}

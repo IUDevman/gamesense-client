@@ -124,7 +124,7 @@ public class ModuleManager{
 		e.resetTranslation();
 		Minecraft.getMinecraft().profiler.endSection();
 
-		modules.stream().filter(module -> module.isEnabled()).forEach(module ->{
+		modules.stream().filter(module -> module.isEnabled()).forEach(module -> {
 			Minecraft.getMinecraft().profiler.startSection(module.getName());
 			module.onWorldRender(e);
 			Minecraft.getMinecraft().profiler.endSection();
@@ -156,7 +156,7 @@ public class ModuleManager{
 
 	public static void onBind(int key){
 		if (key == 0 || key == Keyboard.KEY_NONE) return;
-		modules.forEach(module ->{
+		modules.forEach(module -> {
 			if (module.getBind() == key){
 				module.toggle();
 			}
@@ -164,12 +164,12 @@ public class ModuleManager{
 	}
 
 	public static Module getModuleByName(String name){
-		Module m = getModules().stream().filter(mm->mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+		Module m = getModules().stream().filter(mm -> mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 		return m;
 	}
 
 	public static boolean isModuleEnabled(String name){
-		Module m = getModules().stream().filter(mm->mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+		Module m = getModules().stream().filter(mm -> mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 		return m.isEnabled();
 	}
 

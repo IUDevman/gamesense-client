@@ -43,7 +43,7 @@ public class NoRender extends Module{
 	}
 
 	@EventHandler
-	public Listener<RenderBlockOverlayEvent> blockOverlayEventListener = new Listener<>(event ->{
+	public Listener<RenderBlockOverlayEvent> blockOverlayEventListener = new Listener<>(event -> {
 		if (fire.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.FIRE) event.setCanceled(true);
 		if (noOverlay.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.WATER) event.setCanceled(true);
 		if (noOverlay.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.BLOCK) event.setCanceled(true);
@@ -51,7 +51,7 @@ public class NoRender extends Module{
 
 	// Disable Water and lava fog
 	@EventHandler
-	private final Listener<EntityViewRenderEvent.FogDensity> fogDensityListener = new Listener<>(event ->{
+	private final Listener<EntityViewRenderEvent.FogDensity> fogDensityListener = new Listener<>(event -> {
 		if (noOverlay.getValue()){
 			if (event.getState().getMaterial().equals(Material.WATER)
 					|| event.getState().getMaterial().equals(Material.LAVA)){
@@ -63,12 +63,12 @@ public class NoRender extends Module{
 
 	// Disable screen overlays Overlays
 	@EventHandler
-	private final Listener<RenderBlockOverlayEvent> renderBlockOverlayEventListener = new Listener<>(event ->{
+	private final Listener<RenderBlockOverlayEvent> renderBlockOverlayEventListener = new Listener<>(event -> {
 		event.setCanceled(true);
 	});
 
 	@EventHandler
-	private final Listener<RenderGameOverlayEvent> renderGameOverlayEventListener = new Listener<>(event ->{
+	private final Listener<RenderGameOverlayEvent> renderGameOverlayEventListener = new Listener<>(event -> {
 		if (noOverlay.getValue()){
 			if (event.getType().equals(RenderGameOverlayEvent.ElementType.HELMET)){
 				event.setCanceled(true);
@@ -81,7 +81,7 @@ public class NoRender extends Module{
 
 	// Bossbar
 	@EventHandler
-	private final Listener<BossbarEvent> bossbarEventListener = new Listener<>(event ->{
+	private final Listener<BossbarEvent> bossbarEventListener = new Listener<>(event -> {
 		if (noBossBar.getValue()){
 			event.cancel();
 		}

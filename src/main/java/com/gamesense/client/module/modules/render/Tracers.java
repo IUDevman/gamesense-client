@@ -43,9 +43,9 @@ public class Tracers extends Module{
 
 	public void onWorldRender(RenderEvent event){
 		mc.world.loadedEntityList.stream()
-				.filter(e->e instanceof EntityPlayer)
-				.filter(e->e != mc.player)
-				.forEach(e->{
+				.filter(e -> e instanceof EntityPlayer)
+				.filter(e -> e != mc.player)
+				.forEach(e -> {
 					if (mc.player.getDistance(e) > renderDistance.getValue()){
 						return;
 					} else{

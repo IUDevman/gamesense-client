@@ -109,7 +109,7 @@ public class EventProcessor{
 			if (Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
 				ModuleManager.onBind(Keyboard.getEventKey());
 			//Macro
-			GameSenseMod.getInstance().macroManager.getMacros().forEach(m ->{
+			GameSenseMod.getInstance().macroManager.getMacros().forEach(m -> {
 				if (m.getKey() == Keyboard.getEventKey())
 					m.onMacro();
 			});
@@ -199,13 +199,13 @@ public class EventProcessor{
 	}
 
 	@EventHandler
-	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event ->{
+	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
 		if (event.getPacket() instanceof SPacketPlayerListItem){
 				SPacketPlayerListItem packet = (SPacketPlayerListItem) event.getPacket();
 				if (packet.getAction() == SPacketPlayerListItem.Action.ADD_PLAYER){
 					for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()){
 						if (playerData.getProfile().getId() != mc.session.getProfile().getId()){
-							new Thread(() ->{
+							new Thread(() -> {
 								String name = resolveName(playerData.getProfile().getId().toString());
 								if (name != null){
 									if (mc.player != null && mc.player.ticksExisted >= 1000)
@@ -218,7 +218,7 @@ public class EventProcessor{
 				if (packet.getAction() == SPacketPlayerListItem.Action.REMOVE_PLAYER){
 					for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()){
 						if (playerData.getProfile().getId() != mc.session.getProfile().getId()){
-							new Thread(() ->{
+							new Thread(() -> {
 								final String name = resolveName(playerData.getProfile().getId().toString());
 								if (name != null){
 									if (mc.player != null && mc.player.ticksExisted >= 1000)

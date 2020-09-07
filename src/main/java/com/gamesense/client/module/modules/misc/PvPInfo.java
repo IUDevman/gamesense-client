@@ -63,7 +63,7 @@ public class PvPInfo extends Module{
 	}
 
 	@EventHandler
-	public Listener<TotemPopEvent> totemPopEvent = new Listener<>(event ->{
+	public Listener<TotemPopEvent> totemPopEvent = new Listener<>(event -> {
 	 if (popcounter.getValue()){
 		 if (popList == null){
 			 popList = new HashMap<>();
@@ -178,7 +178,7 @@ public class PvPInfo extends Module{
 	}
 
 	@EventHandler
-	public Listener<PacketEvent.Receive> totemPopListener = new Listener<>(event ->{
+	public Listener<PacketEvent.Receive> totemPopListener = new Listener<>(event -> {
 
 		if (mc.world == null || mc.player == null){
 			return;

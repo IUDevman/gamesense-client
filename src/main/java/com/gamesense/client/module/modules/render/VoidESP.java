@@ -87,7 +87,7 @@ public class VoidESP extends Module{
 		if (voidHoles.isEmpty()){
 			return;
 		}
-		voidHoles.forEach(blockPos ->{
+		voidHoles.forEach(blockPos -> {
 			GameSenseTessellator.prepare(GL11.GL_QUADS);
 			if (renderMode.getValue().equalsIgnoreCase("Box")){
 				drawBox(blockPos, 255, 255, 0);
