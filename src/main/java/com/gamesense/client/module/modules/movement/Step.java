@@ -44,7 +44,7 @@ public class Step extends Module{
 				if (this.ticks == 0){
 					EntityUtil.resetTimer();
 				} else{
-					--this.ticks;
+					this.ticks--;
 				}
 			}
 			if (mc.player != null && mc.player.onGround && !mc.player.isInWater() && !mc.player.isOnLadder() && this.reverse.getValue()){
