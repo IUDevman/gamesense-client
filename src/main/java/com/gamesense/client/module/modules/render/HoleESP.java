@@ -53,7 +53,7 @@ public class HoleESP extends Module {
 		
 		width=registerInteger("Width","Width",1,1,10);
 		bedrockColor=registerColor("Bedrock Color","BedrockColor",new GSColor(0,255,0));
-		otherColor=registerColor("Other Color","OtherColor",new GSColor(255,0,0));
+		otherColor=registerColor("Obsidian Color","ObsidianColor",new GSColor(255,0,0));
     }
 
     //defines the render borders
