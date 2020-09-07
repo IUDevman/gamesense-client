@@ -205,7 +205,7 @@ public class EntityESP extends Module{
 
 	public String getHudInfo(){
 		String t = "";
-		if(renderMode.getValue().equalsIgnoreCase("Box")){
+		if (renderMode.getValue().equalsIgnoreCase("Box")){
 			t = "[" + ChatFormatting.WHITE + "Box" + ChatFormatting.GRAY + "]";
 		}
 		if (renderMode.getValue().equalsIgnoreCase("Outline")){

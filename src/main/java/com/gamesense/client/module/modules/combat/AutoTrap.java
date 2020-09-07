@@ -128,10 +128,10 @@ public class AutoTrap extends Module{
 
 		List<Vec3d> placeTargets = new ArrayList<>();
 
-		if(mode.getValue().equalsIgnoreCase("Normal")){
+		if (mode.getValue().equalsIgnoreCase("Normal")){
 			Collections.addAll(placeTargets, Offsets.TRAP);
 		}
-		if(mode.getValue().equalsIgnoreCase("NoStep")){
+		if (mode.getValue().equalsIgnoreCase("NoStep")){
 			Collections.addAll(placeTargets, Offsets.TRAPFULLROOF);
 		}
 

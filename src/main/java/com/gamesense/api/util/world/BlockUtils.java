@@ -46,31 +46,31 @@ public class BlockUtils{
 	}
 
 	public static boolean placeBlockScaffold(BlockPos pos, boolean rotate){
-		for(EnumFacing side : EnumFacing.values())
+		for (EnumFacing side : EnumFacing.values())
 		{
 			BlockPos neighbor = pos.offset(side);
 			EnumFacing side2 = side.getOpposite();
 
 			// check if side is visible (facing away from player)
-			//if(eyesPos.squareDistanceTo(
+			//if (eyesPos.squareDistanceTo(
 			//		new Vec3d(pos).add(0.5, 0.5, 0.5)) >= eyesPos
 			//		.squareDistanceTo(
 			//				new Vec3d(neighbor).add(0.5, 0.5, 0.5)))
 			//	continue;
 
 			// check if neighbor can be right clicked
-			if(!canBeClicked(neighbor))
+			if (!canBeClicked(neighbor))
 				continue;
 
 			Vec3d hitVec = new Vec3d(neighbor).add(0.5, 0.5, 0.5)
 					.add(new Vec3d(side2.getDirectionVec()).scale(0.5));
 
 			// check if hitVec is within range (4.25 blocks)
-			//if(eyesPos.squareDistanceTo(hitVec) > 18.0625)
+			//if (eyesPos.squareDistanceTo(hitVec) > 18.0625)
 			//continue;
 
 			// place block
-			if(rotate)
+			if (rotate)
 				faceVectorPacketInstant(hitVec);
 			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
 			processRightClickBlock(neighbor, side2, hitVec);
@@ -181,8 +181,8 @@ public class BlockUtils{
 		int cy = loc.getY();
 		int cz = loc.getZ();
 
-		for(int x = cx - (int)r; (float)x <= (float)cx + r; x++){
-			for(int z = cz - (int)r; (float)z <= (float)cz + r; z++){
+		for (int x = cx - (int)r; (float)x <= (float)cx + r; x++){
+			for (int z = cz - (int)r; (float)z <= (float)cz + r; z++){
 				int y = sphere ? cy - (int)r : cy;
 
 				while(true){

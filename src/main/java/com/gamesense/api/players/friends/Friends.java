@@ -16,16 +16,16 @@ public class Friends{
 
 	public static boolean isFriend(String name){
 		boolean b = false;
-		for(Friend f : getFriends()){
-			if(f.getName().equalsIgnoreCase(name)) b = true;
+		for (Friend f : getFriends()){
+			if (f.getName().equalsIgnoreCase(name)) b = true;
 		}
 		return b;
 	}
 
 	public Friend getFriendByName(String name){
 		Friend fr = null;
-		for(Friend f : getFriends()){
-			if(f.getName().equalsIgnoreCase(name)) fr = f;
+		for (Friend f : getFriends()){
+			if (f.getName().equalsIgnoreCase(name)) fr = f;
 		}
 		return fr;
 	}

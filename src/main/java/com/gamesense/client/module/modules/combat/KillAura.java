@@ -39,7 +39,7 @@ public class KillAura extends Module{
 	private boolean isAttacking = false;
 
 	public void onUpdate(){
-		if(mc.player == null || mc.player.isDead) return;
+		if (mc.player == null || mc.player.isDead) return;
 		List<Entity> targets = mc.world.loadedEntityList.stream()
 				.filter(entity -> entity != mc.player)
 				.filter(entity -> mc.player.getDistance(entity) <= range.getValue())
@@ -51,11 +51,11 @@ public class KillAura extends Module{
 				.collect(Collectors.toList());
 
 		targets.forEach(target ->{
-			if(swordOnly.getValue())
-				if(!(mc.player.getHeldItemMainhand().getItem() instanceof ItemSword)) return;
+			if (swordOnly.getValue())
+				if (!(mc.player.getHeldItemMainhand().getItem() instanceof ItemSword)) return;
 
-			if(caCheck.getValue())
-				if(((AutoCrystal) ModuleManager.getModuleByName("AutoCrystalGS")).isActive) return;
+			if (caCheck.getValue())
+				if (((AutoCrystal) ModuleManager.getModuleByName("AutoCrystalGS")).isActive) return;
 
 			attack(target);
 		});
@@ -64,7 +64,7 @@ public class KillAura extends Module{
 	@EventHandler
 	private final Listener<PacketEvent.Send> listener = new Listener<>(event ->{
 		if (event.getPacket() instanceof CPacketUseEntity){
-			if(criticals.getValue() && ((CPacketUseEntity) event.getPacket()).getAction() == CPacketUseEntity.Action.ATTACK && mc.player.onGround && isAttacking){
+			if (criticals.getValue() && ((CPacketUseEntity) event.getPacket()).getAction() == CPacketUseEntity.Action.ATTACK && mc.player.onGround && isAttacking){
 				mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.1f, mc.player.posZ, false));
 				mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY, mc.player.posZ, false));
 			}
@@ -80,7 +80,7 @@ public class KillAura extends Module{
 	}
 
 	public void attack(Entity e){
-		if(mc.player.getCooledAttackStrength(0) >= 1){
+		if (mc.player.getCooledAttackStrength(0) >= 1){
 			isAttacking = true;
 			mc.playerController.attackEntity(mc.player, e);
 			mc.player.swingArm(EnumHand.MAIN_HAND);

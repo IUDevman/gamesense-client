@@ -20,18 +20,18 @@ public class ToggleCommand extends Command{
 	public void onCommand(String command, String[] args) throws Exception{
 		found = false;
 		ModuleManager.getModules().forEach(m ->{
-			if(m.getName().equalsIgnoreCase(args[0])){
-				if(m.isEnabled()){
+			if (m.getName().equalsIgnoreCase(args[0])){
+				if (m.isEnabled()){
 					m.disable();
 					found = true;
 						Command.sendClientMessage(m.getName() + ChatFormatting.RED + " disabled!");
-				} else if(!m.isEnabled()){
+				} else if (!m.isEnabled()){
 					m.enable();
 					found = true;
 						Command.sendClientMessage(m.getName() + ChatFormatting.GREEN + " enabled!");
 				}
 			}
 		});
-		if(!found && args.length == 1) Command.sendClientMessage(ChatFormatting.GRAY + "Module not found!");
+		if (!found && args.length == 1) Command.sendClientMessage(ChatFormatting.GRAY + "Module not found!");
 	}
 }

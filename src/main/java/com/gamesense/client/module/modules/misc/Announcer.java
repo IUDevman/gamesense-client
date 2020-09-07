@@ -102,7 +102,7 @@ public class Announcer extends Module{
 
 				speed = Math.sqrt(d0 * d0 + d2 * d2 + d3 * d3);
 
-				if(!(speed <= 1) && !(speed > 5000)){
+				if (!(speed <= 1) && !(speed > 5000)){
 					String walkAmount = new DecimalFormat("0.00").format(speed);
 
 					Random random = new Random();
@@ -124,13 +124,13 @@ public class Announcer extends Module{
 	@EventHandler
 	private final Listener<LivingEntityUseItemEvent.Finish> eatListener = new Listener<>(event ->{
 		int randomNum = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-		if(event.getEntity() == mc.player){
-			if(event.getItem().getItem() instanceof ItemFood || event.getItem().getItem() instanceof ItemAppleGold){
+		if (event.getEntity() == mc.player){
+			if (event.getItem().getItem() instanceof ItemFood || event.getItem().getItem() instanceof ItemAppleGold){
 				eaten++;
-				if(eattingDelay >= 300 * delay.getValue()){
+				if (eattingDelay >= 300 * delay.getValue()){
 					if (eat.getValue() && eaten > randomNum){
 						Random random = new Random();
-						if(clientSide.getValue()){
+						if (clientSide.getValue()){
 							Command.sendClientMessage
 									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", eaten + "").replace("{name}",  mc.player.getHeldItemMainhand().getDisplayName()));
 						} else{
@@ -154,7 +154,7 @@ public class Announcer extends Module{
 				if (place.getValue() && blocksPlaced > randomNum){
 					Random random = new Random();
 					String msg = placeMessages[random.nextInt(placeMessages.length)].replace("{amount}", blocksPlaced + "").replace("{name}", mc.player.getHeldItemMainhand().getDisplayName());
-					if(clientSide.getValue()){
+					if (clientSide.getValue()){
 						Command.sendClientMessage(msg);
 					} else{
 						mc.player.sendChatMessage(msg);
@@ -176,7 +176,7 @@ public class Announcer extends Module{
 				String msg = breakMessages[random.nextInt(breakMessages.length)]
 						.replace("{amount}", blocksBroken + "")
 						.replace("{name}", mc.world.getBlockState(event.getBlockPos()).getBlock().getLocalizedName());
-				if(clientSide.getValue()){
+				if (clientSide.getValue()){
 					Command.sendClientMessage(msg);
 				} else{
 					mc.player.sendChatMessage(msg);
@@ -192,7 +192,7 @@ public class Announcer extends Module{
 		if (attack.getValue() && !(event.getTarget() instanceof EntityEnderCrystal)){
 			if (attackDelay >= 300 * delay.getValue()){
 				String msg = attackMessage.replace("{name}", event.getTarget().getName()).replace("{item}", mc.player.getHeldItemMainhand().getDisplayName());
-				if(clientSide.getValue()){
+				if (clientSide.getValue()){
 					Command.sendClientMessage(msg);
 				} else{
 					mc.player.sendChatMessage(msg);
@@ -206,7 +206,7 @@ public class Announcer extends Module{
 	private final Listener<PlayerJumpEvent> jumpListener = new Listener<>(event ->{
 		if (jump.getValue()){
 			if (jumpDelay >= 300 * delay.getValue()){
-				if(clientSide.getValue()){
+				if (clientSide.getValue()){
 					Random random = new Random();
 					Command.sendClientMessage(jumpMessages[random.nextInt(jumpMessages.length)]);
 				} else{

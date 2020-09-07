@@ -17,7 +17,7 @@ public class AutoGgCommand extends Command{
 	@Override
 	public void onCommand(String command, String[] args) throws Exception{
 		String s = args[1].replace("_", " ");
-		if(args[0].equalsIgnoreCase("add")){
+		if (args[0].equalsIgnoreCase("add")){
 			if (!AutoGG.getAutoGgMessages().contains(s)){
 				AutoGG.addAutoGgMessage(s);
 				Command.sendClientMessage("Added AutoGG message: " + s);

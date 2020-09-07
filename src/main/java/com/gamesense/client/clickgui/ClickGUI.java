@@ -99,8 +99,8 @@ public class ClickGUI extends GuiScreen{
 	public static Frames getFrameByName(String name){
 		Frames pa = null;
 
-		for(Frames frames : getFrames()){
-			if(name.equalsIgnoreCase(String.valueOf(frames.category))) pa = frames;
+		for (Frames frames : getFrames()){
+			if (name.equalsIgnoreCase(String.valueOf(frames.category))) pa = frames;
 		}
 		return pa;
 	}

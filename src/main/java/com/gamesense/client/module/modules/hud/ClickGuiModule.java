@@ -35,8 +35,8 @@ public class ClickGuiModule extends Module{
 
 	public void onEnable(){
 		mc.displayGuiScreen(GameSenseMod.getInstance().clickGUI);
-		if(((Announcer) ModuleManager.getModuleByName("Announcer")).clickGui.getValue() && ModuleManager.isModuleEnabled("Announcer") && mc.player != null)
-			if(((Announcer)ModuleManager.getModuleByName("Announcer")).clientSide.getValue()){
+		if (((Announcer) ModuleManager.getModuleByName("Announcer")).clickGui.getValue() && ModuleManager.isModuleEnabled("Announcer") && mc.player != null)
+			if (((Announcer)ModuleManager.getModuleByName("Announcer")).clientSide.getValue()){
 				Command.sendClientMessage(Announcer.guiMessage);
 			} else{
 				mc.player.sendChatMessage(Announcer.guiMessage);
@@ -45,7 +45,7 @@ public class ClickGuiModule extends Module{
 	}
 
 	private void drawStringWithShadow(String text, int x, int y, int color){
-		if(customFont.getValue())
+		if (customFont.getValue())
 			GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
 		else
 			mc.fontRenderer.drawStringWithShadow(text, x, y, color);

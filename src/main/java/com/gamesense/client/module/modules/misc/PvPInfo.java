@@ -122,7 +122,7 @@ public class PvPInfo extends Module{
 		}
 	}
 	  if (popcounter.getValue()){
-		  for(EntityPlayer player : mc.world.playerEntities){
+		  for (EntityPlayer player : mc.world.playerEntities){
 			  if (player.getHealth() <= 0){
 				  if (popList.containsKey(player.getName())){
 					  Command.sendClientMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popList.get(player.getName()) + getTextColor()  + " totems!");

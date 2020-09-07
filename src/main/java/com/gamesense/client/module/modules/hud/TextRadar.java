@@ -116,7 +116,7 @@ public class TextRadar extends Module{
 
 	//bullshit port from HUD
 	private int getWidth(String s){
-		if(HUD.customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
+		if (HUD.customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
 		else return mc.fontRenderer.getStringWidth(s);
 	}
 }

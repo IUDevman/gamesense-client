@@ -258,7 +258,7 @@ public class LoadConfiguration{
 				String name = curLine.split(":")[0];
 				String isOn = curLine.split(":")[1];
 				boolean drawn = Boolean.parseBoolean(isOn);
-				for(Module m : ModuleManager.getModules()){
+				for (Module m : ModuleManager.getModules()){
 					if (m.getName().equalsIgnoreCase(name)){
 						m.setDrawn(drawn);
 					}
@@ -309,7 +309,7 @@ public class LoadConfiguration{
 				String curLine = line.trim();
 				String name = curLine.split(":")[0];
 				String bind = curLine.split(":")[1];
-				for(Module m : ModuleManager.getModules()){
+				for (Module m : ModuleManager.getModules()){
 					if (m != null && m.getName().equalsIgnoreCase(name)){
 						m.setBind(Keyboard.getKeyIndex(bind));
 					}

@@ -41,7 +41,7 @@ public class Notifications extends Module{
 		} else{
 			waitCounter = 0;
 		}
-		if(list.size() > 0)
+		if (list.size() > 0)
 			list.remove(0);
 	}
 
@@ -51,7 +51,7 @@ public class Notifications extends Module{
 		else{
 			sort = 1;}
 		notCount = 0;
-		for(TextComponentString s : list){
+		for (TextComponentString s : list){
 			notCount = list.indexOf(s) + 1;
 			notColor = s.getStyle().getColor();
 
@@ -75,7 +75,7 @@ public class Notifications extends Module{
 	}
 
 	public static void addMessage(TextComponentString m){
-		if(list.size() < 3){
+		if (list.size() < 3){
 			list.remove(m);
 			list.add(m);
 		}else{
@@ -95,7 +95,7 @@ public class Notifications extends Module{
 
 	//bullshit port from HUD
 	private int getWidth(String s){
-		if(HUD.customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
+		if (HUD.customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
 		else return mc.fontRenderer.getStringWidth(s);
 	}
 }

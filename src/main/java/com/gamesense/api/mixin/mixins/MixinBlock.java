@@ -15,6 +15,6 @@ public abstract class MixinBlock{
 
 	@Inject(method = "getRenderLayer", at = @At("HEAD"))
 	public void preGetRenderLayer(CallbackInfoReturnable<BlockRenderLayer> cir){
-		if(this.getLocalizedName().equalsIgnoreCase("hmmm")){}
+		if (this.getLocalizedName().equalsIgnoreCase("hmmm")){}
 	}
 }

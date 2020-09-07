@@ -47,7 +47,7 @@ public class LogoutSpots extends Module{
 	private final Listener<PlayerLeaveEvent> listener2 = new Listener<>(event ->{
 		if (mc.world == null) return;
 		lastTickEntities.forEach(e ->{
-			if(e.getName().equalsIgnoreCase(event.getName())){
+			if (e.getName().equalsIgnoreCase(event.getName())){
 				String date = new SimpleDateFormat("k:mm").format(new Date());
 				loggedPlayers.put(e, date);
 				String pos = "x" + e.getPosition().getX() + " y" + e.getPosition().getY() + " z" + e.getPosition().getZ();
@@ -62,7 +62,7 @@ public class LogoutSpots extends Module{
 
 	public void onWorldRender(RenderEvent event){
 		loggedPlayers.forEach((e, time) ->{
-			if(mc.player.getDistance(e) < 500){
+			if (mc.player.getDistance(e) < 500){
 				GL11.glPushMatrix();
 				drawLogoutBox(e.getRenderBoundingBox(), 1, 0, 0, 0, 255);
 				drawNametag(e, time);
@@ -75,7 +75,7 @@ public class LogoutSpots extends Module{
 		ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
 		Color color;
 		Color c = Rainbow.getColor();
-		if(ColorMain.rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+		if (ColorMain.rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
 		else color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
 		GameSenseTessellator.drawBoundingBox(bb, width, color.getRGB());
 	}
@@ -83,10 +83,10 @@ public class LogoutSpots extends Module{
 	@EventHandler
 	private final Listener<WorldEvent.Unload> listener3 = new Listener<>(event ->{
 		lastTickEntities.clear();
-		if(mc.player == null)
+		if (mc.player == null)
 			loggedPlayers.clear();
 		else
-		if(!mc.player.isDead)
+		if (!mc.player.isDead)
 			loggedPlayers.clear();
 	});
 
@@ -116,12 +116,12 @@ public class LogoutSpots extends Module{
 		float f = mc.player.getDistance(entityIn);
 		float sc = f < 25 ? 0.5f : 2f;
 		float m = (f / 20f) * (float) (Math.pow(1.2589254f, 0.1 / sc));
-		if(m < 0.5f) m = 0.5f;
-		if(m > 5f) m = 5f;
+		if (m < 0.5f) m = 0.5f;
+		if (m > 5f) m = 5f;
 
 		Vec3d interp = getInterpolatedRenderPos(entityIn, mc.getRenderPartialTicks());
 		float mm;
-		if(m > 2)
+		if (m > 2)
 			mm = m / 2;
 		else
 			mm = m;
@@ -156,7 +156,7 @@ public class LogoutSpots extends Module{
 		ColorMain colorMain = ((ColorMain) ModuleManager.getModuleByName("Colors"));
 		Color color;
 		Color c = Rainbow.getColor();
-		if(ColorMain.rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+		if (ColorMain.rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
 		else color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
 		fontRendererIn.drawStringWithShadow(line1, -i, 10, color.getRGB());
 		fontRendererIn.drawStringWithShadow(line2, -ii, 20, color.getRGB());

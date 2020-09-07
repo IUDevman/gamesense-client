@@ -39,8 +39,8 @@ public class SettingsManager{
 	}
 
 	public Setting getSettingByName(String name){
-		for(Setting set : getSettings()){
-			if(set.getName().equalsIgnoreCase(name)){
+		for (Setting set : getSettings()){
+			if (set.getName().equalsIgnoreCase(name)){
 				return set;
 			}
 		}

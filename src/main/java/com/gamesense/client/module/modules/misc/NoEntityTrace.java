@@ -22,7 +22,7 @@ public class NoEntityTrace extends Module{
 	}
 
 	public boolean noTrace(){
-		if(pickaxeOnly.getValue()) return isEnabled() && isHoldingPickaxe;
+		if (pickaxeOnly.getValue()) return isEnabled() && isHoldingPickaxe;
 		return isEnabled();
 	}
 }

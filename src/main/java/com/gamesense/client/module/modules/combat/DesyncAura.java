@@ -75,7 +75,7 @@ public class DesyncAura extends Module{
 			if (enchants == null){
 				return false;
 			} else{
-				for(int i = 0; i < enchants.tagCount(); i++){
+				for (int i = 0; i < enchants.tagCount(); i++){
 					NBTTagCompound enchant = enchants.getCompoundTagAt(i);
 					if (enchant.getInteger("id") == 16){
 						int lvl = enchant.getInteger("lvl");
@@ -100,7 +100,7 @@ public class DesyncAura extends Module{
 		if (this.switchTo32k.getValue() && !holding32k){
 			int newSlot = -1;
 
-			for(int i = 0; i < 9; i++){
+			for (int i = 0; i < 9; i++){
 				ItemStack stack = mc.player.inventory.getStackInSlot(i);
 				if (stack != ItemStack.EMPTY && this.checkSharpness(stack)){
 					newSlot = i;

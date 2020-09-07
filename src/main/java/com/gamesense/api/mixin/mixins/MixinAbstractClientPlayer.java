@@ -25,7 +25,7 @@ public abstract class MixinAbstractClientPlayer{
 		UUID uuid = getPlayerInfo().getGameProfile().getId();
 		CapesModule capesModule = ((CapesModule) ModuleManager.getModuleByName("Capes"));
 
-		if(ModuleManager.isModuleEnabled("Capes") && GameSenseMod.getInstance().capeUtils.hasCape(uuid)){
+		if (ModuleManager.isModuleEnabled("Capes") && GameSenseMod.getInstance().capeUtils.hasCape(uuid)){
 			if (capesModule.capeMode.getValue().equalsIgnoreCase("Black")){
 				cir.setReturnValue(new ResourceLocation("gamesense:textures/capeblack.png"));
 			}

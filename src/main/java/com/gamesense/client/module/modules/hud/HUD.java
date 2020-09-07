@@ -263,7 +263,7 @@ public class HUD extends Module{
 
 		if (ArrayList.getValue()){
 
-				if(sortUp.getValue()){ sort = -1;
+				if (sortUp.getValue()){ sort = -1;
 				} else{ sort = 1;}
 				modCount = 0;
 				ModuleManager.getModules()
@@ -282,7 +282,7 @@ public class HUD extends Module{
 							} else{
 								c = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue());
 							}
-							if(sortUp.getValue()){
+							if (sortUp.getValue()){
 								if (right.getValue()){
 									drawStringWithShadow(m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), c.getRGB());
 									hue[0] +=.02f;
@@ -385,7 +385,7 @@ public class HUD extends Module{
 		}
 
 	private int getWidth(String s){
-		if(customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
+		if (customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
 		else return mc.fontRenderer.getStringWidth(s);
 	}
 }

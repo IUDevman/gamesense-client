@@ -19,7 +19,7 @@ public abstract class MixinEntityPlayer{
 
 	@Inject(method = "jump", at = @At("HEAD"), cancellable = true)
 	public void onJump(CallbackInfo ci){
-		if(Minecraft.getMinecraft().player.getName() == this.getName()){
+		if (Minecraft.getMinecraft().player.getName() == this.getName()){
 			GameSenseMod.EVENT_BUS.post(new PlayerJumpEvent());
 		}
 	}

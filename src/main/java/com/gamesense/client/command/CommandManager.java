@@ -43,7 +43,7 @@ public class CommandManager{
 		String args = input.substring(command.length()).trim();
 		b = false;
 		commands.forEach(c ->{
-			for(String s : c.getAlias()){
+			for (String s : c.getAlias()){
 				if (s.equalsIgnoreCase(command)){
 					b = true;
 					try{
@@ -54,6 +54,6 @@ public class CommandManager{
 				}
 			}
 		});
-		if(!b) Command.sendClientMessage(ChatFormatting.GRAY + "Unknown command!");
+		if (!b) Command.sendClientMessage(ChatFormatting.GRAY + "Unknown command!");
 	}
 }

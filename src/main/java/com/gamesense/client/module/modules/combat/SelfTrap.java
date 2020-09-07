@@ -125,13 +125,13 @@ public class SelfTrap extends Module{
 
 		List<Vec3d> placeTargets = new ArrayList<>();
 
-		if(mode.getValue().equalsIgnoreCase("Normal")){
+		if (mode.getValue().equalsIgnoreCase("Normal")){
 			Collections.addAll(placeTargets, SelfTrap.Offsets.TRAP);
 		}
-		if(mode.getValue().equalsIgnoreCase("NoStep")){
+		if (mode.getValue().equalsIgnoreCase("NoStep")){
 			Collections.addAll(placeTargets, SelfTrap.Offsets.TRAPFULLROOF);
 		}
-		if(mode.getValue().equalsIgnoreCase("Simple")){
+		if (mode.getValue().equalsIgnoreCase("Simple")){
 			Collections.addAll(placeTargets, SelfTrap.Offsets.TRAPSIMPLE);
 		}
 

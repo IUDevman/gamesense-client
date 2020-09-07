@@ -20,7 +20,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer{
 	public void move(AbstractClientPlayer player, MoverType type, double x, double y, double z){
 		PlayerMoveEvent moveEvent = new PlayerMoveEvent(type, x, y, z);
 		GameSenseMod.EVENT_BUS.post(moveEvent);
-		if(moveEvent.isCancelled()){
+		if (moveEvent.isCancelled()){
 		}
 		super.move(type, moveEvent.x, moveEvent.y, moveEvent.z);
 	}

@@ -189,7 +189,7 @@ public class SaveConfiguration{
 		try{
 			File file = new File(Messages.getAbsolutePath(), "AutoGG.json");
 			BufferedWriter out = new BufferedWriter(new FileWriter(file));
-			for(String s : AutoGG.getAutoGgMessages()){
+			for (String s : AutoGG.getAutoGgMessages()){
 				out.write(s);
 				out.write("\r\n");
 			}

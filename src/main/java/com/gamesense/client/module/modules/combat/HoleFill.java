@@ -149,7 +149,7 @@ public class HoleFill extends Module{
 	}
 
 	private void place(BlockPos blockPos){
-		//if(mc.player.getDistanceSq(blockPos) <= minRange.getValue()) return;
+		//if (mc.player.getDistanceSq(blockPos) <= minRange.getValue()) return;
 		for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(blockPos))){
 			if (entity instanceof EntityLivingBase){
 				return;
@@ -164,18 +164,18 @@ public class HoleFill extends Module{
 				mc.player.posY + mc.player.getEyeHeight(),
 				mc.player.posZ);
 
-		for(EnumFacing side : EnumFacing.values())
+		for (EnumFacing side : EnumFacing.values())
 		{
 			BlockPos neighbor = pos.offset(side);
 			EnumFacing side2 = side.getOpposite();
 
-			if(!canBeClicked(neighbor))
+			if (!canBeClicked(neighbor))
 				continue;
 
 			Vec3d hitVec = new Vec3d(neighbor).add(0.5, 0.5, 0.5)
 					.add(new Vec3d(side2.getDirectionVec()).scale(0.5));
 
-			if(rotate)
+			if (rotate)
 				faceVectorPacketInstant(hitVec);
 			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
 			processRightClickBlock(neighbor, side2, hitVec);

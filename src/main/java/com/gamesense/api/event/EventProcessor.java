@@ -96,7 +96,7 @@ public class EventProcessor{
 	@SubscribeEvent
 	public void onRender(RenderGameOverlayEvent.Post event){
 		GameSenseMod.EVENT_BUS.post(event);
-		if(event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR){
+		if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR){
 			//module onRender
 			ModuleManager.onRender();
 			//HudComponent stuff
@@ -106,11 +106,11 @@ public class EventProcessor{
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
 	 public void onKeyInput(InputEvent.KeyInputEvent event){
 		if (Keyboard.getEventKeyState()){
-			if(Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
+			if (Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
 		  ModuleManager.onBind(Keyboard.getEventKey());
 			//Macro
 			GameSenseMod.getInstance().macroManager.getMacros().forEach(m ->{
-				if(m.getKey() == Keyboard.getEventKey())
+				if (m.getKey() == Keyboard.getEventKey())
 					m.onMacro();
 			});
 	}
@@ -118,7 +118,7 @@ public class EventProcessor{
 
 	@SubscribeEvent
 	public void onMouseInput(InputEvent.MouseInputEvent event){
-		if(Mouse.getEventButtonState())
+		if (Mouse.getEventButtonState())
 			GameSenseMod.EVENT_BUS.post(event);
 	}
 

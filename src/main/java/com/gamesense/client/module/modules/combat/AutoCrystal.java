@@ -421,7 +421,7 @@ public class AutoCrystal extends Module{
 			GameSenseTessellator.release();
 		}
 
-		if(showDamage.getValue()){
+		if (showDamage.getValue()){
 			if (this.render != null && this.renderEnt != null){
 				GlStateManager.pushMatrix();
 				GameSenseTessellator.glBillboardDistanceScaled((float) render.getX() + 0.5f, (float) render.getY() + 0.5f, (float) render.getZ() + 0.5f, mc.player, 1);
@@ -672,7 +672,7 @@ public class AutoCrystal extends Module{
 		isActive = false;
 		isPlacing = false;
 		isBreaking = false;
-		if(chat.getValue() && mc.player != null){
+		if (chat.getValue() && mc.player != null){
 			Command.sendRawMessage("\u00A7aAutoCrystal turned ON!");
 		}
 	}
@@ -687,7 +687,7 @@ public class AutoCrystal extends Module{
 		isActive = false;
 		isPlacing = false;
 		isBreaking = false;
-		if(chat.getValue()){
+		if (chat.getValue()){
 			Command.sendRawMessage("\u00A7cAutoCrystal turned OFF!");
 		}
 	}

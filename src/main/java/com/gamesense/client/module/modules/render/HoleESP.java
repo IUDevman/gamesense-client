@@ -147,14 +147,14 @@ public class HoleESP extends Module{
 		}
 		GameSenseTessellator.prepare(GL11.GL_QUADS);
 
-		if(mode.getValue().equalsIgnoreCase("Air")){
+		if (mode.getValue().equalsIgnoreCase("Air")){
 			safeHoles.forEach((blockPos, isBedrock) ->{
 				if (isBedrock){
 					drawBox(blockPos, 0, 255, 0);
 				} else drawBox(blockPos, 255, 0, 0);
 			});
 		}
-		if(mode.getValue().equalsIgnoreCase("Ground")){
+		if (mode.getValue().equalsIgnoreCase("Ground")){
 			safeHoles.forEach((blockPos, isBedrock) ->{
 				if (isBedrock){
 					drawBox2(blockPos, 0, 255, 0);

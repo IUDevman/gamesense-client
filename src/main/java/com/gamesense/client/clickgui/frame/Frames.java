@@ -74,7 +74,7 @@ public class Frames{
 
 	public void renderGUIFrame(final FontRenderer fontRenderer){
 		Gui.drawRect(this.x, this.y, this.x + this.width, this.y + this.barHeight, ClickGUI.color);
-		if(font) GameSenseMod.fontRenderer.drawStringWithShadow(this.category.name(), (float)(this.x + 2), (float)(this.y + 3), -1);
+		if (font) GameSenseMod.fontRenderer.drawStringWithShadow(this.category.name(), (float)(this.x + 2), (float)(this.y + 3), -1);
 		else FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.category.name(), this.x + 2, this.y + 3, -1);
 		if (this.open && !this.guicomponents.isEmpty()){
 			for (final Component component : this.guicomponents){

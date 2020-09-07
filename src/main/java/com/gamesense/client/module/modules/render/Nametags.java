@@ -72,12 +72,12 @@ public class Nametags extends Module{
 				double y = interpolate(entity.lastTickPosY, entity.posY, event.getPartialTicks()) - mc.getRenderManager().renderPosY;
 				double z = interpolate(entity.lastTickPosZ, entity.posZ, event.getPartialTicks()) - mc.getRenderManager().renderPosZ;
 				Vec3d m = renderPosEntity(entity);
-				renderNameTagsFor((EntityPlayer) entity, m.x, m.y, m.z);
+				renderNameTagsfor ((EntityPlayer) entity, m.x, m.y, m.z);
 			}
 		}
 	}
 
-	public void renderNameTagsFor(final EntityPlayer entityPlayer, final double n, final double n2, final double n3){
+	public void renderNameTagsfor (final EntityPlayer entityPlayer, final double n, final double n2, final double n3){
 		renderNametags(entityPlayer, n, n2, n3);
 	}
 

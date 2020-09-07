@@ -79,10 +79,10 @@ public abstract class Module{
 	}
 
 	public void toggle(){
-		if(isEnabled()){
+		if (isEnabled()){
 			disable();
 		}
-		else if(!isEnabled()){
+		else if (!isEnabled()){
 			enable();
 		}
 	}

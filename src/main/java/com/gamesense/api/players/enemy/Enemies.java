@@ -16,16 +16,16 @@ public class Enemies{
 
 	public static boolean isEnemy(String name){
 		boolean b = false;
-		for(Enemy e : getEnemies()){
-			if(e.getName().equalsIgnoreCase(name)) b = true;
+		for (Enemy e : getEnemies()){
+			if (e.getName().equalsIgnoreCase(name)) b = true;
 		}
 		return b;
 	}
 
 	public static Enemy getEnemyByName(String name){
 		Enemy en = null;
-		for(Enemy e : getEnemies()){
-			if(e.getName().equalsIgnoreCase(name)) en = e;
+		for (Enemy e : getEnemies()){
+			if (e.getName().equalsIgnoreCase(name)) en = e;
 		}
 		return en;
 	}

@@ -12,7 +12,7 @@ public class Macro{
 	}
 
 	public void onMacro(){
-		if(Minecraft.getMinecraft().player != null)
+		if (Minecraft.getMinecraft().player != null)
 			Minecraft.getMinecraft().player.sendChatMessage(value);
 	}
 

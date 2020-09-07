@@ -41,7 +41,7 @@ public class ChatModifier extends Module{
 		formats.add("H12:mm:ss a");
 		ArrayList<String> deco = new ArrayList<>(); deco.add("< >"); deco.add("[ ]"); deco.add("{}"); deco.add(" ");
 		ArrayList<String> colors = new ArrayList<>();
-		for(ChatFormatting cf : ChatFormatting.values()){
+		for (ChatFormatting cf : ChatFormatting.values()){
 			colors.add(cf.getName());
 		}
 

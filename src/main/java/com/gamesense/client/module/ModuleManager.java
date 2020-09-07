@@ -157,7 +157,7 @@ public class ModuleManager{
 	public static void onBind(int key){
 		if (key == 0 || key == Keyboard.KEY_NONE) return;
 		modules.forEach(module ->{
-			if(module.getBind() == key){
+			if (module.getBind() == key){
 				module.toggle();
 			}
 		});
