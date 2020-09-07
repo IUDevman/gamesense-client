@@ -7,8 +7,8 @@ import com.gamesense.client.module.Module;
  * Check com.gamesense.api.mixin.mixins.MixinShulkerViewer
  */
 
-public class ShulkerViewer extends Module {
-    public ShulkerViewer(){
-        super("ShulkerViewer", Category.Render);
-    }
+public class ShulkerViewer extends Module{
+	public ShulkerViewer(){
+		super("ShulkerViewer", Category.Render);
+	}
 }

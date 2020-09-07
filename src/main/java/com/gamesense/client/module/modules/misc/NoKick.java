@@ -11,54 +11,54 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 
 /**
- *   @see //com.gamesense.api.mixin.mixins.MixinNetworkManager for PacketKick
+ *	@see //com.gamesense.api.mixin.mixins.MixinNetworkManager for PacketKick
  */
 
-public class NoKick extends Module {
-    public NoKick() {super("NoKick", Category.Misc);}
+public class NoKick extends Module{
+	public NoKick(){super("NoKick", Category.Misc);}
 
-    public Setting.Boolean noPacketKick;
-    Setting.Boolean noSlimeCrash;
-    Setting.Boolean noOffhandCrash;
+	public Setting.Boolean noPacketKick;
+	Setting.Boolean noSlimeCrash;
+	Setting.Boolean noOffhandCrash;
 
-    public void setup(){
-        noPacketKick = registerBoolean("Packet", "Packet", true);
-        noSlimeCrash = registerBoolean("Slime", "Slime", false);
-        noOffhandCrash = registerBoolean("Offhand", "Offhand", false);
-    }
+	public void setup(){
+		noPacketKick = registerBoolean("Packet", "Packet", true);
+		noSlimeCrash = registerBoolean("Slime", "Slime", false);
+		noOffhandCrash = registerBoolean("Offhand", "Offhand", false);
+	}
 
-    //slime
-    public void onUpdate() {
-        if (mc.world != null && noSlimeCrash.getValue()) {
-            mc.world.loadedEntityList
-                    .forEach(entity -> {
-                        if (entity instanceof EntitySlime) {
-                            EntitySlime slime = (EntitySlime) entity;
-                            if (slime.getSlimeSize() > 4) {
-                                mc.world.removeEntity(entity);
-                            }
-                        }
-                    });
-        }
-    }
+	//slime
+	public void onUpdate(){
+		if (mc.world != null && noSlimeCrash.getValue()){
+			mc.world.loadedEntityList
+					.forEach(entity ->{
+						if (entity instanceof EntitySlime){
+							EntitySlime slime = (EntitySlime) entity;
+							if (slime.getSlimeSize() > 4){
+								mc.world.removeEntity(entity);
+							}
+						}
+					});
+		}
+	}
 
-    //Offhand
-    @EventHandler
-    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
-        if (noOffhandCrash.getValue()) {
-            if (event.getPacket() instanceof SPacketSoundEffect) {
-                if (((SPacketSoundEffect) event.getPacket()).getSound() == SoundEvents.ITEM_ARMOR_EQUIP_GENERIC) {
-                    event.cancel();
-                }
-            }
-        }
-    });
+	//Offhand
+	@EventHandler
+	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event ->{
+		if (noOffhandCrash.getValue()){
+			if (event.getPacket() instanceof SPacketSoundEffect){
+				if (((SPacketSoundEffect) event.getPacket()).getSound() == SoundEvents.ITEM_ARMOR_EQUIP_GENERIC){
+					event.cancel();
+				}
+			}
+		}
+	});
 
-    public void onEnable() {
-        GameSenseMod.EVENT_BUS.subscribe(this);
-    }
+	public void onEnable(){
+		GameSenseMod.EVENT_BUS.subscribe(this);
+	}
 
-    public void onDisable() {
-        GameSenseMod.EVENT_BUS.unsubscribe(this);
-    }
+	public void onDisable(){
+		GameSenseMod.EVENT_BUS.unsubscribe(this);
+	}
 }

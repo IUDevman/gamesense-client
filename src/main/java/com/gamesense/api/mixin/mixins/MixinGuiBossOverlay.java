@@ -9,14 +9,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GuiBossOverlay.class)
-public class MixinGuiBossOverlay {
+public class MixinGuiBossOverlay{
 
-    @Inject(method = "renderBossHealth", at = @At("HEAD"), cancellable = true)
-    private void renderBossHealth(CallbackInfo ci) {
-        BossbarEvent event = new BossbarEvent();
-        GameSenseMod.EVENT_BUS.post(event);
-        if (event.isCancelled()) {
-            ci.cancel();
-        }
-    }
+	@Inject(method = "renderBossHealth", at = @At("HEAD"), cancellable = true)
+	private void renderBossHealth(CallbackInfo ci){
+		BossbarEvent event = new BossbarEvent();
+		GameSenseMod.EVENT_BUS.post(event);
+		if (event.isCancelled()){
+			ci.cancel();
+		}
+	}
 }
