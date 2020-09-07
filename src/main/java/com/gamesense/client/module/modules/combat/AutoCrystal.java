@@ -6,11 +6,11 @@ import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -98,6 +98,8 @@ public class AutoCrystal extends Module {
     Setting.Mode handBreak;
     Setting.Mode breakMode;
     Setting.Mode hudDisplay;
+
+	Setting.ColorSetting color;
     Setting.Boolean cancelCrystal;
 
     private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
@@ -147,6 +149,7 @@ public class AutoCrystal extends Module {
         cancelCrystal = registerBoolean("Cancel Crystal", "Cancel Crystal", true);
         chat = registerBoolean("Toggle Msg", "ToggleMsg", true);
         hudDisplay = registerMode("HUD", "HUD", hudModes, "Mode");
+		color=registerColor("Color","Color");
     }
 
     public void onUpdate() {
@@ -410,26 +413,11 @@ public class AutoCrystal extends Module {
 
     public void onWorldRender(RenderEvent event) {
         if (this.render != null) {
-            final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
-            int rgb = Color.HSBtoRGB(hue[0], 1, 1);
-            int r = (rgb >> 16) & 0xFF;
-            int g = (rgb >> 8) & 0xFF;
-            int b = rgb & 0xFF;
-            hue[0] +=.02f;
-
-            if (ColorMain.rainbow.getValue()) {
-                GameSenseTessellator.prepare(7);
-                GameSenseTessellator.drawBox(this.render, r, g, b, 50, 63);
-                GameSenseTessellator.release();
-                GameSenseTessellator.prepare(7);
-                GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, r, g, b, 255);
-            } else {
-                GameSenseTessellator.prepare(7);
-                GameSenseTessellator.drawBox(this.render, ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 50, 63);
-                GameSenseTessellator.release();
-                GameSenseTessellator.prepare(7);
-                GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), 255);
-            }
+			GameSenseTessellator.prepare(7);
+			GameSenseTessellator.drawBox(this.render, new GSColor(color.getValue(),50), 63);
+			GameSenseTessellator.release();
+			GameSenseTessellator.prepare(7);
+			GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, new GSColor(color.getValue(),255));
             GameSenseTessellator.release();
         }
 
@@ -442,7 +430,7 @@ public class AutoCrystal extends Module {
                 GlStateManager.disableDepth();
                 GlStateManager.translate(-(mc.fontRenderer.getStringWidth(damageText) / 2.0d), 0, 0);
                 //mc.fontRenderer.drawStringWithShadow(damageText, 0, 0, 0xFFffffff);
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), damageText, 0, 0, 0xFFffffff);
+                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), damageText, 0, 0, new GSColor(255,255,255));
                 GlStateManager.popMatrix();
             }
         }
@@ -454,7 +442,10 @@ public class AutoCrystal extends Module {
     }
 
     //Bruh why did I never think of just using booleans, this was so much easier than
-    // the previous chinese implementation I did. @Author CyberTF2.
+    // the previous chinese implementation I did.
+	/**
+	*@Author CyberTF2.
+	*/
     private boolean crystalCheck(Entity crystal) {
 
         if (!(crystal instanceof EntityEnderCrystal))

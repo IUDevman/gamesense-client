@@ -23,6 +23,7 @@ public class ClickGuiModule extends Module {
     public static Setting.Integer scrollSpeed;
     public static Setting.Integer opacity;
     public static Setting.Mode icon;
+    public static Setting.ColorSetting guiColor;
 
     public void setup(){
         ArrayList<String> icons = new ArrayList<>();
@@ -31,6 +32,7 @@ public class ClickGuiModule extends Module {
         opacity = registerInteger("Opacity", "Opacity", 200,50,255);
         scrollSpeed = registerInteger("Scroll Speed", "Scroll Speed", 10, 1, 20);
         icon = registerMode("Icon", "Icons", icons, "Image");
+        guiColor=registerColor("Color","Color");
     }
 
     public void onEnable(){
@@ -42,12 +44,5 @@ public class ClickGuiModule extends Module {
                 mc.player.sendChatMessage(Announcer.guiMessage);
             }
         this.disable();
-    }
-
-    private void drawStringWithShadow(String text, int x, int y, int color){
-        if(customFont.getValue())
-            GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
-        else
-            mc.fontRenderer.drawStringWithShadow(text, x, y, color);
     }
 }

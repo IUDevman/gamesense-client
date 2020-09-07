@@ -1,12 +1,12 @@
 package com.gamesense.client.clickgui;
 
-import com.gamesense.api.util.color.Rainbow;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.clickgui.frame.Component;
 import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ClickGuiModule;
-import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.Gui;
 
 import java.awt.*;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class ClickGUI extends GuiScreen {
     public static ArrayList<Frames> frames;
-    public static int color;
 
     public ClickGUI(){
         ClickGUI.frames = new ArrayList<Frames>();
@@ -28,12 +27,6 @@ public class ClickGUI extends GuiScreen {
     }
 
     public void drawScreen(final int mouseX, final int mouseY, final float partialTicks){
-        if (ColorMain.rainbow.getValue()){
-            ClickGUI.color = Rainbow.getColorWithOpacity(ClickGuiModule.opacity.getValue()).getRGB();
-        }
-        else {
-            ClickGUI.color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), ClickGuiModule.opacity.getValue()).getRGB();
-        }
         for (final Frames frames : ClickGUI.frames){
             frames.renderGUIFrame(this.fontRenderer);
             frames.updatePosition(mouseX, mouseY);
@@ -109,7 +102,21 @@ public class ClickGUI extends GuiScreen {
         return frames;
     }
 
-    static{
-        ClickGUI.color = -1;
-    }
+    public static GSColor getMainColor() {
+		return ClickGuiModule.guiColor.getValue();
+	}
+	
+	public static GSColor getTransColor (boolean hovered) {
+		GSColor transColor=new GSColor(195, 195, 195, ClickGuiModule.opacity.getValue()-50);
+		if (hovered) return new GSColor(transColor.darker().darker());
+		return transColor;
+	}
+	
+	public static GSColor getFontColor() {
+		return new GSColor(255,255,255);
+	}
+	
+	public static void drawRect (int x1, int y1, int x2, int y2, GSColor color) {
+		Gui.drawRect(x1,y1,x2,y2,color.getRGB());
+	}
 }

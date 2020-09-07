@@ -4,9 +4,9 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.players.enemy.Enemies;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.color.ColourHolder;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.Wrapper;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
@@ -23,7 +23,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -46,7 +46,8 @@ public class Nametags extends Module {
     Setting.Boolean health;
     Setting.Boolean ping;
     Setting.Boolean entityId;
-    Setting.Mode borderColor;
+	Setting.Boolean customColor;
+    Setting.ColorSetting borderColor;
 
     public void setup() {
         durability = registerBoolean("Durability", "Durability", true);
@@ -57,11 +58,8 @@ public class Nametags extends Module {
         health = registerBoolean("Health", "Health", true);
         ping = registerBoolean("Ping", "Ping", false);
         entityId = registerBoolean("Entity Id", "EntityId", false);
-        ArrayList<String> borderColorModes = new ArrayList<>();
-        borderColorModes.add("Normal");
-        borderColorModes.add("Rainbow");
-        borderColorModes.add("Custom");
-        borderColor = registerMode("Border Color", "BorderColor", borderColorModes, "Custom");
+		customColor = registerBoolean("Custom Color", "CustomColor", true);
+        borderColor = registerColor("Border Color","BorderColor");
     }
 
     public void onWorldRender(RenderEvent event) {
@@ -100,7 +98,7 @@ public class Nametags extends Module {
         GlStateManager.disableDepth();
         String displayName = itemStack.getDisplayName();
         final String s2 = displayName;
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), s2, -FontUtils.getStringWidth(HUD.customFont.getValue(), s2) /2, y, -1);
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), s2, -FontUtils.getStringWidth(HUD.customFont.getValue(), s2) /2, y, new GSColor(255,255,255));
         GlStateManager.enableDepth();
         final float n5 = 2.0f;
         final int n6 = 2;
@@ -109,7 +107,6 @@ public class Nametags extends Module {
 
     private void renderEnchants(ItemStack itemStack, int x, int y) {
         y = y;
-        final int n3 = -1;
         final Iterator<Enchantment> iterator2;
         Iterator<Enchantment> iterator = iterator2 = EnchantmentHelper.getEnchantments(itemStack).keySet().iterator();
         while (iterator.hasNext()) {
@@ -120,7 +117,7 @@ public class Nametags extends Module {
             else {
                 final Enchantment enchantment3 = enchantment;
                 if (enchantnames.getValue()) {
-                    FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.stringForEnchants(enchantment3, EnchantmentHelper.getEnchantmentLevel(enchantment3, itemStack)), (x * 2), y, n3);
+                    FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.stringForEnchants(enchantment3, EnchantmentHelper.getEnchantmentLevel(enchantment3, itemStack)), (x * 2), y, new GSColor(255,255,255));
                 }
                 else {
                     return;
@@ -130,7 +127,7 @@ public class Nametags extends Module {
             }
         }
         if (itemStack.getItem().equals(Items.GOLDEN_APPLE) && itemStack.hasEffect()) {
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), "God", (x * 2), y,-3977919);
+            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), "God", (x * 2), y,new GSColor(195,77,65));
         }
     }
 
@@ -152,22 +149,17 @@ public class Nametags extends Module {
         return s2;
     }
 
-    public static int toHex(int r, int g, int b){
-        return  (0xff << 24) | ((r&0xff) << 16) | ((g&0xff) << 8) | (b&0xff);
-    }
-
     private void renderItemDurability(final ItemStack itemStack, final int x, final int y) {
         final int maxDamage = itemStack.getMaxDamage();
         final float n3 = (maxDamage - itemStack.getItemDamage()) / (float)maxDamage;
         float green = ((float) itemStack.getMaxDamage() - (float) itemStack.getItemDamage()) / (float) itemStack.getMaxDamage();
         float red = 1 - green;
         int dmg = 100 - (int) (red * 100);
-        int Color =toHex((int) (red * 255), (int) (green * 255), 0);
         final float n4 = 0.5f;
         final float n5 = 0.5f;
         GlStateManager.scale(n5, n4, n5);
         GlStateManager.disableDepth();
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(),new StringBuilder().insert(0, (int) (n3 * 100.0f)).append('%').toString(), (x * 2), y, Color);
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(),new StringBuilder().insert(0, (int) (n3 * 100.0f)).append('%').toString(), (x * 2), y, new GSColor((int) (red * 255), (int) (green * 255), 0));
         GlStateManager.enableDepth();
         final float n6 = 2.0f;
         final int n7 = 2;
@@ -223,17 +215,17 @@ public class Nametags extends Module {
     }
 
     public static void M(final float n) {
-        GL11.glDisable(3008);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
-        GL11.glDisable(3553);
-        GL11.glDisable(2929);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(false);
-        GL11.glEnable(2884);
+        GL11.glEnable(GL11.GL_CULL_FACE);
         mc.entityRenderer.enableLightmap();
-        GL11.glEnable(2848);
-        GL11.glHint(3154, 4354);
-        GL11.glHint(3155, 4354);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
+        GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_DONT_CARE);
         GL11.glLineWidth(n);
     }
 
@@ -273,23 +265,10 @@ public class Nametags extends Module {
         GlStateManager.enableBlend();
         EntityPlayer entityPlayer2;
         GlStateManager.enableBlend();
-        if (borderColor.getValue().equalsIgnoreCase("Normal")) {
-            drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, 855638016);
-        } else if (borderColor.getValue().equalsIgnoreCase("Rainbow")) {
-            final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
-
-            int rgb = java.awt.Color.HSBtoRGB(hue[0], 1f, 1f);
-
-            int red = (rgb >> 16) & 0xFF;
-            int green = (rgb >> 8) & 0xFF;
-            int blue = rgb & 0xFF;
-            hue[0] += .02f;
-            int color2 = ColourHolder.toHex(red, green, blue);
-            drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, color2);
-        } else if (borderColor.getValue().equalsIgnoreCase("Custom")) {
-            int color = ColourHolder.toHex(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue());
-            drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, 1426064384, color);
-        }
+        GSColor color;
+        if (customColor.getValue()) color=borderColor.getValue();
+		else color=new GSColor(0,0,0,51);
+		drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, new GSColor(0,4,0,85), color);
         GlStateManager.disableBlend();
         FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.renderEntityName(entityPlayer), (-n4), (-(mc.fontRenderer.FONT_HEIGHT - 1)), this.renderPing(entityPlayer));
         entityPlayer2 = entityPlayer;
@@ -410,25 +389,24 @@ public class Nametags extends Module {
         GlStateManager.doPolygonOffset(n21, 1500000.0f);
         GlStateManager.popMatrix();
     }
-
-    private int renderPing(final EntityPlayer entityPlayer) {
-        int n = -1;
+	
+	private GSColor renderPing(final EntityPlayer entityPlayer) {
         if (Friends.isFriend(entityPlayer.getName())) {
-            return ColorMain.getFriendColorInt();
+            return ColorMain.getFriendGSColor();
         }
         if (Enemies.isEnemy(entityPlayer.getName())){
-            return ColorMain.getEnemyColorInt();
+            return ColorMain.getEnemyGSColor();
         }
         if (entityPlayer.isInvisible()) {
-            return Color.GRAY.getRGB();
+            return new GSColor(128,128,128);
         }
         if (mc.getConnection() != null && mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()) == null) {
-            return -1113785;
+            return new GSColor(239,1,71);
         }
         if (entityPlayer.isSneaking()) {
-            n = 16750848;
+            return new GSColor(255,153,0);
         }
-        return n;
+        return new GSColor(255,255,255);
     }
 
     private String renderEntityName(final EntityPlayer entityPlayer) {
@@ -481,90 +459,64 @@ public class Nametags extends Module {
         return new StringBuilder().insert(0, s).append(s2).append(" ").append((ceil > 0.0) ? Integer.valueOf((int)ceil) : "0").toString();
     }
 
-    public static void drawBorderedRectReliant(final float x, final float y, final float x1, final float y1, final float lineWidth, final int inside, final int border) {
+    public static void drawBorderedRectReliant(final float x, final float y, final float x1, final float y1, final float lineWidth, final GSColor inside, final GSColor border) {
         enableGL2D();
         drawRect(x, y, x1, y1, inside);
-        glColor(border);
-        GL11.glEnable(3042);
-        GL11.glDisable(3553);
-        GL11.glBlendFunc(770, 771);
+        border.glColor();
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glLineWidth(lineWidth);
-        GL11.glBegin(3);
+        GL11.glBegin(GL11.GL_LINE_STRIP);
         GL11.glVertex2f(x, y);
         GL11.glVertex2f(x, y1);
         GL11.glVertex2f(x1, y1);
         GL11.glVertex2f(x1, y);
         GL11.glVertex2f(x, y);
         GL11.glEnd();
-        GL11.glEnable(3553);
-        GL11.glDisable(3042);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
         disableGL2D();
     }
 
     public static void enableGL2D() {
-        GL11.glDisable(2929);
-        GL11.glEnable(3042);
-        GL11.glDisable(3553);
-        GL11.glBlendFunc(770, 771);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDepthMask(true);
-        GL11.glEnable(2848);
-        GL11.glHint(3154, 4354);
-        GL11.glHint(3155, 4354);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+        GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST);
     }
 
     public static void disableGL2D() {
-        GL11.glEnable(3553);
-        GL11.glDisable(3042);
-        GL11.glEnable(2929);
-        GL11.glDisable(2848);
-        GL11.glHint(3154, 4352);
-        GL11.glHint(3155, 4352);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
+        GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_DONT_CARE);
     }
 
-    public static void drawRect(final Rectangle rectangle, final int color) {
+    public static void drawRect(final Rectangle rectangle, final GSColor color) {
         drawRect((float)rectangle.x, (float)rectangle.y, (float)(rectangle.x + rectangle.width), (float)(rectangle.y + rectangle.height), color);
     }
 
-    public static void drawRect(final float x, final float y, final float x1, final float y1, final int color) {
+    public static void drawRect(final float x, final float y, final float x1, final float y1, final GSColor color) {
         enableGL2D();
-        glColor(color);
-        drawRect(x, y, x1, y1);
-        disableGL2D();
-    }
-
-    public static void drawRect(final float x, final float y, final float x1, final float y1, final float r, final float g, final float b, final float a) {
-        enableGL2D();
-        GL11.glColor4f(r, g, b, a);
+        color.glColor();
         drawRect(x, y, x1, y1);
         disableGL2D();
     }
 
     public static void drawRect(final float x, final float y, final float x1, final float y1) {
-        GL11.glBegin(7);
+        GL11.glBegin(GL11.GL_QUADS);
         GL11.glVertex2f(x, y1);
         GL11.glVertex2f(x1, y1);
         GL11.glVertex2f(x1, y);
         GL11.glVertex2f(x, y);
         GL11.glEnd();
-    }
-
-    public static void glColor(final Color color) {
-        GL11.glColor4f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, color.getAlpha() / 255.0f);
-    }
-
-    public static void glColor(final int hex) {
-        final float alpha = (hex >> 24 & 0xFF) / 255.0f;
-        final float red = (hex >> 16 & 0xFF) / 255.0f;
-        final float green = (hex >> 8 & 0xFF) / 255.0f;
-        final float blue = (hex & 0xFF) / 255.0f;
-        GL11.glColor4f(red, green, blue, alpha);
-    }
-
-    public static void glColor(final float alpha, final int redRGB, final int greenRGB, final int blueRGB) {
-        final float red = 0.003921569f * redRGB;
-        final float green = 0.003921569f * greenRGB;
-        final float blue = 0.003921569f * blueRGB;
-        GL11.glColor4f(red, green, blue, alpha);
     }
 
     private int armorValue(final int n) {

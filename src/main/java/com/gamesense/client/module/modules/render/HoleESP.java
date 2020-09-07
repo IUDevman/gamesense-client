@@ -4,7 +4,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.color.Rainbow;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.module.Module;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -12,7 +12,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,16 +24,17 @@ public class HoleESP extends Module {
 
     //settings
     public static Setting.Integer rangeS;
-    Setting.Boolean rainbow;
     Setting.Boolean hideOwn;
     Setting.Boolean flatOwn;
     Setting.Mode mode;
     Setting.Mode type;
+	Setting.Integer width;
+	Setting.ColorSetting bedrockColor;
+	Setting.ColorSetting otherColor;
 
     //load settings
     public void setup(){
         rangeS = registerInteger("Range", "Range", 5, 1, 20);
-        rainbow = registerBoolean("Rainbow", "Rainbow", false);
         hideOwn = registerBoolean("Hide Own", "HideOwn", false);
         flatOwn = registerBoolean("Flat Own", "FlatOwn", false);
 
@@ -50,6 +50,10 @@ public class HoleESP extends Module {
 
         type = registerMode("Render", "Render", render, "Both");
         mode = registerMode("Mode", "Mode", modes, "Air");
+		
+		width=registerInteger("Width","Width",1,1,10);
+		bedrockColor=registerColor("Bedrock Color","BedrockColor",new GSColor(0,255,0));
+		otherColor=registerColor("Other Color","OtherColor",new GSColor(255,0,0));
     }
 
     //defines the render borders
@@ -145,137 +149,78 @@ public class HoleESP extends Module {
         if (safeHoles.isEmpty()){
             return;
         }
+		
         GameSenseTessellator.prepare(GL11.GL_QUADS);
-
-        if(mode.getValue().equalsIgnoreCase("Air")) {
-            safeHoles.forEach((blockPos, isBedrock) -> {
-                if (isBedrock) {
-                    drawBox(blockPos, 0, 255, 0);
-                } else drawBox(blockPos, 255, 0, 0);
-            });
-        }
-        if(mode.getValue().equalsIgnoreCase("Ground")) {
-            safeHoles.forEach((blockPos, isBedrock) -> {
-                if (isBedrock) {
-                    drawBox2(blockPos, 0, 255, 0);
-                } else drawBox2(blockPos, 255, 0, 0);
-            });
-        }
-        if (mode.getValue().equalsIgnoreCase("Flat")){
-            safeHoles.forEach((blockPos, isBedrock) -> {
-                if (isBedrock){
-                    drawFlat(blockPos, 0, 255, 0);
-                } else drawFlat(blockPos, 255, 0, 0);
-            });
-        }
-        GameSenseTessellator.release();
-        GameSenseTessellator.prepare(7);
-        if (mode.getValue().equalsIgnoreCase("Air")){
-            safeHoles.forEach((blockPos, isBedrock) -> {
-                if (isBedrock) {
-                    drawOutline(blockPos,1,0,255,0);
-                } else drawOutline(blockPos,1,255,0,0);
-            });
-        }
-        if (mode.getValue().equalsIgnoreCase("Ground")){
-            safeHoles.forEach((blockPos, isBedrock) -> {
-                if (isBedrock) {
-                    drawOutline(blockPos,1,0,255,0);
-                } else drawOutline(blockPos,1,255,0,0);
-            });
-        }
-        if (mode.getValue().equalsIgnoreCase("Flat")){
-            safeHoles.forEach((blockPos, isBedrock) -> {
-                if (isBedrock) {
-                    drawOutline(blockPos,1,0,255,0);
-                } else drawOutline(blockPos,1,255,0,0);
-            });
-        }
+		safeHoles.forEach((blockPos, isBedrock) -> {
+			if (mode.getValue().equalsIgnoreCase("Air")) drawBox(blockPos,isBedrock);
+			else if (mode.getValue().equalsIgnoreCase("Ground")) drawDownBox(blockPos,isBedrock);
+			else if (mode.getValue().equalsIgnoreCase("Flat")) drawFlat(blockPos,isBedrock);
+		});
+		GameSenseTessellator.release();
+		GameSenseTessellator.prepare(GL11.GL_QUADS);
+		safeHoles.forEach((blockPos, isBedrock) -> {
+			drawOutline(blockPos,width.getValue(),isBedrock);
+		});
         GameSenseTessellator.release();
     }
 
-    //renders air boxes
-    private void drawBox(BlockPos blockPos, int r, int g, int b) {
-        if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
-            Color color;
-            Color c = Rainbow.getColor();
-            AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-            if (rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
-            else color = new Color(r, g, b, 50);
+	private GSColor getColor (boolean isBedrock, int alpha) {
+		GSColor c;
+		if (isBedrock) c=bedrockColor.getValue();
+		else c=otherColor.getValue();
+		return new GSColor(c,alpha);
+	}
 
+    //renders air boxes
+    private void drawBox(BlockPos blockPos, boolean isBedrock) {
+        if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
+			GSColor color=getColor(isBedrock,50);
+            AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
             if (mode.getValue().equalsIgnoreCase("Air")) {
                 if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ)))
-                    GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
+                    GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
                 else
-                    GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
+                    GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.ALL);
             }
         }
     }
 
     //renders ground boxes
-    public void drawBox2(BlockPos blockPos, int r, int g, int b){
+    private void drawDownBox(BlockPos blockPos, boolean isBedrock){
         if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
-            Color color;
-            Color c = Rainbow.getColor();
+            GSColor color=getColor(isBedrock,50);
             AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-            if (rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
-            else color = new Color(r, g, b, 50);
-
             if (mode.getValue().equalsIgnoreCase("Ground")) {
-                GameSenseTessellator.drawBox2(blockPos, color.getRGB(), GeometryMasks.Quad.ALL);
+                GameSenseTessellator.drawDownBox(blockPos, color, GeometryMasks.Quad.ALL);
             }
         }
     }
 
-    public void drawFlat(BlockPos blockPos, int r, int g, int b) {
+    private void drawFlat(BlockPos blockPos, boolean isBedrock) {
         if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
-            Color color;
-            Color c = Rainbow.getColor();
+            GSColor color=getColor(isBedrock,50);
             AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
             if (mode.getValue().equalsIgnoreCase("Flat")) {
-                if (rainbow.getValue()) color = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
-                else color = new Color(r, g, b, 50);
-                GameSenseTessellator.drawBox(blockPos, color.getRGB(), GeometryMasks.Quad.DOWN);
+                GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
             }
         }
     }
 
-    public void drawOutline(BlockPos blockPos, int width, int r, int g, int b) {
+    private void drawOutline(BlockPos blockPos, int width, boolean isBedrock) {
+		GSColor color=getColor(isBedrock,255);
         if (type.getValue().equalsIgnoreCase("Outline") || type.getValue().equalsIgnoreCase("Both")) {
-            final float[] hue = {(System.currentTimeMillis() % (360 * 32)) / (360f * 32)};
-            int rgb = Color.HSBtoRGB(hue[0], 1, 1);
-            int r1 = (rgb >> 16) & 0xFF;
-            int g2 = (rgb >> 8) & 0xFF;
-            int b3 = rgb & 0xFF;
-            hue[0] += .02f;
             if (mode.getValue().equalsIgnoreCase("Air")) {
                 if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
-                    if (rainbow.getValue()) {
-                        GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r1, g2, b3, 255);
-                    } else {
-                        GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r, g, b, 255);
-                    }
+                    GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, color);
                 } else {
-                    if (rainbow.getValue()) {
-                        GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r1, g2, b3, 255);
-                    } else {
-                        GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, r, g, b, 255);
-                    }
+                    GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, color);
                 }
             }
             if (mode.getValue().equalsIgnoreCase("Flat")) {
-                if (rainbow.getValue()) {
-                    GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r1, g2, b3, 255);
-                } else {
-                    GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, r, g, b, 255);
-                }
+                GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, color);
             }
             if (mode.getValue().equalsIgnoreCase("Ground")) {
-                if (rainbow.getValue()) {
-                    GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, r1, g2, b3, 255);
-                } else {
-                    GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, r, g, b, 255);
-                }
+                GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, color);
             }
         }
     }
