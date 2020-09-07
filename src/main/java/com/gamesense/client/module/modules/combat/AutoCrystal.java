@@ -373,7 +373,7 @@ public class AutoCrystal extends Module{
 									blockPos = (BlockPos) var11.next();
 									b = entity.getDistanceSq(blockPos);
 									// Better method for doing EnemyRange
-									// @author Cyber
+									// @Author Cyber
 									x = blockPos.getX() + 0.0;
 									y = blockPos.getY() + 1.0;
 									z = blockPos.getZ() + 0.0;

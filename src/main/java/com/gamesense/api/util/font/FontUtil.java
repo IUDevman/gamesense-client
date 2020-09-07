@@ -10,7 +10,7 @@ import net.minecraft.util.StringUtils;
  * it's free to use
  * but you have to credit me
  *
- * @author HeroCode
+ * @Author HeroCode
  */
 
 public class FontUtil{
