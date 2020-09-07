@@ -26,9 +26,7 @@ jobs:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
-    - name: Build with Gradle
+    - name: Decomp Workspace
+      run: ./gradlew setupDecompWorkspace
+    - name: Build
       run: ./gradlew build
-    - uses: actions/upload-artifact@v2
-      with:
-        name: Package
-        path: build/libs
