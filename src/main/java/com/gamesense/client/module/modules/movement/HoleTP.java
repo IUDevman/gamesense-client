@@ -33,7 +33,7 @@ public class HoleTP extends Module{
 			}
 			if (!this.jumped && HoleTP.mc.player.fallDistance < 0.5 && this.isInHole() && HoleTP.mc.player.posY - this.getNearestBlockBelow() <= 1.125 && HoleTP.mc.player.posY - this.getNearestBlockBelow() <= 0.95 && !this.isOnLiquid() && !this.isInLiquid()){
 				if (!HoleTP.mc.player.onGround){
-					++this.packets;
+					this.packets++;
 				}
 				if (!HoleTP.mc.player.onGround && !HoleTP.mc.player.isInsideOfMaterial(Material.WATER) && !HoleTP.mc.player.isInsideOfMaterial(Material.LAVA) && !HoleTP.mc.gameSettings.keyBindJump.isKeyDown() && !HoleTP.mc.player.isOnLadder() && this.packets > 0){
 					final BlockPos blockPos = new BlockPos(HoleTP.mc.player.posX, HoleTP.mc.player.posY, HoleTP.mc.player.posZ);
@@ -115,8 +115,8 @@ public class HoleTP extends Module{
 
 	private boolean isOnLiquid(){
 		final double y = HoleTP.mc.player.posY - 0.03;
-		for (int x = MathHelper.floor(HoleTP.mc.player.posX); x < MathHelper.ceil(HoleTP.mc.player.posX); ++x){
-			for (int z = MathHelper.floor(HoleTP.mc.player.posZ); z < MathHelper.ceil(HoleTP.mc.player.posZ); ++z){
+		for (int x = MathHelper.floor(HoleTP.mc.player.posX); x < MathHelper.ceil(HoleTP.mc.player.posX); x++){
+			for (int z = MathHelper.floor(HoleTP.mc.player.posZ); z < MathHelper.ceil(HoleTP.mc.player.posZ); z++){
 				final BlockPos pos = new BlockPos(x, MathHelper.floor(y), z);
 				if (HoleTP.mc.world.getBlockState(pos).getBlock() instanceof BlockLiquid){
 					return true;
@@ -128,8 +128,8 @@ public class HoleTP extends Module{
 
 	private boolean isInLiquid(){
 		final double y = HoleTP.mc.player.posY + 0.01;
-		for (int x = MathHelper.floor(HoleTP.mc.player.posX); x < MathHelper.ceil(HoleTP.mc.player.posX); ++x){
-			for (int z = MathHelper.floor(HoleTP.mc.player.posZ); z < MathHelper.ceil(HoleTP.mc.player.posZ); ++z){
+		for (int x = MathHelper.floor(HoleTP.mc.player.posX); x < MathHelper.ceil(HoleTP.mc.player.posX); x++){
+			for (int z = MathHelper.floor(HoleTP.mc.player.posZ); z < MathHelper.ceil(HoleTP.mc.player.posZ); z++){
 				final BlockPos pos = new BlockPos(x, (int)y, z);
 				if (HoleTP.mc.world.getBlockState(pos).getBlock() instanceof BlockLiquid){
 					return true;

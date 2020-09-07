@@ -75,7 +75,7 @@ public class Step extends Module{
 			if (mc.player.collidedHorizontally && (mc.player.moveForward != 0.0f || mc.player.moveStrafing != 0.0f) && mc.player.onGround){
 				if (one && this.height.getValue() >= 1.0){
 					final double[] oneOffset ={0.42, 0.753};
-					for (int i = 0; i < oneOffset.length; ++i){
+					for (int i = 0; i < oneOffset.length; i++){
 						mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + oneOffset[i], mc.player.posZ, mc.player.onGround));
 					}
 					if (timer.getValue()){
@@ -86,7 +86,7 @@ public class Step extends Module{
 				}
 				if (onefive && this.height.getValue() >= 1.5){
 					final double[] oneFiveOffset ={0.42, 0.75, 1.0, 1.16, 1.23, 1.2};
-					for (int i = 0; i < oneFiveOffset.length; ++i){
+					for (int i = 0; i < oneFiveOffset.length; i++){
 						mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + oneFiveOffset[i], mc.player.posZ, mc.player.onGround));
 					}
 					if (timer.getValue()){
@@ -97,7 +97,7 @@ public class Step extends Module{
 				}
 				if (two && this.height.getValue() >= 2.0){
 					final double[] twoOffset ={0.42, 0.78, 0.63, 0.51, 0.9, 1.21, 1.45, 1.43};
-					for (int i = 0; i < twoOffset.length; ++i){
+					for (int i = 0; i < twoOffset.length; i++){
 						mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + twoOffset[i], mc.player.posZ, mc.player.onGround));
 					}
 					if (timer.getValue()){
@@ -108,7 +108,7 @@ public class Step extends Module{
 				}
 				if (twofive && this.height.getValue() >= 2.5){
 					final double[] twoFiveOffset ={0.425, 0.821, 0.699, 0.599, 1.022, 1.372, 1.652, 1.869, 2.019, 1.907};
-					for (int i = 0; i < twoFiveOffset.length; ++i){
+					for (int i = 0; i < twoFiveOffset.length; i++){
 						mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + twoFiveOffset[i], mc.player.posZ, mc.player.onGround));
 					}
 					if (timer.getValue()){

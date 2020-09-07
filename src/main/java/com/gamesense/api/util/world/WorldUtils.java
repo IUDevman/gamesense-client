@@ -24,7 +24,7 @@ public class WorldUtils{
 		EnumFacing[] var3 = EnumFacing.values();
 		int var4 = var3.length;
 
-		for(int var5 = 0; var5 < var4; ++var5){
+		for(int var5 = 0; var5 < var4; var5++){
 			EnumFacing side = var3[var5];
 			BlockPos neighbor = pos.offset(side);
 			EnumFacing side2 = side.getOpposite();
@@ -55,7 +55,7 @@ public class WorldUtils{
 
 	public static int findItem(Item item){
 		try{
-			for(int i = 0; i < 9; ++i){
+			for(int i = 0; i < 9; i++){
 				ItemStack stack = Minecraft.getMinecraft().player.inventory.getStackInSlot(i);
 				if (item == stack.getItem()){
 					return i;

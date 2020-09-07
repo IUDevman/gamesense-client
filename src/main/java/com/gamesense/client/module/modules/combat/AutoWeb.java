@@ -55,14 +55,14 @@ public class AutoWeb extends Module{
 			this.slowModeSwitch = false;
 			return;
 		}
-		for (int i = 0; i < (int)Math.floor(this.bpt.getValue()); ++i){
+		for (int i = 0; i < (int)Math.floor(this.bpt.getValue()); i++){
 			if (this.offsetStep >= this.offsetList.length){
 				this.endLoop();
 				return;
 			}
 			final Vec3d offset = this.offsetList[this.offsetStep];
 			this.placeBlock(new BlockPos(this.closestTarget.getPositionVector()).down().add(offset.x, offset.y, offset.z));
-			++this.offsetStep;
+			this.offsetStep++;
 		}
 		this.slowModeSwitch = true;
 	}
@@ -123,7 +123,7 @@ public class AutoWeb extends Module{
 
 	private int findWebInHotBar(){
 		int slot = -1;
-		for (int i = 0; i < 9; ++i){
+		for (int i = 0; i < 9; i++){
 			final ItemStack stack = Wrapper.getPlayer().inventory.getStackInSlot(i);
 			if (stack != ItemStack.EMPTY && stack.getItem() instanceof ItemBlock){
 				final Block block = ((ItemBlock)stack.getItem()).getBlock();

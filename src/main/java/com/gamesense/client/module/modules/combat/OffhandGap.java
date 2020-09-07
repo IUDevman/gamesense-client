@@ -44,7 +44,7 @@ public class OffhandGap extends Module{
 				return;
 			}
 			int t = -1;
-			for (int i = 0; i < 45; ++i){
+			for (int i = 0; i < 45; i++){
 				if (OffhandCrystal.mc.player.inventory.getStackInSlot(i).getItem() == Items.TOTEM_OF_UNDYING){
 					t = i;
 					break;
@@ -67,7 +67,7 @@ public class OffhandGap extends Module{
 		}
 		if (this.returnI){
 			int t = -1;
-			for (int i = 0; i < 45; ++i){
+			for (int i = 0; i < 45; i++){
 				if (OffhandCrystal.mc.player.inventory.getStackInSlot(i).isEmpty()){
 					t = i;
 					break;
@@ -82,7 +82,7 @@ public class OffhandGap extends Module{
 		this.totems = OffhandCrystal.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
 		this.crystals = OffhandCrystal.mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == this.item).mapToInt(ItemStack::getCount).sum();
 		if (this.shouldTotem() && OffhandCrystal.mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING){
-			++this.totems;
+			this.totems++;
 		} else if (!this.shouldTotem() && OffhandCrystal.mc.player.getHeldItemOffhand().getItem() == this.item){
 			this.crystals += OffhandCrystal.mc.player.getHeldItemOffhand().getCount();
 		} else{
@@ -104,7 +104,7 @@ public class OffhandGap extends Module{
 						return;
 					}
 					int t = -1;
-					for (int i = 0; i < 45; ++i){
+					for (int i = 0; i < 45; i++){
 						if (OffhandCrystal.mc.player.inventory.getStackInSlot(i).getItem() == this.item){
 							t = i;
 							break;
@@ -120,7 +120,7 @@ public class OffhandGap extends Module{
 						return;
 					}
 					int t = -1;
-					for (int i = 0; i < 45; ++i){
+					for (int i = 0; i < 45; i++){
 						if (OffhandCrystal.mc.player.inventory.getStackInSlot(i).getItem() == Items.TOTEM_OF_UNDYING){
 							t = i;
 							break;
@@ -134,7 +134,7 @@ public class OffhandGap extends Module{
 				}
 			} else{
 				int t = -1;
-				for (int i = 0; i < 45; ++i){
+				for (int i = 0; i < 45; i++){
 					if (OffhandCrystal.mc.player.inventory.getStackInSlot(i).isEmpty()){
 						t = i;
 						break;

@@ -209,7 +209,7 @@ public class HUD extends Module{
 					for (final EntityPlayer e : entities){
 						int i = 0;
 						for (final BlockPos add : this.surroundOffset){
-							++i;
+							i++;
 							final BlockPos o = new BlockPos(e.getPositionVector().x, e.getPositionVector().y, e.getPositionVector().z).add(add.getX(), add.getY(), add.getZ());
 							if (mc.world.getBlockState(o).getBlock() == Blocks.OBSIDIAN){
 								if (i == 1 && a.canPlaceCrystal(o.north(1).down())){
@@ -356,7 +356,7 @@ public class HUD extends Module{
 
 				GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
 				NonNullList<ItemStack> items = Minecraft.getMinecraft().player.inventory.mainInventory;
-				for (int size = items.size(), item = 9; item < size; ++item){
+				for (int size = items.size(), item = 9; item < size; item++){
 					final int slotX = x + 1 + item % 9 * 18;
 					final int slotY = y + 1 + (item / 9 - 1) * 18;
 					RenderHelper.enableGUIStandardItemLighting();

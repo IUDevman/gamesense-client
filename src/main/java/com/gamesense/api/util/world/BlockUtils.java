@@ -181,8 +181,8 @@ public class BlockUtils{
 		int cy = loc.getY();
 		int cz = loc.getZ();
 
-		for(int x = cx - (int)r; (float)x <= (float)cx + r; ++x){
-			for(int z = cz - (int)r; (float)z <= (float)cz + r; ++z){
+		for(int x = cx - (int)r; (float)x <= (float)cx + r; x++){
+			for(int z = cz - (int)r; (float)z <= (float)cz + r; z++){
 				int y = sphere ? cy - (int)r : cy;
 
 				while(true){
@@ -197,7 +197,7 @@ public class BlockUtils{
 						circleblocks.add(l);
 					}
 
-					++y;
+					y++;
 				}
 			}
 		}
@@ -209,8 +209,8 @@ public class BlockUtils{
 		final List<BlockPos> circleblocks = new ArrayList<BlockPos>();
 		final int cx = loc.getX();
 		final int cz = loc.getZ();
-		for (int x = cx - (int)r; x <= cx + r; ++x){
-			for (int z = cz - (int)r; z <= cz + r; ++z){
+		for (int x = cx - (int)r; x <= cx + r; x++){
+			for (int z = cz - (int)r; z <= cz + r; z++){
 				final double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z);
 				if (dist < r * r && (!hollow || dist >= (r - 1.0f) * (r - 1.0f))){
 					final BlockPos l = new BlockPos(x, y, z);

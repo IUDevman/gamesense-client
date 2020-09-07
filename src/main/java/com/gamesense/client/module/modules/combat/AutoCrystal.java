@@ -237,7 +237,7 @@ public class AutoCrystal extends Module{
 
 		int crystalSlot = mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL ? mc.player.inventory.currentItem : -1;
 		if (crystalSlot == -1){
-			for (int l = 0; l < 9; ++l){
+			for (int l = 0; l < 9; l++){
 				if (mc.player.inventory.getStackInSlot(l).getItem() == Items.END_CRYSTAL){
 					crystalSlot = l;
 					break;

@@ -56,7 +56,7 @@ public class ModeComponent extends Component{
 	public void mouseClicked(final int mouseX, final int mouseY, final int button){
 		if (this.isMouseOnButton(mouseX, mouseY) && button == 0 && this.parent.open){
 			final int maxIndex = this.set.getModes().size() - 1;
-			++this.modeIndex;
+			this.modeIndex++;
 			if (this.modeIndex > maxIndex){
 				this.modeIndex = 0;
 			}
