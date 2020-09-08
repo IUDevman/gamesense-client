@@ -6,14 +6,12 @@ import java.math.BigDecimal;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.GSColor;
-import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.clickgui.frame.Buttons;
 import com.gamesense.client.clickgui.frame.Component;
-import com.gamesense.client.module.modules.hud.ClickGuiModule;
+import com.gamesense.client.clickgui.frame.Renderer;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.gamesense.client.module.modules.hud.ColorMain;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import net.minecraft.client.gui.Gui;
 
 public class ColorComponent extends Component {
 
@@ -36,11 +34,11 @@ public class ColorComponent extends Component {
     
     @Override
     public void renderComponent() {
-        ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 80, ClickGUI.getTransColor(hovered));
-		if (set.getRainbow()) ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+16, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 32, set.getValue());
-        ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, ClickGUI.getTransColor(false));
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, ClickGUI.getFontColor());
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, ClickGUI.getFontColor());
+        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 80, Renderer.getTransColor(hovered));
+		if (set.getRainbow()) Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+16, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 32, set.getValue());
+        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, Renderer.getTransColor(false));
+		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, Renderer.getFontColor());
+		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, Renderer.getFontColor());
 		
 		double renderWidthR,renderWidthG,renderWidthB;
 		if (ColorMain.colorModel.getValue().equalsIgnoreCase("RGB")) {
@@ -52,18 +50,18 @@ public class ColorComponent extends Component {
 			renderWidthG = 100 * set.getColor().getSaturation();
 			renderWidthB = 100 * set.getColor().getBrightness();
 		}
-		ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 48, set.getValue());
-		ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+48, this.parent.parent.getX() + (int)renderWidthG, this.parent.parent.getY() + this.offset + 64, set.getValue());
-		ClickGUI.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+64, this.parent.parent.getX() + (int)renderWidthB, this.parent.parent.getY() + this.offset + 80, set.getValue());
+        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 48, set.getValue());
+        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+48, this.parent.parent.getX() + (int)renderWidthG, this.parent.parent.getY() + this.offset + 64, set.getValue());
+        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+64, this.parent.parent.getX() + (int)renderWidthB, this.parent.parent.getY() + this.offset + 80, set.getValue());
 		
 		if (ColorMain.colorModel.getValue().equalsIgnoreCase("RGB")) {
-			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Red: " + this.set.getColor().getRed(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+32, ClickGUI.getFontColor());
-			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Green: " + this.set.getColor().getGreen(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+48, ClickGUI.getFontColor());
-			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Blue: " + this.set.getColor().getBlue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+64, ClickGUI.getFontColor());
+			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Red: " + this.set.getColor().getRed(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+32, Renderer.getFontColor());
+			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Green: " + this.set.getColor().getGreen(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+48, Renderer.getFontColor());
+			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Blue: " + this.set.getColor().getBlue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+64, Renderer.getFontColor());
 		} else {
-			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Hue: " + (int)(this.set.getColor().getHue()*360), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+32, ClickGUI.getFontColor());
-			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Saturation: " + (int)(this.set.getColor().getSaturation()*100), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+48, ClickGUI.getFontColor());
-			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Brightness: " + (int)(this.set.getColor().getBrightness()*100), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+64, ClickGUI.getFontColor());
+			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Hue: " + (int)(this.set.getColor().getHue()*360), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+32, Renderer.getFontColor());
+			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Saturation: " + (int)(this.set.getColor().getSaturation()*100), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+48, Renderer.getFontColor());
+			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Brightness: " + (int)(this.set.getColor().getBrightness()*100), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+64, Renderer.getFontColor());
 		}
     }
     

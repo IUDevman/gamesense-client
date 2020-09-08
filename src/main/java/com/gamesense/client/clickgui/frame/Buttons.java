@@ -3,7 +3,6 @@ package com.gamesense.client.clickgui.frame;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.clickgui.buttons.*;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ClickGuiModule;
@@ -76,12 +75,12 @@ public class Buttons extends Component {
 
     @Override
     public void renderComponent() {
-        ClickGUI.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, mod.isEnabled()?ClickGUI.getMainColor():ClickGUI.getTransColor(isHovered));
-        ClickGUI.drawRect(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, ClickGUI.getTransColor(false));
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, ClickGUI.getFontColor());
+        Renderer.drawRectStatic(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, Renderer.getTransColor(isHovered));
+        Renderer.drawRectStatic(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, Renderer.getTransColor(false));
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, mod.isEnabled()?Renderer.getMainColor():Renderer.getFontColor());
         if (this.subcomponents.size() > 1) {
             if (ClickGuiModule.icon.getValue().equalsIgnoreCase("Image")) {
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "" : "", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, ClickGUI.getFontColor());
+                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "" : "", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, Renderer.getFontColor());
                 if (this.open) {
                     //gif texture
                     drawOpenRender(this.parent.getX() + this.parent.getWidth() - 13, this.parent.getY() + this.offset + 2 + 2);
@@ -91,7 +90,7 @@ public class Buttons extends Component {
                 }
             }
             else {
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "~" : ">", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, ClickGUI.getFontColor());
+                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "~" : ">", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, Renderer.getFontColor());
             }
         }
         if (this.open && !this.subcomponents.isEmpty()) {

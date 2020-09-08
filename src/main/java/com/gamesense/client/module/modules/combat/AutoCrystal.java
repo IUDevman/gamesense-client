@@ -216,6 +216,10 @@ public class AutoCrystal extends Module {
                     lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
                 }
 
+                /**
+                 * @Author Hoosiers
+                 * Pretty WIP, but it seems to make the CA much faster
+                 */
                 mc.playerController.attackEntity(mc.player, crystal);
                 if (handBreak.getValue().equalsIgnoreCase("Offhand") && !mc.player.getHeldItemOffhand().isEmpty) {
                     mc.player.swingArm(EnumHand.OFF_HAND);
