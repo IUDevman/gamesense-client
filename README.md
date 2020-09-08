@@ -8,7 +8,7 @@ Current version: 2.1.1
 Developers:
 -Cyber
 -Hoosiers
--Lukflug
+-lukflug
 -auburnhud2
 
 -Make sure to check the credits too!

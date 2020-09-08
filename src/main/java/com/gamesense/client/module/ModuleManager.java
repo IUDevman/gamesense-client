@@ -32,7 +32,6 @@ public class ModuleManager {
         addMod(new AutoTotem());
         addMod(new AutoTrap());
         addMod(new AutoWeb());
-        addMod(new DesyncAura());
         addMod(new FastBow());
         addMod(new HoleFill());
         addMod(new KillAura());
