@@ -219,12 +219,30 @@ public class AutoCrystal extends Module {
                 mc.playerController.attackEntity(mc.player, crystal);
                 if (handBreak.getValue().equalsIgnoreCase("Offhand") && !mc.player.getHeldItemOffhand().isEmpty) {
                     mc.player.swingArm(EnumHand.OFF_HAND);
+                    if (cancelCrystal.getValue()) {
+                        crystal.setDead();
+                        mc.world.removeAllEntities();
+                        mc.world.getLoadedEntityList();
+                    }
+
                 } else {
                     mc.player.swingArm(EnumHand.MAIN_HAND);
+                    if (cancelCrystal.getValue()) {
+                        crystal.setDead();
+                        mc.world.removeAllEntities();
+                        mc.world.getLoadedEntityList();
+                    }
+
                 }
                 if (handBreak.getValue().equalsIgnoreCase("Both")) {
                     mc.player.swingArm(EnumHand.MAIN_HAND);
                     mc.player.swingArm(EnumHand.OFF_HAND);
+                    if (cancelCrystal.getValue()) {
+                        crystal.setDead();
+                        mc.world.removeAllEntities();
+                        mc.world.getLoadedEntityList();
+                    }
+
                 }
                 if (cancelCrystal.getValue()) {
                     crystal.setDead();
@@ -388,7 +406,7 @@ public class AutoCrystal extends Module {
                                     blockPos = (BlockPos) var11.next();
                                     b = entity.getDistanceSq(blockPos);
                                     // Better method for doing EnemyRange
-                                    // @author Cyber
+                                    // @Author Cyber
                                     x = blockPos.getX() + 0.0;
                                     y = blockPos.getY() + 1.0;
                                     z = blockPos.getZ() + 0.0;
