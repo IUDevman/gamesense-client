@@ -5,11 +5,7 @@ import java.util.List;
 import com.gamesense.api.util.GSColor;
 import com.gamesense.client.module.Module;
 
-<<<<<<< HEAD
-public class Setting{
-=======
 public abstract class Setting {
->>>>>>> master
 
 	private final String name;
 	private final String configname;

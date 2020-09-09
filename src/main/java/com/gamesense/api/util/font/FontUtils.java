@@ -21,3 +21,4 @@ public class FontUtils {
 		if (customFont) return GameSenseMod.fontRenderer.getHeight();
 		else return mc.fontRenderer.FONT_HEIGHT;
 	}
+}
