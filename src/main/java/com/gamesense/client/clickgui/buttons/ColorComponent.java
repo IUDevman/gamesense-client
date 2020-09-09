@@ -10,12 +10,13 @@ import com.gamesense.client.clickgui.frame.Buttons;
 import com.gamesense.client.clickgui.frame.Component;
 import com.gamesense.client.clickgui.frame.Renderer;
 import com.gamesense.client.module.modules.hud.HUD;
+import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.ColorMain;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 public class ColorComponent extends Component {
 
-    private boolean hovered;
+    private boolean hoveredA, hoveredB;
     private final Setting.ColorSetting set;
     private final Buttons parent;
     private int offset;
@@ -34,11 +35,13 @@ public class ColorComponent extends Component {
     
     @Override
     public void renderComponent() {
-        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 80, Renderer.getTransColor(hovered));
+        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 80, Renderer.getTransColor(hoveredA));
 		if (set.getRainbow()) Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+16, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 32, set.getValue());
         Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, Renderer.getTransColor(false));
 		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, Renderer.getFontColor());
 		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, Renderer.getFontColor());
+        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 81, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 96, Renderer.getTransColor(hoveredB));
+		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Sync Color", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+80, Renderer.getFontColor());
 		
 		double renderWidthR,renderWidthG,renderWidthB;
 		if (ColorMain.colorModel.getValue().equalsIgnoreCase("RGB")) {
@@ -72,10 +75,22 @@ public class ColorComponent extends Component {
     
     @Override
     public void updateComponent(final int mouseX, final int mouseY) {
-        this.hovered = (this.isMouseOnButtonD(mouseX, mouseY) || this.isMouseOnButtonI(mouseX, mouseY));
+        boolean hovered = (this.isMouseOnButtonD(mouseX, mouseY) || this.isMouseOnButtonI(mouseX, mouseY));
         this.y = this.parent.parent.getY() + this.offset;
         this.x = this.parent.parent.getX();
         final double diff = Math.min(100, Math.max(0, mouseX - this.x));
+        if (hovered) {
+        	if (mouseY-this.y<=80) {
+        		hoveredA=true;
+        		hoveredB=false;
+        	} else {
+        		hoveredA=false;
+        		hoveredB=true;
+        	}
+        } else {
+        	hoveredA=false;
+        	hoveredB=false;
+        }
         if (this.dragging) {
 			GSColor c=set.getColor();
 			if (ColorMain.colorModel.getValue().equalsIgnoreCase("RGB")) {
@@ -117,6 +132,8 @@ public class ColorComponent extends Component {
             this.dragging = true;
 			if (mouseY-this.y>=16 && mouseY-this.y<32) {
 				set.setValue(!set.getRainbow(),set.getColor());
+			} else if (mouseY-this.y>=80 && mouseY-this.y<96) {
+				set.setValue(ClickGuiModule.guiColor.getRainbow(),ClickGuiModule.guiColor.getColor());
 			}
         }
     }
@@ -127,10 +144,10 @@ public class ColorComponent extends Component {
     }
     
     public boolean isMouseOnButtonD(final int x, final int y) {
-        return x > this.x && x < this.x + (this.parent.parent.getWidth() / 2 + 1) && y > this.y && y < this.y + 80;
+        return x > this.x && x < this.x + (this.parent.parent.getWidth() / 2 + 1) && y > this.y && y < this.y + 96;
     }
     
     public boolean isMouseOnButtonI(final int x, final int y) {
-        return x > this.x + this.parent.parent.getWidth() / 2 && x < this.x + this.parent.parent.getWidth() && y > this.y && y < this.y + 80;
+        return x > this.x + this.parent.parent.getWidth() / 2 && x < this.x + this.parent.parent.getWidth() && y > this.y && y < this.y + 96;
     }
 }

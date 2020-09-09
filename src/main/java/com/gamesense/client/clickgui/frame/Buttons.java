@@ -52,7 +52,7 @@ public class Buttons extends Component {
                         break;
 					case COLOR:
 						this.subcomponents.add(new ColorComponent((Setting.ColorSetting)s, this, opY));
-						opY+=64;
+						opY+=80;
 						break;
                 }
                 opY += 16;
@@ -68,7 +68,7 @@ public class Buttons extends Component {
         int opY = this.offset + 16;
         for (final Component comp : this.subcomponents) {
             comp.setOff(opY);
-			if (comp instanceof ColorComponent) opY+=64;
+			if (comp instanceof ColorComponent) opY+=80;
             opY += 16;
         }
     }
