@@ -29,7 +29,7 @@ public class SaveModules{
 		saveSettings(config,category,"Value.json",Setting.Type.INT);
 		saveSettings(config,category,"Boolean.json",Setting.Type.BOOLEAN);
 		saveSettings(config,category,"String.json",Setting.Type.MODE);
-		//saveSettings(config,category,"Color.json",Setting.Type.COLOR);
+		saveSettings(config,category,"Color.json",Setting.Type.COLOR);
 	}
 	
 	private void saveSettings (File config, Module.Category category, String filename, Setting.Type type){
@@ -53,9 +53,9 @@ public class SaveModules{
 					case MODE:
 						out.write(mod.getConfigName() + ":" + ((Setting.Mode) mod).getValue() + ":" + mod.getParent().getName() + "\r\n");
 						break;
-					/* case COLOR:
+					case COLOR:
 						out.write(mod.getConfigName()+":"+((Setting.ColorSetting)mod).toInteger()+":"+mod.getParent().getName()+"\r\n");
-						break; */
+						break;
 					}
 				}
 			}

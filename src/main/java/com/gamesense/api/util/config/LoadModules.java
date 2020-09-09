@@ -27,7 +27,7 @@ public class LoadModules{
 		loadSettings(config,category,"Value.json",Setting.Type.INT);
 		loadSettings(config,category,"Boolean.json",Setting.Type.BOOLEAN);
 		loadSettings(config,category,"String.json",Setting.Type.MODE);
-		//loadSettings(config,category,"Color.json",Setting.Type.COLOR);
+		loadSettings(config,category,"Color.json",Setting.Type.COLOR);
 	}
 	
 	private void loadSettings (File config, Module.Category category, String filename, Setting.Type type){
@@ -60,9 +60,9 @@ public class LoadModules{
 							case MODE:
 								((Setting.Mode) mod).setValue(isOn);
 								break;
-							/* case COLOR:
+							case COLOR:
 								((Setting.ColorSetting)mod).fromInteger(java.lang.Integer.parseInt(isOn));
-								break; */
+								break;
 							}
 						}
 					}

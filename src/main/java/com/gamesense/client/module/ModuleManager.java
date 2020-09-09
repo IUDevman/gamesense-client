@@ -19,8 +19,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class ModuleManager{
-
+public class ModuleManager {
 	public static ArrayList<Module> modules;
 
 	public ModuleManager(){
@@ -32,7 +31,6 @@ public class ModuleManager{
 		addMod(new AutoTotem());
 		addMod(new AutoTrap());
 		addMod(new AutoWeb());
-		addMod(new DesyncAura());
 		addMod(new FastBow());
 		addMod(new HoleFill());
 		addMod(new KillAura());
@@ -97,15 +95,15 @@ public class ModuleManager{
 		modules.add(m);
 	}
 
-	public static void onUpdate(){
+	public static void onUpdate() {
 		modules.stream().filter(Module::isEnabled).forEach(Module::onUpdate);
 	}
 
-	public static void onRender(){
+	public static void onRender() {
 		modules.stream().filter(Module::isEnabled).forEach(Module::onRender);
 	}
 
-	public static void onWorldRender(RenderWorldLastEvent event){
+	public static void onWorldRender(RenderWorldLastEvent event) {
 
 		Minecraft.getMinecraft().profiler.startSection("gamesense");
 		Minecraft.getMinecraft().profiler.startSection("setup");
@@ -145,7 +143,7 @@ public class ModuleManager{
 		Minecraft.getMinecraft().profiler.endSection();
 	}
 
-	public static ArrayList<Module> getModules(){
+	public static ArrayList<Module> getModules() {
 		return modules;
 	}
 
@@ -154,22 +152,22 @@ public class ModuleManager{
 		return list;
 	}
 
-	public static void onBind(int key){
+	public static void onBind(int key) {
 		if (key == 0 || key == Keyboard.KEY_NONE) return;
 		modules.forEach(module -> {
-			if (module.getBind() == key){
+			if(module.getBind() == key){
 				module.toggle();
 			}
 		});
 	}
 
 	public static Module getModuleByName(String name){
-		Module m = getModules().stream().filter(mm -> mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+		Module m = getModules().stream().filter(mm->mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 		return m;
 	}
 
 	public static boolean isModuleEnabled(String name){
-		Module m = getModules().stream().filter(mm -> mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+		Module m = getModules().stream().filter(mm->mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 		return m.isEnabled();
 	}
 
@@ -177,15 +175,15 @@ public class ModuleManager{
 		return m.isEnabled();
 	}
 
-	public static Vec3d getInterpolatedPos(Entity entity, float ticks){
+	public static Vec3d getInterpolatedPos(Entity entity, float ticks) {
 		return new Vec3d(entity.lastTickPosX, entity.lastTickPosY, entity.lastTickPosZ).add(getInterpolatedAmount(entity, ticks));
 	}
 
-	public static Vec3d getInterpolatedAmount(Entity entity, double ticks){
+	public static Vec3d getInterpolatedAmount(Entity entity, double ticks) {
 		return getInterpolatedAmount(entity, ticks, ticks, ticks);
 	}
 
-	public static Vec3d getInterpolatedAmount(Entity entity, double x, double y, double z){
+	public static Vec3d getInterpolatedAmount(Entity entity, double x, double y, double z) {
 		return new Vec3d(
 				(entity.posX - entity.lastTickPosX) * x,
 				(entity.posY - entity.lastTickPosY) * y,

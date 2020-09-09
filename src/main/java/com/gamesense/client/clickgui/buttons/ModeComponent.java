@@ -4,16 +4,12 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.client.clickgui.frame.Buttons;
 import com.gamesense.client.clickgui.frame.Component;
+import com.gamesense.client.clickgui.frame.Renderer;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import net.minecraft.client.gui.Gui;
 
-import java.awt.Color;
-
-public class ModeComponent extends Component{
-
+public class ModeComponent extends Component {
 	private boolean hovered;
 	private final Buttons parent;
 	private final Setting.Mode set;
@@ -40,9 +36,9 @@ public class ModeComponent extends Component{
 	
 	@Override
 	public void renderComponent(){
-		Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, this.hovered ? new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).darker().darker().getRGB() : new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).getRGB());
-		Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).getRGB());
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, -1);
+		Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, Renderer.getTransColor(hovered));
+		Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, Renderer.getTransColor(false));
+		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, Renderer.getFontColor());
 	}
 	
 	@Override

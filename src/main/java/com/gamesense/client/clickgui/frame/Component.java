@@ -2,8 +2,7 @@ package com.gamesense.client.clickgui.frame;
 
 import net.minecraft.client.Minecraft;
 
-public class Component{
-
+public abstract class Component{
 	protected Minecraft mc = Minecraft.getMinecraft();
 
 	public void updateComponent(final int mouseX, final int mouseY){

@@ -1,13 +1,15 @@
 package com.gamesense.api.util.font;
 
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.GameSenseMod;
 import net.minecraft.client.Minecraft;
 
-public class FontUtils{
+public class FontUtils {
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	public static float drawStringWithShadow(boolean customFont, String text, int x, int y, int color){
-		if (customFont) return GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
-		else return mc.fontRenderer.drawStringWithShadow(text, x, y, color);
+	
+	public static float drawStringWithShadow(boolean customFont, String text, int x, int y, GSColor color){
+		if(customFont) return GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
+		else return mc.fontRenderer.drawStringWithShadow(text, x, y, color.getRGB());
 	}
 
 	public static int getStringWidth(boolean customFont, String str){
@@ -19,9 +21,3 @@ public class FontUtils{
 		if (customFont) return GameSenseMod.fontRenderer.getHeight();
 		else return mc.fontRenderer.FONT_HEIGHT;
 	}
-
-	public static float drawKeyStringWithShadow(boolean customFont, String text, int x, int y, int color){
-		if (customFont) return GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
-		else return mc.fontRenderer.drawStringWithShadow(text, x, y, color);
-	}
-}

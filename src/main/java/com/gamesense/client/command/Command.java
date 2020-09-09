@@ -8,7 +8,7 @@ import net.minecraft.util.text.TextComponentString;
 
 import java.awt.*;
 
-public abstract class Command{
+public abstract class Command {
 	static Minecraft mc = Minecraft.getMinecraft();
 	public static String prefix = "-";
 	public abstract String[] getAlias();
@@ -23,7 +23,7 @@ public abstract class Command{
 		if (Notifications.disableChat.getValue() && ModuleManager.isModuleEnabled("Notifications")){
 			return;
 		}
-		else{
+		else {
 			if (MsgWaterMark)
 				mc.player.sendMessage(new TextComponentString(ChatFormatting.GRAY + "[" + ChatFormatting.WHITE + "Game" + ChatFormatting.DARK_GREEN + "Sense" + ChatFormatting.GRAY + "] " + ChatFormatting.RESET + cf + message));
 			else
@@ -32,17 +32,17 @@ public abstract class Command{
 	}
 
 	public static Color getColorFromChatFormatting(ChatFormatting cf){
-		if (cf == ChatFormatting.BLACK) return Color.BLACK;
-		if (cf == ChatFormatting.GRAY) return Color.GRAY;
-		if (cf == ChatFormatting.AQUA) return Color.CYAN;
-		if (cf == ChatFormatting.BLUE || cf == ChatFormatting.DARK_BLUE || cf == ChatFormatting.DARK_AQUA) return Color.BLUE;
-		if (cf == ChatFormatting.DARK_GRAY) return Color.DARK_GRAY;
-		if (cf == ChatFormatting.DARK_GREEN || cf == ChatFormatting.GREEN) return Color.GREEN;
-		if (cf == ChatFormatting.DARK_PURPLE) return Color.MAGENTA;
-		if (cf == ChatFormatting.RED || cf == ChatFormatting.DARK_RED) return Color.RED;
-		if (cf == ChatFormatting.LIGHT_PURPLE) return Color.PINK;
-		if (cf == ChatFormatting.YELLOW) return Color.YELLOW;
-		if (cf == ChatFormatting.GOLD) return Color.ORANGE;
+		if(cf == ChatFormatting.BLACK) return Color.BLACK;
+		if(cf == ChatFormatting.GRAY) return  Color.GRAY;
+		if(cf == ChatFormatting.AQUA) return Color.CYAN;
+		if(cf == ChatFormatting.BLUE || cf == ChatFormatting.DARK_BLUE || cf == ChatFormatting.DARK_AQUA) return Color.BLUE;
+		if(cf == ChatFormatting.DARK_GRAY) return Color.DARK_GRAY;
+		if(cf == ChatFormatting.DARK_GREEN || cf == ChatFormatting.GREEN) return Color.GREEN;
+		if(cf == ChatFormatting.DARK_PURPLE) return Color.MAGENTA;
+		if(cf == ChatFormatting.RED || cf == ChatFormatting.DARK_RED) return Color.RED;
+		if(cf == ChatFormatting.LIGHT_PURPLE) return Color.PINK;
+		if(cf == ChatFormatting.YELLOW) return Color.YELLOW;
+		if(cf == ChatFormatting.GOLD) return Color.ORANGE;
 		return Color.WHITE;
 	}
 

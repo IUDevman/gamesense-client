@@ -14,12 +14,14 @@ import net.minecraft.network.play.client.CPacketInput;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 
-public class Freecam extends Module{
-	public Freecam(){super("Freecam", Category.Render);}
+public class Freecam extends Module {
+	public Freecam() {super("Freecam", Category.Render);}
 
+	Setting.Boolean cancelPackets;
 	Setting.Double speed;
 
-	public void setup(){
+	public void setup() {
+		cancelPackets = registerBoolean("Cancel Packets","CancelPackets",true);
 		speed = registerDouble("Speed", "Speed", 5.0D, 0.0D, 10.0D);
 	}
 
@@ -32,16 +34,16 @@ public class Freecam extends Module{
 	private Entity ridingEntity;
 
 	@Override
-	protected void onEnable(){
+	protected void onEnable() {
 		GameSenseMod.EVENT_BUS.subscribe(this);
-		if (mc.player != null){
+		if (mc.player != null) {
 			isRidingEntity = mc.player.getRidingEntity() != null;
 
-			if (mc.player.getRidingEntity() == null){
+			if (mc.player.getRidingEntity() == null) {
 				posX = mc.player.posX;
 				posY = mc.player.posY;
 				posZ = mc.player.posZ;
-			} else{
+			} else {
 				ridingEntity = mc.player.getRidingEntity();
 				mc.player.dismountRidingEntity();
 			}
@@ -60,10 +62,10 @@ public class Freecam extends Module{
 	}
 
 	@Override
-	protected void onDisable(){
+	protected void onDisable() {
 		GameSenseMod.EVENT_BUS.unsubscribe(this);
 		EntityPlayer localPlayer = mc.player;
-		if (localPlayer != null){
+		if (localPlayer != null) {
 			mc.player.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
 			mc.world.removeEntityFromWorld(-100);
 			clonedPlayer = null;
@@ -74,14 +76,14 @@ public class Freecam extends Module{
 			mc.player.noClip = false;
 			mc.player.motionX = mc.player.motionY = mc.player.motionZ = 0.f;
 
-			if (isRidingEntity){
+			if (isRidingEntity) {
 				mc.player.startRiding(ridingEntity, true);
 			}
 		}
 	}
 
 	@Override
-	public void onUpdate(){
+	public void onUpdate() {
 		mc.player.capabilities.isFlying = true;
 		mc.player.capabilities.setFlySpeed((float) (speed.getValue() / 100f));
 		mc.player.noClip = true;
@@ -101,9 +103,8 @@ public class Freecam extends Module{
 
 	@EventHandler
 	private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
-		if (event.getPacket() instanceof CPacketPlayer || event.getPacket() instanceof CPacketInput){
+		if ((event.getPacket() instanceof CPacketPlayer || event.getPacket() instanceof CPacketInput) && cancelPackets.getValue()) {
 			event.cancel();
 		}
 	});
-
 }

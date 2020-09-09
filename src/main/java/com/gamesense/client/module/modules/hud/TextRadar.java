@@ -3,8 +3,11 @@ package com.gamesense.client.module.modules.hud;
 import com.gamesense.api.players.enemy.Enemies;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.hud.HUD;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
 
@@ -43,21 +46,21 @@ public class TextRadar extends Module{
 
 	public void onRender(){
 		if (sortUp.getValue()){
-			sort = -1;}
-		else{
-			sort = 1;}
+			sort = -1; }
+		else {
+			sort = 1; }
 		playerCount = 0;
 		mc.world.loadedEntityList.stream()
-				.filter(e -> e instanceof EntityPlayer)
-				.filter(e -> e != mc.player)
-				.forEach(e -> {
+				.filter(e->e instanceof EntityPlayer)
+				.filter(e->e != mc.player)
+				.forEach(e->{
 					if (Friends.isFriend(e.getName())){
 						friendcolor = ColorMain.getFriendColor();
 					}
 					else if (Enemies.isEnemy(e.getName())){
 						friendcolor = ColorMain.getEnemyColor();
 					}
-					else{
+					else {
 						friendcolor = TextFormatting.GRAY;
 					}
 					if ((((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) <= 5){
@@ -89,34 +92,20 @@ public class TextRadar extends Module{
 					}
 					if (sortUp.getValue()){
 						if (sortRight.getValue()){
-								drawStringWithShadow(TextFormatting.GRAY + "[" + healthcolor + (int) (((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int) mc.player.getDistance(e) + TextFormatting.GRAY + "]", radarX.getValue() - getWidth(TextFormatting.GRAY + "[" + healthcolor + (int) (((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int) mc.player.getDistance(e) + TextFormatting.GRAY + "]"), radarY.getValue() + (playerCount * 10), 0xffffffff);
-						} else{
-								drawStringWithShadow(TextFormatting.GRAY + "[" + healthcolor + (int) (((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int) mc.player.getDistance(e) + TextFormatting.GRAY + "]", radarX.getValue(), radarY.getValue() + (playerCount * 10), 0xffffffff);
+								FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.GRAY + "[" + healthcolor + (int) (((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int) mc.player.getDistance(e) + TextFormatting.GRAY + "]", radarX.getValue() - FontUtils.getStringWidth(HUD.customFont.getValue(), TextFormatting.GRAY + "[" + healthcolor + (int) (((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int) mc.player.getDistance(e) + TextFormatting.GRAY + "]"), radarY.getValue() + (playerCount * 10), new GSColor(255,255,255));
+						} else {
+								FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.GRAY + "[" + healthcolor + (int) (((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int) mc.player.getDistance(e) + TextFormatting.GRAY + "]", radarX.getValue(), radarY.getValue() + (playerCount * 10), new GSColor(255,255,255));
 						}
 						playerCount++;
 					}
-					else{
+					else {
 						if (sortRight.getValue()){
-							drawStringWithShadow(TextFormatting.GRAY + "[" + healthcolor + (int)(((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int)mc.player.getDistance(e) + TextFormatting.GRAY + "]", radarX.getValue() - getWidth(TextFormatting.GRAY + "[" + healthcolor + (int)(((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int)mc.player.getDistance(e) + TextFormatting.GRAY + "]"), radarY.getValue() + (playerCount * -10), 0xffffffff);
-						} else{
-							drawStringWithShadow(TextFormatting.GRAY + "[" + healthcolor + (int)(((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int)mc.player.getDistance(e) + TextFormatting.GRAY + "]", radarX.getValue(), radarY.getValue() + (playerCount * -10), 0xffffffff);
+							FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.GRAY + "[" + healthcolor + (int)(((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int)mc.player.getDistance(e) + TextFormatting.GRAY + "]", radarX.getValue() - FontUtils.getStringWidth(HUD.customFont.getValue(), TextFormatting.GRAY + "[" + healthcolor + (int)(((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int)mc.player.getDistance(e) + TextFormatting.GRAY + "]"), radarY.getValue() + (playerCount * -10), new GSColor(255,255,255));
+						} else {
+							FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.GRAY + "[" + healthcolor + (int)(((EntityPlayer) e).getHealth() + ((EntityPlayer) e).getAbsorptionAmount()) + TextFormatting.GRAY + "] " + friendcolor + e.getName() + TextFormatting.GRAY + " [" + distancecolor + (int)mc.player.getDistance(e) + TextFormatting.GRAY + "]", radarX.getValue(), radarY.getValue() + (playerCount * -10), new GSColor(255,255,255));
 						}
 						playerCount++;
 					}
 				});
-	}
-
-	//bullshit port from HUD
-	private void drawStringWithShadow (String text,int x, int y, int color){
-		if (HUD.customFont.getValue())
-			GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
-		else
-			mc.fontRenderer.drawStringWithShadow(text, x, y, color);
-	}
-
-	//bullshit port from HUD
-	private int getWidth(String s){
-		if (HUD.customFont.getValue()) return GameSenseMod.fontRenderer.getStringWidth(s);
-		else return mc.fontRenderer.getStringWidth(s);
 	}
 }

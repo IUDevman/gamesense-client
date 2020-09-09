@@ -5,19 +5,13 @@ import java.math.BigDecimal;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
-import com.gamesense.api.util.color.Rainbow;
-import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.clickgui.frame.Buttons;
 import com.gamesense.client.clickgui.frame.Component;
-import com.gamesense.client.module.modules.hud.ColorMain;
-import com.gamesense.client.module.modules.hud.ClickGuiModule;
+import com.gamesense.client.clickgui.frame.Renderer;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import net.minecraft.client.gui.Gui;
-import java.awt.Color;
 
-public class IntegerComponent extends Component{
-
+public class IntegerComponent extends Component {
 	private boolean hovered;
 	private final Setting.Integer set;
 	private final Buttons parent;
@@ -38,17 +32,11 @@ public class IntegerComponent extends Component{
 	
 	@Override
 	public void renderComponent(){
-		if (ColorMain.rainbow.getValue()){
-			ClickGUI.color = Rainbow.getColorWithOpacity(ClickGuiModule.opacity.getValue()).getRGB();
-		}
-		else{
-			ClickGUI.color = new Color(ColorMain.Red.getValue(), ColorMain.Green.getValue(), ColorMain.Blue.getValue(), ClickGuiModule.opacity.getValue()).getRGB();
-		}
-		Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, this.hovered ? new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).darker().darker().getRGB() : new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).getRGB());
+		Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, Renderer.getTransColor(hovered));
 		final int drag = this.set.getValue() / this.set.getMax() * this.parent.parent.getWidth();
-		Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + (int)this.renderWidth, this.parent.parent.getY() + this.offset + 16, this.hovered ? ClickGUI.color : ClickGUI.color);
-		Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, new Color(195, 195, 195, ClickGuiModule.opacity.getValue()-50).getRGB());
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, -1);
+		Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + (int)this.renderWidth, this.parent.parent.getY() + this.offset + 16, Renderer.getMainColor());
+		Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, Renderer.getTransColor(false));
+		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, Renderer.getFontColor());
 	}
 	
 	@Override

@@ -2,9 +2,14 @@ package com.gamesense.api.settings;
 
 import java.util.List;
 
+import com.gamesense.api.util.GSColor;
 import com.gamesense.client.module.Module;
 
+<<<<<<< HEAD
 public class Setting{
+=======
+public abstract class Setting {
+>>>>>>> master
 
 	private final String name;
 	private final String configname;
@@ -44,9 +49,9 @@ public class Setting{
 		INT,
 		DOUBLE,
 		BOOLEAN,
-		STRING,
-		MODE
-	}
+		MODE,
+		COLOR
+    }
 
 	public static class Integer extends Setting{
 		private int value;
@@ -143,6 +148,46 @@ public class Setting{
 
 		public List<String> getModes(){
 			return this.modes;
+		}
+	}
+	
+	// Color config added by lukflug
+	public static class ColorSetting extends Setting {
+		private boolean rainbow;
+		private GSColor value;
+		
+		public ColorSetting (final String name, final String configname, final Module parent, final Module.Category category, boolean rainbow, final GSColor value) {
+			super(name,configname,parent,category,Type.COLOR);
+			this.rainbow=rainbow;
+			this.value=value;
+		}
+		
+		public GSColor getValue() {
+			if (rainbow) {
+				return GSColor.fromHSB((System.currentTimeMillis()%(360*32))/(360f * 32),1,1);
+			} return value;
+		}
+		
+		public void setValue (boolean rainbow, final GSColor value) {
+			this.rainbow=rainbow;
+			this.value=value;
+		}
+		
+		public int toInteger() {
+			return value.getRGB()&0xFFFFFF+(rainbow?1:0)*0x1000000;
+		}
+		
+		public void fromInteger (int number) {
+			value=new GSColor(number&0xFFFFFF);
+			rainbow=((number&0x1000000)!=0);
+		}
+		
+		public GSColor getColor() {
+			return value;
+		}
+		
+		public boolean getRainbow() {
+			return rainbow;
 		}
 	}
 }
