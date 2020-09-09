@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CapeUtils {
-    List<UUID> uuids = new ArrayList<>();
-    public CapeUtils(){
-        try {
-            URL pastebin = new URL("https://pastebin.com/raw/6D5JSYdC");
-            BufferedReader in = new BufferedReader(new InputStreamReader(pastebin.openStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                uuids.add(UUID.fromString(inputLine));
-            }
-        } catch(Exception e){}
-    }
+public class CapeUtils{
+	List<UUID> uuids = new ArrayList<>();
+	public CapeUtils(){
+		try{
+			URL pastebin = new URL("https://pastebin.com/raw/6D5JSYdC");
+			BufferedReader in = new BufferedReader(new InputStreamReader(pastebin.openStream()));
+			String inputLine;
+			while ((inputLine = in.readLine()) != null){
+				uuids.add(UUID.fromString(inputLine));
+			}
+		} catch(Exception e){}
+	}
 
-    public boolean hasCape(UUID id){
-        return uuids.contains(id);
-    }
+	public boolean hasCape(UUID id){
+		return uuids.contains(id);
+	}
 }

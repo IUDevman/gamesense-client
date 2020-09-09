@@ -27,292 +27,292 @@ import java.util.List;
 import static com.gamesense.api.util.world.BlockUtils.canBeClicked;
 import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
 
-public class SelfTrap extends Module {
-    public SelfTrap() {
-        super("SelfTrap", Category.Combat);
-    }
+public class SelfTrap extends Module{
+	public SelfTrap(){
+		super("SelfTrap", Category.Combat);
+	}
 
-    private Setting.Integer blocksPerTick;
-    private Setting.Integer tickDelay;
-    private Setting.Boolean rotate;
-    private EntityPlayer closestTarget;
-    private String lastTickTargetName;
-    private int playerHotbarSlot = -1;
-    private int lastHotbarSlot = -1;
-    private int delayStep = 0;
-    private boolean isSneaking = false;
-    private int offsetStep = 0;
-    private boolean firstRun;
-    Setting.Mode mode;
+	private Setting.Integer blocksPerTick;
+	private Setting.Integer tickDelay;
+	private Setting.Boolean rotate;
+	private EntityPlayer closestTarget;
+	private String lastTickTargetName;
+	private int playerHotbarSlot = -1;
+	private int lastHotbarSlot = -1;
+	private int delayStep = 0;
+	private boolean isSneaking = false;
+	private int offsetStep = 0;
+	private boolean firstRun;
+	Setting.Mode mode;
 
-    public void setup() {
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Normal");
-        modes.add("NoStep");
-        modes.add("Simple");
-        mode = registerMode("Mode", "Mode", modes, "Normal");
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 5, 0, 10);
-        tickDelay = registerInteger("Delay", "Delay", 0, 0, 10);
-    }
+	public void setup(){
+		ArrayList<String> modes = new ArrayList<>();
+		modes.add("Normal");
+		modes.add("NoStep");
+		modes.add("Simple");
+		mode = registerMode("Mode", "Mode", modes, "Normal");
+		rotate = registerBoolean("Rotate", "Rotate", true);
+		blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 5, 0, 10);
+		tickDelay = registerInteger("Delay", "Delay", 0, 0, 10);
+	}
 
-    protected void onEnable() {
+	protected void onEnable(){
 
-        if (mc.player == null) {
-            this.disable();
-            return;
-        }
-        firstRun = true;
+		if (mc.player == null){
+			this.disable();
+			return;
+		}
+		firstRun = true;
 
-        // save initial player hand
-        playerHotbarSlot = mc.player.inventory.currentItem;
-        lastHotbarSlot = -1;
-    }
+		// save initial player hand
+		playerHotbarSlot = mc.player.inventory.currentItem;
+		lastHotbarSlot = -1;
+	}
 
-    @Override
-    protected void onDisable() {
+	@Override
+	protected void onDisable(){
 
-        if (mc.player == null) {
-            return;
-        }
+		if (mc.player == null){
+			return;
+		}
 
-        if (lastHotbarSlot != playerHotbarSlot && playerHotbarSlot != -1) {
-            mc.player.inventory.currentItem = playerHotbarSlot;
-        }
+		if (lastHotbarSlot != playerHotbarSlot && playerHotbarSlot != -1){
+			mc.player.inventory.currentItem = playerHotbarSlot;
+		}
 
-        if (isSneaking) {
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-            isSneaking = false;
-        }
+		if (isSneaking){
+			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+			isSneaking = false;
+		}
 
-        playerHotbarSlot = -1;
-        lastHotbarSlot = -1;
-    }
+		playerHotbarSlot = -1;
+		lastHotbarSlot = -1;
+	}
 
-    @Override
-    public void onUpdate() {
+	@Override
+	public void onUpdate(){
 
-        if (mc.player == null) {
-            return;
-        }
+		if (mc.player == null){
+			return;
+		}
 
-        if (!firstRun) {
-            if (delayStep < tickDelay.getValue()) {
-                delayStep++;
-                return;
-            } else {
-                delayStep = 0;
-            }
-        }
+		if (!firstRun){
+			if (delayStep < tickDelay.getValue()){
+				delayStep++;
+				return;
+			} else{
+				delayStep = 0;
+			}
+		}
 
-        findClosestTarget();
+		findClosestTarget();
 
-        if (closestTarget == null) {
-            if (firstRun) {
-                firstRun = false;
-            }
-            return;
-        }
+		if (closestTarget == null){
+			if (firstRun){
+				firstRun = false;
+			}
+			return;
+		}
 
-        if (firstRun) {
-            firstRun = false;
-            lastTickTargetName = closestTarget.getName();
+		if (firstRun){
+			firstRun = false;
+			lastTickTargetName = closestTarget.getName();
 
-        } else if (!lastTickTargetName.equals(closestTarget.getName())) {
-            lastTickTargetName = closestTarget.getName();
-            offsetStep = 0;
-        }
+		} else if (!lastTickTargetName.equals(closestTarget.getName())){
+			lastTickTargetName = closestTarget.getName();
+			offsetStep = 0;
+		}
 
-        List<Vec3d> placeTargets = new ArrayList<>();
+		List<Vec3d> placeTargets = new ArrayList<>();
 
-        if(mode.getValue().equalsIgnoreCase("Normal")) {
-            Collections.addAll(placeTargets, SelfTrap.Offsets.TRAP);
-        }
-        if(mode.getValue().equalsIgnoreCase("NoStep")) {
-            Collections.addAll(placeTargets, SelfTrap.Offsets.TRAPFULLROOF);
-        }
-        if(mode.getValue().equalsIgnoreCase("Simple")) {
-            Collections.addAll(placeTargets, SelfTrap.Offsets.TRAPSIMPLE);
-        }
+		if (mode.getValue().equalsIgnoreCase("Normal")){
+			Collections.addAll(placeTargets, SelfTrap.Offsets.TRAP);
+		}
+		if (mode.getValue().equalsIgnoreCase("NoStep")){
+			Collections.addAll(placeTargets, SelfTrap.Offsets.TRAPFULLROOF);
+		}
+		if (mode.getValue().equalsIgnoreCase("Simple")){
+			Collections.addAll(placeTargets, SelfTrap.Offsets.TRAPSIMPLE);
+		}
 
-        int blocksPlaced = 0;
+		int blocksPlaced = 0;
 
-        while (blocksPlaced < blocksPerTick.getValue()) {
+		while (blocksPlaced < blocksPerTick.getValue()){
 
-            if (offsetStep >= placeTargets.size()) {
-                offsetStep = 0;
-                break;
-            }
+			if (offsetStep >= placeTargets.size()){
+				offsetStep = 0;
+				break;
+			}
 
-            BlockPos offsetPos = new BlockPos(placeTargets.get(offsetStep));
-            BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).down().add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+			BlockPos offsetPos = new BlockPos(placeTargets.get(offsetStep));
+			BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).down().add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
-            if (placeBlockInRange(targetPos)) {
-                blocksPlaced++;
-            }
+			if (placeBlockInRange(targetPos)){
+				blocksPlaced++;
+			}
 
-            offsetStep++;
-        }
+			offsetStep++;
+		}
 
 
-        if (blocksPlaced > 0) {
+		if (blocksPlaced > 0){
 
-            if (lastHotbarSlot != playerHotbarSlot && playerHotbarSlot != -1) {
-                mc.player.inventory.currentItem = playerHotbarSlot;
-                lastHotbarSlot = playerHotbarSlot;
-            }
+			if (lastHotbarSlot != playerHotbarSlot && playerHotbarSlot != -1){
+				mc.player.inventory.currentItem = playerHotbarSlot;
+				lastHotbarSlot = playerHotbarSlot;
+			}
 
-            if (isSneaking) {
-                mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-                isSneaking = false;
-            }
-        }
-    }
+			if (isSneaking){
+				mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+				isSneaking = false;
+			}
+		}
+	}
 
-    private boolean placeBlockInRange(BlockPos pos) {
+	private boolean placeBlockInRange(BlockPos pos){
 
-        // check if block is already placed
-        Block block = mc.world.getBlockState(pos).getBlock();
-        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
-            return false;
-        }
+		// check if block is already placed
+		Block block = mc.world.getBlockState(pos).getBlock();
+		if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)){
+			return false;
+		}
 
-        // check if entity blocks placing
-        for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos))) {
-            if (!(entity instanceof EntityItem) && !(entity instanceof EntityXPOrb)) {
-                return false;
-            }
-        }
+		// check if entity blocks placing
+		for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos))){
+			if (!(entity instanceof EntityItem) && !(entity instanceof EntityXPOrb)){
+				return false;
+			}
+		}
 
-        EnumFacing side = BlockUtils.getPlaceableSide(pos);
+		EnumFacing side = BlockUtils.getPlaceableSide(pos);
 
-        // check if we have a block adjacent to blockpos to click at
-        if (side == null) {
-            return false;
-        }
+		// check if we have a block adjacent to blockpos to click at
+		if (side == null){
+			return false;
+		}
 
-        BlockPos neighbour = pos.offset(side);
-        EnumFacing opposite = side.getOpposite();
+		BlockPos neighbour = pos.offset(side);
+		EnumFacing opposite = side.getOpposite();
 
-        // check if neighbor can be right clicked
-        if (!canBeClicked(neighbour)) {
-            return false;
-        }
+		// check if neighbor can be right clicked
+		if (!canBeClicked(neighbour)){
+			return false;
+		}
 
-        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-        Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
+		Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+		Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
-        int obiSlot = findObiInHotbar();
+		int obiSlot = findObiInHotbar();
 
-        if (obiSlot == -1) {
-            this.disable();
-        }
+		if (obiSlot == -1){
+			this.disable();
+		}
 
-        if (lastHotbarSlot != obiSlot) {
-            mc.player.inventory.currentItem = obiSlot;
-            lastHotbarSlot = obiSlot;
-        }
+		if (lastHotbarSlot != obiSlot){
+			mc.player.inventory.currentItem = obiSlot;
+			lastHotbarSlot = obiSlot;
+		}
 
-        if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)) {
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
-            isSneaking = true;
-        }
+		if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)){
+			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
+			isSneaking = true;
+		}
 
-        if (rotate.getValue()) {
-            faceVectorPacketInstant(hitVec);
-        }
+		if (rotate.getValue()){
+			faceVectorPacketInstant(hitVec);
+		}
 
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
-        mc.rightClickDelayTimer = 4;
+		mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+		mc.player.swingArm(EnumHand.MAIN_HAND);
+		mc.rightClickDelayTimer = 4;
 
-        return true;
-    }
+		return true;
+	}
 
-    private int findObiInHotbar() {
+	private int findObiInHotbar(){
 
-        // search blocks in hotbar
-        int slot = -1;
-        for (int i = 0; i < 9; i++) {
+		// search blocks in hotbar
+		int slot = -1;
+		for (int i = 0; i < 9; i++){
 
-            // filter out non-block items
-            ItemStack stack = mc.player.inventory.getStackInSlot(i);
+			// filter out non-block items
+			ItemStack stack = mc.player.inventory.getStackInSlot(i);
 
-            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
-                continue;
-            }
+			if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)){
+				continue;
+			}
 
-            Block block = ((ItemBlock) stack.getItem()).getBlock();
-            if (block instanceof BlockObsidian) {
-                slot = i;
-                break;
-            }
+			Block block = ((ItemBlock) stack.getItem()).getBlock();
+			if (block instanceof BlockObsidian){
+				slot = i;
+				break;
+			}
 
-        }
-        return slot;
-    }
+		}
+		return slot;
+	}
 
-    private void findClosestTarget() {
-        List<EntityPlayer> playerList = mc.world.playerEntities;
-        closestTarget = null;
+	private void findClosestTarget(){
+		List<EntityPlayer> playerList = mc.world.playerEntities;
+		closestTarget = null;
 
-        for (EntityPlayer target : playerList) {
+		for (EntityPlayer target : playerList){
 
-            if (target == mc.player) {
-                closestTarget = target;
-            }
-        }
-    }
+			if (target == mc.player){
+				closestTarget = target;
+			}
+		}
+	}
 
-    private static class Offsets {
+	private static class Offsets{
 
-        private static final Vec3d[] TRAP = {
-                new Vec3d(0, 0, -1),
-                new Vec3d(1, 0, 0),
-                new Vec3d(0, 0, 1),
-                new Vec3d(-1, 0, 0),
-                new Vec3d(0, 1, -1),
-                new Vec3d(1, 1, 0),
-                new Vec3d(0, 1, 1),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(0, 2, -1),
-                new Vec3d(1, 2, 0),
-                new Vec3d(0, 2, 1),
-                new Vec3d(-1, 2, 0),
-                new Vec3d(0, 3, -1),
-                new Vec3d(0, 3, 0)
-        };
+		private static final Vec3d[] TRAP ={
+				new Vec3d(0, 0, -1),
+				new Vec3d(1, 0, 0),
+				new Vec3d(0, 0, 1),
+				new Vec3d(-1, 0, 0),
+				new Vec3d(0, 1, -1),
+				new Vec3d(1, 1, 0),
+				new Vec3d(0, 1, 1),
+				new Vec3d(-1, 1, 0),
+				new Vec3d(0, 2, -1),
+				new Vec3d(1, 2, 0),
+				new Vec3d(0, 2, 1),
+				new Vec3d(-1, 2, 0),
+				new Vec3d(0, 3, -1),
+				new Vec3d(0, 3, 0)
+		};
 
-        private static final Vec3d[] TRAPFULLROOF = {
-                new Vec3d(0, 0, -1),
-                new Vec3d(1, 0, 0),
-                new Vec3d(0, 0, 1),
-                new Vec3d(-1, 0, 0),
-                new Vec3d(0, 1, -1),
-                new Vec3d(1, 1, 0),
-                new Vec3d(0, 1, 1),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(0, 2, -1),
-                new Vec3d(1, 2, 0),
-                new Vec3d(0, 2, 1),
-                new Vec3d(-1, 2, 0),
-                new Vec3d(0, 3, -1),
-                new Vec3d(0, 3, 0),
-                new Vec3d(0, 4, 0)
-        };
+		private static final Vec3d[] TRAPFULLROOF ={
+				new Vec3d(0, 0, -1),
+				new Vec3d(1, 0, 0),
+				new Vec3d(0, 0, 1),
+				new Vec3d(-1, 0, 0),
+				new Vec3d(0, 1, -1),
+				new Vec3d(1, 1, 0),
+				new Vec3d(0, 1, 1),
+				new Vec3d(-1, 1, 0),
+				new Vec3d(0, 2, -1),
+				new Vec3d(1, 2, 0),
+				new Vec3d(0, 2, 1),
+				new Vec3d(-1, 2, 0),
+				new Vec3d(0, 3, -1),
+				new Vec3d(0, 3, 0),
+				new Vec3d(0, 4, 0)
+		};
 
-        private static final Vec3d[] TRAPSIMPLE = {
-                new Vec3d(-1, 0, 0),
-                new Vec3d(1, 0,0),
-                new Vec3d(0,0,-1),
-                new Vec3d(0,0,1),
-                new Vec3d(1, 1,0),
-                new Vec3d(0,1,-1),
-                new Vec3d(0,1,1),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(-1, 2, 0),
-                new Vec3d(-1, 3, 0),
-                new Vec3d(0, 3, 0)
-        };
-    }
+		private static final Vec3d[] TRAPSIMPLE ={
+				new Vec3d(-1, 0, 0),
+				new Vec3d(1, 0,0),
+				new Vec3d(0,0,-1),
+				new Vec3d(0,0,1),
+				new Vec3d(1, 1,0),
+				new Vec3d(0,1,-1),
+				new Vec3d(0,1,1),
+				new Vec3d(-1, 1, 0),
+				new Vec3d(-1, 2, 0),
+				new Vec3d(-1, 3, 0),
+				new Vec3d(0, 3, 0)
+		};
+	}
 }

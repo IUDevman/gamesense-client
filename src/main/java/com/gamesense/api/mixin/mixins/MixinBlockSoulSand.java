@@ -13,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BlockSoulSand.class)
-public class MixinBlockSoulSand {
+public class MixinBlockSoulSand{
 
-   @Inject(method = "onEntityCollision", at = @At("HEAD"), cancellable = true)
-    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn, CallbackInfo info) {
-        if (ModuleManager.isModuleEnabled("PlayerTweaks") && ((PlayerTweaks)ModuleManager.getModuleByName("PlayerTweaks")).noSlow.getValue())
-            info.cancel();
-    }
+	@Inject(method = "onEntityCollision", at = @At("HEAD"), cancellable = true)
+	public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn, CallbackInfo info){
+		if (ModuleManager.isModuleEnabled("PlayerTweaks") && ((PlayerTweaks)ModuleManager.getModuleByName("PlayerTweaks")).noSlow.getValue())
+			info.cancel();
+	}
 }

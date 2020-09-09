@@ -10,19 +10,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GuiIngame.class)
-public class MixinPlayerOverlay {
+public class MixinPlayerOverlay{
 
-    @Inject(method = "renderPumpkinOverlay", at = @At("HEAD"), cancellable = true)
-    protected void renderPumpkinOverlayHook(ScaledResolution scaledRes, CallbackInfo info) {
-       if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noOverlay.getValue()){
-           info.cancel();
-       }
-    }
+	@Inject(method = "renderPumpkinOverlay", at = @At("HEAD"), cancellable = true)
+	protected void renderPumpkinOverlayHook(ScaledResolution scaledRes, CallbackInfo info){
+		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noOverlay.getValue()){
+			info.cancel();
+		}
+	}
 
-    @Inject(method = "renderPotionEffects", at = @At("HEAD"), cancellable = true)
-    protected void renderPotionEffectsHook(ScaledResolution scaledRes, CallbackInfo info) {
-        if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noOverlay.getValue()){
-            info.cancel();
-        }
-    }
+	@Inject(method = "renderPotionEffects", at = @At("HEAD"), cancellable = true)
+	protected void renderPotionEffectsHook(ScaledResolution scaledRes, CallbackInfo info){
+		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noOverlay.getValue()){
+			info.cancel();
+		}
+	}
 }

@@ -13,7 +13,6 @@ import org.lwjgl.input.Mouse;
 import java.util.ArrayList;
 
 public class Frames {
-
     public ArrayList<Component> guicomponents;
     public Module.Category category;
     private final int width;

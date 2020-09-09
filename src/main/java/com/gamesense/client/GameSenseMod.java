@@ -29,97 +29,97 @@ import org.lwjgl.opengl.Display;
 import java.awt.*;
 
 @Mod(modid = GameSenseMod.MODID, name = GameSenseMod.FORGENAME, version = GameSenseMod.MODVER, clientSideOnly = true)
-public class GameSenseMod {
-    public static final String MODID = "gamesense";
-    public static String MODNAME = "GameSense";
-    public static final String MODVER = "v2.1.2";
-    public static final String FORGENAME = "GameSense";
+public class GameSenseMod{
+	public static final String MODID = "gamesense";
+	public static String MODNAME = "GameSense";
+	public static final String MODVER = "v2.1.2";
+	public static final String FORGENAME = "GameSense";
 
-    public static final Logger log = LogManager.getLogger(MODNAME);
+	public static final Logger log = LogManager.getLogger(MODNAME);
 
-    public ClickGUI clickGUI;
-    public SettingsManager settingsManager;
-    public Friends friends;
-    public ModuleManager moduleManager;
-    public SaveConfiguration saveConfiguration;
-    public LoadConfiguration loadConfiguration;
-    public SaveModules saveModules;
-    public LoadModules loadModules;
-    public CapeUtils capeUtils;
-    public MacroManager macroManager;
-    EventProcessor eventProcessor;
-    public static CFontRenderer fontRenderer;
-    public static Enemies enemies;
+	public ClickGUI clickGUI;
+	public SettingsManager settingsManager;
+	public Friends friends;
+	public ModuleManager moduleManager;
+	public SaveConfiguration saveConfiguration;
+	public LoadConfiguration loadConfiguration;
+	public SaveModules saveModules;
+	public LoadModules loadModules;
+	public CapeUtils capeUtils;
+	public MacroManager macroManager;
+	EventProcessor eventProcessor;
+	public static CFontRenderer fontRenderer;
+	public static Enemies enemies;
 
-    public static final EventBus EVENT_BUS = new EventManager();
+	public static final EventBus EVENT_BUS = new EventManager();
 
-    @Mod.Instance
-    private static GameSenseMod INSTANCE;
+	@Mod.Instance
+	private static GameSenseMod INSTANCE;
 
-    public GameSenseMod(){
-        INSTANCE = this;
-    }
+	public GameSenseMod(){
+		INSTANCE = this;
+	}
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event){
-    }
+	@Mod.EventHandler
+	public void preInit(FMLPreInitializationEvent event){
+	}
 
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event){
-        eventProcessor = new EventProcessor();
-        eventProcessor.init();
+	@Mod.EventHandler
+	public void init(FMLInitializationEvent event){
+		eventProcessor = new EventProcessor();
+		eventProcessor.init();
 
-        fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true, false);
+		fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true, false);
 
-        TpsUtils tpsUtils = new TpsUtils();
+		TpsUtils tpsUtils = new TpsUtils();
 
-        settingsManager = new SettingsManager();
-        log.info("Settings initialized!");
+		settingsManager = new SettingsManager();
+		log.info("Settings initialized!");
 
-        friends = new Friends();
-        enemies = new Enemies();
-        log.info("Friends and enemies initialized!");
+		friends = new Friends();
+		enemies = new Enemies();
+		log.info("Friends and enemies initialized!");
 
-        moduleManager = new ModuleManager();
-        log.info("Modules initialized!");
+		moduleManager = new ModuleManager();
+		log.info("Modules initialized!");
 
-        clickGUI = new ClickGUI();
-        log.info("ClickGUI initialized!");
+		clickGUI = new ClickGUI();
+		log.info("ClickGUI initialized!");
 
-        macroManager = new MacroManager();
-        log.info("Macros initialized!");
+		macroManager = new MacroManager();
+		log.info("Macros initialized!");
 
-        saveConfiguration = new SaveConfiguration();
-        Runtime.getRuntime().addShutdownHook(new Stopper());
-        log.info("Config Saved!");
+		saveConfiguration = new SaveConfiguration();
+		Runtime.getRuntime().addShutdownHook(new Stopper());
+		log.info("Config Saved!");
 
-        loadConfiguration = new LoadConfiguration();
-        log.info("Config Loaded!");
+		loadConfiguration = new LoadConfiguration();
+		log.info("Config Loaded!");
 
-        saveModules = new SaveModules();
-        Runtime.getRuntime().addShutdownHook(new Stopper());
-        log.info("Modules Saved!");
+		saveModules = new SaveModules();
+		Runtime.getRuntime().addShutdownHook(new Stopper());
+		log.info("Modules Saved!");
 
-        loadModules = new LoadModules();
-        log.info("Modules Loaded!");
+		loadModules = new LoadModules();
+		log.info("Modules Loaded!");
 
-        CommandManager.initCommands();
-        log.info("Commands initialized!");
+		CommandManager.initCommands();
+		log.info("Commands initialized!");
 
-        log.info("Initialization complete!\n");
-    }
+		log.info("Initialization complete!\n");
+	}
 
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event){
-        Display.setTitle(MODNAME + " " + MODVER);
+	@Mod.EventHandler
+	public void postInit(FMLPostInitializationEvent event){
+		Display.setTitle(MODNAME + " " + MODVER);
 
-        capeUtils = new CapeUtils();
-        log.info("Capes initialised!");
+		capeUtils = new CapeUtils();
+		log.info("Capes initialised!");
 
-        log.info("PostInitialization complete!\n");
-    }
+		log.info("PostInitialization complete!\n");
+	}
 
-    public static GameSenseMod getInstance(){
-        return INSTANCE;
-    }
+	public static GameSenseMod getInstance(){
+		return INSTANCE;
+	}
 }

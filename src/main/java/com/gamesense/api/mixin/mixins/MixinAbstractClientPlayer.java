@@ -16,22 +16,22 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 @Mixin(AbstractClientPlayer.class)
-public abstract class MixinAbstractClientPlayer {
+public abstract class MixinAbstractClientPlayer{
 
-    @Shadow @Nullable protected abstract NetworkPlayerInfo getPlayerInfo();
+	@Shadow @Nullable protected abstract NetworkPlayerInfo getPlayerInfo();
 
-    @Inject(method = "getLocationCape", at = @At("HEAD"), cancellable = true)
-    public void getLocationCape(CallbackInfoReturnable<ResourceLocation> cir){
-        UUID uuid = getPlayerInfo().getGameProfile().getId();
-        CapesModule capesModule = ((CapesModule) ModuleManager.getModuleByName("Capes"));
+	@Inject(method = "getLocationCape", at = @At("HEAD"), cancellable = true)
+	public void getLocationCape(CallbackInfoReturnable<ResourceLocation> cir){
+		UUID uuid = getPlayerInfo().getGameProfile().getId();
+		CapesModule capesModule = ((CapesModule) ModuleManager.getModuleByName("Capes"));
 
-        if(ModuleManager.isModuleEnabled("Capes") && GameSenseMod.getInstance().capeUtils.hasCape(uuid)) {
-            if (capesModule.capeMode.getValue().equalsIgnoreCase("Black")) {
-                cir.setReturnValue(new ResourceLocation("gamesense:textures/capeblack.png"));
-            }
-            else {
-                cir.setReturnValue(new ResourceLocation("gamesense:textures/capewhite.png"));
-            }
-        }
-    }
+		if (ModuleManager.isModuleEnabled("Capes") && GameSenseMod.getInstance().capeUtils.hasCape(uuid)){
+			if (capesModule.capeMode.getValue().equalsIgnoreCase("Black")){
+				cir.setReturnValue(new ResourceLocation("gamesense:textures/capeblack.png"));
+			}
+			else{
+				cir.setReturnValue(new ResourceLocation("gamesense:textures/capewhite.png"));
+			}
+		}
+	}
 }
