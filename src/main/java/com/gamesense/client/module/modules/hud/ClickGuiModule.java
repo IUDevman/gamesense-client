@@ -23,15 +23,21 @@ public class ClickGuiModule extends Module {
     public static Setting.Integer scrollSpeed;
     public static Setting.Integer opacity;
     public static Setting.Mode icon;
+    public static Setting.Mode backgroundColor;
     public static Setting.ColorSetting guiColor;
 
     public void setup(){
         ArrayList<String> icons = new ArrayList<>();
         icons.add("Font");
         icons.add("Image");
+        ArrayList<String> background = new ArrayList<>();
+        background.add("Black");
+        background.add("Silver");
+        background.add("Gray");
         opacity = registerInteger("Opacity", "Opacity", 200,50,255);
         scrollSpeed = registerInteger("Scroll Speed", "Scroll Speed", 10, 1, 20);
         icon = registerMode("Icon", "Icons", icons, "Image");
+        backgroundColor = registerMode("Background", "Background", background, "Gray");
         guiColor=registerColor("Color","Color");
     }
 
