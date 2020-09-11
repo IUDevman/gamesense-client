@@ -87,7 +87,7 @@ public class AutoCrystal extends Module {
     Setting.Integer placeDelay;
     Setting.Integer antiSuicideValue;
     Setting.Integer facePlace;
-    //Setting.Integer attackSpeed;
+    Setting.Integer attackSpeed;
     Setting.Double maxSelfDmg;
     Setting.Double minBreakDmg;
     Setting.Double enemyRange;
@@ -128,7 +128,7 @@ public class AutoCrystal extends Module {
         handBreak = registerMode("Hand", "Hand", hands, "Main");
         antiSuicide = registerBoolean("Anti Suicide", "AntiSuicide", false);
         antiSuicideValue = registerInteger("Pause Health", "PauseHealth", 10, 0, 36);
-        //attackSpeed = registerInteger("Attack Speed", "AttackSpeed", 12, 1, 20);
+        attackSpeed = registerInteger("Attack Speed", "AttackSpeed", 12, 1, 20);
         placeDelay = registerInteger("Place Delay", "PlaceDelay", 0, 0, 20);
         placeRange = registerDouble("Place Range", "PlaceRange", 6.0, 0.0, 6.0);
         range = registerDouble("Hit Range", "HitRange", 5.0, 0.0, 10.0);
@@ -206,57 +206,60 @@ public class AutoCrystal extends Module {
                 }
             }
 
-            isActive = true;
-            isBreaking = true;
+            if (System.nanoTime() / 1000000L - breakSystemTime >= 420 - attackSpeed.getValue() * 20) {
 
-            if (rotate.getValue()) {
-                lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
-            }
+                isActive = true;
+                isBreaking = true;
 
-            /**
-             * @Author Hoosiers
-             * Pretty WIP, but it seems to make the CA much faster
-             */
-            mc.playerController.attackEntity(mc.player, crystal);
-            if (crystal == null){
-                return;
-            }
-            if (handBreak.getValue().equalsIgnoreCase("Offhand") && !mc.player.getHeldItemOffhand().isEmpty) {
-                mc.player.swingArm(EnumHand.OFF_HAND);
+                if (rotate.getValue()) {
+                    lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+                }
+
+                /**
+                 * @Author Hoosiers
+                 * Pretty WIP, but it seems to make the CA much faster
+                 */
+                mc.playerController.attackEntity(mc.player, crystal);
+                if (crystal == null) {
+                    return;
+                }
+                if (handBreak.getValue().equalsIgnoreCase("Offhand") && !mc.player.getHeldItemOffhand().isEmpty) {
+                    mc.player.swingArm(EnumHand.OFF_HAND);
+                    if (cancelCrystal.getValue()) {
+                        crystal.setDead();
+                        mc.world.removeAllEntities();
+                        mc.world.getLoadedEntityList();
+                    }
+
+                } else {
+                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                    if (cancelCrystal.getValue()) {
+                        crystal.setDead();
+                        mc.world.removeAllEntities();
+                        mc.world.getLoadedEntityList();
+                    }
+
+                }
+                if (handBreak.getValue().equalsIgnoreCase("Both")) {
+                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                    mc.player.swingArm(EnumHand.OFF_HAND);
+                    if (cancelCrystal.getValue()) {
+                        crystal.setDead();
+                        mc.world.removeAllEntities();
+                        mc.world.getLoadedEntityList();
+                    }
+
+                }
                 if (cancelCrystal.getValue()) {
                     crystal.setDead();
                     mc.world.removeAllEntities();
                     mc.world.getLoadedEntityList();
+                    breakSystemTime = System.nanoTime() / 1000000L;
                 }
 
-            } else {
-                mc.player.swingArm(EnumHand.MAIN_HAND);
-                if (cancelCrystal.getValue()) {
-                    crystal.setDead();
-                    mc.world.removeAllEntities();
-                    mc.world.getLoadedEntityList();
-                }
-
+                isActive = false;
+                isBreaking = false;
             }
-            if (handBreak.getValue().equalsIgnoreCase("Both")) {
-                mc.player.swingArm(EnumHand.MAIN_HAND);
-                mc.player.swingArm(EnumHand.OFF_HAND);
-                if (cancelCrystal.getValue()) {
-                    crystal.setDead();
-                    mc.world.removeAllEntities();
-                    mc.world.getLoadedEntityList();
-                }
-
-            }
-            if (cancelCrystal.getValue()) {
-                crystal.setDead();
-                mc.world.removeAllEntities();
-                mc.world.getLoadedEntityList();
-            }
-
-            isActive = false;
-            isBreaking = false;
-
             if (!singlePlace.getValue()) {
                 return;
             }
