@@ -1,20 +1,25 @@
 package com.gamesense.client.module.modules.render;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.lwjgl.opengl.GL11;
+
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.util.render.GameSenseTessellator;
-import com.gamesense.api.util.GSColor;
 import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.GSColor;
+import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.ColorMain;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.gui.FontRenderer;
@@ -23,7 +28,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.world.WorldEvent;
-import org.lwjgl.opengl.GL11;
 
 public class LogoutSpots extends Module {
 	public LogoutSpots() {super("LogoutSpots", Category.Render);}
@@ -38,7 +42,7 @@ public class LogoutSpots extends Module {
 	public void setup() {
 		width=registerInteger("Width","Width",1,1,10);
 		color=registerColor("Box Color","Color",new GSColor(0,0,0));
-		color=registerColor("Nametag Color","NameColor");
+		nameColor=registerColor("Nametag Color","NameColor");
 	}
 
 	@EventHandler

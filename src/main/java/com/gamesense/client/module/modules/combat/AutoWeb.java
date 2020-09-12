@@ -1,18 +1,26 @@
 package com.gamesense.client.module.modules.combat;
 
+import java.util.List;
+
+import com.gamesense.api.players.friends.Friends;
+import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.Wrapper;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.client.module.*;
-import com.gamesense.api.settings.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.*;
-import net.minecraft.network.play.client.*;
-import net.minecraft.item.*;
-import net.minecraft.block.*;
-import com.gamesense.api.players.friends.*;
-import com.gamesense.api.util.*;
-import java.util.*;
+import com.gamesense.client.module.Module;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockWeb;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.CPacketAnimation;
+import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.client.CPacketHeldItemChange;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class AutoWeb extends Module{
 
