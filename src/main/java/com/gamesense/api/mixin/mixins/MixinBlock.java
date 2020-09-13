@@ -9,12 +9,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Block.class)
-public abstract class MixinBlock{
+public abstract class MixinBlock {
 
-	@Shadow public abstract String getLocalizedName();
+    @Shadow
+    public abstract String getLocalizedName();
 
-	@Inject(method = "getRenderLayer", at = @At("HEAD"))
-	public void preGetRenderLayer(CallbackInfoReturnable<BlockRenderLayer> cir){
-		if (this.getLocalizedName().equalsIgnoreCase("hmmm")){}
-	}
+    @Inject(method = "getRenderLayer", at = @At("HEAD"))
+    public void preGetRenderLayer(CallbackInfoReturnable<BlockRenderLayer> cir) {
+        if (this.getLocalizedName().equalsIgnoreCase("hmmm")) {
+        }
+    }
 }

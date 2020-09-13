@@ -1,13 +1,14 @@
 package com.gamesense.api.players.enemy;
 
-public class Enemy{
+public class Enemy {
 
-	String name;
-	public Enemy(String n){
-		name = n;
-	}
+    String name;
 
-	public String getName(){
-		return name;
-	}
+    public Enemy(String n) {
+        name = n;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

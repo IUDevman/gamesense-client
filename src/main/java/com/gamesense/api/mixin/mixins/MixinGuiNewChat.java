@@ -14,18 +14,22 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.List;
 
 @Mixin(GuiNewChat.class)
-public abstract class MixinGuiNewChat{
+public abstract class MixinGuiNewChat {
 
-	@Shadow private int scrollPos;
+    @Shadow
+    private int scrollPos;
 
-	@Shadow @Final private List<ChatLine> drawnChatLines;
+    @Shadow
+    @Final
+    private List<ChatLine> drawnChatLines;
 
-	@Shadow public abstract int getLineCount();
+    @Shadow
+    public abstract int getLineCount();
 
-	@Redirect(method = "drawChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiNewChat;drawRect(IIIII)V"))
-	private void drawRectBackgroundClean(int left, int top, int right, int bottom, int color){
-		if (!ModuleManager.isModuleEnabled("ChatModifier") || !((ChatModifier)ModuleManager.getModuleByName("ChatModifier")).clearBkg.getValue()){
-			Gui.drawRect(left, top, right, bottom, color);
-			}
-	}
+    @Redirect(method = "drawChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiNewChat;drawRect(IIIII)V"))
+    private void drawRectBackgroundClean(int left, int top, int right, int bottom, int color) {
+        if (!ModuleManager.isModuleEnabled("ChatModifier") || !((ChatModifier) ModuleManager.getModuleByName("ChatModifier")).clearBkg.getValue()) {
+            Gui.drawRect(left, top, right, bottom, color);
+        }
+    }
 }

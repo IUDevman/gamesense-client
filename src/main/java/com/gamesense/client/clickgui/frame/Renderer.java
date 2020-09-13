@@ -17,20 +17,20 @@ public class Renderer {
      */
 
     //no gradient, single color
-    public static void drawRectStatic(int leftX, int leftY, int rightX, int rightY, GSColor color){
-        Gui.drawRect(leftX,leftY,rightX,rightY,color.getRGB());
+    public static void drawRectStatic(int leftX, int leftY, int rightX, int rightY, GSColor color) {
+        Gui.drawRect(leftX, leftY, rightX, rightY, color.getRGB());
     }
 
     //top down color gradient
-    public static void drawRectGradient(int leftX, int leftY, int rightX, int rightY, GSColor startColor, GSColor endColor){
-        float s = (float)(startColor.getRGB() >> 24 & 255) / 255.0F;
-        float s1 = (float)(startColor.getRGB() >> 16 & 255) / 255.0F;
-        float s2 = (float)(startColor.getRGB() >> 8 & 255) / 255.0F;
-        float s3 = (float)(startColor.getRGB() & 255) / 255.0F;
-        float e1 = (float)(endColor.getRGB() >> 24 & 255) / 255.0F;
-        float e2 = (float)(endColor.getRGB() >> 16 & 255) / 255.0F;
-        float e3 = (float)(endColor.getRGB() >> 8 & 255) / 255.0F;
-        float e4 = (float)(endColor.getRGB() & 255) / 255.0F;
+    public static void drawRectGradient(int leftX, int leftY, int rightX, int rightY, GSColor startColor, GSColor endColor) {
+        float s = (float) (startColor.getRGB() >> 24 & 255) / 255.0F;
+        float s1 = (float) (startColor.getRGB() >> 16 & 255) / 255.0F;
+        float s2 = (float) (startColor.getRGB() >> 8 & 255) / 255.0F;
+        float s3 = (float) (startColor.getRGB() & 255) / 255.0F;
+        float e1 = (float) (endColor.getRGB() >> 24 & 255) / 255.0F;
+        float e2 = (float) (endColor.getRGB() >> 16 & 255) / 255.0F;
+        float e3 = (float) (endColor.getRGB() >> 8 & 255) / 255.0F;
+        float e4 = (float) (endColor.getRGB() & 255) / 255.0F;
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
@@ -54,14 +54,13 @@ public class Renderer {
         return ClickGuiModule.guiColor.getValue();
     }
 
-    public static GSColor getTransColor (boolean hovered) {
+    public static GSColor getTransColor(boolean hovered) {
         GSColor transColor = new GSColor(195, 195, 195, ClickGuiModule.opacity.getValue() - 50);
 
-        if (ClickGuiModule.backgroundColor.getValue().equalsIgnoreCase("Black")){
-            transColor = new GSColor(0, 0, 0,ClickGuiModule.opacity.getValue() - 50);
-        }
-        else if (ClickGuiModule.backgroundColor.getValue().equalsIgnoreCase("Silver")){
-            transColor = new GSColor(100, 100, 100,ClickGuiModule.opacity.getValue() - 50);
+        if (ClickGuiModule.backgroundColor.getValue().equalsIgnoreCase("Black")) {
+            transColor = new GSColor(0, 0, 0, ClickGuiModule.opacity.getValue() - 50);
+        } else if (ClickGuiModule.backgroundColor.getValue().equalsIgnoreCase("Silver")) {
+            transColor = new GSColor(100, 100, 100, ClickGuiModule.opacity.getValue() - 50);
         }
 
         if (hovered) return new GSColor(transColor.darker().darker());
@@ -69,6 +68,6 @@ public class Renderer {
     }
 
     public static GSColor getFontColor() {
-        return new GSColor(255,255,255);
+        return new GSColor(255, 255, 255);
     }
 }

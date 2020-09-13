@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockLiquid.class)
-public class MixinBlockLiquid{
+public class MixinBlockLiquid {
 
-	@Inject(method = "canCollideCheck", at = @At("HEAD"), cancellable = true)
-	public void canCollideCheck(final IBlockState blockState, final boolean b, final CallbackInfoReturnable<Boolean> callbackInfoReturnable){
-		callbackInfoReturnable.setReturnValue(ModuleManager.isModuleEnabled("LiquidInteract") || (b && (int) blockState.getValue((IProperty) BlockLiquid.LEVEL) == 0));
-	}
+    @Inject(method = "canCollideCheck", at = @At("HEAD"), cancellable = true)
+    public void canCollideCheck(final IBlockState blockState, final boolean b, final CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        callbackInfoReturnable.setReturnValue(ModuleManager.isModuleEnabled("LiquidInteract") || (b && (int) blockState.getValue((IProperty) BlockLiquid.LEVEL) == 0));
+    }
 }

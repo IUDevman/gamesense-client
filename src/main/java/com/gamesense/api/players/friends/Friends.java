@@ -3,38 +3,39 @@ package com.gamesense.api.players.friends;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Friends{
+public class Friends {
 
-	public static List<Friend> friends;
-	public Friends(){
-		friends = new ArrayList<>();
-	}
+    public static List<Friend> friends;
 
-	public static List<Friend> getFriends(){
-		return friends;
-	}
+    public Friends() {
+        friends = new ArrayList<>();
+    }
 
-	public static boolean isFriend(String name){
-		boolean b = false;
-		for (Friend f : getFriends()){
-			if (f.getName().equalsIgnoreCase(name)) b = true;
-		}
-		return b;
-	}
+    public static List<Friend> getFriends() {
+        return friends;
+    }
 
-	public Friend getFriendByName(String name){
-		Friend fr = null;
-		for (Friend f : getFriends()){
-			if (f.getName().equalsIgnoreCase(name)) fr = f;
-		}
-		return fr;
-	}
+    public static boolean isFriend(String name) {
+        boolean b = false;
+        for (Friend f : getFriends()) {
+            if (f.getName().equalsIgnoreCase(name)) b = true;
+        }
+        return b;
+    }
 
-	public void addFriend(String name){
-		friends.add(new Friend(name));
-	}
+    public Friend getFriendByName(String name) {
+        Friend fr = null;
+        for (Friend f : getFriends()) {
+            if (f.getName().equalsIgnoreCase(name)) fr = f;
+        }
+        return fr;
+    }
 
-	public void delFriend(String name){
-		friends.remove(getFriendByName(name));
-	}
+    public void addFriend(String name) {
+        friends.add(new Friend(name));
+    }
+
+    public void delFriend(String name) {
+        friends.remove(getFriendByName(name));
+    }
 }

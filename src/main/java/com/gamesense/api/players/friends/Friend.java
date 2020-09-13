@@ -1,13 +1,14 @@
 package com.gamesense.api.players.friends;
 
-public class Friend{
+public class Friend {
 
-	String name;
-	public Friend(String n){
-		name = n;
-	}
+    String name;
 
-	public String getName(){
-		return name;
-	}
+    public Friend(String n) {
+        name = n;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
