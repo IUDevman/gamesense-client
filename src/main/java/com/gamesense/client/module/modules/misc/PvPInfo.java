@@ -36,6 +36,9 @@ public class PvPInfo extends Module{
 	Setting.Boolean popcounter;
 	Setting.Boolean strengthdetect;
 	Setting.Mode ChatColor;
+	Setting.Mode PlayerColor;
+	Setting.Mode CounterColor;
+	Setting.Mode PopColor;
 
 	public void setup(){
 		ArrayList<String> colors = new ArrayList<>();
@@ -59,7 +62,9 @@ public class PvPInfo extends Module{
 		pearlalert = registerBoolean("Pearl Alert", "PearlAlert",false);
 		popcounter = registerBoolean("Pop Counter", "PopCounter", false);
 		strengthdetect = registerBoolean("Strength Detect", "StrengthDetect", false);
-		ChatColor = registerMode("Color", "Color", colors, "Light Purple");
+		ChatColor = registerMode("ChatColor", "ChatColor", colors, "Dark Gray");
+		PlayerColor = registerMode("PlayerColor", "PlayerColor", colors, "Dark Aqua");
+		PopColor = registerMode("PopColor", "PopColor", colors, "Gold");
 	}
 
 	@EventHandler
@@ -71,12 +76,12 @@ public class PvPInfo extends Module{
 
 		 if (popList.get(event.getEntity().getName()) == null){
 			 popList.put(event.getEntity().getName(), 1);
-			 Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
+			 Command.sendRawMessage(getChatColor() + "" + ChatFormatting.BOLD + "[" + ChatFormatting.RESET + ChatFormatting.YELLOW + "" + ChatFormatting.BOLD + "Totem Counter" + ChatFormatting.RESET + getChatColor() + "" + ChatFormatting.BOLD + "]" + ChatFormatting.RESET + getPlayerColor() + " " + ChatFormatting.BOLD + event.getEntity().getName() + ChatFormatting.RESET + getChatColor() + " popped " + ChatFormatting.RESET + getPopColor() + "" + ChatFormatting.BOLD + 1 + ChatFormatting.RESET + getChatColor() + " totem!");
 		} else if (!(popList.get(event.getEntity().getName()) == null)){
 			 int popCounter = popList.get(event.getEntity().getName());
 			 int newPopCounter = popCounter += 1;
 			 popList.put(event.getEntity().getName(), newPopCounter);
-			 Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + getTextColor() + " totems!");
+			 Command.sendRawMessage(getChatColor() + "" + ChatFormatting.BOLD + "[" + ChatFormatting.RESET + ChatFormatting.YELLOW + "" + ChatFormatting.BOLD + "Totem Counter" + ChatFormatting.RESET + getChatColor() + "" + ChatFormatting.BOLD + "]" + ChatFormatting.RESET + getPlayerColor() + " " + ChatFormatting.BOLD + event.getEntity().getName() + ChatFormatting.RESET + getChatColor() + " popped " + ChatFormatting.RESET + getPopColor() + "" + ChatFormatting.BOLD + newPopCounter + ChatFormatting.RESET + getChatColor() + " totems!");
 		}
 	}
 	});
@@ -90,7 +95,7 @@ public class PvPInfo extends Module{
 				if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())){
 					if (!knownPlayers.contains(e)){
 						knownPlayers.add(e);
-						Command.sendClientMessage(getTextColor() + e.getName() + " has been spotted thanks to GameSense!");
+						Command.sendRawMessage(getChatColor() + "" + ChatFormatting.BOLD + "[" + ChatFormatting.RESET + ChatFormatting.YELLOW + "" + ChatFormatting.BOLD + "Visual Range" + ChatFormatting.RESET + getChatColor() + "" + ChatFormatting.BOLD + "]" + ChatFormatting.RESET + getPlayerColor() + " " + ChatFormatting.BOLD + e.getName() + ChatFormatting.RESET + getChatColor() + " has been spotted thanks to " + ChatFormatting.RESET + ChatFormatting.WHITE + "Game" + ChatFormatting.RESET + ChatFormatting.DARK_GREEN + "Sense" + ChatFormatting.RESET + getChatColor() + "!");
 					}
 				}
 			}
@@ -114,7 +119,7 @@ public class PvPInfo extends Module{
 				if (e instanceof EntityEnderPearl){
 					if (!antipearlspamplz.contains(e)){
 						antipearlspamplz.add(e);
-						Command.sendClientMessage(getTextColor() + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + " has just thrown a pearl!");
+						Command.sendRawMessage(getChatColor() + "" + ChatFormatting.BOLD + "[" + ChatFormatting.RESET + ChatFormatting.BLUE + "" + ChatFormatting.BOLD + "Pearl Watcher" + ChatFormatting.RESET + getChatColor() + "" + ChatFormatting.BOLD + "]" + ChatFormatting.RESET + getPlayerColor() + " " + ChatFormatting.BOLD + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + ChatFormatting.RESET + ChatFormatting.DARK_BLUE + " has just thrown a pearl!");
 					}
 				}
 			}
@@ -125,7 +130,7 @@ public class PvPInfo extends Module{
 		for (EntityPlayer player : mc.world.playerEntities){
 			if (player.getHealth() <= 0){
 				if (popList.containsKey(player.getName())){
-					Command.sendClientMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popList.get(player.getName()) + getTextColor() + " totems!");
+					Command.sendRawMessage(getChatColor() + "" + ChatFormatting.BOLD + "[" + ChatFormatting.RESET + ChatFormatting.YELLOW + "" + ChatFormatting.BOLD + "Totem Counter" + ChatFormatting.RESET + getChatColor() + "" + ChatFormatting.BOLD + "]" + ChatFormatting.RESET + getPlayerColor() + " " + ChatFormatting.BOLD + player.getName() + ChatFormatting.RESET + getChatColor() + " died after popping " + ChatFormatting.RESET + getPopColor() + "" + ChatFormatting.BOLD + popList.get(player.getName()) + ChatFormatting.RESET + getChatColor() + " totems!");
 					popList.remove(player.getName(), popList.get(player.getName()));
 				}
 			}
@@ -138,12 +143,12 @@ public class PvPInfo extends Module{
 				EntityPlayer ent = (EntityPlayer) var1.next();
 				if (EntityUtil.isLiving(ent) && ent.getHealth() > 0.0F){
 					if (ent.isPotionActive(MobEffects.STRENGTH) && !this.strengthedPlayers.contains(ent)){
-						Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " has (drank) strength!");
+						Command.sendRawMessage(getChatColor() + "" + ChatFormatting.BOLD + "[" + ChatFormatting.RESET + ChatFormatting.DARK_RED + "" + ChatFormatting.BOLD + "Strength Watcher" + ChatFormatting.RESET + getChatColor() + "" + ChatFormatting.BOLD + "]" + ChatFormatting.RESET + getPlayerColor() + " " + ChatFormatting.BOLD + ent.getDisplayNameString() + ChatFormatting.RESET + ChatFormatting.RED + " has (drank) strength!");
 						this.strengthedPlayers.add(ent);
 					}
 
 					if (this.strengthedPlayers.contains(ent) && !ent.isPotionActive(MobEffects.STRENGTH)){
-						Command.sendClientMessage(getTextColor() + ent.getDisplayNameString() + " no longer has strength!");
+						Command.sendRawMessage(getChatColor() + "" + ChatFormatting.BOLD + "[" + ChatFormatting.RESET + ChatFormatting.DARK_RED + "" + ChatFormatting.BOLD + "Strength Watcher" + ChatFormatting.RESET + getChatColor() + "" + ChatFormatting.BOLD + "]" + ChatFormatting.RESET + getPlayerColor() + " " + ChatFormatting.BOLD + ent.getDisplayNameString() + ChatFormatting.RESET + ChatFormatting.GREEN + " no longer has strength!");
 						this.strengthedPlayers.remove(ent);
 					}
 					this.checkRender();
@@ -200,7 +205,7 @@ public class PvPInfo extends Module{
 		this.renderPlayers = new HashSet();
 	}
 
-	public ChatFormatting getTextColor(){
+	public ChatFormatting getChatColor(){
 		if (ChatColor.getValue().equalsIgnoreCase("Black")){
 			return ChatFormatting.BLACK;
 		}
@@ -247,6 +252,110 @@ public class PvPInfo extends Module{
 			return ChatFormatting.WHITE;
 		}
 		if (ChatColor.getValue().equalsIgnoreCase("Aqua")){
+			return ChatFormatting.AQUA;
+		}
+		return null;
+	}
+
+	public ChatFormatting getPlayerColor(){
+		if (PlayerColor.getValue().equalsIgnoreCase("Black")){
+			return ChatFormatting.BLACK;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Dark Green")){
+			return ChatFormatting.DARK_GREEN;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Dark Red")){
+			return ChatFormatting.DARK_RED;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Gold")){
+			return ChatFormatting.GOLD;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Dark Gray")){
+			return ChatFormatting.DARK_GRAY;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Green")){
+			return ChatFormatting.GREEN;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Red")){
+			return ChatFormatting.RED;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Yellow")){
+			return ChatFormatting.YELLOW;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Dark Blue")){
+			return ChatFormatting.DARK_BLUE;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Dark Aqua")){
+			return ChatFormatting.DARK_AQUA;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Dark Purple")){
+			return ChatFormatting.DARK_PURPLE;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Gray")){
+			return ChatFormatting.GRAY;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Blue")){
+			return ChatFormatting.BLUE;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Light Purple")){
+			return ChatFormatting.LIGHT_PURPLE;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("White")){
+			return ChatFormatting.WHITE;
+		}
+		if (PlayerColor.getValue().equalsIgnoreCase("Aqua")){
+			return ChatFormatting.AQUA;
+		}
+		return null;
+	}
+
+	public ChatFormatting getPopColor(){
+		if (PopColor.getValue().equalsIgnoreCase("Black")){
+			return ChatFormatting.BLACK;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Dark Green")){
+			return ChatFormatting.DARK_GREEN;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Dark Red")){
+			return ChatFormatting.DARK_RED;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Gold")){
+			return ChatFormatting.GOLD;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Dark Gray")){
+			return ChatFormatting.DARK_GRAY;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Green")){
+			return ChatFormatting.GREEN;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Red")){
+			return ChatFormatting.RED;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Yellow")){
+			return ChatFormatting.YELLOW;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Dark Blue")){
+			return ChatFormatting.DARK_BLUE;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Dark Aqua")){
+			return ChatFormatting.DARK_AQUA;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Dark Purple")){
+			return ChatFormatting.DARK_PURPLE;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Gray")){
+			return ChatFormatting.GRAY;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Blue")){
+			return ChatFormatting.BLUE;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Light Purple")){
+			return ChatFormatting.LIGHT_PURPLE;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("White")){
+			return ChatFormatting.WHITE;
+		}
+		if (PopColor.getValue().equalsIgnoreCase("Aqua")){
 			return ChatFormatting.AQUA;
 		}
 		return null;

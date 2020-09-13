@@ -46,6 +46,8 @@ public class HUD extends Module {
 	public static Setting.Boolean customFont;
 	Setting.Boolean PotionEffects;
 	Setting.Boolean Watermark;
+	Setting.Integer watermarkx;
+	Setting.Integer watermarky;
 	Setting.Boolean Welcomer;
 	Setting.Boolean Inventory;
 	Setting.Integer inventoryX;
@@ -104,6 +106,8 @@ public class HUD extends Module {
 		psortUp = registerBoolean("Potion Sort Up", "PotionSortUp", false);
 		pright = registerBoolean("Potion Right", "PotionRight", false);
 		Watermark = registerBoolean("Watermark", "Watermark", false);
+		watermarkx = registerInteger("Watermark X", "WatermarkX", 0, 0, 1000);
+		watermarky = registerInteger("Watermark Y", "WatermarkY", 0, 0, 1000);
 		Welcomer = registerBoolean("Welcomer", "Welcomer", false);
 		welcomex = registerInteger("Welcomer X", "WelcomerX", 0, 0, 1000);
 		welcomey = registerInteger("Welcomer Y", "WelcomerY", 0, 0, 1000);
@@ -146,7 +150,7 @@ public class HUD extends Module {
 		}
 
 		if (Watermark.getValue()) {
-			FontUtils.drawStringWithShadow(customFont.getValue(), "GameSense " + GameSenseMod.MODVER, 0, 0, c);
+			FontUtils.drawStringWithShadow(customFont.getValue(), "Game" + ChatFormatting.DARK_GREEN + "Sense " + ChatFormatting.RESET + GameSenseMod.MODVER, watermarkx.getValue(), watermarky.getValue(), c);
 		}
 
 		if (Welcomer.getValue()) {
@@ -156,7 +160,7 @@ public class HUD extends Module {
 		if (Inventory.getValue()) {
 			drawInventory(inventoryX.getValue(), inventoryY.getValue());
 		}
-
+watermarkx = registerInteger("Watermark X", "WatermarkX", 0, 0, 1000);
 		GSColor on = new GSColor(0, 255, 0);
 		GSColor off = new GSColor(255, 0, 0);
 		if (GameSenseInfo.getValue()) {
