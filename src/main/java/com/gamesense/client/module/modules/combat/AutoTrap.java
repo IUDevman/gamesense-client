@@ -4,7 +4,9 @@ import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -26,311 +28,328 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gamesense.api.util.world.BlockUtils.canBeClicked;
 import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
 
-public class AutoTrap extends Module{
-	public AutoTrap(){
-		super("AutoTrap", Category.Combat);
-	}
-	private Setting.Integer range;
-	private Setting.Integer blocksPerTick;
-	private Setting.Integer tickDelay;
-	private Setting.Boolean rotate;
-	private EntityPlayer closestTarget;
-	private String lastTickTargetName;
-	private int playerHotbarSlot = -1;
-	private int lastHotbarSlot = -1;
-	private int delayStep = 0;
-	private boolean isSneaking = false;
-	private int offsetStep = 0;
-	private boolean firstRun;
-	Setting.Mode mode;
-
-	public void setup(){
-		ArrayList<String> modes = new ArrayList<>();
-		modes.add("Normal");
-		modes.add("NoStep");
-		mode = registerMode("Mode", "Mode", modes, "Normal");
-		rotate = registerBoolean("Rotate", "Rotate", true);
-		range = registerInteger("Range", "Range", 6, 0, 6);
-		blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 5, 0, 10);
-		tickDelay = registerInteger("Delay", "Delay", 0, 0, 10);
-	}
-
-	protected void onEnable(){
-
-		if (mc.player == null){
-			this.disable();
-			return;
-		}
-
-		firstRun = true;
-
-		// save initial player hand
-		playerHotbarSlot = mc.player.inventory.currentItem;
-		lastHotbarSlot = -1;
-	}
-
-	@Override
-	protected void onDisable(){
-
-		if (mc.player == null){
-			return;
-		}
-
-		if (lastHotbarSlot != playerHotbarSlot && playerHotbarSlot != -1){
-			mc.player.inventory.currentItem = playerHotbarSlot;
-		}
-
-		if (isSneaking){
-			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-			isSneaking = false;
-		}
-
-		playerHotbarSlot = -1;
-		lastHotbarSlot = -1;
-	}
-
-	@Override
-	public void onUpdate(){
-
-		if (mc.player == null){
-			return;
-		}
-
-		if (!firstRun){
-			if (delayStep < tickDelay.getValue()){
-				delayStep++;
-				return;
-			} else{
-				delayStep = 0;
-			}
-		}
-
-		findClosestTarget();
-
-		if (closestTarget == null){
-			if (firstRun){
-				firstRun = false;
-			}
-			return;
-		}
-
-		if (firstRun){
-			firstRun = false;
-			lastTickTargetName = closestTarget.getName();
-
-		} else if (!lastTickTargetName.equals(closestTarget.getName())){
-			lastTickTargetName = closestTarget.getName();
-			offsetStep = 0;
-		}
-
-		List<Vec3d> placeTargets = new ArrayList<>();
-
-		if (mode.getValue().equalsIgnoreCase("Normal")){
-			Collections.addAll(placeTargets, Offsets.TRAP);
-		}
-		if (mode.getValue().equalsIgnoreCase("NoStep")){
-			Collections.addAll(placeTargets, Offsets.TRAPFULLROOF);
-		}
-
-		// TODO: dont use static bridging in offset but calculate them on the fly
-		// based on view direction (or relative direction of target to player)
-		// (add full/half n/e/s/w patterns to append dynamically)
-
-		// TODO: sort offsetList by optimal caging success factor -> 
-		// sort them by pos y up AND start building behind target
-
-		int blocksPlaced = 0;
-
-		while (blocksPlaced < blocksPerTick.getValue()){
-
-			if (offsetStep >= placeTargets.size()){
-				offsetStep = 0;
-				break;
-			}
-
-			BlockPos offsetPos = new BlockPos(placeTargets.get(offsetStep));
-			BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).down().add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-
-			if (placeBlockInRange(targetPos, range.getValue())){
-				blocksPlaced++;
-			}
-
-			offsetStep++;
-		}
-
-		if (blocksPlaced > 0){
-
-			if (lastHotbarSlot != playerHotbarSlot && playerHotbarSlot != -1){
-				mc.player.inventory.currentItem = playerHotbarSlot;
-				lastHotbarSlot = playerHotbarSlot;
-			}
-
-			if (isSneaking){
-				mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-				isSneaking = false;
-			}
-		}
-	}
-
-	private boolean placeBlockInRange(BlockPos pos, double range){
-
-		// check if block is already placed
-		Block block = mc.world.getBlockState(pos).getBlock();
-		if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)){
-			return false;
-		}
-
-		// check if entity blocks placing
-		for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos))){
-			if (!(entity instanceof EntityItem) && !(entity instanceof EntityXPOrb)){
-				return false;
-			}
-		}
-
-		EnumFacing side = BlockUtils.getPlaceableSide(pos);
-
-		// check if we have a block adjacent to blockpos to click at
-		if (side == null){
-			return false;
-		}
-
-		BlockPos neighbour = pos.offset(side);
-		EnumFacing opposite = side.getOpposite();
-
-		// check if neighbor can be right clicked
-		if (!canBeClicked(neighbour)){
-			return false;
-		}
-
-		Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-		Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
-
-		if (mc.player.getPositionVector().distanceTo(hitVec) > range){
-			return false;
-		}
-
-		int obiSlot = findObiInHotbar();
-
-		if (obiSlot == -1){
-			this.disable();
-		}
-
-		if (lastHotbarSlot != obiSlot){
-			mc.player.inventory.currentItem = obiSlot;
-			lastHotbarSlot = obiSlot;
-		}
-
-		if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)){
-			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
-			isSneaking = true;
-		}
-
-		if (rotate.getValue()){
-			faceVectorPacketInstant(hitVec);
-		}
-
-		mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-		mc.player.swingArm(EnumHand.MAIN_HAND);
-		mc.rightClickDelayTimer = 4;
-
-		return true;
-	}
-
-	private int findObiInHotbar(){
-
-		// search blocks in hotbar
-		int slot = -1;
-		for (int i = 0; i < 9; i++){
-
-			// filter out non-block items
-			ItemStack stack = mc.player.inventory.getStackInSlot(i);
-
-			if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)){
-				continue;
-			}
-
-			Block block = ((ItemBlock) stack.getItem()).getBlock();
-			if (block instanceof BlockObsidian){
-				slot = i;
-				break;
-			}
-		}
-		return slot;
-	}
-
-	private void findClosestTarget(){
-
-		List<EntityPlayer> playerList = mc.world.playerEntities;
-
-		closestTarget = null;
-
-		for (EntityPlayer target : playerList){
-
-			if (target == mc.player){
-				continue;
-			}
-
-			if (Friends.isFriend(target.getName())){
-				continue;
-			}
-
-			if (!EntityUtil.isLiving(target)){
-				continue;
-			}
-
-			if ((target).getHealth() <= 0){
-				continue;
-			}
-
-			if (closestTarget == null){
-				closestTarget = target;
-				continue;
-			}
-
-			if (mc.player.getDistance(target) < mc.player.getDistance(closestTarget)){
-				closestTarget = target;
-			}
-		}
-	}
-
-	private static class Offsets{
-
-		private static final Vec3d[] TRAP ={
-				new Vec3d(0, 0, -1),
-				new Vec3d(1, 0, 0),
-				new Vec3d(0, 0, 1),
-				new Vec3d(-1, 0, 0),
-				new Vec3d(0, 1, -1),
-				new Vec3d(1, 1, 0),
-				new Vec3d(0, 1, 1),
-				new Vec3d(-1, 1, 0),
-				new Vec3d(0, 2, -1),
-				new Vec3d(1, 2, 0),
-				new Vec3d(0, 2, 1),
-				new Vec3d(-1, 2, 0),
-				new Vec3d(0, 3, -1),
-				new Vec3d(0, 3, 0)
-		};
-
-		private static final Vec3d[] TRAPFULLROOF ={
-				new Vec3d(0, 0, -1),
-				new Vec3d(1, 0, 0),
-				new Vec3d(0, 0, 1),
-				new Vec3d(-1, 0, 0),
-				new Vec3d(0, 1, -1),
-				new Vec3d(1, 1, 0),
-				new Vec3d(0, 1, 1),
-				new Vec3d(-1, 1, 0),
-				new Vec3d(0, 2, -1),
-				new Vec3d(1, 2, 0),
-				new Vec3d(0, 2, 1),
-				new Vec3d(-1, 2, 0),
-				new Vec3d(0, 3, -1),
-				new Vec3d(0, 3, 0),
-				new Vec3d(0, 4, 0)
-		};
-	}
+/**
+ * @Author Hoosiers on 09/19/20
+ * Ported and modified from Surround.java
+ */
+
+public class AutoTrap extends Module {
+    public AutoTrap(){
+        super("AutoTrap", Category.Combat);
+    }
+
+    Setting.Mode trapType;
+    Setting.Boolean chatMsg;
+    Setting.Boolean rotate;
+    Setting.Boolean disableNone;
+    Setting.Integer enemyRange;
+    Setting.Integer tickDelay;
+    Setting.Integer blocksPerTick;
+
+    public void setup(){
+        ArrayList<String> trapTypes = new ArrayList<>();
+        trapTypes.add("Normal");
+        trapTypes.add("No Step");
+
+        trapType = registerMode("Mode", "Mode", trapTypes, "Normal");
+        disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
+        rotate = registerBoolean("Rotate", "Rotate", true);
+        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
+        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
+        enemyRange = registerInteger("Range", "Range",4, 0, 6);
+        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+    }
+
+    private int cachedHotbarSlot = -1;
+    private int obbyHotbarSlot;
+
+    private boolean noObby = false;
+    private boolean isSneaking = false;
+    private boolean firstRun = false;
+
+    private int blocksPlaced;
+    private int delayTimeTicks = 0;
+    private int offsetSteps = 0;
+
+    private EntityPlayer closestTarget;
+
+    public void onEnable(){
+        if (mc.player == null){
+            disable();
+            return;
+        }
+
+        if (chatMsg.getValue()){
+            Command.sendRawMessage("\u00A7aAutoTrap turned ON!");
+        }
+
+        cachedHotbarSlot = mc.player.inventory.currentItem;
+        obbyHotbarSlot = -1;
+    }
+
+    public void onDisable(){
+        if (mc.player == null){
+            return;
+        }
+
+        if (chatMsg.getValue()){
+            if (noObby){
+                Command.sendRawMessage("\u00A7cNo obsidian detected... AutoTrap turned OFF!");
+            }
+            else {
+                Command.sendRawMessage("\u00A7cAutoTrap turned OFF!");
+            }
+        }
+
+        if (obbyHotbarSlot != cachedHotbarSlot && cachedHotbarSlot != -1){
+            mc.player.inventory.currentItem = cachedHotbarSlot;
+        }
+
+        if (isSneaking){
+            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+            isSneaking = false;
+        }
+
+        cachedHotbarSlot = -1;
+        obbyHotbarSlot = -1;
+
+        noObby = false;
+        firstRun = true;
+        AutoCrystal.stopAC = false;
+    }
+
+    public void onUpdate(){
+        if (mc.player == null){
+            disable();
+            return;
+        }
+
+        if (disableNone.getValue() && noObby){
+            mc.player.inventory.currentItem = cachedHotbarSlot;
+            disable();
+            return;
+        }
+
+        findClosestTarget();
+
+        if (closestTarget == null){
+            return;
+        }
+
+        if (firstRun){
+            firstRun = false;
+            if (findObsidianSlot() == -1){
+                noObby = true;
+            }
+        }
+        else {
+            if (delayTimeTicks < tickDelay.getValue()){
+                delayTimeTicks++;
+                return;
+            }
+            else {
+                delayTimeTicks = 0;
+            }
+        }
+
+        blocksPlaced = 0;
+
+        while (blocksPlaced <= blocksPerTick.getValue()){
+
+            List<Vec3d> placeTargets = new ArrayList<>();
+            int maxSteps;
+
+            if (trapType.getValue().equalsIgnoreCase("Normal")){
+                Collections.addAll(placeTargets, Offsets.TRAP);
+                maxSteps = AutoTrap.Offsets.TRAP.length;
+            }
+            else {
+                Collections.addAll(placeTargets, Offsets.TRAPFULLROOF);
+                maxSteps = AutoTrap.Offsets.TRAPFULLROOF.length;
+            }
+
+            if (offsetSteps >= maxSteps){
+                offsetSteps = 0;
+                break;
+            }
+
+            BlockPos offsetPos = new BlockPos(placeTargets.get(offsetSteps));
+            BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+
+            boolean tryPlacing = true;
+
+            if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()){
+                tryPlacing = false;
+            }
+
+            for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetPos))){
+                if (entity instanceof EntityItem || entity instanceof EntityXPOrb){
+                    tryPlacing = false;
+                    break;
+                }
+            }
+
+            if (tryPlacing && placeBlock(targetPos, enemyRange.getValue())){
+                blocksPlaced++;
+            }
+
+            offsetSteps++;
+
+            if (isSneaking){
+                mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+                isSneaking = false;
+            }
+        }
+    }
+
+    private int findObsidianSlot(){
+        int slot = -1;
+
+        for (int i = 0; i < 9; i++){
+            ItemStack stack = mc.player.inventory.getStackInSlot(i);
+
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)){
+                continue;
+            }
+
+            Block block = ((ItemBlock) stack.getItem()).getBlock();
+            if (block instanceof BlockObsidian){
+                slot = i;
+                break;
+            }
+        }
+        return slot;
+    }
+
+    private boolean placeBlock(BlockPos pos, int range){
+        Block block = mc.world.getBlockState(pos).getBlock();
+
+        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)){
+            return false;
+        }
+
+        EnumFacing side = BlockUtils.getPlaceableSide(pos);
+
+        if (side == null){
+            return false;
+        }
+
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
+
+        if (!BlockUtils.canBeClicked(neighbour)){
+            return false;
+        }
+
+        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
+
+        if (mc.player.getPositionVector().distanceTo(hitVec) > range){
+            return false;
+        }
+
+        int obsidianSlot = findObsidianSlot();
+
+        if (mc.player.inventory.currentItem != obsidianSlot){
+            obbyHotbarSlot = obsidianSlot;
+
+            mc.player.inventory.currentItem = obsidianSlot;
+        }
+
+        if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)){
+            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
+            isSneaking = true;
+        }
+
+        if (obsidianSlot == -1){
+            noObby = true;
+            return false;
+        }
+
+        boolean stoppedAC = false;
+
+        if (ModuleManager.isModuleEnabled("AutoCrystalGS")){
+            AutoCrystal.stopAC = true;
+            stoppedAC = true;
+        }
+
+        if (rotate.getValue()){
+            faceVectorPacketInstant(hitVec);
+        }
+
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.rightClickDelayTimer = 4;
+
+        if (stoppedAC){
+            AutoCrystal.stopAC = false;
+            stoppedAC = false;
+        }
+
+        return true;
+    }
+
+    private void findClosestTarget(){
+        List<EntityPlayer> playerList = mc.world.playerEntities;
+
+        closestTarget = null;
+
+        for (EntityPlayer entityPlayer : playerList){
+            if (entityPlayer == mc.player){
+                continue;
+            }
+            if (Friends.isFriend(entityPlayer.getName())){
+                continue;
+            }
+            if (!EntityUtil.isLiving(entityPlayer)) {
+                continue;
+            }
+            if (closestTarget == null){
+                closestTarget = entityPlayer;
+                continue;
+            }
+            if (mc.player.getDistance(entityPlayer) < mc.player.getDistance(closestTarget)){
+                closestTarget = entityPlayer;
+            }
+        }
+    }
+
+    private static class Offsets {
+        private static final Vec3d[] TRAP ={
+                new Vec3d(0, -1, -1),
+                new Vec3d(1, -1, 0),
+                new Vec3d(0, -1, 1),
+                new Vec3d(-1, -1, 0),
+                new Vec3d(0, 0,-1),
+                new Vec3d(1, 0, 0),
+                new Vec3d(0, 0, 1),
+                new Vec3d(-1, 0, 0),
+                new Vec3d(0, 1, -1),
+                new Vec3d(1, 1, 0),
+                new Vec3d(0, 1, 1),
+                new Vec3d(-1, 1, 0),
+                new Vec3d(0, 2, -1),
+                new Vec3d(0, 2, 0)
+        };
+
+        private static final Vec3d[] TRAPFULLROOF ={
+                new Vec3d(0, -1, -1),
+                new Vec3d(1, -1, 0),
+                new Vec3d(0, -1, 1),
+                new Vec3d(-1, -1, 0),
+                new Vec3d(0, 0, -1),
+                new Vec3d(1, 0, 0),
+                new Vec3d(0, 0, 1),
+                new Vec3d(-1, 0, 0),
+                new Vec3d(0, 1, -1),
+                new Vec3d(1, 1, 0),
+                new Vec3d(0, 1, 1),
+                new Vec3d(-1, 1, 0),
+                new Vec3d(0, 2, -1),
+                new Vec3d(0, 2, 0),
+                new Vec3d(0, 3, 0)
+        };
+    }
 }
