@@ -45,11 +45,11 @@ public class StorageESP extends Module{
 					if(c instanceof TileEntityEnderChest)
 						GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(c.getPos()).getSelectedBoundingBox(mc.world, c.getPos()), (float)w.getValue(), c2.getValue());
 					if(c instanceof TileEntityShulkerBox)
-						GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(c.getPos()).getSelectedBoundingBox(mc.world, c.getPos()), (float)w.getValue(), c4.getValue());
+						GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(c.getPos()).getSelectedBoundingBox(mc.world, c.getPos()), (float)w.getValue(), c3.getValue());
 					if(c instanceof TileEntityDispenser
 							|| c instanceof TileEntityFurnace
 							|| c instanceof TileEntityHopper)
-						GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(c.getPos()).getSelectedBoundingBox(mc.world, c.getPos()), (float)w.getValue(), c3.getValue());
+						GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(c.getPos()).getSelectedBoundingBox(mc.world, c.getPos()), (float)w.getValue(), c4.getValue());
 				}
 			});
 			GameSenseTessellator.releaseGL();
