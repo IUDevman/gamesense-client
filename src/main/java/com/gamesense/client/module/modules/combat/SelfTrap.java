@@ -101,7 +101,7 @@ public class SelfTrap extends Module {
 
         if (chatMsg.getValue()){
             if (noObby){
-                return;
+                Command.sendRawMessage("\u00A7cNo obsidian detected... SelfTrap turned OFF!");
             }
             else {
                 Command.sendRawMessage("\u00A7cSelfTrap turned OFF!");
@@ -122,7 +122,7 @@ public class SelfTrap extends Module {
         centeredBlock = Vec3d.ZERO;
 
         noObby = false;
-        firstRun = false;
+        firstRun = true;
         AutoCrystal.stopAC = false;
     }
 
@@ -133,9 +133,6 @@ public class SelfTrap extends Module {
         }
 
         if (disableNone.getValue() && noObby){
-            if (chatMsg.getValue()){
-                Command.sendRawMessage("\u00A7cNo obsidian detected... SelfTrap turned OFF!");
-            }
             mc.player.inventory.currentItem = cachedHotbarSlot;
             disable();
             return;
@@ -243,6 +240,11 @@ public class SelfTrap extends Module {
             }
 
             offsetSteps++;
+
+            if (isSneaking){
+                mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+                isSneaking = false;
+            }
         }
     }
 

@@ -69,7 +69,7 @@ public class GameSenseMod{
 		eventProcessor = new EventProcessor();
 		eventProcessor.init();
 
-		fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true, false);
+		fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true,true);
 
 		TpsUtils tpsUtils = new TpsUtils();
 
