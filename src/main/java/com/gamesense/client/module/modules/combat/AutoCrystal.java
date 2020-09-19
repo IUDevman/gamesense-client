@@ -42,7 +42,6 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.Explosion;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -105,6 +104,7 @@ public class AutoCrystal extends Module {
     private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
 
     public boolean isActive = false;
+    public static boolean stopAC = false;
     private long breakSystemTime;
 
     public void setup() {
@@ -160,6 +160,10 @@ public class AutoCrystal extends Module {
         if (mc.player == null || mc.player.isDead) {
             return;
         }// bruh
+
+        if (stopAC){
+            return;
+        }
 
         EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityEnderCrystal)
@@ -484,7 +488,7 @@ public class AutoCrystal extends Module {
 
         if (breakMode.getValue().equalsIgnoreCase("Only Own")) {
             for (BlockPos pos : new ArrayList<BlockPos>(PlacedCrystals)) {
-                if (pos != null && pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= range.getValue())
+                if (pos != null && pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= 3)
                     return true;
             }
         }
@@ -523,6 +527,10 @@ public class AutoCrystal extends Module {
 
         if (entity instanceof EntityPlayer) {
             return entity != mc.player;
+        }
+
+        if (entity.getDistance(mc.player) > enemyRange.getValue()){
+            return false;
         }
 
         return false;
