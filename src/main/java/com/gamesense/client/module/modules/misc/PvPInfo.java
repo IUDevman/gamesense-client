@@ -256,7 +256,4 @@ public class PvPInfo extends Module{
 		knownPlayers.clear();
 		GameSenseMod.EVENT_BUS.unsubscribe(this);
 	}
-
-
 }
-

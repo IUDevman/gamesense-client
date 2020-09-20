@@ -27,7 +27,6 @@ public class ModuleManager {
 		//Combat
 		addMod(new AutoArmor());
 		addMod(new AutoCrystal());
-		addMod(new AutoFeetPlace());
 		addMod(new AutoTotem());
 		addMod(new AutoTrap());
 		addMod(new AutoWeb());
@@ -37,6 +36,7 @@ public class ModuleManager {
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
 		addMod(new SelfTrap());
+		addMod(new Surround());
 		//Exploits
 		addMod(new CoordExploit());
 		addMod(new FastBreak());
@@ -59,6 +59,7 @@ public class ModuleManager {
 		addMod(new ChatModifier());
 		addMod(new ChatSuffix());
 		addMod(new FastPlace());
+		addMod(new FakePlayer());
 		addMod(new HoosiersDupe());
 		addMod(new MCF());
 		addMod(new MultiTask());

@@ -12,7 +12,7 @@ public class Fullbright extends Module{
 		super("Fullbright", Category.Render);
 	}
 
-	float old;
+	float oldGamma;
 	Setting.Mode Mode;
 
 	public void setup(){
@@ -24,22 +24,23 @@ public class Fullbright extends Module{
 	}
 
 	public void onEnable(){
-		old = mc.gameSettings.gammaSetting;
+		oldGamma = mc.gameSettings.gammaSetting;
 	}
 
 	public void onUpdate(){
-	if (Mode.getValue().equalsIgnoreCase("Gamma")){
-		mc.gameSettings.gammaSetting = 666f;
-		mc.player.removePotionEffect(Potion.getPotionById(16));
-	} else if (Mode.getValue().equalsIgnoreCase("Potion")){
-		final PotionEffect potionEffect = new PotionEffect(Potion.getPotionById(16), 123456789, 5);
-		potionEffect.setPotionDurationMax(true);
-		mc.player.addPotionEffect(potionEffect);
-	}
+		if (Mode.getValue().equalsIgnoreCase("Gamma")){
+			mc.gameSettings.gammaSetting = 666f;
+			mc.player.removePotionEffect(Potion.getPotionById(16));
+		}
+		else if (Mode.getValue().equalsIgnoreCase("Potion")){
+			final PotionEffect potionEffect = new PotionEffect(Potion.getPotionById(16), 123456789, 5);
+			potionEffect.setPotionDurationMax(true);
+			mc.player.addPotionEffect(potionEffect);
+		}
 	}
 
 	public void onDisable(){
-		mc.gameSettings.gammaSetting = old;
+		mc.gameSettings.gammaSetting = oldGamma;
 		mc.player.removePotionEffect(Potion.getPotionById(16));
 	}
 }

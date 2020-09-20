@@ -32,7 +32,7 @@ import java.awt.*;
 public class GameSenseMod{
 	public static final String MODID = "gamesense";
 	public static String MODNAME = "GameSense";
-	public static final String MODVER = "v2.1.2";
+	public static final String MODVER = "v2.1.3";
 	public static final String FORGENAME = "GameSense";
 
 	public static final Logger log = LogManager.getLogger(MODNAME);
@@ -69,7 +69,7 @@ public class GameSenseMod{
 		eventProcessor = new EventProcessor();
 		eventProcessor.init();
 
-		fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true, false);
+		fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true,true);
 
 		TpsUtils tpsUtils = new TpsUtils();
 

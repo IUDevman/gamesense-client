@@ -27,13 +27,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 public class HUD extends Module {
 	public HUD() {
@@ -78,7 +76,7 @@ public class HUD extends Module {
 	private static final RenderItem itemRender = Minecraft.getMinecraft()
 			.getRenderItem();
 	int totems;
-	
+
 	private static GSColor col;
 
 	public void setup() {
@@ -239,10 +237,10 @@ public class HUD extends Module {
 				} else {
 					FontUtils.drawStringWithShadow(customFont.getValue(), "KA: DSBL", infox.getValue(), infoy.getValue() + 10, off);
 				}
-				if (ModuleManager.isModuleEnabled("AutoFeetPlace")) {
-					FontUtils.drawStringWithShadow(customFont.getValue(), "FP: ENBL", infox.getValue(), infoy.getValue() + 20, on);
+				if (ModuleManager.isModuleEnabled("Surround")) {
+					FontUtils.drawStringWithShadow(customFont.getValue(), "SU: ENBL", infox.getValue(), infoy.getValue() + 20, on);
 				} else {
-					FontUtils.drawStringWithShadow(customFont.getValue(), "FP: DSBL", infox.getValue(), infoy.getValue() + 20, off);
+					FontUtils.drawStringWithShadow(customFont.getValue(), "SU: DSBL", infox.getValue(), infoy.getValue() + 20, off);
 				}
 				if (ModuleManager.isModuleEnabled("AutoTrap")) {
 					FontUtils.drawStringWithShadow(customFont.getValue(), "AT: ENBL", infox.getValue(), infoy.getValue() + 30, on);

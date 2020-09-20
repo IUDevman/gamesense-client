@@ -22,39 +22,37 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
-
 import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
 
 /**
- * @Author Hoosiers on 09/19/20
- * Ported and modified from Surround.java
+ * @Author Hoosiers on 09/18/20
  */
 
-public class SelfTrap extends Module {
-    public SelfTrap(){
-        super("SelfTrap", Category.Combat);
+public class Surround extends Module {
+    public Surround(){
+        super("Surround", Category.Combat);
     }
 
-    Setting.Mode trapType;
     Setting.Boolean chatMsg;
+    Setting.Boolean triggerSurround;
+    Setting.Boolean shiftOnly;
     Setting.Boolean rotate;
     Setting.Boolean disableNone;
+    Setting.Boolean disableOnJump;
     Setting.Boolean centerPlayer;
     Setting.Integer tickDelay;
+    Setting.Integer timeOutTicks;
     Setting.Integer blocksPerTick;
 
     public void setup(){
-        ArrayList<String> trapTypes = new ArrayList<>();
-        trapTypes.add("Normal");
-        trapTypes.add("No Step");
-        trapTypes.add("Simple");
-
-        trapType = registerMode("Mode", "Mode", trapTypes, "Normal");
+        triggerSurround = registerBoolean("Triggerable", "Triggerable", false);
+        shiftOnly = registerBoolean("Shift Only", "ShiftOnly", false);
         disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
+        disableOnJump = registerBoolean("Disable On Jump", "DisableOnJump", false);
         rotate = registerBoolean("Rotate", "Rotate", true);
         centerPlayer = registerBoolean("Center Player", "CenterPlayer", false);
         tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
+        timeOutTicks = registerInteger("Timeout Ticks", "TimeoutTicks", 40, 1, 100);
         blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
     }
@@ -67,6 +65,7 @@ public class SelfTrap extends Module {
     private boolean firstRun = false;
 
     private int blocksPlaced;
+    private int runTimeTicks = 0;
     private int delayTimeTicks = 0;
     private int playerYLevel = 0;
     private int offsetSteps = 0;
@@ -80,7 +79,7 @@ public class SelfTrap extends Module {
         }
 
         if (chatMsg.getValue()){
-            Command.sendRawMessage("\u00A7aSelfTrap turned ON!");
+            Command.sendRawMessage("\u00A7aSurround turned ON!");
         }
 
         if (centerPlayer.getValue() && mc.player.onGround){
@@ -101,10 +100,10 @@ public class SelfTrap extends Module {
 
         if (chatMsg.getValue()){
             if (noObby){
-                Command.sendRawMessage("\u00A7cNo obsidian detected... SelfTrap turned OFF!");
+                Command.sendRawMessage("\u00A7cNo obsidian detected... Surround turned OFF!");
             }
             else {
-                Command.sendRawMessage("\u00A7cSelfTrap turned OFF!");
+                Command.sendRawMessage("\u00A7cSurround turned OFF!");
             }
         }
 
@@ -158,6 +157,14 @@ public class SelfTrap extends Module {
             }
         }
 
+        if (shiftOnly.getValue() && !mc.player.isSneaking()){
+            return;
+        }
+
+        if (disableOnJump.getValue() && !(mc.player.onGround)){
+            return;
+        }
+
         if (centerPlayer.getValue() && centeredBlock != Vec3d.ZERO && mc.player.onGround){
 
             double xDeviation = Math.abs(centeredBlock.x - mc.player.posX);
@@ -170,7 +177,7 @@ public class SelfTrap extends Module {
                 double newX;
                 double newZ;
                 if (mc.player.posX > Math.round(mc.player.posX)){
-                    newX = Math.round(mc.player.posX) + 0.5;
+                   newX = Math.round(mc.player.posX) + 0.5;
                 }
                 else if (mc.player.posX < Math.round(mc.player.posX)){
                     newX = Math.round(mc.player.posX) - 0.5;
@@ -194,25 +201,18 @@ public class SelfTrap extends Module {
             }
         }
 
+        if (triggerSurround.getValue() && runTimeTicks >= timeOutTicks.getValue()){
+            runTimeTicks = 0;
+            disable();
+            return;
+        }
+
         blocksPlaced = 0;
 
         while (blocksPlaced <= blocksPerTick.getValue()){
-
             Vec3d[] offsetPattern;
-            int maxSteps;
-
-            if (trapType.getValue().equalsIgnoreCase("Normal")){
-                offsetPattern = Offsets.TRAP;
-                maxSteps = Offsets.TRAP.length;
-            }
-            else if (trapType.getValue().equalsIgnoreCase("No Step")){
-                offsetPattern = Offsets.TRAPFULLROOF;
-                maxSteps = Offsets.TRAPFULLROOF.length;
-            }
-            else {
-                offsetPattern = Offsets.TRAPSIMPLE;
-                maxSteps = Offsets.TRAPSIMPLE.length;
-            }
+            offsetPattern = Surround.Offsets.SURROUND;
+            int maxSteps = Surround.Offsets.SURROUND.length;
 
             if (offsetSteps >= maxSteps){
                 offsetSteps = 0;
@@ -246,6 +246,7 @@ public class SelfTrap extends Module {
                 isSneaking = false;
             }
         }
+        runTimeTicks++;
     }
 
     private int findObsidianSlot(){
@@ -341,53 +342,15 @@ public class SelfTrap extends Module {
     }
 
     private static class Offsets {
-        private static final Vec3d[] TRAP ={
-                new Vec3d(0, -1, -1),
-                new Vec3d(1, -1, 0),
-                new Vec3d(0, -1, 1),
-                new Vec3d(-1, -1, 0),
-                new Vec3d(0, 0,-1),
+        private static final Vec3d[] SURROUND ={
                 new Vec3d(1, 0, 0),
                 new Vec3d(0, 0, 1),
                 new Vec3d(-1, 0, 0),
-                new Vec3d(0, 1, -1),
-                new Vec3d(1, 1, 0),
-                new Vec3d(0, 1, 1),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(0, 2, -1),
-                new Vec3d(0, 2, 0)
-        };
-
-        private static final Vec3d[] TRAPFULLROOF ={
-                new Vec3d(0, -1, -1),
-                new Vec3d(1, -1, 0),
-                new Vec3d(0, -1, 1),
-                new Vec3d(-1, -1, 0),
                 new Vec3d(0, 0, -1),
-                new Vec3d(1, 0, 0),
-                new Vec3d(0, 0, 1),
-                new Vec3d(-1, 0, 0),
-                new Vec3d(0, 1, -1),
-                new Vec3d(1, 1, 0),
-                new Vec3d(0, 1, 1),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(0, 2, -1),
-                new Vec3d(0, 2, 0),
-                new Vec3d(0, 3, 0)
-        };
-
-        private static final Vec3d[] TRAPSIMPLE ={
+                new Vec3d(1, -1, 0),
+                new Vec3d(0, -1, 1),
                 new Vec3d(-1, -1, 0),
-                new Vec3d(1, -1,0),
-                new Vec3d(0,-1,-1),
-                new Vec3d(0,-1,1),
-                new Vec3d(1, 0,0),
-                new Vec3d(0,0,-1),
-                new Vec3d(0,0,1),
-                new Vec3d(-1, 0, 0),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(-1, 2, 0),
-                new Vec3d(0, 2, 0)
+                new Vec3d(0, -1, -1)
         };
     }
 }

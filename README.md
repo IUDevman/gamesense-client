@@ -1,9 +1,11 @@
 # GameSense Client
-![Java CI with Gradle](https://github.com/IUDevman/gamesense-master/workflows/Java%20CI%20with%20Gradle/badge.svg)
+![logo](https://github.com/IUDevman/gamesense-client/blob/master/src/main/resources/assets/gamesense/textures/gamesense.png)
+
+![build](https://github.com/IUDevman/gamesense-master/workflows/Java%20CI%20with%20Gradle/badge.svg)
 
 Discord: https://discord.gg/xfgPw63
 
-Current version: 2.1.2
+Current version: 2.1.3
 
 Developers:
 
@@ -16,3 +18,4 @@ Developers:
 * auburnhud2
 
 -Make sure to check the credits too!
+
