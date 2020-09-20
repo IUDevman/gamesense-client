@@ -37,6 +37,7 @@ public class SelfTrap extends Module {
     }
 
     Setting.Mode trapType;
+    Setting.Boolean shiftOnly;
     Setting.Boolean chatMsg;
     Setting.Boolean rotate;
     Setting.Boolean disableNone;
@@ -51,6 +52,7 @@ public class SelfTrap extends Module {
         trapTypes.add("Simple");
 
         trapType = registerMode("Mode", "Mode", trapTypes, "Normal");
+        shiftOnly = registerBoolean("Shift Only", "ShiftOnly", false);
         disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
         rotate = registerBoolean("Rotate", "Rotate", true);
         centerPlayer = registerBoolean("Center Player", "CenterPlayer", false);
@@ -156,6 +158,10 @@ public class SelfTrap extends Module {
             else {
                 delayTimeTicks = 0;
             }
+        }
+
+        if (shiftOnly.getValue() && !mc.player.isSneaking()){
+            return;
         }
 
         if (centerPlayer.getValue() && centeredBlock != Vec3d.ZERO && mc.player.onGround){
