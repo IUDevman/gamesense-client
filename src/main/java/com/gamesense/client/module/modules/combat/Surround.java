@@ -35,6 +35,7 @@ public class Surround extends Module {
 
     Setting.Boolean chatMsg;
     Setting.Boolean triggerSurround;
+    Setting.Boolean shiftOnly;
     Setting.Boolean rotate;
     Setting.Boolean disableNone;
     Setting.Boolean disableOnJump;
@@ -45,6 +46,7 @@ public class Surround extends Module {
 
     public void setup(){
         triggerSurround = registerBoolean("Triggerable", "Triggerable", false);
+        shiftOnly = registerBoolean("Shift Only", "ShiftOnly", false);
         disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
         disableOnJump = registerBoolean("Disable On Jump", "DisableOnJump", false);
         rotate = registerBoolean("Rotate", "Rotate", true);
@@ -153,6 +155,10 @@ public class Surround extends Module {
             else {
                 delayTimeTicks = 0;
             }
+        }
+
+        if (shiftOnly.getValue() && !mc.player.isSneaking()){
+            return;
         }
 
         if (disableOnJump.getValue() && !(mc.player.onGround)){

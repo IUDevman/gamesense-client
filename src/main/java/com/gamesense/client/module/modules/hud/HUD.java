@@ -33,7 +33,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class HUD extends Module {
 	public HUD() {
 		super("HUD", Category.HUD);
@@ -77,7 +76,7 @@ public class HUD extends Module {
 	private static final RenderItem itemRender = Minecraft.getMinecraft()
 			.getRenderItem();
 	int totems;
-	
+
 	private static GSColor col;
 
 	public void setup() {
