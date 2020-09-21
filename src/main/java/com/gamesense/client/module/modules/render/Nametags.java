@@ -152,6 +152,8 @@ public class Nametags extends Module {
 		final int maxDamage = itemStack.getMaxDamage();
 		final float n3 = (maxDamage - itemStack.getItemDamage()) / (float)maxDamage;
 		float green = ((float) itemStack.getMaxDamage() - (float) itemStack.getItemDamage()) / (float) itemStack.getMaxDamage();
+		if (green>1) green=1;					// Ensure that the color value is in range
+		else if (green<0) green=0;
 		float red = 1 - green;
 		int dmg = 100 - (int) (red * 100);
 		final float n4 = 0.5f;
