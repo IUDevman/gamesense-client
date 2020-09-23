@@ -69,7 +69,7 @@ public class ModuleManager {
 		//Render
 		addMod(new BlockHighlight());
 		addMod(new CapesModule());
-		addMod(new EntityESP());
+		addMod(new ESP());
 		addMod(new Freecam());
 		addMod(new Fullbright());
 		addMod(new HitSpheres());
@@ -80,7 +80,6 @@ public class ModuleManager {
 		addMod(new NoRender());
 		addMod(new RenderTweaks());
 		addMod(new ShulkerViewer());
-		addMod(new StorageESP());
 		addMod(new Tracers());
 		addMod(new ViewModel());
 		addMod(new VoidESP());
