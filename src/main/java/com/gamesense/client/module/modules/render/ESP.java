@@ -41,7 +41,7 @@ public class ESP extends Module {
     public void setup(){
         mainColor = registerColor("Color", "Color");
         range = registerInteger("Range", "Range", 100, 10, 260);
-        width = registerInteger("Line Width", "LineWidth", 1, 1, 5);
+        width = registerInteger("Line Width", "LineWidth", 2, 1, 5);
         playerRender = registerBoolean("Player", "Player", true);
         mobRender = registerBoolean("Mob", "Mob", false);
         entityRender = registerBoolean("Entity", "Entity", false);
