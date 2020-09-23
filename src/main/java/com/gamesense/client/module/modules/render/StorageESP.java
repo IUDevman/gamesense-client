@@ -25,8 +25,8 @@ public class StorageESP extends Module{
 		w = registerInteger("Width", "Width", 2 , 1 ,10);
 		c1=registerColor("Chest Color","ChestColor",new GSColor(255,255,0));
 		c2=registerColor("EnderChest Color","EnderChestColor",new GSColor(180,70,200));
-		c3=registerColor("Shulker Color","ShulkerBoxColor",new GSColor(150,150,150));
-		c4=registerColor("Other Color","OtherColor",new GSColor(255,0,0));
+		c3=registerColor("Shulker Color","ShulkerBoxColor",new GSColor(255,0,0));
+		c4=registerColor("Other Color","OtherColor",new GSColor(150,150,150));
 	}
 
 	public void onUpdate(){
