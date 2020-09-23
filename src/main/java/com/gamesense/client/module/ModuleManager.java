@@ -36,6 +36,7 @@ public class ModuleManager {
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
 		addMod(new SelfTrap());
+		addMod(new SelfWeb());
 		addMod(new Surround());
 		//Exploits
 		addMod(new CoordExploit());
