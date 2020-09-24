@@ -161,7 +161,7 @@ public class Surround extends Module {
             return;
         }
 
-        if (disableOnJump.getValue() && !(mc.player.onGround)){
+        if (disableOnJump.getValue() && !(mc.player.onGround) && !(mc.player.isInWeb)){
             return;
         }
 
