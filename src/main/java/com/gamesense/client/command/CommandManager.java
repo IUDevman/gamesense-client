@@ -54,6 +54,6 @@ public class CommandManager{
 				}
 			}
 		});
-		if (!b) Command.sendClientMessage(ChatFormatting.GRAY + "Unknown command!");
+		if (!b) Command.sendClientMessage(ChatFormatting.GRAY + "Unknown command! Do " + Command.getPrefix() + "help for a list of commands.");
 	}
 }
