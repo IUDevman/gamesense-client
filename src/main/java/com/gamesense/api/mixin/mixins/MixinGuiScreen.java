@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.awt.*;
 
 @Mixin (GuiScreen.class)
-public class MixinShulkerViewer{
+public class MixinGuiScreen {
 
 	RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
 	ResourceLocation resource;
