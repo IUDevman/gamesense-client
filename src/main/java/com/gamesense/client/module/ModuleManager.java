@@ -71,6 +71,7 @@ public class ModuleManager {
 		//Render
 		addMod(new BlockHighlight());
 		addMod(new CapesModule());
+		addMod(new CustomFOV());
 		addMod(new ESP());
 		addMod(new Freecam());
 		addMod(new Fullbright());
