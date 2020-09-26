@@ -32,6 +32,7 @@ public class ModuleManager {
 		addMod(new AutoWeb());
 		addMod(new FastBow());
 		addMod(new HoleFill());
+		addMod(new HotbarRefill());
 		addMod(new KillAura());
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
