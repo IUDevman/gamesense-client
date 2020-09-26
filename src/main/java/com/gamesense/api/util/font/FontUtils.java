@@ -1,6 +1,6 @@
 package com.gamesense.api.util.font;
 
-import com.gamesense.api.util.GSColor;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import net.minecraft.client.Minecraft;
 

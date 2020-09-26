@@ -5,7 +5,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.GSColor;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.init.Blocks;

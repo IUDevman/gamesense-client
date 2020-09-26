@@ -6,7 +6,7 @@ import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.Wrapper;
-import com.gamesense.api.util.GSColor;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
@@ -23,8 +23,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 /**

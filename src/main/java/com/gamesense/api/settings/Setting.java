@@ -2,7 +2,7 @@ package com.gamesense.api.settings;
 
 import java.util.List;
 
-import com.gamesense.api.util.GSColor;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
 
 public abstract class Setting {

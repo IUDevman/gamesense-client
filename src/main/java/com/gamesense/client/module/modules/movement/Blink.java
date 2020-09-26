@@ -45,6 +45,7 @@ public class Blink extends Module {
         if (ghostPlayer.getValue()) {
             entity = new EntityOtherPlayerMP(mc.world, mc.getSession().getProfile());
             entity.copyLocationAndAnglesFrom(mc.player);
+            entity.inventory.copyInventory(mc.player.inventory);
             entity.rotationYaw = mc.player.rotationYaw;
             entity.rotationYawHead = mc.player.rotationYawHead;
             mc.world.addEntityToWorld(667, entity);
