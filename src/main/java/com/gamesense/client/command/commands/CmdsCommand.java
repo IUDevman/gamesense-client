@@ -10,7 +10,7 @@ import net.minecraft.util.text.event.HoverEvent;
 public class CmdsCommand extends Command{
 	@Override
 	public String[] getAlias(){
-		return new String[]{"commands", "cmds"};
+		return new String[]{"commands", "cmds", "help"};
 	}
 
 	@Override
