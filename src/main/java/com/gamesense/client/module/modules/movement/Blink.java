@@ -51,10 +51,16 @@ public class Blink extends Module {
         }
     }
 
+    public void onUpdate(){
+        if (!ghostPlayer.getValue() && entity != null){
+            mc.world.removeEntity(entity);
+        }
+    }
+
     public void onDisable() {
         GameSenseMod.EVENT_BUS.unsubscribe(this);
 
-        if (this.entity != null) {
+        if (entity != null) {
             mc.world.removeEntity(entity);
         }
 
