@@ -32,7 +32,6 @@ public class ModuleManager {
 		addMod(new AutoWeb());
 		addMod(new FastBow());
 		addMod(new HoleFill());
-		addMod(new HotbarRefill());
 		addMod(new KillAura());
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
@@ -64,6 +63,7 @@ public class ModuleManager {
 		addMod(new FastPlace());
 		addMod(new FakePlayer());
 		addMod(new HoosiersDupe());
+		addMod(new HotbarRefill());
 		addMod(new MCF());
 		addMod(new MultiTask());
 		addMod(new NoEntityTrace());
