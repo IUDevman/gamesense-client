@@ -11,6 +11,7 @@ import net.minecraft.util.text.event.HoverEvent;
 
 //Credit: Seth - SeppukuDevelopment
 public class ModsCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{"modules", "mods"};

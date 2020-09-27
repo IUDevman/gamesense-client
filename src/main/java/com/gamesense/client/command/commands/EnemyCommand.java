@@ -5,6 +5,7 @@ import com.gamesense.client.command.Command;
 import com.gamesense.api.players.enemy.Enemies;
 
 public class EnemyCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{

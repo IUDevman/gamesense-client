@@ -6,6 +6,7 @@ import com.gamesense.client.module.ModuleManager;
 
 public class ToggleCommand extends Command{
 	boolean found;
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{"toggle", "t"};
@@ -13,7 +14,7 @@ public class ToggleCommand extends Command{
 
 	@Override
 	public String getSyntax(){
-		return "toggle <Module>";
+		return "toggle <module>";
 	}
 
 	@Override

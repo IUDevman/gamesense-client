@@ -6,14 +6,15 @@ import com.gamesense.client.module.ModuleManager;
 
 public class DrawnCommand extends Command{
 	boolean found;
+
 	@Override
 	public String[] getAlias(){
-		return new String[]{"drawn", "visible", "d"};
+		return new String[]{"drawn", "visible", "d", "seen"};
 	}
 
 	@Override
 	public String getSyntax(){
-		return "drawn <Module>";
+		return "drawn <module>";
 	}
 
 	@Override

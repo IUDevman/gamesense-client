@@ -4,6 +4,7 @@ import com.gamesense.api.Stopper;
 import com.gamesense.client.command.Command;
 
 public class SaveConfigCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{"saveconfig", "savecfg"};

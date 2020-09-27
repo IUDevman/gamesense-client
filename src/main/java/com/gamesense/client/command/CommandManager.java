@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class CommandManager{
 	private static ArrayList<Command> commands;
-	boolean b;
+	boolean validCommand;
 
 	public static void initCommands(){
 		commands = new ArrayList<>();
@@ -29,8 +29,8 @@ public class CommandManager{
 		addCommand(new VanishCommand());
 	}
 
-	public static void addCommand(Command c){
-		commands.add(c);
+	public static void addCommand(Command command){
+		commands.add(command);
 	}
 
 	public static ArrayList<Command> getCommands(){
@@ -41,11 +41,11 @@ public class CommandManager{
 		String[] split = input.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"); // Split by every space if it isn't surrounded by quotes // credit 086/KAMI
 		String command = split[0];
 		String args = input.substring(command.length()).trim();
-		b = false;
+		validCommand = false;
 		commands.forEach(c -> {
 			for (String s : c.getAlias()){
 				if (s.equalsIgnoreCase(command)){
-					b = true;
+					validCommand = true;
 					try{
 						c.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
 					} catch (Exception e){
@@ -54,6 +54,6 @@ public class CommandManager{
 				}
 			}
 		});
-		if (!b) Command.sendClientMessage(ChatFormatting.GRAY + "Unknown command! Type " + Command.getPrefix() + "help for a list of commands!");
+		if (!validCommand) Command.sendClientMessage(ChatFormatting.GRAY + "Unknown command! Type " + Command.getPrefix() + "help for a list of commands!");
 	}
 }

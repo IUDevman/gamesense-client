@@ -19,7 +19,7 @@ public class SetSettingCommand extends Command{
 
 	@Override
 	public String getSyntax(){
-		return "set <Module> <Setting> <Value>";
+		return "set <module> <setting> <value>";
 	}
 
 	@Override

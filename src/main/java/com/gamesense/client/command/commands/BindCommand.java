@@ -5,6 +5,7 @@ import com.gamesense.client.module.ModuleManager;
 import org.lwjgl.input.Keyboard;
 
 public class BindCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{"bind", "b"};
@@ -12,7 +13,7 @@ public class BindCommand extends Command{
 
 	@Override
 	public String getSyntax(){
-		return "bind <Module> <Key>";
+		return "bind <module> <key>";
 	}
 
 	@Override
