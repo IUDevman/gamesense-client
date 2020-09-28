@@ -70,7 +70,8 @@ public class Anchor extends Module {
                 && mc.world.getBlockState(playerPos.down().east()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(playerPos.down().west()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(playerPos.down().north()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down().south()).getBlock() != Blocks.AIR){
+                && mc.world.getBlockState(playerPos.down().south()).getBlock() != Blocks.AIR
+                && mc.world.getBlockState(playerPos.down(2)).getBlock() != Blocks.AIR){
 
             mc.player.motionX = 0;
             mc.player.motionZ = 0;
@@ -80,7 +81,8 @@ public class Anchor extends Module {
                 && mc.world.getBlockState(playerPos.down(2).east()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(playerPos.down(2).west()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(playerPos.down(2).north()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down(2).south()).getBlock() != Blocks.AIR){
+                && mc.world.getBlockState(playerPos.down(2).south()).getBlock() != Blocks.AIR
+                && mc.world.getBlockState(playerPos.down(3)).getBlock() != Blocks.AIR){
 
             mc.player.motionX = 0;
             mc.player.motionZ = 0;
