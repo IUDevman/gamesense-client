@@ -45,6 +45,8 @@ public class ModuleManager {
 		addMod(new NoInteract());
 		addMod(new NoSwing());
 		addMod(new PortalGodMode());
+		addMod(new Timer());
+		addMod(new XCarry());
 		//Movement
 		addMod(new Blink());
 		addMod(new HoleTP());
