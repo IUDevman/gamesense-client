@@ -7,7 +7,7 @@
 
 Discord: https://discord.gg/xfgPw63
 
-Current version: 2.1.3
+Current version: 2.1.4
 
 Developers:
 
