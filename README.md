@@ -17,7 +17,7 @@
 [![alpine](https://img.shields.io/badge/Alpine-1.5-red.svg)](https://github.com/ZeroMemes/Alpine)
 ![org.json.simple](https://img.shields.io/badge/json--simple-1.1.1-red.svg)
 [![typeTools](https://img.shields.io/badge/TypeTools-0.5.0-red.svg)](https://github.com/jhalterman/typetools)
-[![optifine](https://img.shields.io/badge/Compatible_with-OptiFine_HD_U_F5-yellowgreen.svg)](https://www.optifine.net)
+[![optifine](https://img.shields.io/badge/Compatible_with-OptiFine_HD_Ultra%20F5-yellowgreen.svg)](https://www.optifine.net)
 [![forgeHax](https://img.shields.io/badge/Compatible_with-ForgeHax_2.9.0-yellowgreen.svg)](https://github.com/fr1kin/ForgeHax)
 [![kamiBlue](https://img.shields.io/badge/Compatible_with-KAMI_Blue_1.1.6-yellowgreen.svg)](https://github.com/kami-blue/client)
 [![salhack](https://img.shields.io/badge/Compatible_with-Salhack_2.05-yellowgreen.svg)](https://github.com/ionar2/salhack)
