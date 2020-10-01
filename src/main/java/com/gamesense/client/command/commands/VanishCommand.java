@@ -15,7 +15,7 @@ public class VanishCommand extends Command{
 
 	@Override
 	public String getSyntax(){
-		return "vanish to do the epic gamer dupe";
+		return "vanish (godmode exploit)";
 	}
 
 	private static Entity vehicle;

@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.File;
 
 public class OpenFolderCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{"openfolder", "folder"};

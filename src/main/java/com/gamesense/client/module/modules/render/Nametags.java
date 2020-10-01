@@ -6,7 +6,7 @@ import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.Wrapper;
-import com.gamesense.api.util.GSColor;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
@@ -23,8 +23,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -131,7 +129,6 @@ public class Nametags extends Module {
 		}
 	}
 
-	//I dont know
 	private String stringForEnchants(final Enchantment enchantment, final int n) {
 		final ResourceLocation resourceLocation;
 		String substring = ((resourceLocation = Enchantment.REGISTRY.getNameForObject(enchantment)) == null) ? enchantment.getName() : resourceLocation.toString();
@@ -153,6 +150,8 @@ public class Nametags extends Module {
 		final int maxDamage = itemStack.getMaxDamage();
 		final float n3 = (maxDamage - itemStack.getItemDamage()) / (float)maxDamage;
 		float green = ((float) itemStack.getMaxDamage() - (float) itemStack.getItemDamage()) / (float) itemStack.getMaxDamage();
+		if (green>1) green=1;					// Ensure that the color value is in range
+		else if (green<0) green=0;
 		float red = 1 - green;
 		int dmg = 100 - (int) (red * 100);
 		final float n4 = 0.5f;
@@ -192,41 +191,6 @@ public class Nametags extends Module {
 		final int n8 = 2;
 		GlStateManager.scale((float)n8, n7, (float)n8);
 		GlStateManager.popMatrix();
-	}
-
-	public static Vec3d M2(final Entity entity, final Vec3d vec3d) {
-		return location4(entity, vec3d.x, vec3d.y, vec3d.z);
-	}
-
-	public static Vec3d location1(final Entity entity, final Vec3d vec3d) {
-		return location4(entity, vec3d.x, vec3d.y, vec3d.z);
-	}
-
-	public static Vec3d location3(final Entity entity, final double n) {
-		return location4(entity, n, n, n);
-	}
-
-	public static Vec3d location4(final Entity entity, final double n, final double n2, final double n3) {
-		return new Vec3d((entity.posX - entity.lastTickPosX) * n, (entity.posY - entity.lastTickPosY) * n2, (entity.posZ - entity.lastTickPosZ) * n3);
-	}
-
-	public static Vec3d location5(final Entity entity, final float n) {
-		return new Vec3d(entity.lastTickPosX, entity.lastTickPosY, entity.lastTickPosZ).add(location3(entity, n));
-	}
-
-	public static void M(final float n) {
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glDepthMask(false);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		mc.entityRenderer.enableLightmap();
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
-		GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_DONT_CARE);
-		GL11.glLineWidth(n);
 	}
 
 	//RENDER THE ACTUAL NAMETAGS
@@ -270,7 +234,9 @@ public class Nametags extends Module {
 		else color=new GSColor(0,0,0,51);
 		drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, new GSColor(0,4,0,85), color);
 		GlStateManager.disableBlend();
+		GlStateManager.pushMatrix();
 		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.renderEntityName(entityPlayer), (-n4), (-(mc.fontRenderer.FONT_HEIGHT - 1)), this.renderPing(entityPlayer));
+		GlStateManager.popMatrix();
 		entityPlayer2 = entityPlayer;
 		final ItemStack heldItemMainhand = entityPlayer2.getHeldItemMainhand();
 		final ItemStack heldItemOffhand = entityPlayer.getHeldItemOffhand();
@@ -499,10 +465,6 @@ public class Nametags extends Module {
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
 		GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_DONT_CARE);
-	}
-
-	public static void drawRect(final Rectangle rectangle, final GSColor color) {
-		drawRect((float)rectangle.x, (float)rectangle.y, (float)(rectangle.x + rectangle.width), (float)(rectangle.y + rectangle.height), color);
 	}
 
 	public static void drawRect(final float x, final float y, final float x1, final float y1, final GSColor color) {

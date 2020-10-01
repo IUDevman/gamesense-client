@@ -24,10 +24,6 @@ public class MotionUtils{
 		return baseSpeed;
 	}
 
-	public static double getSpeed(final EntityLivingBase entity){
-		return Math.sqrt((entity.motionX * entity.motionX) + (entity.motionZ * entity.motionZ));
-	}
-
 	public static double[] forward(final double speed){
 		float forward = Minecraft.getMinecraft().player.movementInput.moveForward;
 		float side = Minecraft.getMinecraft().player.movementInput.moveStrafe;

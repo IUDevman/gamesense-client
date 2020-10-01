@@ -6,6 +6,7 @@ import com.gamesense.client.command.Command;
 import com.gamesense.api.players.friends.Friends;
 
 public class FriendCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{"friend", "friends", "f"};
@@ -13,7 +14,7 @@ public class FriendCommand extends Command{
 
 	@Override
 	public String getSyntax(){
-		return "friend <add | del> <Name>";
+		return "friend <add | del> <name>";
 	}
 
 	@Override

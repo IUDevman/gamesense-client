@@ -7,16 +7,17 @@ import com.gamesense.api.util.font.CFontRenderer;
 import java.awt.*;
 
 public class FontCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{
-				"font", "setfont"
+				"font", "setfont", "newfont", "chatfont"
 		};
 	}
 
 	@Override
 	public String getSyntax(){
-		return "font <Name> <Size>";
+		return "font <name> <size>";
 	}
 
 	@Override

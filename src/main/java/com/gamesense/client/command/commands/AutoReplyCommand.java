@@ -4,10 +4,11 @@ import com.gamesense.client.command.Command;
 import com.gamesense.client.module.modules.misc.AutoReply;
 
 public class AutoReplyCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{
-				"autoreply"
+				"autoreply", "reply"
 		};
 	}
 

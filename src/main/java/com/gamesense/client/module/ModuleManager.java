@@ -36,6 +36,7 @@ public class ModuleManager {
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
 		addMod(new SelfTrap());
+		addMod(new SelfWeb());
 		addMod(new Surround());
 		//Exploits
 		addMod(new CoordExploit());
@@ -45,6 +46,8 @@ public class ModuleManager {
 		addMod(new NoSwing());
 		addMod(new PortalGodMode());
 		//Movement
+		addMod(new Anchor());
+		addMod(new Blink());
 		addMod(new HoleTP());
 		addMod(new PlayerTweaks());
 		addMod(new ReverseStep());
@@ -61,6 +64,7 @@ public class ModuleManager {
 		addMod(new FastPlace());
 		addMod(new FakePlayer());
 		addMod(new HoosiersDupe());
+		addMod(new HotbarRefill());
 		addMod(new MCF());
 		addMod(new MultiTask());
 		addMod(new NoEntityTrace());
@@ -69,7 +73,7 @@ public class ModuleManager {
 		//Render
 		addMod(new BlockHighlight());
 		addMod(new CapesModule());
-		addMod(new EntityESP());
+		addMod(new ESP());
 		addMod(new Freecam());
 		addMod(new Fullbright());
 		addMod(new HitSpheres());
@@ -80,7 +84,6 @@ public class ModuleManager {
 		addMod(new NoRender());
 		addMod(new RenderTweaks());
 		addMod(new ShulkerViewer());
-		addMod(new StorageESP());
 		addMod(new Tracers());
 		addMod(new ViewModel());
 		addMod(new VoidESP());

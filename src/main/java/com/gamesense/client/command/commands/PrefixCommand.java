@@ -3,9 +3,10 @@ package com.gamesense.client.command.commands;
 import com.gamesense.client.command.Command;
 
 public class PrefixCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
-		return new String[]{"prefix", "setprefix"};
+		return new String[]{"prefix", "setprefix", "cmdprefix"};
 	}
 
 	@Override

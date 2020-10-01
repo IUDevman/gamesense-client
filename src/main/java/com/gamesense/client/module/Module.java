@@ -3,7 +3,7 @@ package com.gamesense.client.module;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.util.GSColor;
+import com.gamesense.api.util.render.GSColor;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 

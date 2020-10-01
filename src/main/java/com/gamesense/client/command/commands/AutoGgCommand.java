@@ -4,6 +4,7 @@ import com.gamesense.client.command.Command;
 import com.gamesense.client.module.modules.misc.AutoGG;
 
 public class AutoGgCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{"autogg", "autoez"};

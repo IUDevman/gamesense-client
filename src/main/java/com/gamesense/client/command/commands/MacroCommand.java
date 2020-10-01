@@ -7,6 +7,7 @@ import com.gamesense.client.macro.Macro;
 import org.lwjgl.input.Keyboard;
 
 public class MacroCommand extends Command{
+
 	@Override
 	public String[] getAlias(){
 		return new String[]{"macro", "macros"};

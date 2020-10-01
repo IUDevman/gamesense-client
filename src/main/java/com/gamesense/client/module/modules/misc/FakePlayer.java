@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.client.module.Module;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.world.GameType;
 
 import java.util.UUID;
 
@@ -22,6 +23,8 @@ public class FakePlayer extends Module {
         clonedPlayer.rotationYawHead = mc.player.rotationYawHead;
         clonedPlayer.rotationYaw = mc.player.rotationYaw;
         clonedPlayer.rotationPitch = mc.player.rotationPitch;
+        clonedPlayer.setGameType(GameType.SURVIVAL);
+        clonedPlayer.setHealth(20);
 
         mc.world.addEntityToWorld(-1234, clonedPlayer);
         clonedPlayer.onLivingUpdate();

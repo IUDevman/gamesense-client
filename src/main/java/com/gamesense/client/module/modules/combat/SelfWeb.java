@@ -5,72 +5,68 @@ import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockObsidian;
+import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
-import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayList;
+
 import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
 
 /**
- * @Author Hoosiers on 09/18/20
+ * @Author Hoosiers on 09/23/20
+ * Ported and modified from Surround.java
  */
 
-public class Surround extends Module {
-    public Surround(){
-        super("Surround", Category.Combat);
+public class SelfWeb extends Module {
+    public SelfWeb(){
+        super("SelfWeb", Category.Combat);
     }
 
     Setting.Boolean chatMsg;
-    Setting.Boolean triggerSurround;
     Setting.Boolean shiftOnly;
+    Setting.Boolean singleWeb;
     Setting.Boolean rotate;
     Setting.Boolean disableNone;
-    Setting.Boolean disableOnJump;
-    Setting.Boolean centerPlayer;
     Setting.Integer tickDelay;
-    Setting.Integer timeOutTicks;
     Setting.Integer blocksPerTick;
+    Setting.Mode placeType;
 
     public void setup(){
-        triggerSurround = registerBoolean("Triggerable", "Triggerable", false);
+        ArrayList<String> placeModes = new ArrayList<>();
+        placeModes.add("Single");
+        placeModes.add("Double");
+
+        placeType = registerMode("Place", "Place", placeModes, "Single");
         shiftOnly = registerBoolean("Shift Only", "ShiftOnly", false);
-        disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
-        disableOnJump = registerBoolean("Disable On Jump", "DisableOnJump", false);
+        singleWeb = registerBoolean("One Place", "OnePlace", false);
+        disableNone = registerBoolean("Disable No Web", "DisableNoWeb", true);
         rotate = registerBoolean("Rotate", "Rotate", true);
-        centerPlayer = registerBoolean("Center Player", "CenterPlayer", false);
         tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        timeOutTicks = registerInteger("Timeout Ticks", "TimeoutTicks", 40, 1, 100);
         blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
     }
 
     private int cachedHotbarSlot = -1;
-    private int obbyHotbarSlot;
+    private int webHotbarSlot;
 
-    private boolean noObby = false;
+    private boolean noWeb = false;
     private boolean isSneaking = false;
     private boolean firstRun = false;
 
     private int blocksPlaced;
-    private int runTimeTicks = 0;
     private int delayTimeTicks = 0;
     private int playerYLevel = 0;
     private int offsetSteps = 0;
-
-    private Vec3d centeredBlock = Vec3d.ZERO;
 
     public void onEnable(){
         if (mc.player == null){
@@ -79,18 +75,11 @@ public class Surround extends Module {
         }
 
         if (chatMsg.getValue()){
-            Command.sendRawMessage("\u00A7aSurround turned ON!");
+            Command.sendRawMessage("\u00A7aSelfWeb turned ON!");
         }
-
-        if (centerPlayer.getValue() && mc.player.onGround){
-            mc.player.motionX = 0;
-            mc.player.motionZ = 0;
-        }
-
-        centeredBlock = getCenterOfBlock(mc.player.posX, mc.player.posY, mc.player.posY);
 
         cachedHotbarSlot = mc.player.inventory.currentItem;
-        obbyHotbarSlot = -1;
+        webHotbarSlot = -1;
     }
 
     public void onDisable(){
@@ -99,15 +88,15 @@ public class Surround extends Module {
         }
 
         if (chatMsg.getValue()){
-            if (noObby){
-                Command.sendRawMessage("\u00A7cNo obsidian detected... Surround turned OFF!");
+            if (noWeb){
+                Command.sendRawMessage("\u00A7cNo web detected... SelfWeb turned OFF!");
             }
             else {
-                Command.sendRawMessage("\u00A7cSurround turned OFF!");
+                Command.sendRawMessage("\u00A7cSelfWeb turned OFF!");
             }
         }
 
-        if (obbyHotbarSlot != cachedHotbarSlot && cachedHotbarSlot != -1){
+        if (webHotbarSlot != cachedHotbarSlot && cachedHotbarSlot != -1){
             mc.player.inventory.currentItem = cachedHotbarSlot;
         }
 
@@ -117,10 +106,9 @@ public class Surround extends Module {
         }
 
         cachedHotbarSlot = -1;
-        obbyHotbarSlot = -1;
-        centeredBlock = Vec3d.ZERO;
+        webHotbarSlot = -1;
 
-        noObby = false;
+        noWeb = false;
         firstRun = true;
         AutoCrystal.stopAC = false;
     }
@@ -131,7 +119,7 @@ public class Surround extends Module {
             return;
         }
 
-        if (disableNone.getValue() && noObby){
+        if (disableNone.getValue() && noWeb){
             mc.player.inventory.currentItem = cachedHotbarSlot;
             disable();
             return;
@@ -141,10 +129,16 @@ public class Surround extends Module {
             return;
         }
 
+        if (singleWeb.getValue() && blocksPlaced >= 1){
+            blocksPlaced = 0;
+            disable();
+            return;
+        }
+
         if (firstRun){
             firstRun = false;
-            if (findObsidianSlot() == -1){
-                noObby = true;
+            if (findWebSlot() == -1){
+                noWeb = true;
             }
         }
         else {
@@ -161,58 +155,20 @@ public class Surround extends Module {
             return;
         }
 
-        if (disableOnJump.getValue() && !(mc.player.onGround) && !(mc.player.isInWeb)){
-            return;
-        }
-
-        if (centerPlayer.getValue() && centeredBlock != Vec3d.ZERO && mc.player.onGround){
-
-            double xDeviation = Math.abs(centeredBlock.x - mc.player.posX);
-            double zDeviation = Math.abs(centeredBlock.z - mc.player.posZ);
-
-            if (xDeviation <= 0.1 && zDeviation <= 0.1){
-                centeredBlock = Vec3d.ZERO;
-            }
-            else {
-                double newX;
-                double newZ;
-                if (mc.player.posX > Math.round(mc.player.posX)){
-                   newX = Math.round(mc.player.posX) + 0.5;
-                }
-                else if (mc.player.posX < Math.round(mc.player.posX)){
-                    newX = Math.round(mc.player.posX) - 0.5;
-                }
-                else {
-                    newX = mc.player.posX;
-                }
-
-                if (mc.player.posZ > Math.round(mc.player.posZ)){
-                    newZ = Math.round(mc.player.posZ) + 0.5;
-                }
-                else if (mc.player.posZ < Math.round(mc.player.posZ)){
-                    newZ = Math.round(mc.player.posZ) - 0.5;
-                }
-                else {
-                    newZ = mc.player.posZ;
-                }
-
-                mc.player.connection.sendPacket(new CPacketPlayer.Position(newX, mc.player.posY, newZ, true));
-                mc.player.setPosition(newX, mc.player.posY, newZ);
-            }
-        }
-
-        if (triggerSurround.getValue() && runTimeTicks >= timeOutTicks.getValue()){
-            runTimeTicks = 0;
-            disable();
-            return;
-        }
-
         blocksPlaced = 0;
 
         while (blocksPlaced <= blocksPerTick.getValue()){
             Vec3d[] offsetPattern;
-            offsetPattern = Surround.Offsets.SURROUND;
-            int maxSteps = Surround.Offsets.SURROUND.length;
+            int maxSteps;
+
+            if (placeType.getValue().equalsIgnoreCase("Double")){
+                offsetPattern = Offsets.DOUBLE;
+                maxSteps = Offsets.DOUBLE.length;
+            }
+            else {
+                offsetPattern = Offsets.SINGLE;
+                maxSteps = Offsets.SINGLE.length;
+            }
 
             if (offsetSteps >= maxSteps){
                 offsetSteps = 0;
@@ -246,10 +202,9 @@ public class Surround extends Module {
                 isSneaking = false;
             }
         }
-        runTimeTicks++;
     }
 
-    private int findObsidianSlot(){
+    private int findWebSlot(){
         int slot = -1;
 
         for (int i = 0; i < 9; i++){
@@ -260,7 +215,7 @@ public class Surround extends Module {
             }
 
             Block block = ((ItemBlock) stack.getItem()).getBlock();
-            if (block instanceof BlockObsidian){
+            if (block instanceof BlockWeb){
                 slot = i;
                 break;
             }
@@ -291,12 +246,12 @@ public class Surround extends Module {
         Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
-        int obsidianSlot = findObsidianSlot();
+        int webSlot = findWebSlot();
 
-        if (mc.player.inventory.currentItem != obsidianSlot){
-            obbyHotbarSlot = obsidianSlot;
+        if (mc.player.inventory.currentItem != webSlot){
+            webHotbarSlot = webSlot;
 
-            mc.player.inventory.currentItem = obsidianSlot;
+            mc.player.inventory.currentItem = webSlot;
         }
 
         if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)){
@@ -304,8 +259,8 @@ public class Surround extends Module {
             isSneaking = true;
         }
 
-        if (obsidianSlot == -1){
-            noObby = true;
+        if (webSlot == -1){
+            noWeb = true;
             return false;
         }
 
@@ -316,7 +271,7 @@ public class Surround extends Module {
             stoppedAC = true;
         }
 
-        if (rotate.getValue()){
+        if (rotate.getValue()) {
             faceVectorPacketInstant(hitVec);
         }
 
@@ -332,25 +287,14 @@ public class Surround extends Module {
         return true;
     }
 
-    private Vec3d getCenterOfBlock(double playerX, double playerY, double playerZ){
-
-        double newX = Math.floor(playerX) + 0.5;
-        double newY = Math.floor(playerY);
-        double newZ = Math.floor(playerZ) + 0.5;
-
-        return new Vec3d(newX, newY, newZ);
-    }
-
     private static class Offsets {
-        private static final Vec3d[] SURROUND ={
-                new Vec3d(1, 0, 0),
-                new Vec3d(0, 0, 1),
-                new Vec3d(-1, 0, 0),
-                new Vec3d(0, 0, -1),
-                new Vec3d(1, -1, 0),
-                new Vec3d(0, -1, 1),
-                new Vec3d(-1, -1, 0),
-                new Vec3d(0, -1, -1)
+        private static final Vec3d[] SINGLE ={
+                new Vec3d(0, 0, 0)
+        };
+
+        private static final Vec3d[] DOUBLE ={
+                new Vec3d(0, 0, 0),
+                new Vec3d(0, 1, 0)
         };
     }
 }
