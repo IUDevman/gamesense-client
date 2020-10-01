@@ -16,7 +16,15 @@
 [![shadow](https://img.shields.io/badge/Gradle_Shadow-1.2.3-red.svg)](https://github.com/johnrengelman/shadow)
 [![alpine](https://img.shields.io/badge/Alpine-1.5-red.svg)](https://github.com/ZeroMemes/Alpine)
 ![org.json.simple](https://img.shields.io/badge/json--simple-1.1.1-red.svg)
-[![TypeTools](https://img.shields.io/badge/TypeTools-0.5.0-red.svg)](https://github.com/jhalterman/typetools)
+[![typeTools](https://img.shields.io/badge/TypeTools-0.5.0-red.svg)](https://github.com/jhalterman/typetools)
+[![optifine](https://img.shields.io/badge/Compatible_with-OptiFine_HD_U_F5-yellowgreen.svg)](https://www.optifine.net)
+[![forgeHax](https://img.shields.io/badge/Compatible_with-ForgeHax_2.9.0-yellowgreen.svg)](https://github.com/fr1kin/ForgeHax)
+[![kamiBlue](https://img.shields.io/badge/Compatible_with-KAMI_Blue_1.1.6-yellowgreen.svg)](https://github.com/kami-blue/client)
+[![salhack](https://img.shields.io/badge/Compatible_with-Salhack_2.05-yellowgreen.svg)](https://github.com/ionar2/salhack)
+[![seppuku](https://img.shields.io/badge/Compatible_with-Seppuku_3.0.6-yellowgreen.svg)](https://github.com/seppukudevelopment/seppuku)
+[![inertia](https://img.shields.io/badge/Compatible_with-Inertia_3.1.3-yellowgreen.svg)](https://github.com/THEREALWWEFAN231/Inertia)
+[![forgeWurst](https://img.shields.io/badge/Compatible_with-ForgeWurst_0.11-yellowgreen.svg)](https://github.com/Wurst-Imperium/ForgeWurst)
+[![wurstPlusTwo](https://img.shields.io/badge/Compatible_with-WurstPlusTwo_1.0-yellowgreen.svg)](https://github.com/TrvsF/wurstplus-two)
 ![y2k](https://img.shields.io/badge/Y2K-compliant-brightgreen.svg)
 
 Contributors:
