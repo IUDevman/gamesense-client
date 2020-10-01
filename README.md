@@ -19,10 +19,19 @@
 [![TypeTools](https://img.shields.io/badge/TypeTools-0.5.0-red.svg)](https://github.com/jhalterman/typetools)
 ![y2k](https://img.shields.io/badge/Y2K-compliant-brightgreen.svg)
 
-Developers:
-* Cyber
-* Hoosiers
-* lukflug
-* auburnhud2
+Contributors:
+* Cyber (original developer)
+* Hoosiers (original developer, head developer, maintainer)
+* lukflug (color settings and minor optimizations, issue tracker)
+* auburnhud2 (whitespace and continuous integration, issue tracker)
+* Dngerr (added Blink and HotbarRefill modules)
 
--Make sure to check the credits too!
+Some code used from:
+KAMI / 086
+Osiris / Finz0 (old base)
+ForgeHax / Fr1kin
+Seppuku / SeppukuDevelopment
+Backdoored / CookieDragon234
+Aurora / Memeszz
+EditMe / AlignedAxisBB
+Kami Blue / Bella
