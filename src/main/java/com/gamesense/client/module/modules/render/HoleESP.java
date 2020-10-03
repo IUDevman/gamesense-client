@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.lwjgl.opengl.GL11;
-
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
@@ -152,18 +150,14 @@ public class HoleESP extends Module{
 			return;
 		}
 		
-		GameSenseTessellator.prepare(GL11.GL_QUADS);
 		safeHoles.forEach((blockPos, isBedrock) -> {
 			if (mode.getValue().equalsIgnoreCase("Air")) drawBox(blockPos,isBedrock);
 			else if (mode.getValue().equalsIgnoreCase("Ground")) drawDownBox(blockPos,isBedrock);
 			else if (mode.getValue().equalsIgnoreCase("Flat")) drawFlat(blockPos,isBedrock);
 		});
-		GameSenseTessellator.release();
-		GameSenseTessellator.prepare(GL11.GL_QUADS);
 		safeHoles.forEach((blockPos, isBedrock) -> {
 			drawOutline(blockPos,width.getValue(),isBedrock);
 		});
-		GameSenseTessellator.release();
 	}
 
 	private GSColor getColor (boolean isBedrock, int alpha) {

@@ -2,15 +2,15 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import org.lwjgl.opengl.GL11;
 
 public class BlockHighlight extends Module{
 	public BlockHighlight(){
@@ -40,9 +40,7 @@ public class BlockHighlight extends Module{
 				GameSenseTessellator.drawBoundingBox(bb, w.getValue(), color.getValue());
 				GameSenseTessellator.releaseGL();
 				if (shade.getValue()) {
-					GameSenseTessellator.prepare(GL11.GL_QUADS);
 					GameSenseTessellator.drawBox(bb, c2, GeometryMasks.Quad.ALL);
-					GameSenseTessellator.release();
 				}
 			}
 		}

@@ -3,8 +3,6 @@ package com.gamesense.client.module.modules.render;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
@@ -92,16 +90,12 @@ public class VoidESP extends Module {
 			return;
 		}
 		voidHoles.forEach(blockPos -> {
-			GameSenseTessellator.prepare(GL11.GL_QUADS);
 			if (renderMode.getValue().equalsIgnoreCase("Box")){
 				drawBox(blockPos);
 			} else {
 				drawFlat(blockPos);
 			}
-			GameSenseTessellator.release();
-			GameSenseTessellator.prepare(7);
 			drawOutline(blockPos,width.getValue());
-			GameSenseTessellator.release();
 		});
 	}
 
