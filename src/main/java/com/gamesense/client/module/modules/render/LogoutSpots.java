@@ -77,10 +77,10 @@ public class LogoutSpots extends Module {
 	public void onWorldRender(RenderEvent event) {
 		loggedPlayers.forEach((e, time) -> {
 			if(mc.player.getDistance(e) < 500) {
-				GL11.glPushMatrix();
+				GlStateManager.pushMatrix();
 				drawLogoutBox(e.getRenderBoundingBox(), width.getValue());
 				drawNametag(e, time);
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			}
 		});
 	}

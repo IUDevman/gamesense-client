@@ -14,7 +14,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
 
-import static org.lwjgl.opengl.GL11.*;
 
 //Credit 086 for Kami base Tessellator
 
@@ -32,7 +31,6 @@ public class GameSenseTessellator extends Tessellator{
 	}
 
 	public static void prepareGL(){
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.glLineWidth(1.5F);
 		GlStateManager.disableTexture2D();
@@ -42,7 +40,7 @@ public class GameSenseTessellator extends Tessellator{
 		GlStateManager.disableLighting();
 		GlStateManager.disableCull();
 		GlStateManager.enableAlpha();
-		GlStateManager.color(1, 1, 1);
+		GlStateManager.color(1, 1, 1, 1);
 	}
 
 	public static void begin(int mode){
@@ -64,8 +62,7 @@ public class GameSenseTessellator extends Tessellator{
 		GlStateManager.enableTexture2D();
 		GlStateManager.enableBlend();
 		GlStateManager.enableDepth();
-		GlStateManager.color(1, 1, 1);
-		GL11.glColor4f(1, 1, 1, 1);
+		GlStateManager.color(1, 1, 1, 1);
 	}
 
 	public static void drawBox(AxisAlignedBB bb, GSColor color, int sides) {
@@ -132,22 +129,22 @@ public class GameSenseTessellator extends Tessellator{
 
 	public static void drawSphere(double x, double y, double z, float size, int slices, int stacks) {
 		final Sphere s = new Sphere();
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL_BLEND);
-		GL11.glLineWidth(1.2F);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL_DEPTH_TEST);
-		GL11.glDepthMask(false);
+		GlStateManager.enableBlend();
+		GlStateManager.glLineWidth(1.2f);
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
 		s.setDrawStyle(GLU.GLU_SILHOUETTE);
-		GL11.glTranslated(x - mc.getRenderManager().renderPosX, y - mc.getRenderManager().renderPosY, z - mc.getRenderManager().renderPosZ);
+		GlStateManager.translate(x - mc.getRenderManager().renderPosX, y - mc.getRenderManager().renderPosY, z - mc.getRenderManager().renderPosZ);
 		s.draw(size, slices, stacks);
-		GL11.glLineWidth(2.0F);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL_DEPTH_TEST);
-		GL11.glDepthMask(true);
-		GL11.glDisable(GL_BLEND);
-		GL11.glPopMatrix();
+		GlStateManager.glLineWidth(2.0f);
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableDepth();
+		GlStateManager.depthMask(true);
+		GlStateManager.disableBlend();
+		GlStateManager.popMatrix();
 	}
 	
 	public static void drawBoundingBox(final AxisAlignedBB bb, final float width, GSColor color) {
@@ -195,7 +192,7 @@ public class GameSenseTessellator extends Tessellator{
 		GlStateManager.depthMask(false);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
-		GL11.glLineWidth(width);
+		GlStateManager.glLineWidth(width);
 		Minecraft mc = Minecraft.getMinecraft();
 		double x = (double) bp.getX() - mc.getRenderManager().viewerPosX;
 		double y = (double) bp.getY() - mc.getRenderManager().viewerPosY;
@@ -245,7 +242,7 @@ public class GameSenseTessellator extends Tessellator{
 		GlStateManager.depthMask(false);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
-		GL11.glLineWidth(width);
+		GlStateManager.glLineWidth(width);
 		Minecraft mc = Minecraft.getMinecraft();
 		double x = (double) bp.getX() - mc.getRenderManager().viewerPosX;
 		double y = (double) bp.getY() - mc.getRenderManager().viewerPosY;
@@ -277,7 +274,7 @@ public class GameSenseTessellator extends Tessellator{
 		bufferbuilder.pos(bb.minX, bb.minY, bb.maxZ).color(r, g, b, alpha).endVertex();
 		bufferbuilder.pos(bb.minX, bb.maxY, bb.maxZ).color(r, g, b, alpha).endVertex();
 		tessellator.draw();
-		GL11.glDisable(GL_LINE_SMOOTH);
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		GlStateManager.depthMask(true);
 		GlStateManager.enableDepth();
 		GlStateManager.enableTexture2D();
@@ -295,7 +292,7 @@ public class GameSenseTessellator extends Tessellator{
 		GlStateManager.depthMask(false);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
-		GL11.glLineWidth(width);
+		GlStateManager.glLineWidth(width);
 		Minecraft mc = Minecraft.getMinecraft();
 		double x = (double) bp.getX() - mc.getRenderManager().viewerPosX;
 		double y = (double) bp.getY() - mc.getRenderManager().viewerPosY;

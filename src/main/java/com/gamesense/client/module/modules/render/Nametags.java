@@ -429,39 +429,39 @@ public class Nametags extends Module {
 		enableGL2D();
 		drawRect(x, y, x1, y1, inside);
 		border.glColor();
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glLineWidth(lineWidth);
-		GL11.glBegin(GL11.GL_LINE_STRIP);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableDepth();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.glLineWidth(lineWidth);
+		GlStateManager.glBegin(GL11.GL_LINE_STRIP);
 			GL11.glVertex2f(x, y);
 			GL11.glVertex2f(x, y1);
 			GL11.glVertex2f(x1, y1);
 			GL11.glVertex2f(x1, y);
 			GL11.glVertex2f(x, y);
-		GL11.glEnd();
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.glEnd();
+		GlStateManager.enableDepth();
+		GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
 		disableGL2D();
 	}
 
 	public static void enableGL2D() {
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glDepthMask(true);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableDepth();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.depthMask(true);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 		GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST);
 	}
 
 	public static void disableGL2D() {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GlStateManager.enableDepth();
+		GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
 		GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_DONT_CARE);
@@ -475,12 +475,12 @@ public class Nametags extends Module {
 	}
 
 	public static void drawRect(final float x, final float y, final float x1, final float y1) {
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2f(x, y1);
-		GL11.glVertex2f(x1, y1);
-		GL11.glVertex2f(x1, y);
-		GL11.glVertex2f(x, y);
-		GL11.glEnd();
+		GlStateManager.glBegin(GL11.GL_QUADS);
+			GL11.glVertex2f(x, y1);
+			GL11.glVertex2f(x1, y1);
+			GL11.glVertex2f(x1, y);
+			GL11.glVertex2f(x, y);
+		GlStateManager.glEnd();
 	}
 
 	private int armorValue(final int n) {

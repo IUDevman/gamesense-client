@@ -110,29 +110,28 @@ public class Tracers extends Module {
 	}
 
 	public static void renderLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, double up, GSColor color){
-		GL11.glPushMatrix();
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glLineWidth(1.0F);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glDepthMask(false);
+		GlStateManager.pushMatrix();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.enableBlend();
+		GlStateManager.glLineWidth(1.0F);
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
 		color.glColor();
 		GlStateManager.disableLighting();
-		GL11.glLoadIdentity();
+		GlStateManager.loadIdentity();
 		mc.entityRenderer.orientCamera(mc.getRenderPartialTicks());
-		GL11.glBegin(GL11.GL_LINES);{
+		GlStateManager.glBegin(GL11.GL_LINES);
 			GL11.glVertex3d(posx, posy, posz);
 			GL11.glVertex3d(posx2, posy2+up, posz2);
-		}
-		GL11.glEnd();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glDepthMask(true);
-		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.glEnd();
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableDepth();
+		GlStateManager.depthMask(true);
+		GlStateManager.disableBlend();
 		GL11.glColor3d(1d,1d,1d);
 		GlStateManager.enableLighting();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	public static void renderLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color){

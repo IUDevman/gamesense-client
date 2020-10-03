@@ -1,20 +1,22 @@
 package com.gamesense.client.module.modules.render;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.lwjgl.opengl.GL11;
+
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class HoleESP extends Module{
 
@@ -189,7 +191,7 @@ public class HoleESP extends Module{
 	private void drawDownBox(BlockPos blockPos, boolean isBedrock){
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
-			AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
+			//AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			if (mode.getValue().equalsIgnoreCase("Ground")) {
 				GameSenseTessellator.drawDownBox(blockPos, color, GeometryMasks.Quad.ALL);
 			}
@@ -199,7 +201,7 @@ public class HoleESP extends Module{
 	private void drawFlat(BlockPos blockPos, boolean isBedrock) {
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
-			AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
+			//AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			if (mode.getValue().equalsIgnoreCase("Flat")) {
 				GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
 			}

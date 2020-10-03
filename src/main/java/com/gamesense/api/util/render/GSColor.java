@@ -2,7 +2,7 @@ package com.gamesense.api.util.render;
 
 import java.awt.Color;
 
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 /**
 * @author lukflug
@@ -10,6 +10,11 @@ import org.lwjgl.opengl.GL11;
 // Why would anyone ever need to use JavaDoc properly?
 
 public class GSColor extends Color {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public GSColor (int rgb) {
 		super(rgb);
 	}
@@ -51,6 +56,6 @@ public class GSColor extends Color {
 	}
 	
 	public void glColor() {
-		GL11.glColor4f(getRed()/255.0f,getGreen()/255.0f,getBlue()/255.0f,getAlpha()/255.0f);
+		GlStateManager.color(getRed()/255.0f,getGreen()/255.0f,getBlue()/255.0f,getAlpha()/255.0f);
 	}
 }
