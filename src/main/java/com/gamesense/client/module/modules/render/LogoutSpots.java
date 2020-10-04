@@ -140,25 +140,20 @@ public class LogoutSpots extends Module {
 		float viewerYaw = mc.getRenderManager().playerViewY;
 		float viewerPitch = mc.getRenderManager().playerViewX;
 		boolean isThirdPersonFrontal = mc.getRenderManager().options.thirdPersonView == 2;
-		GlStateManager.translate(x, y, z);
-		GlStateManager.rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
-
-
-		GlStateManager.scale(m, m, m);
-
 		FontRenderer fontRendererIn = mc.fontRenderer;
-		GlStateManager.scale(-0.025F, -0.025F, 0.025F);
-
 		String line1 = entityIn.getName() + "  (" + t + ")";
 		String line2 = "x" + entityIn.getPosition().getX() + " y" + entityIn.getPosition().getY() + " z" + entityIn.getPosition().getZ();
 		int i = fontRendererIn.getStringWidth(line1) / 2;
 		int ii = fontRendererIn.getStringWidth(line2) / 2;
+		
+		GlStateManager.translate(x, y, z);
+		GlStateManager.rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
+		GlStateManager.scale(m, m, m);
+		GlStateManager.scale(-0.025F, -0.025F, 0.025F);
 		GlStateManager.enableBlend();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-
 		GlStateManager.enableTexture2D();
-
 		GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
 		fontRendererIn.drawStringWithShadow(line1, -i, 10, nameColor.getValue().getRGB());
 		fontRendererIn.drawStringWithShadow(line2, -ii, 20, nameColor.getValue().getRGB());
