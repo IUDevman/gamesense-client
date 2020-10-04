@@ -15,6 +15,7 @@ public class CommandManager{
 		addCommand(new AutoReplyCommand());
 		addCommand(new BindCommand());
 		addCommand(new CmdsCommand());
+		addCommand(new DisableAllCommand());
 		addCommand(new DrawnCommand());
 		addCommand(new EnemyCommand());
 		addCommand(new FixGuiCommand());
