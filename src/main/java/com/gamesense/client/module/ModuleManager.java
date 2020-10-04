@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.module.modules.combat.AutoArmor;
 import com.gamesense.client.module.modules.combat.AutoCrystal;
 import com.gamesense.client.module.modules.combat.AutoTotem;
@@ -72,7 +72,6 @@ import com.gamesense.client.module.modules.render.ViewModel;
 import com.gamesense.client.module.modules.render.VoidESP;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -166,18 +165,9 @@ public class ModuleManager {
 	}
 
 	public static void onWorldRender(RenderWorldLastEvent event) {
-
 		Minecraft.getMinecraft().profiler.startSection("gamesense");
 		Minecraft.getMinecraft().profiler.startSection("setup");
-
-		GlStateManager.disableTexture2D();
-		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-		GlStateManager.shadeModel(GL11.GL_SMOOTH);
-		GlStateManager.disableDepth();
-		GlStateManager.glLineWidth(1f);
-
+		GameSenseTessellator.prepare();
 		RenderEvent e = new RenderEvent(event.getPartialTicks());
 		Minecraft.getMinecraft().profiler.endSection();
 
@@ -188,17 +178,7 @@ public class ModuleManager {
 		});
 
 		Minecraft.getMinecraft().profiler.startSection("release");
-
-		GlStateManager.glLineWidth(1f);
-		GlStateManager.shadeModel(GL11.GL_FLAT);
-		GlStateManager.disableBlend();
-		GlStateManager.enableAlpha();
-		GlStateManager.enableTexture2D();
-		GlStateManager.enableDepth();
-		GlStateManager.enableCull();
-		//GameSenseTessellator.releaseGL();
-		// TODO sort this shit out
-
+		GameSenseTessellator.release();
 		Minecraft.getMinecraft().profiler.endSection();
 		Minecraft.getMinecraft().profiler.endSection();
 	}

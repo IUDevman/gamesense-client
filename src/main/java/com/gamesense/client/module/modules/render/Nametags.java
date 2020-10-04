@@ -64,9 +64,9 @@ public class Nametags extends Module {
 		for (Object o : mc.world.playerEntities) {
 			final Entity entity = (Entity) o;
 			if (entity instanceof EntityPlayer && entity != mc.player && entity.isEntityAlive()) {
-				double x = interpolate(entity.lastTickPosX, entity.posX, event.getPartialTicks()) - mc.getRenderManager().renderPosX;
+				/*double x = interpolate(entity.lastTickPosX, entity.posX, event.getPartialTicks()) - mc.getRenderManager().renderPosX;
 				double y = interpolate(entity.lastTickPosY, entity.posY, event.getPartialTicks()) - mc.getRenderManager().renderPosY;
-				double z = interpolate(entity.lastTickPosZ, entity.posZ, event.getPartialTicks()) - mc.getRenderManager().renderPosZ;
+				double z = interpolate(entity.lastTickPosZ, entity.posZ, event.getPartialTicks()) - mc.getRenderManager().renderPosZ;*/
 				Vec3d m = renderPosEntity(entity);
 				renderNameTagsFor((EntityPlayer) entity, m.x, m.y, m.z);
 			}
@@ -85,9 +85,9 @@ public class Nametags extends Module {
 		return new Vec3d(timerPos(entity.posX, entity.lastTickPosX) - mc.getRenderManager().renderPosX, timerPos(entity.posY, entity.lastTickPosY) - mc.getRenderManager().renderPosY, timerPos(entity.posZ, entity.lastTickPosZ) - mc.getRenderManager().renderPosZ);
 	}
 
-	private double interpolate(final double previous, final double current, final float delta) {
+	/*private double interpolate(final double previous, final double current, final float delta) {
 		return previous + (current - previous) * delta;
-	}
+	}*/
 
 	private void renderItemName(ItemStack itemStack, int x, int y) {
 		float n3 = 0.5f;
@@ -104,7 +104,6 @@ public class Nametags extends Module {
 	}
 
 	private void renderEnchants(ItemStack itemStack, int x, int y) {
-		y = y;
 		final Iterator<Enchantment> iterator2;
 		Iterator<Enchantment> iterator = iterator2 = EnchantmentHelper.getEnchantments(itemStack).keySet().iterator();
 		while (iterator.hasNext()) {
@@ -153,7 +152,7 @@ public class Nametags extends Module {
 		if (green>1) green=1;					// Ensure that the color value is in range
 		else if (green<0) green=0;
 		float red = 1 - green;
-		int dmg = 100 - (int) (red * 100);
+		//int dmg = 100 - (int) (red * 100);
 		final float n4 = 0.5f;
 		final float n5 = 0.5f;
 		GlStateManager.scale(n5, n4, n5);
@@ -208,7 +207,7 @@ public class Nametags extends Module {
 		entity2.posZ = m.z;
 		distance = entity.getDistance(n, distance, n2);
 		final int n4 = FontUtils.getStringWidth(HUD.customFont.getValue(),this.renderEntityName(entityPlayer)) / 2;
-		final int n5 = FontUtils.getStringWidth(HUD.customFont.getValue(),this.renderEntityName(entityPlayer)) / 2;
+		//final int n5 = FontUtils.getStringWidth(HUD.customFont.getValue(),this.renderEntityName(entityPlayer)) / 2;
 		double n6 = 0.0018 + 0.003F * distance;
 		if (distance <= 8.0) {
 			n6 = 0.0245;
