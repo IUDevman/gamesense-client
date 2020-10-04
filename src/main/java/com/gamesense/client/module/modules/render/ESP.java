@@ -59,7 +59,6 @@ public class ESP extends Module {
     public void onWorldRender(RenderEvent event){
         mc.world.loadedEntityList.stream().filter(entity -> entity != mc.player).filter(entity -> rangeEntityCheck(entity)).forEach(entity -> {
             defineEntityColors(entity);
-            GameSenseTessellator.prepareGL();
             if (playerRender.getValue() && entity instanceof EntityPlayer){
                 GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);
             }
@@ -76,7 +75,6 @@ public class ESP extends Module {
                     GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
                 }
             }
-            GameSenseTessellator.releaseGL();
             if (glowCrystals.getValue() && entity instanceof EntityEnderCrystal){
                 entity.setGlowing(true);
             }
@@ -87,7 +85,6 @@ public class ESP extends Module {
         });
         if (containerRender.getValue()) {
             mc.world.loadedTileEntityList.stream().filter(tileEntity -> rangeTileCheck(tileEntity)).forEach(tileEntity -> {
-                GameSenseTessellator.prepareGL();
                 if (tileEntity instanceof TileEntityChest){
                     containerColor = new GSColor(255, 255, 0, opacityGradient);
                     GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
@@ -104,7 +101,6 @@ public class ESP extends Module {
                     containerColor = new GSColor(150, 150, 150, opacityGradient);
                     GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
-                GameSenseTessellator.releaseGL();
             });
         }
     }

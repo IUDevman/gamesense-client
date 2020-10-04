@@ -36,9 +36,7 @@ public class BlockHighlight extends Module{
 			pos = ray.getBlockPos();
 			bb = mc.world.getBlockState(pos).getSelectedBoundingBox(mc.world, pos);
 			if (bb != null && pos != null && mc.world.getBlockState(pos).getMaterial() != Material.AIR) {
-				GameSenseTessellator.prepareGL();
 				GameSenseTessellator.drawBoundingBox(bb, w.getValue(), color.getValue());
-				GameSenseTessellator.releaseGL();
 				if (shade.getValue()) {
 					GameSenseTessellator.drawBox(bb, c2, GeometryMasks.Quad.ALL);
 				}

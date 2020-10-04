@@ -20,7 +20,7 @@ public class MobOwner extends Module{
 	private Setting.Integer requestTime;
 	private Setting.Boolean debug;
 
-	private final Map<String, String> cachedUUIDs = new HashMap<String, String>(){{}};
+	private final Map<String, String> cachedUUIDs = new HashMap<String, String>();
 	private int apiRequests = 0;
 	private final String invalidText = "Servers offline!";
 

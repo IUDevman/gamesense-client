@@ -13,7 +13,6 @@ import com.gamesense.client.module.Module;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 public class HoleESP extends Module{
@@ -171,7 +170,6 @@ public class HoleESP extends Module{
 	private void drawBox(BlockPos blockPos, boolean isBedrock) {
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
-			AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			if (mode.getValue().equalsIgnoreCase("Air")) {
 				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ)))
 					GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
@@ -185,7 +183,6 @@ public class HoleESP extends Module{
 	private void drawDownBox(BlockPos blockPos, boolean isBedrock){
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
-			//AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			if (mode.getValue().equalsIgnoreCase("Ground")) {
 				GameSenseTessellator.drawDownBox(blockPos, color, GeometryMasks.Quad.ALL);
 			}
@@ -195,7 +192,6 @@ public class HoleESP extends Module{
 	private void drawFlat(BlockPos blockPos, boolean isBedrock) {
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
-			//AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			if (mode.getValue().equalsIgnoreCase("Flat")) {
 				GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
 			}
