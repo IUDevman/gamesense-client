@@ -371,7 +371,7 @@ public class AutoTrap extends Module {
                 new Vec3d(-1, 2, 0),
                 new Vec3d(-1, 1, 0),
                 new Vec3d(0, 2, 1),
-                new Vec3d(0, 1, 1),
+                new Vec3d(0, 1, 1)
         };
     }
 }
