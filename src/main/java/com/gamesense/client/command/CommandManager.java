@@ -17,6 +17,7 @@ public class CommandManager{
 		addCommand(new CmdsCommand());
 		addCommand(new DrawnCommand());
 		addCommand(new EnemyCommand());
+		addCommand(new FixGuiCommand());
 		addCommand(new FontCommand());
 		addCommand(new FriendCommand());
 		addCommand(new MacroCommand());
