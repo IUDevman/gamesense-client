@@ -40,14 +40,10 @@ KAMI / 086
 
 Osiris / Finz0 (old base)
 
-ForgeHax / Fr1kin
-
 Seppuku / SeppukuDevelopment
 
 Backdoored / CookieDragon234
 
 Aurora / Memeszz
 
-EditMe / AlignedAxisBB
-
-Kami Blue / Bella
+Kami Blue / L1ving

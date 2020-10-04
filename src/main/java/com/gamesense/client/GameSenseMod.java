@@ -14,7 +14,6 @@ import com.gamesense.api.event.EventProcessor;
 import com.gamesense.client.macro.MacroManager;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.api.util.render.CapeUtils;
-import com.gamesense.api.util.world.TpsUtils;
 import com.gamesense.api.util.font.CFontRenderer;
 import me.zero.alpine.EventBus;
 import me.zero.alpine.EventManager;
@@ -47,7 +46,7 @@ public class GameSenseMod{
 	public LoadModules loadModules;
 	public CapeUtils capeUtils;
 	public MacroManager macroManager;
-	EventProcessor eventProcessor;
+	public EventProcessor eventProcessor;
 	public static CFontRenderer fontRenderer;
 	public static Enemies enemies;
 
@@ -71,8 +70,6 @@ public class GameSenseMod{
 
 		fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true,true);
 
-		TpsUtils tpsUtils = new TpsUtils();
-
 		settingsManager = new SettingsManager();
 		log.info("Settings initialized!");
 
@@ -90,18 +87,13 @@ public class GameSenseMod{
 		log.info("Macros initialized!");
 
 		saveConfiguration = new SaveConfiguration();
+		saveModules = new SaveModules();
 		Runtime.getRuntime().addShutdownHook(new Stopper());
 		log.info("Config Saved!");
 
 		loadConfiguration = new LoadConfiguration();
-		log.info("Config Loaded!");
-
-		saveModules = new SaveModules();
-		Runtime.getRuntime().addShutdownHook(new Stopper());
-		log.info("Modules Saved!");
-
 		loadModules = new LoadModules();
-		log.info("Modules Loaded!");
+		log.info("Config Loaded!");
 
 		CommandManager.initCommands();
 		log.info("Commands initialized!");
