@@ -8,11 +8,9 @@ import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
-import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ColorMain;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
@@ -52,7 +50,6 @@ public class Tracers extends Module {
 				.filter(e->e instanceof EntityPlayer)
 				.filter(e->e != mc.player)
 				.forEach(e->{
-					GameSenseMod.log.info("2");
 					if (mc.player.getDistance(e) > renderDistance.getValue()){
 						return;
 					} else {
@@ -95,10 +92,10 @@ public class Tracers extends Module {
 	public void drawLine1(double posx, double posy, double posz, double up, GSColor color){
 		Vec3d eyes = new Vec3d(0, 0, 1)
 				.rotatePitch(-(float)Math
-						.toRadians(Minecraft.getMinecraft().player.rotationPitch))
+						.toRadians(mc.player.rotationPitch))
 				.rotateYaw(-(float)Math
-						.toRadians(Minecraft.getMinecraft().player.rotationYaw));
-		eyes=eyes.add(mc.getRenderManager().viewerPosX,mc.getRenderManager().viewerPosY,mc.getRenderManager().viewerPosZ);
+						.toRadians(mc.player.rotationYaw));
+		eyes=eyes.add(mc.getRenderManager().renderPosX,mc.getRenderManager().renderPosY,mc.getRenderManager().renderPosZ);
 		if (pointsTo.getValue().equalsIgnoreCase("Head")) {
 			GameSenseTessellator.drawLine(eyes.x, eyes.y + mc.player.getEyeHeight(), eyes.z, posx, posy+up, posz, color);
 		} else {
