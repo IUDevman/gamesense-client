@@ -1,6 +1,7 @@
 package com.gamesense.api.util.render;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
 
@@ -183,12 +184,14 @@ public class GameSenseTessellator {
 		GlStateManager.disableCull();
 		GlStateManager.enableAlpha();
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glEnable(GL32.GL_DEPTH_CLAMP);		// Tracers will break on graphics cards before 2008 and some low end ones after that
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(-mc.getRenderManager().viewerPosX,-mc.getRenderManager().viewerPosY,-mc.getRenderManager().viewerPosZ);
 	}
 	
 	public static void release() {
 		GlStateManager.popMatrix();
+		GL11.glDisable(GL32.GL_DEPTH_CLAMP);
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		GlStateManager.enableAlpha();
 		GlStateManager.enableCull();

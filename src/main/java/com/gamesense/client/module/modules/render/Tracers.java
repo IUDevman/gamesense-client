@@ -11,6 +11,7 @@ import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ColorMain;
 
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
@@ -90,16 +91,11 @@ public class Tracers extends Module {
 	}
 
 	public void drawLine1(double posx, double posy, double posz, double up, GSColor color){
-		Vec3d eyes = new Vec3d(0, 0, 1)
-				.rotatePitch(-(float)Math
-						.toRadians(mc.player.rotationPitch))
-				.rotateYaw(-(float)Math
-						.toRadians(mc.player.rotationYaw));
-		eyes=eyes.add(mc.getRenderManager().renderPosX,mc.getRenderManager().renderPosY,mc.getRenderManager().renderPosZ);
+		Vec3d eyes=ActiveRenderInfo.getCameraPosition().add(mc.getRenderManager().viewerPosX,mc.getRenderManager().viewerPosY,mc.getRenderManager().viewerPosZ);
 		if (pointsTo.getValue().equalsIgnoreCase("Head")) {
-			GameSenseTessellator.drawLine(eyes.x, eyes.y + mc.player.getEyeHeight(), eyes.z, posx, posy+up, posz, color);
+			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy+up, posz, color);
 		} else {
-			GameSenseTessellator.drawLine(eyes.x, eyes.y + mc.player.getEyeHeight(), eyes.z, posx, posy, posz, color);
+			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy, posz, color);
 		}
 	}
 }
