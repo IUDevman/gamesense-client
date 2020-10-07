@@ -7,6 +7,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.Wrapper;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
@@ -63,7 +64,7 @@ public class Nametags extends Module {
 	public void onWorldRender(RenderEvent event) {
 		for (Object o : mc.world.playerEntities) {
 			final Entity entity = (Entity) o;
-			if (entity instanceof EntityPlayer && entity != mc.player && entity.isEntityAlive()) {
+			if (entity instanceof EntityPlayer /*&& entity != mc.player*/ && entity.isEntityAlive()) {
 				/*double x = interpolate(entity.lastTickPosX, entity.posX, event.getPartialTicks()) - mc.getRenderManager().renderPosX;
 				double y = interpolate(entity.lastTickPosY, entity.posY, event.getPartialTicks()) - mc.getRenderManager().renderPosY;
 				double z = interpolate(entity.lastTickPosZ, entity.posZ, event.getPartialTicks()) - mc.getRenderManager().renderPosZ;*/
@@ -93,11 +94,11 @@ public class Nametags extends Module {
 		float n3 = 0.5f;
 		float n4 = 0.5f;
 		GlStateManager.scale(n4, n3, n4);
-		GlStateManager.disableDepth();
+		//GlStateManager.disableDepth();
 		String displayName = itemStack.getDisplayName();
 		final String s2 = displayName;
 		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), s2, -FontUtils.getStringWidth(HUD.customFont.getValue(), s2) /2, y, new GSColor(255,255,255));
-		GlStateManager.enableDepth();
+		//GlStateManager.enableDepth();
 		final float n5 = 2.0f;
 		final int n6 = 2;
 		GlStateManager.scale((float)n6, n5, (float)n6);
@@ -156,9 +157,9 @@ public class Nametags extends Module {
 		final float n4 = 0.5f;
 		final float n5 = 0.5f;
 		GlStateManager.scale(n5, n4, n5);
-		GlStateManager.disableDepth();
+		//GlStateManager.disableDepth();
 		FontUtils.drawStringWithShadow(HUD.customFont.getValue(),new StringBuilder().insert(0, (int) (n3 * 100.0f)).append('%').toString(), (x * 2), y, new GSColor((int) (red * 255), (int) (green * 255), 0));
-		GlStateManager.enableDepth();
+		//GlStateManager.enableDepth();
 		final float n6 = 2.0f;
 		final int n7 = 2;
 		GlStateManager.scale((float)n7, n6, (float)n7);
@@ -171,7 +172,7 @@ public class Nametags extends Module {
 		RenderHelper.enableStandardItemLighting();
 		mc.getRenderItem().zLevel = -150.0f;
 		GlStateManager.disableAlpha();
-		GlStateManager.enableDepth();
+		//GlStateManager.enableDepth();
 		GlStateManager.disableCull();
 		final int n4 = (n3 > 4) ? ((n3 - 4) * 8 / 2) : 0;
 		mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, n, n2 + n4);
@@ -183,9 +184,9 @@ public class Nametags extends Module {
 		final float n5 = 0.5f;
 		final float n6 = 0.5f;
 		GlStateManager.scale(n6, n5, n6);
-		GlStateManager.disableDepth();
+		//GlStateManager.disableDepth();
 		this.renderEnchants(itemStack, n, n2 - 24);
-		GlStateManager.enableDepth();
+		//GlStateManager.enableDepth();
 		final float n7 = 2.0f;
 		final int n8 = 2;
 		GlStateManager.scale((float)n8, n7, (float)n8);
@@ -208,34 +209,35 @@ public class Nametags extends Module {
 		distance = entity.getDistance(n, distance, n2);
 		final int n4 = FontUtils.getStringWidth(HUD.customFont.getValue(),this.renderEntityName(entityPlayer)) / 2;
 		//final int n5 = FontUtils.getStringWidth(HUD.customFont.getValue(),this.renderEntityName(entityPlayer)) / 2;
-		double n6 = 0.0018 + 0.003F * distance;
-		if (distance <= 8.0) {
-			n6 = 0.0245;
-		}
-		GlStateManager.pushMatrix();
-		RenderHelper.enableStandardItemLighting();
-		GlStateManager.enablePolygonOffset();
-		GlStateManager.doPolygonOffset(1.0f, -1500000.0f);
-		GlStateManager.disableLighting();
-		GlStateManager.translate((float)n, (float)tempY + 1.4f, (float)n2);
-		final float n7 = -mc.getRenderManager().playerViewY;
-		final float n8 = 1.0f;
-		final float n9 = 0.0f;
-		GlStateManager.rotate(n7, n9, n8, n9);
-		GlStateManager.rotate(mc.getRenderManager().playerViewX, (mc.gameSettings.thirdPersonView == 2) ? -1.0f : 1.0f, 0.0f, (float)0);
-		GlStateManager.scale(-n6, -n6, n6);
-		GlStateManager.disableDepth();
-		GlStateManager.enableBlend();
+		//double n6 = 0.0018 + 0.003F * distance;
+		//if (distance <= 8.0) {
+		//	n6 = 0.0245;
+		//}
+		//GlStateManager.pushMatrix();
+		//RenderHelper.enableStandardItemLighting();
+		//GlStateManager.enablePolygonOffset();
+		//GlStateManager.doPolygonOffset(1.0f, -1500000.0f);
+		//GlStateManager.disableLighting();
+		//GlStateManager.disableDepth();
+		//GlStateManager.translate((float)n, (float)tempY + 1.4f, (float)n2);
+		//final float n7 = -mc.getRenderManager().playerViewY;
+		//GlStateManager.rotate(n7, 0, 1, 0);
+		//GlStateManager.rotate(mc.getRenderManager().playerViewX, (mc.gameSettings.thirdPersonView == 2) ? -1.0f : 1.0f, 0.0f, (float)0);
+		//GlStateManager.scale(-n6, -n6, n6);
+		//GlStateManager.disableDepth();
+		//GlStateManager.enableBlend();
 		EntityPlayer entityPlayer2;
-		GlStateManager.enableBlend();
+		//GlStateManager.enableBlend();
 		GSColor color;
 		if (customColor.getValue()) color=borderColor.getValue();
 		else color=new GSColor(0,0,0,51);
 		drawBorderedRectReliant((float) (-n4 - 1), (float) (-mc.fontRenderer.FONT_HEIGHT), (float) (n4 + 2), 1.0f, 1.8f, new GSColor(0,4,0,85), color);
-		GlStateManager.disableBlend();
-		GlStateManager.pushMatrix();
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.renderEntityName(entityPlayer), (-n4), (-(mc.fontRenderer.FONT_HEIGHT - 1)), this.renderPing(entityPlayer));
-		GlStateManager.popMatrix();
+		//GlStateManager.disableBlend();
+		//GlStateManager.pushMatrix();
+		String[] text=new String[1];
+		text[0]=renderEntityName(entityPlayer);
+		GameSenseTessellator.drawNametag(n,tempY,n2,text,this.renderPing(entityPlayer),2);
+		//GlStateManager.popMatrix();
 		entityPlayer2 = entityPlayer;
 		final ItemStack heldItemMainhand = entityPlayer2.getHeldItemMainhand();
 		final ItemStack heldItemOffhand = entityPlayer.getHeldItemOffhand();
@@ -341,18 +343,18 @@ public class Nametags extends Module {
 			n10 += 16;
 		}
 		GlStateManager.popMatrix();
-		final float n21 = 1.0f;
+		//final float n21 = 1.0f;
 		final double posZ2 = posZ;
 		final Entity entity3 = entity;
 		final double posY2 = posY;
 		entity.posX = posX;
 		entity3.posY = posY2;
 		entity3.posZ = posZ2;
-		GlStateManager.enableDepth();
-		GlStateManager.disableBlend();
-		GlStateManager.disablePolygonOffset();
-		GlStateManager.doPolygonOffset(n21, 1500000.0f);
-		GlStateManager.popMatrix();
+		//GlStateManager.enableDepth();
+		//GlStateManager.disableBlend();
+		//GlStateManager.disablePolygonOffset();
+		//GlStateManager.doPolygonOffset(n21, 1500000.0f);
+		//GlStateManager.popMatrix();
 	}
 	
 	private GSColor renderPing(final EntityPlayer entityPlayer) {
@@ -379,22 +381,22 @@ public class Nametags extends Module {
 		if (this.entityId.getValue()) {
 			s = new StringBuilder().insert(0, s).append(" ID: ").append(entityPlayer.getEntityId()).toString();
 		}
-		Nametags nametags = null;
+		//Nametags nametags = null;
 		Label_0195: {
 			if (this.gamemode.getValue()) {
 				if (entityPlayer.isCreative()) {
 					s = new StringBuilder().insert(0, s).append(" [C]").toString();
-					nametags = this;
+					//nametags = this;
 					break Label_0195;
 				}
 				if (entityPlayer.isSpectator()) {
 					s = new StringBuilder().insert(0, s).append(" [I]").toString();
-					nametags = this;
+					//nametags = this;
 					break Label_0195;
 				}
 				s = new StringBuilder().insert(0, s).append(" [S]").toString();
 			}
-			nametags = this;
+			//nametags = this;
 		}
 		if (this.ping.getValue() && mc.getConnection() != null && mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()) != null) {
 			s = new StringBuilder().insert(0, s).append(" ").append(mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()).getResponseTime()).append("ms").toString();
@@ -430,7 +432,7 @@ public class Nametags extends Module {
 		border.glColor();
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
-		GlStateManager.disableDepth();
+		//GlStateManager.disableDepth();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GlStateManager.glLineWidth(lineWidth);
 		GlStateManager.glBegin(GL11.GL_LINE_STRIP);
@@ -440,7 +442,7 @@ public class Nametags extends Module {
 			GL11.glVertex2f(x1, y);
 			GL11.glVertex2f(x, y);
 		GlStateManager.glEnd();
-		GlStateManager.enableDepth();
+		//GlStateManager.enableDepth();
 		GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();
 		disableGL2D();
@@ -449,7 +451,7 @@ public class Nametags extends Module {
 	public static void enableGL2D() {
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
-		GlStateManager.disableDepth();
+		//GlStateManager.disableDepth();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GlStateManager.depthMask(true);
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
@@ -458,7 +460,7 @@ public class Nametags extends Module {
 	}
 
 	public static void disableGL2D() {
-		GlStateManager.enableDepth();
+		//GlStateManager.enableDepth();
 		GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);

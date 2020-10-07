@@ -452,22 +452,18 @@ public class AutoCrystal extends Module {
     }
 
     public void onWorldRender(RenderEvent event) {
+        // As far as I can tell, this code never gets executed, since render is always null :(
         if (this.render != null) {
             GameSenseTessellator.drawBox(this.render, new GSColor(color.getValue(),50), 63);
-            GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, new GSColor(color.getValue(),255));
+            GameSenseTessellator.drawBoundingBox(this.render, 1.00f, new GSColor(color.getValue(),255));
         }
-
+        
         if(showDamage.getValue()){
             if (this.render != null && this.renderEnt != null) {
-                GlStateManager.pushMatrix();
-                GameSenseTessellator.glBillboardDistanceScaled((float) render.getX() + 0.5f, (float) render.getY() + 0.5f, (float) render.getZ() + 0.5f, mc.player, 1);
-                double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
-                String damageText = (Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
-                GlStateManager.disableDepth();
-                GlStateManager.translate(-(mc.fontRenderer.getStringWidth(damageText) / 2.0d), 0, 0);
-                //mc.fontRenderer.drawStringWithShadow(damageText, 0, 0, 0xFFffffff);
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), damageText, 0, 0, new GSColor(255,255,255));
-                GlStateManager.popMatrix();
+            	double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
+                String[] damageText=new String[1];
+                damageText[0]=(Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
+                GameSenseTessellator.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ(),damageText,new GSColor(255,255,255),1);
             }
         }
     }

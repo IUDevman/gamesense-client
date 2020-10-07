@@ -203,16 +203,16 @@ public class HoleESP extends Module{
 		if (type.getValue().equalsIgnoreCase("Outline") || type.getValue().equalsIgnoreCase("Both")) {
 			if (mode.getValue().equalsIgnoreCase("Air")) {
 				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
-					GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, color);
+					GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
 				} else {
-					GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, color);
+					GameSenseTessellator.drawBoundingBox(blockPos, width, color);
 				}
 			}
 			if (mode.getValue().equalsIgnoreCase("Flat")) {
-				GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, color);
+				GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
 			}
 			if (mode.getValue().equalsIgnoreCase("Ground")) {
-				GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, color);
+				GameSenseTessellator.drawBoundingDownBox(blockPos, width, color);
 			}
 		}
 	}

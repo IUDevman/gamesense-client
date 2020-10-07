@@ -140,10 +140,10 @@ public class VoidESP extends Module {
 	private void drawOutline(BlockPos blockPos, int width) {
 		if (renderType.getValue().equalsIgnoreCase("Outline") || renderType.getValue().equalsIgnoreCase("Both")) {
 			if (renderMode.getValue().equalsIgnoreCase("Box")) {
-				GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, color.getValue());
+				GameSenseTessellator.drawBoundingBox(blockPos, width, color.getValue());
 			}
 			if (renderMode.getValue().equalsIgnoreCase("Flat")) {
-				GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, color.getValue());
+				GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color.getValue());
 			}
 		}
 	}

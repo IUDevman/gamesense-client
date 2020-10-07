@@ -20,11 +20,9 @@ import com.gamesense.client.module.Module;
 
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.world.WorldEvent;
 
 public class LogoutSpots extends Module {
@@ -118,67 +116,9 @@ public class LogoutSpots extends Module {
 	}
 
 	private void drawNametag(Entity entityIn, String t) {
-		GlStateManager.pushMatrix();
-
-		float f = mc.player.getDistance(entityIn);
-		float sc = f < 25 ? 0.5f : 2f;
-		float m = (f / 20f) * (float) (Math.pow(1.2589254f, 0.1 / sc));
-		if(m < 0.5f) m = 0.5f;
-		if(m > 5f) m = 5f;
-
-		Vec3d interp = getInterpolatedRenderPos(entityIn, mc.getRenderPartialTicks());
-		float mm;
-		if(m > 2)
-			mm = m / 2;
-		else
-			mm = m;
-		float yAdd = entityIn.height + mm;
-		double x = interp.x;
-		double y = interp.y + yAdd;
-		double z = interp.z;
-
-		float viewerYaw = mc.getRenderManager().playerViewY;
-		float viewerPitch = mc.getRenderManager().playerViewX;
-		boolean isThirdPersonFrontal = mc.getRenderManager().options.thirdPersonView == 2;
-		FontRenderer fontRendererIn = mc.fontRenderer;
-		String line1 = entityIn.getName() + "  (" + t + ")";
-		String line2 = "x" + entityIn.getPosition().getX() + " y" + entityIn.getPosition().getY() + " z" + entityIn.getPosition().getZ();
-		int i = fontRendererIn.getStringWidth(line1) / 2;
-		int ii = fontRendererIn.getStringWidth(line2) / 2;
-		
-		GlStateManager.translate(x, y, z);
-		GlStateManager.rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
-		GlStateManager.scale(m, m, m);
-		GlStateManager.scale(-0.025F, -0.025F, 0.025F);
-		GlStateManager.enableBlend();
-		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.enableTexture2D();
-		GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-		fontRendererIn.drawStringWithShadow(line1, -i, 10, nameColor.getValue().getRGB());
-		fontRendererIn.drawStringWithShadow(line2, -ii, 20, nameColor.getValue().getRGB());
-		GlStateManager.glNormal3f(0.0F, 0.0F, 0.0F);
-		GlStateManager.disableDepth();
-		GlStateManager.disableTexture2D();
-		GlStateManager.popMatrix();
-	}
-
-	public static Vec3d getInterpolatedPos(Entity entity, float ticks) {
-		return new Vec3d(entity.lastTickPosX, entity.lastTickPosY, entity.lastTickPosZ).add(getInterpolatedAmount(entity, ticks));
-	}
-
-	public static Vec3d getInterpolatedRenderPos(Entity entity, float ticks) {
-		return getInterpolatedPos(entity, ticks).subtract(mc.getRenderManager().renderPosX,mc.getRenderManager().renderPosY,mc.getRenderManager().renderPosZ);
-	}
-
-	public static Vec3d getInterpolatedAmount(Entity entity, double x, double y, double z) {
-		return new Vec3d(
-				(entity.posX - entity.lastTickPosX) * x,
-				(entity.posY - entity.lastTickPosY) * y,
-				(entity.posZ - entity.lastTickPosZ) * z
-		);
-	}
-	public static Vec3d getInterpolatedAmount(Entity entity, double ticks) {
-		return getInterpolatedAmount(entity, ticks, ticks, ticks);
+		String[] text=new String[2];
+		text[0] = entityIn.getName() + "  (" + t + ")";
+		text[1] = "x" + entityIn.getPosition().getX() + " y" + entityIn.getPosition().getY() + " z" + entityIn.getPosition().getZ();
+		GameSenseTessellator.drawNametag(entityIn,text,nameColor.getValue(),0);
 	}
 }
