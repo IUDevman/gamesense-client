@@ -1,23 +1,80 @@
 package com.gamesense.client.module;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+import org.lwjgl.input.Keyboard;
+
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.render.GameSenseTessellator;
-import com.gamesense.client.module.modules.combat.*;
-import com.gamesense.client.module.modules.exploits.*;
-import com.gamesense.client.module.modules.hud.*;
-import com.gamesense.client.module.modules.misc.*;
-import com.gamesense.client.module.modules.movement.*;
-import com.gamesense.client.module.modules.render.*;
+import com.gamesense.client.module.modules.combat.AutoArmor;
+import com.gamesense.client.module.modules.combat.AutoCrystal;
+import com.gamesense.client.module.modules.combat.AutoTotem;
+import com.gamesense.client.module.modules.combat.AutoTrap;
+import com.gamesense.client.module.modules.combat.AutoWeb;
+import com.gamesense.client.module.modules.combat.FastBow;
+import com.gamesense.client.module.modules.combat.HoleFill;
+import com.gamesense.client.module.modules.combat.KillAura;
+import com.gamesense.client.module.modules.combat.OffhandCrystal;
+import com.gamesense.client.module.modules.combat.OffhandGap;
+import com.gamesense.client.module.modules.combat.SelfTrap;
+import com.gamesense.client.module.modules.combat.SelfWeb;
+import com.gamesense.client.module.modules.combat.Surround;
+import com.gamesense.client.module.modules.exploits.CoordExploit;
+import com.gamesense.client.module.modules.exploits.FastBreak;
+import com.gamesense.client.module.modules.exploits.LiquidInteract;
+import com.gamesense.client.module.modules.exploits.NoInteract;
+import com.gamesense.client.module.modules.exploits.NoSwing;
+import com.gamesense.client.module.modules.exploits.PortalGodMode;
+import com.gamesense.client.module.modules.hud.ClickGuiModule;
+import com.gamesense.client.module.modules.hud.ColorMain;
+import com.gamesense.client.module.modules.hud.HUD;
+import com.gamesense.client.module.modules.hud.Notifications;
+import com.gamesense.client.module.modules.hud.TextRadar;
+import com.gamesense.client.module.modules.misc.Announcer;
+import com.gamesense.client.module.modules.misc.AutoGG;
+import com.gamesense.client.module.modules.misc.AutoReply;
+import com.gamesense.client.module.modules.misc.AutoTool;
+import com.gamesense.client.module.modules.misc.ChatModifier;
+import com.gamesense.client.module.modules.misc.ChatSuffix;
+import com.gamesense.client.module.modules.misc.FakePlayer;
+import com.gamesense.client.module.modules.misc.FastPlace;
+import com.gamesense.client.module.modules.misc.HoosiersDupe;
+import com.gamesense.client.module.modules.misc.HotbarRefill;
+import com.gamesense.client.module.modules.misc.MCF;
+import com.gamesense.client.module.modules.misc.MultiTask;
+import com.gamesense.client.module.modules.misc.NoEntityTrace;
+import com.gamesense.client.module.modules.misc.NoKick;
+import com.gamesense.client.module.modules.misc.PvPInfo;
+import com.gamesense.client.module.modules.movement.Anchor;
+import com.gamesense.client.module.modules.movement.Blink;
+import com.gamesense.client.module.modules.movement.HoleTP;
+import com.gamesense.client.module.modules.movement.PlayerTweaks;
+import com.gamesense.client.module.modules.movement.ReverseStep;
+import com.gamesense.client.module.modules.movement.Speed;
+import com.gamesense.client.module.modules.movement.Sprint;
+import com.gamesense.client.module.modules.movement.Step;
+import com.gamesense.client.module.modules.render.BlockHighlight;
+import com.gamesense.client.module.modules.render.CapesModule;
+import com.gamesense.client.module.modules.render.ESP;
+import com.gamesense.client.module.modules.render.Freecam;
+import com.gamesense.client.module.modules.render.Fullbright;
+import com.gamesense.client.module.modules.render.HitSpheres;
+import com.gamesense.client.module.modules.render.HoleESP;
+import com.gamesense.client.module.modules.render.LogoutSpots;
+import com.gamesense.client.module.modules.render.MobOwner;
+import com.gamesense.client.module.modules.render.Nametags;
+import com.gamesense.client.module.modules.render.NoRender;
+import com.gamesense.client.module.modules.render.RenderTweaks;
+import com.gamesense.client.module.modules.render.ShulkerViewer;
+import com.gamesense.client.module.modules.render.Tracers;
+import com.gamesense.client.module.modules.render.ViewModel;
+import com.gamesense.client.module.modules.render.VoidESP;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class ModuleManager {
 	public static ArrayList<Module> modules;
@@ -108,22 +165,10 @@ public class ModuleManager {
 	}
 
 	public static void onWorldRender(RenderWorldLastEvent event) {
-
 		Minecraft.getMinecraft().profiler.startSection("gamesense");
 		Minecraft.getMinecraft().profiler.startSection("setup");
-
-		GlStateManager.disableTexture2D();
-		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-		GlStateManager.shadeModel(GL11.GL_SMOOTH);
-		GlStateManager.disableDepth();
-		GlStateManager.glLineWidth(1f);
-
-		Vec3d renderPos = getInterpolatedPos(Minecraft.getMinecraft().player, event.getPartialTicks());
-
-		RenderEvent e = new RenderEvent(GameSenseTessellator.INSTANCE, renderPos, event.getPartialTicks());
-		e.resetTranslation();
+		GameSenseTessellator.prepare();
+		RenderEvent e = new RenderEvent(event.getPartialTicks());
 		Minecraft.getMinecraft().profiler.endSection();
 
 		modules.stream().filter(module -> module.isEnabled()).forEach(module -> {
@@ -133,16 +178,7 @@ public class ModuleManager {
 		});
 
 		Minecraft.getMinecraft().profiler.startSection("release");
-
-		GlStateManager.glLineWidth(1f);
-		GlStateManager.shadeModel(GL11.GL_FLAT);
-		GlStateManager.disableBlend();
-		GlStateManager.enableAlpha();
-		GlStateManager.enableTexture2D();
-		GlStateManager.enableDepth();
-		GlStateManager.enableCull();
-		GameSenseTessellator.releaseGL();
-
+		GameSenseTessellator.release();
 		Minecraft.getMinecraft().profiler.endSection();
 		Minecraft.getMinecraft().profiler.endSection();
 	}

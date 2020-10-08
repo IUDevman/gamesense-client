@@ -279,7 +279,7 @@ public class LoadConfiguration{
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String line;
 			while((line = br.readLine()) != null){
-				Iterator var6 = ModuleManager.getModules().iterator();
+				Iterator<Module> var6 = ModuleManager.getModules().iterator();
 				while(var6.hasNext()){
 					Module m = (Module)var6.next();
 					if (m.getName().equals(line)){

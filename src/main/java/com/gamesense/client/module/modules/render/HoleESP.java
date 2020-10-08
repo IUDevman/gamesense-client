@@ -1,20 +1,19 @@
 package com.gamesense.client.module.modules.render;
 
-import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.render.GameSenseTessellator;
-import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.module.Module;
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import org.lwjgl.opengl.GL11;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.render.GSColor;
+import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.client.module.Module;
+
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.math.BlockPos;
 
 public class HoleESP extends Module{
 
@@ -150,18 +149,14 @@ public class HoleESP extends Module{
 			return;
 		}
 		
-		GameSenseTessellator.prepare(GL11.GL_QUADS);
 		safeHoles.forEach((blockPos, isBedrock) -> {
 			if (mode.getValue().equalsIgnoreCase("Air")) drawBox(blockPos,isBedrock);
 			else if (mode.getValue().equalsIgnoreCase("Ground")) drawDownBox(blockPos,isBedrock);
 			else if (mode.getValue().equalsIgnoreCase("Flat")) drawFlat(blockPos,isBedrock);
 		});
-		GameSenseTessellator.release();
-		GameSenseTessellator.prepare(GL11.GL_QUADS);
 		safeHoles.forEach((blockPos, isBedrock) -> {
 			drawOutline(blockPos,width.getValue(),isBedrock);
 		});
-		GameSenseTessellator.release();
 	}
 
 	private GSColor getColor (boolean isBedrock, int alpha) {
@@ -175,7 +170,6 @@ public class HoleESP extends Module{
 	private void drawBox(BlockPos blockPos, boolean isBedrock) {
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
-			AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			if (mode.getValue().equalsIgnoreCase("Air")) {
 				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ)))
 					GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
@@ -189,7 +183,6 @@ public class HoleESP extends Module{
 	private void drawDownBox(BlockPos blockPos, boolean isBedrock){
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
-			AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			if (mode.getValue().equalsIgnoreCase("Ground")) {
 				GameSenseTessellator.drawDownBox(blockPos, color, GeometryMasks.Quad.ALL);
 			}
@@ -199,7 +192,6 @@ public class HoleESP extends Module{
 	private void drawFlat(BlockPos blockPos, boolean isBedrock) {
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
-			AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			if (mode.getValue().equalsIgnoreCase("Flat")) {
 				GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
 			}
@@ -211,16 +203,16 @@ public class HoleESP extends Module{
 		if (type.getValue().equalsIgnoreCase("Outline") || type.getValue().equalsIgnoreCase("Both")) {
 			if (mode.getValue().equalsIgnoreCase("Air")) {
 				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
-					GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, color);
+					GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
 				} else {
-					GameSenseTessellator.drawBoundingBoxBlockPos(blockPos, width, color);
+					GameSenseTessellator.drawBoundingBox(blockPos, width, color);
 				}
 			}
 			if (mode.getValue().equalsIgnoreCase("Flat")) {
-				GameSenseTessellator.drawBoundingBoxBottom2(blockPos, width, color);
+				GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
 			}
 			if (mode.getValue().equalsIgnoreCase("Ground")) {
-				GameSenseTessellator.drawBoundingBoxBlockPos2(blockPos, width, color);
+				GameSenseTessellator.drawBoundingDownBox(blockPos, width, color);
 			}
 		}
 	}

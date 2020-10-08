@@ -77,7 +77,7 @@ public class CFontRenderer extends CFont {
 		x *= 2.0D;
 		y *= 2.0D;
 		if (render) {
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GlStateManager.scale(0.5D, 0.5D, 0.5D);
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -85,7 +85,7 @@ public class CFontRenderer extends CFont {
 			int size = text.length();
 			GlStateManager.enableTexture2D();
 			GlStateManager.bindTexture(tex.getGlTextureId());
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.getGlTextureId());
+			//GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex.getGlTextureId());
 			for (int i = 0; i < size; i++) {
 				char character = text.charAt(i);
 				if ((character == '\u00A7') && (i < size)) {
@@ -151,16 +151,16 @@ public class CFontRenderer extends CFont {
 					}
 					i++;
 				} else if ((character < currentData.length) && (character >= 0)) {
-					GL11.glBegin(4);
+					GlStateManager.glBegin(GL11.GL_TRIANGLES);
 					drawChar(currentData, character, (float) x, (float) y);
-					GL11.glEnd();
+					GlStateManager.glEnd();
 					if (strikethrough) drawLine(x, y + currentData[character].height / 2, x + currentData[character].width - 8.0D, y + currentData[character].height / 2, 1.0F);
 					if (underline) drawLine(x, y + currentData[character].height - 2.0D, x + currentData[character].width - 8.0D, y + currentData[character].height - 2.0D, 1.0F);
 					x += currentData[character].width - 8 + this.charOffset;
 				}
 			}
 			GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_DONT_CARE);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		return (float) x / 2.0F;
 	}
@@ -231,13 +231,13 @@ public class CFontRenderer extends CFont {
 	}
 
 	private void drawLine(double x, double y, double x1, double y1, float width) {
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glLineWidth(width);
-		GL11.glBegin(1);
-		GL11.glVertex2d(x, y);
-		GL11.glVertex2d(x1, y1);
-		GL11.glEnd();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GlStateManager.disableTexture2D();
+		GlStateManager.glLineWidth(width);
+		GlStateManager.glBegin(GL11.GL_LINES);
+			GL11.glVertex2d(x, y);
+			GL11.glVertex2d(x1, y1);
+		GlStateManager.glEnd();
+		GlStateManager.enableTexture2D();
 	}
 
 	public List<String> wrapWords(String text, double width) {

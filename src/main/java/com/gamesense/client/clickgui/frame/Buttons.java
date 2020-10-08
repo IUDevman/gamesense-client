@@ -153,9 +153,9 @@ public class Buttons extends Component {
 		GlStateManager.enableAlpha();
 		this.mc.getTextureManager().bindTexture(opengui);
 		GlStateManager.color(1, 1, 1, 1);
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		Gui.drawScaledCustomSizeModalRect(x,y,0,0,256,256,10,10,256,256);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		GlStateManager.disableAlpha();
 		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
 	}
@@ -164,9 +164,9 @@ public class Buttons extends Component {
 		GlStateManager.enableAlpha();
 		this.mc.getTextureManager().bindTexture(closedgui);
 		GlStateManager.color(1, 1, 1, 1);
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		Gui.drawScaledCustomSizeModalRect(x,y,0,0,256,256,10,10,256,256);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		GlStateManager.disableAlpha();
 		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
 	}

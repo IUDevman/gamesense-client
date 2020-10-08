@@ -1,12 +1,18 @@
 package com.gamesense.client.module.modules.combat;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
-import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
@@ -14,6 +20,7 @@ import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
+
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
@@ -38,15 +45,18 @@ import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.CombatRules;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Author Cyber
@@ -442,26 +452,18 @@ public class AutoCrystal extends Module {
     }
 
     public void onWorldRender(RenderEvent event) {
+        // As far as I can tell, this code never gets executed, since render is always null :(
         if (this.render != null) {
-            GameSenseTessellator.prepare(7);
             GameSenseTessellator.drawBox(this.render, new GSColor(color.getValue(),50), 63);
-            GameSenseTessellator.release();
-            GameSenseTessellator.prepare(7);
-            GameSenseTessellator.drawBoundingBoxBlockPos(this.render, 1.00f, new GSColor(color.getValue(),255));
-            GameSenseTessellator.release();
+            GameSenseTessellator.drawBoundingBox(this.render, 1.00f, new GSColor(color.getValue(),255));
         }
-
+        
         if(showDamage.getValue()){
             if (this.render != null && this.renderEnt != null) {
-                GlStateManager.pushMatrix();
-                GameSenseTessellator.glBillboardDistanceScaled((float) render.getX() + 0.5f, (float) render.getY() + 0.5f, (float) render.getZ() + 0.5f, mc.player, 1);
-                double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
-                String damageText = (Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
-                GlStateManager.disableDepth();
-                GlStateManager.translate(-(mc.fontRenderer.getStringWidth(damageText) / 2.0d), 0, 0);
-                //mc.fontRenderer.drawStringWithShadow(damageText, 0, 0, 0xFFffffff);
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), damageText, 0, 0, new GSColor(255,255,255));
-                GlStateManager.popMatrix();
+            	double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
+                String[] damageText=new String[1];
+                damageText[0]=(Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
+                GameSenseTessellator.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ(),damageText,new GSColor(255,255,255),1);
             }
         }
     }
