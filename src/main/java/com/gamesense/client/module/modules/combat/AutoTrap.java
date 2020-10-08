@@ -52,6 +52,7 @@ public class AutoTrap extends Module {
         ArrayList<String> trapTypes = new ArrayList<>();
         trapTypes.add("Normal");
         trapTypes.add("No Step");
+        trapTypes.add("Air");
 
         trapType = registerMode("Mode", "Mode", trapTypes, "Normal");
         disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
@@ -164,6 +165,10 @@ public class AutoTrap extends Module {
             if (trapType.getValue().equalsIgnoreCase("Normal")){
                 Collections.addAll(placeTargets, Offsets.TRAP);
                 maxSteps = AutoTrap.Offsets.TRAP.length;
+            }
+            else if (trapType.getValue().equalsIgnoreCase("Air")){
+                Collections.addAll(placeTargets, Offsets.AIR);
+                maxSteps = AutoTrap.Offsets.AIR.length;
             }
             else {
                 Collections.addAll(placeTargets, Offsets.TRAPFULLROOF);
@@ -350,6 +355,23 @@ public class AutoTrap extends Module {
                 new Vec3d(0, 2, -1),
                 new Vec3d(0, 2, 0),
                 new Vec3d(0, 3, 0)
+        };
+
+        private static final Vec3d[] AIR ={
+                new Vec3d(0, -1, -1),
+                new Vec3d(1, -1, 0),
+                new Vec3d(0, -1, 1),
+                new Vec3d(-1, -1, 0),
+                new Vec3d(0, 0,-1),
+                new Vec3d(0, 1, -1),
+                new Vec3d(0, 2, -1),
+                new Vec3d(0, 2, 0),
+                new Vec3d(1, 2, 0),
+                new Vec3d(1, 1, 0),
+                new Vec3d(-1, 2, 0),
+                new Vec3d(-1, 1, 0),
+                new Vec3d(0, 2, 1),
+                new Vec3d(0, 1, 1)
         };
     }
 }

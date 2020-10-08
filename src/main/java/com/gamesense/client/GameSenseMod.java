@@ -48,7 +48,7 @@ public class GameSenseMod{
 	public LoadModules loadModules;
 	public CapeUtils capeUtils;
 	public MacroManager macroManager;
-	EventProcessor eventProcessor;
+	public EventProcessor eventProcessor;
 	public static CFontRenderer fontRenderer;
 	public static Enemies enemies;
 
@@ -91,18 +91,13 @@ public class GameSenseMod{
 		log.info("Macros initialized!");
 
 		saveConfiguration = new SaveConfiguration();
+		saveModules = new SaveModules();
 		Runtime.getRuntime().addShutdownHook(new Stopper());
 		log.info("Config Saved!");
 
 		loadConfiguration = new LoadConfiguration();
-		log.info("Config Loaded!");
-
-		saveModules = new SaveModules();
-		Runtime.getRuntime().addShutdownHook(new Stopper());
-		log.info("Modules Saved!");
-
 		loadModules = new LoadModules();
-		log.info("Modules Loaded!");
+		log.info("Config Loaded!");
 
 		CommandManager.initCommands();
 		log.info("Commands initialized!");
