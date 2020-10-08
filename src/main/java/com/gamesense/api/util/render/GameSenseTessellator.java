@@ -10,6 +10,7 @@ import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.modules.hud.HUD;
+import com.gamesense.client.module.modules.render.Nametags;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -188,7 +189,7 @@ public class GameSenseTessellator {
 			scale=Math.min(Math.max(scale,.5),5);
 			offset=scale>2?scale/2:scale;
 			scale/=40;
-			start=1;
+			start=10;
 			break;
 		case 1:
 			scale=-((int)dist)/6.0;
@@ -198,20 +199,52 @@ public class GameSenseTessellator {
 		case 2:
 			scale=0.0018+0.003*dist;
 			if (dist<=8.0) scale=0.0245;
-			start=-1;
+			start=-8;
 			break;
 		}
-		GlStateManager.enableTexture2D();
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x-mc.getRenderManager().viewerPosX,y+offset-mc.getRenderManager().viewerPosY,z-mc.getRenderManager().viewerPosZ);
 		GlStateManager.rotate(-mc.getRenderManager().playerViewY,0,1,0);
 		GlStateManager.rotate(mc.getRenderManager().playerViewX,mc.gameSettings.thirdPersonView==2?-1:1,0,0);
 		GlStateManager.scale(-scale,-scale,scale);
-		for (int i=0;i<text.length;i++) {
-			FontUtils.drawStringWithShadow(HUD.customFont.getValue(),text[i],-FontUtils.getStringWidth(HUD.customFont.getValue(),text[i])/2,(i+start)*10,color);
+		if (type==2) {
+			double width=0;
+			GSColor bcolor=new GSColor(0,0,0,51);
+			if (Nametags.customColor.getValue()) bcolor=Nametags.borderColor.getValue();
+			for (int i=0;i<text.length;i++) {
+				double w=FontUtils.getStringWidth(HUD.customFont.getValue(),text[i])/2;
+				if (w>width) width=w;
+			}
+			drawBorderedRect(-width-1,-mc.fontRenderer.FONT_HEIGHT,width+2,1,1.8f,new GSColor(0,4,0,85), bcolor);
 		}
-		GlStateManager.popMatrix();
+		GlStateManager.enableTexture2D();
+		for (int i=0;i<text.length;i++) {
+			FontUtils.drawStringWithShadow(HUD.customFont.getValue(),text[i],-FontUtils.getStringWidth(HUD.customFont.getValue(),text[i])/2,i*(mc.fontRenderer.FONT_HEIGHT+1)+start,color);
+		}
 		GlStateManager.disableTexture2D();
+		// TODO CFontRenderer state leak exists. Fixing it breaks the GUI. Fixing it, will make disabling GL_TEXTURE_2D unnecessary.
+		if (type!=2) GlStateManager.popMatrix();
+	}
+	
+	private static void drawBorderedRect (double x, double y, double x1, double y1, float lineWidth, GSColor inside, GSColor border) {
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		inside.glColor();
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+			bufferbuilder.pos(x,y1,0).endVertex();
+			bufferbuilder.pos(x1,y1,0).endVertex();
+			bufferbuilder.pos(x1,y,0).endVertex();
+			bufferbuilder.pos(x,y,0).endVertex();
+		tessellator.draw();
+		border.glColor();
+		GlStateManager.glLineWidth(lineWidth);
+		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+			bufferbuilder.pos(x,y,0).endVertex();
+			bufferbuilder.pos(x,y1,0).endVertex();
+			bufferbuilder.pos(x1,y1,0).endVertex();
+			bufferbuilder.pos(x1,y,0).endVertex();
+			bufferbuilder.pos(x,y,0).endVertex();
+		tessellator.draw();
 	}
 	
 	public static void prepare() {
