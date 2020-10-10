@@ -464,7 +464,7 @@ public class AutoCrystal extends Module {
                 double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
                 String[] damageText=new String[1];
                 damageText[0]=(Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
-                GameSenseTessellator.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ(),damageText,new GSColor(255,255,255),1);
+                GameSenseTessellator.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ()+0.5,damageText,new GSColor(255,255,255),1);
             }
         }
     }
