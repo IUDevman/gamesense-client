@@ -1,31 +1,21 @@
 package com.gamesense.client.module.modules.combat;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.font.FontUtils;
-import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.HUD;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
-
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -45,18 +35,15 @@ import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.CombatRules;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
 import net.minecraft.world.Explosion;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author Cyber
@@ -107,6 +94,7 @@ public class AutoCrystal extends Module {
     Setting.Mode handBreak;
     Setting.Mode breakMode;
     Setting.Mode hudDisplay;
+    Setting.Mode auraLogic;
 
     Setting.ColorSetting color;
     Setting.Boolean cancelCrystal;
@@ -132,8 +120,13 @@ public class AutoCrystal extends Module {
         hudModes.add("Mode");
         hudModes.add("None");
 
+        ArrayList<String> logicModes = new ArrayList<>();
+        logicModes.add("Break-Place");
+        logicModes.add("Place-Break");
+
         explode = registerBoolean("Break", "Break", true);
         place = registerBoolean("Place", "Place", true);
+        auraLogic = registerMode("Logic", "Logic", logicModes, "Break-Place");
         breakMode = registerMode("Break Modes", "BreakModes", breakModes, "All");
         handBreak = registerMode("Hand", "Hand", hands, "Main");
         antiSuicide = registerBoolean("Anti Suicide", "AntiSuicide", false);
@@ -175,6 +168,17 @@ public class AutoCrystal extends Module {
             return;
         }
 
+        if (auraLogic.getValue().equalsIgnoreCase("Break-Place")){
+            breakCrystal();
+            placeCrystal();
+        }
+        else {
+            placeCrystal();
+            breakCrystal();
+        }
+    }
+
+    private void breakCrystal(){
         EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityEnderCrystal)
                 .filter(e -> mc.player.getDistance(e) <= range.getValue())
@@ -263,7 +267,6 @@ public class AutoCrystal extends Module {
                         mc.world.removeAllEntities();
                         mc.world.getLoadedEntityList();
                     }
-
                 }
                 if (cancelCrystal.getValue()) {
                     crystal.setDead();
@@ -288,7 +291,9 @@ public class AutoCrystal extends Module {
             isActive = false;
             isBreaking = false;
         }
+    }
 
+    private void placeCrystal(){
         int crystalSlot = mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL ? mc.player.inventory.currentItem : -1;
         if (crystalSlot == -1) {
             for (int l = 0; l < 9; ++l) {
@@ -316,91 +321,90 @@ public class AutoCrystal extends Module {
         label164:
         while (true) {
             EntityPlayer entity;
-            do {
-                do {
-                    if (!var9.hasNext()) {
-                        if (damage == 0.5D) {
-                            this.render = null;
-                            this.renderEnt = null;
-                            resetRotation();
-                            return;
-                        }
-
-                        this.render = q;
-                        if (this.place.getValue()) {
-                            if (antiSuicide.getValue() && mc.player.getHealth() + mc.player.getAbsorptionAmount() < antiSuicideValue.getValue()){
-                                return;
-                            }
-                            if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
-                                if (this.autoSwitch.getValue()) {
-                                    mc.player.inventory.currentItem = crystalSlot;
-                                    resetRotation();
-                                    this.switchCooldown = true;
-                                }
-                                return;
-                            }
-
-                            if (rotate.getValue()) {
-                                this.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D, mc.player);
-                            }
-                            RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D));
-                            if (raytrace.getValue()) {
-                                if (result == null || result.sideHit == null) {
-                                    q = null;
-                                    f = null;
-                                    render = null;
-                                    resetRotation();
-                                    isActive = false;
-                                    isPlacing = false;
-                                    return;
-                                } else {
-                                    f = result.sideHit;
-                                }
-                            }
-
-                            if (this.switchCooldown) {
-                                this.switchCooldown = false;
-                                return;
-                            }
-
-                            //mc.playerController.processRightClickBlock(mc.player, mc.world, q, f, new Vec3d(0, 0, 0), EnumHand.MAIN_HAND);
-                            if (q != null && mc.player != null) {
-                                isActive = true;
-                                isPlacing = true;
-                                if (raytrace.getValue() && f != null) {
-                                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, f, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
-                                } else if (q.getY() == 255) {
-                                    // For Hoosiers. This is how we do buildheight. If the target block (q) is at Y 255. Then we send a placement packet to the bottom part of the block. Thus the EnumFacing.DOWN.
-                                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.DOWN, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
-                                } else {
-                                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
-                                }
-                                mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
-                                //Cache the crystals we've placed
-                                PlacedCrystals.add(q);
-                                if (ModuleManager.isModuleEnabled("AutoGG"))
-                                    AutoGG.INSTANCE.addTargetedPlayer(renderEnt.getName());
-                            }
-
-                            if (isSpoofingAngles) {
-                                EntityPlayerSP var10000;
-                                if (togglePitch) {
-                                    var10000 = mc.player;
-                                    var10000.rotationPitch = (float) ((double) var10000.rotationPitch + 4.0E-4D);
-                                    togglePitch = false;
-                                } else {
-                                    var10000 = mc.player;
-                                    var10000.rotationPitch = (float) ((double) var10000.rotationPitch - 4.0E-4D);
-                                    togglePitch = true;
-                                }
-                            }
-
-                            return;
-                        }
+            do { do {
+                if (!var9.hasNext()) {
+                    if (damage == 0.5D) {
+                        this.render = null;
+                        this.renderEnt = null;
+                        resetRotation();
+                        return;
                     }
 
-                    entity = (EntityPlayer) var9.next();
-                } while (entity == mc.player);
+                    this.render = q;
+                    if (this.place.getValue()) {
+                        if (antiSuicide.getValue() && mc.player.getHealth() + mc.player.getAbsorptionAmount() < antiSuicideValue.getValue()){
+                            return;
+                        }
+                        if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
+                            if (this.autoSwitch.getValue()) {
+                                mc.player.inventory.currentItem = crystalSlot;
+                                resetRotation();
+                                this.switchCooldown = true;
+                            }
+                            return;
+                        }
+
+                        if (rotate.getValue()) {
+                            this.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D, mc.player);
+                        }
+                        RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D));
+                        if (raytrace.getValue()) {
+                            if (result == null || result.sideHit == null) {
+                                q = null;
+                                f = null;
+                                render = null;
+                                resetRotation();
+                                isActive = false;
+                                isPlacing = false;
+                                return;
+                            } else {
+                                f = result.sideHit;
+                            }
+                        }
+
+                        if (this.switchCooldown) {
+                            this.switchCooldown = false;
+                            return;
+                        }
+
+                        //mc.playerController.processRightClickBlock(mc.player, mc.world, q, f, new Vec3d(0, 0, 0), EnumHand.MAIN_HAND);
+                        if (q != null && mc.player != null) {
+                            isActive = true;
+                            isPlacing = true;
+                            if (raytrace.getValue() && f != null) {
+                                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, f, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+                            } else if (q.getY() == 255) {
+                                // For Hoosiers. This is how we do buildheight. If the target block (q) is at Y 255. Then we send a placement packet to the bottom part of the block. Thus the EnumFacing.DOWN.
+                                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.DOWN, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+                            } else {
+                                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+                            }
+                            mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
+                            //Cache the crystals we've placed
+                            PlacedCrystals.add(q);
+                            if (ModuleManager.isModuleEnabled("AutoGG"))
+                                AutoGG.INSTANCE.addTargetedPlayer(renderEnt.getName());
+                        }
+
+                        if (isSpoofingAngles) {
+                            EntityPlayerSP var10000;
+                            if (togglePitch) {
+                                var10000 = mc.player;
+                                var10000.rotationPitch = (float) ((double) var10000.rotationPitch + 4.0E-4D);
+                                togglePitch = false;
+                            } else {
+                                var10000 = mc.player;
+                                var10000.rotationPitch = (float) ((double) var10000.rotationPitch - 4.0E-4D);
+                                togglePitch = true;
+                            }
+                        }
+
+                        return;
+                    }
+                }
+
+                entity = (EntityPlayer) var9.next();
+            } while (entity == mc.player);
             } while (entity.getHealth() <= 0.0F);
 
             Iterator var11 = blocks.iterator();
@@ -415,33 +419,30 @@ public class AutoCrystal extends Module {
                 double x;
                 double y;
                 double z;
-                do {
+                do { do { do { do {
+                    double b;
                     do {
-                        do {
-                            do {
-                                double b;
-                                do {
-                                    if (!var11.hasNext()) {
-                                        continue label164;
-                                    }
+                        if (!var11.hasNext()) {
+                            continue label164;
+                        }
 
-                                    blockPos = (BlockPos) var11.next();
-                                    b = entity.getDistanceSq(blockPos);
-                                    // Better method for doing EnemyRange
-                                    // @Author Cyber
-                                    x = blockPos.getX() + 0.0;
-                                    y = blockPos.getY() + 1.0;
-                                    z = blockPos.getZ() + 0.0;
-                                    // } while (b >= 169.0D);
-                                } while (entity.getDistanceSq(x, y , z) >= enemyRange.getValue() * enemyRange.getValue());
+                        blockPos = (BlockPos) var11.next();
+                        b = entity.getDistanceSq(blockPos);
+                        // Better method for doing EnemyRange
+                        // @Author Cyber
+                        x = blockPos.getX() + 0.0;
+                        y = blockPos.getY() + 1.0;
+                        z = blockPos.getZ() + 0.0;
+                        // } while (b >= 169.0D);
+                    } while (entity.getDistanceSq(x, y , z) >= enemyRange.getValue() * enemyRange.getValue());
 
-                                d = calculateDamage((double) blockPos.getX() + 0.5D, blockPos.getY() + 1, (double) blockPos.getZ() + 0.5D, entity);
-                            } while (d <= damage);
-                            targetDamage = calculateDamage(blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5, entity);
-                            targetHealth = entity.getHealth() + entity.getAbsorptionAmount();
-                        } while (targetDamage < minDmg.getValue() && targetHealth > facePlace.getValue());
-                        self = calculateDamage((double) blockPos.getX() + 0.5D, blockPos.getY() + 1, (double) blockPos.getZ() + 0.5D, mc.player);
-                    } while (self >= maxSelfDmg.getValue());
+                    d = calculateDamage((double) blockPos.getX() + 0.5D, blockPos.getY() + 1, (double) blockPos.getZ() + 0.5D, entity);
+                } while (d <= damage);
+                    targetDamage = calculateDamage(blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5, entity);
+                    targetHealth = entity.getHealth() + entity.getAbsorptionAmount();
+                } while (targetDamage < minDmg.getValue() && targetHealth > facePlace.getValue());
+                    self = calculateDamage((double) blockPos.getX() + 0.5D, blockPos.getY() + 1, (double) blockPos.getZ() + 0.5D, mc.player);
+                } while (self >= maxSelfDmg.getValue());
                 } while(self >= mc.player.getHealth() + mc.player.getAbsorptionAmount());
 
                 damage = d;
@@ -457,10 +458,10 @@ public class AutoCrystal extends Module {
             GameSenseTessellator.drawBox(this.render, new GSColor(color.getValue(),50), 63);
             GameSenseTessellator.drawBoundingBox(this.render, 1.00f, new GSColor(color.getValue(),255));
         }
-        
+
         if(showDamage.getValue()){
             if (this.render != null && this.renderEnt != null) {
-            	double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
+                double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
                 String[] damageText=new String[1];
                 damageText[0]=(Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
                 GameSenseTessellator.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ(),damageText,new GSColor(255,255,255),1);
