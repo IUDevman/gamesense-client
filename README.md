@@ -1,7 +1,7 @@
 # GameSense Client
 ![logo](https://github.com/IUDevman/gamesense-client/blob/master/src/main/resources/assets/gamesense/textures/gamesense.png)
 
-[![version](https://img.shields.io/badge/Version-2.1.4-green.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
+[![version](https://img.shields.io/badge/Version-2.1.5-green.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
 [![discord](https://img.shields.io/badge/Discord-xfgPw63-8080c0)](https://discord.gg/xfgPw63)
 ![build](https://github.com/IUDevman/gamesense-master/workflows/Java%20CI%20with%20Gradle/badge.svg)
 [![license](https://img.shields.io/badge/License-GPL_v3.0-white.svg)](https://github.com/lukflug/gamesense-client/blob/master/LICENSE)
