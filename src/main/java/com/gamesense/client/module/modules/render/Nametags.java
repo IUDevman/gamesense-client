@@ -17,6 +17,7 @@ import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -154,13 +155,16 @@ public class Nametags extends Module {
 
 	private void renderItems(final ItemStack itemStack, final int n, final int n2, final int n3) {
 		GlStateManager.enableTexture2D();
-		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
 		GlStateManager.depthMask(true);
+		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
 		GlStateManager.enableDepth();
-		mc.getRenderItem().zLevel = -150.0f;
+		GlStateManager.disableAlpha();
 		final int n4 = (n3 > 4) ? ((n3 - 4) * 8 / 2) : 0;
+		mc.getRenderItem().zLevel = -150.0f;
+		RenderHelper.enableStandardItemLighting();
 		mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, n, n2 + n4);
 		mc.getRenderItem().renderItemOverlays(mc.fontRenderer, itemStack, n, n2 + n4);
+		RenderHelper.disableStandardItemLighting();
 		mc.getRenderItem().zLevel = 0.0f;
 		GameSenseTessellator.prepare();		// Restore expected state
 		GlStateManager.pushMatrix();
