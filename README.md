@@ -30,7 +30,7 @@
 Contributors:
 * Cyber (original developer)
 * Hoosiers (original developer, head developer, maintainer)
-* lukflug (color settings and minor optimizations, issue tracker)
+* lukflug (color settings, OpenGL and minor optimizations, issue tracker)
 * auburnhud2 (whitespace and continuous integration, issue tracker)
 * Dngerr (added Blink and HotbarRefill modules)
 
