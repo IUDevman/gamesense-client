@@ -3,7 +3,6 @@ package com.gamesense.client.module.modules.hud;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
-import com.gamesense.api.util.world.TpsUtils;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
@@ -22,12 +21,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -70,8 +69,6 @@ public class HUD extends Module {
 	int sort;
 	int modCount;
 	int count;
-	DecimalFormat format1 = new DecimalFormat("0");
-	DecimalFormat format2 = new DecimalFormat("00");
 
 	private static final RenderItem itemRender = Minecraft.getMinecraft()
 			.getRenderItem();
@@ -116,14 +113,8 @@ public class HUD extends Module {
 			try {
 				mc.player.getActivePotionEffects().forEach(effect -> {
 					String name = I18n.format(effect.getPotion().getName());
-					double duration = effect.getDuration() / TpsUtils.getTickRate();
 					int amplifier = effect.getAmplifier() + 1;
-					double p1 = duration % 60;
-					double p2 = duration / 60;
-					double p3 = p2 % 60;
-					String minutes = format1.format(p3);
-					String seconds = format2.format(p1);
-					String s = name + " " + amplifier + ChatFormatting.GRAY + " " + minutes + ":" + seconds;
+					String s = name + " " + amplifier + ChatFormatting.GRAY + " " + Potion.getPotionDurationString(effect, 1.0f);
 					if (psortUp.getValue()) {
 						if (pright.getValue()) {
 							FontUtils.drawStringWithShadow(customFont.getValue(), s, potionx.getValue() - FontUtils.getStringWidth(customFont.getValue(),s),potiony.getValue() + (count * 10), c);

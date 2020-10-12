@@ -2,6 +2,7 @@ package com.gamesense.client;
 
 import java.awt.Font;
 
+import com.gamesense.api.util.world.TpsUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
@@ -71,8 +72,6 @@ public class GameSenseMod{
 		eventProcessor.init();
 
 		fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true,true);
-
-		//TpsUtils tpsUtils = new TpsUtils();
 
 		settingsManager = new SettingsManager();
 		log.info("Settings initialized!");

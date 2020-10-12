@@ -491,14 +491,14 @@ public class AutoCrystal extends Module {
 
         if (breakMode.getValue().equalsIgnoreCase("Only Own")) {
             for (BlockPos pos : new ArrayList<BlockPos>(PlacedCrystals)) {
-                if (pos != null && pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= 3)
+                if (pos != null && pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= 1) {
                     return true;
+                }
             }
         }
 
         if (breakMode.getValue().equalsIgnoreCase("Smart")) {
-
-
+            
             EntityLivingBase target = renderEnt != null ? (EntityLivingBase) renderEnt : GetNearTarget(crystal);
 
             if (target == null)
