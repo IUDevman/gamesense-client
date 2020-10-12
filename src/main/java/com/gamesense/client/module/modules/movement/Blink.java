@@ -35,14 +35,16 @@ public class Blink extends Module {
         if (packet instanceof CPacketChatMessage || packet instanceof CPacketConfirmTeleport || packet instanceof CPacketKeepAlive || packet instanceof CPacketTabComplete || packet instanceof CPacketClientStatus) {
             return;
         }
-        packets.add(packet);
-        event.cancel();
+        if (mc.player == null || mc.player.isDead) {
+            packets.add(packet);
+            event.cancel();
+        }
     });
 
     public void onEnable() {
         GameSenseMod.EVENT_BUS.subscribe(this);
 
-        if (ghostPlayer.getValue()) {
+        if (ghostPlayer.getValue() && mc.player != null) {
             entity = new EntityOtherPlayerMP(mc.world, mc.getSession().getProfile());
             entity.copyLocationAndAnglesFrom(mc.player);
             entity.inventory.copyInventory(mc.player.inventory);
@@ -65,7 +67,7 @@ public class Blink extends Module {
             mc.world.removeEntity(entity);
         }
 
-        if (packets.size() > 0) {
+        if (packets.size() > 0 && mc.player != null) {
             for (Packet packet : packets) {
                 mc.player.connection.sendPacket(packet);
             }
