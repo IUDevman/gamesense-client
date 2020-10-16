@@ -1,7 +1,6 @@
 package com.gamesense.api;
 
 import com.gamesense.api.util.config.SaveConfiguration;
-import com.gamesense.client.GameSenseMod;
 
 public class Stopper extends Thread{
 

@@ -83,30 +83,30 @@ public class SaveConfig {
             moduleObject.add("Module", new JsonPrimitive(module.getName()));
 
             for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
-                JsonObject dataObject = new JsonObject();
+                //JsonObject dataObject = new JsonObject();
                 switch (setting.getType()){
                     case BOOLEAN: {
-                        dataObject.add("Boolean", new JsonPrimitive(((Setting.Boolean) setting).getValue()));
+                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Boolean) setting).getValue()));
                         break;
                     }
                     case INT: {
-                        dataObject.add("Integer", new JsonPrimitive(((Setting.Integer) setting).getValue()));
+                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Integer) setting).getValue()));
                         break;
                     }
                     case DOUBLE: {
-                        dataObject.add("Double", new JsonPrimitive(((Setting.Double) setting).getValue()));
+                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Double) setting).getValue()));
                         break;
                     }
                     case COLOR: {
-                        dataObject.add("Color", new JsonPrimitive(((Setting.ColorSetting) setting).toInteger()));
+                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.ColorSetting) setting).toInteger()));
                         break;
                     }
                     case MODE: {
-                        dataObject.add("Mode", new JsonPrimitive(((Setting.Mode) setting).getValue()));
+                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Mode) setting).getValue()));
                         break;
                     }
                 }
-                settingObject.add(setting.getConfigName(), dataObject);
+                //settingObject.add(setting.getConfigName(), dataObject);
             }
             moduleObject.add("Settings", settingObject);
             String jsonString = gson.toJson(new JsonParser().parse(moduleObject.toString()));

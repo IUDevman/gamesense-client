@@ -1,17 +1,18 @@
 package com.gamesense.api.config;
 
-import com.gamesense.api.settings.Setting;
-import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import com.gamesense.api.settings.Setting;
+import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * @Author Hoosiers on 10/15/2020
@@ -34,6 +35,7 @@ public class LoadConfig {
     String miscName = "Misc/";
 
     public void loadConfig() throws IOException {
+    	loadModules();
         loadEnabledModules();
     }
 
@@ -54,10 +56,11 @@ public class LoadConfig {
 
             JsonObject settingObject = moduleObject.get("Settings").getAsJsonObject();
             for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
+            	JsonElement dataObject=settingObject.get(setting.getConfigName());
+            	
+                if (dataObject!=null && dataObject.isJsonPrimitive()) {
 
-                if (setting.getConfigName() == settingObject.getAsString()){
-
-                    JsonObject dataObject = settingObject.get(setting.getType().toString()).getAsJsonObject();
+                    //JsonObject dataObject = configObject.getAsJsonObject().get(setting.getType().toString()).getAsJsonObject();
 
                     switch (setting.getType()){
                         case BOOLEAN: {
