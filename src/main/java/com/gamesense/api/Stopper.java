@@ -12,7 +12,7 @@ public class Stopper extends Thread{
 
 	public static void saveConfig(){
 
-		GameSenseMod.getInstance().saveModules.saveModules();
+		//GameSenseMod.getInstance().saveModules.saveModules();
 
 		SaveConfiguration.saveAutoGG();
 		SaveConfiguration.saveAutoReply();

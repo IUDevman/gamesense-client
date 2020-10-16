@@ -2,7 +2,9 @@ package com.gamesense.client;
 
 import java.awt.Font;
 
-import com.gamesense.api.util.world.TpsUtils;
+import com.gamesense.api.config.ConfigStopper;
+import com.gamesense.api.config.LoadConfig;
+import com.gamesense.api.config.SaveConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
@@ -43,10 +45,8 @@ public class GameSenseMod{
 	public SettingsManager settingsManager;
 	public Friends friends;
 	public ModuleManager moduleManager;
-	public SaveConfiguration saveConfiguration;
-	public LoadConfiguration loadConfiguration;
-	public SaveModules saveModules;
-	public LoadModules loadModules;
+	public SaveConfig saveConfig;
+	public LoadConfig loadConfig;
 	public CapeUtils capeUtils;
 	public MacroManager macroManager;
 	public EventProcessor eventProcessor;
@@ -89,13 +89,8 @@ public class GameSenseMod{
 		macroManager = new MacroManager();
 		log.info("Macros initialized!");
 
-		saveConfiguration = new SaveConfiguration();
-		saveModules = new SaveModules();
-		Runtime.getRuntime().addShutdownHook(new Stopper());
-		log.info("Config Saved!");
-
-		loadConfiguration = new LoadConfiguration();
-		loadModules = new LoadModules();
+		loadConfig = new LoadConfig();
+		Runtime.getRuntime().addShutdownHook(new ConfigStopper());
 		log.info("Config Loaded!");
 
 		CommandManager.initCommands();
