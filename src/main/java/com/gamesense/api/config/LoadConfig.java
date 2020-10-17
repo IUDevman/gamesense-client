@@ -56,9 +56,9 @@ public class LoadConfig {
 
             JsonObject settingObject = moduleObject.get("Settings").getAsJsonObject();
             for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
-            	JsonElement dataObject=settingObject.get(setting.getConfigName());
+            	JsonElement dataObject = settingObject.get(setting.getConfigName());
             	
-                if (dataObject!=null && dataObject.isJsonPrimitive()) {
+                if (dataObject != null && dataObject.isJsonPrimitive()) {
 
                     //JsonObject dataObject = configObject.getAsJsonObject().get(setting.getType().toString()).getAsJsonObject();
 
@@ -88,23 +88,24 @@ public class LoadConfig {
     public void loadEnabledModules() throws IOException {
         String enabledLocation = fileName + mainName;
 
-        if (!Files.exists(Paths.get(enabledLocation + "Toggle" + ".json"))){
+        if (!Files.exists(Paths.get(enabledLocation + "Toggle" + ".json"))) {
             return;
         }
 
         InputStream inputStream = Files.newInputStream(Paths.get(enabledLocation + "Toggle" + ".json"));
         JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
 
-        if (moduleObject.get("Modules") == null){
+        if (moduleObject.get("Modules") == null) {
             return;
         }
 
-        JsonObject enabledObject = moduleObject.get("Modules").getAsJsonObject();
+        JsonObject settingObject = moduleObject.get("Modules").getAsJsonObject();
         for (Module module : ModuleManager.getModules()){
-            if (module.getName() == enabledObject.toString()){
-                module.setEnabled(enabledObject.getAsBoolean());
+            JsonElement dataObject = settingObject.get(module.getName());
+
+            if (dataObject != null && dataObject.isJsonPrimitive()) {
+                module.setEnabled(dataObject.getAsBoolean());
             }
         }
-        inputStream.close();
     }
 }
