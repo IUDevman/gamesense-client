@@ -194,7 +194,8 @@ public class SaveConfig {
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "CustomFont" + ".json"), "UTF-8");
         JsonObject fontObject = new JsonObject();
 
-        fontObject.add("Font", new JsonPrimitive(GameSenseMod.fontRenderer.getFont().toString()));
+        fontObject.add("Font Name", new JsonPrimitive(GameSenseMod.fontRenderer.getFontName()));
+        fontObject.add("Font Size", new JsonPrimitive(GameSenseMod.fontRenderer.getFontSize()));
         String jsonString = gson.toJson(new JsonParser().parse(fontObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();
@@ -302,15 +303,15 @@ public class SaveConfig {
 
     public void saveAutoReply() throws IOException {
 
-        registerFiles(miscName, "AutoReplay");
+        registerFiles(miscName, "AutoReply");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "AutoReplay" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "AutoReply" + ".json"), "UTF-8");
         JsonObject mainObject = new JsonObject();
         JsonObject messageObject = new JsonObject();
 
         messageObject.add("Message", new JsonPrimitive(AutoReply.getReply()));
-        mainObject.add("AutoReplay", messageObject);
+        mainObject.add("AutoReply", messageObject);
         String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();

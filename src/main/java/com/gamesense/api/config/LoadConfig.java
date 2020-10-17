@@ -1,5 +1,6 @@
 package com.gamesense.api.config;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -7,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
@@ -41,6 +43,7 @@ public class LoadConfig {
         loadModuleKeybinds();
         loadDrawnModules();
         loadCommandPrefix();
+        loadCustomFont();
     }
 
     //big shoutout to lukflug for helping/fixing this
@@ -138,13 +141,13 @@ public class LoadConfig {
     }
 
     public void loadDrawnModules() throws IOException {
-        String bindLocation = fileName + mainName;
+        String drawnLocation = fileName + mainName;
 
-        if (!Files.exists(Paths.get(bindLocation + "Drawn" + ".json"))) {
+        if (!Files.exists(Paths.get(drawnLocation + "Drawn" + ".json"))) {
             return;
         }
 
-        InputStream inputStream = Files.newInputStream(Paths.get(bindLocation + "Drawn" + ".json"));
+        InputStream inputStream = Files.newInputStream(Paths.get(drawnLocation + "Drawn" + ".json"));
         JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
 
         if (moduleObject.get("Modules") == null) {
@@ -163,23 +166,64 @@ public class LoadConfig {
     }
 
     public void loadCommandPrefix() throws IOException {
-        String bindLocation = fileName + mainName;
+        String prefixLocation = fileName + mainName;
 
-        if (!Files.exists(Paths.get(bindLocation + "CommandPrefix" + ".json"))) {
+        if (!Files.exists(Paths.get(prefixLocation + "CommandPrefix" + ".json"))) {
             return;
         }
 
-        InputStream inputStream = Files.newInputStream(Paths.get(bindLocation + "CommandPrefix" + ".json"));
-        JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+        InputStream inputStream = Files.newInputStream(Paths.get(prefixLocation + "CommandPrefix" + ".json"));
+        JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
 
-        if (moduleObject.get("Prefix") == null) {
+        if (mainObject.get("Prefix") == null) {
             return;
         }
 
-        JsonElement prefixObject = moduleObject.get("Prefix");
+        JsonElement prefixObject = mainObject.get("Prefix");
 
         if (prefixObject != null && prefixObject.isJsonPrimitive()) {
             Command.setPrefix(prefixObject.getAsString());
+        }
+        inputStream.close();
+    }
+
+    public void loadCustomFont() throws IOException {
+        String fontLocation = fileName + miscName;
+
+        if (!Files.exists(Paths.get(fontLocation + "CustomFont" + ".json"))){
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(fontLocation + "CustomFont" + ".json"));
+        JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (mainObject.get("Font Name") == null || mainObject.get("Font Size") == null){
+            return;
+        }
+
+        JsonElement fontNameObject = mainObject.get("Font Name");
+
+        String name = null;
+
+        if (fontNameObject != null && fontNameObject.isJsonPrimitive()) {
+            name = fontNameObject.getAsString();
+        }
+
+        JsonElement fontSizeObject = mainObject.get("Font Size");
+
+        int size = -1;
+
+        if (fontSizeObject != null && fontSizeObject.isJsonPrimitive()) {
+            size = fontSizeObject.getAsInt();
+        }
+
+        if (name != null && size != -1){
+            GameSenseMod.fontRenderer = new CFontRenderer(new Font(name, Font.PLAIN, size), true, true);
+            GameSenseMod.fontRenderer.setFont(new Font(name, Font.PLAIN, size));
+            GameSenseMod.fontRenderer.setAntiAlias(true);
+            GameSenseMod.fontRenderer.setFractionalMetrics(true);
+            GameSenseMod.fontRenderer.setFontName(name);
+            GameSenseMod.fontRenderer.setFontSize(size);
         }
         inputStream.close();
     }

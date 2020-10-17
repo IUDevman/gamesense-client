@@ -27,5 +27,6 @@ public class FontCommand extends Command{
 		GameSenseMod.fontRenderer = new CFontRenderer(new Font(font, Font.PLAIN, size), true, false);
 		GameSenseMod.fontRenderer.setFontName(font);
 		GameSenseMod.fontRenderer.setFontSize(size);
+		Command.sendClientMessage("Set the font to " + font + ", size " + size);
 	}
 }
