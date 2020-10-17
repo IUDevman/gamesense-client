@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.google.gson.JsonElement;
@@ -38,8 +39,11 @@ public class LoadConfig {
     	loadModules();
         loadEnabledModules();
         loadModuleKeybinds();
+        loadDrawnModules();
+        loadCommandPrefix();
     }
 
+    //big shoutout to lukflug for helping/fixing this
     public void loadModules() throws IOException {
         String moduleLocation = fileName + moduleName;
 
@@ -60,9 +64,6 @@ public class LoadConfig {
             	JsonElement dataObject = settingObject.get(setting.getConfigName());
             	
                 if (dataObject != null && dataObject.isJsonPrimitive()) {
-
-                    //JsonObject dataObject = configObject.getAsJsonObject().get(setting.getType().toString()).getAsJsonObject();
-
                     switch (setting.getType()){
                         case BOOLEAN:
                             ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
@@ -132,6 +133,53 @@ public class LoadConfig {
             if (dataObject != null && dataObject.isJsonPrimitive()) {
                 module.setBind(dataObject.getAsInt());
             }
+        }
+        inputStream.close();
+    }
+
+    public void loadDrawnModules() throws IOException {
+        String bindLocation = fileName + mainName;
+
+        if (!Files.exists(Paths.get(bindLocation + "Drawn" + ".json"))) {
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(bindLocation + "Drawn" + ".json"));
+        JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (moduleObject.get("Modules") == null) {
+            return;
+        }
+
+        JsonObject settingObject = moduleObject.get("Modules").getAsJsonObject();
+        for (Module module : ModuleManager.getModules()){
+            JsonElement dataObject = settingObject.get(module.getName());
+
+            if (dataObject != null && dataObject.isJsonPrimitive()) {
+                module.setDrawn(dataObject.getAsBoolean());
+            }
+        }
+        inputStream.close();
+    }
+
+    public void loadCommandPrefix() throws IOException {
+        String bindLocation = fileName + mainName;
+
+        if (!Files.exists(Paths.get(bindLocation + "CommandPrefix" + ".json"))) {
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(bindLocation + "CommandPrefix" + ".json"));
+        JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (moduleObject.get("Prefix") == null) {
+            return;
+        }
+
+        JsonElement prefixObject = moduleObject.get("Prefix");
+
+        if (prefixObject != null && prefixObject.isJsonPrimitive()) {
+            Command.setPrefix(prefixObject.getAsString());
         }
         inputStream.close();
     }
