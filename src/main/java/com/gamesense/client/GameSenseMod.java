@@ -2,22 +2,17 @@ package com.gamesense.client;
 
 import java.awt.Font;
 
-import com.gamesense.api.config.ConfigStopper;
-import com.gamesense.api.config.LoadConfig;
-import com.gamesense.api.config.SaveConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
-import com.gamesense.api.Stopper;
+import com.gamesense.api.config.ConfigStopper;
+import com.gamesense.api.config.LoadConfig;
+import com.gamesense.api.config.SaveConfig;
 import com.gamesense.api.event.EventProcessor;
 import com.gamesense.api.players.enemy.Enemies;
 import com.gamesense.api.players.friends.Friends;
 import com.gamesense.api.settings.SettingsManager;
-import com.gamesense.api.util.config.LoadConfiguration;
-import com.gamesense.api.util.config.LoadModules;
-import com.gamesense.api.util.config.SaveConfiguration;
-import com.gamesense.api.util.config.SaveModules;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.render.CapeUtils;
 import com.gamesense.client.clickgui.ClickGUI;
@@ -89,6 +84,7 @@ public class GameSenseMod{
 		macroManager = new MacroManager();
 		log.info("Macros initialized!");
 
+		saveConfig = new SaveConfig();
 		loadConfig = new LoadConfig();
 		Runtime.getRuntime().addShutdownHook(new ConfigStopper());
 		log.info("Config Loaded!");

@@ -63,21 +63,21 @@ public class LoadConfig {
                     //JsonObject dataObject = configObject.getAsJsonObject().get(setting.getType().toString()).getAsJsonObject();
 
                     switch (setting.getType()){
-                        case BOOLEAN: {
+                        case BOOLEAN:
                             ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
-                        }
-                        case INT: {
+                            break;
+                        case INT:
                             ((Setting.Integer) setting).setValue(dataObject.getAsInt());
-                        }
-                        case DOUBLE: {
+                            break;
+                        case DOUBLE:
                             ((Setting.Double) setting).setValue(dataObject.getAsDouble());
-                        }
-                        case COLOR: {
+                            break;
+                        case COLOR:
                             ((Setting.ColorSetting) setting).fromInteger(dataObject.getAsInt());
-                        }
-                        case MODE: {
+                            break;
+                        case MODE:
                             ((Setting.Mode) setting).setValue(dataObject.getAsString());
-                        }
+                            break;
                     }
                 }
             }
