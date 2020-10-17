@@ -37,6 +37,7 @@ public class LoadConfig {
     public void loadConfig() throws IOException {
     	loadModules();
         loadEnabledModules();
+        loadModuleKeybinds();
     }
 
     public void loadModules() throws IOException {
@@ -107,5 +108,31 @@ public class LoadConfig {
                 module.setEnabled(dataObject.getAsBoolean());
             }
         }
+        inputStream.close();
+    }
+
+    public void loadModuleKeybinds() throws IOException {
+        String bindLocation = fileName + mainName;
+
+        if (!Files.exists(Paths.get(bindLocation + "Bind" + ".json"))) {
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(bindLocation + "Bind" + ".json"));
+        JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (moduleObject.get("Modules") == null) {
+            return;
+        }
+
+        JsonObject settingObject = moduleObject.get("Modules").getAsJsonObject();
+        for (Module module : ModuleManager.getModules()){
+            JsonElement dataObject = settingObject.get(module.getName());
+
+            if (dataObject != null && dataObject.isJsonPrimitive()) {
+                module.setBind(dataObject.getAsInt());
+            }
+        }
+        inputStream.close();
     }
 }
