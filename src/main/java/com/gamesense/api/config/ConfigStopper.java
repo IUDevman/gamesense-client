@@ -8,6 +8,10 @@ public class ConfigStopper extends Thread {
 
     @Override
     public void run(){
+        saveConfig();
+    }
+
+    public static void saveConfig(){
         try {
             GameSenseMod.getInstance().saveConfig.saveConfig();
             GameSenseMod.getInstance().saveConfig.saveModules();

@@ -2,7 +2,7 @@ package com.gamesense.client.command.commands;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.gamesense.client.command.Command;
-import com.gamesense.api.players.enemy.Enemies;
+import com.gamesense.api.util.players.enemy.Enemies;
 
 public class EnemyCommand extends Command{
 

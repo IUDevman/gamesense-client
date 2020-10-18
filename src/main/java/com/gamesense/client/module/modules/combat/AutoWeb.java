@@ -2,9 +2,9 @@ package com.gamesense.client.module.modules.combat;
 
 import java.util.List;
 
-import com.gamesense.api.players.friends.Friends;
+import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.Wrapper;
+import com.gamesense.api.util.misc.Wrapper;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.module.Module;

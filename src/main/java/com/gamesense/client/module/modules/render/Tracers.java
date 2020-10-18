@@ -3,8 +3,8 @@ package com.gamesense.client.module.modules.render;
 import java.util.ArrayList;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.players.enemy.Enemies;
-import com.gamesense.api.players.friends.Friends;
+import com.gamesense.api.util.players.enemy.Enemies;
+import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;

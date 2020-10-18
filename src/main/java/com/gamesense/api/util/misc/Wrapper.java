@@ -1,4 +1,4 @@
-package com.gamesense.api.util;
+package com.gamesense.api.util.misc;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;

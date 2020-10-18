@@ -1,6 +1,6 @@
 package com.gamesense.client.command.commands;
 
-import com.gamesense.api.Stopper;
+import com.gamesense.api.config.ConfigStopper;
 import com.gamesense.client.command.Command;
 
 public class SaveConfigCommand extends Command{
@@ -17,7 +17,7 @@ public class SaveConfigCommand extends Command{
 
 	@Override
 	public void onCommand(String command, String[] args) throws Exception{
-		Stopper.saveConfig();
+		ConfigStopper.saveConfig();
 		Command.sendClientMessage("Config saved!");
 	}
 }

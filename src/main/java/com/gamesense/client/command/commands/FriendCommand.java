@@ -3,7 +3,7 @@ package com.gamesense.client.command.commands;
 import com.gamesense.client.GameSenseMod;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.gamesense.client.command.Command;
-import com.gamesense.api.players.friends.Friends;
+import com.gamesense.api.util.players.friends.Friends;
 
 public class FriendCommand extends Command{
 

@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.players.enemy.Enemies;
-import com.gamesense.api.players.friends.Friends;
+import com.gamesense.api.util.players.enemy.Enemies;
+import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;

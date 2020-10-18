@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.players.friends.Friends;
+import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;

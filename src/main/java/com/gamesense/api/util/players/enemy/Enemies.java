@@ -1,4 +1,4 @@
-package com.gamesense.api.players.enemy;
+package com.gamesense.api.util.players.enemy;
 
 import java.util.ArrayList;
 import java.util.List;

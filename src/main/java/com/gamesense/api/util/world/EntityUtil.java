@@ -1,6 +1,6 @@
 package com.gamesense.api.util.world;
 
-import com.gamesense.api.util.Wrapper;
+import com.gamesense.api.util.misc.Wrapper;
 import com.google.gson.JsonParser;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;

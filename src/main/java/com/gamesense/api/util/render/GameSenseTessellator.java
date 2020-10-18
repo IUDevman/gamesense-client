@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
 
-import com.gamesense.api.util.Wrapper;
+import com.gamesense.api.util.misc.Wrapper;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;

@@ -1,9 +1,9 @@
 package com.gamesense.api.config;
 
-import com.gamesense.api.players.enemy.Enemies;
-import com.gamesense.api.players.enemy.Enemy;
-import com.gamesense.api.players.friends.Friend;
-import com.gamesense.api.players.friends.Friends;
+import com.gamesense.api.util.players.enemy.Enemies;
+import com.gamesense.api.util.players.enemy.Enemy;
+import com.gamesense.api.util.players.friends.Friend;
+import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.ClickGUI;

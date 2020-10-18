@@ -2,16 +2,16 @@ package com.gamesense.client;
 
 import java.awt.Font;
 
+import com.gamesense.api.config.ConfigStopper;
+import com.gamesense.api.config.LoadConfig;
+import com.gamesense.api.config.SaveConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
-import com.gamesense.api.config.ConfigStopper;
-import com.gamesense.api.config.LoadConfig;
-import com.gamesense.api.config.SaveConfig;
 import com.gamesense.api.event.EventProcessor;
-import com.gamesense.api.players.enemy.Enemies;
-import com.gamesense.api.players.friends.Friends;
+import com.gamesense.api.util.players.enemy.Enemies;
+import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.SettingsManager;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.render.CapeUtils;
@@ -28,23 +28,24 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = GameSenseMod.MODID, name = GameSenseMod.FORGENAME, version = GameSenseMod.MODVER, clientSideOnly = true)
 public class GameSenseMod{
+
 	public static final String MODID = "gamesense";
 	public static String MODNAME = "GameSense";
-	public static final String MODVER = "v2.1.5";
 	public static final String FORGENAME = "GameSense";
+	public static final String MODVER = "v2.1.5";
 
 	public static final Logger log = LogManager.getLogger(MODNAME);
 
-	public ClickGUI clickGUI;
-	public SettingsManager settingsManager;
-	public Friends friends;
-	public ModuleManager moduleManager;
+	public EventProcessor eventProcessor;
 	public SaveConfig saveConfig;
 	public LoadConfig loadConfig;
-	public CapeUtils capeUtils;
-	public EventProcessor eventProcessor;
+	public ModuleManager moduleManager;
+	public SettingsManager settingsManager;
 	public static CFontRenderer fontRenderer;
-	public static Enemies enemies;
+	public CapeUtils capeUtils;
+	public ClickGUI clickGUI;
+	public Friends friends;
+	public Enemies enemies;
 
 	public static final EventBus EVENT_BUS = new EventManager();
 
@@ -63,8 +64,10 @@ public class GameSenseMod{
 	public void init(FMLInitializationEvent event){
 		eventProcessor = new EventProcessor();
 		eventProcessor.init();
+		log.info("Events initialized!");
 
 		fontRenderer = new CFontRenderer(new Font("Arial", Font.PLAIN, 18), true,true);
+		log.info("Custom font initialized!");
 
 		settingsManager = new SettingsManager();
 		log.info("Settings initialized!");
@@ -79,13 +82,13 @@ public class GameSenseMod{
 		clickGUI = new ClickGUI();
 		log.info("ClickGUI initialized!");
 
+		CommandManager.initCommands();
+		log.info("Commands initialized!");
+
 		saveConfig = new SaveConfig();
 		loadConfig = new LoadConfig();
 		Runtime.getRuntime().addShutdownHook(new ConfigStopper());
 		log.info("Config Loaded!");
-
-		CommandManager.initCommands();
-		log.info("Commands initialized!");
 
 		log.info("Initialization complete!\n");
 	}
