@@ -15,6 +15,8 @@ import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoReply;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -47,7 +49,11 @@ public class LoadConfig {
         loadCommandPrefix();
         loadCustomFont();
         //loadFriendsList();
+        //loadEnemiesList();
         loadClickGUIPositions();
+        //loadMacros();
+        //loadAutoGG();
+        loadAutoReply();
     }
 
     //big shoutout to lukflug for helping/fixing this
@@ -245,6 +251,16 @@ public class LoadConfig {
         if (mainObject.get("Friends") == null){
             return;
         }
+
+        JsonArray friendObject = mainObject.get("Friends").getAsJsonArray();
+
+        friendObject.forEach(friend -> {
+            JsonElement dataObject = friend.getAsJsonObject();
+            if (friend != null && friend.isJsonPrimitive()){
+                GameSenseMod.getInstance().friends.addFriend(dataObject.getAsString());
+            }
+                });
+        inputStream.close();
     }
 
     public void loadClickGUIPositions() throws IOException {
@@ -283,6 +299,28 @@ public class LoadConfig {
             if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()){
                 frames.setOpen(panelOpenObject.getAsBoolean());
             }
+        }
+        inputStream.close();
+    }
+
+    public void loadAutoReply() throws IOException {
+        String fileLocation = fileName + miscName;
+
+        if (!Files.exists(Paths.get(fileLocation + "AutoReply" + ".json"))){
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(fileLocation + "AutoReply" + ".json"));
+        JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (mainObject.get("AutoReply") == null){
+            return;
+        }
+
+        JsonObject arObject = mainObject.get("AutoReply").getAsJsonObject();
+        JsonElement dataObject = arObject.get("Message");
+        if (dataObject != null && dataObject.isJsonPrimitive()) {
+            AutoReply.setReply(dataObject.getAsString());
         }
         inputStream.close();
     }

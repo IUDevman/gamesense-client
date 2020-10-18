@@ -208,10 +208,12 @@ public class SaveConfig {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "Friends" + ".json"), "UTF-8");
         JsonObject mainObject = new JsonObject();
-        JsonObject friendsObject = new JsonObject();
+        JsonArray friendsObject = new JsonArray();
 
         for (Friend friend : Friends.getFriends()){
-            friendsObject.add("Name", new JsonPrimitive(friend.getName()));
+            JsonObject dataObject = new JsonObject();
+            dataObject.add("Name", new JsonPrimitive(friend.getName()));
+            friendsObject.add(dataObject);
         }
 
         mainObject.add("Friends", friendsObject);
