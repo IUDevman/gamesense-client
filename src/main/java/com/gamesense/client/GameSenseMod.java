@@ -66,7 +66,7 @@ public class GameSenseMod{
 		eventProcessor = new EventProcessor();
 		eventProcessor.init();
 
-		fontRenderer = new CFontRenderer(new Font("Ariel", Font.PLAIN, 18), true,true);
+		fontRenderer = new CFontRenderer(new Font("Arial", Font.PLAIN, 18), true,true);
 
 		settingsManager = new SettingsManager();
 		log.info("Settings initialized!");
