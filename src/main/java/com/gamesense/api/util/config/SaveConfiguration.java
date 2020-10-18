@@ -8,7 +8,6 @@ import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.clickgui.ClickGUI;
-import com.gamesense.client.macro.Macro;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
@@ -97,23 +96,6 @@ public class SaveConfiguration{
 			while (var3.hasNext()){
 				Frames frames = (Frames)var3.next();
 				out.write(frames.category + ":" + frames.getX() + ":" + frames.getY() + ":" + frames.isOpen());
-				out.write("\r\n");
-			}
-			out.close();
-		}
-		catch (Exception var5){
-		}
-	}
-
-	//saves macros
-	public static void saveMacros(){
-		try{
-			File file = new File(Miscellaneous.getAbsolutePath(), "ClientMacros.json");
-			BufferedWriter out = new BufferedWriter(new FileWriter(file));
-			Iterator var3 = GameSenseMod.getInstance().macroManager.getMacros().iterator();
-			while(var3.hasNext()){
-				Macro m = (Macro) var3.next();
-				out.write(Keyboard.getKeyName(m.getKey()) + ":" + m.getValue().replace(" ", "_"));
 				out.write("\r\n");
 			}
 			out.close();

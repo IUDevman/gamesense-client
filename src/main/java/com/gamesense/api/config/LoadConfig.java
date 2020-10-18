@@ -51,7 +51,6 @@ public class LoadConfig {
         //loadFriendsList();
         //loadEnemiesList();
         loadClickGUIPositions();
-        //loadMacros();
         //loadAutoGG();
         loadAutoReply();
     }

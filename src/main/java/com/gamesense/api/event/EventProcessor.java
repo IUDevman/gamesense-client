@@ -85,11 +85,12 @@ public class EventProcessor {
 		if (Keyboard.getEventKeyState()) {
 		   if(Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
 		  ModuleManager.onBind(Keyboard.getEventKey());
-			//Macro
+			/*** Macro, depreciated
 		   GameSenseMod.getInstance().macroManager.getMacros().forEach(m -> {
 				if(m.getKey() == Keyboard.getEventKey())
 					m.onMacro();
 			});
+			 */
 	  }
 		}
 

@@ -9,7 +9,6 @@ import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.command.Command;
-import com.gamesense.client.macro.Macro;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
@@ -261,25 +260,6 @@ public class SaveConfig {
             panelObject.add(frame.category.name(), valueObject);
         }
         mainObject.add("Panels", panelObject);
-        String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
-        fileOutputStreamWriter.write(jsonString);
-        fileOutputStreamWriter.close();
-    }
-
-    public void saveMacros() throws IOException {
-
-        registerFiles(miscName, "Macro");
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "Macro" + ".json"), "UTF-8");
-        JsonObject mainObject = new JsonObject();
-        JsonObject macroObject = new JsonObject();
-
-        for (Macro macro : GameSenseMod.getInstance().macroManager.getMacros()){
-
-            macroObject.add(String.valueOf(macro.getKey()), new JsonPrimitive(macro.getValue()));
-        }
-        mainObject.add("Macros", macroObject);
         String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();

@@ -21,7 +21,6 @@ public class CommandManager{
 		addCommand(new FixGuiCommand());
 		addCommand(new FontCommand());
 		addCommand(new FriendCommand());
-		addCommand(new MacroCommand());
 		addCommand(new ModsCommand());
 		addCommand(new OpenFolderCommand());
 		addCommand(new PrefixCommand());

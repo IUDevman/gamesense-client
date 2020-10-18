@@ -7,7 +7,6 @@ import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.clickgui.frame.Frames;
-import com.gamesense.client.macro.Macro;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
@@ -35,7 +34,6 @@ public class LoadConfiguration{
 		loadFont();
 		loadFriends();
 		loadGUI();
-		loadMacros();
 		loadMessages();
 		loadPrefix();
 	}
@@ -69,28 +67,6 @@ public class LoadConfiguration{
 		catch (Exception var6){
 			var6.printStackTrace();
 			SaveConfiguration.saveGUI();
-		}
-	}
-
-	//loads client macros
-	public void loadMacros(){
-		try{
-			File file = new File(SaveConfiguration.Miscellaneous.getAbsolutePath(), "ClientMacros.json");
-			FileInputStream fstream = new FileInputStream(file.getAbsolutePath());
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String line;
-			while((line = br.readLine()) != null){
-				String curLine = line.trim();
-				String bind = curLine.split(":")[0];
-				String value = curLine.split(":")[1];
-				GameSenseMod.getInstance().macroManager.addMacro(new Macro(Keyboard.getKeyIndex(bind), value.replace("_", " ")));
-			}
-			br.close();
-		}
-		catch (Exception var6){
-			var6.printStackTrace();
-			SaveConfiguration.saveMacros();
 		}
 	}
 

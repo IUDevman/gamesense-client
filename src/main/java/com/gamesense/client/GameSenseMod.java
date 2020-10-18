@@ -17,7 +17,6 @@ import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.render.CapeUtils;
 import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.command.CommandManager;
-import com.gamesense.client.macro.MacroManager;
 import com.gamesense.client.module.ModuleManager;
 
 import me.zero.alpine.EventBus;
@@ -43,7 +42,6 @@ public class GameSenseMod{
 	public SaveConfig saveConfig;
 	public LoadConfig loadConfig;
 	public CapeUtils capeUtils;
-	public MacroManager macroManager;
 	public EventProcessor eventProcessor;
 	public static CFontRenderer fontRenderer;
 	public static Enemies enemies;
@@ -80,9 +78,6 @@ public class GameSenseMod{
 
 		clickGUI = new ClickGUI();
 		log.info("ClickGUI initialized!");
-
-		macroManager = new MacroManager();
-		log.info("Macros initialized!");
 
 		saveConfig = new SaveConfig();
 		loadConfig = new LoadConfig();
