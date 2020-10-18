@@ -248,15 +248,15 @@ public class SaveConfig {
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "ClickGUI" + ".json"), "UTF-8");
         JsonObject mainObject = new JsonObject();
         JsonObject panelObject = new JsonObject();
-        JsonObject valueObject = new JsonObject();
 
         for (Frames frame : ClickGUI.getFrames()){
+            JsonObject valueObject = new JsonObject();
 
             valueObject.add("PosX", new JsonPrimitive(frame.getX()));
             valueObject.add("PosY", new JsonPrimitive(frame.getY()));
             valueObject.add("State", new JsonPrimitive(frame.isOpen()));
 
-            panelObject.add(frame.toString(), valueObject);
+            panelObject.add(frame.category.name(), valueObject);
         }
         mainObject.add("Panels", panelObject);
         String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));

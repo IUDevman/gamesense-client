@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.clickgui.ClickGUI;
+import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -44,6 +46,8 @@ public class LoadConfig {
         loadDrawnModules();
         loadCommandPrefix();
         loadCustomFont();
+        //loadFriendsList();
+        loadClickGUIPositions();
     }
 
     //big shoutout to lukflug for helping/fixing this
@@ -224,6 +228,61 @@ public class LoadConfig {
             GameSenseMod.fontRenderer.setFractionalMetrics(true);
             GameSenseMod.fontRenderer.setFontName(name);
             GameSenseMod.fontRenderer.setFontSize(size);
+        }
+        inputStream.close();
+    }
+
+    public void loadFriendsList() throws IOException {
+        String friendLocation = fileName + miscName;
+
+        if (!Files.exists(Paths.get(friendLocation + "Friends" + ".json"))){
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(friendLocation + "Friends" + ".json"));
+        JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (mainObject.get("Friends") == null){
+            return;
+        }
+    }
+
+    public void loadClickGUIPositions() throws IOException {
+        String fileLocation = fileName + mainName;
+
+        if (!Files.exists(Paths.get(fileLocation + "ClickGUI" + ".json"))){
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(fileLocation + "ClickGUI" + ".json"));
+        JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (mainObject.get("Panels") == null){
+            return;
+        }
+
+        JsonObject panelObject = mainObject.get("Panels").getAsJsonObject();
+        for (Frames frames : ClickGUI.getFrames()){
+            if (panelObject.get(frames.category.name()) == null){
+                return;
+            }
+
+            JsonObject panelObject2 = panelObject.get(frames.category.name()).getAsJsonObject();
+
+            JsonElement panelPosXObject = panelObject2.get("PosX");
+            if (panelPosXObject != null && panelPosXObject.isJsonPrimitive()){
+                frames.setX(panelPosXObject.getAsInt());
+            }
+
+            JsonElement panelPosYObject = panelObject2.get("PosY");
+            if (panelPosYObject != null && panelPosYObject.isJsonPrimitive()){
+                frames.setY(panelPosYObject.getAsInt());
+            }
+
+            JsonElement panelOpenObject = panelObject2.get("State");
+            if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()){
+                frames.setOpen(panelOpenObject.getAsBoolean());
+            }
         }
         inputStream.close();
     }
