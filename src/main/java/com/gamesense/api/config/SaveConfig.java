@@ -82,7 +82,6 @@ public class SaveConfig {
             moduleObject.add("Module", new JsonPrimitive(module.getName()));
 
             for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
-                //JsonObject dataObject = new JsonObject();
                 switch (setting.getType()){
                     case BOOLEAN: {
                     	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Boolean) setting).getValue()));
@@ -105,7 +104,6 @@ public class SaveConfig {
                         break;
                     }
                 }
-                //settingObject.add(setting.getConfigName(), dataObject);
             }
             moduleObject.add("Settings", settingObject);
             String jsonString = gson.toJson(new JsonParser().parse(moduleObject.toString()));
@@ -207,15 +205,12 @@ public class SaveConfig {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "Friends" + ".json"), "UTF-8");
         JsonObject mainObject = new JsonObject();
-        JsonArray friendsObject = new JsonArray();
+        JsonArray friendArray = new JsonArray();
 
         for (Friend friend : Friends.getFriends()){
-            JsonObject dataObject = new JsonObject();
-            dataObject.add("Name", new JsonPrimitive(friend.getName()));
-            friendsObject.add(dataObject);
+            friendArray.add(friend.getName());
         }
-
-        mainObject.add("Friends", friendsObject);
+        mainObject.add("Friends", friendArray);
         String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();
@@ -228,19 +223,17 @@ public class SaveConfig {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "Enemies" + ".json"), "UTF-8");
         JsonObject mainObject = new JsonObject();
-        JsonObject enemiesObject = new JsonObject();
+        JsonArray enemyArray = new JsonArray();
 
         for (Enemy enemy : Enemies.getEnemies()){
-            enemiesObject.add("Name", new JsonPrimitive(enemy.getName()));
+            enemyArray.add(enemy.getName());
         }
-
-        mainObject.add("Enemies", enemiesObject);
+        mainObject.add("Enemies", enemyArray);
         String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();
     }
 
-    //todo: got some more work to do here
     public void saveClickGUIPositions() throws IOException {
 
         registerFiles(mainName, "ClickGUI");
@@ -272,12 +265,12 @@ public class SaveConfig {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "AutoGG" + ".json"), "UTF-8");
         JsonObject mainObject = new JsonObject();
-        JsonObject messageObject = new JsonObject();
+        JsonArray messageArray = new JsonArray();
 
         for (String autoGG : AutoGG.getAutoGgMessages()){
-            messageObject.add("Message", new JsonPrimitive(autoGG));
+            messageArray.add(autoGG);
         }
-        mainObject.add("AutoGG", messageObject);
+        mainObject.add("Messages", messageArray);
         String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();

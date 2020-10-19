@@ -9,12 +9,14 @@ import java.nio.file.Paths;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
+import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -48,10 +50,10 @@ public class LoadConfig {
         loadDrawnModules();
         loadCommandPrefix();
         loadCustomFont();
-        //loadFriendsList();
-        //loadEnemiesList();
+        loadFriendsList();
+        loadEnemiesList();
         loadClickGUIPositions();
-        //loadAutoGG();
+        loadAutoGG();
         loadAutoReply();
     }
 
@@ -253,12 +255,31 @@ public class LoadConfig {
 
         JsonArray friendObject = mainObject.get("Friends").getAsJsonArray();
 
-        friendObject.forEach(friend -> {
-            JsonElement dataObject = friend.getAsJsonObject();
-            if (friend != null && friend.isJsonPrimitive()){
-                GameSenseMod.getInstance().friends.addFriend(dataObject.getAsString());
-            }
-                });
+        friendObject.forEach(object -> {
+            GameSenseMod.getInstance().friends.addFriend(object.getAsString());
+        });
+        inputStream.close();
+    }
+
+    public void loadEnemiesList() throws IOException {
+        String enemyLocation = fileName + miscName;
+
+        if (!Files.exists(Paths.get(enemyLocation + "Enemies" + ".json"))){
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(enemyLocation + "Enemies" + ".json"));
+        JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (mainObject.get("Enemies") == null){
+            return;
+        }
+
+        JsonArray enemyObject = mainObject.get("Enemies").getAsJsonArray();
+
+        enemyObject.forEach(object -> {
+            Enemies.addEnemy(object.getAsString());
+        });
         inputStream.close();
     }
 
@@ -299,6 +320,28 @@ public class LoadConfig {
                 frames.setOpen(panelOpenObject.getAsBoolean());
             }
         }
+        inputStream.close();
+    }
+
+    public void loadAutoGG() throws IOException {
+        String fileLocation = fileName + miscName;
+
+        if (!Files.exists(Paths.get(fileLocation + "AutoGG" + ".json"))){
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(fileLocation + "AutoGG" + ".json"));
+        JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (mainObject.get("Messages") == null){
+            return;
+        }
+
+        JsonArray messageObject = mainObject.get("Messages").getAsJsonArray();
+
+        messageObject.forEach(object -> {
+            AutoGG.addAutoGgMessage(object.getAsString());
+        });
         inputStream.close();
     }
 
