@@ -37,7 +37,7 @@ public class SaveConfig {
         }
     }
 
-    String fileName = "GameSense3/";
+    String fileName = "GameSense/";
     String moduleName = "Modules/";
     String mainName = "Main/";
     String miscName = "Misc/";
