@@ -49,10 +49,8 @@ public class Nametags extends Module {
 	Setting.Boolean entityId;
 	public static Setting.Boolean customColor;
 	public static Setting.ColorSetting borderColor;
-	Setting.Integer range;
 
 	public void setup() {
-		range = registerInteger("Range", "Range", 100, 10, 260);
 		durability = registerBoolean("Durability", "Durability", true);
 		armor = registerBoolean("Armor", "Armor", true);
 		enchantnames = registerBoolean("Enchants", "Enchants", true);
@@ -69,9 +67,6 @@ public class Nametags extends Module {
 		for (Object o : mc.world.playerEntities) {
 			final Entity entity = (Entity) o;
 			if (entity instanceof EntityPlayer && entity != mc.player && entity.isEntityAlive()) {
-				if (entity.getDistance(mc.player) > range.getValue()){
-					return;
-				}
 				Vec3d m = renderPosEntity(entity);
 				renderNameTagsFor((EntityPlayer) entity, m.x, m.y, m.z);
 			}
