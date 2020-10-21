@@ -51,7 +51,7 @@ public class CityESP extends Module {
         selectMode = registerMode("Select", "Select", selectModes, "Closest");
         renderMode = registerMode("Render", "Render", renderModes, "Both");
         width = registerInteger("Width", "Width", 1, 1, 10);
-        color = registerColor("Color", "Color");
+        color = registerColor("Color", "Color", new GSColor(102,51,153));
     }
 
     public void onWorldRender(RenderEvent event){
