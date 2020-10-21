@@ -239,4 +239,14 @@ public class EntityUtil{
 	public static double getRelativeZ(float yaw){
 		return MathHelper.cos(yaw * 0.017453292F);
 	}
+
+	public static float clamp(float val, float min, float max) {
+		if (val <= min) {
+			val = min;
+		}
+		if (val >= max) {
+			val = max;
+		}
+		return val;
+	}
 }

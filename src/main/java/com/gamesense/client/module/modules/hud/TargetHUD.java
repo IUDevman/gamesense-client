@@ -5,18 +5,26 @@ import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.module.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * @Author Hoosiers on 10/19/2020
@@ -45,17 +53,23 @@ public class TargetHUD extends Module {
     GSColor backgroundColor;
     GSColor nameColor;
     GSColor healthColor;
+    TextFormatting playercolor;
+    String playerinfo;
+    float ping;
 
     public void onRender(){
         if (mc.world != null) {
             backgroundColor = new GSColor(background.getValue(), 100);
             outlineColor = new GSColor(outline.getValue(), 255);
 
-            EntityPlayer player = mc.world.playerEntities.stream()
-                    .filter(entityPlayer -> entityPlayer.getName() != mc.player.getName())
-                    .filter(entityPlayer -> entityPlayer.getDistance(mc.player) <= range.getValue())
-                    .sorted(Comparator.comparing(entityPlayer -> entityPlayer.getDistance(mc.player)))
-                    .findFirst().orElse(null);
+            EntityPlayer player = (EntityPlayer) mc.world.loadedEntityList.stream()
+                    .filter(entity -> IsValidEntity(entity))
+                    .map(entity -> (EntityLivingBase) entity)
+                    .min(Comparator.comparing(c -> mc.player.getDistance(c)))
+                    .orElse(null);
+
+            if (player == null)
+                return;
 
             if (player != null) {
                 String playerName = player.getName();
@@ -63,11 +77,12 @@ public class TargetHUD extends Module {
                 findNameColor(playerName);
                 findHealthColor(playerHealth);
 
+
                 //box
                 drawTargetBox();
 
                 //player model
-                drawEntityPlayer(player, posX.getValue(), posY.getValue());
+                drawEntityPlayer(player, posX.getValue() + 40, posY.getValue() + 87);
 
                 //player name
                 FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.BOLD + playerName, posX.getValue() + 101, posY.getValue() + 11, nameColor);
@@ -83,6 +98,9 @@ public class TargetHUD extends Module {
 
                 //armor + items
                 drawItemTextures(player, posX.getValue() + 101, posY.getValue() + 83);
+
+                //player info
+                drawPlayerInfo(player, posX.getValue() + 101, posY.getValue() + 43);
             }
         }
     }
@@ -102,7 +120,44 @@ public class TargetHUD extends Module {
     }
 
     public void drawEntityPlayer(EntityPlayer entityPlayer, int x, int y){
-        //todo- linustouchtips
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+
+        GuiInventory.drawEntityOnScreen(x, y, 43, 28, 60, entityPlayer);
+
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableBlend();
+
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+    }
+
+    public void drawPlayerInfo(EntityPlayer player, int x, int y) {
+        // pretty messy, hopefully hoosiers won't mind :/ - linus
+
+            if (player.inventory.armorItemInSlot(2).getItem().equals(Items.ELYTRA)) {
+                playerinfo = "Wasp";
+                playercolor = TextFormatting.LIGHT_PURPLE;
+            }
+
+            if (player.inventory.armorItemInSlot(2).getItem().equals(Items.DIAMOND_CHESTPLATE)) {
+                playerinfo = "Threat";
+                playercolor = TextFormatting.RED;
+            }
+
+            if (player.inventory.armorItemInSlot(3).getItem().equals(Items.AIR)) {
+                playerinfo = "NewFag";
+                playercolor = TextFormatting.GREEN;
+            } else {
+                playerinfo = "None";
+                playercolor = TextFormatting.WHITE;
+            }
+
+        ping = getPing(player);
+
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), playercolor + playerinfo + TextFormatting.WHITE + " | "  + ping + " ms", x, y, new GSColor(255, 255, 255));
     }
 
     //having more than one of these displayed at once makes things too crowded
@@ -137,16 +192,11 @@ public class TargetHUD extends Module {
             iteration++;
             if (is.isEmpty()) continue;
             int x = px - 90 + (9 - iteration) * 20 + 2;
-            GlStateManager.enableDepth();
 
             itemRender.zLevel = 200F;
             itemRender.renderItemAndEffectIntoGUI(is, x, py);
             itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, is, x, py, "");
             itemRender.zLevel = 0F;
-
-            GlStateManager.enableTexture2D();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
 
             String s = is.getCount() > 1 ? is.getCount() + "" : "";
             mc.fontRenderer.drawStringWithShadow(s, x + 19 - 2 - mc.fontRenderer.getStringWidth(s), py + 9, new GSColor(255,255,255).getRGB());
@@ -194,5 +244,26 @@ public class TargetHUD extends Module {
         else {
             healthColor = new GSColor(255, 0, 0, 255);
         }
+    }
+
+    private boolean IsValidEntity (Entity e){
+        if (!(e instanceof EntityPlayer)) {
+            return false;
+        }
+
+        if (e instanceof EntityPlayer) {
+            if (e == mc.player) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public float getPing (EntityPlayer player){
+        float ping = 0;
+        try { ping = EntityUtil.clamp(Objects.requireNonNull(mc.getConnection()).getPlayerInfo(player.getUniqueID()).getResponseTime(), 1, 300.0f); }
+        catch (NullPointerException ignored) {}
+        return ping;
     }
 }
