@@ -57,6 +57,7 @@ import com.gamesense.client.module.modules.movement.Sprint;
 import com.gamesense.client.module.modules.movement.Step;
 import com.gamesense.client.module.modules.render.BlockHighlight;
 import com.gamesense.client.module.modules.render.CapesModule;
+import com.gamesense.client.module.modules.render.CityESP;
 import com.gamesense.client.module.modules.render.ESP;
 import com.gamesense.client.module.modules.render.Freecam;
 import com.gamesense.client.module.modules.render.Fullbright;
@@ -131,6 +132,7 @@ public class ModuleManager {
 		//Render
 		addMod(new BlockHighlight());
 		addMod(new CapesModule());
+		addMod(new CityESP());
 		addMod(new ESP());
 		addMod(new Freecam());
 		addMod(new Fullbright());
