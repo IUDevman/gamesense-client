@@ -30,6 +30,7 @@ import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.hud.HUD;
 import com.gamesense.client.module.modules.hud.Notifications;
+import com.gamesense.client.module.modules.hud.TargetHUD;
 import com.gamesense.client.module.modules.hud.TextRadar;
 import com.gamesense.client.module.modules.misc.Announcer;
 import com.gamesense.client.module.modules.misc.AutoGG;
@@ -149,6 +150,7 @@ public class ModuleManager {
 		addMod(new ColorMain());
 		addMod(new HUD());
 		addMod(new Notifications());
+		addMod(new TargetHUD());
 		addMod(new TextRadar());
 	}
 
