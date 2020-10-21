@@ -151,7 +151,7 @@ public class HoleESP extends Module{
 		
 		safeHoles.forEach((blockPos, isBedrock) -> {
 			if (mode.getValue().equalsIgnoreCase("Air")) drawBox(blockPos,isBedrock);
-			else if (mode.getValue().equalsIgnoreCase("Ground")) drawDownBox(blockPos,isBedrock);
+			else if (mode.getValue().equalsIgnoreCase("Ground")) drawBox(blockPos.down(),isBedrock);
 			else if (mode.getValue().equalsIgnoreCase("Flat")) drawFlat(blockPos,isBedrock);
 		});
 		safeHoles.forEach((blockPos, isBedrock) -> {
@@ -171,20 +171,15 @@ public class HoleESP extends Module{
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
 			if (mode.getValue().equalsIgnoreCase("Air")) {
-				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ)))
+				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
 					GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
-				else
+				}
+				else {
 					GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.ALL);
+				}
 			}
-		}
-	}
-
-	//renders ground boxes
-	private void drawDownBox(BlockPos blockPos, boolean isBedrock){
-		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
-			GSColor color=getColor(isBedrock,50);
-			if (mode.getValue().equalsIgnoreCase("Ground")) {
-				GameSenseTessellator.drawDownBox(blockPos, color, GeometryMasks.Quad.ALL);
+			if (mode.getValue().equalsIgnoreCase("Ground")){
+				GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.ALL);
 			}
 		}
 	}
@@ -212,7 +207,7 @@ public class HoleESP extends Module{
 				GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
 			}
 			if (mode.getValue().equalsIgnoreCase("Ground")) {
-				GameSenseTessellator.drawBoundingDownBox(blockPos, width, color);
+				GameSenseTessellator.drawBoundingBox(blockPos.down(), width, color);
 			}
 		}
 	}

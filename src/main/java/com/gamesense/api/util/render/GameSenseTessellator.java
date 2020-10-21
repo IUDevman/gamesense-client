@@ -36,14 +36,6 @@ public class GameSenseTessellator {
 		drawBox(bb.minX,bb.minY,bb.minZ,bb.maxX-bb.minX,bb.maxY-bb.minY,bb.maxZ-bb.minZ,color,sides);
 	}
 
-	public static void drawDownBox(BlockPos blockPos, GSColor color, int sides) {
-		drawDownBox(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, 1, 1, color, sides);
-	}
-
-	public static void drawDownBox (double x, double y, double z, double w, double h, double d, GSColor color, int sides) {
-		drawBox(x,y,z,w,-h,d,color,sides);
-	}
-
 	public static void drawBox(double x, double y, double z, double w, double h, double d, GSColor color, int sides) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -90,10 +82,6 @@ public class GameSenseTessellator {
 
 	public static void drawBoundingBox (BlockPos bp, float width, GSColor color) {
 		drawBoundingBox(getBoundingBox(bp,1,1,1),width,color);
-	}
-
-	public static void drawBoundingDownBox (BlockPos bp, float width, GSColor color) {
-		drawBoundingBox(getBoundingBox(bp,1,-1,1),width,color);
 	}
 
 	public static void drawBoundingBox (AxisAlignedBB bb, float width, GSColor color) {
@@ -216,19 +204,6 @@ public class GameSenseTessellator {
 		GlStateManager.popMatrix();
 	}
 
-	public static void glBillboardDistanceScaled(float x, float y, float z, EntityPlayer player, float scale) {
-		float s = 2f/75f/*0.016666668f * 1.6f*/;
-		GlStateManager.translate(x - Minecraft.getMinecraft().getRenderManager().renderPosX, y - Minecraft.getMinecraft().getRenderManager().renderPosY, z - Minecraft.getMinecraft().getRenderManager().renderPosZ);
-		GlStateManager.glNormal3f(0.0f, 1.0f, 0.0f);
-		GlStateManager.rotate(-Minecraft.getMinecraft().player.rotationYaw, 0.0f, 1.0f, 0.0f);
-		GlStateManager.rotate(Minecraft.getMinecraft().player.rotationPitch, Minecraft.getMinecraft().gameSettings.thirdPersonView == 2 ? -1.0f : 1.0f, 0.0f, 0.0f);
-		GlStateManager.scale(-s, -s, s);
-		int distance = (int) player.getDistance(x, y, z);
-		float scaleDistance = -distance/(8-2*scale);
-		if (scaleDistance < 1f) scaleDistance = 1;
-		GlStateManager.scale(scaleDistance, scaleDistance, scaleDistance);
-	}
-
 	public static void drawNametag (Entity entity, String[] text, GSColor color, int type) {
 		Vec3d pos = EntityUtil.getInterpolatedPos(entity,mc.getRenderPartialTicks());
 		drawNametag(pos.x,pos.y+entity.height,pos.z,text,color,type);
@@ -302,6 +277,17 @@ public class GameSenseTessellator {
 		tessellator.draw();
 	}
 
+	private static void vertex (double x, double y, double z, BufferBuilder bufferbuilder) {
+		bufferbuilder.pos(x-mc.getRenderManager().viewerPosX,y-mc.getRenderManager().viewerPosY,z-mc.getRenderManager().viewerPosZ).endVertex();
+	}
+
+	private static AxisAlignedBB getBoundingBox (BlockPos bp, int width, int height, int depth) {
+		double x=bp.getX();
+		double y=bp.getY();
+		double z=bp.getZ();
+		return new AxisAlignedBB(x,y,z,x+width,y+height,z+depth);
+	}
+
 	public static void prepare() {
 		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ZERO, GL11.GL_ONE);
@@ -330,16 +316,5 @@ public class GameSenseTessellator {
 		GlStateManager.glLineWidth(1.0f);
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
-	}
-
-	private static void vertex (double x, double y, double z, BufferBuilder bufferbuilder) {
-		bufferbuilder.pos(x-mc.getRenderManager().viewerPosX,y-mc.getRenderManager().viewerPosY,z-mc.getRenderManager().viewerPosZ).endVertex();
-	}
-
-	private static AxisAlignedBB getBoundingBox (BlockPos bp, int width, int height, int depth) {
-		double x=bp.getX();
-		double y=bp.getY();
-		double z=bp.getZ();
-		return new AxisAlignedBB(x,y,z,x+width,y+height,z+depth);
 	}
 }
