@@ -144,16 +144,16 @@ public class CityESP extends Module {
 
         switch (renderMode.getValue()){
             case "Both": {
-                GameSenseTessellator.drawBox(blockPos, gsColor2, GeometryMasks.Quad.ALL);
-                GameSenseTessellator.drawBoundingBox(blockPos, width.getValue(), gsColor1);
+                GameSenseTessellator.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
+                GameSenseTessellator.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
                 break;
             }
             case "Outline": {
-                GameSenseTessellator.drawBoundingBox(blockPos, width.getValue(), gsColor1);
+                GameSenseTessellator.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
                 break;
             }
             case "Fill": {
-                GameSenseTessellator.drawBox(blockPos, gsColor2, GeometryMasks.Quad.ALL);
+                GameSenseTessellator.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
                 break;
             }
         }

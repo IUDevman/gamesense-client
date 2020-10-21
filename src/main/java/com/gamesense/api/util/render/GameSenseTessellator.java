@@ -23,17 +23,17 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-//Credit 086 for Kami base Tessellator, heavily rewrote/modified by lukflug
+//Credit 086 for Kami base Tessellator, heavily rewrote/modified by lukflug and others
 
 public class GameSenseTessellator {
 	private static final Minecraft mc = Wrapper.getMinecraft();
 
-	public static void drawBox(BlockPos blockPos, GSColor color, int sides) {
-		drawBox(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, 1, 1, color, sides);
+	public static void drawBox(BlockPos blockPos, double height, GSColor color, int sides) {
+		drawBox(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, height, 1, color, sides);
 	}
 
-	public static void drawBox(AxisAlignedBB bb, GSColor color, int sides) {
-		drawBox(bb.minX,bb.minY,bb.minZ,bb.maxX-bb.minX,bb.maxY-bb.minY,bb.maxZ-bb.minZ,color,sides);
+	public static void drawBox(AxisAlignedBB bb, double height, GSColor color, int sides) {
+		drawBox(bb.minX,bb.minY,bb.minZ,bb.maxX-bb.minX, height,bb.maxZ-bb.minZ,color,sides);
 	}
 
 	public static void drawBox(double x, double y, double z, double w, double h, double d, GSColor color, int sides) {
@@ -80,8 +80,8 @@ public class GameSenseTessellator {
 		tessellator.draw();
 	}
 
-	public static void drawBoundingBox (BlockPos bp, float width, GSColor color) {
-		drawBoundingBox(getBoundingBox(bp,1,1,1),width,color);
+	public static void drawBoundingBox (BlockPos bp, double height, float width, GSColor color) {
+		drawBoundingBox(getBoundingBox(bp,1, height,1),width,color);
 	}
 
 	public static void drawBoundingBox (AxisAlignedBB bb, float width, GSColor color) {
@@ -281,7 +281,7 @@ public class GameSenseTessellator {
 		bufferbuilder.pos(x-mc.getRenderManager().viewerPosX,y-mc.getRenderManager().viewerPosY,z-mc.getRenderManager().viewerPosZ).endVertex();
 	}
 
-	private static AxisAlignedBB getBoundingBox (BlockPos bp, int width, int height, int depth) {
+	private static AxisAlignedBB getBoundingBox (BlockPos bp, double width, double height, double depth) {
 		double x=bp.getX();
 		double y=bp.getY();
 		double z=bp.getZ();

@@ -27,6 +27,7 @@ public class HoleESP extends Module{
 	Setting.Boolean flatOwn;
 	Setting.Mode mode;
 	Setting.Mode type;
+	Setting.Double slabHeight;
 	Setting.Integer width;
 	Setting.ColorSetting bedrockColor;
 	Setting.ColorSetting otherColor;
@@ -46,10 +47,13 @@ public class HoleESP extends Module{
 		modes.add("Air");
 		modes.add("Ground");
 		modes.add("Flat");
+		modes.add("Slab");
+		modes.add("Double");
 		
 		type = registerMode("Render", "Render", render, "Both");
 		mode = registerMode("Mode", "Mode", modes, "Air");
-		
+
+		slabHeight = registerDouble("Slab Height", "SlabHeight", 0.5, 0.1, 1.5);
 		width=registerInteger("Width","Width",1,1,10);
 		bedrockColor=registerColor("Bedrock Color","BedrockColor",new GSColor(0,255,0));
 		otherColor=registerColor("Obsidian Color","ObsidianColor",new GSColor(255,0,0));
@@ -152,7 +156,9 @@ public class HoleESP extends Module{
 		safeHoles.forEach((blockPos, isBedrock) -> {
 			if (mode.getValue().equalsIgnoreCase("Air")) drawBox(blockPos,isBedrock);
 			else if (mode.getValue().equalsIgnoreCase("Ground")) drawBox(blockPos.down(),isBedrock);
-			else if (mode.getValue().equalsIgnoreCase("Flat")) drawFlat(blockPos,isBedrock);
+			else if (mode.getValue().equalsIgnoreCase("Flat")) drawBox(blockPos,isBedrock);
+			else if (mode.getValue().equalsIgnoreCase("Slab")) drawBox(blockPos, isBedrock);
+			else if (mode.getValue().equalsIgnoreCase("Double")) drawBox(blockPos, isBedrock);
 		});
 		safeHoles.forEach((blockPos, isBedrock) -> {
 			drawOutline(blockPos,width.getValue(),isBedrock);
@@ -166,33 +172,44 @@ public class HoleESP extends Module{
 		return new GSColor(c,alpha);
 	}
 
-	//renders air boxes
+	//renders fill
 	private void drawBox(BlockPos blockPos, boolean isBedrock) {
 		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
 			GSColor color=getColor(isBedrock,50);
 			if (mode.getValue().equalsIgnoreCase("Air")) {
 				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
-					GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
+					GameSenseTessellator.drawBox(blockPos, 1, color, GeometryMasks.Quad.DOWN);
 				}
 				else {
-					GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.ALL);
+					GameSenseTessellator.drawBox(blockPos, 1, color, GeometryMasks.Quad.ALL);
 				}
 			}
-			if (mode.getValue().equalsIgnoreCase("Ground")){
-				GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.ALL);
+			else if (mode.getValue().equalsIgnoreCase("Double")) {
+				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
+					GameSenseTessellator.drawBox(blockPos, 1, color, GeometryMasks.Quad.DOWN);
+				}
+				else {
+					GameSenseTessellator.drawBox(blockPos, 2, color, GeometryMasks.Quad.ALL);
+				}
+			}
+			else if (mode.getValue().equalsIgnoreCase("Ground")) {
+				GameSenseTessellator.drawBox(blockPos, 1, color, GeometryMasks.Quad.ALL);
+			}
+			else if (mode.getValue().equalsIgnoreCase("Slab")) {
+				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
+					GameSenseTessellator.drawBox(blockPos, 1, color, GeometryMasks.Quad.DOWN);
+				}
+				else {
+					GameSenseTessellator.drawBox(blockPos, slabHeight.getValue(), color, GeometryMasks.Quad.ALL);
+				}
+			}
+			else if (mode.getValue().equalsIgnoreCase("Flat")) {
+				GameSenseTessellator.drawBox(blockPos, 1, color, GeometryMasks.Quad.DOWN);
 			}
 		}
 	}
 
-	private void drawFlat(BlockPos blockPos, boolean isBedrock) {
-		if (type.getValue().equalsIgnoreCase("Fill") || type.getValue().equalsIgnoreCase("Both")) {
-			GSColor color=getColor(isBedrock,50);
-			if (mode.getValue().equalsIgnoreCase("Flat")) {
-				GameSenseTessellator.drawBox(blockPos, color, GeometryMasks.Quad.DOWN);
-			}
-		}
-	}
-
+	//renders outline
 	private void drawOutline(BlockPos blockPos, int width, boolean isBedrock) {
 		GSColor color=getColor(isBedrock,255);
 		if (type.getValue().equalsIgnoreCase("Outline") || type.getValue().equalsIgnoreCase("Both")) {
@@ -200,14 +217,28 @@ public class HoleESP extends Module{
 				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
 					GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
 				} else {
-					GameSenseTessellator.drawBoundingBox(blockPos, width, color);
+					GameSenseTessellator.drawBoundingBox(blockPos, 1, width, color);
 				}
 			}
-			if (mode.getValue().equalsIgnoreCase("Flat")) {
+			else if (mode.getValue().equalsIgnoreCase("Flat")) {
 				GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
 			}
-			if (mode.getValue().equalsIgnoreCase("Ground")) {
-				GameSenseTessellator.drawBoundingBox(blockPos.down(), width, color);
+			else if (mode.getValue().equalsIgnoreCase("Ground")) {
+				GameSenseTessellator.drawBoundingBox(blockPos.down(), 1, width, color);
+			}
+			else if (mode.getValue().equalsIgnoreCase("Double")) {
+				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
+					GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
+				} else {
+					GameSenseTessellator.drawBoundingBox(blockPos, 2, width, color);
+				}
+			}
+			else if (mode.getValue().equalsIgnoreCase("Slab")) {
+				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
+					GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
+				} else {
+					GameSenseTessellator.drawBoundingBox(blockPos, slabHeight.getValue(), width, color);
+				}
 			}
 		}
 	}

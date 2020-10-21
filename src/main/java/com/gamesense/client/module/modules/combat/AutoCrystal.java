@@ -455,8 +455,8 @@ public class AutoCrystal extends Module {
     public void onWorldRender(RenderEvent event) {
         // As far as I can tell, this code never gets executed, since render is always null :(
         if (this.render != null) {
-            GameSenseTessellator.drawBox(this.render, new GSColor(color.getValue(),50), 63);
-            GameSenseTessellator.drawBoundingBox(this.render, 1.00f, new GSColor(color.getValue(),255));
+            GameSenseTessellator.drawBox(this.render,1, new GSColor(color.getValue(),50), 63);
+            GameSenseTessellator.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(),255));
         }
 
         if(showDamage.getValue()){
