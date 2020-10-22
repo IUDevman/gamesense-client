@@ -11,6 +11,7 @@ import com.gamesense.client.module.modules.combat.AutoCrystal;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -248,100 +249,106 @@ public class HUD extends Module {
 
 		if (ArrayList.getValue()) {
 
-				if(sortUp.getValue()){ sort = -1;
-				} else { sort = 1; }
-				modCount = 0;
-				col=c;
-				ModuleManager.getModules()
-						.stream()
-						.filter(Module::isEnabled)
-						.filter(Module::isDrawn)
-						.sorted(Comparator.comparing(module -> FontUtils.getStringWidth(customFont.getValue(), module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo()) * (-1)))
-						.forEach(m -> {
-							if(sortUp.getValue()) {
-								if (right.getValue()) {
-									FontUtils.drawStringWithShadow(customFont.getValue(), m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), col);
-								} else {
-									FontUtils.drawStringWithShadow(customFont.getValue(), m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * 10), col);
-								}
-								modCount++;
+			if(sortUp.getValue()){ sort = -1;
+			} else { sort = 1; }
+			modCount = 0;
+			col=c;
+			ModuleManager.getModules()
+					.stream()
+					.filter(Module::isEnabled)
+					.filter(Module::isDrawn)
+					.sorted(Comparator.comparing(module -> FontUtils.getStringWidth(customFont.getValue(), module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo()) * (-1)))
+					.forEach(m -> {
+						if(sortUp.getValue()) {
+							if (right.getValue()) {
+								FontUtils.drawStringWithShadow(customFont.getValue(), m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(), m.getName() + ChatFormatting.GRAY + m.getHudInfo()), arrayy.getValue() + (modCount * 10), col);
 							} else {
-								if (right.getValue()) {
-									FontUtils.drawStringWithShadow(customFont.getValue(), m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(),m.getName() + ChatFormatting.GRAY + " " + m.getHudInfo()), arrayy.getValue() + (modCount * -10), col);
-								} else {
-									FontUtils.drawStringWithShadow(customFont.getValue(), m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * -10), col);
-								}
-								modCount++;
+								FontUtils.drawStringWithShadow(customFont.getValue(), m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * 10), col);
 							}
-							if (color.getRainbow()) col=GSColor.fromHSB(col.getHue()+.02f,col.getSaturation(),col.getBrightness());
-						});
-			}
+							modCount++;
+						} else {
+							if (right.getValue()) {
+								FontUtils.drawStringWithShadow(customFont.getValue(), m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue() - FontUtils.getStringWidth(customFont.getValue(),m.getName() + ChatFormatting.GRAY + " " + m.getHudInfo()), arrayy.getValue() + (modCount * -10), col);
+							} else {
+								FontUtils.drawStringWithShadow(customFont.getValue(), m.getName() + ChatFormatting.GRAY  + m.getHudInfo(), arrayx.getValue(), arrayy.getValue() + (modCount * -10), col);
+							}
+							modCount++;
+						}
+						if (color.getRainbow()) col=GSColor.fromHSB(col.getHue()+.02f,col.getSaturation(),col.getBrightness());
+					});
+		}
 
-			if (ArmorHud.getValue()) {
+		if (ArmorHud.getValue()) {
+
+			GlStateManager.enableTexture2D();
+
+			ScaledResolution resolution = new ScaledResolution(mc);
+			int i = resolution.getScaledWidth() / 2;
+			int iteration = 0;
+			int y = resolution.getScaledHeight() - 55 - (mc.player.isInWater() ? 10 : 0);
+			for (ItemStack is : mc.player.inventory.armorInventory) {
+				iteration++;
+				if (is.isEmpty()) continue;
+				int x = i - 90 + (9 - iteration) * 20 + 2;
+				GlStateManager.enableDepth();
+
+				itemRender.zLevel = 200F;
+				itemRender.renderItemAndEffectIntoGUI(is, x, y);
+				itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, is, x, y, "");
+				itemRender.zLevel = 0F;
 
 				GlStateManager.enableTexture2D();
-
-				ScaledResolution resolution = new ScaledResolution(mc);
-				int i = resolution.getScaledWidth() / 2;
-				int iteration = 0;
-				int y = resolution.getScaledHeight() - 55 - (mc.player.isInWater() ? 10 : 0);
-				for (ItemStack is : mc.player.inventory.armorInventory) {
-					iteration++;
-					if (is.isEmpty()) continue;
-					int x = i - 90 + (9 - iteration) * 20 + 2;
-					GlStateManager.enableDepth();
-
-					itemRender.zLevel = 200F;
-					itemRender.renderItemAndEffectIntoGUI(is, x, y);
-					itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, is, x, y, "");
-					itemRender.zLevel = 0F;
-
-					GlStateManager.enableTexture2D();
-					GlStateManager.disableLighting();
-					GlStateManager.disableDepth();
-
-					String s = is.getCount() > 1 ? is.getCount() + "" : "";
-					mc.fontRenderer.drawStringWithShadow(s, x + 19 - 2 - mc.fontRenderer.getStringWidth(s), y + 9, new GSColor(255,255,255).getRGB());
-						float green = ((float) is.getMaxDamage() - (float) is.getItemDamage()) / (float) is.getMaxDamage();
-						float red = 1 - green;
-						int dmg = 100 - (int) (red * 100);
-						FontUtils.drawStringWithShadow(customFont.getValue(), dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, y - 11, new GSColor((int) (red * 255), (int) (green * 255), 0));
-				}
-
-				GlStateManager.enableDepth();
 				GlStateManager.disableLighting();
+				GlStateManager.disableDepth();
+
+				String s = is.getCount() > 1 ? is.getCount() + "" : "";
+				mc.fontRenderer.drawStringWithShadow(s, x + 19 - 2 - mc.fontRenderer.getStringWidth(s), y + 9, new GSColor(255,255,255).getRGB());
+				float green = ((float) is.getMaxDamage() - (float) is.getItemDamage()) / (float) is.getMaxDamage();
+				float red = 1 - green;
+				int dmg = 100 - (int) (red * 100);
+				FontUtils.drawStringWithShadow(customFont.getValue(), dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, y - 11, new GSColor((int) (red * 255), (int) (green * 255), 0));
 			}
 
+			GlStateManager.enableDepth();
+			GlStateManager.disableLighting();
 		}
 
-		public void drawInventory ( int x, int y){
-			if (Inventory.getValue()) {
-				GlStateManager.enableAlpha();
-				mc.renderEngine.bindTexture(resource);
-				GlStateManager.color(1, 1, 1, 1);
-				mc.ingameGUI.drawTexturedModalRect(x, y, 7, 17, 162, 54);
-				GlStateManager.disableAlpha();
+	}
 
-				GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
-				NonNullList<ItemStack> items = Minecraft.getMinecraft().player.inventory.mainInventory;
-				for (int size = items.size(), item = 9; item < size; ++item) {
-					final int slotX = x + 1 + item % 9 * 18;
-					final int slotY = y + 1 + (item / 9 - 1) * 18;
-					RenderHelper.enableGUIStandardItemLighting();
-					mc.getRenderItem().renderItemAndEffectIntoGUI(items.get(item), slotX, slotY);
-					mc.getRenderItem().renderItemOverlays(mc.fontRenderer, items.get(item), slotX, slotY);
-					RenderHelper.disableStandardItemLighting();
-				}
-			}
-		}
+	public void drawInventory ( int x, int y){
+		GSColor color1 = new GSColor(color.getValue(), 255);
+		GSColor color2 = new GSColor(color.getValue(), 100);
 
-		public int getPing () {
-			int p = -1;
-			if (mc.player == null || mc.getConnection() == null || mc.getConnection().getPlayerInfo(mc.player.getName()) == null) {
-				p = -1;
-			} else {
-				p = mc.getConnection().getPlayerInfo(mc.player.getName()).getResponseTime();
-			}
-			return p;
+		//shaded box
+		Gui.drawRect(x + 1, y + 1, x + 161, y + 53, color2.getRGB());
+		//top
+		Gui.drawRect(x, y, x + 162, y + 1, color1.getRGB());
+		//bottom
+		Gui.drawRect(x, y + 53, x + 162, y + 54, color1.getRGB());
+		//left
+		Gui.drawRect(x, y, x + 1, y + 54, color1.getRGB());
+		//right
+		Gui.drawRect(x + 161, y, x + 162, y + 54, color1.getRGB());
+
+		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+		NonNullList<ItemStack> items = Minecraft.getMinecraft().player.inventory.mainInventory;
+		for (int size = items.size(), item = 9; item < size; ++item) {
+			final int slotX = x + 1 + item % 9 * 18;
+			final int slotY = y + 1 + (item / 9 - 1) * 18;
+			RenderHelper.enableGUIStandardItemLighting();
+			mc.getRenderItem().renderItemAndEffectIntoGUI(items.get(item), slotX, slotY);
+			mc.getRenderItem().renderItemOverlays(mc.fontRenderer, items.get(item), slotX, slotY);
+			RenderHelper.disableStandardItemLighting();
 		}
+	}
+
+	public int getPing () {
+		int p = -1;
+		if (mc.player == null || mc.getConnection() == null || mc.getConnection().getPlayerInfo(mc.player.getName()) == null) {
+			p = -1;
+		} else {
+			p = mc.getConnection().getPlayerInfo(mc.player.getName()).getResponseTime();
+		}
+		return p;
+	}
 }
