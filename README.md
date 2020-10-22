@@ -34,6 +34,7 @@ Contributors:
 * lukflug (color settings, OpenGL and minor optimizations, issue tracker)
 * auburnhud2 (whitespace and continuous integration, issue tracker)
 * Dngerr (added Blink and HotbarRefill modules)
+* linustouchtips (contributer)
 
 Some code used from:
 
