@@ -215,27 +215,27 @@ public class HoleESP extends Module{
 		if (type.getValue().equalsIgnoreCase("Outline") || type.getValue().equalsIgnoreCase("Both")) {
 			if (mode.getValue().equalsIgnoreCase("Air")) {
 				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
-					GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
+					GameSenseTessellator.drawBoundingBoxWithSides(blockPos, width, color, GeometryMasks.Quad.DOWN);
 				} else {
 					GameSenseTessellator.drawBoundingBox(blockPos, 1, width, color);
 				}
 			}
 			else if (mode.getValue().equalsIgnoreCase("Flat")) {
-				GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
+				GameSenseTessellator.drawBoundingBoxWithSides(blockPos, width, color, GeometryMasks.Quad.DOWN);
 			}
 			else if (mode.getValue().equalsIgnoreCase("Ground")) {
 				GameSenseTessellator.drawBoundingBox(blockPos.down(), 1, width, color);
 			}
 			else if (mode.getValue().equalsIgnoreCase("Double")) {
 				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
-					GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
+					GameSenseTessellator.drawBoundingBoxWithSides(blockPos, width, color, GeometryMasks.Quad.DOWN);
 				} else {
 					GameSenseTessellator.drawBoundingBox(blockPos, 2, width, color);
 				}
 			}
 			else if (mode.getValue().equalsIgnoreCase("Slab")) {
 				if (this.flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
-					GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color);
+					GameSenseTessellator.drawBoundingBoxWithSides(blockPos, width, color, GeometryMasks.Quad.DOWN);
 				} else {
 					GameSenseTessellator.drawBoundingBox(blockPos, slabHeight.getValue(), width, color);
 				}

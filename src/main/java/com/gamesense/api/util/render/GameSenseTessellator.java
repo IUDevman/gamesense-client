@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -109,22 +108,8 @@ public class GameSenseTessellator {
 		tessellator.draw();
 	}
 
-	public static void drawBoundingBoxBottom (BlockPos bp, float width, GSColor color) {
-		GlStateManager.glLineWidth(width);
-		AxisAlignedBB bb = getBoundingBox(bp,1,1,1);
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		color.glColor();
-		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
-		vertex(bb.minX,bb.minY,bb.minZ,bufferbuilder);
-		vertex(bb.minX,bb.minY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.minY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.minY,bb.minZ,bufferbuilder);
-		vertex(bb.minX,bb.minY,bb.minZ,bufferbuilder);
-		vertex(bb.minX,bb.minY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.minY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.minY,bb.minZ,bufferbuilder);
-		tessellator.draw();
+	public static void drawBoundingBoxWithSides(BlockPos blockPos, int width, GSColor color, int sides){
+		drawBoundingBoxWithSides(getBoundingBox(blockPos, 1, 1, 1), width, color, sides);
 	}
 
 	//hoosiers put this together with blood, sweat, and tears D:

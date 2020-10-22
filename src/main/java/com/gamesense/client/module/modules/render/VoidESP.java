@@ -143,7 +143,7 @@ public class VoidESP extends Module {
 				GameSenseTessellator.drawBoundingBox(blockPos, 1, width, color.getValue());
 			}
 			if (renderMode.getValue().equalsIgnoreCase("Flat")) {
-				GameSenseTessellator.drawBoundingBoxBottom(blockPos, width, color.getValue());
+				GameSenseTessellator.drawBoundingBoxWithSides(blockPos, width, color.getValue(), GeometryMasks.Quad.DOWN);
 			}
 		}
 	}
