@@ -70,46 +70,54 @@ public class SaveConfig {
         }
     }
 
-    public void saveModules() throws IOException {
+    public void saveModules(){
         for (Module module : ModuleManager.getModules()){
+            try {
+                saveModuleDirect(module);
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
 
-            registerFiles(moduleName, module.getName());
+    public void saveModuleDirect(Module module) throws IOException {
+        registerFiles(moduleName, module.getName());
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + moduleName + module.getName() + ".json"), "UTF-8");
-            JsonObject moduleObject = new JsonObject();
-            JsonObject settingObject = new JsonObject();
-            moduleObject.add("Module", new JsonPrimitive(module.getName()));
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + moduleName + module.getName() + ".json"), "UTF-8");
+        JsonObject moduleObject = new JsonObject();
+        JsonObject settingObject = new JsonObject();
+        moduleObject.add("Module", new JsonPrimitive(module.getName()));
 
-            for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
-                switch (setting.getType()){
-                    case BOOLEAN: {
-                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Boolean) setting).getValue()));
-                        break;
-                    }
-                    case INT: {
-                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Integer) setting).getValue()));
-                        break;
-                    }
-                    case DOUBLE: {
-                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Double) setting).getValue()));
-                        break;
-                    }
-                    case COLOR: {
-                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.ColorSetting) setting).toInteger()));
-                        break;
-                    }
-                    case MODE: {
-                    	settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Mode) setting).getValue()));
-                        break;
-                    }
+        for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
+            switch (setting.getType()){
+                case BOOLEAN: {
+                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Boolean) setting).getValue()));
+                    break;
+                }
+                case INT: {
+                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Integer) setting).getValue()));
+                    break;
+                }
+                case DOUBLE: {
+                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Double) setting).getValue()));
+                    break;
+                }
+                case COLOR: {
+                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.ColorSetting) setting).toInteger()));
+                    break;
+                }
+                case MODE: {
+                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Mode) setting).getValue()));
+                    break;
                 }
             }
-            moduleObject.add("Settings", settingObject);
-            String jsonString = gson.toJson(new JsonParser().parse(moduleObject.toString()));
-            fileOutputStreamWriter.write(jsonString);
-            fileOutputStreamWriter.close();
         }
+        moduleObject.add("Settings", settingObject);
+        String jsonString = gson.toJson(new JsonParser().parse(moduleObject.toString()));
+        fileOutputStreamWriter.write(jsonString);
+        fileOutputStreamWriter.close();
     }
 
     public void saveEnabledModules() throws IOException {
