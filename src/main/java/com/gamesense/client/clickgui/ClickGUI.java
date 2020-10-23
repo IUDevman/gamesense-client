@@ -24,7 +24,7 @@ public class ClickGUI extends GuiScreen {
 
 	public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
 		for (final Frames frames : ClickGUI.frames){
-			frames.renderGUIFrame(this.fontRenderer);
+			frames.renderGUIFrame();
 			frames.updatePosition(mouseX, mouseY);
 			frames.updateMouseWheel();
 			for (final Component comp : frames.getComponents()){
@@ -81,18 +81,7 @@ public class ClickGUI extends GuiScreen {
 		return false;
 	}
 
-	public void initGui(){
-
-	}
-
-	public static Frames getFrameByName(String name){
-		Frames pa = null;
-
-		for (Frames frames : getFrames()){
-			if (name.equalsIgnoreCase(String.valueOf(frames.category))) pa = frames;
-		}
-		return pa;
-	}
+	public void initGui(){}
 
 	public static ArrayList<Frames> getFrames(){
 		return frames;

@@ -8,9 +8,6 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -22,9 +19,6 @@ public class Buttons extends Component {
 	private final ArrayList<Component> subcomponents;
 	public boolean open;
 	private final int height;
-
-	private static final ResourceLocation opengui = new ResourceLocation("minecraft:opengui.png");
-	private static final ResourceLocation closedgui = new ResourceLocation("minecraft:closedgui.png");
 
 	public Buttons(final Module mod, final Frames parent, final int offset) {
 
@@ -57,8 +51,8 @@ public class Buttons extends Component {
 				opY += 16;
 			}
 		}
-		this.subcomponents.add(new KeybindComponent(this, opY));
 		this.height=opY+16-offset;
+		this.subcomponents.add(new KeybindComponent(this, this.height));
 	}
 
 	@Override
@@ -74,25 +68,10 @@ public class Buttons extends Component {
 
 	@Override
 	public void renderComponent() {
-		Renderer.drawRectStatic(this.parent.getX(), this.parent.getY() + this.offset + 1, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, Renderer.getTransColor(isHovered));
-		Renderer.drawRectStatic(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 1, Renderer.getTransColor(false));
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, mod.isEnabled()?Renderer.getMainColor():Renderer.getFontColor());
-		if (this.subcomponents.size() > 1) {
-			if (ClickGuiModule.icon.getValue().equalsIgnoreCase("Image")) {
-				FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "" : "", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, Renderer.getFontColor());
-				if (this.open) {
-					//gif texture
-					drawOpenRender(this.parent.getX() + this.parent.getWidth() - 13, this.parent.getY() + this.offset + 2 + 2);
-				} else {
-					//static texture
-					drawClosedRender(this.parent.getX() + this.parent.getWidth() - 13, this.parent.getY() + this.offset + 2 + 2);
-				}
-			}
-			else {
-				FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.open ? "~" : ">", this.parent.getX() + this.parent.getWidth() - 10, this.parent.getY() + this.offset + 2 + 2, Renderer.getFontColor());
-			}
-		}
+		Renderer.drawModuleBox(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, mod.isEnabled()?Renderer.getEnabledColor(isHovered):Renderer.getBackgroundColor(isHovered));
+		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, Renderer.getFontColor());
 		if (this.open && !this.subcomponents.isEmpty()) {
+			Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 16, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 17, ClickGuiModule.outlineColor.getValue().getRGB());
 			for (final Component comp : this.subcomponents) {
 				comp.renderComponent();
 			}
@@ -147,27 +126,5 @@ public class Buttons extends Component {
 
 	public boolean isMouseOnButton(final int x, final int y) {
 		return x > this.parent.getX() && x < this.parent.getX() + this.parent.getWidth() && y > this.parent.getY() + this.offset && y < this.parent.getY() + 16 + this.offset;
-	}
-
-	public void drawOpenRender(int x, int y){
-		GlStateManager.enableAlpha();
-		this.mc.getTextureManager().bindTexture(opengui);
-		GlStateManager.color(1, 1, 1, 1);
-		GlStateManager.pushMatrix();
-		Gui.drawScaledCustomSizeModalRect(x,y,0,0,256,256,10,10,256,256);
-		GlStateManager.popMatrix();
-		GlStateManager.disableAlpha();
-		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
-	}
-
-	public void drawClosedRender(int x, int y){
-		GlStateManager.enableAlpha();
-		this.mc.getTextureManager().bindTexture(closedgui);
-		GlStateManager.color(1, 1, 1, 1);
-		GlStateManager.pushMatrix();
-		Gui.drawScaledCustomSizeModalRect(x,y,0,0,256,256,10,10,256,256);
-		GlStateManager.popMatrix();
-		GlStateManager.disableAlpha();
-		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
 	}
 }

@@ -3,17 +3,12 @@ package com.gamesense.client.clickgui.frame;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public class Renderer {
 
     /**
      * @Author Hoosiers and Lukflug
-     * 09/08/20
-     * Some functions are from net.minecraft.client.gui.Gui, modified for ClickGui usage
+     * 09/08/20, 10/22/20
      */
 
     //no gradient, single color
@@ -21,54 +16,95 @@ public class Renderer {
         Gui.drawRect(leftX,leftY,rightX,rightY,color.getRGB());
     }
 
-    //top down color gradient
-    public static void drawRectGradient(int leftX, int leftY, int rightX, int rightY, GSColor startColor, GSColor endColor){
-        float s = (float)(startColor.getRGB() >> 24 & 255) / 255.0F;
-        float s1 = (float)(startColor.getRGB() >> 16 & 255) / 255.0F;
-        float s2 = (float)(startColor.getRGB() >> 8 & 255) / 255.0F;
-        float s3 = (float)(startColor.getRGB() & 255) / 255.0F;
-        float e1 = (float)(endColor.getRGB() >> 24 & 255) / 255.0F;
-        float e2 = (float)(endColor.getRGB() >> 16 & 255) / 255.0F;
-        float e3 = (float)(endColor.getRGB() >> 8 & 255) / 255.0F;
-        float e4 = (float)(endColor.getRGB() & 255) / 255.0F;
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(7425);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos(rightX, leftY, 0).color(s1, s2, s3, s).endVertex(); //startColor
-        bufferbuilder.pos(leftX, leftY, 0).color(s1, s2, s3, s).endVertex(); //startColor
-        bufferbuilder.pos(leftX, rightY, 0).color(e2, e3, e4, e1).endVertex(); //endColor
-        bufferbuilder.pos(rightX, rightY, 0).color(e2, e4, e4, e1).endVertex(); //endColor
-        tessellator.draw();
-        GlStateManager.shadeModel(7424);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+    public static void drawCategoryBox(int posX, int posY, int finalX, int finalY, GSColor color){
+        GSColor shadeColor = new GSColor(color, ClickGuiModule.opacity.getValue());
+        GSColor outlineColor = new GSColor(ClickGuiModule.outlineColor.getValue(), 255);
+
+        //box
+        Gui.drawRect(posX + 1, posY + 1, finalX - 1, finalY -1, shadeColor.getRGB());
+        //top outline
+        Gui.drawRect(posX, posY, finalX, posY + 1, outlineColor.getRGB());
+        //bottom outline
+        Gui.drawRect(posX, finalY - 1, finalX, finalY, outlineColor.getRGB());
+        //left outline
+        Gui.drawRect(posX, posY, posX + 1, finalY, outlineColor.getRGB());
+        //right outline
+        Gui.drawRect(finalX -1, posY, finalX, finalY, outlineColor.getRGB());
     }
 
-    public static GSColor getMainColor() {
-        return ClickGuiModule.guiColor.getValue();
+    public static void drawModuleBox(int posX, int posY, int finalX, int finalY, GSColor color){
+        GSColor shadeColor = new GSColor(color, ClickGuiModule.opacity.getValue());
+        GSColor outlineColor = new GSColor(ClickGuiModule.outlineColor.getValue(), 255);
+
+        //box
+        Gui.drawRect(posX + 1, posY, finalX - 1, finalY, shadeColor.getRGB());
+        //left
+        Gui.drawRect(posX, posY, posX + 1, finalY, outlineColor.getRGB());
+        //right
+        Gui.drawRect(finalX - 1, posY, finalX, finalY, outlineColor.getRGB());
     }
 
-    public static GSColor getTransColor (boolean hovered) {
-        GSColor transColor = new GSColor(195, 195, 195, ClickGuiModule.opacity.getValue() - 50);
+    public static void drawSliderBox(boolean direction, int posX, int posY, int finalX, int finalY, GSColor color){
+        GSColor shadeColor = new GSColor(color, ClickGuiModule.opacity.getValue());
+        GSColor outlineColor = new GSColor(ClickGuiModule.outlineColor.getValue(), 255);
 
-        if (ClickGuiModule.backgroundColor.getValue().equalsIgnoreCase("Black")){
-            transColor = new GSColor(0, 0, 0,ClickGuiModule.opacity.getValue() - 50);
+        //left
+        if (direction == true) {
+            Gui.drawRect(posX + 1, posY, finalX, finalY, shadeColor.getRGB());
+            Gui.drawRect(posX, posY, posX + 1, finalY, outlineColor.getRGB());
         }
-        else if (ClickGuiModule.backgroundColor.getValue().equalsIgnoreCase("Silver")){
-            transColor = new GSColor(100, 100, 100,ClickGuiModule.opacity.getValue() - 50);
+        //right
+        else {
+            Gui.drawRect(posX, posY, finalX - 1, finalY, shadeColor.getRGB());
+            Gui.drawRect(finalX - 1, posY, finalX, finalY, outlineColor.getRGB());
+        }
+    }
+
+    public static GSColor getEnabledColor(boolean hovered) {
+        GSColor enabledColor = new GSColor(ClickGuiModule.enabledColor.getValue());
+
+        if (hovered){
+            if (enabledColor.getRed() + enabledColor.getBlue() + enabledColor.getGreen() > 383) {
+                enabledColor = new GSColor(ClickGuiModule.enabledColor.getValue().darker().darker());
+            }
+            else {
+                enabledColor = new GSColor(ClickGuiModule.enabledColor.getValue().brighter().brighter());
+            }
+        }
+        return enabledColor;
+    }
+
+    public static GSColor getBackgroundColor(boolean hovered) {
+        GSColor transColor = new GSColor(ClickGuiModule.backgroundColor.getValue(), ClickGuiModule.opacity.getValue());
+
+        if (hovered) {
+            if (transColor.getRed() + transColor.getGreen() + transColor.getBlue() > 383) {
+                return new GSColor(transColor.darker().darker());
+            }
+            else {
+                return new GSColor(transColor.brighter().brighter());
+            }
         }
 
-        if (hovered) return new GSColor(transColor.darker().darker());
         return transColor;
     }
 
+    public static GSColor getSettingColor(boolean hovered) {
+        GSColor settingColor = new GSColor(ClickGuiModule.settingBackgroundColor.getValue(), ClickGuiModule.opacity.getValue());
+
+        if (hovered) {
+            if (settingColor.getRed() + settingColor.getGreen() + settingColor.getBlue() > 383) {
+                return new GSColor(settingColor.darker().darker());
+            }
+            else {
+                return new GSColor(settingColor.brighter().brighter());
+            }
+        }
+
+        return settingColor;
+    }
+
     public static GSColor getFontColor() {
-        return new GSColor(255,255,255);
+        return ClickGuiModule.fontColor.getValue();
     }
 }

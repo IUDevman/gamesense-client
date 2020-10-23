@@ -35,12 +35,12 @@ public class ColorComponent extends Component {
     
     @Override
     public void renderComponent() {
-        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 80, Renderer.getTransColor(hoveredA));
+        Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 17, Renderer.getSettingColor(hoveredA));
 		if (set.getRainbow()) Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+16, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 32, set.getValue());
-        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, Renderer.getTransColor(false));
+        Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 2, Renderer.getSettingColor(false));
 		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, Renderer.getFontColor());
 		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, Renderer.getFontColor());
-        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 81, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 96, Renderer.getTransColor(hoveredB));
+        Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 81, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 97, Renderer.getSettingColor(hoveredB));
 		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Sync Color", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+80, Renderer.getFontColor());
 		
 		double renderWidthR,renderWidthG,renderWidthB;
@@ -53,10 +53,14 @@ public class ColorComponent extends Component {
 			renderWidthG = 100 * set.getColor().getSaturation();
 			renderWidthB = 100 * set.getColor().getBrightness();
 		}
-        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 48, set.getValue());
-        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+48, this.parent.parent.getX() + (int)renderWidthG, this.parent.parent.getY() + this.offset + 64, set.getValue());
-        Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+64, this.parent.parent.getX() + (int)renderWidthB, this.parent.parent.getY() + this.offset + 80, set.getValue());
-		
+        Renderer.drawSliderBox(true, this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 49, set.getValue());
+        Renderer.drawSliderBox(true, this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+48, this.parent.parent.getX() + (int)renderWidthG, this.parent.parent.getY() + this.offset + 65, set.getValue());
+        Renderer.drawSliderBox(true, this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+64, this.parent.parent.getX() + (int)renderWidthB, this.parent.parent.getY() + this.offset + 81, set.getValue());
+
+        Renderer.drawSliderBox(false, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 49, Renderer.getSettingColor(hoveredA));
+        Renderer.drawSliderBox(false, this.parent.parent.getX() + (int)renderWidthG, this.parent.parent.getY() + this.offset + 1+48, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 65, Renderer.getSettingColor(hoveredA));
+        Renderer.drawSliderBox(false, this.parent.parent.getX() + (int)renderWidthB, this.parent.parent.getY() + this.offset + 1+64, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 81, Renderer.getSettingColor(hoveredA));
+
 		if (ColorMain.colorModel.getValue().equalsIgnoreCase("RGB")) {
 			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Red: " + this.set.getColor().getRed(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+32, Renderer.getFontColor());
 			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Green: " + this.set.getColor().getGreen(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+48, Renderer.getFontColor());
@@ -133,7 +137,7 @@ public class ColorComponent extends Component {
 			if (mouseY-this.y>=16 && mouseY-this.y<32) {
 				set.setValue(!set.getRainbow(),set.getColor());
 			} else if (mouseY-this.y>=80 && mouseY-this.y<96) {
-				set.setValue(ClickGuiModule.guiColor.getRainbow(),ClickGuiModule.guiColor.getColor());
+				set.setValue(ClickGuiModule.enabledColor.getRainbow(),ClickGuiModule.enabledColor.getColor());
 			}
         }
     }

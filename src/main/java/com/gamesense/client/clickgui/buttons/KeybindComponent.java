@@ -3,8 +3,11 @@ package com.gamesense.client.clickgui.buttons;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.client.clickgui.frame.Buttons;
 import com.gamesense.client.clickgui.frame.Component;
+import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.clickgui.frame.Renderer;
+import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
+import net.minecraft.client.gui.Gui;
 import org.lwjgl.input.Keyboard;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
@@ -30,9 +33,8 @@ public class KeybindComponent extends Component {
 	
 	@Override
 	public void renderComponent(){
-		Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 15, Renderer.getTransColor(true));
-		Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 1, Renderer.getTransColor(false));
-		Renderer.drawRectStatic(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 15, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, Renderer.getTransColor(true));
+		Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + 1 + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 15, Renderer.getSettingColor(hovered));
+		Gui.drawRect(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 15, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16, ClickGuiModule.outlineColor.getValue().getRGB());
 		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.binding ? "Key..." : ("Key: " + ChatFormatting.GRAY + Keyboard.getKeyName(this.parent.mod.getBind())), (this.parent.parent.getX() + 2), (this.parent.parent.getY() + this.offset + 4), Renderer.getFontColor());
 	}
 	

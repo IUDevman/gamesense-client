@@ -1,14 +1,13 @@
 package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.Announcer;
 import org.lwjgl.input.Keyboard;
-
-import java.util.ArrayList;
 
 public class ClickGuiModule extends Module{
 	public ClickGuiModule INSTANCE;
@@ -19,26 +18,22 @@ public class ClickGuiModule extends Module{
 		INSTANCE = this;
 	}
 
-	public Setting.Boolean customFont;
 	public static Setting.Integer scrollSpeed;
 	public static Setting.Integer opacity;
-	public static Setting.Mode icon;
-	public static Setting.Mode backgroundColor;
-	public static Setting.ColorSetting guiColor;
+	public static Setting.ColorSetting enabledColor;
+	public static Setting.ColorSetting outlineColor;
+	public static Setting.ColorSetting backgroundColor;
+	public static Setting.ColorSetting settingBackgroundColor;
+	public static Setting.ColorSetting fontColor;
 
 	public void setup(){
-		ArrayList<String> icons = new ArrayList<>();
-		icons.add("Font");
-		icons.add("Image");
-		ArrayList<String> background = new ArrayList<>();
-		background.add("Black");
-		background.add("Silver");
-		background.add("Gray");
-		opacity = registerInteger("Opacity", "Opacity", 200,50,255);
+		opacity = registerInteger("Opacity", "Opacity", 150,50,255);
 		scrollSpeed = registerInteger("Scroll Speed", "Scroll Speed", 10, 1, 20);
-		icon = registerMode("Icon", "Icons", icons, "Image");
-		backgroundColor = registerMode("Background", "Background", background, "Gray");
-		guiColor=registerColor("Color","Color");
+		outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
+		enabledColor =registerColor("Enabled","Enabled", new GSColor(255, 0, 0, 255));
+		backgroundColor = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
+		settingBackgroundColor = registerColor("Setting", "Setting", new GSColor(30, 30, 30, 255));
+		fontColor = registerColor("Font", "Font", new GSColor(255, 255, 255 ,255));
 	}
 
 	public void onEnable(){

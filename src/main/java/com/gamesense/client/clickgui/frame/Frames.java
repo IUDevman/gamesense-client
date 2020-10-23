@@ -7,7 +7,7 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.ClickGuiModule;
 import com.gamesense.client.module.modules.hud.HUD;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
@@ -43,6 +43,7 @@ public class Frames {
             this.guicomponents.add(devmodButton);
             tY += 16;
         }
+        this.guicomponents.add(new FrameCap(this, tY));
         this.refresh();
     }
 
@@ -70,10 +71,10 @@ public class Frames {
         this.y = newY;
     }
 
-    public void renderGUIFrame(final FontRenderer fontRenderer){
-        Renderer.drawRectGradient(this.x, this.y, this.x + this.width, this.y + this.barHeight, Renderer.getMainColor(), Renderer.getTransColor(false));
-        if(font) GameSenseMod.fontRenderer.drawStringWithShadow(this.category.name(), (float)(this.x + 2), (float)(this.y + 3), Renderer.getFontColor());
-        else FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.category.name(), this.x + 2, this.y + 3, Renderer.getFontColor());
+    public void renderGUIFrame(){
+        Renderer.drawCategoryBox(this.x, this.y, this.x + this.width, this.y + this.barHeight, Renderer.getEnabledColor(false));
+        if(font) GameSenseMod.fontRenderer.drawStringWithShadow(this.category.name(), (float)(this.x + 2), (float)(this.y + 4), Renderer.getFontColor());
+        else FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.category.name(), this.x + 2, this.y + 4, Renderer.getFontColor());
         if (this.open && !this.guicomponents.isEmpty()){
             for (final Component component : this.guicomponents){
                 component.renderComponent();
