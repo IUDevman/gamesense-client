@@ -252,9 +252,7 @@ public class TargetHUD extends Module {
         }
 
         if (e instanceof EntityPlayer) {
-            if (e == mc.player) {
-                return false;
-            }
+            return e != mc.player;
         }
 
         return true;

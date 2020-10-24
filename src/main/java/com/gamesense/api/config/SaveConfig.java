@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -85,7 +86,7 @@ public class SaveConfig {
         registerFiles(moduleName, module.getName());
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + moduleName + module.getName() + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + moduleName + module.getName() + ".json"), StandardCharsets.UTF_8);
         JsonObject moduleObject = new JsonObject();
         JsonObject settingObject = new JsonObject();
         moduleObject.add("Module", new JsonPrimitive(module.getName()));
@@ -125,7 +126,7 @@ public class SaveConfig {
         registerFiles(mainName, "Toggle");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "Toggle" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "Toggle" + ".json"), StandardCharsets.UTF_8);
         JsonObject moduleObject = new JsonObject();
         JsonObject enabledObject = new JsonObject();
 
@@ -144,7 +145,7 @@ public class SaveConfig {
         registerFiles(mainName, "Bind");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "Bind" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "Bind" + ".json"), StandardCharsets.UTF_8);
         JsonObject moduleObject = new JsonObject();
         JsonObject bindObject = new JsonObject();
 
@@ -163,7 +164,7 @@ public class SaveConfig {
         registerFiles(mainName, "Drawn");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "Drawn" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "Drawn" + ".json"), StandardCharsets.UTF_8);
         JsonObject moduleObject = new JsonObject();
         JsonObject drawnObject = new JsonObject();
 
@@ -182,7 +183,7 @@ public class SaveConfig {
         registerFiles(mainName, "CommandPrefix");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "CommandPrefix" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "CommandPrefix" + ".json"), StandardCharsets.UTF_8);
         JsonObject prefixObject = new JsonObject();
 
         prefixObject.add("Prefix", new JsonPrimitive(Command.getPrefix()));
@@ -196,7 +197,7 @@ public class SaveConfig {
         registerFiles(miscName, "CustomFont");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "CustomFont" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "CustomFont" + ".json"), StandardCharsets.UTF_8);
         JsonObject fontObject = new JsonObject();
 
         fontObject.add("Font Name", new JsonPrimitive(GameSenseMod.fontRenderer.getFontName()));
@@ -211,7 +212,7 @@ public class SaveConfig {
         registerFiles(miscName, "Friends");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "Friends" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "Friends" + ".json"), StandardCharsets.UTF_8);
         JsonObject mainObject = new JsonObject();
         JsonArray friendArray = new JsonArray();
 
@@ -229,7 +230,7 @@ public class SaveConfig {
         registerFiles(miscName, "Enemies");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "Enemies" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "Enemies" + ".json"), StandardCharsets.UTF_8);
         JsonObject mainObject = new JsonObject();
         JsonArray enemyArray = new JsonArray();
 
@@ -247,7 +248,7 @@ public class SaveConfig {
         registerFiles(mainName, "ClickGUI");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "ClickGUI" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "ClickGUI" + ".json"), StandardCharsets.UTF_8);
         JsonObject mainObject = new JsonObject();
         JsonObject panelObject = new JsonObject();
 
@@ -271,7 +272,7 @@ public class SaveConfig {
         registerFiles(miscName, "AutoGG");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "AutoGG" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "AutoGG" + ".json"), StandardCharsets.UTF_8);
         JsonObject mainObject = new JsonObject();
         JsonArray messageArray = new JsonArray();
 
@@ -289,7 +290,7 @@ public class SaveConfig {
         registerFiles(miscName, "AutoReply");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "AutoReply" + ".json"), "UTF-8");
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "AutoReply" + ".json"), StandardCharsets.UTF_8);
         JsonObject mainObject = new JsonObject();
         JsonObject messageObject = new JsonObject();
 

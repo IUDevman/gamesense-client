@@ -47,5 +47,3 @@ Seppuku / SeppukuDevelopment
 Backdoored / CookieDragon234
 
 Aurora / Memeszz
-
-Kami Blue / L1ving

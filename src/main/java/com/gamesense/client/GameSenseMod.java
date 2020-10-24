@@ -88,7 +88,7 @@ public class GameSenseMod{
 		saveConfig = new SaveConfig();
 		loadConfig = new LoadConfig();
 		Runtime.getRuntime().addShutdownHook(new ConfigStopper());
-		log.info("Config Loaded!");
+		log.info("Config initialized!");
 
 		log.info("Initialization complete!\n");
 	}

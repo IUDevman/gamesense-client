@@ -25,6 +25,7 @@ public class ConfigStopper extends Thread {
             GameSenseMod.getInstance().saveConfig.saveClickGUIPositions();
             GameSenseMod.getInstance().saveConfig.saveAutoGG();
             GameSenseMod.getInstance().saveConfig.saveAutoReply();
+            GameSenseMod.log.info("Saved Config!");
         }
         catch (IOException e) {
             e.printStackTrace();

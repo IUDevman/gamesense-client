@@ -68,7 +68,7 @@ public class Surround extends Module {
     private int blocksPlaced;
     private int runTimeTicks = 0;
     private int delayTimeTicks = 0;
-    private int playerYLevel = 0;
+    private final int playerYLevel = 0;
     private int offsetSteps = 0;
 
     private Vec3d centeredBlock = Vec3d.ZERO;

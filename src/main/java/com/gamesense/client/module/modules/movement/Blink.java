@@ -29,7 +29,7 @@ public class Blink extends Module {
     private final Queue<Packet> packets = new ConcurrentLinkedQueue();
 
     @EventHandler
-    private Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
         Packet packet = event.getPacket();
 
         if (packet instanceof CPacketChatMessage || packet instanceof CPacketConfirmTeleport || packet instanceof CPacketKeepAlive || packet instanceof CPacketTabComplete || packet instanceof CPacketClientStatus) {

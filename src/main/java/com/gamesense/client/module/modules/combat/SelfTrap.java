@@ -71,7 +71,7 @@ public class SelfTrap extends Module {
 
     private int blocksPlaced;
     private int delayTimeTicks = 0;
-    private int playerYLevel = 0;
+    private final int playerYLevel = 0;
     private int offsetSteps = 0;
 
     private Vec3d centeredBlock = Vec3d.ZERO;

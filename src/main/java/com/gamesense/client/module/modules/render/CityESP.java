@@ -86,16 +86,12 @@ public class CityESP extends Module {
         BlockPos blockPos = new BlockPos(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ);
 
         //minimum amount of blocks needed to be "trapped"
-        if (mc.world.getBlockState(blockPos.east()).getBlock() != Blocks.AIR
+        return mc.world.getBlockState(blockPos.east()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(blockPos.west()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(blockPos.north()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(blockPos.south()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(blockPos.up(2)).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(blockPos.down()).getBlock() != Blocks.AIR){
-            return true;
-        }
-
-        return false;
+                && mc.world.getBlockState(blockPos.down()).getBlock() != Blocks.AIR;
     }
 
     //this doesn't check if there is a block below the target block, might add it later if people want it

@@ -66,7 +66,7 @@ public class SelfWeb extends Module {
 
     private int blocksPlaced;
     private int delayTimeTicks = 0;
-    private int playerYLevel = 0;
+    private final int playerYLevel = 0;
     private int offsetSteps = 0;
 
     public void onEnable(){
