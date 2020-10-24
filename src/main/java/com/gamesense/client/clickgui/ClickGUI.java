@@ -13,12 +13,15 @@ public class ClickGUI extends GuiScreen {
 
 	public ClickGUI(){
 		ClickGUI.frames = new ArrayList<Frames>();
-		int DevFrameX = 10;
+
+		int framePosX = 10;
+		int framePosY = 30;
+		int frameWidth = 100;
+
 		for (final Module.Category category : Module.Category.values()){
-			final Frames devframe = new Frames(category);
-			devframe.setX(DevFrameX);
-			ClickGUI.frames.add(devframe);
-			DevFrameX += devframe.getWidth() + 10;
+
+			ClickGUI.frames.add(new Frames(category, framePosX, framePosY, frameWidth));
+			framePosX += frameWidth + 10;
 		}
 	}
 

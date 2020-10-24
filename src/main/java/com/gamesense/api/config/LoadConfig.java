@@ -66,6 +66,7 @@ public class LoadConfig {
                 loadModuleDirect(moduleLocation, module);
             }
             catch (IOException e){
+                System.out.println(module.getName());
                 e.printStackTrace();
             }
         }
