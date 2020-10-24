@@ -58,47 +58,57 @@ public class LoadConfig {
     }
 
     //big shoutout to lukflug for helping/fixing this
-    public void loadModules() throws IOException {
+    public void loadModules() {
         String moduleLocation = fileName + moduleName;
 
         for (Module module : ModuleManager.getModules()){
-            if (!Files.exists(Paths.get(moduleLocation + module.getName() + ".json"))){
-                return;
+            try {
+                loadModuleDirect(moduleLocation, module);
             }
-
-            InputStream inputStream = Files.newInputStream(Paths.get(moduleLocation + module.getName() + ".json"));
-            JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
-
-            if (moduleObject.get("Module") == null){
-                return;
+            catch (IOException e){
+                System.out.println(module.getName());
+                e.printStackTrace();
             }
+        }
+    }
 
-            JsonObject settingObject = moduleObject.get("Settings").getAsJsonObject();
-            for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
-            	JsonElement dataObject = settingObject.get(setting.getConfigName());
-            	
-                if (dataObject != null && dataObject.isJsonPrimitive()) {
-                    switch (setting.getType()){
-                        case BOOLEAN:
-                            ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
-                            break;
-                        case INT:
-                            ((Setting.Integer) setting).setValue(dataObject.getAsInt());
-                            break;
-                        case DOUBLE:
-                            ((Setting.Double) setting).setValue(dataObject.getAsDouble());
-                            break;
-                        case COLOR:
-                            ((Setting.ColorSetting) setting).fromInteger(dataObject.getAsInt());
-                            break;
-                        case MODE:
-                            ((Setting.Mode) setting).setValue(dataObject.getAsString());
-                            break;
-                    }
+    public void loadModuleDirect(String moduleLocation, Module module) throws IOException {
+        if (!Files.exists(Paths.get(moduleLocation + module.getName() + ".json"))){
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(moduleLocation + module.getName() + ".json"));
+        JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (moduleObject.get("Module") == null){
+            return;
+        }
+
+        JsonObject settingObject = moduleObject.get("Settings").getAsJsonObject();
+        for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
+            JsonElement dataObject = settingObject.get(setting.getConfigName());
+
+            if (dataObject != null && dataObject.isJsonPrimitive()) {
+                switch (setting.getType()){
+                    case BOOLEAN:
+                        ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
+                        break;
+                    case INT:
+                        ((Setting.Integer) setting).setValue(dataObject.getAsInt());
+                        break;
+                    case DOUBLE:
+                        ((Setting.Double) setting).setValue(dataObject.getAsDouble());
+                        break;
+                    case COLOR:
+                        ((Setting.ColorSetting) setting).fromInteger(dataObject.getAsInt());
+                        break;
+                    case MODE:
+                        ((Setting.Mode) setting).setValue(dataObject.getAsString());
+                        break;
                 }
             }
-            inputStream.close();
         }
+        inputStream.close();
     }
 
     public void loadEnabledModules() throws IOException {
