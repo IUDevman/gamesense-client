@@ -64,7 +64,6 @@ import com.gamesense.client.module.modules.render.Fullbright;
 import com.gamesense.client.module.modules.render.HitSpheres;
 import com.gamesense.client.module.modules.render.HoleESP;
 import com.gamesense.client.module.modules.render.LogoutSpots;
-import com.gamesense.client.module.modules.render.MobOwner;
 import com.gamesense.client.module.modules.render.Nametags;
 import com.gamesense.client.module.modules.render.NoRender;
 import com.gamesense.client.module.modules.render.RenderTweaks;
@@ -139,7 +138,6 @@ public class ModuleManager {
 		addMod(new HitSpheres());
 		addMod(new HoleESP());
 		addMod(new LogoutSpots());
-		addMod(new MobOwner());
 		addMod(new Nametags());
 		addMod(new NoRender());
 		addMod(new RenderTweaks());

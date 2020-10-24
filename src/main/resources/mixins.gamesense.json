@@ -19,7 +19,7 @@
 	"MixinGuiPlayerTabOverlay",
 	"MixinGuiBossOverlay",
 	"MixinGuiScreen",
-  "MixinRenderPlayer",
+	"MixinRenderPlayer",
 	"MixinWorld",
 	"MixinPlayerOverlay",
 	"MixinBlockLiquid",

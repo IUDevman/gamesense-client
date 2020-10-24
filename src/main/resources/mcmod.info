@@ -6,9 +6,9 @@
 	"version": "${version}",
 	"mcversion": "1.12.2",
 	"url": "https://discord.gg/xfgPw63",
-	"authorList": ["Go_Hoosiers", "CyberTF2","lukflug","auburnhud2","Dngerr"],
+	"authorList": ["Go_Hoosiers", "CyberTF2","lukflug","auburnhud2","Dngerr","linustouchtips"],
 	"credits": "Check the Discord",
-	"logoFile": "assets/gamesense/textures/gamesense.png",
+	"logoFile": "assets/gamesense/gamesense.png",
 	"screenshots": [],
 	"dependencies": []
 }

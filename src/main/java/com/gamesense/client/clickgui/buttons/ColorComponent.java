@@ -52,7 +52,7 @@ public class ColorComponent extends Component {
         }
         //rainbow
         Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 17, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 33, Renderer.getSettingColor(hoveredA));
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(),"Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, set.getValue());
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(),"Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, Renderer.getFontColor());
         //slider 1
         Renderer.drawSliderBox(true, this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 49, set.getValue());
         Renderer.drawSliderBox(false, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 49, Renderer.getSettingColor(hoveredA));
