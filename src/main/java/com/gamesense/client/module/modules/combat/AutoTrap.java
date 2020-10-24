@@ -7,6 +7,7 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -83,7 +84,7 @@ public class AutoTrap extends Module {
         }
 
         if (chatMsg.getValue()){
-            Command.sendRawMessage("\u00A7aAutoTrap turned ON!");
+            Command.sendRawMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
         }
 
         cachedHotbarSlot = mc.player.inventory.currentItem;
@@ -97,10 +98,10 @@ public class AutoTrap extends Module {
 
         if (chatMsg.getValue()){
             if (noObby){
-                Command.sendRawMessage("\u00A7cNo obsidian detected... AutoTrap turned OFF!");
+                Command.sendRawMessage(ColorMain.getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
             }
             else {
-                Command.sendRawMessage("\u00A7cAutoTrap turned OFF!");
+                Command.sendRawMessage(ColorMain.getDisabledColor() + "AutoTrap turned OFF!");
             }
         }
 

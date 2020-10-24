@@ -5,6 +5,7 @@ import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -79,7 +80,7 @@ public class Surround extends Module {
         }
 
         if (chatMsg.getValue()){
-            Command.sendRawMessage("\u00A7aSurround turned ON!");
+            Command.sendRawMessage(ColorMain.getEnabledColor() + "Surround turned ON!");
         }
 
         if (centerPlayer.getValue() && mc.player.onGround){
@@ -100,10 +101,10 @@ public class Surround extends Module {
 
         if (chatMsg.getValue()){
             if (noObby){
-                Command.sendRawMessage("\u00A7cNo obsidian detected... Surround turned OFF!");
+                Command.sendRawMessage(ColorMain.getDisabledColor() + "No obsidian detected... Surround turned OFF!");
             }
             else {
-                Command.sendRawMessage("\u00A7cSurround turned OFF!");
+                Command.sendRawMessage(ColorMain.getDisabledColor() + "Surround turned OFF!");
             }
         }
 

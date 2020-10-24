@@ -15,8 +15,10 @@ public class ColorMain extends Module{
 	}
 
 	public static Setting.Mode colorModel;
-	public static Setting.Mode friendcolor;
-	public static Setting.Mode enemycolor;
+	public static Setting.Mode friendColor;
+	public static Setting.Mode enemyColor;
+	public static Setting.Mode chatEnableColor;
+	public static Setting.Mode chatDisableColor;
 
 	public void setup() {
 		ArrayList<String> tab = new ArrayList<>();
@@ -36,8 +38,10 @@ public class ColorMain extends Module{
 		tab.add("Aqua");
 		tab.add("Light Purple");
 		tab.add("White");
-		friendcolor = registerMode("Friend", "FriendColor", tab, "Blue");
-		enemycolor = registerMode("Enemy", "EnemyColor", tab, "Red");
+		friendColor = registerMode("Friend", "FriendColor", tab, "Blue");
+		enemyColor = registerMode("Enemy", "EnemyColor", tab, "Red");
+		chatEnableColor = registerMode("Msg Enbl", "MsgEnbl", tab, "Green");
+		chatDisableColor = registerMode("Msg Dsbl", "MsgDsbl", tab, "Red");
 		ArrayList<String> models=new ArrayList<>();
 		models.add("RGB");
 		models.add("HSB");
@@ -101,12 +105,16 @@ public class ColorMain extends Module{
 	}
 
 	public static TextFormatting getFriendColor(){
-		return settingToFormatting(friendcolor);
+		return settingToFormatting(friendColor);
 	}
 
 	public static TextFormatting getEnemyColor() {
-		return settingToFormatting(enemycolor);
+		return settingToFormatting(enemyColor);
 	}
+
+	public static TextFormatting getEnabledColor(){return settingToFormatting(chatEnableColor);}
+
+	public static TextFormatting getDisabledColor(){return settingToFormatting(chatDisableColor);}
 	
 	private static Color settingToColor (Setting.Mode setting) {
 		if (setting.getValue().equalsIgnoreCase("Black")){
@@ -161,10 +169,10 @@ public class ColorMain extends Module{
 	}
 
 	public static GSColor getFriendGSColor(){
-		return new GSColor(settingToColor(friendcolor));
+		return new GSColor(settingToColor(friendColor));
 	}
 
 	public static GSColor getEnemyGSColor(){
-		return new GSColor(settingToColor(enemycolor));
+		return new GSColor(settingToColor(enemyColor));
 	}
 }

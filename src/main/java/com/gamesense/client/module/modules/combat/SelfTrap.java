@@ -5,6 +5,7 @@ import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -82,7 +83,7 @@ public class SelfTrap extends Module {
         }
 
         if (chatMsg.getValue()){
-            Command.sendRawMessage("\u00A7aSelfTrap turned ON!");
+            Command.sendRawMessage(ColorMain.getEnabledColor() + "SelfTrap turned ON!");
         }
 
         if (centerPlayer.getValue() && mc.player.onGround){
@@ -103,10 +104,10 @@ public class SelfTrap extends Module {
 
         if (chatMsg.getValue()){
             if (noObby){
-                Command.sendRawMessage("\u00A7cNo obsidian detected... SelfTrap turned OFF!");
+                Command.sendRawMessage(ColorMain.getDisabledColor() + "No obsidian detected... SelfTrap turned OFF!");
             }
             else {
-                Command.sendRawMessage("\u00A7cSelfTrap turned OFF!");
+                Command.sendRawMessage(ColorMain.getDisabledColor() + "SelfTrap turned OFF!");
             }
         }
 

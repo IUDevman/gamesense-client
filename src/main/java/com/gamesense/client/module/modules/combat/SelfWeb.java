@@ -5,6 +5,7 @@ import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -75,7 +76,7 @@ public class SelfWeb extends Module {
         }
 
         if (chatMsg.getValue()){
-            Command.sendRawMessage("\u00A7aSelfWeb turned ON!");
+            Command.sendRawMessage(ColorMain.getEnabledColor() + "SelfWeb turned ON!");
         }
 
         cachedHotbarSlot = mc.player.inventory.currentItem;
@@ -89,10 +90,10 @@ public class SelfWeb extends Module {
 
         if (chatMsg.getValue()){
             if (noWeb){
-                Command.sendRawMessage("\u00A7cNo web detected... SelfWeb turned OFF!");
+                Command.sendRawMessage(ColorMain.getDisabledColor() + "No web detected... SelfWeb turned OFF!");
             }
             else {
-                Command.sendRawMessage("\u00A7cSelfWeb turned OFF!");
+                Command.sendRawMessage(ColorMain.getDisabledColor() + "SelfWeb turned OFF!");
             }
         }
 

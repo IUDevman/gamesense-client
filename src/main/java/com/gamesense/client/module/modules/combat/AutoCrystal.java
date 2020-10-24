@@ -10,6 +10,7 @@ import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
@@ -150,7 +151,7 @@ public class AutoCrystal extends Module {
         rotate = registerBoolean("Rotate", "Rotate", true);
         spoofRotations = registerBoolean("Spoof Angles", "SpoofAngles", true);
         cancelCrystal = registerBoolean("Cancel Crystal", "Cancel Crystal", true);
-        chat = registerBoolean("Toggle Msg", "ToggleMsg", true);
+        chat = registerBoolean("Chat Msgs", "ChatMsgs", true);
         hudDisplay = registerMode("HUD", "HUD", hudModes, "Mode");
         color=registerColor("Color","Color");
     }
@@ -712,7 +713,7 @@ public class AutoCrystal extends Module {
         isPlacing = false;
         isBreaking = false;
         if(chat.getValue() && mc.player != null) {
-            Command.sendRawMessage("\u00A7aAutoCrystal turned ON!");
+            Command.sendRawMessage(ColorMain.getEnabledColor() + "AutoCrystal turned ON!");
         }
     }
 
@@ -727,7 +728,7 @@ public class AutoCrystal extends Module {
         isPlacing = false;
         isBreaking = false;
         if(chat.getValue()) {
-            Command.sendRawMessage("\u00A7cAutoCrystal turned OFF!");
+            Command.sendRawMessage(ColorMain.getDisabledColor() + "AutoCrystal turned OFF!");
         }
     }
 

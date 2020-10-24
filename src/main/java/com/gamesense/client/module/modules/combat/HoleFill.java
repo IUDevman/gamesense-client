@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.hud.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -65,7 +66,7 @@ public class HoleFill extends Module{
 		yRange = registerInteger("Y Range", "YRange", 2 , 0 ,10);
 		waitTick = registerInteger("Tick Delay", "TickDelay", 1 , 0, 20);
 		rotate = registerBoolean("Rotate", "Rotate", false);
-		chat = registerBoolean("Toggle Msg", "ToggleMsg", false);
+		chat = registerBoolean("Chat Msgs", "ChatMsgs", false);
 	}
 
 	public void onUpdate(){
@@ -141,11 +142,11 @@ public class HoleFill extends Module{
 	}
 
 	public void onEnable(){
-		if (mc.player != null && chat.getValue()) Command.sendRawMessage("\u00A7aHolefill turned ON!");
+		if (mc.player != null && chat.getValue()) Command.sendRawMessage(ColorMain.getEnabledColor() + "Holefill turned ON!");
 	}
 
 	public void onDisable(){
-		if (mc.player != null && chat.getValue()) Command.sendRawMessage("\u00A7cHolefill turned OFF!");
+		if (mc.player != null && chat.getValue()) Command.sendRawMessage(ColorMain.getDisabledColor() + "Holefill turned OFF!");
 	}
 
 	private void place(BlockPos blockPos){
