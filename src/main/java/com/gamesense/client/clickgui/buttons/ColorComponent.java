@@ -24,12 +24,9 @@ public class ColorComponent extends Component {
     private int x;
     private int y;
     private boolean dragging;
-    public static boolean isOpen;
-    private boolean enabled;
 
     public ColorComponent(final Setting.ColorSetting value, final Buttons button, final int offset) {
         this.dragging = false;
-        this.isOpen = false;
         this.set = value;
         this.parent = button;
         this.x = button.parent.getX() + button.parent.getWidth();
@@ -54,8 +51,8 @@ public class ColorComponent extends Component {
             renderWidthB = 100 * set.getColor().getBrightness();
         }
         //rainbow
-        Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 17, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 33, enabled?set.getValue():Renderer.getSettingColor(hoveredA));
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(),"Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, Renderer.getFontColor());
+        Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 17, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 33, Renderer.getSettingColor(hoveredA));
+        FontUtils.drawStringWithShadow(HUD.customFont.getValue(),"Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, set.getValue());
         //slider 1
         Renderer.drawSliderBox(true, this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 49, set.getValue());
         Renderer.drawSliderBox(false, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 49, Renderer.getSettingColor(hoveredA));

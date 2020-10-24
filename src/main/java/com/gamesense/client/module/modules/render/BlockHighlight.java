@@ -112,7 +112,7 @@ public class BlockHighlight extends Module {
             facing = findRenderingSide(enumFacing);
         }
 
-        GameSenseTessellator.drawBox(axisAlignedBB, 1, color, facing);
+        GameSenseTessellator.drawBox(axisAlignedBB, true, 1, color, facing);
     }
 
     private int findRenderingSide(EnumFacing enumFacing){
