@@ -28,6 +28,7 @@ import com.gamesense.client.module.modules.exploits.NoSwing;
 import com.gamesense.client.module.modules.exploits.PortalGodMode;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.client.module.modules.hud.ArmorHUD;
 import com.gamesense.client.module.modules.hud.CombatInfo;
 import com.gamesense.client.module.modules.hud.InventoryViewer;
 import com.gamesense.client.module.modules.hud.ModuleArrayList;
@@ -150,6 +151,7 @@ public class ModuleManager {
 		addMod(new ViewModel());
 		addMod(new VoidESP());
 		//HUD
+		addMod(new ArmorHUD());
 		addMod(new ModuleArrayList());
 		addMod(new CombatInfo());
 		addMod(new InventoryViewer());
