@@ -1,4 +1,4 @@
-package com.gamesense.client.module.modules.hud;
+package com.gamesense.client.module.modules.gui;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
@@ -12,7 +12,7 @@ import org.lwjgl.input.Keyboard;
 public class ClickGuiModule extends Module{
 	public ClickGuiModule INSTANCE;
 	public ClickGuiModule(){
-		super("ClickGUI", Category.HUD);
+		super("ClickGUI", Category.GUI);
 		setBind(Keyboard.KEY_O);
 		setDrawn(false);
 		INSTANCE = this;

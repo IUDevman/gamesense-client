@@ -1,4 +1,4 @@
-package com.gamesense.client.module.modules.hud;
+package com.gamesense.client.module.modules.gui;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class ColorMain extends Module{
 	public ColorMain(){
-		super("Colors", Category.HUD);
+		super("Colors", Category.GUI);
 		setDrawn(false);
 	}
 
@@ -19,6 +19,7 @@ public class ColorMain extends Module{
 	public static Setting.Mode enemyColor;
 	public static Setting.Mode chatEnableColor;
 	public static Setting.Mode chatDisableColor;
+	public static Setting.Boolean customFont;
 
 	public void setup() {
 		ArrayList<String> tab = new ArrayList<>();
@@ -38,6 +39,7 @@ public class ColorMain extends Module{
 		tab.add("Aqua");
 		tab.add("Light Purple");
 		tab.add("White");
+		customFont = registerBoolean("Custom Font", "CustomFont", true);
 		friendColor = registerMode("Friend", "FriendColor", tab, "Blue");
 		enemyColor = registerMode("Enemy", "EnemyColor", tab, "Red");
 		chatEnableColor = registerMode("Msg Enbl", "MsgEnbl", tab, "Green");

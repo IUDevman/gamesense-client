@@ -26,10 +26,14 @@ import com.gamesense.client.module.modules.exploits.LiquidInteract;
 import com.gamesense.client.module.modules.exploits.NoInteract;
 import com.gamesense.client.module.modules.exploits.NoSwing;
 import com.gamesense.client.module.modules.exploits.PortalGodMode;
-import com.gamesense.client.module.modules.hud.ClickGuiModule;
-import com.gamesense.client.module.modules.hud.ColorMain;
-import com.gamesense.client.module.modules.hud.HUD;
+import com.gamesense.client.module.modules.gui.ClickGuiModule;
+import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.client.module.modules.hud.CombatInfo;
+import com.gamesense.client.module.modules.hud.InventoryViewer;
+import com.gamesense.client.module.modules.hud.ModuleArrayList;
 import com.gamesense.client.module.modules.hud.Notifications;
+import com.gamesense.client.module.modules.hud.Overlay;
+import com.gamesense.client.module.modules.hud.PotionEffects;
 import com.gamesense.client.module.modules.hud.TargetHUD;
 import com.gamesense.client.module.modules.hud.TextRadar;
 import com.gamesense.client.module.modules.misc.Announcer;
@@ -146,12 +150,17 @@ public class ModuleManager {
 		addMod(new ViewModel());
 		addMod(new VoidESP());
 		//HUD
-		addMod(new ClickGuiModule());
-		addMod(new ColorMain());
-		addMod(new HUD());
+		addMod(new ModuleArrayList());
+		addMod(new CombatInfo());
+		addMod(new InventoryViewer());
 		addMod(new Notifications());
+		addMod(new Overlay());
+		addMod(new PotionEffects());
 		addMod(new TargetHUD());
 		addMod(new TextRadar());
+		//GUI
+		addMod(new ClickGuiModule());
+		addMod(new ColorMain());
 	}
 
 	public static void addMod(Module m){

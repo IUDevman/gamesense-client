@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.hud.ColorMain;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

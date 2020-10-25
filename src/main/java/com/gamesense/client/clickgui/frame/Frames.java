@@ -5,8 +5,8 @@ import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.ClickGUI;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.ClickGuiModule;
-import com.gamesense.client.module.modules.hud.HUD;
+import com.gamesense.client.module.modules.gui.ClickGuiModule;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.gui.Gui;
 import org.lwjgl.input.Mouse;
 
@@ -74,7 +74,7 @@ public class Frames {
     public void renderGUIFrame(){
         Renderer.drawCategoryBox(this.x, this.y, this.x + this.width, this.y + this.barHeight, Renderer.getEnabledColor(false));
         if(font) GameSenseMod.fontRenderer.drawStringWithShadow(this.category.name(), (float)(this.x + 2), (float)(this.y + 4), Renderer.getFontColor());
-        else FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.category.name(), this.x + 2, this.y + 4, Renderer.getFontColor());
+        else FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), this.category.name(), this.x + 2, this.y + 4, Renderer.getFontColor());
         if (this.open && !this.guicomponents.isEmpty()){
             for (final Component component : this.guicomponents){
                 component.renderComponent();

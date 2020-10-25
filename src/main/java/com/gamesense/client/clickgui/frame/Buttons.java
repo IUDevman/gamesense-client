@@ -5,8 +5,8 @@ import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.buttons.*;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.hud.ClickGuiModule;
-import com.gamesense.client.module.modules.hud.HUD;
+import com.gamesense.client.module.modules.gui.ClickGuiModule;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.gui.Gui;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class Buttons extends Component {
 	@Override
 	public void renderComponent() {
 		Renderer.drawModuleBox(this.parent.getX(), this.parent.getY() + this.offset, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + 16 + this.offset, mod.isEnabled()?Renderer.getEnabledColor(isHovered):Renderer.getBackgroundColor(isHovered));
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, Renderer.getFontColor());
+		FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), this.mod.getName(), this.parent.getX() + 2, this.parent.getY() + this.offset + 2 + 2, Renderer.getFontColor());
 		if (this.open && !this.subcomponents.isEmpty()) {
 			Gui.drawRect(this.parent.getX(), this.parent.getY() + this.offset + 16, this.parent.getX() + this.parent.getWidth(), this.parent.getY() + this.offset + 17, ClickGuiModule.outlineColor.getValue().getRGB());
 			for (final Component comp : this.subcomponents) {

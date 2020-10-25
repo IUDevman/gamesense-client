@@ -7,6 +7,7 @@ import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -18,7 +19,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextFormatting;
@@ -45,8 +45,8 @@ public class TargetHUD extends Module {
         range = registerInteger("Range", "Range", 100, 1, 260);
         posX = registerInteger("X", "X", 10, 0, 1000);
         posY = registerInteger("Y", "Y", 10, 0, 1000);
-        outline = registerColor("Outline", "Outline");
-        background = registerColor("Background", "Background");
+        outline = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
+        background = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
     }
 
     GSColor outlineColor;
@@ -85,13 +85,13 @@ public class TargetHUD extends Module {
                 drawEntityPlayer(player, posX.getValue() + 40, posY.getValue() + 87);
 
                 //player name
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.BOLD + playerName, posX.getValue() + 101, posY.getValue() + 11, nameColor);
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.BOLD + playerName, posX.getValue() + 101, posY.getValue() + 11, nameColor);
 
                 //health + absorption
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.WHITE + "Health: " + TextFormatting.RESET + playerHealth, posX.getValue() + 101, posY.getValue() + 23, healthColor);
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Health: " + TextFormatting.RESET + playerHealth, posX.getValue() + 101, posY.getValue() + 23, healthColor);
 
                 //distance
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), "Distance: " + ((int) player.getDistance(mc.player)), posX.getValue() + 101, posY.getValue() + 33, new GSColor(255, 255, 255, 255));
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "Distance: " + ((int) player.getDistance(mc.player)), posX.getValue() + 101, posY.getValue() + 33, new GSColor(255, 255, 255, 255));
 
                 //status effects
                 drawStatusEffects(player, posX.getValue(), posY.getValue());
@@ -157,7 +157,7 @@ public class TargetHUD extends Module {
 
         ping = getPing(player);
 
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), playercolor + playerinfo + TextFormatting.WHITE + " | "  + ping + " ms", x, y, new GSColor(255, 255, 255));
+        FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), playercolor + playerinfo + TextFormatting.WHITE + " | "  + ping + " ms", x, y, new GSColor(255, 255, 255));
     }
 
     //having more than one of these displayed at once makes things too crowded
@@ -170,13 +170,13 @@ public class TargetHUD extends Module {
             findPotionColor(potionEffect);
 
             if (potionEffect.getPotion() == MobEffects.WEAKNESS) {
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + "Weakness!", inX, inY, statusColor);
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + "Weakness!", inX, inY, statusColor);
             }
             else if (potionEffect.getPotion() == MobEffects.INVISIBILITY){
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + "Invisible!", inX, inY, statusColor);
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + "Invisible!", inX, inY, statusColor);
             }
             else if (potionEffect.getPotion() == MobEffects.STRENGTH){
-                FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + "Strength!", inX, inY, statusColor);
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + "Strength!", inX, inY, statusColor);
             }
         });
     }
@@ -203,7 +203,7 @@ public class TargetHUD extends Module {
             float green = ((float) is.getMaxDamage() - (float) is.getItemDamage()) / (float) is.getMaxDamage();
             float red = 1 - green;
             int dmg = 100 - (int) (red * 100);
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, py - 11, new GSColor((int) (red * 255), (int) (green * 255), 0));
+            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, py - 11, new GSColor((int) (red * 255), (int) (green * 255), 0));
         }
 
         GlStateManager.enableDepth();

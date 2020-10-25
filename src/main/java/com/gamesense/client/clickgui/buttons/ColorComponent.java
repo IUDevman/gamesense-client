@@ -9,9 +9,8 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.clickgui.frame.Buttons;
 import com.gamesense.client.clickgui.frame.Component;
 import com.gamesense.client.clickgui.frame.Renderer;
-import com.gamesense.client.module.modules.hud.ClickGuiModule;
-import com.gamesense.client.module.modules.hud.HUD;
-import com.gamesense.client.module.modules.hud.ColorMain;
+import com.gamesense.client.module.modules.gui.ClickGuiModule;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.util.text.TextFormatting;
 
@@ -38,7 +37,7 @@ public class ColorComponent extends Component {
     public void renderComponent() {
         //name
         Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1, this.parent.parent.getX() + this.parent.parent.getWidth(),this.parent.parent.getY() + this.offset + 17, Renderer.getSettingColor(hoveredA));
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), TextFormatting.BOLD + this.set.getName(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, Renderer.getFontColor());
+        FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.BOLD + this.set.getName(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, Renderer.getFontColor());
 
         double renderWidthR,renderWidthG,renderWidthB;
         if (ColorMain.colorModel.getValue().equalsIgnoreCase("RGB")) {
@@ -52,7 +51,7 @@ public class ColorComponent extends Component {
         }
         //rainbow
         Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 17, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 33, Renderer.getSettingColor(hoveredA));
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(),"Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, Renderer.getFontColor());
+        FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),"Rainbow", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+16, Renderer.getFontColor());
         //slider 1
         Renderer.drawSliderBox(true, this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 49, set.getValue());
         Renderer.drawSliderBox(false, this.parent.parent.getX() + (int)renderWidthR, this.parent.parent.getY() + this.offset + 1+32, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 49, Renderer.getSettingColor(hoveredA));
@@ -64,17 +63,17 @@ public class ColorComponent extends Component {
         Renderer.drawSliderBox(false, this.parent.parent.getX() + (int)renderWidthB, this.parent.parent.getY() + this.offset + 1+64, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 81, Renderer.getSettingColor(hoveredA));
         //synch button
         Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 81, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 97, Renderer.getSettingColor(hoveredB));
-        FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Sync Color", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+80, Renderer.getFontColor());
+        FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), ChatFormatting.GRAY + "Sync Color", this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+80, Renderer.getFontColor());
 
         //utils
         if (ColorMain.colorModel.getValue().equalsIgnoreCase("RGB")) {
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Red: " + this.set.getColor().getRed(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+32, Renderer.getFontColor());
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Green: " + this.set.getColor().getGreen(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+48, Renderer.getFontColor());
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Blue: " + this.set.getColor().getBlue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+64, Renderer.getFontColor());
+            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), ChatFormatting.GRAY + "Red: " + this.set.getColor().getRed(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+32, Renderer.getFontColor());
+            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), ChatFormatting.GRAY + "Green: " + this.set.getColor().getGreen(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+48, Renderer.getFontColor());
+            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), ChatFormatting.GRAY + "Blue: " + this.set.getColor().getBlue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+64, Renderer.getFontColor());
         } else {
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Hue: " + (int)(this.set.getColor().getHue()*360), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+32, Renderer.getFontColor());
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Saturation: " + (int)(this.set.getColor().getSaturation()*100), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+48, Renderer.getFontColor());
-            FontUtils.drawStringWithShadow(HUD.customFont.getValue(), ChatFormatting.GRAY + "Brightness: " + (int)(this.set.getColor().getBrightness()*100), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+64, Renderer.getFontColor());
+            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), ChatFormatting.GRAY + "Hue: " + (int)(this.set.getColor().getHue()*360), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+32, Renderer.getFontColor());
+            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), ChatFormatting.GRAY + "Saturation: " + (int)(this.set.getColor().getSaturation()*100), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+48, Renderer.getFontColor());
+            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), ChatFormatting.GRAY + "Brightness: " + (int)(this.set.getColor().getBrightness()*100), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4+64, Renderer.getFontColor());
         }
     }
 

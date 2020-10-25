@@ -4,10 +4,9 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.client.clickgui.frame.Buttons;
 import com.gamesense.client.clickgui.frame.Component;
-import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.clickgui.frame.Renderer;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.hud.HUD;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 public class ModeComponent extends Component {
@@ -38,7 +37,7 @@ public class ModeComponent extends Component {
 	@Override
 	public void renderComponent(){
 		Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + 1 + this.offset, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 16 + 1, Renderer.getSettingColor(hovered));
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, Renderer.getFontColor());
+		FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), this.set.getName() + " " + ChatFormatting.GRAY + this.set.getValue(), this.parent.parent.getX() + 2, this.parent.parent.getY() + this.offset + 4, Renderer.getFontColor());
 	}
 	
 	@Override

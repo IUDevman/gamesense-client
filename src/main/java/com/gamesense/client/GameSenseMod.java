@@ -66,7 +66,7 @@ public class GameSenseMod{
 		eventProcessor.init();
 		log.info("Events initialized!");
 
-		fontRenderer = new CFontRenderer(new Font("Arial", Font.PLAIN, 18), true,true);
+		fontRenderer = new CFontRenderer(new Font("Verdana", Font.PLAIN, 18), true,true);
 		log.info("Custom font initialized!");
 
 		settingsManager = new SettingsManager();

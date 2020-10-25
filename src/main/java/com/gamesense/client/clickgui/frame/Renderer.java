@@ -1,7 +1,7 @@
 package com.gamesense.client.clickgui.frame;
 
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.module.modules.hud.ClickGuiModule;
+import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import net.minecraft.client.gui.Gui;
 
 public class Renderer {

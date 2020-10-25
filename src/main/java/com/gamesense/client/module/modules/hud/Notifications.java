@@ -4,6 +4,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
@@ -58,18 +59,18 @@ public class Notifications extends Module{
 
 			if (sortUp.getValue()){
 				if (sortRight.getValue()){
-					FontUtils.drawStringWithShadow(HUD.customFont.getValue(),s.getText(), notX.getValue() - FontUtils.getStringWidth(HUD.customFont.getValue(),s.getText()), notY.getValue() + (notCount * 10), new GSColor(255,255,255));
+					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s.getText(), notX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(),s.getText()), notY.getValue() + (notCount * 10), new GSColor(255,255,255));
 				}
 				else {
-					FontUtils.drawStringWithShadow(HUD.customFont.getValue(),s.getText(), notX.getValue(),notY.getValue() + (notCount * 10), new GSColor(255,255,255));
+					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s.getText(), notX.getValue(),notY.getValue() + (notCount * 10), new GSColor(255,255,255));
 				}
 			}
 			else {
 				if (sortRight.getValue()){
-					FontUtils.drawStringWithShadow(HUD.customFont.getValue(),s.getText(), notX.getValue() - FontUtils.getStringWidth(HUD.customFont.getValue(),s.getText()), notY.getValue() + (notCount * -10), new GSColor(255,255,255));
+					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s.getText(), notX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(),s.getText()), notY.getValue() + (notCount * -10), new GSColor(255,255,255));
 				}
 				else {
-					FontUtils.drawStringWithShadow(HUD.customFont.getValue(),s.getText(), notX.getValue(),notY.getValue() + (notCount * -10), new GSColor(255,255,255));
+					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s.getText(), notX.getValue(),notY.getValue() + (notCount * -10), new GSColor(255,255,255));
 				}
 			}
 		}

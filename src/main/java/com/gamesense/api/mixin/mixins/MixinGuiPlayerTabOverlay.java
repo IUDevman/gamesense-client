@@ -2,7 +2,7 @@ package com.gamesense.api.mixin.mixins;
 
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
-import com.gamesense.client.module.modules.hud.ColorMain;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.scoreboard.ScorePlayerTeam;

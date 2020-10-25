@@ -13,8 +13,7 @@ import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.hud.ColorMain;
-import com.gamesense.client.module.modules.hud.HUD;
+import com.gamesense.client.module.modules.gui.ColorMain;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -99,7 +98,7 @@ public class Nametags extends Module {
 			else {
 				final Enchantment enchantment3 = enchantment;
 				if (enchantnames.getValue()) {
-					FontUtils.drawStringWithShadow(HUD.customFont.getValue(), this.stringForEnchants(enchantment3, EnchantmentHelper.getEnchantmentLevel(enchantment3, itemStack)), (x * 2), y, new GSColor(255,255,255));
+					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), this.stringForEnchants(enchantment3, EnchantmentHelper.getEnchantmentLevel(enchantment3, itemStack)), (x * 2), y, new GSColor(255,255,255));
 				}
 				else {
 					return;
@@ -109,7 +108,7 @@ public class Nametags extends Module {
 			}
 		}
 		if (itemStack.getItem().equals(Items.GOLDEN_APPLE) && itemStack.hasEffect()) {
-			FontUtils.drawStringWithShadow(HUD.customFont.getValue(), "God", (x * 2), y,new GSColor(195,77,65));
+			FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "God", (x * 2), y,new GSColor(195,77,65));
 		}
 		GlStateManager.disableTexture2D();
 	}
@@ -135,7 +134,7 @@ public class Nametags extends Module {
 		GlStateManager.enableTexture2D();
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(.5,.5,.5);
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(), itemStack.getDisplayName(), -FontUtils.getStringWidth(HUD.customFont.getValue(), itemStack.getDisplayName()) /2, y, new GSColor(255,255,255));
+		FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), -FontUtils.getStringWidth(ColorMain.customFont.getValue(), itemStack.getDisplayName()) /2, y, new GSColor(255,255,255));
 		GlStateManager.popMatrix();
 		GlStateManager.disableTexture2D();
 	}
@@ -150,7 +149,7 @@ public class Nametags extends Module {
 		GlStateManager.enableTexture2D();
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(.5,.5,.5);
-		FontUtils.drawStringWithShadow(HUD.customFont.getValue(),new StringBuilder().insert(0, (int) (n3 * 100.0f)).append('%').toString(), (x * 2), y, new GSColor((int) (red * 255), (int) (green * 255), 0));
+		FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),new StringBuilder().insert(0, (int) (n3 * 100.0f)).append('%').toString(), (x * 2), y, new GSColor((int) (red * 255), (int) (green * 255), 0));
 		GlStateManager.popMatrix();
 		GlStateManager.disableTexture2D();
 	}
@@ -245,12 +244,12 @@ public class Nametags extends Module {
 			if (this.durability.getValue() && heldItemMainhand.isItemStackDamageable()) {
 				final int n15 = k;
 				this.renderItemDurability(heldItemMainhand, n10, k);
-				k = n15 - (HUD.customFont.getValue() ? FontUtils.getFontHeight(HUD.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
+				k = n15 - (ColorMain.customFont.getValue() ? FontUtils.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
 				nametags = this;
 			}
 			else {
 				if (b) {
-					k -= (HUD.customFont.getValue() ? FontUtils.getFontHeight(HUD.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
+					k -= (ColorMain.customFont.getValue() ? FontUtils.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
 				}
 				nametags = this;
 			}

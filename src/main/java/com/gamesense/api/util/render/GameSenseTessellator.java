@@ -1,5 +1,6 @@
 package com.gamesense.api.util.render;
 
+import com.gamesense.client.module.modules.gui.ColorMain;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
@@ -9,7 +10,6 @@ import com.gamesense.api.util.misc.Wrapper;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.client.module.modules.hud.HUD;
 import com.gamesense.client.module.modules.render.Nametags;
 
 import net.minecraft.client.Minecraft;
@@ -232,14 +232,14 @@ public class GameSenseTessellator {
 			GSColor bcolor=new GSColor(0,0,0,51);
 			if (Nametags.customColor.getValue()) bcolor=Nametags.borderColor.getValue();
 			for (int i=0;i<text.length;i++) {
-				double w=FontUtils.getStringWidth(HUD.customFont.getValue(),text[i])/2;
+				double w=FontUtils.getStringWidth(ColorMain.customFont.getValue(),text[i])/2;
 				if (w>width) width=w;
 			}
 			drawBorderedRect(-width-1,-mc.fontRenderer.FONT_HEIGHT,width+2,1,1.8f,new GSColor(0,4,0,85), bcolor);
 		}
 		GlStateManager.enableTexture2D();
 		for (int i=0;i<text.length;i++) {
-			FontUtils.drawStringWithShadow(HUD.customFont.getValue(),text[i],-FontUtils.getStringWidth(HUD.customFont.getValue(),text[i])/2,i*(mc.fontRenderer.FONT_HEIGHT+1)+start,color);
+			FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),text[i],-FontUtils.getStringWidth(ColorMain.customFont.getValue(),text[i])/2,i*(mc.fontRenderer.FONT_HEIGHT+1)+start,color);
 		}
 		GlStateManager.disableTexture2D();
 		// TODO CFontRenderer state leak exists. Fixing it breaks the GUI. Fixing it, will make disabling GL_TEXTURE_2D unnecessary.

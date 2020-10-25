@@ -142,6 +142,7 @@ public abstract class Module {
 		Movement,
 		Misc,
 		Render,
-		HUD
+		HUD,
+		GUI
 	}
 }
