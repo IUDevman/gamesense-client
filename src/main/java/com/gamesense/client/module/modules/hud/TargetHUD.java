@@ -43,8 +43,8 @@ public class TargetHUD extends Module {
 
     public void setup(){
         range = registerInteger("Range", "Range", 100, 1, 260);
-        posX = registerInteger("X", "X", 10, 0, 1000);
-        posY = registerInteger("Y", "Y", 10, 0, 1000);
+        posX = registerInteger("X", "X", 0, 0, 1000);
+        posY = registerInteger("Y", "Y", 70, 0, 1000);
         outline = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
         background = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
     }
@@ -58,7 +58,7 @@ public class TargetHUD extends Module {
     float ping;
 
     public void onRender(){
-        if (mc.world != null) {
+        if (mc.world != null && mc.player.ticksExisted >= 10) {
             backgroundColor = new GSColor(background.getValue(), 100);
             outlineColor = new GSColor(outline.getValue(), 255);
 
@@ -77,46 +77,45 @@ public class TargetHUD extends Module {
                 findNameColor(playerName);
                 findHealthColor(playerHealth);
 
+                //player model
+                drawEntityPlayer(player, posX.getValue() + 35, posY.getValue() + 87);
 
                 //box
                 drawTargetBox();
 
-                //player model
-                drawEntityPlayer(player, posX.getValue() + 40, posY.getValue() + 87);
-
                 //player name
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.BOLD + playerName, posX.getValue() + 101, posY.getValue() + 11, nameColor);
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.BOLD + playerName, posX.getValue() + 71, posY.getValue() + 11, nameColor);
 
                 //health + absorption
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Health: " + TextFormatting.RESET + playerHealth, posX.getValue() + 101, posY.getValue() + 23, healthColor);
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Health: " + TextFormatting.RESET + playerHealth, posX.getValue() + 71, posY.getValue() + 23, healthColor);
 
                 //distance
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "Distance: " + ((int) player.getDistance(mc.player)), posX.getValue() + 101, posY.getValue() + 33, new GSColor(255, 255, 255, 255));
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "Distance: " + ((int) player.getDistance(mc.player)), posX.getValue() + 71, posY.getValue() + 33, new GSColor(255, 255, 255, 255));
 
                 //status effects
                 drawStatusEffects(player, posX.getValue(), posY.getValue());
 
                 //armor + items
-                drawItemTextures(player, posX.getValue() + 101, posY.getValue() + 83);
+                drawItemTextures(player, posX.getValue() + 58, posY.getValue() + 73);
 
                 //player info
-                drawPlayerInfo(player, posX.getValue() + 101, posY.getValue() + 43);
+                drawPlayerInfo(player, posX.getValue() + 71, posY.getValue() + 43);
             }
         }
     }
 
     public void drawTargetBox(){
         //outline
-        Gui.drawRect(posX.getValue() + 1, posY.getValue() + 1, posX.getValue() + 201, posY.getValue() + 101, backgroundColor.getRGB());
+        Gui.drawRect(posX.getValue() + 1, posY.getValue() + 1, posX.getValue() + 161, posY.getValue() + 93, backgroundColor.getRGB());
 
         //top
-        Gui.drawRect(posX.getValue(), posY.getValue(), posX.getValue() + 202, posY.getValue() + 1, outlineColor.getRGB());
+        Gui.drawRect(posX.getValue(), posY.getValue(), posX.getValue() + 162, posY.getValue() + 1, outlineColor.getRGB());
         //bottom
-        Gui.drawRect(posX.getValue(), posY.getValue() + 101, posX.getValue() + 202, posY.getValue() + 102, outlineColor.getRGB());
+        Gui.drawRect(posX.getValue(), posY.getValue() + 93, posX.getValue() + 162, posY.getValue() + 94, outlineColor.getRGB());
         //left
-        Gui.drawRect(posX.getValue(), posY.getValue(), posX.getValue() + 1, posY.getValue() + 102, outlineColor.getRGB());
+        Gui.drawRect(posX.getValue(), posY.getValue(), posX.getValue() + 1, posY.getValue() + 94, outlineColor.getRGB());
         //right
-        Gui.drawRect(posX.getValue() + 201, posY.getValue(), posX.getValue() + 202, posY.getValue() + 102, outlineColor.getRGB());
+        Gui.drawRect(posX.getValue() + 161, posY.getValue(), posX.getValue() + 162, posY.getValue() + 94, outlineColor.getRGB());
     }
 
     public void drawEntityPlayer(EntityPlayer entityPlayer, int x, int y){
@@ -163,7 +162,7 @@ public class TargetHUD extends Module {
     //having more than one of these displayed at once makes things too crowded
     GSColor statusColor = new GSColor(255, 255, 255, 255);
     public void drawStatusEffects(EntityPlayer entityPlayer, int x, int y){
-        int inX = x + 101;
+        int inX = x + 71;
         int inY = y + 55;
 
         entityPlayer.getActivePotionEffects().forEach(potionEffect -> {
@@ -197,13 +196,6 @@ public class TargetHUD extends Module {
             itemRender.renderItemAndEffectIntoGUI(is, x, py);
             itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, is, x, py, "");
             itemRender.zLevel = 0F;
-
-            String s = is.getCount() > 1 ? is.getCount() + "" : "";
-            mc.fontRenderer.drawStringWithShadow(s, x + 19 - 2 - mc.fontRenderer.getStringWidth(s), py + 9, new GSColor(255,255,255).getRGB());
-            float green = ((float) is.getMaxDamage() - (float) is.getItemDamage()) / (float) is.getMaxDamage();
-            float red = 1 - green;
-            int dmg = 100 - (int) (red * 100);
-            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, py - 11, new GSColor((int) (red * 255), (int) (green * 255), 0));
         }
 
         GlStateManager.enableDepth();
