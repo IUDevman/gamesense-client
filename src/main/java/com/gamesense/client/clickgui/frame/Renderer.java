@@ -65,7 +65,7 @@ public class Renderer {
 
         if (hovered){
             if (enabledColor.getRed() + enabledColor.getBlue() + enabledColor.getGreen() > 383) {
-                enabledColor = new GSColor(ClickGuiModule.enabledColor.getValue().darker().darker());
+                enabledColor = new GSColor(ClickGuiModule.enabledColor.getValue().darker());
             }
             else {
                 enabledColor = new GSColor(ClickGuiModule.enabledColor.getValue().brighter().brighter());
@@ -79,7 +79,7 @@ public class Renderer {
 
         if (hovered) {
             if (transColor.getRed() + transColor.getGreen() + transColor.getBlue() > 383) {
-                return new GSColor(transColor.darker().darker());
+                return new GSColor(transColor.darker());
             }
             else {
                 return new GSColor(transColor.brighter().brighter());
@@ -94,7 +94,7 @@ public class Renderer {
 
         if (hovered) {
             if (settingColor.getRed() + settingColor.getGreen() + settingColor.getBlue() > 383) {
-                return new GSColor(settingColor.darker().darker());
+                return new GSColor(settingColor.darker());
             }
             else {
                 return new GSColor(settingColor.brighter().brighter());
