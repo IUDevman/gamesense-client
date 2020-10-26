@@ -15,6 +15,11 @@ import net.minecraft.network.play.server.SPacketEntityStatus;
 
 import java.util.*;
 
+/**
+* @author Darki
+* @src https://github.com/DarkiBoi/CliNet/blob/master/src/main/java/me/zeroeightsix/kami/module/modules/combat/TotemPopCounter.java
+**/
+
 public class TotemPopCounter extends Module {
     public TotemPopCounter(){
         super("PopCounter", Category.Misc);
