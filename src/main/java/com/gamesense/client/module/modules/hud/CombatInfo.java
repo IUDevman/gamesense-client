@@ -57,7 +57,7 @@ public class CombatInfo extends Module {
 
                 EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
                         .filter(entity -> entity instanceof EntityEnderCrystal)
-                        .filter(e -> mc.player.getDistance(e) <= AutoCrystal.range.getValue())
+                        .filter(e -> mc.player.getDistance(e) <= AutoCrystal.breakRange.getValue())
                         .map(entity -> (EntityEnderCrystal) entity)
                         .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
                         .orElse(null);
@@ -74,7 +74,7 @@ public class CombatInfo extends Module {
                 final List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
 
                 FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "gamesense.cc", posX.getValue(), posY.getValue(), color.getValue());
-                if (players != null && mc.player.getDistance(players) <= AutoCrystal.range.getValue()) {
+                if (players != null && mc.player.getDistance(players) <= AutoCrystal.breakRange.getValue()) {
                     FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "HTR", posX.getValue(), posY.getValue() + 10, on);
                 } else {
                     FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "HTR", posX.getValue(), posY.getValue() + 10, off);
