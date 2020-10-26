@@ -50,7 +50,7 @@ public class IntegerComponent extends Component {
 		final double diff = Math.min(100, Math.max(0, mouseX - this.x));
 		final int min = this.set.getMin();
 		final int max = this.set.getMax();
-		this.renderWidth = 100 * (this.set.getValue() - min) / (max - min);
+		this.renderWidth = 99 * (this.set.getValue() - min) / (max - min);
 		if (this.dragging){
 			if (diff == 0.0){
 				this.set.setValue(this.set.getMin());

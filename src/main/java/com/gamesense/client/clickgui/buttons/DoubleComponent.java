@@ -50,7 +50,7 @@ public class DoubleComponent extends Component {
 		final double diff = Math.min(100, Math.max(0, mouseX - this.x));
 		final double min = this.set.getMin();
 		final double max = this.set.getMax();
-		this.renderWidth = 100.0 * (this.set.getValue() - min) / (max - min);
+		this.renderWidth = 99 * (this.set.getValue() - min) / (max - min);
 		if (this.dragging){
 			if (diff == 0.0){
 				this.set.setValue(this.set.getMin());

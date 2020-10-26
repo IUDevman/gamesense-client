@@ -41,13 +41,13 @@ public class ColorComponent extends Component {
 
         double renderWidthR,renderWidthG,renderWidthB;
         if (ColorMain.colorModel.getValue().equalsIgnoreCase("RGB")) {
-            renderWidthR = 100 * set.getColor().getRed() / 255.0;
-            renderWidthG = 100 * set.getColor().getGreen() / 255.0;
-            renderWidthB = 100 * set.getColor().getBlue() / 255.0;
+            renderWidthR = 98 * set.getColor().getRed() / 255.0;
+            renderWidthG = 98 * set.getColor().getGreen() / 255.0;
+            renderWidthB = 98 * set.getColor().getBlue() / 255.0;
         } else {
-            renderWidthR = 100 * set.getColor().getHue();
-            renderWidthG = 100 * set.getColor().getSaturation();
-            renderWidthB = 100 * set.getColor().getBrightness();
+            renderWidthR = 99 * set.getColor().getHue();
+            renderWidthG = 98 * set.getColor().getSaturation();
+            renderWidthB = 98 * set.getColor().getBrightness();
         }
         //rainbow
         Renderer.drawModuleBox(this.parent.parent.getX(), this.parent.parent.getY() + this.offset + 17, this.parent.parent.getX() + this.parent.parent.getWidth(), this.parent.parent.getY() + this.offset + 33, set.getValue());

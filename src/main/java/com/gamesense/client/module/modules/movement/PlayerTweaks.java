@@ -68,8 +68,9 @@ public class PlayerTweaks extends Module{
 	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
 		if (antiKnockBack.getValue()){
 			if (event.getPacket() instanceof SPacketEntityVelocity){
-				if (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId())
+				if (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId()) {
 					event.cancel();
+				}
 			}
 			if (event.getPacket() instanceof SPacketExplosion){
 				event.cancel();
