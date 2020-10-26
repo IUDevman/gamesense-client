@@ -52,6 +52,7 @@ import com.gamesense.client.module.modules.misc.MultiTask;
 import com.gamesense.client.module.modules.misc.NoEntityTrace;
 import com.gamesense.client.module.modules.misc.NoKick;
 import com.gamesense.client.module.modules.misc.PvPInfo;
+import com.gamesense.client.module.modules.misc.TotemPopCounter;
 import com.gamesense.client.module.modules.movement.Anchor;
 import com.gamesense.client.module.modules.movement.Blink;
 import com.gamesense.client.module.modules.movement.HoleTP;
@@ -132,6 +133,7 @@ public class ModuleManager {
 		addMod(new MultiTask());
 		addMod(new NoEntityTrace());
 		addMod(new NoKick());
+		addMod(new TotemPopCounter());
 		addMod(new PvPInfo());
 		//Render
 		addMod(new BlockHighlight());

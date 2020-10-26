@@ -81,18 +81,12 @@ public class EventProcessor {
 	}
 
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
-	 public void onKeyInput(InputEvent.KeyInputEvent event) {
+	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (Keyboard.getEventKeyState()) {
-		   if(Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
-		  ModuleManager.onBind(Keyboard.getEventKey());
-			/*** Macro, depreciated
-		   GameSenseMod.getInstance().macroManager.getMacros().forEach(m -> {
-				if(m.getKey() == Keyboard.getEventKey())
-					m.onMacro();
-			});
-			 */
-	  }
+			if(Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
+			ModuleManager.onBind(Keyboard.getEventKey());
 		}
+	}
 
 	@SubscribeEvent
 	public void onMouseInput(InputEvent.MouseInputEvent event){
@@ -179,33 +173,33 @@ public class EventProcessor {
 	@EventHandler
 	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
 		if (event.getPacket() instanceof SPacketPlayerListItem) {
-				SPacketPlayerListItem packet = (SPacketPlayerListItem) event.getPacket();
-				if (packet.getAction() == SPacketPlayerListItem.Action.ADD_PLAYER) {
-					for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
-						if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
-							new Thread(() -> {
-								String name = resolveName(playerData.getProfile().getId().toString());
-								if (name != null) {
-									if (mc.player != null && mc.player.ticksExisted >= 1000)
-										GameSenseMod.EVENT_BUS.post(new PlayerJoinEvent(name));
-								}
-							}).start();
-						}
+			SPacketPlayerListItem packet = (SPacketPlayerListItem) event.getPacket();
+			if (packet.getAction() == SPacketPlayerListItem.Action.ADD_PLAYER) {
+				for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
+					if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
+						new Thread(() -> {
+							String name = resolveName(playerData.getProfile().getId().toString());
+							if (name != null) {
+								if (mc.player != null && mc.player.ticksExisted >= 1000)
+									GameSenseMod.EVENT_BUS.post(new PlayerJoinEvent(name));
+							}
+						}).start();
 					}
 				}
-				if (packet.getAction() == SPacketPlayerListItem.Action.REMOVE_PLAYER) {
-					for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
-						if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
-							new Thread(() -> {
-								final String name = resolveName(playerData.getProfile().getId().toString());
-								if (name != null) {
-									if (mc.player != null && mc.player.ticksExisted >= 1000)
-										GameSenseMod.EVENT_BUS.post(new PlayerLeaveEvent(name));
-								}
-							}).start();
-						}
+			}
+			if (packet.getAction() == SPacketPlayerListItem.Action.REMOVE_PLAYER) {
+				for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
+					if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
+						new Thread(() -> {
+							final String name = resolveName(playerData.getProfile().getId().toString());
+							if (name != null) {
+								if (mc.player != null && mc.player.ticksExisted >= 1000)
+									GameSenseMod.EVENT_BUS.post(new PlayerLeaveEvent(name));
+							}
+						}).start();
 					}
 				}
+			}
 		}
 	});
 

@@ -23,12 +23,12 @@ public class ChatModifier extends Module{
 	}
 
 	public Setting.Boolean clearBkg;
-	Setting.Boolean chattimestamps;
+	Setting.Boolean chatTimeStamps;
 	Setting.Mode format;
 	Setting.Mode color;
 	Setting.Mode decoration;
 	Setting.Boolean space;
-	Setting.Boolean greentext;
+	Setting.Boolean greenText;
 
 	public void setup(){
 
@@ -46,8 +46,8 @@ public class ChatModifier extends Module{
 		}
 
 		clearBkg = registerBoolean("Clear Chat", "ClearChat", false);
-		greentext = registerBoolean("Green Text", "GreenText", false);
-		chattimestamps = registerBoolean("Chat Time Stamps", "ChatTimeStamps", false);
+		greenText = registerBoolean("Green Text", "GreenText", false);
+		chatTimeStamps = registerBoolean("Chat Time Stamps", "ChatTimeStamps", false);
 		format = registerMode("Format", "Format", formats, "H24:mm");
 		decoration = registerMode("Deco", "Deco", deco, "[ ]");
 		color = registerMode("Color", "Colors", colors, ChatFormatting.GRAY.getName());
@@ -58,7 +58,7 @@ public class ChatModifier extends Module{
 	@EventHandler
 	private final Listener<ClientChatReceivedEvent> chatReceivedEventListener = new Listener<>(event -> {
 		//Chat Time Stamps
-		if (chattimestamps.getValue()){
+		if (chatTimeStamps.getValue()){
 			String decoLeft = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[0];
 			String decoRight = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[1];
 			if (space.getValue()) decoRight += " ";
@@ -71,7 +71,7 @@ public class ChatModifier extends Module{
 
 	@EventHandler
 	private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
-		if (greentext.getValue()){
+		if (greenText.getValue()){
 			if (event.getPacket() instanceof CPacketChatMessage){
 				if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(Command.getPrefix()))
 					return;

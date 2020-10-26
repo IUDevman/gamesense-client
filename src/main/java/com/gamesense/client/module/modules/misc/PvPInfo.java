@@ -1,22 +1,16 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.event.events.TotemPopEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderPearl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
-import net.minecraft.network.play.server.SPacketEntityStatus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,14 +21,11 @@ public class PvPInfo extends Module {
 	List<Entity> antipearlspamplz = new ArrayList<>();
 	List<Entity> players;
 	List<Entity> pearls;
-	private HashMap<String, Integer> popList = new HashMap();
 	List<Entity> strengthedPlayers = new ArrayList<>();
 
-
-	Setting.Boolean visualrange;
-	Setting.Boolean pearlalert;
-	Setting.Boolean popcounter;
-	Setting.Boolean strengthdetect;
+	Setting.Boolean visualRange;
+	Setting.Boolean pearlAlert;
+	Setting.Boolean strengthDetect;
 	Setting.Mode ChatColor;
 
 	public void setup(){
@@ -55,34 +46,14 @@ public class PvPInfo extends Module {
 		colors.add("Aqua");
 		colors.add("Light Purple");
 		colors.add("White");
-		visualrange = registerBoolean("Visual Range", "VisualRange", false);
-		pearlalert = registerBoolean("Pearl Alert", "PearlAlert",false);
-		popcounter = registerBoolean("Pop Counter", "PopCounter", false);
-		strengthdetect = registerBoolean("Strength Detect", "StrengthDetect", false);
+		visualRange = registerBoolean("Visual Range", "VisualRange", false);
+		pearlAlert = registerBoolean("Pearl Alert", "PearlAlert",false);
+		strengthDetect = registerBoolean("Strength Detect", "StrengthDetect", false);
 		ChatColor = registerMode("Color", "Color", colors, "Light Purple");
 	}
 
-	@EventHandler
-	public Listener<TotemPopEvent> totemPopEvent = new Listener<>(event -> {
-		if (popcounter.getValue()){
-			if (popList == null){
-				popList = new HashMap<>();
-			}
-
-			if (popList.get(event.getEntity().getName()) == null){
-				popList.put(event.getEntity().getName(), 1);
-				Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
-			} else if (!(popList.get(event.getEntity().getName()) == null)){
-				int popCounter = popList.get(event.getEntity().getName());
-				int newPopCounter = popCounter += 1;
-				popList.put(event.getEntity().getName(), newPopCounter);
-				Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + getTextColor() + " totems!");
-			}
-		}
-	});
-
 	public void onUpdate() {
-		if (visualrange.getValue()) {
+		if (visualRange.getValue()) {
 			if (mc.player == null) return;
 			players = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityPlayer).collect(Collectors.toList());
 			try {
@@ -107,7 +78,7 @@ public class PvPInfo extends Module {
 			} catch (Exception e) {
 			} // ez no crasherino pt.2
 		}
-		if (pearlalert.getValue()) {
+		if (pearlAlert.getValue()) {
 			pearls = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityEnderPearl).collect(Collectors.toList());
 			try {
 				for (Entity e : pearls) {
@@ -121,17 +92,7 @@ public class PvPInfo extends Module {
 			} catch (Exception e) {
 			}
 		}
-		if (popcounter.getValue()) {
-			for (EntityPlayer player : mc.world.playerEntities) {
-				if (player.getHealth() <= 0) {
-					if (popList.containsKey(player.getName())) {
-						Command.sendClientMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popList.get(player.getName()) + getTextColor() + " totems!");
-						popList.remove(player.getName(), popList.get(player.getName()));
-					}
-				}
-			}
-		}
-		if (strengthdetect.getValue() && mc.player != null && mc.world != null) {
+		if (strengthDetect.getValue() && mc.player != null && mc.world != null) {
 			for (EntityPlayer player : mc.world.playerEntities){
 				if (player.isPotionActive(MobEffects.STRENGTH) && !(strengthedPlayers.contains(player))){
 					Command.sendClientMessage(getTextColor() + player.getName() + " has (drank) strength!");
@@ -143,26 +104,6 @@ public class PvPInfo extends Module {
 				}
 			}
 		}
-	}
-
-	@EventHandler
-	public Listener<PacketEvent.Receive> totemPopListener = new Listener<>(event -> {
-
-		if (mc.world == null || mc.player == null){
-			return;
-		}
-		if (event.getPacket() instanceof SPacketEntityStatus){
-			SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
-			if (packet.getOpCode() == 35){
-				Entity entity = packet.getEntity(mc.world);
-				GameSenseMod.EVENT_BUS.post(new TotemPopEvent(entity));
-			}
-		}
-	});
-
-	public void onEnable(){
-		GameSenseMod.EVENT_BUS.subscribe(this);
-		popList = new HashMap<>();
 	}
 
 	public ChatFormatting getTextColor(){
@@ -215,6 +156,10 @@ public class PvPInfo extends Module {
 			return ChatFormatting.AQUA;
 		}
 		return null;
+	}
+
+	public void onEnable(){
+		GameSenseMod.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable(){

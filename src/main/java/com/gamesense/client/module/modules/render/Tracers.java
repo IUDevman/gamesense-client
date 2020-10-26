@@ -39,9 +39,9 @@ public class Tracers extends Module {
 		link.add("Feet");
 
 		pointsTo = registerMode("Draw To", "DrawTo", link, "Feet");
-		nearColor=registerColor("Near Color","NearColor",new GSColor(255,0,0));
-		midColor=registerColor("Middle Color","MidColor",new GSColor(255,255,0));
-		farColor=registerColor("Far Color","FarColor",new GSColor(0,255,0));
+		nearColor=registerColor("Near Color","NearColor",new GSColor(255,0,0, 255));
+		midColor=registerColor("Middle Color","MidColor",new GSColor(255,255,0, 255));
+		farColor=registerColor("Far Color","FarColor",new GSColor(0,255,0, 255));
 	}
 
 	GSColor tracerColor;
