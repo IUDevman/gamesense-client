@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
+import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.module.modules.render.SkyColor;
+import net.minecraftforge.client.event.*;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -26,14 +29,6 @@ import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
-import net.minecraftforge.client.event.ClientChatEvent;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.InputUpdateEvent;
-import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
-import net.minecraftforge.client.event.RenderBlockOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -107,6 +102,24 @@ public class EventProcessor {
 				Command.sendClientMessage(ChatFormatting.DARK_RED + "Error: " + e.getMessage());
 			}
 			//event.setMessage("");
+		}
+	}
+
+	@SubscribeEvent
+	public void onFogColorRender(EntityViewRenderEvent.FogColors event) {
+		if (ModuleManager.isModuleEnabled("SkyColor")) {
+			GSColor color = SkyColor.color.getValue();
+			event.setRed(color.getRed() / 255f);
+			event.setGreen(color.getGreen() / 255f);
+			event.setBlue(color.getBlue() / 255f);
+		}
+	}
+
+	@SubscribeEvent
+	public void fog(EntityViewRenderEvent.FogDensity event) {
+		if (ModuleManager.isModuleEnabled("SkyColor") && !SkyColor.fog.getValue()) {
+			event.setDensity(0);
+			event.setCanceled(true);
 		}
 	}
 
