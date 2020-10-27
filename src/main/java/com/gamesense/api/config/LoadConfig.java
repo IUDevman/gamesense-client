@@ -130,7 +130,9 @@ public class LoadConfig {
             JsonElement dataObject = settingObject.get(module.getName());
 
             if (dataObject != null && dataObject.isJsonPrimitive()) {
-                module.setEnabled(dataObject.getAsBoolean());
+                if (dataObject.getAsBoolean() == true){
+                    module.enable();
+                }
             }
         }
         inputStream.close();

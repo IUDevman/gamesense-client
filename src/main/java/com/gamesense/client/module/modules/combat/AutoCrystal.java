@@ -68,6 +68,7 @@ public class AutoCrystal extends Module {
     Setting.Boolean antiSuicide;
     Setting.Boolean endCrystalMode;
     Setting.Boolean cancelCrystal;
+    Setting.Boolean noGapSwitch;
     Setting.Integer facePlaceValue;
     Setting.Integer attackSpeed;
     Setting.Integer antiSuicideValue;
@@ -111,6 +112,7 @@ public class AutoCrystal extends Module {
         antiSuicide = registerBoolean("Anti Suicide", "AntiSuicide", true);
         antiSuicideValue = registerInteger("Min Health", "MinHealth", 14, 1, 36);
         autoSwitch = registerBoolean("Switch", "Switch", true);
+        noGapSwitch = registerBoolean("No Gap Switch", "NoGapSwitch", false);
         multiPlace = registerBoolean("Multi Place", "MultiPlace", false);
         endCrystalMode = registerBoolean("1.13 Place", "1.13Place", false);
         cancelCrystal = registerBoolean("Cancel Crystal", "CancelCrystal", false);
@@ -295,9 +297,11 @@ public class AutoCrystal extends Module {
 
                         if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
                             if (this.autoSwitch.getValue()) {
-                                mc.player.inventory.currentItem = crystalSlot;
-                                resetRotation();
-                                this.switchCooldown = true;
+                                if ((noGapSwitch.getValue() && !(mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE)) || !noGapSwitch.getValue()){
+                                    mc.player.inventory.currentItem = crystalSlot;
+                                    resetRotation();
+                                    this.switchCooldown = true;
+                                }
                             }
                             return;
                         }
@@ -438,8 +442,8 @@ public class AutoCrystal extends Module {
             return true;
         }
         else if (breakMode.getValue().equalsIgnoreCase("Own")){
-            for (BlockPos pos : new ArrayList<BlockPos>(PlacedCrystals)) {
-                if (pos != null && pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= 3.0) {
+            for (BlockPos pos : new ArrayList<>(PlacedCrystals)) {
+                if (pos != null && pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= 1.0) {
                     return true;
                 }
             }

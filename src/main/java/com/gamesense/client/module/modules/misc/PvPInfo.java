@@ -1,18 +1,29 @@
 package com.gamesense.client.module.modules.misc;
 
+import com.gamesense.api.event.events.PacketEvent;
+import com.gamesense.api.event.events.TotemPopEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderPearl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
+import net.minecraft.network.play.server.SPacketEntityStatus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+/**
+ * @author Darki for popcounter
+ * @src https://github.com/DarkiBoi/CliNet/blob/master/src/main/java/me/zeroeightsix/kami/module/modules/combat/TotemPopCounter.java
+ **/
 
 public class PvPInfo extends Module {
 	public PvPInfo(){super("PvPInfo", Category.Misc);}
@@ -22,10 +33,12 @@ public class PvPInfo extends Module {
 	List<Entity> players;
 	List<Entity> pearls;
 	List<Entity> strengthedPlayers = new ArrayList<>();
+	private HashMap<String, Integer> popCounterHashMap = new HashMap<>();
 
 	Setting.Boolean visualRange;
 	Setting.Boolean pearlAlert;
 	Setting.Boolean strengthDetect;
+	Setting.Boolean popCounter;
 	Setting.Mode ChatColor;
 
 	public void setup(){
@@ -49,6 +62,7 @@ public class PvPInfo extends Module {
 		visualRange = registerBoolean("Visual Range", "VisualRange", false);
 		pearlAlert = registerBoolean("Pearl Alert", "PearlAlert",false);
 		strengthDetect = registerBoolean("Strength Detect", "StrengthDetect", false);
+		popCounter = registerBoolean("Pop Counter", "PopCounter", false);
 		ChatColor = registerMode("Color", "Color", colors, "Light Purple");
 	}
 
@@ -104,7 +118,50 @@ public class PvPInfo extends Module {
 				}
 			}
 		}
+		if (popCounter.getValue() && mc.world != null && mc.player != null) {
+			for (EntityPlayer player : mc.world.playerEntities) {
+				if (player.getHealth() <= 0) {
+					if (popCounterHashMap.containsKey(player.getDisplayNameString())) {
+						Command.sendClientMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popCounterHashMap.get(player.getName()) + getTextColor() + " totems!");
+						popCounterHashMap.remove(player.getName(), popCounterHashMap.get(player.getName()));
+					}
+				}
+			}
+		}
 	}
+
+	@EventHandler
+	private final Listener<PacketEvent.Receive> packetEventListener = new Listener<>(event -> {
+
+		if (mc.world == null || mc.player == null){
+			return;
+		}
+		if (event.getPacket() instanceof SPacketEntityStatus){
+			SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
+			if (packet.getOpCode() == 35){
+				Entity entity = packet.getEntity(mc.world);
+				GameSenseMod.EVENT_BUS.post(new TotemPopEvent(entity));
+			}
+		}
+	});
+
+	@EventHandler
+	private final Listener<TotemPopEvent> totemPopEventListener = new Listener<>(event -> {
+		if (popCounterHashMap == null){
+			popCounterHashMap = new HashMap<>();
+		}
+
+		if (popCounterHashMap.get(event.getEntity().getName()) == null){
+			popCounterHashMap.put(event.getEntity().getName(), 1);
+			Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
+		}
+		else if (popCounterHashMap.get(event.getEntity().getName()) != null){
+			int popCounter = popCounterHashMap.get(event.getEntity().getName());
+			int newPopCounter = popCounter += 1;
+			popCounterHashMap.put(event.getEntity().getName(), newPopCounter);
+			Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + getTextColor() + " totems!");
+		}
+	});
 
 	public ChatFormatting getTextColor(){
 		if (ChatColor.getValue().equalsIgnoreCase("Black")){
@@ -160,6 +217,7 @@ public class PvPInfo extends Module {
 
 	public void onEnable(){
 		GameSenseMod.EVENT_BUS.subscribe(this);
+		popCounterHashMap = new HashMap<>();
 	}
 
 	public void onDisable(){
