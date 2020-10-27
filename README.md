@@ -33,7 +33,7 @@ Contributors:
 * Hoosiers (original developer, head developer, maintainer)
 * lukflug (color settings, OpenGL and minor optimizations, issue tracker)
 * auburnhud2 (whitespace and continuous integration, issue tracker)
-* Dngerr (aBlink and HotbarRefill)
+* Dngerr (Blink and HotbarRefill)
 * linustouchtips (TargetHUD)
 * DarkiBoi (TotemPopCounter)
 
