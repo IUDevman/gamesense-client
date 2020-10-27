@@ -3,6 +3,7 @@ package com.gamesense.client.module;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import com.gamesense.client.module.modules.render.*;
 import org.lwjgl.input.Keyboard;
 
 import com.gamesense.api.event.events.RenderEvent;
@@ -60,22 +61,6 @@ import com.gamesense.client.module.modules.movement.ReverseStep;
 import com.gamesense.client.module.modules.movement.Speed;
 import com.gamesense.client.module.modules.movement.Sprint;
 import com.gamesense.client.module.modules.movement.Step;
-import com.gamesense.client.module.modules.render.BlockHighlight;
-import com.gamesense.client.module.modules.render.CapesModule;
-import com.gamesense.client.module.modules.render.CityESP;
-import com.gamesense.client.module.modules.render.ESP;
-import com.gamesense.client.module.modules.render.Freecam;
-import com.gamesense.client.module.modules.render.Fullbright;
-import com.gamesense.client.module.modules.render.HitSpheres;
-import com.gamesense.client.module.modules.render.HoleESP;
-import com.gamesense.client.module.modules.render.LogoutSpots;
-import com.gamesense.client.module.modules.render.Nametags;
-import com.gamesense.client.module.modules.render.NoRender;
-import com.gamesense.client.module.modules.render.RenderTweaks;
-import com.gamesense.client.module.modules.render.ShulkerViewer;
-import com.gamesense.client.module.modules.render.Tracers;
-import com.gamesense.client.module.modules.render.ViewModel;
-import com.gamesense.client.module.modules.render.VoidESP;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -150,6 +135,7 @@ public class ModuleManager {
 		addMod(new Tracers());
 		addMod(new ViewModel());
 		addMod(new VoidESP());
+		addMod(new SkyColor());
 		//HUD
 		addMod(new ArmorHUD());
 		addMod(new ModuleArrayList());
