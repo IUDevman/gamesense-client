@@ -28,7 +28,7 @@ public class InventoryViewer extends Module {
         outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
     }
 
-    public void onRender(){
+    public void onRender() {
         GSColor fillWithOpacity = new GSColor(fillColor.getValue(), 100);
         GSColor outlineWithOpacity = new GSColor(outlineColor.getValue(), 255);
 
@@ -44,15 +44,17 @@ public class InventoryViewer extends Module {
         Gui.drawRect(posX.getValue() + 161, posY.getValue(), posX.getValue() + 162, posY.getValue() + 56, outlineWithOpacity.getRGB());
 
         //items
-        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+        GlStateManager.pushMatrix();
+        RenderHelper.enableGUIStandardItemLighting();
         NonNullList<ItemStack> items = Minecraft.getMinecraft().player.inventory.mainInventory;
         for (int size = items.size(), item = 9; item < size; ++item) {
             final int slotX = posX.getValue() + item % 9 * 18;
             final int slotY = posY.getValue() + 2 + (item / 9 - 1) * 18;
-            RenderHelper.enableGUIStandardItemLighting();
             mc.getRenderItem().renderItemAndEffectIntoGUI(items.get(item), slotX, slotY);
             mc.getRenderItem().renderItemOverlays(mc.fontRenderer, items.get(item), slotX, slotY);
-            RenderHelper.disableStandardItemLighting();
         }
+        RenderHelper.disableStandardItemLighting();
+        mc.getRenderItem().zLevel = 0.0F;
+        GlStateManager.popMatrix();
     }
 }

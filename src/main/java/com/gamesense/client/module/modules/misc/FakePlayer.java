@@ -31,12 +31,11 @@ public class FakePlayer extends Module {
         clonedPlayer.setHealth(20);
         mc.world.addEntityToWorld(-1234, clonedPlayer);
         clonedPlayer.onLivingUpdate();
-        //GameSenseMod.EVENT_BUS.post(new PlayerJoinEvent("Fit"));
-        
     }
 
     public void onDisable(){
-        mc.world.removeEntityFromWorld(-1234);
-        //GameSenseMod.EVENT_BUS.post(new PlayerLeaveEvent("Fit"));
+        if (mc.world != null) {
+            mc.world.removeEntityFromWorld(-1234);
+        }
     }
 }

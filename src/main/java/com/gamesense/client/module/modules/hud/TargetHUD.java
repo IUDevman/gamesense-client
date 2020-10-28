@@ -13,6 +13,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -135,28 +136,25 @@ public class TargetHUD extends Module {
     }
 
     public void drawPlayerInfo(EntityPlayer player, int x, int y) {
-        // pretty messy, hopefully hoosiers won't mind :/ - linus
 
-            if (player.inventory.armorItemInSlot(2).getItem().equals(Items.ELYTRA)) {
-                playerinfo = "Wasp";
-                playercolor = TextFormatting.LIGHT_PURPLE;
-            }
-
-            if (player.inventory.armorItemInSlot(2).getItem().equals(Items.DIAMOND_CHESTPLATE)) {
-                playerinfo = "Threat";
-                playercolor = TextFormatting.RED;
-            }
-
-            if (player.inventory.armorItemInSlot(3).getItem().equals(Items.AIR)) {
-                playerinfo = "NewFag";
-                playercolor = TextFormatting.GREEN;
-            } else {
-                playerinfo = "None";
-                playercolor = TextFormatting.WHITE;
-            }
+        if (player.inventory.armorItemInSlot(2).getItem().equals(Items.ELYTRA)) {
+            playerinfo = "Wasp";
+            playercolor = TextFormatting.LIGHT_PURPLE;
+        }
+        else if (player.inventory.armorItemInSlot(2).getItem().equals(Items.DIAMOND_CHESTPLATE)) {
+            playerinfo = "Threat";
+            playercolor = TextFormatting.RED;
+        }
+        else if (player.inventory.armorItemInSlot(3).getItem().equals(Items.AIR)) {
+            playerinfo = "NewFag";
+            playercolor = TextFormatting.GREEN;
+        }
+        else {
+            playerinfo = "None";
+            playercolor = TextFormatting.WHITE;
+        }
 
         ping = getPing(player);
-
         FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), playercolor + playerinfo + TextFormatting.WHITE + " | "  + ping + " ms", x, y, new GSColor(255, 255, 255));
     }
 
@@ -181,11 +179,10 @@ public class TargetHUD extends Module {
         });
     }
 
-    //ported and modified from HUD/Nametags
-    //todo: linus- if you want to make your own, that would be awesome... if not, I still need to modify this to make it look better
     private static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
     public void drawItemTextures(EntityPlayer entityPlayer, int px, int py){
-        GlStateManager.enableTexture2D();
+        GlStateManager.pushMatrix();
+        RenderHelper.enableGUIStandardItemLighting();
 
         int iteration = 0;
         for (ItemStack is : entityPlayer.getArmorInventoryList()) {
@@ -199,8 +196,9 @@ public class TargetHUD extends Module {
             itemRender.zLevel = 0F;
         }
 
-        GlStateManager.enableDepth();
-        GlStateManager.disableLighting();
+        RenderHelper.disableStandardItemLighting();
+        mc.getRenderItem().zLevel = 0.0F;
+        GlStateManager.popMatrix();
     }
 
     public void findPotionColor(PotionEffect potionEffect){

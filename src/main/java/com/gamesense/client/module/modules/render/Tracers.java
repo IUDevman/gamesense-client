@@ -12,6 +12,7 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
@@ -70,7 +71,9 @@ public class Tracers extends Module {
 							}
 						}
 					}
+					GlStateManager.pushMatrix();
 					drawLineToEntityPlayer(e, tracerColor);
+					GlStateManager.popMatrix();
 				});
 	}
 
