@@ -9,6 +9,7 @@ public class CapesModule extends Module{
 	public CapesModule(){
 		super("Capes", Category.Render);
 		setDrawn(false);
+		setEnabled(true);
 	}
 
 	public Setting.Mode capeMode;

@@ -67,6 +67,7 @@ dependencies {
 	compile "com.github.ZeroMemes:Alpine:1.5"
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
 	compile group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
+	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
 }
 
 processResources {
@@ -97,6 +98,7 @@ shadowJar {
 		include(dependency('com.github.ZeroMemes:Alpine'))
 		include(dependency('net.jodah:typetools'))
 		include(dependency('com.googlecode.json-simple:json-simple:1.1.1'))
+		include(dependency('club.minnced:java-discord-rpc:2.0.1'))
 	}
 	exclude 'dummyThing'
 	exclude 'LICENSE.txt'

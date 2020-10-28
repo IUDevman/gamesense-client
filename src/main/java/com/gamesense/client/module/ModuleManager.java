@@ -31,6 +31,7 @@ import com.gamesense.client.module.modules.misc.AutoReply;
 import com.gamesense.client.module.modules.misc.AutoTool;
 import com.gamesense.client.module.modules.misc.ChatModifier;
 import com.gamesense.client.module.modules.misc.ChatSuffix;
+import com.gamesense.client.module.modules.misc.DiscordRPCModule;
 import com.gamesense.client.module.modules.misc.FakePlayer;
 import com.gamesense.client.module.modules.misc.FastPlace;
 import com.gamesense.client.module.modules.misc.HoosiersDupe;
@@ -115,6 +116,7 @@ public class ModuleManager {
 		addMod(new AutoTool());
 		addMod(new ChatModifier());
 		addMod(new ChatSuffix());
+		addMod(new DiscordRPCModule());
 		addMod(new FastPlace());
 		addMod(new FakePlayer());
 		addMod(new HoosiersDupe());
