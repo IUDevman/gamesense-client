@@ -34,7 +34,7 @@ Contributors:
 * lukflug (color settings, OpenGL and minor optimizations, issue tracker)
 * auburnhud2 (whitespace and continuous integration, issue tracker)
 * Dngerr (Blink and HotbarRefill)
-* linustouchtips (TargetHUD)
+* linustouchtips (TargetHUD, SkyColor, and Quiver)
 * DarkiBoi (TotemPopCounter)
 
 Some code used from:
