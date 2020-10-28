@@ -2,23 +2,12 @@ package com.gamesense.client.module;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import com.gamesense.client.module.modules.combat.*;
 import org.lwjgl.input.Keyboard;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.render.GameSenseTessellator;
-import com.gamesense.client.module.modules.combat.AutoArmor;
-import com.gamesense.client.module.modules.combat.AutoCrystal;
-import com.gamesense.client.module.modules.combat.AutoTotem;
-import com.gamesense.client.module.modules.combat.AutoTrap;
-import com.gamesense.client.module.modules.combat.AutoWeb;
-import com.gamesense.client.module.modules.combat.FastBow;
-import com.gamesense.client.module.modules.combat.HoleFill;
-import com.gamesense.client.module.modules.combat.KillAura;
-import com.gamesense.client.module.modules.combat.OffhandCrystal;
-import com.gamesense.client.module.modules.combat.OffhandGap;
-import com.gamesense.client.module.modules.combat.SelfTrap;
-import com.gamesense.client.module.modules.combat.SelfWeb;
-import com.gamesense.client.module.modules.combat.Surround;
 import com.gamesense.client.module.modules.exploits.CoordExploit;
 import com.gamesense.client.module.modules.exploits.FastBreak;
 import com.gamesense.client.module.modules.exploits.LiquidInteract;
@@ -101,6 +90,8 @@ public class ModuleManager {
 		addMod(new SelfTrap());
 		addMod(new SelfWeb());
 		addMod(new Surround());
+		// addMod(new Quiver());
+		// addMod(new PacketEXP());
 		//Exploits
 		addMod(new CoordExploit());
 		addMod(new FastBreak());
