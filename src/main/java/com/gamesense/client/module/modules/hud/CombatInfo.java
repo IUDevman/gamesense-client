@@ -29,7 +29,8 @@ public class CombatInfo extends Module {
     Setting.Integer posX;
     Setting.Integer posY;
     Setting.Mode infoType;
-    Setting.ColorSetting color;
+    Setting.ColorSetting color1;
+    Setting.ColorSetting color2;
 
     public void setup(){
         ArrayList<String> infoTypes = new ArrayList<>();
@@ -39,7 +40,8 @@ public class CombatInfo extends Module {
         posX = registerInteger("X", "X", 0, 0, 1000);
         posY = registerInteger("Y", "Y", 150, 0, 1000);
         infoType = registerMode("Type", "Type", infoTypes, "Hoosiers");
-        color = registerColor("Color","Color", new GSColor(0, 255, 0, 255));
+        color1 = registerColor("On","On", new GSColor(0, 255, 0, 255));
+        color2 = registerColor("Off", "Off", new GSColor(255, 0, 0, 255));
     }
 
     private int totems;
@@ -47,20 +49,14 @@ public class CombatInfo extends Module {
 
 
     public void onRender(){
-        GSColor on = new GSColor(0, 255, 0);
-        GSColor off = new GSColor(255, 0, 0);
+        GSColor on = new GSColor(color1.getValue());
+        GSColor off = new GSColor(color2.getValue());
 
         switch (infoType.getValue()){
             case "Cyber": {
                 totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
                 if (mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) totems++;
 
-                EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
-                        .filter(entity -> entity instanceof EntityEnderCrystal)
-                        .filter(e -> mc.player.getDistance(e) <= AutoCrystal.breakRange.getValue())
-                        .map(entity -> (EntityEnderCrystal) entity)
-                        .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
-                        .orElse(null);
                 EntityOtherPlayerMP players = mc.world.loadedEntityList.stream()
                         .filter(entity -> entity instanceof EntityOtherPlayerMP)
                         .filter(entity -> !Friends.isFriend(entity.getName()))
@@ -73,7 +69,7 @@ public class CombatInfo extends Module {
                 this.surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};
                 final List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
 
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "gamesense.cc", posX.getValue(), posY.getValue(), color.getValue());
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "gamesense.cc", posX.getValue(), posY.getValue(), on);
                 if (players != null && mc.player.getDistance(players) <= AutoCrystal.breakRange.getValue()) {
                     FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "HTR", posX.getValue(), posY.getValue() + 10, on);
                 } else {

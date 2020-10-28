@@ -107,9 +107,9 @@ public class Announcer extends Module{
 
 					Random random = new Random();
 					if (clientSide.getValue()){
-						Command.sendClientMessage(walkMessage.replace("{blocks}", walkAmount));
+						Command.sendClientMessage(walkMessage.replace("{blocks}", " " + walkAmount));
 					} else{
-						mc.player.sendChatMessage(walkMessages[random.nextInt(walkMessages.length)].replace("{blocks}", walkAmount));
+						mc.player.sendChatMessage(walkMessages[random.nextInt(walkMessages.length)].replace("{blocks}", " " + walkAmount));
 					}
 					lastPositionUpdate = System.currentTimeMillis();
 					lastPositionX = mc.player.lastTickPosX;
@@ -132,10 +132,10 @@ public class Announcer extends Module{
 						Random random = new Random();
 						if (clientSide.getValue()){
 							Command.sendClientMessage
-									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", eaten + "").replace("{name}", mc.player.getHeldItemMainhand().getDisplayName()));
+									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", " " + eaten).replace("{name}", " " + mc.player.getHeldItemMainhand().getDisplayName()));
 						} else{
 							mc.player.sendChatMessage
-									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", eaten + "").replace("{name}", mc.player.getHeldItemMainhand().getDisplayName()));
+									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", " " + eaten).replace("{name}", " " + mc.player.getHeldItemMainhand().getDisplayName()));
 						}
 						eaten = 0;
 						eattingDelay = 0;
@@ -153,7 +153,7 @@ public class Announcer extends Module{
 			if (blockPlacedDelay >= 150 * delay.getValue()){
 				if (place.getValue() && blocksPlaced > randomNum){
 					Random random = new Random();
-					String msg = placeMessages[random.nextInt(placeMessages.length)].replace("{amount}", blocksPlaced + "").replace("{name}", mc.player.getHeldItemMainhand().getDisplayName());
+					String msg = placeMessages[random.nextInt(placeMessages.length)].replace("{amount}", " " + blocksPlaced).replace("{name}"," " + mc.player.getHeldItemMainhand().getDisplayName());
 					if (clientSide.getValue()){
 						Command.sendClientMessage(msg);
 					} else{
@@ -174,8 +174,8 @@ public class Announcer extends Module{
 			if (breaking.getValue() && blocksBroken > randomNum){
 				Random random = new Random();
 				String msg = breakMessages[random.nextInt(breakMessages.length)]
-						.replace("{amount}", blocksBroken + "")
-						.replace("{name}", mc.world.getBlockState(event.getBlockPos()).getBlock().getLocalizedName());
+						.replace("{amount}", " " + blocksBroken)
+						.replace("{name}", " " + mc.world.getBlockState(event.getBlockPos()).getBlock().getLocalizedName());
 				if (clientSide.getValue()){
 					Command.sendClientMessage(msg);
 				} else{
@@ -191,7 +191,7 @@ public class Announcer extends Module{
 	private final Listener<AttackEntityEvent> attackListener = new Listener<>(event -> {
 		if (attack.getValue() && !(event.getTarget() instanceof EntityEnderCrystal)){
 			if (attackDelay >= 300 * delay.getValue()){
-				String msg = attackMessage.replace("{name}", event.getTarget().getName()).replace("{item}", mc.player.getHeldItemMainhand().getDisplayName());
+				String msg = attackMessage.replace("{name}", " " + event.getTarget().getName()).replace("{item}", " " + mc.player.getHeldItemMainhand().getDisplayName());
 				if (clientSide.getValue()){
 					Command.sendClientMessage(msg);
 				} else{
