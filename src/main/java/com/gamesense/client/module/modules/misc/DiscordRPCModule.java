@@ -8,7 +8,6 @@ public class DiscordRPCModule extends Module {
     public DiscordRPCModule(){
         super("DiscordRPC", Category.Misc);
         setDrawn(false);
-        setEnabled(true);
     }
 
     public void onEnable(){
