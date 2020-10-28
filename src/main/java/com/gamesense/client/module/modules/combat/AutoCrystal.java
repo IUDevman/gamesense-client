@@ -259,8 +259,10 @@ public class AutoCrystal extends Module {
         if (crystalSlot == -1) {
             for (int l = 0; l < 9; ++l) {
                 if (mc.player.inventory.getStackInSlot(l).getItem() == Items.END_CRYSTAL) {
-                    crystalSlot = l;
-                    break;
+                    if (mc.player.getHeldItem(EnumHand.OFF_HAND).getItem() != Items.END_CRYSTAL) {
+                        crystalSlot = l;
+                        break;
+                    }
                 }
             }
         }
@@ -451,8 +453,9 @@ public class AutoCrystal extends Module {
         else if (breakMode.getValue().equalsIgnoreCase("Smart")){
             EntityLivingBase target = renderEnt != null ? (EntityLivingBase) renderEnt : GetNearTarget(crystal);
 
-            if (target == null)
+            if (target == null || target == mc.player) {
                 return false;
+            }
 
             float targetDmg = calculateDamage(crystal.posX + 0.5, crystal.posY + 1, crystal.posZ + 0.5, target);
 
