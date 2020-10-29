@@ -124,7 +124,7 @@ public class AutoGG extends Module{
 		if (AutoGgMessages.size() > 0)
 			message = AutoGgMessages.get(index);
 		else
-			message = "gg";
+			message = "GG! GameSense " + GameSenseMod.MODVER + " is on top!";
 
 		String messageSanitized = message.replaceAll("ยง", "").replace("{name}", name);
 		if (messageSanitized.length() > 255){
