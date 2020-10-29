@@ -7,15 +7,11 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -183,13 +179,6 @@ public class SelfWeb extends Module {
 
             if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()){
                 tryPlacing = false;
-            }
-
-            for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetPos))){
-                if (entity instanceof EntityItem || entity instanceof EntityXPOrb){
-                    tryPlacing = false;
-                    break;
-                }
             }
 
             if (tryPlacing && placeBlock(targetPos)){

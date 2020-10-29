@@ -11,8 +11,7 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
@@ -236,7 +235,7 @@ public class SelfTrap extends Module {
             }
 
             for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetPos))){
-                if (entity instanceof EntityItem || entity instanceof EntityXPOrb){
+                if (entity instanceof EntityPlayer){
                     tryPlacing = false;
                     break;
                 }
