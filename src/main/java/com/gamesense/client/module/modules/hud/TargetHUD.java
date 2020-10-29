@@ -12,10 +12,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,23 +63,23 @@ public class TargetHUD extends Module {
             backgroundColor = new GSColor(background.getValue(), 100);
             outlineColor = new GSColor(outline.getValue(), 255);
 
-            EntityPlayer player = (EntityPlayer) mc.world.loadedEntityList.stream()
+            EntityPlayer entityPlayer = (EntityPlayer) mc.world.loadedEntityList.stream()
                     .filter(entity -> IsValidEntity(entity))
                     .map(entity -> (EntityLivingBase) entity)
                     .min(Comparator.comparing(c -> mc.player.getDistance(c)))
                     .orElse(null);
 
-            if (player == null)
+            if (entityPlayer == null)
                 return;
 
-            if (player != null) {
-                String playerName = player.getName();
-                int playerHealth = (int) (player.getHealth() + player.getAbsorptionAmount());
+            if (entityPlayer != null) {
+                String playerName = entityPlayer.getName();
+                int playerHealth = (int) (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount());
                 findNameColor(playerName);
                 findHealthColor(playerHealth);
 
                 //player model
-                drawEntityPlayer(player, posX.getValue() + 35, posY.getValue() + 87);
+                drawEntityPlayer(entityPlayer, posX.getValue() + 35, posY.getValue() + 87 - (entityPlayer.isSneaking()?10:0));
 
                 //box
                 drawTargetBox();
@@ -93,16 +91,16 @@ public class TargetHUD extends Module {
                 FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Health: " + TextFormatting.RESET + playerHealth, posX.getValue() + 71, posY.getValue() + 23, healthColor);
 
                 //distance
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "Distance: " + ((int) player.getDistance(mc.player)), posX.getValue() + 71, posY.getValue() + 33, new GSColor(255, 255, 255, 255));
+                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "Distance: " + ((int) entityPlayer.getDistance(mc.player)), posX.getValue() + 71, posY.getValue() + 33, new GSColor(255, 255, 255, 255));
 
                 //status effects
-                drawStatusEffects(player, posX.getValue(), posY.getValue());
+                drawStatusEffects(entityPlayer, posX.getValue(), posY.getValue());
 
                 //armor + items
-                drawItemTextures(player, posX.getValue() + 58, posY.getValue() + 73);
+                drawItemTextures(entityPlayer, posX.getValue() + 58, posY.getValue() + 73);
 
                 //player info
-                drawPlayerInfo(player, posX.getValue() + 71, posY.getValue() + 43);
+                drawPlayerInfo(entityPlayer, posX.getValue() + 71, posY.getValue() + 43);
             }
         }
     }
@@ -122,31 +120,21 @@ public class TargetHUD extends Module {
     }
 
     public void drawEntityPlayer(EntityPlayer entityPlayer, int x, int y){
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GlStateManager.disableTexture2D();
-        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-
-        drawEntityOnScreen(x, y, 43, 28, 60, entityPlayer);
-
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.enableTexture2D();
-        GlStateManager.enableBlend();
-
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GuiInventory.drawEntityOnScreen(x, y, 43, 28, 60, entityPlayer);
     }
 
-    public void drawPlayerInfo(EntityPlayer player, int x, int y) {
+    public void drawPlayerInfo(EntityPlayer entityPlayer, int x, int y) {
 
-        if (player.inventory.armorItemInSlot(2).getItem().equals(Items.ELYTRA)) {
+        if (entityPlayer.inventory.armorItemInSlot(2).getItem().equals(Items.ELYTRA)) {
             playerinfo = "Wasp";
             playercolor = TextFormatting.LIGHT_PURPLE;
         }
-        else if (player.inventory.armorItemInSlot(2).getItem().equals(Items.DIAMOND_CHESTPLATE)) {
+        else if (entityPlayer.inventory.armorItemInSlot(2).getItem().equals(Items.DIAMOND_CHESTPLATE)) {
             playerinfo = "Threat";
             playercolor = TextFormatting.RED;
         }
-        else if (player.inventory.armorItemInSlot(3).getItem().equals(Items.AIR)) {
+        else if (entityPlayer.inventory.armorItemInSlot(3).getItem().equals(Items.AIR)) {
             playerinfo = "NewFag";
             playercolor = TextFormatting.GREEN;
         }
@@ -155,7 +143,7 @@ public class TargetHUD extends Module {
             playercolor = TextFormatting.WHITE;
         }
 
-        ping = getPing(player);
+        ping = getPing(entityPlayer);
         FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), playercolor + playerinfo + TextFormatting.WHITE + " | "  + ping + " ms", x, y, new GSColor(255, 255, 255));
     }
 
@@ -181,19 +169,19 @@ public class TargetHUD extends Module {
     }
 
     private static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
-    public void drawItemTextures(EntityPlayer entityPlayer, int px, int py){
+    public void drawItemTextures(EntityPlayer entityPlayer, int x, int y){
         GlStateManager.pushMatrix();
         RenderHelper.enableGUIStandardItemLighting();
 
         int iteration = 0;
-        for (ItemStack is : entityPlayer.getArmorInventoryList()) {
+        for (ItemStack itemStack : entityPlayer.getArmorInventoryList()) {
             iteration++;
-            if (is.isEmpty()) continue;
-            int x = px - 90 + (9 - iteration) * 20 + 2;
+            if (itemStack.isEmpty()) continue;
+            int inX = x - 90 + (9 - iteration) * 20 + 2;
 
             itemRender.zLevel = 200F;
-            itemRender.renderItemAndEffectIntoGUI(is, x, py);
-            itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, is, x, py, "");
+            itemRender.renderItemAndEffectIntoGUI(itemStack, inX, y);
+            itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, inX, y, "");
             itemRender.zLevel = 0F;
         }
 
@@ -236,35 +224,6 @@ public class TargetHUD extends Module {
         else {
             healthColor = new GSColor(255, 0, 0, 255);
         }
-    }
-    
-    public static void drawEntityOnScreen(int posX, int posY, int scale, float mouseX, float mouseY, EntityLivingBase ent) {
-        GlStateManager.enableColorMaterial();
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float)posX, (float)posY, 50.0F);
-        GlStateManager.scale((float)(-scale), (float)scale, (float)scale);
-        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-        float f = ent.renderYawOffset;
-        float f1 = ent.rotationYaw;
-        float f2 = ent.rotationPitch;
-        float f3 = ent.prevRotationYawHead;
-        float f4 = ent.rotationYawHead;
-        GlStateManager.rotate(135.0F, 0.0F, 1.0F, 0.0F);
-        RenderHelper.enableStandardItemLighting();
-        GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-((float)Math.atan((double)(mouseY / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.translate(0.0F, 0.0F, 0.0F);
-        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
-        rendermanager.setPlayerViewY(180.0F);
-        rendermanager.setRenderShadow(false);
-        rendermanager.renderEntity(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
-        rendermanager.setRenderShadow(true);
-        GlStateManager.popMatrix();
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GlStateManager.disableTexture2D();
-        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
     }
 
     private boolean IsValidEntity (Entity e){
