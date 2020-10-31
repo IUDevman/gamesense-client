@@ -4,38 +4,41 @@ import com.gamesense.api.event.events.JumpEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.world.MotionUtils;
 import com.gamesense.client.module.Module;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 
-import java.util.ArrayList;
-
-public class Sprint extends Module{
+public class Sprint extends Module {
 
 	public Sprint(){
 		super("Sprint", Category.Movement);
 	}
 
-	Setting.Mode Mode;
+	Setting.Boolean reverseSprint;
 
 	public void setup(){
-		ArrayList<String> sprintModes = new ArrayList<>();
-		sprintModes.add("Legit");
-		sprintModes.add("Rage");
-		Mode = registerMode("Mode", "Mode", sprintModes, "Legit");
+		reverseSprint = registerBoolean("Reverse", "Reverse", false);
 	}
 
 	public void onUpdate(){
+		if (mc.player == null){
+			return;
+		}
+
 		if (mc.gameSettings.keyBindSneak.isKeyDown()){
 			mc.player.setSprinting(false);
 			return;
 		}
-		if (mc.player.getFoodStats().getFoodLevel() > 6 && Mode.getValue().equalsIgnoreCase("Rage") ? (mc.player.moveForward != 0 || mc.player.moveStrafing != 0) : mc.player.moveForward > 0)
+		else if (mc.player.getFoodStats().getFoodLevel() > 6 && reverseSprint.getValue()? (mc.player.moveForward != 0 || mc.player.moveStrafing != 0):mc.player.moveForward > 0){
 			mc.player.setSprinting(true);
-	}
-
-	public void onJump(JumpEvent event){
-		if (Mode.getValue().equalsIgnoreCase("Rage")){
-			double[] dir = MotionUtils.forward(0.017453292F);
-			event.getLocation().setX(dir[0] * 0.2f);
-			event.getLocation().setZ(dir[1] * 0.2f);
 		}
 	}
+
+	@EventHandler
+	private final Listener<JumpEvent> jumpEventListener = new Listener<>(event -> {
+		if (reverseSprint.getValue()){
+			double[] direction = MotionUtils.forward(0.017453292F);
+			event.getLocation().setX(direction[0] * 0.2F);
+			event.getLocation().setZ(direction[1] * 0.2F);
+		}
+	});
 }
