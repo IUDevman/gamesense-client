@@ -24,9 +24,9 @@
 
 
 <!-- INFORMATION -->
-##Information
+## Information
 
-###About
+#### About
 GameSense is a Minecraft Forge "Utility Mod" for anarchy-related servers such as 2b2t. 
 This project was started by Cyber and Hoosiers in early January 2020 as a method to learn some basics of Java coding.
 Feel free to contribute and join the official discord by clicking the shield above.
@@ -38,7 +38,7 @@ Most notable features:
 * Custom renderings that are compatible with other mods such as future
 * Clean GUI and stable config
 
-###Contributors
+#### Contributors
 * Cyber (original developer)
 * Hoosiers (original developer, head developer, maintainer)
 * lukflug (color settings, OpenGL and minor optimizations, issue tracker)
@@ -47,7 +47,7 @@ Most notable features:
 * linustouchtips (TargetHUD, SkyColor, and Quiver)
 * DarkiBoi (TotemPopCounter)
 
-###Credits
+#### Credits
 Some code used from:
 * KAMI / 086
 * Osiris / Finz0 (old base)
@@ -57,7 +57,7 @@ Some code used from:
 
 
 <!-- INSTALLATION -->
-##Installation
+## Installation
 1. GameSense requires Minecraft v1.12.2 Forge to run. You can download that here: https://files.minecraftforge.net/.
 2. Once forge is installed, download the latest release from the releases page or from the discord.
 3. Navigate to your Minecraft folder (%appdata%/.minecraft).
@@ -66,10 +66,10 @@ Some code used from:
 6. Launch the game using your Forge profile (created in step 1).
 
 <!-- CONTRIBUTING -->
-##Contributing
+## Contributing
 Feel free to help out with development by creating a pull request and it will be reviewed.
 
-###Guidelines
+#### Guidelines
 * All code commited should be original or properly credited.
 * Please explain `in detail` on what you changed and why it would be beneficial.
 * Try to separate new features. Large pull requests with multiple new features take longer to be merged.
@@ -79,7 +79,7 @@ If you have any questions about this, feel free to ask in the discord or by mess
 
 
 <!-- SUPPORT -->
-##Support
+## Support
 Feature requests and major bug reports can be given by creating an issue. 
 Please try to explain in detail the feature/problem and also provide the names of the other mods you are using with GameSense (bug reporting).
 
