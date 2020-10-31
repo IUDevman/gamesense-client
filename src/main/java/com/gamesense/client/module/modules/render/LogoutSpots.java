@@ -1,124 +1,166 @@
 package com.gamesense.client.module.modules.render;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.api.util.world.Timer;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
-
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.world.WorldEvent;
 
-public class LogoutSpots extends Module {
-	public LogoutSpots() {super("LogoutSpots", Category.Render);}
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-	Map<Entity, String> loggedPlayers = new ConcurrentHashMap<>();
-	List<Entity> lastTickEntities;
-	
-	Setting.Integer width;
-	Setting.ColorSetting color;
-	Setting.ColorSetting nameColor;
-	
-	public void setup() {
-		width=registerInteger("Width","Width",1,1,10);
-		color=registerColor("Box Color","Color",new GSColor(0,0,0));
-		nameColor=registerColor("Nametag Color","NameColor");
+/**
+ * Rewrote by Hoosiers on 10/30/20
+ */
+
+public class LogoutSpots extends Module {
+	public LogoutSpots(){
+		super("LogoutSpots", Category.Render);
 	}
 
-	@EventHandler
-	private final Listener<PlayerJoinEvent> listener1 = new Listener<>(event -> {
-		loggedPlayers.forEach((e, s) -> {
-			try {
-				if (e.getName().equalsIgnoreCase(event.getName())) {
-					loggedPlayers.remove(e);
-					Command.sendClientMessage(event.getName() + " reconnected!");
-				}
-			} catch(ConcurrentModificationException ex){ex.printStackTrace();}
-		});
-	});
+	Setting.Boolean chatMsg;
+	Setting.Boolean nameTag;
+	Setting.Integer lineWidth;
+	Setting.Integer range;
+	Setting.Mode renderMode;
+	Setting.ColorSetting color;
 
-	@EventHandler
-	private final Listener<PlayerLeaveEvent> listener2 = new Listener<>(event -> {
-		if (mc.world == null) return;
-		lastTickEntities.forEach(e ->{
-			if(e.getName().equalsIgnoreCase(event.getName())){
-				String date = new SimpleDateFormat("k:mm").format(new Date());
-				loggedPlayers.put(e, date);
-				String pos = "x" + e.getPosition().getX() + " y" + e.getPosition().getY() + " z" + e.getPosition().getZ();
-				Command.sendClientMessage(event.getName() + " disconnected at " + pos + "!");
-			}
-		});
-	});
+	public void setup(){
+		ArrayList<String> renderModes = new ArrayList<>();
+		renderModes.add("Both");
+		renderModes.add("Outline");
+		renderModes.add("Fill");
+
+		range = registerInteger("Range", "Range", 100, 10, 260);
+		chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+		nameTag = registerBoolean("Nametag", "Nametag", true);
+		lineWidth = registerInteger("Width", "Width", 1, 1, 10);
+		renderMode = registerMode("Render", "Render", renderModes, "Both");
+		color = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
+	}
+
+	Map<net.minecraft.entity.Entity, String> loggedPlayers = new ConcurrentHashMap<>();
+	List<EntityPlayer> worldPlayers = new ArrayList<>();
+	Timer timer = new Timer();
 
 	public void onUpdate(){
-		lastTickEntities = mc.world.loadedEntityList;
+		mc.world.playerEntities.stream()
+				.filter(entityPlayer -> entityPlayer != mc.player)
+				.filter(entityPlayer -> entityPlayer.getDistance(mc.player) <= range.getValue())
+				.forEach(entityPlayer -> worldPlayers.add(entityPlayer));
 	}
 
-	public void onWorldRender(RenderEvent event) {
-		loggedPlayers.forEach((e, time) -> {
-			if(mc.player.getDistance(e) < 500) {
-				GlStateManager.pushMatrix();
-				drawLogoutBox(e.getRenderBoundingBox(), width.getValue());
-				drawNametag(e, time);
-				GlStateManager.popMatrix();
-			}
-		});
-	}
-
-	public void drawLogoutBox(AxisAlignedBB bb, int width){
-		GameSenseTessellator.drawBoundingBox(bb, width, color.getValue());
-	}
-
-	@EventHandler
-	private final Listener<WorldEvent.Unload> listener3 = new Listener<>(event -> {
-		lastTickEntities.clear();
-		if(mc.player == null)
-			loggedPlayers.clear();
-		else
-		if(!mc.player.isDead)
-			loggedPlayers.clear();
-	});
-
-	@EventHandler
-	private final Listener<WorldEvent.Load> listener4 = new Listener<>(event -> {
-		lastTickEntities.clear();
-		if (mc.player == null) {
-			loggedPlayers.clear();
-		} else {
-			if (!mc.player.isDead) loggedPlayers.clear();
+	public void onWorldRender(RenderEvent event){
+		if (mc.player != null && mc.world != null){
+			loggedPlayers.forEach((entity, string) -> {
+				startFunction(entity, string);
+			});
 		}
-	});
+	}
 
 	public void onEnable(){
-		lastTickEntities = new ArrayList<>();
 		loggedPlayers.clear();
+		worldPlayers = new ArrayList<>();
 		GameSenseMod.EVENT_BUS.subscribe(this);
 	}
 
-	public void onDisable() {
+	public void onDisable(){
+		worldPlayers.clear();
 		GameSenseMod.EVENT_BUS.unsubscribe(this);
 	}
 
-	private void drawNametag(Entity entityIn, String t) {
-		String[] text=new String[2];
-		text[0] = entityIn.getName() + "  (" + t + ")";
-		text[1] = "x" + entityIn.getPosition().getX() + " y" + entityIn.getPosition().getY() + " z" + entityIn.getPosition().getZ();
-		GameSenseTessellator.drawNametag(entityIn,text,nameColor.getValue(),0);
+	private void startFunction(Entity entity, String string){
+		int posX = (int) entity.posX;
+		int posY = (int) entity.posY;
+		int posZ = (int) entity.posZ;
+
+		String[] nameTagMessage = new String[2];
+		nameTagMessage[0] = entity.getName() + " (" + string + ")";
+		nameTagMessage[1] = "(" + posX + "," + posY + "," + posZ + ")";
+
+		GlStateManager.pushMatrix();
+		GameSenseTessellator.drawNametag(entity, nameTagMessage, color.getValue(),0);
+
+		switch (renderMode.getValue()){
+			case "Both": {
+				GameSenseTessellator.drawBoundingBox(entity.getRenderBoundingBox(), lineWidth.getValue(), color.getValue());
+				GameSenseTessellator.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
+				break;
+			}
+			case "Outline": {
+				GameSenseTessellator.drawBoundingBox(entity.getRenderBoundingBox(), lineWidth.getValue(), color.getValue());
+				break;
+			}
+			case "Fill": {
+				GameSenseTessellator.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
+				break;
+			}
+		}
+		GlStateManager.popMatrix();
 	}
+
+	/** event handlers below: **/
+
+	@EventHandler
+	private final Listener<PlayerJoinEvent> playerJoinEventListener1 = new Listener<>(event -> {
+		if (mc.world != null) {
+			loggedPlayers.forEach((entity, string) -> {
+				if (entity.getName().equalsIgnoreCase(event.getName())) {
+					loggedPlayers.remove(entity);
+
+					if (chatMsg.getValue()) {
+						Command.sendClientMessage(event.getName() + " reconnected!");
+					}
+				}
+			});
+		}
+	});
+
+	@EventHandler
+	private final Listener<PlayerLeaveEvent> playerLeaveEventListener2 = new Listener<>(event -> {
+		if (mc.world != null) {
+			worldPlayers.forEach(entity -> {
+				if (entity.getName().equalsIgnoreCase(event.getName()) && !(loggedPlayers.containsKey(entity.getName()))) {
+					String date = new SimpleDateFormat("k:mm").format(new Date());
+					loggedPlayers.put(entity, date);
+					worldPlayers.remove(entity);
+
+					if (chatMsg.getValue() && timer.getTimePassed() / 50L >= 5) {
+						String location = "(" + (int) entity.posX + "," + (int) entity.posY + "," + (int) entity.posZ + ")";
+						Command.sendClientMessage(event.getName() + " disconnected at " + location + "!");
+						timer.reset();
+					}
+				}
+			});
+		}
+	});
+
+	@EventHandler
+	private final Listener<WorldEvent.Unload> unloadListener1 = new Listener<>(event -> {
+		worldPlayers.clear();
+		if (mc.player == null || mc.world == null){
+			loggedPlayers.clear();
+		}
+	});
+
+	@EventHandler
+	private final Listener<WorldEvent.Load> unloadListener2 = new Listener<>(event -> {
+		worldPlayers.clear();
+		if (mc.player == null || mc.world == null){
+			loggedPlayers.clear();
+		}
+	});
 }
