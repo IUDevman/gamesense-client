@@ -22,7 +22,7 @@ public class Freecam extends Module {
 
 	public void setup() {
 		cancelPackets = registerBoolean("Cancel Packets","CancelPackets",true);
-		speed = registerDouble("Speed", "Speed", 5.0D, 0.0D, 10.0D);
+		speed = registerDouble("Speed", "Speed", 10, 0, 20);
 	}
 
 	private double posX, posY, posZ;

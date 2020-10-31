@@ -28,19 +28,6 @@ public class Blink extends Module {
     EntityOtherPlayerMP entity;
     private final Queue<Packet> packets = new ConcurrentLinkedQueue();
 
-    @EventHandler
-    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
-        Packet packet = event.getPacket();
-
-        if (packet instanceof CPacketChatMessage || packet instanceof CPacketConfirmTeleport || packet instanceof CPacketKeepAlive || packet instanceof CPacketTabComplete || packet instanceof CPacketClientStatus) {
-            return;
-        }
-        if (mc.player == null || mc.player.isDead) {
-            packets.add(packet);
-            event.cancel();
-        }
-    });
-
     public void onEnable() {
         GameSenseMod.EVENT_BUS.subscribe(this);
 
@@ -74,6 +61,19 @@ public class Blink extends Module {
             packets.clear();
         }
     }
+
+    @EventHandler
+    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
+        Packet packet = event.getPacket();
+
+        if (packet instanceof CPacketChatMessage || packet instanceof CPacketConfirmTeleport || packet instanceof CPacketKeepAlive || packet instanceof CPacketTabComplete || packet instanceof CPacketClientStatus) {
+            return;
+        }
+        if (mc.player == null || mc.player.isDead) {
+            packets.add(packet);
+            event.cancel();
+        }
+    });
 
     public String getHudInfo(){
         String t = "[" + ChatFormatting.WHITE + packets.size() + ChatFormatting.GRAY + "]";
