@@ -122,7 +122,6 @@ public class VoidESP extends Module {
 	private void drawFlat(BlockPos blockPos) {
 		if (renderType.getValue().equalsIgnoreCase("Fill") || renderType.getValue().equalsIgnoreCase("Both")) {
 			GSColor c=new GSColor(color.getValue(),50);
-			//AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			if (renderMode.getValue().equalsIgnoreCase("Flat")) {
 				GameSenseTessellator.drawBox(blockPos, 1, c, GeometryMasks.Quad.DOWN);
 			}
@@ -132,7 +131,6 @@ public class VoidESP extends Module {
 	private void drawBox(BlockPos blockPos) {
 		if (renderType.getValue().equalsIgnoreCase("Fill") || renderType.getValue().equalsIgnoreCase("Both")) {
 			GSColor c=new GSColor(color.getValue(),50);
-			//AxisAlignedBB bb = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
 			GameSenseTessellator.drawBox(blockPos, 1, c, GeometryMasks.Quad.ALL);
 		}
 	}
