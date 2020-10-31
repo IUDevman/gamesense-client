@@ -83,6 +83,10 @@ public class LogoutSpots extends Module {
 	}
 
 	private void startFunction(Entity entity, String string){
+		if (entity.getDistance(mc.player) > range.getValue()){
+			return;
+		}
+
 		int posX = (int) entity.posX;
 		int posY = (int) entity.posY;
 		int posZ = (int) entity.posZ;
