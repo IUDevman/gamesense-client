@@ -1,6 +1,7 @@
 <!-- PROJECT TITLE -->
 ![logo](https://github.com/IUDevman/gamesense-client/blob/master/src/main/resources/assets/gamesense/gamesense.png)
 
+
 <!-- PROJECT SHIELDS -->
 [![version](https://img.shields.io/badge/Version-2.2.0-green.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
 [![discord](https://img.shields.io/badge/Discord-xfgPw63-8080c0)](https://discord.gg/xfgPw63)
@@ -9,21 +10,23 @@
 [![license](https://img.shields.io/badge/License-GPL_v3.0-white.svg)](https://github.com/lukflug/gamesense-client/blob/master/LICENSE)
 ![minecraft](https://img.shields.io/badge/Minecraft-1.12.2-blue.svg)
 
+
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 * [Information](#Information)
     * [About](#About)
     * [Contributors](#Contributors)
-    * [Additional Credits](#Additional Credits)
+    * [Additional Credits](#Credits)
 * [Installation](#Installation)
 * [Contributing](#Contributing)
     * [Guidelines](#Guidelines)
 * [Support](#Support)
 
+
 <!-- INFORMATION -->
 ##Information
 
-#####About
+###About
 GameSense is a Minecraft Forge "Utility Mod" for anarchy-related servers such as 2b2t. 
 This project was started by Cyber and Hoosiers in early January 2020 as a method to learn some basics of Java coding.
 Feel free to contribute and join the official discord by clicking the shield above.
@@ -35,7 +38,7 @@ Most notable features:
 * Custom renderings that are compatible with other mods such as future
 * Clean GUI and stable config
 
-#####Contributors
+###Contributors
 * Cyber (original developer)
 * Hoosiers (original developer, head developer, maintainer)
 * lukflug (color settings, OpenGL and minor optimizations, issue tracker)
@@ -44,12 +47,14 @@ Most notable features:
 * linustouchtips (TargetHUD, SkyColor, and Quiver)
 * DarkiBoi (TotemPopCounter)
 
-#####Additional Credits
+###Credits
+Some code used from:
 * KAMI / 086
 * Osiris / Finz0 (old base)
 * Seppuku / SeppukuDevelopment
 * Backdoored / CookieDragon234
 * Aurora / Memeszz
+
 
 <!-- INSTALLATION -->
 ##Installation
@@ -64,13 +69,14 @@ Most notable features:
 ##Contributing
 Feel free to help out with development by creating a pull request and it will be reviewed.
 
-#####Guidelines
+###Guidelines
 * All code commited should be original or properly credited.
 * Please explain `in detail` on what you changed and why it would be beneficial.
 * Try to separate new features. Large pull requests with multiple new features take longer to be merged.
 * Try to follow the general style of the project.
 
 If you have any questions about this, feel free to ask in the discord or by messaging Hoosiers (GooberTown#7384) on Discord.
+
 
 <!-- SUPPORT -->
 ##Support
