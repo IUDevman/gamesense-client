@@ -1,34 +1,41 @@
-# GameSense Client
+<!-- PROJECT TITLE -->
 ![logo](https://github.com/IUDevman/gamesense-client/blob/master/src/main/resources/assets/gamesense/gamesense.png)
 
+<!-- PROJECT SHIELDS -->
 [![version](https://img.shields.io/badge/Version-2.2.0-green.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
 [![discord](https://img.shields.io/badge/Discord-xfgPw63-8080c0)](https://discord.gg/xfgPw63)
 ![build](https://github.com/IUDevman/gamesense-master/workflows/Java%20CI%20with%20Gradle/badge.svg)
 ![GitHub All Releases](https://img.shields.io/github/downloads/IUDevman/gamesense-client/total)
 [![license](https://img.shields.io/badge/License-GPL_v3.0-white.svg)](https://github.com/lukflug/gamesense-client/blob/master/LICENSE)
 ![minecraft](https://img.shields.io/badge/Minecraft-1.12.2-blue.svg)
-[![forge](https://img.shields.io/badge/Forge-1.12.2--14.23.5.2768-orange.svg)](https://github.com/MinecraftForge/MinecraftForge)
-[![forgeGradle](https://img.shields.io/badge/ForgeGradle-2.3-orange.svg)](https://github.com/MinecraftForge/ForgeGradle)
-![mcp](https://img.shields.io/badge/MCP-20180814-orange.svg)
-[![spongeMixin](https://img.shields.io/badge/Sponge_Mixin-0.7.4-yellow.svg)](https://github.com/SpongePowered/Mixin)
-![spongeMixinGradle](https://img.shields.io/badge/Sponge_MixinGradle-0.4-yellow.svg)
-[![gradle](https://img.shields.io/badge/Gradle-4.8.1-000080.svg)](https://github.com/gradle/gradle)
-![java](https://img.shields.io/badge/Java-1.8-orange.svg)
-[![shadow](https://img.shields.io/badge/Gradle_Shadow-1.2.3-red.svg)](https://github.com/johnrengelman/shadow)
-[![alpine](https://img.shields.io/badge/Alpine-1.5-red.svg)](https://github.com/ZeroMemes/Alpine)
-![org.json.simple](https://img.shields.io/badge/json--simple-1.1.1-red.svg)
-[![typeTools](https://img.shields.io/badge/TypeTools-0.5.0-red.svg)](https://github.com/jhalterman/typetools)
-[![optifine](https://img.shields.io/badge/Compatible_with-OptiFine_HD_Ultra%20F5-yellowgreen.svg)](https://www.optifine.net)
-[![forgeHax](https://img.shields.io/badge/Compatible_with-ForgeHax_2.9.0-yellowgreen.svg)](https://github.com/fr1kin/ForgeHax)
-[![kamiBlue](https://img.shields.io/badge/Compatible_with-KAMI_Blue_1.1.6-yellowgreen.svg)](https://github.com/kami-blue/client)
-[![salhack](https://img.shields.io/badge/Compatible_with-Salhack_2.05-yellowgreen.svg)](https://github.com/ionar2/salhack)
-[![seppuku](https://img.shields.io/badge/Compatible_with-Seppuku_3.0.6-yellowgreen.svg)](https://github.com/seppukudevelopment/seppuku)
-[![inertia](https://img.shields.io/badge/Compatible_with-Inertia_3.1.3-yellowgreen.svg)](https://github.com/THEREALWWEFAN231/Inertia)
-[![forgeWurst](https://img.shields.io/badge/Compatible_with-ForgeWurst_0.11-yellowgreen.svg)](https://github.com/Wurst-Imperium/ForgeWurst)
-[![wurstPlusTwo](https://img.shields.io/badge/Compatible_with-WurstPlusTwo_1.0-yellowgreen.svg)](https://github.com/TrvsF/wurstplus-two)
-![y2k](https://img.shields.io/badge/Y2K-compliant-brightgreen.svg)
 
-Contributors:
+<!-- TABLE OF CONTENTS -->
+## Table of Contents
+* [Information](#Information)
+    * [About](#About)
+    * [Contributors](#Contributors)
+    * [Additional Credits](#Additional Credits)
+* [Installation](#Installation)
+* [Contributing](#Contributing)
+    * [Guidelines](#Guidelines)
+* [Support](#Support)
+
+<!-- INFORMATION -->
+##Information
+
+#####About
+GameSense is a Minecraft Forge "Utility Mod" for anarchy-related servers such as 2b2t. 
+This project was started by Cyber and Hoosiers in early January 2020 as a method to learn some basics of Java coding.
+Feel free to contribute and join the official discord by clicking the shield above.
+Please note, this repository and mod is not associated with "GameSense.pub" nor does it use any assets/code from it.
+
+Most notable features:
+* Custom combat modules
+* Viewmodel changer
+* Custom renderings that are compatible with other mods such as future
+* Clean GUI and stable config
+
+#####Contributors
 * Cyber (original developer)
 * Hoosiers (original developer, head developer, maintainer)
 * lukflug (color settings, OpenGL and minor optimizations, issue tracker)
@@ -37,14 +44,37 @@ Contributors:
 * linustouchtips (TargetHUD, SkyColor, and Quiver)
 * DarkiBoi (TotemPopCounter)
 
-Some code used from:
+#####Additional Credits
+* KAMI / 086
+* Osiris / Finz0 (old base)
+* Seppuku / SeppukuDevelopment
+* Backdoored / CookieDragon234
+* Aurora / Memeszz
 
-KAMI / 086
+<!-- INSTALLATION -->
+##Installation
+1. GameSense requires Minecraft v1.12.2 Forge to run. You can download that here: https://files.minecraftforge.net/.
+2. Once forge is installed, download the latest release from the releases page or from the discord.
+3. Navigate to your Minecraft folder (%appdata%/.minecraft).
+4. If this does not already exist, create a folder titled `mods` and with another folder inside titled `1.12.2`.
+5. Drag the release jar into the `1.12.2` folder.
+6. Launch the game using your Forge profile (created in step 1).
 
-Osiris / Finz0 (old base)
+<!-- CONTRIBUTING -->
+##Contributing
+Feel free to help out with development by creating a pull request and it will be reviewed.
 
-Seppuku / SeppukuDevelopment
+#####Guidelines
+* All code commited should be original or properly credited.
+* Please explain `in detail` on what you changed and why it would be beneficial.
+* Try to separate new features. Large pull requests with multiple new features take longer to be merged.
+* Try to follow the general style of the project.
 
-Backdoored / CookieDragon234
+If you have any questions about this, feel free to ask in the discord or by messaging Hoosiers (GooberTown#7384) on Discord.
 
-Aurora / Memeszz
+<!-- SUPPORT -->
+##Support
+Feature requests and major bug reports can be given by creating an issue. 
+Please try to explain in detail the feature/problem and also provide the names of the other mods you are using with GameSense (bug reporting).
+
+For small bug reports/faster help, join the discord and ask your questions there.
