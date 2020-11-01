@@ -48,11 +48,10 @@ Most notable features:
 * DarkiBoi (TotemPopCounter)
 
 #### Credits
-Some code used from:
+Some code used from (not directly referenced in code):
 * KAMI / 086
 * Osiris / Finz0 (old base)
 * Backdoored / CookieDragon234
-* Aurora / Memeszz
 
 
 <!-- INSTALLATION -->

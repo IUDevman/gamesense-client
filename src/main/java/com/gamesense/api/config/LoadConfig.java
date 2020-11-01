@@ -94,7 +94,7 @@ public class LoadConfig {
                     case BOOLEAN:
                         ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
                         break;
-                    case INT:
+                    case INTEGER:
                         ((Setting.Integer) setting).setValue(dataObject.getAsInt());
                         break;
                     case DOUBLE:

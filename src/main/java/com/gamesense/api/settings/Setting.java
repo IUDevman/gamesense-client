@@ -8,17 +8,25 @@ import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.settings.EnumSetting;
 import com.lukflug.panelstudio.settings.NumberSetting;
 
+/**
+ * @author Finz0 for Osiris
+ * @author Memeszz for some static class/functions for settings
+ * 		@src (much newer) https://github.com/Memeszz/Aurora-public
+ * @author Hoosiers, heavy modifications
+ * @author lukflug, PanelStudio integration
+ */
+
 public abstract class Setting {
 
 	private final String name;
-	private final String configname;
+	private final String configName;
 	private final Module parent;
 	private final Module.Category category;
 	private final Type type;
 
-	public Setting(final String name, final String configname, final Module parent, final Module.Category category, final Type type){
+	public Setting(final String name, final String configName, final Module parent, final Module.Category category, final Type type){
 		this.name = name;
-		this.configname = configname;
+		this.configName = configName;
 		this.parent = parent;
 		this.type = type;
 		this.category = category;
@@ -29,7 +37,7 @@ public abstract class Setting {
 	}
 
 	public String getConfigName(){
-		return this.configname;
+		return this.configName;
 	}
 
 	public Module getParent(){
@@ -45,7 +53,7 @@ public abstract class Setting {
 	}
 
 	public enum Type{
-		INT,
+		INTEGER,
 		DOUBLE,
 		BOOLEAN,
 		MODE,
@@ -57,8 +65,8 @@ public abstract class Setting {
 		private final int min;
 		private final int max;
 
-		public Integer(final String name, final String configname, final Module parent, final Module.Category category, final int value, final int min, final int max){
-			super(name, configname, parent, category, Type.INT);
+		public Integer(final String name, final String configName, final Module parent, final Module.Category category, final int value, final int min, final int max){
+			super(name, configName, parent, category, Type.INTEGER);
 			this.value = value;
 			this.min = min;
 			this.max = max;
@@ -97,8 +105,8 @@ public abstract class Setting {
 		private final double min;
 		private final double max;
 
-		public Double(final String name, final String configname, final Module parent, final Module.Category category, final double value, final double min, final double max){
-			super(name, configname, parent, category, Type.DOUBLE);
+		public Double(final String name, final String configName, final Module parent, final Module.Category category, final double value, final double min, final double max){
+			super(name, configName, parent, category, Type.DOUBLE);
 			this.value = value;
 			this.min = min;
 			this.max = max;
@@ -135,8 +143,8 @@ public abstract class Setting {
 	public static class Boolean extends Setting implements com.lukflug.panelstudio.settings.Setting<java.lang.Boolean> {
 		private boolean value;
 
-		public Boolean(final String name, final String configname, final Module parent, final Module.Category category, final boolean value){
-			super(name, configname, parent, category, Type.BOOLEAN);
+		public Boolean(final String name, final String configName, final Module parent, final Module.Category category, final boolean value){
+			super(name, configName, parent, category, Type.BOOLEAN);
 			this.value = value;
 		}
 
@@ -159,8 +167,8 @@ public abstract class Setting {
 		private String value;
 		private final java.util.List<String> modes;
 
-		public Mode(final String name, final String configname, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value){
-			super(name, configname, parent, category, Type.MODE);
+		public Mode(final String name, final String configName, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value){
+			super(name, configName, parent, category, Type.MODE);
 			this.value = value;
 			this.modes = modes;
 		}
@@ -195,8 +203,8 @@ public abstract class Setting {
 		private boolean rainbow;
 		private GSColor value;
 		
-		public ColorSetting (final String name, final String configname, final Module parent, final Module.Category category, boolean rainbow, final GSColor value) {
-			super(name,configname,parent,category,Type.COLOR);
+		public ColorSetting (final String name, final String configName, final Module parent, final Module.Category category, boolean rainbow, final GSColor value) {
+			super(name,configName,parent,category,Type.COLOR);
 			this.rainbow=rainbow;
 			this.value=value;
 		}

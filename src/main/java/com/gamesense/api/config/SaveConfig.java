@@ -103,7 +103,7 @@ public class SaveConfig {
                     settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Boolean) setting).getValue()));
                     break;
                 }
-                case INT: {
+                case INTEGER: {
                     settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Integer) setting).getValue()));
                     break;
                 }

@@ -31,7 +31,7 @@ public class SetSettingCommand extends Command{
 							((Setting.Boolean) s).setValue(java.lang.Boolean.parseBoolean(args[2]));
 							Command.sendClientMessage(s.getConfigName() + " set to " + ((Setting.Boolean) s).getValue() + "!");
 					}
-					if (s.getType().equals(Setting.Type.INT)){
+					if (s.getType().equals(Setting.Type.INTEGER)){
 						if (java.lang.Integer.parseInt(args[2]) > ((Setting.Integer) s).getMax()){
 							((Setting.Integer) s).setValue(((Setting.Integer) s).getMax());
 						}

@@ -106,38 +106,40 @@ public abstract class Module implements Toggleable,KeybindSetting {
 		drawn = d;
 	}
 
-	protected Setting.Integer registerInteger(final String name, final String configname, final int value, final int min, final int max) {
-		final Setting.Integer s = new Setting.Integer(name, configname, this, getCategory(), value, min, max);
-		GameSenseMod.getInstance().settingsManager.addSetting(s);
-		return s;
+	/** Check Setting.java */
+
+	protected Setting.Integer registerInteger(final String name, final String configName, final int value, final int min, final int max) {
+		final Setting.Integer setting = new Setting.Integer(name, configName, this, getCategory(), value, min, max);
+		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		return setting;
 	}
 
-	protected Setting.Double registerDouble(final String name, final String configname, final double value, final double min, final double max) {
-		final Setting.Double s = new Setting.Double(name, configname, this, getCategory(), value, min, max);
-		GameSenseMod.getInstance().settingsManager.addSetting(s);
-		return s;
+	protected Setting.Double registerDouble(final String name, final String configName, final double value, final double min, final double max) {
+		final Setting.Double setting = new Setting.Double(name, configName, this, getCategory(), value, min, max);
+		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		return setting;
 	}
 
-	protected Setting.Boolean registerBoolean(final String name, final String configname, final boolean value) {
-		final Setting.Boolean s = new Setting.Boolean(name, configname, this, getCategory(), value);
-		GameSenseMod.getInstance().settingsManager.addSetting(s);
-		return s;
+	protected Setting.Boolean registerBoolean(final String name, final String configName, final boolean value) {
+		final Setting.Boolean setting = new Setting.Boolean(name, configName, this, getCategory(), value);
+		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		return setting;
 	}
 
-	protected Setting.Mode registerMode(final String name, final String configname, final List<String> modes, final String value) {
-		final Setting.Mode s = new Setting.Mode(name, configname, this, getCategory(), modes, value);
-		GameSenseMod.getInstance().settingsManager.addSetting(s);
-		return s;
+	protected Setting.Mode registerMode(final String name, final String configName, final List<String> modes, final String value) {
+		final Setting.Mode setting = new Setting.Mode(name, configName, this, getCategory(), modes, value);
+		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		return setting;
 	}
 	
-	protected Setting.ColorSetting registerColor (final String name, final String configname, GSColor color) {
-		final Setting.ColorSetting s = new Setting.ColorSetting(name, configname, this, getCategory(), false, color);
-		GameSenseMod.getInstance().settingsManager.addSetting(s);
-		return s;
+	protected Setting.ColorSetting registerColor (final String name, final String configName, GSColor color) {
+		final Setting.ColorSetting setting = new Setting.ColorSetting(name, configName, this, getCategory(), false, color);
+		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		return setting;
 	}
 	
-	protected Setting.ColorSetting registerColor (final String name, final String configname) {
-		return registerColor(name,configname,new GSColor(90,145,240));
+	protected Setting.ColorSetting registerColor (final String name, final String configName) {
+		return registerColor(name,configName,new GSColor(90,145,240));
 	}
 
 	public enum Category{
