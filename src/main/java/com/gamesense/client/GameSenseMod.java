@@ -2,20 +2,20 @@ package com.gamesense.client;
 
 import java.awt.Font;
 
-import com.gamesense.api.config.ConfigStopper;
-import com.gamesense.api.config.LoadConfig;
-import com.gamesense.api.config.SaveConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
+import com.gamesense.api.config.ConfigStopper;
+import com.gamesense.api.config.LoadConfig;
+import com.gamesense.api.config.SaveConfig;
 import com.gamesense.api.event.EventProcessor;
-import com.gamesense.api.util.players.enemy.Enemies;
-import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.SettingsManager;
 import com.gamesense.api.util.font.CFontRenderer;
+import com.gamesense.api.util.players.enemy.Enemies;
+import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.CapeUtils;
-import com.gamesense.client.clickgui.ClickGUI;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.ModuleManager;
 
@@ -43,7 +43,7 @@ public class GameSenseMod{
 	public SettingsManager settingsManager;
 	public static CFontRenderer fontRenderer;
 	public CapeUtils capeUtils;
-	public ClickGUI clickGUI;
+	public GameSenseGUI clickGUI;
 	public Friends friends;
 	public Enemies enemies;
 
@@ -79,7 +79,7 @@ public class GameSenseMod{
 		moduleManager = new ModuleManager();
 		log.info("Modules initialized!");
 
-		clickGUI = new ClickGUI();
+		clickGUI = new GameSenseGUI();
 		log.info("ClickGUI initialized!");
 
 		CommandManager.initCommands();

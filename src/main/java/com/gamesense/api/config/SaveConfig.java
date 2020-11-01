@@ -1,20 +1,5 @@
 package com.gamesense.api.config;
 
-import com.gamesense.api.util.players.enemy.Enemies;
-import com.gamesense.api.util.players.enemy.Enemy;
-import com.gamesense.api.util.players.friends.Friend;
-import com.gamesense.api.util.players.friends.Friends;
-import com.gamesense.api.settings.Setting;
-import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.clickgui.ClickGUI;
-import com.gamesense.client.clickgui.frame.Frames;
-import com.gamesense.client.command.Command;
-import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.misc.AutoGG;
-import com.gamesense.client.module.modules.misc.AutoReply;
-import com.google.gson.*;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,6 +7,27 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.players.enemy.Enemies;
+import com.gamesense.api.util.players.enemy.Enemy;
+import com.gamesense.api.util.players.friends.Friend;
+import com.gamesense.api.util.players.friends.Friends;
+import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.clickgui.GameSenseGUI;
+import com.gamesense.client.command.Command;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
+import com.gamesense.client.module.modules.misc.AutoReply;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.lukflug.panelstudio.DraggableContainer;
+import com.lukflug.panelstudio.FixedComponent;
 
 /**
  * @Author Hoosiers on 10/15/2020
@@ -252,14 +258,15 @@ public class SaveConfig {
         JsonObject mainObject = new JsonObject();
         JsonObject panelObject = new JsonObject();
 
-        for (Frames frame : ClickGUI.getFrames()){
+        GameSenseGUI gui=GameSenseMod.getInstance().clickGUI;
+        for (FixedComponent frame : gui.gui.getComponents()){
             JsonObject valueObject = new JsonObject();
 
-            valueObject.add("PosX", new JsonPrimitive(frame.getX()));
-            valueObject.add("PosY", new JsonPrimitive(frame.getY()));
-            valueObject.add("State", new JsonPrimitive(frame.isOpen()));
+            valueObject.add("PosX", new JsonPrimitive(frame.getPosition(gui).x));
+            valueObject.add("PosY", new JsonPrimitive(frame.getPosition(gui).y));
+            if (frame instanceof DraggableContainer) valueObject.add("State", new JsonPrimitive(((DraggableContainer)frame).open.isRunning()));
 
-            panelObject.add(frame.category.name(), valueObject);
+            panelObject.add(frame.getTitle(), valueObject);
         }
         mainObject.add("Panels", panelObject);
         String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
