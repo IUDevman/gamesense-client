@@ -3,7 +3,7 @@
 
 
 <!-- PROJECT SHIELDS -->
-[![version](https://img.shields.io/badge/Version-2.2.0-green.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
+[![version](https://img.shields.io/badge/Version-2.2.1-green.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
 [![discord](https://img.shields.io/badge/Discord-xfgPw63-8080c0)](https://discord.gg/xfgPw63)
 ![build](https://github.com/IUDevman/gamesense-master/workflows/Java%20CI%20with%20Gradle/badge.svg)
 ![GitHub All Releases](https://img.shields.io/github/downloads/IUDevman/gamesense-client/total)
@@ -48,6 +48,7 @@ Most notable features:
 * DarkiBoi (TotemPopCounter)
 
 #### Credits
+Check specific class files for full credits.
 Some code used from (not directly referenced in code):
 * KAMI / 086
 * Osiris / Finz0 (old base)
