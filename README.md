@@ -51,7 +51,6 @@ Most notable features:
 Some code used from:
 * KAMI / 086
 * Osiris / Finz0 (old base)
-* Seppuku / SeppukuDevelopment
 * Backdoored / CookieDragon234
 * Aurora / Memeszz
 
