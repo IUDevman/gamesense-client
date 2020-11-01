@@ -56,12 +56,12 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		colorToggle=new Toggleable() {
 			@Override
 			public void toggle() {
-				ColorMain.colorModel.increment();;
+				ColorMain.colorModel.increment();
 			}
 			
 			@Override
 			public boolean isRunning() {
-				return ColorMain.colorModel.getName().equals("RGB");
+				return ColorMain.colorModel.getValue().equals("HSB");
 			}
 		};
 		theme=new GameSenseTheme(new GameSenseScheme(),HEIGHT,2);
@@ -155,7 +155,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	@Override
 	public void drawString(Point pos, String s, Color c) {
 		end();
-		int x=pos.x+1, y=pos.y+1;
+		int x=pos.x+2, y=pos.y+1;
 		if (!ColorMain.customFont.getValue()) {
 			x+=1;
 			y+=1;

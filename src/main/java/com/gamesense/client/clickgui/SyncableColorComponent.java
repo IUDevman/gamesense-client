@@ -12,7 +12,7 @@ import com.lukflug.panelstudio.theme.Theme;
 
 public class SyncableColorComponent extends ColorComponent {
 	public SyncableColorComponent (Theme theme, Setting.ColorSetting setting, Toggleable colorToggle) {
-		super(setting.getName(),theme.getContainerRender(),theme.getComponentRender(),setting,false,false,colorToggle);
+		super(setting.getName(),theme.getContainerRender(),theme.getComponentRender(),setting,false,true,colorToggle);
 		if (setting!=ClickGuiModule.enabledColor) addComponent(new SyncButton(theme.getComponentRender()));
 	}
 	
