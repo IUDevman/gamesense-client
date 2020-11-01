@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.gamesense.api.settings.Setting;
@@ -22,11 +23,10 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.ClickGUI;
 import com.lukflug.panelstudio.Container;
 import com.lukflug.panelstudio.DraggableContainer;
+import com.lukflug.panelstudio.FixedComponent;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.settings.BooleanComponent;
-import com.lukflug.panelstudio.settings.ColorComponent;
 import com.lukflug.panelstudio.settings.EnumComponent;
-import com.lukflug.panelstudio.settings.KeybindComponent;
 import com.lukflug.panelstudio.settings.NumberComponent;
 import com.lukflug.panelstudio.settings.SimpleToggleable;
 import com.lukflug.panelstudio.settings.Toggleable;
@@ -84,6 +84,15 @@ public class GameSenseGUI extends GuiScreen implements Interface {
     	begin();
         gui.render();
         end();
+        int scroll=Mouse.getDWheel();
+        if (scroll!=0) {
+        	for (FixedComponent component: gui.getComponents()) {
+        		Point p=component.getPosition(this);
+        		if (scroll>0) p.translate(0,ClickGuiModule.scrollSpeed.getValue());
+        		else p.translate(0,-ClickGuiModule.scrollSpeed.getValue());
+        		component.setPosition(p);
+        	}
+        }
     }
 
     @Override
@@ -281,10 +290,10 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 			} else if (property instanceof Setting.Mode) {
 				container.addComponent(new EnumComponent(property.getName(),theme.getComponentRender(),(Setting.Mode)property));
 			} else if (property instanceof Setting.ColorSetting) {
-				container.addComponent(new ColorComponent(property.getName(),theme.getContainerRender(),theme.getComponentRender(),(Setting.ColorSetting)property,false,true,colorToggle));
+				container.addComponent(new SyncableColorComponent(theme,(Setting.ColorSetting)property,colorToggle));
 			}
 		}
-		container.addComponent(new KeybindComponent(theme.getComponentRender(),module));
+		container.addComponent(new GameSenseKeybind(theme.getComponentRender(),module));
 	}
 	
 	private void begin() {

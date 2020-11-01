@@ -232,7 +232,7 @@ public abstract class Setting {
 
 		@Override
 		public void setValue(Color value) {
-			setValue(new GSColor(value));
+			setValue(getRainbow(),new GSColor(value));
 		}
 
 		@Override
