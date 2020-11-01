@@ -1,7 +1,7 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.clickgui.ClickGUI;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.Command;
 
 /**
@@ -26,7 +26,7 @@ public class FixGuiCommand extends Command {
     public void onCommand(String command, String[] args) throws Exception{
         try {
             //resets ClickGui to default positions
-            GameSenseMod.getInstance().clickGUI = new ClickGUI();
+            GameSenseMod.getInstance().clickGUI = new GameSenseGUI();
             Command.sendClientMessage("ClickGui positions reset!");
         }
         catch (Exception e){

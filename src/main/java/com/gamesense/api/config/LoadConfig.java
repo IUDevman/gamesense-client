@@ -1,6 +1,7 @@
 package com.gamesense.api.config;
 
-import java.awt.*;
+import java.awt.Font;
+import java.awt.Point;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,8 +12,6 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.clickgui.ClickGUI;
-import com.gamesense.client.clickgui.frame.Frames;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -22,6 +21,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.lukflug.panelstudio.DraggableContainer;
+import com.lukflug.panelstudio.FixedComponent;
 
 /**
  * @Author Hoosiers on 10/15/2020
@@ -310,26 +311,28 @@ public class LoadConfig {
         }
 
         JsonObject panelObject = mainObject.get("Panels").getAsJsonObject();
-        for (Frames frames : ClickGUI.getFrames()){
-            if (panelObject.get(frames.category.name()) == null){
+        for (FixedComponent frames : GameSenseMod.getInstance().clickGUI.gui.getComponents()){
+            if (panelObject.get(frames.getTitle()) == null){
                 return;
             }
 
-            JsonObject panelObject2 = panelObject.get(frames.category.name()).getAsJsonObject();
+            JsonObject panelObject2 = panelObject.get(frames.getTitle()).getAsJsonObject();
 
+            Point point=new Point();
             JsonElement panelPosXObject = panelObject2.get("PosX");
             if (panelPosXObject != null && panelPosXObject.isJsonPrimitive()){
-                frames.setX(panelPosXObject.getAsInt());
+                point.x=panelPosXObject.getAsInt();
             }
 
             JsonElement panelPosYObject = panelObject2.get("PosY");
             if (panelPosYObject != null && panelPosYObject.isJsonPrimitive()){
-                frames.setY(panelPosYObject.getAsInt());
+                point.y=panelPosYObject.getAsInt();
             }
+            frames.setPosition(point);
 
             JsonElement panelOpenObject = panelObject2.get("State");
             if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()){
-                frames.setOpen(panelOpenObject.getAsBoolean());
+                if (frames instanceof DraggableContainer && panelOpenObject.getAsBoolean()) ((DraggableContainer)frames).open.toggle();
             }
         }
         inputStream.close();

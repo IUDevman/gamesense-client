@@ -109,7 +109,7 @@ public class Speed extends Module {
 				double speedY = jumpHeight.getValue();
 
 				if (mc.player.onGround && MotionUtils.isMoving(mc.player) && timer.hasReached(300)){
-					EntityUtil.setTimer((float) timerVal.getValue());
+					EntityUtil.setTimer(timerVal.getValue().floatValue());
 					if (mc.player.isPotionActive(MobEffects.JUMP_BOOST)){
 						speedY += (mc.player.getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1f;
 					}

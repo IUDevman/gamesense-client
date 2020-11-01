@@ -1,15 +1,19 @@
 package com.gamesense.client.module;
 
-import com.gamesense.client.GameSenseMod;
-import com.gamesense.api.settings.Setting;
-import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.util.render.GSColor;
-import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
-
 import java.util.List;
 
-public abstract class Module {
+import org.lwjgl.input.Keyboard;
+
+import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.GameSenseMod;
+import com.lukflug.panelstudio.settings.KeybindSetting;
+import com.lukflug.panelstudio.settings.Toggleable;
+
+import net.minecraft.client.Minecraft;
+
+public abstract class Module implements Toggleable,KeybindSetting {
 	protected static final Minecraft mc = Minecraft.getMinecraft();
 
 	String name;
@@ -144,5 +148,25 @@ public abstract class Module {
 		Render,
 		HUD,
 		GUI
+	}
+	
+	@Override
+	public boolean isRunning() {
+		return enabled;
+	}
+	
+	@Override
+	public int getKey() {
+		return bind;
+	}
+	
+	@Override
+	public void setKey(int key) {
+		bind=key;
+	}
+    
+	@Override
+	public String getKeyName() {
+		return Keyboard.getKeyName(bind);
 	}
 }

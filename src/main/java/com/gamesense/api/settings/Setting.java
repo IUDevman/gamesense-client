@@ -1,9 +1,12 @@
 package com.gamesense.api.settings;
 
+import java.awt.Color;
 import java.util.List;
 
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
+import com.lukflug.panelstudio.settings.EnumSetting;
+import com.lukflug.panelstudio.settings.NumberSetting;
 
 public abstract class Setting {
 
@@ -49,7 +52,7 @@ public abstract class Setting {
 		COLOR
     }
 
-	public static class Integer extends Setting{
+	public static class Integer extends Setting implements NumberSetting<java.lang.Integer> {
 		private int value;
 		private final int min;
 		private final int max;
@@ -59,10 +62,6 @@ public abstract class Setting {
 			this.value = value;
 			this.min = min;
 			this.max = max;
-		}
-
-		public int getValue(){
-			return this.value;
 		}
 
 		public void setValue(final int value){
@@ -76,9 +75,24 @@ public abstract class Setting {
 		public int getMax(){
 			return this.max;
 		}
+
+		@Override
+		public java.lang.Integer getValue() {
+			return value;
+		}
+
+		@Override
+		public void setValue(java.lang.Integer value) {
+			this.value=value;
+		}
+
+		@Override
+		public void fromDouble(double value) {
+			this.value=(int)Math.round(value);
+		}
 	}
 
-	public static class Double extends Setting{
+	public static class Double extends Setting implements NumberSetting<java.lang.Double> {
 		private double value;
 		private final double min;
 		private final double max;
@@ -90,7 +104,8 @@ public abstract class Setting {
 			this.max = max;
 		}
 
-		public double getValue(){
+		@Override
+		public java.lang.Double getValue(){
 			return this.value;
 		}
 
@@ -105,9 +120,19 @@ public abstract class Setting {
 		public double getMax(){
 			return this.max;
 		}
+
+		@Override
+		public void setValue(java.lang.Double value) {
+			this.value=value;
+		}
+
+		@Override
+		public void fromDouble(double value) {
+			this.value=value;
+		}
 	}
 
-	public static class Boolean extends Setting{
+	public static class Boolean extends Setting implements com.lukflug.panelstudio.settings.Setting<java.lang.Boolean> {
 		private boolean value;
 
 		public Boolean(final String name, final String configname, final Module parent, final Module.Category category, final boolean value){
@@ -115,16 +140,22 @@ public abstract class Setting {
 			this.value = value;
 		}
 
-		public boolean getValue(){
-			return this.value;
+		@Override
+		public java.lang.Boolean getValue(){
+			return value;
 		}
 
 		public void setValue(final boolean value){
 			this.value = value;
 		}
+
+		@Override
+		public void setValue(java.lang.Boolean value) {
+			this.value=value;
+		}
 	}
 
-	public static class Mode extends Setting{
+	public static class Mode extends Setting implements EnumSetting {
 		private String value;
 		private final java.util.List<String> modes;
 
@@ -145,10 +176,22 @@ public abstract class Setting {
 		public List<String> getModes(){
 			return this.modes;
 		}
+
+		@Override
+		public void increment() {
+			int modeIndex=modes.indexOf(value);
+			modeIndex=(modeIndex+1)%modes.size();
+			setValue(modes.get(modeIndex));
+		}
+
+		@Override
+		public String getValueName() {
+			return value;
+		}
 	}
 	
 	// Color config added by lukflug
-	public static class ColorSetting extends Setting {
+	public static class ColorSetting extends Setting implements com.lukflug.panelstudio.settings.ColorSetting {
 		private boolean rainbow;
 		private GSColor value;
 		
@@ -181,9 +224,20 @@ public abstract class Setting {
 		public GSColor getColor() {
 			return value;
 		}
-		
+
+		@Override
 		public boolean getRainbow() {
 			return rainbow;
+		}
+
+		@Override
+		public void setValue(Color value) {
+			setValue(getRainbow(),new GSColor(value));
+		}
+
+		@Override
+		public void setRainbow(boolean rainbow) {
+			this.rainbow=rainbow;
 		}
 	}
 }
