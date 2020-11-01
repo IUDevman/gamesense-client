@@ -10,9 +10,11 @@ import com.lukflug.panelstudio.settings.Toggleable;
 import com.lukflug.panelstudio.theme.Renderer;
 import com.lukflug.panelstudio.theme.Theme;
 
+import net.minecraft.util.text.TextFormatting;
+
 public class SyncableColorComponent extends ColorComponent {
 	public SyncableColorComponent (Theme theme, Setting.ColorSetting setting, Toggleable colorToggle) {
-		super(setting.getName(),theme.getContainerRender(),theme.getComponentRender(),setting,false,true,colorToggle);
+		super(TextFormatting.BOLD+setting.getName(),theme.getContainerRender(),theme.getComponentRender(),setting,false,true,colorToggle);
 		if (setting!=ClickGuiModule.enabledColor) addComponent(new SyncButton(theme.getComponentRender()));
 	}
 	
