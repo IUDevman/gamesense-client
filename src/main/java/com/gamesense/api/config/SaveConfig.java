@@ -264,7 +264,7 @@ public class SaveConfig {
 
             valueObject.add("PosX", new JsonPrimitive(frame.getPosition(gui).x));
             valueObject.add("PosY", new JsonPrimitive(frame.getPosition(gui).y));
-            if (frame instanceof DraggableContainer) valueObject.add("State", new JsonPrimitive(((DraggableContainer)frame).open.isRunning()));
+            if (frame instanceof DraggableContainer) valueObject.add("State", new JsonPrimitive(((DraggableContainer)frame).open.isOn()));
 
             panelObject.add(frame.getTitle(), valueObject);
         }

@@ -516,7 +516,7 @@ public class AutoCrystal extends Module {
 
     private List<BlockPos> findCrystalBlocks() {
         NonNullList<BlockPos> positions = NonNullList.create();
-        positions.addAll(getSphere(getPlayerPos(), placeRange.getValue().floatValue(), placeRange.getValue().intValue(), false, true, 0).stream().filter(this::canPlaceCrystal).collect(Collectors.toList()));
+        positions.addAll(getSphere(getPlayerPos(), (float)placeRange.getValue(), (int)placeRange.getValue(), false, true, 0).stream().filter(this::canPlaceCrystal).collect(Collectors.toList()));
         return positions;
     }
 

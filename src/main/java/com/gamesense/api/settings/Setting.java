@@ -7,6 +7,7 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.settings.EnumSetting;
 import com.lukflug.panelstudio.settings.NumberSetting;
+import com.lukflug.panelstudio.settings.Toggleable;
 
 public abstract class Setting {
 
@@ -52,7 +53,7 @@ public abstract class Setting {
 		COLOR
     }
 
-	public static class Integer extends Setting implements NumberSetting<java.lang.Integer> {
+	public static class Integer extends Setting implements NumberSetting {
 		private int value;
 		private final int min;
 		private final int max;
@@ -62,6 +63,10 @@ public abstract class Setting {
 			this.value = value;
 			this.min = min;
 			this.max = max;
+		}
+		
+		public int getValue() {
+			return value;
 		}
 
 		public void setValue(final int value){
@@ -77,22 +82,32 @@ public abstract class Setting {
 		}
 
 		@Override
-		public java.lang.Integer getValue() {
+		public double getNumber() {
 			return value;
 		}
 
 		@Override
-		public void setValue(java.lang.Integer value) {
-			this.value=value;
+		public void setNumber(double value) {
+			this.value=(int)Math.round(value);
 		}
 
 		@Override
-		public void fromDouble(double value) {
-			this.value=(int)Math.round(value);
+		public double getMaximumValue() {
+			return min;
+		}
+
+		@Override
+		public double getMinimumValue() {
+			return max;
+		}
+
+		@Override
+		public int getPrecision() {
+			return 0;
 		}
 	}
 
-	public static class Double extends Setting implements NumberSetting<java.lang.Double> {
+	public static class Double extends Setting implements NumberSetting {
 		private double value;
 		private final double min;
 		private final double max;
@@ -104,8 +119,7 @@ public abstract class Setting {
 			this.max = max;
 		}
 
-		@Override
-		public java.lang.Double getValue(){
+		public double getValue(){
 			return this.value;
 		}
 
@@ -122,17 +136,32 @@ public abstract class Setting {
 		}
 
 		@Override
-		public void setValue(java.lang.Double value) {
+		public double getNumber() {
+			return value;
+		}
+
+		@Override
+		public void setNumber(double value) {
 			this.value=value;
 		}
 
 		@Override
-		public void fromDouble(double value) {
-			this.value=value;
+		public double getMaximumValue() {
+			return max;
+		}
+
+		@Override
+		public double getMinimumValue() {
+			return min;
+		}
+
+		@Override
+		public int getPrecision() {
+			return 2;
 		}
 	}
 
-	public static class Boolean extends Setting implements com.lukflug.panelstudio.settings.Setting<java.lang.Boolean> {
+	public static class Boolean extends Setting implements Toggleable {
 		private boolean value;
 
 		public Boolean(final String name, final String configname, final Module parent, final Module.Category category, final boolean value){
@@ -140,8 +169,7 @@ public abstract class Setting {
 			this.value = value;
 		}
 
-		@Override
-		public java.lang.Boolean getValue(){
+		public boolean getValue(){
 			return value;
 		}
 
@@ -150,8 +178,13 @@ public abstract class Setting {
 		}
 
 		@Override
-		public void setValue(java.lang.Boolean value) {
-			this.value=value;
+		public void toggle() {
+			value=!value;
+		}
+
+		@Override
+		public boolean isOn() {
+			return value;
 		}
 	}
 
