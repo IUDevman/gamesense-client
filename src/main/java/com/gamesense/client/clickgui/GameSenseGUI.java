@@ -60,7 +60,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 			}
 			
 			@Override
-			public boolean isRunning() {
+			public boolean isOn() {
 				return ColorMain.colorModel.getValue().equals("HSB");
 			}
 		};
@@ -69,7 +69,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		Point pos=new Point(DISTANCE,DISTANCE);
 		gui=new ClickGUI(this,WIDTH);
 		for (Module.Category category: Module.Category.values()) {
-			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRender(),new SimpleToggleable(false),new Point(pos));
+			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new Point(pos));
 			gui.addComponent(panel);
 			pos.translate(WIDTH+DISTANCE,0);
 			for (Module module: ModuleManager.getModulesInCategory(category)) {
@@ -278,22 +278,22 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	
 	private void addModule (Container panel, Module module) {
 		Container container;
-		container=new ToggleableContainer(module.getName(),theme.getContainerRender(),new SimpleToggleable(false),module);
+		container=new ToggleableContainer(module.getName(),theme.getContainerRenderer(),new SimpleToggleable(false),module);
 		panel.addComponent(container);
 		for (Setting property: GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)) {
 			if (property instanceof Setting.Boolean) {
-				container.addComponent(new BooleanComponent(property.getName(),theme.getComponentRender(),(Setting.Boolean)property));
+				container.addComponent(new BooleanComponent(property.getName(),theme.getComponentRenderer(),(Setting.Boolean)property));
 			} else if (property instanceof Setting.Integer) {
-				container.addComponent(new NumberComponent(property.getName(),theme.getComponentRender(),(Setting.Integer)property,((Setting.Integer)property).getMin(),((Setting.Integer)property).getMax()));
+				container.addComponent(new NumberComponent(property.getName(),theme.getComponentRenderer(),(Setting.Integer)property,((Setting.Integer)property).getMin(),((Setting.Integer)property).getMax()));
 			} else if (property instanceof Setting.Double) {
-				container.addComponent(new NumberComponent(property.getName(),theme.getComponentRender(),(Setting.Double)property,((Setting.Double)property).getMin(),((Setting.Double)property).getMax()));
+				container.addComponent(new NumberComponent(property.getName(),theme.getComponentRenderer(),(Setting.Double)property,((Setting.Double)property).getMin(),((Setting.Double)property).getMax()));
 			} else if (property instanceof Setting.Mode) {
-				container.addComponent(new EnumComponent(property.getName(),theme.getComponentRender(),(Setting.Mode)property));
+				container.addComponent(new EnumComponent(property.getName(),theme.getComponentRenderer(),(Setting.Mode)property));
 			} else if (property instanceof Setting.ColorSetting) {
 				container.addComponent(new SyncableColorComponent(theme,(Setting.ColorSetting)property,colorToggle));
 			}
 		}
-		container.addComponent(new GameSenseKeybind(theme.getComponentRender(),module));
+		container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(),module));
 	}
 	
 	private void begin() {

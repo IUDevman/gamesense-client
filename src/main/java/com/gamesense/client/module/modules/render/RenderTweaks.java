@@ -39,7 +39,7 @@ public class RenderTweaks extends Module{
 			}
 		}
 		if (lowOffhand.getValue()){
-			itemRenderer.equippedProgressOffHand = lowOffhandSlider.getValue().floatValue();
+			itemRenderer.equippedProgressOffHand = (float)lowOffhandSlider.getValue();
 		}
 		if (fovChanger.getValue()){
 			mc.gameSettings.fovSetting = (float)fovChangerSlider.getValue();

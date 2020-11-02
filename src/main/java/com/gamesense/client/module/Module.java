@@ -153,7 +153,7 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	}
 	
 	@Override
-	public boolean isRunning() {
+	public boolean isOn() {
 		return enabled;
 	}
 	
