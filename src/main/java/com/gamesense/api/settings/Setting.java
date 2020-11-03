@@ -101,12 +101,12 @@ public abstract class Setting {
 
 		@Override
 		public double getMaximumValue() {
-			return min;
+			return max;
 		}
 
 		@Override
 		public double getMinimumValue() {
-			return max;
+			return min;
 		}
 
 		@Override
