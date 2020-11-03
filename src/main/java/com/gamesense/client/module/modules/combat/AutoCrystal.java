@@ -222,7 +222,7 @@ public class AutoCrystal extends Module {
                     mc.player.swingArm(EnumHand.OFF_HAND);
                 }
                 else if (handBreak.getValue().equalsIgnoreCase("Offhand") && mc.player.getHeldItemOffhand() != null){
-                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                    mc.player.swingArm(EnumHand.OFF_HAND);
                 }
                 else {
                     mc.player.swingArm(EnumHand.MAIN_HAND);
