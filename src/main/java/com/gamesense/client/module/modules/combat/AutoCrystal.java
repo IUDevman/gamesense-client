@@ -445,7 +445,7 @@ public class AutoCrystal extends Module {
         }
         else if (breakMode.getValue().equalsIgnoreCase("Own")){
             for (BlockPos pos : new ArrayList<>(PlacedCrystals)) {
-                if (pos != null && pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= 1.0) {
+                if (pos != null && pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= 3.0) {
                     return true;
                 }
             }

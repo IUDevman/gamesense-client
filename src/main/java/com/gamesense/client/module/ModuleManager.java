@@ -39,13 +39,13 @@ public class ModuleManager {
 		addMod(new SelfWeb());
 		addMod(new Surround());
 		// addMod(new Quiver());
-		// addMod(new PacketEXP());
 		//Exploits
 		addMod(new CoordExploit());
 		addMod(new FastBreak());
 		addMod(new LiquidInteract());
 		addMod(new NoInteract());
 		addMod(new NoSwing());
+		// addMod(new PacketEXP());
 		addMod(new PortalGodMode());
 		//Movement
 		addMod(new Anchor());
