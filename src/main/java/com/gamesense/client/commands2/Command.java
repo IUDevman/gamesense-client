@@ -48,7 +48,5 @@ public abstract class Command {
         this.commandAlias = alias;
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
-
-    }
+    public abstract void onCommand(String command, String[] message) throws Exception;
 }
