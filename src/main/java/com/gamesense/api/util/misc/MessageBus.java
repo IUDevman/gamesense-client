@@ -16,8 +16,6 @@ public class MessageBus {
     public static String watermark = ChatFormatting.GRAY + "[" + ChatFormatting.WHITE + "Game" + ChatFormatting.GREEN + "Sense" + ChatFormatting.GRAY + "] " + ChatFormatting.RESET;
     public static ChatFormatting messageFormatting = ChatFormatting.GRAY;
 
-    public static boolean cancelMessage = cancelMessage();
-
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
     /** Sends a client-sided message WITH the client prefix **/
@@ -26,7 +24,7 @@ public class MessageBus {
         TextComponentString string2 = new TextComponentString(messageFormatting + message);
 
         Notifications.addMessage(string2);
-        if (cancelMessage){
+        if (ModuleManager.isModuleEnabled("Notifications") && Notifications.disableChat.getValue()){
             return;
         }
         mc.player.sendMessage(string1);
@@ -37,7 +35,7 @@ public class MessageBus {
         TextComponentString string = new TextComponentString(messageFormatting + message);
 
         Notifications.addMessage(string);
-        if (cancelMessage){
+        if (ModuleManager.isModuleEnabled("Notifications") && Notifications.disableChat.getValue()){
             return;
         }
         mc.player.sendMessage(string);
@@ -46,15 +44,5 @@ public class MessageBus {
     /** Sends a server-sided message **/
     public static void sendServerMessage(String message){
         mc.player.connection.sendPacket(new CPacketChatMessage(message));
-    }
-
-    /** Checks to see if Notifications module + "Cancel Messages" option is enabled **/
-    public static boolean cancelMessage(){
-        if (ModuleManager.isModuleEnabled("Notifications") && Notifications.disableChat.getValue()){
-            return true;
-        }
-        else {
-            return false;
-        }
     }
 }
