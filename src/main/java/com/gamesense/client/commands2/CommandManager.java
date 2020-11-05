@@ -19,6 +19,11 @@ public class CommandManager {
         addCommand(new BindCommand());
         addCommand(new CmdListCommand());
         addCommand(new DisableAllCommand());
+        addCommand(new DrawnCommand());
+        addCommand(new EnemyCommand());
+        addCommand(new FixGUICommand());
+        addCommand(new FontCommand());
+        addCommand(new FriendCommand());
     }
 
     public static void addCommand(Command command){

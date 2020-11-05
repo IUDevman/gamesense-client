@@ -22,7 +22,7 @@ public class Friends{
 		return b;
 	}
 
-	public Friend getFriendByName(String name){
+	public static Friend getFriendByName(String name){
 		Friend fr = null;
 		for (Friend f : getFriends()){
 			if (f.getName().equalsIgnoreCase(name)) fr = f;
@@ -30,11 +30,11 @@ public class Friends{
 		return fr;
 	}
 
-	public void addFriend(String name){
+	public static void addFriend(String name){
 		friends.add(new Friend(name));
 	}
 
-	public void delFriend(String name){
+	public static void delFriend(String name){
 		friends.remove(getFriendByName(name));
 	}
 }
