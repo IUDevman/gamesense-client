@@ -4,6 +4,7 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.WaterPushEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -41,10 +42,10 @@ public class PlayerTweaks extends Module{
 		}
 	});
 
-	//Gui Move
+	//Gui Move, this breaks with future for some reason... IDK if there is another way to do this
 	public void onUpdate(){
-		if (guiMove.getValue()){
-			if (mc.currentScreen != null && !(mc.currentScreen instanceof GuiChat)){
+		if (guiMove.getValue() && mc.currentScreen != null){
+			if (!(mc.currentScreen instanceof GuiChat)){
 				if (Keyboard.isKeyDown(200)){
 					mc.player.rotationPitch -= 5;
 				}
@@ -57,8 +58,12 @@ public class PlayerTweaks extends Module{
 				if (Keyboard.isKeyDown(203)){
 					mc.player.rotationYaw -= 5;
 				}
-				if (mc.player.rotationPitch > 90) mc.player.rotationPitch = 90;
-				if (mc.player.rotationPitch < -90) mc.player.rotationPitch = -90;
+				if (mc.player.rotationPitch > 90){
+					mc.player.rotationPitch = 90;
+				}
+				if (mc.player.rotationPitch < -90){
+					mc.player.rotationPitch = -90;
+				}
 			}
 		}
 	}
