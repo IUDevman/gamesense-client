@@ -4,7 +4,7 @@ import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -80,7 +80,7 @@ public class AutoTrap extends Module {
         }
 
         if (chatMsg.getValue()){
-            Command.sendRawMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
+            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
         }
 
         cachedHotbarSlot = mc.player.inventory.currentItem;
@@ -94,10 +94,10 @@ public class AutoTrap extends Module {
 
         if (chatMsg.getValue()){
             if (noObby){
-                Command.sendRawMessage(ColorMain.getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
             }
             else {
-                Command.sendRawMessage(ColorMain.getDisabledColor() + "AutoTrap turned OFF!");
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoTrap turned OFF!");
             }
         }
 

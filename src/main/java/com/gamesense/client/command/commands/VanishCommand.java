@@ -1,6 +1,7 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 
@@ -27,16 +28,16 @@ public class VanishCommand extends Command{
 			vehicle = mc.player.getRidingEntity();
 			mc.player.dismountRidingEntity();
 			mc.world.removeEntityFromWorld(vehicle.getEntityId());
-			Command.sendClientMessage("Vehicle " + vehicle.getName() + " removed.");
+			MessageBus.sendClientPrefixMessage("Vehicle " + vehicle.getName() + " removed.");
 		} else{
 			if (vehicle != null){
 				vehicle.isDead = false;
 				mc.world.addEntityToWorld(vehicle.getEntityId(), vehicle);
 				mc.player.startRiding(vehicle, true);
-				Command.sendClientMessage("Vehicle " + vehicle.getName() + " created.");
+				MessageBus.sendClientPrefixMessage("Vehicle " + vehicle.getName() + " created.");
 				vehicle = null;
 			} else{
-				Command.sendClientMessage("No Vehicle.");
+				MessageBus.sendClientPrefixMessage("No Vehicle.");
 			}
 		}
 	}

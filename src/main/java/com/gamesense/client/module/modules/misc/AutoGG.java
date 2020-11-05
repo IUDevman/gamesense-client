@@ -2,13 +2,13 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
@@ -131,7 +131,7 @@ public class AutoGG extends Module{
 			messageSanitized = messageSanitized.substring(0, 255);
 		}
 
-		mc.player.connection.sendPacket(new CPacketChatMessage(messageSanitized));
+		MessageBus.sendServerMessage(messageSanitized);
 	}
 
 	public void addTargetedPlayer(String name){

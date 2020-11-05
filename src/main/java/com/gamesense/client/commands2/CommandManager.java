@@ -1,0 +1,65 @@
+package com.gamesense.client.commands2;
+
+import com.gamesense.client.commands2.commands.*;
+
+import java.util.ArrayList;
+
+/**
+ * @Author Hoosiers on 11/04/2020
+ */
+
+public class CommandManager {
+
+    public static ArrayList<Command> commands = new ArrayList<>();
+
+    public static void registerCommands(){
+        addCommand(new AutoGG());
+        addCommand(new AutoReply());
+    }
+
+    public static void addCommand(Command command){
+        commands.add(command);
+    }
+
+    public static ArrayList<Command> getCommands(){
+        return commands;
+    }
+
+    public static Command getCommandByName(String name){
+        for (Command command : commands){
+            if (command.getCommandName() == name){
+                return command;
+            }
+        }
+        return null;
+    }
+
+    boolean isValidCommand = false;
+
+    /** @Author 086 for KAMI, regex is a bitch **/
+    public void callCommand(String input){
+        String[] split = input.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        String command1 = split[0];
+        String args = input.substring(command1.length()).trim();
+
+        isValidCommand = false;
+
+        commands.forEach(command -> {
+            for (String string : command.getCommandAlias()){
+                if (string.equalsIgnoreCase(command1)){
+                    isValidCommand = true;
+                    try{
+                        command.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
+                    }
+                    catch (Exception e){
+                        MessageBus.sendClientPrefixMessage(command.getCommandSyntax());
+                    }
+                }
+            }
+        });
+
+        if (!isValidCommand) {
+            MessageBus.sendClientPrefixMessage("Error! Invalid command!");
+        }
+    }
+}

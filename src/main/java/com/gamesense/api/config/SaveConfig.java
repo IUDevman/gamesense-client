@@ -15,7 +15,7 @@ import com.gamesense.api.util.players.friends.Friend;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.GameSenseGUI;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
@@ -192,7 +192,7 @@ public class SaveConfig {
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "CommandPrefix" + ".json"), StandardCharsets.UTF_8);
         JsonObject prefixObject = new JsonObject();
 
-        prefixObject.add("Prefix", new JsonPrimitive(Command.getPrefix()));
+        prefixObject.add("Prefix", new JsonPrimitive(Command.getCommandPrefix()));
         String jsonString = gson.toJson(new JsonParser().parse(prefixObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();

@@ -1,5 +1,6 @@
 package com.gamesense.client.command.commands;
 
+import com.gamesense.client.commands2.MessageBus;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.ModuleManager;
@@ -25,14 +26,14 @@ public class DrawnCommand extends Command{
 				if (m.isDrawn()){
 					m.setDrawn(false);
 					found = true;
-					Command.sendClientMessage(m.getName() + ChatFormatting.RED + " drawn = false");
+					MessageBus.sendClientPrefixMessage(m.getName() + ChatFormatting.RED + " drawn = false");
 				} else if (!m.isDrawn()){
 					m.setDrawn(true);
 					found = true;
-					Command.sendClientMessage(m.getName() + ChatFormatting.GREEN + " drawn = true");
+					MessageBus.sendClientPrefixMessage(m.getName() + ChatFormatting.GREEN + " drawn = true");
 				}
 			}
 		});
-		if (!found && args.length == 1) Command.sendClientMessage(ChatFormatting.GRAY + "Module not found!");
+		if (!found && args.length == 1) MessageBus.sendClientPrefixMessage(ChatFormatting.GRAY + "Module not found!");
 	}
 }

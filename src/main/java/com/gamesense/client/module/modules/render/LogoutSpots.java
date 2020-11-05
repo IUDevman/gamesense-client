@@ -9,7 +9,7 @@ import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.Timer;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -126,7 +126,7 @@ public class LogoutSpots extends Module {
 					loggedPlayers.remove(entity);
 
 					if (chatMsg.getValue()) {
-						Command.sendClientMessage(event.getName() + " reconnected!");
+						MessageBus.sendClientPrefixMessage(event.getName() + " reconnected!");
 					}
 				}
 			});
@@ -144,7 +144,7 @@ public class LogoutSpots extends Module {
 
 					if (chatMsg.getValue() && timer.getTimePassed() / 50L >= 5) {
 						String location = "(" + (int) entity.posX + "," + (int) entity.posY + "," + (int) entity.posZ + ")";
-						Command.sendClientMessage(event.getName() + " disconnected at " + location + "!");
+						MessageBus.sendClientPrefixMessage(event.getName() + " disconnected at " + location + "!");
 						timer.reset();
 					}
 				}

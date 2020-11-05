@@ -120,8 +120,10 @@ public class TargetHUD extends Module {
     }
 
     public void drawEntityPlayer(EntityPlayer entityPlayer, int x, int y){
+        GlStateManager.pushMatrix();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GuiInventory.drawEntityOnScreen(x, y, 43, 28, 60, entityPlayer);
+        GlStateManager.popMatrix();
     }
 
     public void drawPlayerInfo(EntityPlayer entityPlayer, int x, int y) {

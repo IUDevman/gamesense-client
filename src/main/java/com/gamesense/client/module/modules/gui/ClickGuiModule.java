@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.gui;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.Announcer;
@@ -51,10 +51,10 @@ public class ClickGuiModule extends Module{
 
 		if(((Announcer) ModuleManager.getModuleByName("Announcer")).clickGui.getValue() && ModuleManager.isModuleEnabled("Announcer") && mc.player != null) {
 			if (((Announcer) ModuleManager.getModuleByName("Announcer")).clientSide.getValue()) {
-				Command.sendClientMessage(Announcer.guiMessage);
+				MessageBus.sendClientPrefixMessage(Announcer.guiMessage);
 			}
 			else {
-				mc.player.sendChatMessage(Announcer.guiMessage);
+				MessageBus.sendServerMessage(Announcer.guiMessage);
 			}
 		}
 	}

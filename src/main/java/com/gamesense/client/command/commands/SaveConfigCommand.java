@@ -2,6 +2,7 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.api.config.ConfigStopper;
 import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 
 public class SaveConfigCommand extends Command{
 
@@ -18,6 +19,6 @@ public class SaveConfigCommand extends Command{
 	@Override
 	public void onCommand(String command, String[] args) throws Exception{
 		ConfigStopper.saveConfig();
-		Command.sendClientMessage("Config saved!");
+		MessageBus.sendClientPrefixMessage("Config saved!");
 	}
 }

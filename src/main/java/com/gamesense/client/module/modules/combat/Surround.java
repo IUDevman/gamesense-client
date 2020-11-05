@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.world.BlockUtils;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -11,8 +11,6 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -81,7 +79,7 @@ public class Surround extends Module {
         }
 
         if (chatMsg.getValue()){
-            Command.sendRawMessage(ColorMain.getEnabledColor() + "Surround turned ON!");
+            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "Surround turned ON!");
         }
 
         if (centerPlayer.getValue() && mc.player.onGround){
@@ -102,10 +100,10 @@ public class Surround extends Module {
 
         if (chatMsg.getValue()){
             if (noObby){
-                Command.sendRawMessage(ColorMain.getDisabledColor() + "No obsidian detected... Surround turned OFF!");
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... Surround turned OFF!");
             }
             else {
-                Command.sendRawMessage(ColorMain.getDisabledColor() + "Surround turned OFF!");
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Surround turned OFF!");
             }
         }
 

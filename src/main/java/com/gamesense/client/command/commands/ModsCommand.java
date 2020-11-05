@@ -34,7 +34,7 @@ public class ModsCommand extends Command{
 				msg.appendSibling(new TextComponentString((mod.isEnabled() ? "\247a" : "\247c") + mod.getName() + "\2477" + ((i == size - 1) ? "" : ", "))
 						.setStyle(new Style()
 								.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(mod.getCategory().name())))
-								.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Command.getPrefix() + "toggle" + " " + mod.getName()))));
+								.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, com.gamesense.client.commands2.Command.getCommandPrefix() + "toggle" + " " + mod.getName()))));
 			}
 		}
 		Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(msg);

@@ -17,31 +17,4 @@ public abstract class Command {
 
 	public static boolean MsgWaterMark = true;
 	public static ChatFormatting cf = ChatFormatting.GRAY;
-
-	public static void sendClientMessage(String message){
-		Notifications.addMessage(new TextComponentString(cf + message));
-		if (Notifications.disableChat.getValue() && ModuleManager.isModuleEnabled("Notifications")){
-			return;
-		}
-		else {
-			if (MsgWaterMark) {
-				mc.player.sendMessage(new TextComponentString(ChatFormatting.GRAY + "[" + ChatFormatting.WHITE + "Game" + ChatFormatting.DARK_GREEN + "Sense" + ChatFormatting.GRAY + "] " + ChatFormatting.RESET + cf + message));
-			}
-			else {
-				mc.player.sendMessage(new TextComponentString(cf + message));
-			}
-		}
-	}
-
-	public static void sendRawMessage(String message){
-		mc.player.sendMessage(new TextComponentString(message));
-	}
-
-	public static String getPrefix(){
-		return prefix;
-	}
-
-	public static void setPrefix(String newPrefix){
-		prefix = newPrefix;
-	}
 }

@@ -7,7 +7,7 @@ import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -654,7 +654,7 @@ public class AutoCrystal extends Module {
         isPlacing = false;
         isBreaking = false;
         if(chat.getValue() && mc.player != null) {
-            Command.sendRawMessage(ColorMain.getEnabledColor() + "AutoCrystal turned ON!");
+            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoCrystal turned ON!");
         }
     }
 
@@ -669,7 +669,7 @@ public class AutoCrystal extends Module {
         isPlacing = false;
         isBreaking = false;
         if(chat.getValue()) {
-            Command.sendRawMessage(ColorMain.getDisabledColor() + "AutoCrystal turned OFF!");
+            MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoCrystal turned OFF!");
         }
     }
 

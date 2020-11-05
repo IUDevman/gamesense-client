@@ -8,7 +8,7 @@ import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.Module;
 
 import com.gamesense.client.module.ModuleManager;
@@ -70,7 +70,7 @@ public class AutoWeb extends Module{
 		}
 
 		if (chatMsg.getValue()){
-			Command.sendRawMessage(ColorMain.getEnabledColor() + "AutoWeb turned ON!");
+			MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoWeb turned ON!");
 		}
 
 		cachedHotbarSlot = mc.player.inventory.currentItem;
@@ -84,10 +84,10 @@ public class AutoWeb extends Module{
 
 		if (chatMsg.getValue()){
 			if (noWeb){
-				Command.sendRawMessage(ColorMain.getDisabledColor() + "No web detected... AutoWeb turned OFF!");
+				MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... AutoWeb turned OFF!");
 			}
 			else {
-				Command.sendRawMessage(ColorMain.getDisabledColor() + "AutoWeb turned OFF!");
+				MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoWeb turned OFF!");
 			}
 		}
 

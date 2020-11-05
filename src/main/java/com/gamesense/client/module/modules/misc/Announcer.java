@@ -2,10 +2,10 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.command.Command;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerJumpEvent;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -107,9 +107,9 @@ public class Announcer extends Module{
 
 					Random random = new Random();
 					if (clientSide.getValue()){
-						Command.sendClientMessage(walkMessage.replace("{blocks}", " " + walkAmount));
+						MessageBus.sendClientPrefixMessage(walkMessage.replace("{blocks}", " " + walkAmount));
 					} else{
-						mc.player.sendChatMessage(walkMessages[random.nextInt(walkMessages.length)].replace("{blocks}", " " + walkAmount));
+						MessageBus.sendServerMessage(walkMessages[random.nextInt(walkMessages.length)].replace("{blocks}", " " + walkAmount));
 					}
 					lastPositionUpdate = System.currentTimeMillis();
 					lastPositionX = mc.player.lastTickPosX;
@@ -131,11 +131,9 @@ public class Announcer extends Module{
 					if (eat.getValue() && eaten > randomNum){
 						Random random = new Random();
 						if (clientSide.getValue()){
-							Command.sendClientMessage
-									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", " " + eaten).replace("{name}", " " + mc.player.getHeldItemMainhand().getDisplayName()));
+							MessageBus.sendClientPrefixMessage(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", " " + eaten).replace("{name}", " " + mc.player.getHeldItemMainhand().getDisplayName()));
 						} else{
-							mc.player.sendChatMessage
-									(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", " " + eaten).replace("{name}", " " + mc.player.getHeldItemMainhand().getDisplayName()));
+							MessageBus.sendServerMessage(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", " " + eaten).replace("{name}", " " + mc.player.getHeldItemMainhand().getDisplayName()));
 						}
 						eaten = 0;
 						eattingDelay = 0;
@@ -155,9 +153,9 @@ public class Announcer extends Module{
 					Random random = new Random();
 					String msg = placeMessages[random.nextInt(placeMessages.length)].replace("{amount}", " " + blocksPlaced).replace("{name}"," " + mc.player.getHeldItemMainhand().getDisplayName());
 					if (clientSide.getValue()){
-						Command.sendClientMessage(msg);
+						MessageBus.sendClientPrefixMessage(msg);
 					} else{
-						mc.player.sendChatMessage(msg);
+						MessageBus.sendServerMessage(msg);
 					}
 					blocksPlaced = 0;
 					blockPlacedDelay = 0;
@@ -177,9 +175,9 @@ public class Announcer extends Module{
 						.replace("{amount}", " " + blocksBroken)
 						.replace("{name}", " " + mc.world.getBlockState(event.getBlockPos()).getBlock().getLocalizedName());
 				if (clientSide.getValue()){
-					Command.sendClientMessage(msg);
+					MessageBus.sendClientPrefixMessage(msg);
 				} else{
-					mc.player.sendChatMessage(msg);
+					MessageBus.sendServerMessage(msg);
 				}
 				blocksBroken = 0;
 				blockBrokeDelay = 0;
@@ -193,9 +191,9 @@ public class Announcer extends Module{
 			if (attackDelay >= 300 * delay.getValue()){
 				String msg = attackMessage.replace("{name}", " " + event.getTarget().getName()).replace("{item}", " " + mc.player.getHeldItemMainhand().getDisplayName());
 				if (clientSide.getValue()){
-					Command.sendClientMessage(msg);
+					MessageBus.sendClientPrefixMessage(msg);
 				} else{
-					mc.player.sendChatMessage(msg);
+					MessageBus.sendServerMessage(msg);
 				}
 				attackDelay = 0;
 			}
@@ -208,10 +206,10 @@ public class Announcer extends Module{
 			if (jumpDelay >= 300 * delay.getValue()){
 				if (clientSide.getValue()){
 					Random random = new Random();
-					Command.sendClientMessage(jumpMessages[random.nextInt(jumpMessages.length)]);
+					MessageBus.sendClientPrefixMessage(jumpMessages[random.nextInt(jumpMessages.length)]);
 				} else{
 					Random random = new Random();
-					mc.player.sendChatMessage(jumpMessages[random.nextInt(jumpMessages.length)]);
+					MessageBus.sendServerMessage(jumpMessages[random.nextInt(jumpMessages.length)]);
 				}
 				jumpDelay = 0;
 			}

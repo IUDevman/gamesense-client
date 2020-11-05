@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
@@ -22,10 +22,11 @@ public class MCF extends Module{
 		if (mc.objectMouseOver.typeOfHit.equals(RayTraceResult.Type.ENTITY) && mc.objectMouseOver.entityHit instanceof EntityPlayer && Mouse.getEventButton() == 2){
 			if (Friends.isFriend(mc.objectMouseOver.entityHit.getName())){
 				GameSenseMod.getInstance().friends.delFriend(mc.objectMouseOver.entityHit.getName());
-				Command.sendClientMessage(ChatFormatting.RED + "Removed " + mc.objectMouseOver.entityHit.getName() + " from friends list");
-			} else{
+				MessageBus.sendClientPrefixMessage(ChatFormatting.RED + "Removed " + mc.objectMouseOver.entityHit.getName() + " from friends list");
+			}
+			else{
 				GameSenseMod.getInstance().friends.addFriend(mc.objectMouseOver.entityHit.getName());
-				Command.sendClientMessage(ChatFormatting.GREEN + "Added " + mc.objectMouseOver.entityHit.getName() + " to friends list");
+				MessageBus.sendClientPrefixMessage(ChatFormatting.GREEN + "Added " + mc.objectMouseOver.entityHit.getName() + " to friends list");
 			}
 		}
 	});

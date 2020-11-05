@@ -1,5 +1,6 @@
 package com.gamesense.client.command;
 
+import com.gamesense.client.commands2.MessageBus;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.gamesense.client.command.commands.*;
 
@@ -50,11 +51,11 @@ public class CommandManager{
 					try{
 						c.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
 					} catch (Exception e){
-						Command.sendClientMessage(ChatFormatting.GRAY + c.getSyntax());
+						MessageBus.sendClientPrefixMessage(ChatFormatting.GRAY + c.getSyntax());
 					}
 				}
 			}
 		});
-		if (!validCommand) Command.sendClientMessage(ChatFormatting.GRAY + "Unknown command! Type " + Command.getPrefix() + "help for a list of commands!");
+		if (!validCommand) MessageBus.sendClientPrefixMessage(ChatFormatting.GRAY + "Unknown command! Type " + com.gamesense.client.commands2.Command.getCommandPrefix() + "help for a list of commands!");
 	}
 }

@@ -1,6 +1,7 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 
 import java.awt.*;
 import java.io.File;
@@ -21,6 +22,7 @@ public class OpenFolderCommand extends Command{
 	public void onCommand(String command, String[] args) throws Exception{
 		try{
 			Desktop.getDesktop().open(new File("GameSense"));
-		} catch(Exception e){sendClientMessage("Error: " + e.getMessage());}
+		} catch(Exception e){
+			MessageBus.sendClientPrefixMessage("Error: " + e.getMessage());}
 	}
 }

@@ -1,6 +1,7 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.MessageBus;
 import com.gamesense.client.module.modules.misc.AutoReply;
 
 public class AutoReplyCommand extends Command{
@@ -21,9 +22,9 @@ public class AutoReplyCommand extends Command{
 	public void onCommand(String command, String[] args) throws Exception{
 		if (args[0] != null && !args[0].equalsIgnoreCase("")){
 			AutoReply.setReply(args[0].replace("_", " "));
-			Command.sendClientMessage("AutoReply message set to " + AutoReply.getReply());
+			MessageBus.sendClientPrefixMessage("AutoReply message set to " + AutoReply.getReply());
 		} else{
-			Command.sendClientMessage(getSyntax());
+			MessageBus.sendClientPrefixMessage(getSyntax());
 		}
 	}
 }

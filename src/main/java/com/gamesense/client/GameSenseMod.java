@@ -2,6 +2,7 @@ package com.gamesense.client;
 
 import java.awt.Font;
 
+import com.gamesense.client.commands2.CommandManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
@@ -16,7 +17,6 @@ import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.CapeUtils;
 import com.gamesense.client.clickgui.GameSenseGUI;
-import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.ModuleManager;
 
 import me.zero.alpine.EventBus;
@@ -82,7 +82,8 @@ public class GameSenseMod{
 		clickGUI = new GameSenseGUI();
 		log.info("ClickGUI initialized!");
 
-		CommandManager.initCommands();
+		//CommandManager.initCommands();
+		CommandManager.registerCommands();
 		log.info("Commands initialized!");
 
 		saveConfig = new SaveConfig();

@@ -12,7 +12,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.commands2.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
@@ -206,7 +206,7 @@ public class LoadConfig {
         JsonElement prefixObject = mainObject.get("Prefix");
 
         if (prefixObject != null && prefixObject.isJsonPrimitive()) {
-            Command.setPrefix(prefixObject.getAsString());
+            Command.setCommandPrefix(prefixObject.getAsString());
         }
         inputStream.close();
     }
