@@ -16,6 +16,9 @@ public class CommandManager {
     public static void registerCommands(){
         addCommand(new AutoGGCommand());
         addCommand(new AutoReplyCommand());
+        addCommand(new BindCommand());
+        addCommand(new CmdListCommand());
+        addCommand(new DisableAllCommand());
     }
 
     public static void addCommand(Command command){
