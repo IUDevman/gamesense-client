@@ -1,214 +1,310 @@
 package com.gamesense.client.module.modules.combat;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.misc.Wrapper;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockWeb;
+import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.gui.ColorMain;
+import net.minecraft.block.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketEntityAction;
-import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class AutoWeb extends Module{
-
-	Setting.Boolean rotate;
-	Setting.Double range;
-	Setting.Integer bpt;
-	Setting.Boolean spoofRotations;
-	Setting.Boolean spoofHotbar;
-	private final Vec3d[] offsetList;
-	private boolean slowModeSwitch;
-	private int playerHotbarSlot;
-	private EntityPlayer closestTarget;
-	private int lastHotbarSlot;
-	private int offsetStep;
-
 	public AutoWeb(){
 		super("AutoWeb", Category.Combat);
-		this.offsetList = new Vec3d[]{ new Vec3d(0.0, 1.0, 0.0), new Vec3d(0.0, 0.0, 0.0)};
-		this.slowModeSwitch = false;
-		this.playerHotbarSlot = -1;
-		this.lastHotbarSlot = -1;
-		this.offsetStep = 0;
 	}
 
-	@Override
+	Setting.Mode trapType;
+	Setting.Boolean chatMsg;
+	Setting.Boolean rotate;
+	Setting.Boolean disableNone;
+	Setting.Integer enemyRange;
+	Setting.Integer tickDelay;
+	Setting.Integer blocksPerTick;
+
 	public void setup(){
-		this.rotate = registerBoolean("Rotate", "Rotate", false);
-		this.range = registerDouble("Range", "Range", 4.0, 0.0, 6.0);
-		this.bpt = registerInteger("Blocks Per Tick", "BlocksPerTick", 8, 1, 15);
-		this.spoofRotations = registerBoolean("Spoof Rotations", "SpoofRotations", false);
-		this.spoofHotbar = registerBoolean("Silent Switch", "SilentSwitch", false);
+		ArrayList<String> trapTypes = new ArrayList<>();
+		trapTypes.add("Single");
+		trapTypes.add("Double");
+
+		trapType = registerMode("Mode", "Mode", trapTypes, "Double");
+		disableNone = registerBoolean("Disable No Web", "DisableNoWb", true);
+		rotate = registerBoolean("Rotate", "Rotate", true);
+		tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
+		blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
+		enemyRange = registerInteger("Range", "Range",4, 0, 6);
+		chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
 	}
 
-	@Override
+	private int cachedHotbarSlot = -1;
+	private int webHotbarSlot;
+
+	private boolean noWeb = false;
+	private boolean isSneaking = false;
+	private boolean firstRun = false;
+
+	private int blocksPlaced;
+	private int delayTimeTicks = 0;
+	private int offsetSteps = 0;
+
+	private EntityPlayer closestTarget;
+
+	public void onEnable(){
+		if (mc.player == null){
+			disable();
+			return;
+		}
+
+		if (chatMsg.getValue()){
+			Command.sendRawMessage(ColorMain.getEnabledColor() + "AutoWeb turned ON!");
+		}
+
+		cachedHotbarSlot = mc.player.inventory.currentItem;
+		webHotbarSlot = -1;
+	}
+
+	public void onDisable(){
+		if (mc.player == null){
+			return;
+		}
+
+		if (chatMsg.getValue()){
+			if (noWeb){
+				Command.sendRawMessage(ColorMain.getDisabledColor() + "No web detected... AutoWeb turned OFF!");
+			}
+			else {
+				Command.sendRawMessage(ColorMain.getDisabledColor() + "AutoWeb turned OFF!");
+			}
+		}
+
+		if (webHotbarSlot != cachedHotbarSlot && cachedHotbarSlot != -1){
+			mc.player.inventory.currentItem = cachedHotbarSlot;
+		}
+
+		if (isSneaking){
+			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+			isSneaking = false;
+		}
+
+		cachedHotbarSlot = -1;
+		webHotbarSlot = -1;
+
+		noWeb = false;
+		firstRun = true;
+		AutoCrystal.stopAC = false;
+	}
+
 	public void onUpdate(){
-		if (this.closestTarget == null){
+		if (mc.player == null){
+			disable();
 			return;
 		}
-		if (this.slowModeSwitch){
-			this.slowModeSwitch = false;
+
+		if (disableNone.getValue() && noWeb){
+			mc.player.inventory.currentItem = cachedHotbarSlot;
+			disable();
 			return;
 		}
-		for (int i = 0; i < (int)Math.floor(this.bpt.getValue()); i++){
-			if (this.offsetStep >= this.offsetList.length){
-				this.endLoop();
+
+		findClosestTarget();
+
+		if (closestTarget == null){
+			return;
+		}
+
+		if (firstRun){
+			firstRun = false;
+			if (findWebSlot() == -1){
+				noWeb = true;
+			}
+		}
+		else {
+			if (delayTimeTicks < tickDelay.getValue()){
+				delayTimeTicks++;
 				return;
 			}
-			final Vec3d offset = this.offsetList[this.offsetStep];
-			this.placeBlock(new BlockPos(this.closestTarget.getPositionVector()).down().add(offset.x, offset.y, offset.z));
-			this.offsetStep++;
+			else {
+				delayTimeTicks = 0;
+			}
 		}
-		this.slowModeSwitch = true;
-	}
 
-	private void placeBlock(final BlockPos blockPos){
-		if (!Wrapper.getWorld().getBlockState(blockPos).getMaterial().isReplaceable()){
-			return;
-		}
-		if (!BlockUtils.checkForNeighbours(blockPos)){
-			return;
-		}
-		this.placeBlockExecute(blockPos);
-	}
+		blocksPlaced = 0;
 
-	public void placeBlockExecute(final BlockPos pos){
-		final Vec3d eyesPos = new Vec3d(Wrapper.getPlayer().posX, Wrapper.getPlayer().posY + Wrapper.getPlayer().getEyeHeight(), Wrapper.getPlayer().posZ);
-		final EnumFacing[] values = EnumFacing.values();
-		final int length = values.length;
-		final int n = 0;
-		if (n >= length){
-			return;
-		}
-		final EnumFacing side = values[n];
-		final BlockPos neighbor = pos.offset(side);
-		final EnumFacing side2 = side.getOpposite();
-		final Vec3d hitVec = new Vec3d(neighbor).add(0.5, 0.5, 0.5).add(new Vec3d(side2.getDirectionVec()).scale(0.5));
-		if (this.spoofRotations.getValue()){
-			BlockUtils.faceVectorPacketInstant(hitVec);
-		}
-		boolean needSneak = false;
-		final Block blockBelow = AutoWeb.mc.world.getBlockState(neighbor).getBlock();
-		if (BlockUtils.blackList.contains(blockBelow) || BlockUtils.shulkerList.contains(blockBelow)){
-			needSneak = true;
-		}
-		if (needSneak){
-			AutoWeb.mc.player.connection.sendPacket(new CPacketEntityAction(AutoWeb.mc.player, CPacketEntityAction.Action.START_SNEAKING));
-		}
-		final int obiSlot = this.findWebInHotBar();
-		if (obiSlot == -1){
-			this.disable();
-			return;
-		}
-		if (this.lastHotbarSlot != obiSlot){
-			if (this.spoofHotbar.getValue()){
-				AutoWeb.mc.player.connection.sendPacket(new CPacketHeldItemChange(obiSlot));
+		while (blocksPlaced <= blocksPerTick.getValue()){
+
+			List<Vec3d> placeTargets = new ArrayList<>();
+			int maxSteps;
+
+			if (trapType.getValue().equalsIgnoreCase("Single")){
+				Collections.addAll(placeTargets, AutoWeb.Offsets.SINGLE);
+				maxSteps = AutoWeb.Offsets.SINGLE.length;
 			}
 			else{
-				Wrapper.getPlayer().inventory.currentItem = obiSlot;
+				Collections.addAll(placeTargets, Offsets.DOUBLE);
+				maxSteps = Offsets.DOUBLE.length;
 			}
-			this.lastHotbarSlot = obiSlot;
-		}
-		AutoWeb.mc.playerController.processRightClickBlock(Wrapper.getPlayer(), AutoWeb.mc.world, neighbor, side2, hitVec, EnumHand.MAIN_HAND);
-		AutoWeb.mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
-		if (needSneak){
-			AutoWeb.mc.player.connection.sendPacket(new CPacketEntityAction(AutoWeb.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+
+			if (offsetSteps >= maxSteps){
+				offsetSteps = 0;
+				break;
+			}
+
+			BlockPos offsetPos = new BlockPos(placeTargets.get(offsetSteps));
+			BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+
+			boolean tryPlacing = true;
+
+			if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()){
+				tryPlacing = false;
+			}
+
+			if (tryPlacing && placeBlock(targetPos, enemyRange.getValue())){
+				blocksPlaced++;
+			}
+
+			offsetSteps++;
+
+			if (isSneaking){
+				mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+				isSneaking = false;
+			}
 		}
 	}
 
-	private int findWebInHotBar(){
+	private int findWebSlot(){
 		int slot = -1;
+
 		for (int i = 0; i < 9; i++){
-			final ItemStack stack = Wrapper.getPlayer().inventory.getStackInSlot(i);
-			if (stack != ItemStack.EMPTY && stack.getItem() instanceof ItemBlock){
-				final Block block = ((ItemBlock)stack.getItem()).getBlock();
-				if (block instanceof BlockWeb){
-					slot = i;
-					break;
-				}
+			ItemStack stack = mc.player.inventory.getStackInSlot(i);
+
+			if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)){
+				continue;
+			}
+
+			Block block = ((ItemBlock) stack.getItem()).getBlock();
+			if (block instanceof BlockWeb){
+				slot = i;
+				break;
 			}
 		}
 		return slot;
 	}
 
-	private void findTarget(){
-		final List<EntityPlayer> playerList = Wrapper.getWorld().playerEntities;
-		for (final EntityPlayer target : playerList){
-			if (target == AutoWeb.mc.player){
+	private boolean placeBlock(BlockPos pos, int range){
+		Block block = mc.world.getBlockState(pos).getBlock();
+
+		if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)){
+			return false;
+		}
+
+		EnumFacing side = BlockUtils.getPlaceableSide(pos);
+
+		if (side == null){
+			return false;
+		}
+
+		BlockPos neighbour = pos.offset(side);
+		EnumFacing opposite = side.getOpposite();
+
+		if (!BlockUtils.canBeClicked(neighbour)){
+			return false;
+		}
+
+		Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+		Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
+
+		if (mc.player.getPositionVector().distanceTo(hitVec) > range){
+			return false;
+		}
+
+		int webbSlot = findWebSlot();
+
+		if (mc.player.inventory.currentItem != webbSlot){
+			webHotbarSlot = webbSlot;
+
+			mc.player.inventory.currentItem = webbSlot;
+		}
+
+		if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)){
+			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
+			isSneaking = true;
+		}
+
+		if (webbSlot == -1){
+			noWeb = true;
+			return false;
+		}
+
+		boolean stoppedAC = false;
+
+		if (ModuleManager.isModuleEnabled("AutoCrystalGS")){
+			AutoCrystal.stopAC = true;
+			stoppedAC = true;
+		}
+
+		if (rotate.getValue()){
+			BlockUtils.faceVectorPacketInstant(hitVec);
+		}
+
+		mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+		mc.player.swingArm(EnumHand.MAIN_HAND);
+		mc.rightClickDelayTimer = 4;
+
+		if (stoppedAC){
+			AutoCrystal.stopAC = false;
+			stoppedAC = false;
+		}
+
+		return true;
+	}
+
+	private void findClosestTarget(){
+		List<EntityPlayer> playerList = mc.world.playerEntities;
+
+		closestTarget = null;
+
+		for (EntityPlayer entityPlayer : playerList){
+			if (entityPlayer == mc.player){
 				continue;
 			}
-			if (Friends.isFriend(target.getName())){
+			if (Friends.isFriend(entityPlayer.getName())){
 				continue;
 			}
-			if (!EntityUtil.isLiving(target)){
+			if (!EntityUtil.isLiving(entityPlayer)) {
 				continue;
 			}
-			if (target.getHealth() <= 0.0f){
+			if (closestTarget == null){
+				closestTarget = entityPlayer;
 				continue;
 			}
-			final double currentDistance = Wrapper.getPlayer().getDistance(target);
-			if (currentDistance > this.range.getValue()){
-				continue;
-			}
-			if (this.closestTarget == null){
-				this.closestTarget = target;
-			}
-			else{
-				if (currentDistance >= Wrapper.getPlayer().getDistance(this.closestTarget)){
-					continue;
-				}
-				this.closestTarget = target;
+			if (mc.player.getDistance(entityPlayer) < mc.player.getDistance(closestTarget)){
+				closestTarget = entityPlayer;
 			}
 		}
 	}
 
-	private void endLoop(){
-		this.offsetStep = 0;
-		if (this.lastHotbarSlot != this.playerHotbarSlot && this.playerHotbarSlot != -1){
-			Wrapper.getPlayer().inventory.currentItem = this.playerHotbarSlot;
-			this.lastHotbarSlot = this.playerHotbarSlot;
-		}
-		this.findTarget();
-	}
+	private static class Offsets {
+		private static final Vec3d[] SINGLE = {
+				new Vec3d(0, 0, 0)
+		};
 
-	@Override
-	protected void onEnable(){
-		if (AutoWeb.mc.player == null){
-			this.disable();
-			return;
-		}
-		this.playerHotbarSlot = Wrapper.getPlayer().inventory.currentItem;
-		this.lastHotbarSlot = -1;
-		this.findTarget();
-	}
-
-	@Override
-	protected void onDisable(){
-		if (AutoWeb.mc.player == null){
-			return;
-		}
-		if (this.lastHotbarSlot != this.playerHotbarSlot && this.playerHotbarSlot != -1){
-			if (this.spoofHotbar.getValue()){
-				AutoWeb.mc.player.connection.sendPacket(new CPacketHeldItemChange(this.playerHotbarSlot));
-			}
-			else{
-				Wrapper.getPlayer().inventory.currentItem = this.playerHotbarSlot;
-			}
-		}
-		this.playerHotbarSlot = -1;
-		this.lastHotbarSlot = -1;
+		private static final Vec3d[] DOUBLE = {
+				new Vec3d(0, 0, 0),
+				new Vec3d(0, 1, 0)
+		};
 	}
 }

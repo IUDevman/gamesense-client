@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
-
 /**
  * @Author Hoosiers on 09/19/20
  * Ported and modified from Surround.java
@@ -280,7 +278,7 @@ public class AutoTrap extends Module {
         }
 
         if (rotate.getValue()){
-            faceVectorPacketInstant(hitVec);
+            BlockUtils.faceVectorPacketInstant(hitVec);
         }
 
         mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
