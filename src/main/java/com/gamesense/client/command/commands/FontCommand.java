@@ -3,7 +3,7 @@ package com.gamesense.client.command.commands;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.api.util.font.CFontRenderer;
-import com.gamesense.client.commands2.MessageBus;
+import com.gamesense.api.util.misc.MessageBus;
 
 import java.awt.*;
 

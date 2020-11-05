@@ -9,7 +9,7 @@ import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.Timer;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.commands2.MessageBus;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;

@@ -1,7 +1,7 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.client.command.Command;
-import com.gamesense.client.commands2.MessageBus;
+import com.gamesense.api.util.misc.MessageBus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 

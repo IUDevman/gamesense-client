@@ -1,6 +1,6 @@
 package com.gamesense.client.command;
 
-import com.gamesense.client.commands2.MessageBus;
+import com.gamesense.api.util.misc.MessageBus;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.gamesense.client.command.commands.*;
 

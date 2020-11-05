@@ -7,7 +7,7 @@ import java.util.Map;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.commands2.Command;
 import com.gamesense.client.commands2.CommandManager;
-import com.gamesense.client.commands2.MessageBus;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.modules.render.SkyColor;
 import net.minecraftforge.client.event.*;
 import org.apache.commons.io.IOUtils;

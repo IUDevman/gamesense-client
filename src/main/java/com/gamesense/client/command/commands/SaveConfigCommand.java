@@ -2,7 +2,7 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.api.config.ConfigStopper;
 import com.gamesense.client.command.Command;
-import com.gamesense.client.commands2.MessageBus;
+import com.gamesense.api.util.misc.MessageBus;
 
 public class SaveConfigCommand extends Command{
 

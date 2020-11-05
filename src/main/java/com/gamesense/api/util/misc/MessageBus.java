@@ -1,4 +1,4 @@
-package com.gamesense.client.commands2;
+package com.gamesense.api.util.misc;
 
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.Notifications;
@@ -32,7 +32,7 @@ public class MessageBus {
         mc.player.sendMessage(string1);
     }
 
-    /** Sends a client-sided message WITHOUT the client prefix **/
+    /** @Unused Sends a client-sided message WITHOUT the client prefix **/
     public static void sendClientRawMessage(String message){
         TextComponentString string = new TextComponentString(messageFormatting + message);
 
