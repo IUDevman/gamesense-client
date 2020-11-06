@@ -57,6 +57,7 @@ public class TargetHUD extends Module {
     TextFormatting playercolor;
     String playerinfo;
     float ping;
+    public static EntityPlayer targetPlayer;
 
     public void onRender(){
         if (mc.world != null && mc.player.ticksExisted >= 10) {
@@ -120,6 +121,7 @@ public class TargetHUD extends Module {
     }
 
     public void drawEntityPlayer(EntityPlayer entityPlayer, int x, int y){
+        targetPlayer = entityPlayer;
         GlStateManager.pushMatrix();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GuiInventory.drawEntityOnScreen(x, y, 43, 28, 60, entityPlayer);
@@ -245,5 +247,13 @@ public class TargetHUD extends Module {
         try { ping = EntityUtil.clamp(Objects.requireNonNull(mc.getConnection()).getPlayerInfo(player.getUniqueID()).getResponseTime(), 1, 300.0f); }
         catch (NullPointerException ignored) {}
         return ping;
+    }
+
+    public static boolean isRenderingEntity(EntityPlayer entityPlayer){
+        if (targetPlayer == entityPlayer){
+            return true;
+        }
+
+        return false;
     }
 }

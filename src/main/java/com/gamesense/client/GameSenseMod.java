@@ -82,7 +82,6 @@ public class GameSenseMod{
 		clickGUI = new GameSenseGUI();
 		log.info("ClickGUI initialized!");
 
-		//CommandManager.initCommands();
 		CommandManager.registerCommands();
 		log.info("Commands initialized!");
 
