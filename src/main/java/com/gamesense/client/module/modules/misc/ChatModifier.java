@@ -1,6 +1,5 @@
 package com.gamesense.client.module.modules.misc;
 
-
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
@@ -73,7 +72,7 @@ public class ChatModifier extends Module{
 	private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
 		if (greenText.getValue()){
 			if (event.getPacket() instanceof CPacketChatMessage){
-				if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(Command.getPrefix()))
+				if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(Command.getCommandPrefix()))
 					return;
 				String message = ((CPacketChatMessage) event.getPacket()).getMessage();
 				String prefix = "";

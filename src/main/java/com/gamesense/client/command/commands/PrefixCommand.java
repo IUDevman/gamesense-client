@@ -1,22 +1,35 @@
 package com.gamesense.client.command.commands;
 
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
 
-public class PrefixCommand extends Command{
+/**
+ * @Author Hoosiers on 11/05/2020
+ */
 
-	@Override
-	public String[] getAlias(){
-		return new String[]{"prefix", "setprefix", "cmdprefix"};
-	}
+public class PrefixCommand extends Command {
 
-	@Override
-	public String getSyntax(){
-		return "prefix <character>";
-	}
+    public PrefixCommand(){
+        super("Prefix");
 
-	@Override
-	public void onCommand(String command, String[] args) throws Exception{
-		Command.setPrefix(args[0]);
-		Command.sendClientMessage("Command prefix set to " + Command.getPrefix());
-	}
+        setCommandSyntax(Command.getCommandPrefix() + "prefix value (no letters or numbers)");
+        setCommandAlias(new String[]{
+                "prefix", "setprefix", "cmdprefix", "commandprefix"
+        });
+    }
+
+    public void onCommand(String command, String[] message) throws Exception{
+        //this makes sure all inputs do not include letters or numbers, sets them to the default prefix instead
+        String main = message[0].toUpperCase().replaceAll("[a-zA-Z0-9]",null);
+        int size = message[0].length();
+
+        //we don't want the prefix to be more than 1 character
+        if (main != null && size == 1){
+            Command.setCommandPrefix(main);
+            MessageBus.sendClientPrefixMessage("Prefix set: \"" + main + "\"!");
+        }
+        else if (size > 1 || size < 1){
+            MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
+        }
+    }
 }

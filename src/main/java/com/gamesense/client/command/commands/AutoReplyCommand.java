@@ -1,29 +1,31 @@
 package com.gamesense.client.command.commands;
 
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.modules.misc.AutoReply;
 
-public class AutoReplyCommand extends Command{
+/**
+ * @Author Hoosiers on 11/04/2020
+ */
 
-	@Override
-	public String[] getAlias(){
-		return new String[]{
-				"autoreply", "reply"
-		};
-	}
+public class AutoReplyCommand extends Command {
 
-	@Override
-	public String getSyntax(){
-		return "autoreply <message (use \"_\" for spaces)>";
-	}
+    public AutoReplyCommand(){
+        super("AutoReply");
 
-	@Override
-	public void onCommand(String command, String[] args) throws Exception{
-		if (args[0] != null && !args[0].equalsIgnoreCase("")){
-			AutoReply.setReply(args[0].replace("_", " "));
-			Command.sendClientMessage("AutoReply message set to " + AutoReply.getReply());
-		} else{
-			Command.sendClientMessage(getSyntax());
-		}
-	}
+        setCommandSyntax(Command.getCommandPrefix() + "autoreply set [message] (use _ for spaces)");
+        setCommandAlias(new String[]{
+                "autoreply", "reply"
+        });
+    }
+
+    public void onCommand(String command, String[] message) throws Exception{
+        String main = message[0];
+        String value = message[1].replace("_", " ");
+
+        if (main.equalsIgnoreCase("set")){
+            AutoReply.setReply(value);
+            MessageBus.sendClientPrefixMessage("Set AutoReply message: " + value + "!");
+        }
+    }
 }

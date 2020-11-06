@@ -1,26 +1,29 @@
 package com.gamesense.client.command.commands;
 
+import com.gamesense.api.config.SaveConfig;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 
-public class OpenFolderCommand extends Command{
+/**
+ * @Author Hoosiers on 11/05/2020
+ */
 
-	@Override
-	public String[] getAlias(){
-		return new String[]{"openfolder", "folder"};
-	}
+public class OpenFolderCommand extends Command {
 
-	@Override
-	public String getSyntax(){
-		return "openfolder";
-	}
+    public OpenFolderCommand(){
+        super("OpenFolder");
 
-	@Override
-	public void onCommand(String command, String[] args) throws Exception{
-		try{
-			Desktop.getDesktop().open(new File("GameSense"));
-		} catch(Exception e){sendClientMessage("Error: " + e.getMessage());}
-	}
+        setCommandSyntax(Command.getCommandPrefix() + "openfolder");
+        setCommandAlias(new String[]{
+                "openfolder", "config", "open", "folder"
+        });
+    }
+
+    public void onCommand(String command, String[] message) throws Exception{
+        Desktop.getDesktop().open(new File(SaveConfig.fileName.replace("/", "")));
+        MessageBus.sendClientPrefixMessage("Opened config folder!");
+    }
 }

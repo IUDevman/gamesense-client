@@ -4,7 +4,7 @@ import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.client.command.Command;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -26,8 +26,6 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
 
 /**
  * @Author Hoosiers on 09/19/20
@@ -82,7 +80,7 @@ public class AutoTrap extends Module {
         }
 
         if (chatMsg.getValue()){
-            Command.sendRawMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
+            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
         }
 
         cachedHotbarSlot = mc.player.inventory.currentItem;
@@ -96,10 +94,10 @@ public class AutoTrap extends Module {
 
         if (chatMsg.getValue()){
             if (noObby){
-                Command.sendRawMessage(ColorMain.getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
             }
             else {
-                Command.sendRawMessage(ColorMain.getDisabledColor() + "AutoTrap turned OFF!");
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoTrap turned OFF!");
             }
         }
 
@@ -280,7 +278,7 @@ public class AutoTrap extends Module {
         }
 
         if (rotate.getValue()){
-            faceVectorPacketInstant(hitVec);
+            BlockUtils.faceVectorPacketInstant(hitVec);
         }
 
         mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);

@@ -5,6 +5,9 @@ import java.net.URL;
 import java.util.Map;
 
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.command.Command;
+import com.gamesense.client.command.CommandManager;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.modules.render.SkyColor;
 import net.minecraftforge.client.event.*;
 import org.apache.commons.io.IOUtils;
@@ -19,8 +22,6 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.command.Command;
-import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.ModuleManager;
 import com.google.common.collect.Maps;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -92,16 +93,15 @@ public class EventProcessor {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onChatSent(ClientChatEvent event) {
 
-		if (event.getMessage().startsWith(Command.getPrefix())) {
+		if (event.getMessage().startsWith(Command.getCommandPrefix())) {
 			event.setCanceled(true);
 			try {
 				mc.ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
 				commandManager.callCommand(event.getMessage().substring(1));
 			} catch (Exception e) {
 				e.printStackTrace();
-				Command.sendClientMessage(ChatFormatting.DARK_RED + "Error: " + e.getMessage());
+				MessageBus.sendClientPrefixMessage(ChatFormatting.DARK_RED + "Error: " + e.getMessage());
 			}
-			//event.setMessage("");
 		}
 	}
 

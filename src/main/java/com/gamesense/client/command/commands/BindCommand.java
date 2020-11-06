@@ -1,29 +1,47 @@
 package com.gamesense.client.command.commands;
 
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import org.lwjgl.input.Keyboard;
 
-public class BindCommand extends Command{
+/**
+ * @Author Hoosiers on 11/05/2020
+ */
 
-	@Override
-	public String[] getAlias(){
-		return new String[]{"bind", "b"};
-	}
+public class BindCommand extends Command {
 
-	@Override
-	public String getSyntax(){
-		return "bind <module> <key>";
-	}
+    public BindCommand(){
+        super("Bind");
 
-	@Override
-	public void onCommand(String command, String[] args) throws Exception{
-		int key = Keyboard.getKeyIndex(args[1].toUpperCase());
-		ModuleManager.getModules().forEach(m -> {
-			if (args[0].equalsIgnoreCase(m.getName())){
-				m.setBind(key);
-				Command.sendClientMessage(args[0] + " bound to " + args[1].toUpperCase());
-			}
-		});
-	}
+        setCommandSyntax(Command.getCommandPrefix() + "bind [module] key");
+        setCommandAlias(new String[]{
+                "bind", "b", "setbind", "key"
+        });
+    }
+
+    public void onCommand(String command, String[] message) throws Exception{
+        String main = message[0];
+        String value = message[1].toUpperCase();
+
+        for (Module module : ModuleManager.getModules()){
+            if (module.getName().equalsIgnoreCase(main)){
+                if (value.equalsIgnoreCase("none")){
+                    module.setBind(Keyboard.KEY_NONE);
+                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + " bind set to: " + value + "!");
+                }
+                //keeps people from accidentally binding things such as ESC, TAB, exc.
+                else if (value.length() == 1){
+                    int key = Keyboard.getKeyIndex(value);
+
+                    module.setBind(key);
+                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + " bind set to: " + value + "!");
+                }
+                else if (value.length() > 1){
+                    MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
+                }
+            }
+        }
+    }
 }

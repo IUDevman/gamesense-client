@@ -4,7 +4,6 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.WaterPushEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;

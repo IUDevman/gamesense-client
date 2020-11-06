@@ -4,7 +4,7 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.TotemPopEvent;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.command.Command;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
@@ -75,7 +75,7 @@ public class PvPInfo extends Module {
 					if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())) {
 						if (!knownPlayers.contains(e)) {
 							knownPlayers.add(e);
-							Command.sendClientMessage(getTextColor() + e.getName() + " has been spotted thanks to GameSense!");
+							MessageBus.sendClientPrefixMessage(getTextColor() + e.getName() + " has been spotted thanks to GameSense!");
 						}
 					}
 				}
@@ -99,7 +99,7 @@ public class PvPInfo extends Module {
 					if (e instanceof EntityEnderPearl) {
 						if (!antipearlspamplz.contains(e)) {
 							antipearlspamplz.add(e);
-							Command.sendClientMessage(getTextColor() + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + " has just thrown a pearl!");
+							MessageBus.sendClientPrefixMessage(getTextColor() + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + " has just thrown a pearl!");
 						}
 					}
 				}
@@ -109,11 +109,11 @@ public class PvPInfo extends Module {
 		if (strengthDetect.getValue() && mc.player != null && mc.world != null) {
 			for (EntityPlayer player : mc.world.playerEntities){
 				if (player.isPotionActive(MobEffects.STRENGTH) && !(strengthedPlayers.contains(player))){
-					Command.sendClientMessage(getTextColor() + player.getName() + " has (drank) strength!");
+					MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " has (drank) strength!");
 					strengthedPlayers.add(player);
 				}
 				if (!(player.isPotionActive(MobEffects.STRENGTH)) && strengthedPlayers.contains(player)){
-					Command.sendClientMessage(getTextColor() + player.getName() + " no longer has strength!");
+					MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " no longer has strength!");
 					strengthedPlayers.remove(player);
 				}
 			}
@@ -122,7 +122,7 @@ public class PvPInfo extends Module {
 			for (EntityPlayer player : mc.world.playerEntities) {
 				if (player.getHealth() <= 0) {
 					if (popCounterHashMap.containsKey(player.getDisplayNameString())) {
-						Command.sendClientMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popCounterHashMap.get(player.getName()) + getTextColor() + " totems!");
+						MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popCounterHashMap.get(player.getName()) + getTextColor() + " totems!");
 						popCounterHashMap.remove(player.getName(), popCounterHashMap.get(player.getName()));
 					}
 				}
@@ -153,13 +153,13 @@ public class PvPInfo extends Module {
 
 		if (popCounterHashMap.get(event.getEntity().getName()) == null){
 			popCounterHashMap.put(event.getEntity().getName(), 1);
-			Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
+			MessageBus.sendClientPrefixMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
 		}
 		else if (popCounterHashMap.get(event.getEntity().getName()) != null){
 			int popCounter = popCounterHashMap.get(event.getEntity().getName());
 			int newPopCounter = popCounter += 1;
 			popCounterHashMap.put(event.getEntity().getName(), newPopCounter);
-			Command.sendClientMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + getTextColor() + " totems!");
+			MessageBus.sendClientPrefixMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + getTextColor() + " totems!");
 		}
 	});
 

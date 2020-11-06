@@ -44,7 +44,7 @@ public class SaveConfig {
         }
     }
 
-    String fileName = "GameSense/";
+    public static final String fileName = "GameSense/";
     String moduleName = "Modules/";
     String mainName = "Main/";
     String miscName = "Misc/";
@@ -192,7 +192,7 @@ public class SaveConfig {
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "CommandPrefix" + ".json"), StandardCharsets.UTF_8);
         JsonObject prefixObject = new JsonObject();
 
-        prefixObject.add("Prefix", new JsonPrimitive(Command.getPrefix()));
+        prefixObject.add("Prefix", new JsonPrimitive(Command.getCommandPrefix()));
         String jsonString = gson.toJson(new JsonParser().parse(prefixObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();

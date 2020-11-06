@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.world.BlockUtils;
-import com.gamesense.client.command.Command;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -64,7 +64,7 @@ public class HoleFill extends Module {
 
 	public void onEnable(){
 		if (chatMsgs.getValue() && mc.player != null){
-			Command.sendRawMessage(ColorMain.getEnabledColor() + "HoleFill turned ON!");
+			MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "HoleFill turned ON!");
 		}
 		if (autoSwitch.getValue() && mc.player != null){
 			oldHandEnable = mc.player.inventory.currentItem;
@@ -73,7 +73,7 @@ public class HoleFill extends Module {
 
 	public void onDisable(){
 		if (chatMsgs.getValue() && mc.player != null){
-			Command.sendRawMessage(ColorMain.getDisabledColor() + "HoleFill turned OFF!");
+			MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "HoleFill turned OFF!");
 		}
 		if (autoSwitch.getValue() && mc.player != null){
 			mc.player.inventory.currentItem = oldHandEnable;

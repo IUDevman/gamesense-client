@@ -206,7 +206,7 @@ public class LoadConfig {
         JsonElement prefixObject = mainObject.get("Prefix");
 
         if (prefixObject != null && prefixObject.isJsonPrimitive()) {
-            Command.setPrefix(prefixObject.getAsString());
+            Command.setCommandPrefix(prefixObject.getAsString());
         }
         inputStream.close();
     }

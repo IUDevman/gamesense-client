@@ -9,7 +9,6 @@ import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.combat.AutoCrystal;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

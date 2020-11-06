@@ -41,7 +41,7 @@ public class Speed extends Module {
 		modes.add("YPort");
 
 		mode = registerMode("Mode", "Mode", modes, "Strafe");
-		jumpHeight = registerDouble("Jump Speed", "JumpSpeed", 0.42, 0, 1);
+		jumpHeight = registerDouble("Jump Speed", "JumpSpeed", 0.41, 0, 1);
 		timerBool = registerBoolean("Timer", "Timer", true);
 		timerVal = registerDouble("Timer Speed", "TimerSpeed", 1.15, 1, 1.5);
 		iceSpeed = registerBoolean("Ice", "Ice", true);

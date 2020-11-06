@@ -1,32 +1,38 @@
 package com.gamesense.client.command.commands;
 
+import com.gamesense.api.util.font.CFontRenderer;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
-import com.gamesense.api.util.font.CFontRenderer;
+import java.awt.Font;
 
-import java.awt.*;
+/**
+ * @Author Hoosiers on 11/05/2020
+ */
 
-public class FontCommand extends Command{
+public class FontCommand extends Command {
 
-	@Override
-	public String[] getAlias(){
-		return new String[]{
-				"font", "setfont", "newfont", "chatfont"
-		};
-	}
+    public FontCommand(){
+        super("Font");
 
-	@Override
-	public String getSyntax(){
-		return "font <name> <size>";
-	}
+        setCommandSyntax(Command.getCommandPrefix() + "font [name] size (use _ for spaces)");
+        setCommandAlias(new String[]{
+                "font", "setfont", "customfont", "fonts", "chatfont"
+        });
+    }
 
-	@Override
-	public void onCommand(String command, String[] args) throws Exception{
-		String font = args[0].replace("_", " ");
-		int size = Integer.parseInt(args[1]);
-		GameSenseMod.fontRenderer = new CFontRenderer(new Font(font, Font.PLAIN, size), true, false);
-		GameSenseMod.fontRenderer.setFontName(font);
-		GameSenseMod.fontRenderer.setFontSize(size);
-		Command.sendClientMessage("Set the font to " + font + ", size " + size);
-	}
+    public void onCommand(String command, String[] message){
+        String main = message[0].replace("_", " ");
+        int value = Integer.parseInt(message[1]);
+
+        if (value >= 21 || value <= 15){
+            value = 18;
+        }
+
+        GameSenseMod.fontRenderer = new CFontRenderer(new Font(main, Font.PLAIN, value), true, true);
+        GameSenseMod.fontRenderer.setFontName(main);
+        GameSenseMod.fontRenderer.setFontSize(value);
+
+        MessageBus.sendClientPrefixMessage("Font set to: " + main.toUpperCase() + ", size " + value + "!");
+    }
 }

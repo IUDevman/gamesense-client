@@ -1,33 +1,35 @@
 package com.gamesense.client.command.commands;
 
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 
 /**
- * @Author Hoosiers on 10/03/20
+ * @Author Hoosiers on 11/05/2020
  */
 
 public class DisableAllCommand extends Command {
 
-    @Override
-    public String[] getAlias(){
-        return new String[]{
-                "disableall", "stopall", "disablemodules"
-        };
+    public DisableAllCommand(){
+        super("DisableAll");
+
+        setCommandSyntax(Command.getCommandPrefix() + "disableall");
+        setCommandAlias(new String[]{
+                "disableall", "stop"
+        });
     }
 
-    @Override
-    public String getSyntax(){
-        return "disableall";
-    }
+    public void onCommand(String command, String[] message) throws Exception{
+        int count = 0;
 
-    @Override
-    public void onCommand(String command, String[] args) throws Exception{
         for (Module module : ModuleManager.getModules()){
-            if (ModuleManager.isModuleEnabled(module)){
+            if (module.isEnabled()){
                 module.disable();
+                count++;
             }
         }
+
+        MessageBus.sendClientPrefixMessage("Disabled " + count + " modules!");
     }
 }

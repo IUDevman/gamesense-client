@@ -1,38 +1,41 @@
 package com.gamesense.client.command.commands;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 
-public class ToggleCommand extends Command{
-	boolean found;
+/**
+ * @Author Hoosiers on 11/05/2020
+ */
 
-	@Override
-	public String[] getAlias(){
-		return new String[]{"toggle", "t"};
-	}
+public class ToggleCommand extends Command {
 
-	@Override
-	public String getSyntax(){
-		return "toggle <module>";
-	}
+    public ToggleCommand(){
+        super("Toggle");
 
-	@Override
-	public void onCommand(String command, String[] args) throws Exception{
-		found = false;
-		ModuleManager.getModules().forEach(m -> {
-			if (m.getName().equalsIgnoreCase(args[0])){
-				if (m.isEnabled()){
-					m.disable();
-					found = true;
-						Command.sendClientMessage(m.getName() + ChatFormatting.RED + " disabled!");
-				} else if (!m.isEnabled()){
-					m.enable();
-					found = true;
-						Command.sendClientMessage(m.getName() + ChatFormatting.GREEN + " enabled!");
-				}
-			}
-		});
-		if (!found && args.length == 1) Command.sendClientMessage(ChatFormatting.GRAY + "Module not found!");
-	}
+        setCommandSyntax(Command.getCommandPrefix() + "toggle [module]");
+        setCommandAlias(new String[]{
+                "toggle", "t", "enable", "disable"
+        });
+    }
+
+    public void onCommand(String command, String[] message) throws Exception{
+        String main = message[0];
+
+        for (Module module : ModuleManager.getModules()){
+            if (module.getName().equalsIgnoreCase(main) && !module.isEnabled()){
+                module.enable();
+                MessageBus.sendClientPrefixMessage("Module " + module.getName() + " set to: ENABLED!");
+            }
+            else if (module.getName().equalsIgnoreCase(main) && module.isEnabled()){
+                module.disable();
+                MessageBus.sendClientPrefixMessage("Module " + module.getName() + " set to: DISABLED!");
+            }
+        }
+
+        if (main == null || ModuleManager.getModuleByName(main) == null){
+            MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
+        }
+    }
 }
