@@ -1,9 +1,9 @@
-package com.gamesense.client.commands2.commands;
+package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.GameSenseGUI;
-import com.gamesense.client.commands2.Command;
+import com.gamesense.client.command.Command;
 
 /**
  * @Author Hoosiers on 11/05/2020

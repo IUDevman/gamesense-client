@@ -1,61 +1,79 @@
 package com.gamesense.client.command;
 
 import com.gamesense.api.util.misc.MessageBus;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.gamesense.client.command.commands.*;
 
 import java.util.ArrayList;
 
-public class CommandManager{
-	private static ArrayList<Command> commands;
-	boolean validCommand;
+/**
+ * @Author Hoosiers on 11/04/2020
+ */
 
-	public static void initCommands(){
-		commands = new ArrayList<>();
-		addCommand(new AutoGgCommand());
-		addCommand(new AutoReplyCommand());
-		addCommand(new BindCommand());
-		addCommand(new CmdsCommand());
-		addCommand(new DisableAllCommand());
-		addCommand(new DrawnCommand());
-		addCommand(new EnemyCommand());
-		addCommand(new FixGuiCommand());
-		addCommand(new FontCommand());
-		addCommand(new FriendCommand());
-		addCommand(new ModsCommand());
-		addCommand(new OpenFolderCommand());
-		addCommand(new PrefixCommand());
-		addCommand(new SaveConfigCommand());
-		addCommand(new SetSettingCommand());
-		addCommand(new ToggleCommand());
-		addCommand(new VanishCommand());
-	}
+public class CommandManager {
 
-	public static void addCommand(Command command){
-		commands.add(command);
-	}
+    public static ArrayList<Command> commands = new ArrayList<>();
 
-	public static ArrayList<Command> getCommands(){
-		return commands;
-	}
+    public static void registerCommands(){
+        addCommand(new AutoGGCommand());
+        addCommand(new AutoReplyCommand());
+        addCommand(new BindCommand());
+        addCommand(new CmdListCommand());
+        addCommand(new DisableAllCommand());
+        addCommand(new DrawnCommand());
+        addCommand(new EnemyCommand());
+        addCommand(new FixGUICommand());
+        addCommand(new FontCommand());
+        addCommand(new FriendCommand());
+        addCommand(new ModulesCommand());
+        addCommand(new OpenFolderCommand());
+        addCommand(new PrefixCommand());
+        addCommand(new SetCommand());
+        addCommand(new ToggleCommand());
+    }
 
-	public void callCommand(String input){
-		String[] split = input.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"); // Split by every space if it isn't surrounded by quotes // credit 086/KAMI
-		String command = split[0];
-		String args = input.substring(command.length()).trim();
-		validCommand = false;
-		commands.forEach(c -> {
-			for (String s : c.getAlias()){
-				if (s.equalsIgnoreCase(command)){
-					validCommand = true;
-					try{
-						c.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
-					} catch (Exception e){
-						MessageBus.sendClientPrefixMessage(ChatFormatting.GRAY + c.getSyntax());
-					}
-				}
-			}
-		});
-		if (!validCommand) MessageBus.sendClientPrefixMessage(ChatFormatting.GRAY + "Unknown command! Type " + com.gamesense.client.commands2.Command.getCommandPrefix() + "help for a list of commands!");
-	}
+    public static void addCommand(Command command){
+        commands.add(command);
+    }
+
+    public static ArrayList<Command> getCommands(){
+        return commands;
+    }
+
+    public static Command getCommandByName(String name){
+        for (Command command : commands){
+            if (command.getCommandName() == name){
+                return command;
+            }
+        }
+        return null;
+    }
+
+    boolean isValidCommand = false;
+
+    /** @Author 086 for KAMI, regex is a bitch **/
+    public void callCommand(String input){
+        String[] split = input.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        String command1 = split[0];
+        String args = input.substring(command1.length()).trim();
+
+        isValidCommand = false;
+
+        commands.forEach(command -> {
+            for (String string : command.getCommandAlias()){
+                if (string.equalsIgnoreCase(command1)){
+                    isValidCommand = true;
+                    try{
+                        command.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
+                    }
+                    catch (Exception e){
+                        MessageBus.sendClientPrefixMessage(command.getCommandSyntax());
+                    }
+                }
+            }
+        });
+
+        if (!isValidCommand) {
+            MessageBus.sendClientPrefixMessage("Error! Invalid command!");
+        }
+    }
 }

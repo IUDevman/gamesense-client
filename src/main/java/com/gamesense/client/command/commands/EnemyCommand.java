@@ -1,38 +1,35 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
-import com.mojang.realmsclient.gui.ChatFormatting;
-import com.gamesense.client.command.Command;
 import com.gamesense.api.util.players.enemy.Enemies;
+import com.gamesense.client.command.Command;
 
-public class EnemyCommand extends Command{
+/**
+ * @Author Hoosiers on 11/05/2020
+ */
 
-	@Override
-	public String[] getAlias(){
-		return new String[]{
-				"enemy", "enemies", "e"
-		};
-	}
+public class EnemyCommand extends Command {
 
-	@Override
-	public String getSyntax(){
-		return "enemy <add | del> <name>";
-	}
+    public EnemyCommand(){
+        super("Enemy");
 
-	@Override
-	public void onCommand(String command, String[] args) throws Exception{
-		if (args[0].equalsIgnoreCase("add")){
-			if (!Enemies.getEnemies().contains(Enemies.getEnemyByName(args[1]))){
-				Enemies.addEnemy(args[1]);
-				MessageBus.sendClientPrefixMessage(ChatFormatting.GRAY + "Added enemy with name " + args[1]);
-			} else{
-				MessageBus.sendClientPrefixMessage(ChatFormatting.GRAY + args[1] + " is already an enemy!");
-			}
-		} else if (args[0].equalsIgnoreCase("del") || (args[0].equalsIgnoreCase("remove"))){
-			Enemies.delEnemy(args[1]);
-			MessageBus.sendClientPrefixMessage(ChatFormatting.GRAY + "Removed enemy with name " + args[1]);
-		} else{
-			MessageBus.sendClientPrefixMessage(getSyntax());
-		}
-	}
+        setCommandSyntax(Command.getCommandPrefix() + "enemy add/del [player]");
+        setCommandAlias(new String[]{
+                "enemy", "enemies", "e"
+        });
+    }
+
+    public void onCommand(String command, String[] message) throws Exception{
+        String main = message[0];
+        String value = message[1];
+
+        if (main.equalsIgnoreCase("add") && !Enemies.isEnemy(value)){
+            Enemies.addEnemy(value);
+            MessageBus.sendClientPrefixMessage("Added enemy: " + value.toUpperCase() + "!");
+        }
+        else if (main.equalsIgnoreCase("del") && Enemies.isEnemy(value)){
+            Enemies.delEnemy(value);
+            MessageBus.sendClientPrefixMessage("Deleted enemy: " + value.toUpperCase() + "!");
+        }
+    }
 }

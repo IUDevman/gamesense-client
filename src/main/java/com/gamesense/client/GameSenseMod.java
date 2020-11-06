@@ -2,7 +2,7 @@ package com.gamesense.client;
 
 import java.awt.Font;
 
-import com.gamesense.client.commands2.CommandManager;
+import com.gamesense.client.command.CommandManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;

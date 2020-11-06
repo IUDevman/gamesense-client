@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import org.lwjgl.opengl.GL11;
 
 public class InventoryViewer extends Module {
     public InventoryViewer(){

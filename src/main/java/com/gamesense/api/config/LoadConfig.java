@@ -12,7 +12,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.commands2.Command;
+import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;

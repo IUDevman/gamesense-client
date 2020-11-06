@@ -1,39 +1,42 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.gamesense.client.command.Command;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 
-public class DrawnCommand extends Command{
-	boolean found;
+/**
+ * @Author Hoosiers on 11/05/2020
+ */
 
-	@Override
-	public String[] getAlias(){
-		return new String[]{"drawn", "visible", "d", "seen"};
-	}
+public class DrawnCommand extends Command {
 
-	@Override
-	public String getSyntax(){
-		return "drawn <module>";
-	}
+    public DrawnCommand(){
+        super("Drawn");
 
-	@Override
-	public void onCommand(String command, String[] args) throws Exception{
-		found = false;
-		ModuleManager.getModules().forEach(m -> {
-			if (m.getName().equalsIgnoreCase(args[0])){
-				if (m.isDrawn()){
-					m.setDrawn(false);
-					found = true;
-					MessageBus.sendClientPrefixMessage(m.getName() + ChatFormatting.RED + " drawn = false");
-				} else if (!m.isDrawn()){
-					m.setDrawn(true);
-					found = true;
-					MessageBus.sendClientPrefixMessage(m.getName() + ChatFormatting.GREEN + " drawn = true");
-				}
-			}
-		});
-		if (!found && args.length == 1) MessageBus.sendClientPrefixMessage(ChatFormatting.GRAY + "Module not found!");
-	}
+        setCommandSyntax(Command.getCommandPrefix() + "drawn [module]");
+        setCommandAlias(new String[]{
+                "drawn", "shown"
+        });
+    }
+
+    public void onCommand(String command, String[] message) throws Exception{
+        String main = message[0];
+
+        for (Module module : ModuleManager.getModules()){
+            if (module.getName().equalsIgnoreCase(main)){
+                if (module.isDrawn()){
+                    module.setDrawn(false);
+                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + "drawn set to: FALSE!");
+                }
+                else if (!module.isDrawn()){
+                    module.setDrawn(true);
+                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + "drawn set to: TRUE!");
+                }
+            }
+            else {
+                MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
+            }
+        }
+    }
 }

@@ -1,20 +1,52 @@
 package com.gamesense.client.command;
 
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.hud.Notifications;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.TextComponentString;
+
+/**
+ * @Author Hoosiers on 11/04/2020
+ */
 
 public abstract class Command {
-	static Minecraft mc = Minecraft.getMinecraft();
 
-	public static String prefix = "-";
+    protected static final Minecraft mc = Minecraft.getMinecraft();
 
-	public abstract String[] getAlias();
-	public abstract String getSyntax();
-	public abstract void onCommand(String command, String[] args) throws Exception;
+    public static String commandPrefix = "-";
 
-	public static boolean MsgWaterMark = true;
-	public static ChatFormatting cf = ChatFormatting.GRAY;
+    String commandName;
+    String[] commandAlias;
+    String commandSyntax;
+
+    public Command(String commandName){
+        this.commandName = commandName;
+    }
+
+    public static String getCommandPrefix(){
+        return commandPrefix;
+    }
+
+    public String getCommandName(){
+        return this.commandName;
+    }
+
+    public String getCommandSyntax(){
+        return this.commandSyntax;
+    }
+
+    public String[] getCommandAlias(){
+        return this.commandAlias;
+    }
+
+    public static void setCommandPrefix(String prefix){
+        commandPrefix = prefix;
+    }
+
+    public void setCommandSyntax(String syntax){
+        this.commandSyntax = syntax;
+    }
+
+    public void setCommandAlias(String[] alias){
+        this.commandAlias = alias;
+    }
+
+    public abstract void onCommand(String command, String[] message) throws Exception;
 }
