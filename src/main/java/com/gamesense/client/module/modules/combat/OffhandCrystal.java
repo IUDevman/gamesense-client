@@ -1,7 +1,9 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -22,6 +24,7 @@ public class OffhandCrystal extends Module{
 	boolean returnI;
 	Item item;
 	Setting.Integer health;
+	Setting.Boolean disableGapple;
 
 	public OffhandCrystal(){
 		super("OffhandCrystal", Category.Combat);
@@ -31,7 +34,14 @@ public class OffhandCrystal extends Module{
 
 	@Override
 	public void setup(){
+		disableGapple = registerBoolean("Disable Gap", "DisableGap", true);
 		health = registerInteger("Health", "Health", 15, 0, 36);
+	}
+
+	public void onEnable(){
+		if (disableGapple.getValue() && ModuleManager.isModuleEnabled("OffhandGap")){
+			ModuleManager.getModuleByName("OffhandGap").disable();
+		}
 	}
 
 	public void onDisable(){
