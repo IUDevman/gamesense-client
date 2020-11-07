@@ -6,6 +6,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.world.Timer;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
@@ -103,7 +104,7 @@ public class AutoCrystal extends Module {
         handBreak = registerMode("Hand", "Hand", hands, "Main");
         breakCrystal = registerBoolean("Break", "Break", true);
         placeCrystal = registerBoolean("Place", "Place", true);
-        attackSpeed = registerInteger("Attack Speed", "AttackSpeed", 12, 1, 20);
+        attackSpeed = registerInteger("Attack Speed", "AttackSpeed", 16, 0, 20);
         breakRange = registerDouble("Hit Range", "HitRange", 4.4, 0.0, 10.0);
         placeRange = registerDouble("Place Range", "PlaceRange", 4.4, 0.0, 6.0);
         wallsRange = registerDouble("Walls Range", "WallsRange", 3.5, 0.0, 10.0);
@@ -139,11 +140,11 @@ public class AutoCrystal extends Module {
     private int oldSlot = -1;
     private int newSlot;
     private int waitCounter;
-    private long breakSystemTime;
     private Entity renderEnt;
     private BlockPos render;
     private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
     private EnumFacing enumFacing;
+    Timer timer = new Timer();
 
     public void onUpdate(){
         if (mc.player == null || mc.world == null || mc.player.isDead){
@@ -206,7 +207,8 @@ public class AutoCrystal extends Module {
                 }
             }
 
-            if (System.nanoTime() / 1000000L - breakSystemTime >= 420 - attackSpeed.getValue() * 20) {
+            if (timer.getTimePassed() / 50L >= 20 - attackSpeed.getValue()) {
+                timer.reset();
 
                 isActive = true;
                 isBreaking = true;
@@ -236,8 +238,6 @@ public class AutoCrystal extends Module {
 
                 isActive = false;
                 isBreaking = false;
-                breakSystemTime = System.nanoTime() / 1000000L;
-
             }
 
             if (!multiPlace.getValue()){
