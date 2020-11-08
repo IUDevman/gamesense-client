@@ -22,7 +22,7 @@ public class FastPlace extends Module{
 			mc.rightClickDelayTimer = 0;
 		}
 
-		if (crystals.getValue() && mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL || mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL){
+		if (crystals.getValue() && mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL){
 			mc.rightClickDelayTimer = 0;
 		}
 

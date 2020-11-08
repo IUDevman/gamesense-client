@@ -1,7 +1,6 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import net.minecraft.client.gui.inventory.GuiContainer;

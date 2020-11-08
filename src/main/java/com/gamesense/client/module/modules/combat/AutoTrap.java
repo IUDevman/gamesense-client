@@ -60,12 +60,10 @@ public class AutoTrap extends Module {
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
     }
 
-    private int cachedHotbarSlot = -1;
-    private int obbyHotbarSlot;
-
     private boolean noObby = false;
     private boolean isSneaking = false;
     private boolean firstRun = false;
+    private int oldSlot = -1;
 
     private int blocksPlaced;
     private int delayTimeTicks = 0;
@@ -83,8 +81,10 @@ public class AutoTrap extends Module {
             MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
         }
 
-        cachedHotbarSlot = mc.player.inventory.currentItem;
-        obbyHotbarSlot = -1;
+        mc.player.inventory.currentItem = oldSlot;
+        if (findObsidianSlot() == -1) {
+            mc.player.inventory.currentItem = findObsidianSlot();
+        }
     }
 
     public void onDisable(){
@@ -101,8 +101,8 @@ public class AutoTrap extends Module {
             }
         }
 
-        if (obbyHotbarSlot != cachedHotbarSlot && cachedHotbarSlot != -1){
-            mc.player.inventory.currentItem = cachedHotbarSlot;
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1){
+            mc.player.inventory.currentItem = oldSlot;
         }
 
         if (isSneaking){
@@ -110,9 +110,7 @@ public class AutoTrap extends Module {
             isSneaking = false;
         }
 
-        cachedHotbarSlot = -1;
-        obbyHotbarSlot = -1;
-
+        oldSlot = -1;
         noObby = false;
         firstRun = true;
         AutoCrystal.stopAC = false;
@@ -125,7 +123,6 @@ public class AutoTrap extends Module {
         }
 
         if (disableNone.getValue() && noObby){
-            mc.player.inventory.currentItem = cachedHotbarSlot;
             disable();
             return;
         }
@@ -255,8 +252,6 @@ public class AutoTrap extends Module {
         int obsidianSlot = findObsidianSlot();
 
         if (mc.player.inventory.currentItem != obsidianSlot){
-            obbyHotbarSlot = obsidianSlot;
-
             mc.player.inventory.currentItem = obsidianSlot;
         }
 

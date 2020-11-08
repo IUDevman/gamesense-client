@@ -53,25 +53,30 @@ public class Notifications extends Module{
 		else{
 			sort = 1;}
 		notCount = 0;
-		for (TextComponentString s : list){
-			notCount = list.indexOf(s) + 1;
-			notColor = s.getStyle().getColor();
+		if (list != null){
+			try {
+				for (TextComponentString s : list) {
+					notCount = list.indexOf(s) + 1;
+					notColor = s.getStyle().getColor();
 
-			if (sortUp.getValue()){
-				if (sortRight.getValue()){
-					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s.getText(), notX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(),s.getText()), notY.getValue() + (notCount * 10), new GSColor(255,255,255));
-				}
-				else {
-					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s.getText(), notX.getValue(),notY.getValue() + (notCount * 10), new GSColor(255,255,255));
+					if (sortUp.getValue()) {
+						if (sortRight.getValue()) {
+							FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), s.getText(), notX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(), s.getText()), notY.getValue() + (notCount * 10), new GSColor(255, 255, 255));
+						} else {
+							FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), s.getText(), notX.getValue(), notY.getValue() + (notCount * 10), new GSColor(255, 255, 255));
+						}
+					} else {
+						if (sortRight.getValue()) {
+							FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), s.getText(), notX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(), s.getText()), notY.getValue() + (notCount * -10), new GSColor(255, 255, 255));
+						} else {
+							FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), s.getText(), notX.getValue(), notY.getValue() + (notCount * -10), new GSColor(255, 255, 255));
+						}
+					}
+					list.remove(s);
 				}
 			}
-			else {
-				if (sortRight.getValue()){
-					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s.getText(), notX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(),s.getText()), notY.getValue() + (notCount * -10), new GSColor(255,255,255));
-				}
-				else {
-					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s.getText(), notX.getValue(),notY.getValue() + (notCount * -10), new GSColor(255,255,255));
-				}
+			catch (Exception e){
+				e.printStackTrace();
 			}
 		}
 	}

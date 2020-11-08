@@ -18,6 +18,7 @@ public class ArmorHUD extends Module {
     private static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
 
     public void onRender(){
+        GlStateManager.pushMatrix();
         GlStateManager.enableTexture2D();
 
         ScaledResolution resolution = new ScaledResolution(mc);
@@ -48,6 +49,6 @@ public class ArmorHUD extends Module {
         }
 
         GlStateManager.enableDepth();
-        GlStateManager.disableLighting();
+        GlStateManager.popMatrix();
     }
 }
