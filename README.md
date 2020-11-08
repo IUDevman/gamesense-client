@@ -46,7 +46,7 @@ Most notable features:
 * linustouchtips (TargetHUD, SkyColor, and Quiver)
 * Dngerr (Blink and HotbarRefill)
 * DarkiBoi (TotemPopCounter)
-
+* GL_DONT_CARE (Viewmodel Transformations)
 #### Credits
 Check specific class files for full credits.
 Some code used from (not directly referenced in code):
