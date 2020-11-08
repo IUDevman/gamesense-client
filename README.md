@@ -41,10 +41,10 @@ Most notable features:
 #### Contributors
 * Cyber (original developer)
 * Hoosiers (original developer, head developer, maintainer)
-* lukflug (color settings, OpenGL and minor optimizations, issue tracker)
+* lukflug (color settings, OpenGL, ClickGUI and minor optimizations, issue tracker)
 * auburnhud2 (whitespace and continuous integration, issue tracker)
-* Dngerr (Blink and HotbarRefill)
 * linustouchtips (TargetHUD, SkyColor, and Quiver)
+* Dngerr (Blink and HotbarRefill)
 * DarkiBoi (TotemPopCounter)
 
 #### Credits
@@ -54,6 +54,7 @@ Some code used from (not directly referenced in code):
 * Osiris / Finz0 (old base)
 * Backdoored / CookieDragon234
 
+This client also implements the ClickGUI using PanelStudio: https://github.com/lukflug/PanelStudio/.
 
 <!-- INSTALLATION -->
 ## Installation
