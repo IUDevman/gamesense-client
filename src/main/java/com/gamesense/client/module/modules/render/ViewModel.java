@@ -9,6 +9,10 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumHandSide;
 
+/**
+ * @Author GL_DONT_CARE (Viewmodel Transformations)
+ */
+
 public class ViewModel extends Module{
 	public ViewModel(){super("ViewModel", Category.Render);}
 
