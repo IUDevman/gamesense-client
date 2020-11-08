@@ -116,6 +116,7 @@ public class Surround extends Module {
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1){
             mc.player.inventory.currentItem = oldSlot;
+            oldSlot = -1;
         }
 
         centeredBlock = Vec3d.ZERO;

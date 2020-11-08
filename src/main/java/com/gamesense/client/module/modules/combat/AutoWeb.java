@@ -50,9 +50,6 @@ public class AutoWeb extends Module{
 		chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
 	}
 
-	private int cachedHotbarSlot = -1;
-	private int webHotbarSlot;
-
 	private boolean noWeb = false;
 	private boolean isSneaking = false;
 	private boolean firstRun = false;
@@ -60,6 +57,7 @@ public class AutoWeb extends Module{
 	private int blocksPlaced;
 	private int delayTimeTicks = 0;
 	private int offsetSteps = 0;
+	private int oldSlot = -1;
 
 	private EntityPlayer closestTarget;
 
@@ -73,8 +71,11 @@ public class AutoWeb extends Module{
 			MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoWeb turned ON!");
 		}
 
-		cachedHotbarSlot = mc.player.inventory.currentItem;
-		webHotbarSlot = -1;
+		oldSlot = mc.player.inventory.currentItem;
+
+		if (findWebSlot() != -1){
+			mc.player.inventory.currentItem = findWebSlot();
+		}
 	}
 
 	public void onDisable(){
@@ -91,17 +92,15 @@ public class AutoWeb extends Module{
 			}
 		}
 
-		if (webHotbarSlot != cachedHotbarSlot && cachedHotbarSlot != -1){
-			mc.player.inventory.currentItem = cachedHotbarSlot;
-		}
-
 		if (isSneaking){
 			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
 			isSneaking = false;
 		}
 
-		cachedHotbarSlot = -1;
-		webHotbarSlot = -1;
+		if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1){
+			mc.player.inventory.currentItem = oldSlot;
+			oldSlot = -1;
+		}
 
 		noWeb = false;
 		firstRun = true;
@@ -115,7 +114,6 @@ public class AutoWeb extends Module{
 		}
 
 		if (disableNone.getValue() && noWeb){
-			mc.player.inventory.currentItem = cachedHotbarSlot;
 			disable();
 			return;
 		}
@@ -234,8 +232,6 @@ public class AutoWeb extends Module{
 		int webbSlot = findWebSlot();
 
 		if (mc.player.inventory.currentItem != webbSlot){
-			webHotbarSlot = webbSlot;
-
 			mc.player.inventory.currentItem = webbSlot;
 		}
 

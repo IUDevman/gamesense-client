@@ -61,9 +61,6 @@ public class SelfTrap extends Module {
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
     }
 
-    private int cachedHotbarSlot = -1;
-    private int obbyHotbarSlot;
-
     private boolean noObby = false;
     private boolean isSneaking = false;
     private boolean firstRun = false;
@@ -72,6 +69,7 @@ public class SelfTrap extends Module {
     private int delayTimeTicks = 0;
     private final int playerYLevel = 0;
     private int offsetSteps = 0;
+    private int oldSlot = -1;
 
     private Vec3d centeredBlock = Vec3d.ZERO;
 
@@ -92,8 +90,11 @@ public class SelfTrap extends Module {
 
         centeredBlock = getCenterOfBlock(mc.player.posX, mc.player.posY, mc.player.posY);
 
-        cachedHotbarSlot = mc.player.inventory.currentItem;
-        obbyHotbarSlot = -1;
+        oldSlot = mc.player.inventory.currentItem;
+
+        if (findObsidianSlot() != -1){
+            mc.player.inventory.currentItem = findObsidianSlot();
+        }
     }
 
     public void onDisable(){
@@ -110,17 +111,16 @@ public class SelfTrap extends Module {
             }
         }
 
-        if (obbyHotbarSlot != cachedHotbarSlot && cachedHotbarSlot != -1){
-            mc.player.inventory.currentItem = cachedHotbarSlot;
-        }
-
         if (isSneaking){
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             isSneaking = false;
         }
 
-        cachedHotbarSlot = -1;
-        obbyHotbarSlot = -1;
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1){
+            mc.player.inventory.currentItem = oldSlot;
+            oldSlot = -1;
+        }
+
         centeredBlock = Vec3d.ZERO;
 
         noObby = false;
@@ -135,7 +135,6 @@ public class SelfTrap extends Module {
         }
 
         if (disableNone.getValue() && noObby){
-            mc.player.inventory.currentItem = cachedHotbarSlot;
             disable();
             return;
         }
@@ -299,8 +298,6 @@ public class SelfTrap extends Module {
         int obsidianSlot = findObsidianSlot();
 
         if (mc.player.inventory.currentItem != obsidianSlot){
-            obbyHotbarSlot = obsidianSlot;
-
             mc.player.inventory.currentItem = obsidianSlot;
         }
 

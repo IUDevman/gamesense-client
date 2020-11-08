@@ -82,7 +82,7 @@ public class AutoTrap extends Module {
         }
 
         mc.player.inventory.currentItem = oldSlot;
-        if (findObsidianSlot() == -1) {
+        if (findObsidianSlot() != -1) {
             mc.player.inventory.currentItem = findObsidianSlot();
         }
     }
@@ -103,6 +103,7 @@ public class AutoTrap extends Module {
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1){
             mc.player.inventory.currentItem = oldSlot;
+            oldSlot = -1;
         }
 
         if (isSneaking){
@@ -110,7 +111,6 @@ public class AutoTrap extends Module {
             isSneaking = false;
         }
 
-        oldSlot = -1;
         noObby = false;
         firstRun = true;
         AutoCrystal.stopAC = false;

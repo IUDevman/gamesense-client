@@ -53,9 +53,6 @@ public class SelfWeb extends Module {
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
     }
 
-    private int cachedHotbarSlot = -1;
-    private int webHotbarSlot;
-
     private boolean noWeb = false;
     private boolean isSneaking = false;
     private boolean firstRun = false;
@@ -64,6 +61,7 @@ public class SelfWeb extends Module {
     private int delayTimeTicks = 0;
     private final int playerYLevel = 0;
     private int offsetSteps = 0;
+    private int oldSlot = -1;
 
     public void onEnable(){
         if (mc.player == null){
@@ -75,8 +73,11 @@ public class SelfWeb extends Module {
             MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "SelfWeb turned ON!");
         }
 
-        cachedHotbarSlot = mc.player.inventory.currentItem;
-        webHotbarSlot = -1;
+        oldSlot = mc.player.inventory.currentItem;
+
+        if (findWebSlot() != -1){
+            mc.player.inventory.currentItem = findWebSlot();
+        }
     }
 
     public void onDisable(){
@@ -93,17 +94,15 @@ public class SelfWeb extends Module {
             }
         }
 
-        if (webHotbarSlot != cachedHotbarSlot && cachedHotbarSlot != -1){
-            mc.player.inventory.currentItem = cachedHotbarSlot;
-        }
-
         if (isSneaking){
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             isSneaking = false;
         }
 
-        cachedHotbarSlot = -1;
-        webHotbarSlot = -1;
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1){
+            mc.player.inventory.currentItem = oldSlot;
+            oldSlot = -1;
+        }
 
         noWeb = false;
         firstRun = true;
@@ -117,7 +116,6 @@ public class SelfWeb extends Module {
         }
 
         if (disableNone.getValue() && noWeb){
-            mc.player.inventory.currentItem = cachedHotbarSlot;
             disable();
             return;
         }
@@ -239,8 +237,6 @@ public class SelfWeb extends Module {
         int webSlot = findWebSlot();
 
         if (mc.player.inventory.currentItem != webSlot){
-            webHotbarSlot = webSlot;
-
             mc.player.inventory.currentItem = webSlot;
         }
 
