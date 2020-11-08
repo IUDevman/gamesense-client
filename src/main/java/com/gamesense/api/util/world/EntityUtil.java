@@ -25,6 +25,11 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * @Author 086/KAMI
+ * @Author Crystallinqq/Auto for some functions (check Speed.java)
+ */
+
 public class EntityUtil{
 
 	private static final Minecraft mc = Minecraft.getMinecraft();

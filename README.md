@@ -55,6 +55,7 @@ Some code used from (not directly referenced in code):
 * Backdoored / CookieDragon234
 
 This client also implements the ClickGUI using PanelStudio: https://github.com/lukflug/PanelStudio/.
+If you believe that we are using your code and credits are not properly given, please message GooberTown#7384 on Discord.
 
 <!-- INSTALLATION -->
 ## Installation
