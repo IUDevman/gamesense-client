@@ -102,6 +102,10 @@ public class HoleFill extends Module {
 
 			BlockPos placePos = holePos.stream().sorted(Comparator.comparing(blockPos -> blockPos.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ))).findFirst().orElse(null);
 
+			if (placePos == null){
+				return;
+			}
+
 			for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(placePos))){
 				if (entity instanceof EntityPlayer){
 					return;
