@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.players.enemy.Enemies;
+import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
@@ -269,7 +270,7 @@ public class LoadConfig {
         JsonArray friendObject = mainObject.get("Friends").getAsJsonArray();
 
         friendObject.forEach(object -> {
-            GameSenseMod.getInstance().friends.addFriend(object.getAsString());
+            Friends.addFriend(object.getAsString());
         });
         inputStream.close();
     }
@@ -328,7 +329,7 @@ public class LoadConfig {
             if (panelPosYObject != null && panelPosYObject.isJsonPrimitive()){
                 point.y=panelPosYObject.getAsInt();
             }
-            frames.setPosition(point);
+            frames.setPosition(GameSenseMod.getInstance().clickGUI,point);
 
             JsonElement panelOpenObject = panelObject2.get("State");
             if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()){
