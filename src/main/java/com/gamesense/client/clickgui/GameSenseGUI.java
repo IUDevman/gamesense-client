@@ -90,7 +90,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
         		Point p=component.getPosition(this);
         		if (scroll>0) p.translate(0,ClickGuiModule.scrollSpeed.getValue());
         		else p.translate(0,-ClickGuiModule.scrollSpeed.getValue());
-        		component.setPosition(p);
+        		component.setPosition(this,p);
         	}
         }
     }
