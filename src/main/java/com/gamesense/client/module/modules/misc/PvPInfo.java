@@ -147,19 +147,20 @@ public class PvPInfo extends Module {
 
 	@EventHandler
 	private final Listener<TotemPopEvent> totemPopEventListener = new Listener<>(event -> {
-		if (popCounterHashMap == null){
-			popCounterHashMap = new HashMap<>();
-		}
+		if (popCounter.getValue()) {
+			if (popCounterHashMap == null) {
+				popCounterHashMap = new HashMap<>();
+			}
 
-		if (popCounterHashMap.get(event.getEntity().getName()) == null){
-			popCounterHashMap.put(event.getEntity().getName(), 1);
-			MessageBus.sendClientPrefixMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
-		}
-		else if (popCounterHashMap.get(event.getEntity().getName()) != null){
-			int popCounter = popCounterHashMap.get(event.getEntity().getName());
-			int newPopCounter = popCounter += 1;
-			popCounterHashMap.put(event.getEntity().getName(), newPopCounter);
-			MessageBus.sendClientPrefixMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + getTextColor() + " totems!");
+			if (popCounterHashMap.get(event.getEntity().getName()) == null) {
+				popCounterHashMap.put(event.getEntity().getName(), 1);
+				MessageBus.sendClientPrefixMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
+			} else if (popCounterHashMap.get(event.getEntity().getName()) != null) {
+				int popCounter = popCounterHashMap.get(event.getEntity().getName());
+				int newPopCounter = popCounter += 1;
+				popCounterHashMap.put(event.getEntity().getName(), newPopCounter);
+				MessageBus.sendClientPrefixMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + getTextColor() + " totems!");
+			}
 		}
 	});
 
