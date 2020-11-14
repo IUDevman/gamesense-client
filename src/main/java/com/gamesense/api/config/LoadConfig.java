@@ -313,9 +313,7 @@ public class LoadConfig {
 
         JsonObject panelObject = mainObject.get("Panels").getAsJsonObject();
         for (FixedComponent frames : GameSenseMod.getInstance().clickGUI.gui.getComponents()){
-            if (panelObject.get(frames.getTitle()) == null){
-                return;
-            }
+            if (panelObject.get(frames.getTitle()) == null) continue;
 
             JsonObject panelObject2 = panelObject.get(frames.getTitle()).getAsJsonObject();
 

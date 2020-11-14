@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -31,6 +32,11 @@ import com.lukflug.panelstudio.settings.NumberComponent;
 import com.lukflug.panelstudio.settings.SimpleToggleable;
 import com.lukflug.panelstudio.settings.Toggleable;
 import com.lukflug.panelstudio.settings.ToggleableContainer;
+import com.lukflug.panelstudio.tabgui.DefaultRenderer;
+import com.lukflug.panelstudio.tabgui.TabGUI;
+import com.lukflug.panelstudio.tabgui.TabGUIContainer;
+import com.lukflug.panelstudio.tabgui.TabGUIItem;
+import com.lukflug.panelstudio.tabgui.TabGUIRenderer;
 import com.lukflug.panelstudio.theme.ColorScheme;
 import com.lukflug.panelstudio.theme.GameSenseTheme;
 import com.lukflug.panelstudio.theme.Theme;
@@ -64,16 +70,53 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 				return ColorMain.colorModel.getValue().equals("HSB");
 			}
 		};
-		theme=new GameSenseTheme(new GameSenseScheme(),HEIGHT,2);
+		ColorScheme scheme=new GameSenseScheme();
+		theme=new GameSenseTheme(scheme,HEIGHT,2);
 		
 		Point pos=new Point(DISTANCE,DISTANCE);
-		gui=new ClickGUI(this,WIDTH);
+		gui=new ClickGUI(this);
+		TabGUIRenderer tabrenderer=new DefaultRenderer(new ColorScheme() {
+			@Override
+			public Color getActiveColor() {
+				return ClickGuiModule.enabledColor.getValue();
+			}
+
+			@Override
+			public Color getInactiveColor() {
+				return ClickGuiModule.backgroundColor.getValue();
+			}
+
+			@Override
+			public Color getBackgroundColor() {
+				return ClickGuiModule.settingBackgroundColor.getValue();
+			}
+
+			@Override
+			public Color getOutlineColor() {
+				return ClickGuiModule.backgroundColor.getValue();
+			}
+
+			@Override
+			public Color getFontColor() {
+				return ClickGuiModule.fontColor.getValue();
+			}
+
+			@Override
+			public int getOpacity() {
+				return ClickGuiModule.opacity.getValue();
+			}
+		},HEIGHT,5,Keyboard.KEY_UP,Keyboard.KEY_DOWN,Keyboard.KEY_LEFT,Keyboard.KEY_RIGHT,Keyboard.KEY_RETURN);
+		TabGUI tabgui=new TabGUI("TabGUI",tabrenderer,new Point(pos),75);
+		gui.addComponent(tabgui);
 		for (Module.Category category: Module.Category.values()) {
-			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new Point(pos));
+			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new Point(pos),WIDTH);
 			gui.addComponent(panel);
+			TabGUIContainer tab=new TabGUIContainer(category.name(),tabrenderer);
+			tabgui.addComponent(tab);
 			pos.translate(WIDTH+DISTANCE,0);
 			for (Module module: ModuleManager.getModulesInCategory(category)) {
 				addModule(panel,module);
+				tab.addComponent(new TabGUIItem(module.getName(),module));
 			}
 		}
 	}
