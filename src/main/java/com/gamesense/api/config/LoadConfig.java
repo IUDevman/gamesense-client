@@ -331,7 +331,7 @@ public class LoadConfig {
 
             JsonElement panelOpenObject = panelObject2.get("State");
             if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()){
-                if (frames instanceof DraggableContainer && panelOpenObject.getAsBoolean()) ((DraggableContainer)frames).open.toggle();
+                if (frames instanceof DraggableContainer && panelOpenObject.getAsBoolean()) ((DraggableContainer)frames).toggle();
             }
         }
         inputStream.close();

@@ -26,6 +26,7 @@ public class ClickGuiModule extends Module{
 	public static Setting.ColorSetting backgroundColor;
 	public static Setting.ColorSetting settingBackgroundColor;
 	public static Setting.ColorSetting fontColor;
+	public static Setting.Integer animationSpeed;
 	Setting.Boolean backgroundBlur;
 
 	public void setup(){
@@ -37,6 +38,7 @@ public class ClickGuiModule extends Module{
 		backgroundColor = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
 		settingBackgroundColor = registerColor("Setting", "Setting", new GSColor(30, 30, 30, 255));
 		fontColor = registerColor("Font", "Font", new GSColor(255, 255, 255 ,255));
+		animationSpeed = registerInteger("Animation Speed", "Animation Speed", 200, 0, 1000);
 	}
 
 	/** This uses minecraft's old "super secret" shaders, which means it could be modified to be a bunch of things in the future */

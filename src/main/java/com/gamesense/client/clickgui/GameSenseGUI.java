@@ -6,12 +6,16 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
@@ -21,8 +25,9 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import com.lukflug.panelstudio.Animation;
 import com.lukflug.panelstudio.ClickGUI;
-import com.lukflug.panelstudio.Container;
+import com.lukflug.panelstudio.CollapsibleContainer;
 import com.lukflug.panelstudio.DraggableContainer;
 import com.lukflug.panelstudio.FixedComponent;
 import com.lukflug.panelstudio.Interface;
@@ -44,6 +49,7 @@ import com.lukflug.panelstudio.theme.Theme;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -57,6 +63,13 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	private Theme theme;
 	private Point mouse=new Point();
 	private boolean lButton=false,rButton=false;
+	
+	// Stuff for glScissor to use
+    private static final FloatBuffer MODELVIEW = GLAllocation.createDirectFloatBuffer(16);
+    private static final FloatBuffer PROJECTION = GLAllocation.createDirectFloatBuffer(16);
+	private static final IntBuffer VIEWPORT = GLAllocation.createDirectIntBuffer(16);
+    private static final FloatBuffer COORDS = GLAllocation.createDirectFloatBuffer(3);
+    private Stack<Rectangle> clipRect=new Stack<Rectangle>();
 	
 	public GameSenseGUI() {
 		colorToggle=new Toggleable() {
@@ -106,12 +119,12 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 				return ClickGuiModule.opacity.getValue();
 			}
 		},HEIGHT,5,Keyboard.KEY_UP,Keyboard.KEY_DOWN,Keyboard.KEY_LEFT,Keyboard.KEY_RIGHT,Keyboard.KEY_RETURN);
-		TabGUI tabgui=new TabGUI("TabGUI",tabrenderer,new Point(pos),75);
+		TabGUI tabgui=new TabGUI("TabGUI",tabrenderer,new GameSenseAnimation(),new Point(pos),75);
 		gui.addComponent(tabgui);
 		for (Module.Category category: Module.Category.values()) {
-			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new Point(pos),WIDTH);
+			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new GameSenseAnimation(),new Point(pos),WIDTH);
 			gui.addComponent(panel);
-			TabGUIContainer tab=new TabGUIContainer(category.name(),tabrenderer);
+			TabGUIContainer tab=new TabGUIContainer(category.name(),tabrenderer,new GameSenseAnimation());
 			tabgui.addComponent(tab);
 			pos.translate(WIDTH+DISTANCE,0);
 			for (Module module: ModuleManager.getModulesInCategory(category)) {
@@ -123,6 +136,9 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	
 	@Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX,MODELVIEW);
+		GlStateManager.getFloat(GL11.GL_PROJECTION_MATRIX,PROJECTION);
+		GlStateManager.glGetInteger(GL11.GL_VIEWPORT,VIEWPORT);
     	mouse=new Point(mouseX,mouseY);
     	begin();
         gui.render();
@@ -255,7 +271,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	@Override
 	public synchronized int loadImage(String name) {
 		try {
-			ResourceLocation rl=new ResourceLocation("cyberhack:gui/"+name);
+			ResourceLocation rl=new ResourceLocation("gamesense:gui/"+name);
 			InputStream stream=Minecraft.getMinecraft().resourceManager.getResource(rl).getInputStream();
 			BufferedImage image=ImageIO.read(stream);
 			int texture=TextureUtil.glGenTextures();
@@ -307,21 +323,64 @@ public class GameSenseGUI extends GuiScreen implements Interface {
         tessellator.draw();
         GlStateManager.disableTexture2D();
 	}
-
-	@Override
-	public void window(Rectangle r) {
-		GL11.glScissor(r.x,r.y,r.width,r.height);
+	
+	private void scissor (Rectangle r) {
+		if (r==null) {
+			GL11.glScissor(0,0,0,0);
+			GL11.glEnable(GL11.GL_SCISSOR_TEST);
+			return;
+		}
+		float x1,y1,x2,y2;
+		GLU.gluProject(r.x,r.y,zLevel,MODELVIEW,PROJECTION,VIEWPORT,COORDS);
+		x1=COORDS.get(0);
+		y1=COORDS.get(1);
+		GLU.gluProject(r.x+r.width,r.y+r.height,zLevel,MODELVIEW,PROJECTION,VIEWPORT,COORDS);
+		x2=COORDS.get(0);
+		y2=COORDS.get(1);
+		GL11.glScissor((int)Math.min(x1,x2),(int)Math.min(y1,y2),(int)Math.ceil(Math.abs(x2-x1))+1,(int)Math.ceil(Math.abs(y2-y1))+1);
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 
 	@Override
+	public void window (Rectangle r) {
+		if (clipRect.isEmpty()) {
+			scissor(r);
+			clipRect.push(r);
+		} else {
+			Rectangle top=clipRect.peek();
+			if (top==null) {
+				scissor(null);
+				clipRect.push(null);
+			} else {
+				int x1,y1,x2,y2;
+				x1=Math.max(r.x,top.x);
+				y1=Math.max(r.y,top.y);
+				x2=Math.min(r.x+r.width,top.x+top.width);
+				y2=Math.min(r.y+r.height,top.y+top.height);
+				if (x2>x1 && y2>y1) {
+					Rectangle rect=new Rectangle(x1,y1,x2-x1,y2-y1);
+					scissor(rect);
+					clipRect.push(rect);
+				} else {
+					scissor(null);
+					clipRect.push(null);
+				}
+			}
+		}
+	}
+
+	@Override
 	public void restore() {
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		if (!clipRect.isEmpty()) {
+			clipRect.pop();
+			if (clipRect.isEmpty()) GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			else scissor(clipRect.peek());
+		}
 	}
 	
-	private void addModule (Container panel, Module module) {
-		Container container;
-		container=new ToggleableContainer(module.getName(),theme.getContainerRenderer(),new SimpleToggleable(false),module);
+	private void addModule (CollapsibleContainer panel, Module module) {
+		CollapsibleContainer container;
+		container=new ToggleableContainer(module.getName(),theme.getContainerRenderer(),new SimpleToggleable(false),new GameSenseAnimation(),module);
 		panel.addComponent(container);
 		for (Setting property: GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)) {
 			if (property instanceof Setting.Boolean) {
@@ -333,7 +392,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 			} else if (property instanceof Setting.Mode) {
 				container.addComponent(new EnumComponent(property.getName(),theme.getComponentRenderer(),(Setting.Mode)property));
 			} else if (property instanceof Setting.ColorSetting) {
-				container.addComponent(new SyncableColorComponent(theme,(Setting.ColorSetting)property,colorToggle));
+				container.addComponent(new SyncableColorComponent(theme,(Setting.ColorSetting)property,colorToggle,new GameSenseAnimation()));
 			}
 		}
 		container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(),module));
@@ -384,5 +443,13 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		public int getOpacity() {
 			return ClickGuiModule.opacity.getValue();
 		}		
+	}
+	
+	
+	private static class GameSenseAnimation extends Animation {
+		@Override
+		protected int getSpeed() {
+			return ClickGuiModule.animationSpeed.getValue();
+		}
 	}
 }
