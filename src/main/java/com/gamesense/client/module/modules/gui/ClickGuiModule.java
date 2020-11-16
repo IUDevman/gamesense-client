@@ -8,6 +8,9 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.Announcer;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.ArrayList;
+
 import org.lwjgl.input.Keyboard;
 
 public class ClickGuiModule extends Module{
@@ -28,6 +31,7 @@ public class ClickGuiModule extends Module{
 	public static Setting.ColorSetting fontColor;
 	public static Setting.Integer animationSpeed;
 	Setting.Boolean backgroundBlur;
+	public static Setting.Mode scrolling;
 
 	public void setup(){
 		backgroundBlur = registerBoolean("Blur", "Blur", false);
@@ -39,6 +43,10 @@ public class ClickGuiModule extends Module{
 		settingBackgroundColor = registerColor("Setting", "Setting", new GSColor(30, 30, 30, 255));
 		fontColor = registerColor("Font", "Font", new GSColor(255, 255, 255 ,255));
 		animationSpeed = registerInteger("Animation Speed", "Animation Speed", 200, 0, 1000);
+		ArrayList<String> models=new ArrayList<>();
+		models.add("Screen");
+		models.add("Container");
+		scrolling=registerMode("Scrolling","ScrollingMode",models,"Screen");
 	}
 
 	/** This uses minecraft's old "super secret" shaders, which means it could be modified to be a bunch of things in the future */

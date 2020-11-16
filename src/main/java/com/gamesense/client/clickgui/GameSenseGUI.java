@@ -122,7 +122,15 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		TabGUI tabgui=new TabGUI("TabGUI",tabrenderer,new GameSenseAnimation(),new Point(pos),75);
 		gui.addComponent(tabgui);
 		for (Module.Category category: Module.Category.values()) {
-			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new GameSenseAnimation(),new Point(pos),WIDTH);
+			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new GameSenseAnimation(),new Point(pos),WIDTH) {
+				@Override
+				protected int getScrollHeight (int childHeight) {
+					if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
+						return childHeight;
+					}
+					return Math.min(childHeight,Math.max(HEIGHT*4,GameSenseGUI.this.height-getPosition(GameSenseGUI.this).y-renderer.getHeight()-HEIGHT));
+				}
+			};
 			gui.addComponent(panel);
 			TabGUIContainer tab=new TabGUIContainer(category.name(),tabrenderer,new GameSenseAnimation());
 			tabgui.addComponent(tab);
@@ -145,12 +153,16 @@ public class GameSenseGUI extends GuiScreen implements Interface {
         end();
         int scroll=Mouse.getDWheel();
         if (scroll!=0) {
-        	for (FixedComponent component: gui.getComponents()) {
-        		Point p=component.getPosition(this);
-        		if (scroll>0) p.translate(0,ClickGuiModule.scrollSpeed.getValue());
-        		else p.translate(0,-ClickGuiModule.scrollSpeed.getValue());
-        		component.setPosition(this,p);
+        	if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
+	        	for (FixedComponent component: gui.getComponents()) {
+	        		Point p=component.getPosition(this);
+	        		if (scroll>0) p.translate(0,ClickGuiModule.scrollSpeed.getValue());
+	        		else p.translate(0,-ClickGuiModule.scrollSpeed.getValue());
+	        		component.setPosition(this,p);
+	        	}
         	}
+        	if (scroll>0) gui.handleScroll(-ClickGuiModule.scrollSpeed.getValue());
+        	else gui.handleScroll(ClickGuiModule.scrollSpeed.getValue());
         }
     }
 
@@ -337,7 +349,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		GLU.gluProject(r.x+r.width,r.y+r.height,zLevel,MODELVIEW,PROJECTION,VIEWPORT,COORDS);
 		x2=COORDS.get(0);
 		y2=COORDS.get(1);
-		GL11.glScissor((int)Math.min(x1,x2),(int)Math.min(y1,y2),(int)Math.ceil(Math.abs(x2-x1))+1,(int)Math.ceil(Math.abs(y2-y1))+1);
+		GL11.glScissor(Math.round(Math.min(x1,x2)),Math.round(Math.min(y1,y2)),Math.round(Math.abs(x2-x1)),Math.round(Math.abs(y2-y1)));
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 
