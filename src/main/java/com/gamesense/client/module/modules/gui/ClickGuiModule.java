@@ -54,6 +54,7 @@ public class ClickGuiModule extends Module{
 
 	public void onEnable(){
 		mc.displayGuiScreen(GameSenseMod.getInstance().clickGUI);
+		if (!GameSenseMod.getInstance().clickGUI.gui.isOn()) GameSenseMod.getInstance().clickGUI.gui.toggle();
 
 		if (backgroundBlur.getValue()) {
 			mc.entityRenderer.loadShader(shader);

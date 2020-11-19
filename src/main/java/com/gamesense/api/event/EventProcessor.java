@@ -81,6 +81,7 @@ public class EventProcessor {
 		if (Keyboard.getEventKeyState()) {
 			if(Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
 			ModuleManager.onBind(Keyboard.getEventKey());
+			GameSenseMod.getInstance().clickGUI.handleKeyEvent(Keyboard.getEventKey());
 		}
 	}
 

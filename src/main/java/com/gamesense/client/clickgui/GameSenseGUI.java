@@ -12,7 +12,6 @@ import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
@@ -25,23 +24,21 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.client.module.modules.hud.HUDModule;
+import com.gamesense.client.module.modules.hud.TabGUIModule;
 import com.lukflug.panelstudio.Animation;
-import com.lukflug.panelstudio.ClickGUI;
 import com.lukflug.panelstudio.CollapsibleContainer;
 import com.lukflug.panelstudio.DraggableContainer;
 import com.lukflug.panelstudio.FixedComponent;
 import com.lukflug.panelstudio.Interface;
+import com.lukflug.panelstudio.hud.HUDClickGUI;
+import com.lukflug.panelstudio.hud.HUDPanel;
 import com.lukflug.panelstudio.settings.BooleanComponent;
 import com.lukflug.panelstudio.settings.EnumComponent;
 import com.lukflug.panelstudio.settings.NumberComponent;
 import com.lukflug.panelstudio.settings.SimpleToggleable;
 import com.lukflug.panelstudio.settings.Toggleable;
 import com.lukflug.panelstudio.settings.ToggleableContainer;
-import com.lukflug.panelstudio.tabgui.DefaultRenderer;
-import com.lukflug.panelstudio.tabgui.TabGUI;
-import com.lukflug.panelstudio.tabgui.TabGUIContainer;
-import com.lukflug.panelstudio.tabgui.TabGUIItem;
-import com.lukflug.panelstudio.tabgui.TabGUIRenderer;
 import com.lukflug.panelstudio.theme.ColorScheme;
 import com.lukflug.panelstudio.theme.GameSenseTheme;
 import com.lukflug.panelstudio.theme.Theme;
@@ -57,10 +54,10 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
 public class GameSenseGUI extends GuiScreen implements Interface {
-	public static final int WIDTH=100,HEIGHT=12,DISTANCE=10;
+	public static final int WIDTH=100,HEIGHT=12,DISTANCE=10,HUD_BORDER=2;
 	private final Toggleable colorToggle;
-	public final ClickGUI gui;
-	private Theme theme;
+	public final HUDClickGUI gui;
+	public static final Theme theme=new GameSenseTheme(new GameSenseScheme(),HEIGHT,2);;
 	private Point mouse=new Point();
 	private boolean lButton=false,rButton=false;
 	
@@ -83,44 +80,16 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 				return ColorMain.colorModel.getValue().equals("HSB");
 			}
 		};
-		ColorScheme scheme=new GameSenseScheme();
-		theme=new GameSenseTheme(scheme,HEIGHT,2);
 		
 		Point pos=new Point(DISTANCE,DISTANCE);
-		gui=new ClickGUI(this);
-		TabGUIRenderer tabrenderer=new DefaultRenderer(new ColorScheme() {
-			@Override
-			public Color getActiveColor() {
-				return ClickGuiModule.enabledColor.getValue();
+		gui=new HUDClickGUI(this);
+		
+		for (Module module: ModuleManager.getModules()) {
+			if (module instanceof HUDModule) {
+				gui.addHUDComponent(new HUDPanel(((HUDModule)module).getComponent(),theme.getPanelRenderer(),module,new GameSenseAnimation(),gui,HUD_BORDER));
 			}
-
-			@Override
-			public Color getInactiveColor() {
-				return ClickGuiModule.backgroundColor.getValue();
-			}
-
-			@Override
-			public Color getBackgroundColor() {
-				return ClickGuiModule.settingBackgroundColor.getValue();
-			}
-
-			@Override
-			public Color getOutlineColor() {
-				return ClickGuiModule.backgroundColor.getValue();
-			}
-
-			@Override
-			public Color getFontColor() {
-				return ClickGuiModule.fontColor.getValue();
-			}
-
-			@Override
-			public int getOpacity() {
-				return ClickGuiModule.opacity.getValue();
-			}
-		},HEIGHT,5,Keyboard.KEY_UP,Keyboard.KEY_DOWN,Keyboard.KEY_LEFT,Keyboard.KEY_RIGHT,Keyboard.KEY_RETURN);
-		TabGUI tabgui=new TabGUI("TabGUI",tabrenderer,new GameSenseAnimation(),new Point(pos),75);
-		gui.addComponent(tabgui);
+		}
+		TabGUIModule.populate();
 		for (Module.Category category: Module.Category.values()) {
 			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new GameSenseAnimation(),new Point(pos),WIDTH) {
 				@Override
@@ -132,25 +101,30 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 				}
 			};
 			gui.addComponent(panel);
-			TabGUIContainer tab=new TabGUIContainer(category.name(),tabrenderer,new GameSenseAnimation());
-			tabgui.addComponent(tab);
 			pos.translate(WIDTH+DISTANCE,0);
 			for (Module module: ModuleManager.getModulesInCategory(category)) {
 				addModule(panel,module);
-				tab.addComponent(new TabGUIItem(module.getName(),module));
 			}
 		}
 	}
 	
-	@Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void render() {
+		if (!gui.isOn()) renderGUI();
+	}
+	
+	private void renderGUI() {
 		GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX,MODELVIEW);
 		GlStateManager.getFloat(GL11.GL_PROJECTION_MATRIX,PROJECTION);
 		GlStateManager.glGetInteger(GL11.GL_VIEWPORT,VIEWPORT);
-    	mouse=new Point(mouseX,mouseY);
     	begin();
         gui.render();
         end();
+	}
+	
+	@Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		renderGUI();
+    	mouse=new Point(mouseX,mouseY);
         int scroll=Mouse.getDWheel();
         if (scroll!=0) {
         	if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
@@ -194,11 +168,16 @@ public class GameSenseGUI extends GuiScreen implements Interface {
     	gui.handleButton(releaseButton);
     }
     
+    public void handleKeyEvent (int scancode) {
+    	if (scancode!=1) gui.handleKey(scancode);
+    }
+    
     @Override
     protected void keyTyped(final char typedChar, final int keyCode) {
     	if (keyCode == 1) {
     		gui.exit();
     		this.mc.displayGuiScreen(null);
+    		if (gui.isOn()) gui.toggle();
     	} else gui.handleKey(keyCode);
     }
 
@@ -425,7 +404,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	}
 	
 	
-	private static class GameSenseScheme implements ColorScheme {
+	public static class GameSenseScheme implements ColorScheme {
 		@Override
 		public Color getActiveColor() {
 			return ClickGuiModule.enabledColor.getValue();
@@ -458,7 +437,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	}
 	
 	
-	private static class GameSenseAnimation extends Animation {
+	public static class GameSenseAnimation extends Animation {
 		@Override
 		protected int getSpeed() {
 			return ClickGuiModule.animationSpeed.getValue();

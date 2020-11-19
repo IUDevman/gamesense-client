@@ -3,17 +3,85 @@ package com.gamesense.client.module;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import com.gamesense.client.module.modules.combat.*;
-import com.gamesense.client.module.modules.movement.*;
-import com.gamesense.client.module.modules.render.*;
-import com.gamesense.client.module.modules.exploits.*;
-import com.gamesense.client.module.modules.gui.*;
-import com.gamesense.client.module.modules.misc.*;
-import com.gamesense.client.module.modules.hud.*;
-
 import org.lwjgl.input.Keyboard;
+
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.module.modules.combat.AutoArmor;
+import com.gamesense.client.module.modules.combat.AutoCrystal;
+import com.gamesense.client.module.modules.combat.AutoTotem;
+import com.gamesense.client.module.modules.combat.AutoTrap;
+import com.gamesense.client.module.modules.combat.AutoWeb;
+import com.gamesense.client.module.modules.combat.FastBow;
+import com.gamesense.client.module.modules.combat.HoleFill;
+import com.gamesense.client.module.modules.combat.KillAura;
+import com.gamesense.client.module.modules.combat.OffhandCrystal;
+import com.gamesense.client.module.modules.combat.OffhandGap;
+import com.gamesense.client.module.modules.combat.SelfTrap;
+import com.gamesense.client.module.modules.combat.SelfWeb;
+import com.gamesense.client.module.modules.combat.Surround;
+import com.gamesense.client.module.modules.exploits.CoordExploit;
+import com.gamesense.client.module.modules.exploits.FastBreak;
+import com.gamesense.client.module.modules.exploits.LiquidInteract;
+import com.gamesense.client.module.modules.exploits.NoInteract;
+import com.gamesense.client.module.modules.exploits.NoSwing;
+import com.gamesense.client.module.modules.exploits.PortalGodMode;
+import com.gamesense.client.module.modules.gui.ClickGuiModule;
+import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.client.module.modules.hud.ArmorHUD;
+import com.gamesense.client.module.modules.hud.CombatInfo;
+import com.gamesense.client.module.modules.hud.HUDModule;
+import com.gamesense.client.module.modules.hud.InventoryViewer;
+import com.gamesense.client.module.modules.hud.ModuleArrayList;
+import com.gamesense.client.module.modules.hud.Notifications;
+import com.gamesense.client.module.modules.hud.Overlay;
+import com.gamesense.client.module.modules.hud.PotionEffects;
+import com.gamesense.client.module.modules.hud.TabGUIModule;
+import com.gamesense.client.module.modules.hud.TargetHUD;
+import com.gamesense.client.module.modules.hud.TextRadar;
+import com.gamesense.client.module.modules.misc.Announcer;
+import com.gamesense.client.module.modules.misc.AutoGG;
+import com.gamesense.client.module.modules.misc.AutoReply;
+import com.gamesense.client.module.modules.misc.AutoTool;
+import com.gamesense.client.module.modules.misc.ChatModifier;
+import com.gamesense.client.module.modules.misc.ChatSuffix;
+import com.gamesense.client.module.modules.misc.DiscordRPCModule;
+import com.gamesense.client.module.modules.misc.FakePlayer;
+import com.gamesense.client.module.modules.misc.FastPlace;
+import com.gamesense.client.module.modules.misc.HoosiersDupe;
+import com.gamesense.client.module.modules.misc.HotbarRefill;
+import com.gamesense.client.module.modules.misc.MCF;
+import com.gamesense.client.module.modules.misc.MultiTask;
+import com.gamesense.client.module.modules.misc.NoEntityTrace;
+import com.gamesense.client.module.modules.misc.NoKick;
+import com.gamesense.client.module.modules.misc.PvPInfo;
+import com.gamesense.client.module.modules.movement.Anchor;
+import com.gamesense.client.module.modules.movement.Blink;
+import com.gamesense.client.module.modules.movement.HoleTP;
+import com.gamesense.client.module.modules.movement.PlayerTweaks;
+import com.gamesense.client.module.modules.movement.ReverseStep;
+import com.gamesense.client.module.modules.movement.Speed;
+import com.gamesense.client.module.modules.movement.Sprint;
+import com.gamesense.client.module.modules.movement.Step;
+import com.gamesense.client.module.modules.render.BlockHighlight;
+import com.gamesense.client.module.modules.render.CapesModule;
+import com.gamesense.client.module.modules.render.CityESP;
+import com.gamesense.client.module.modules.render.ESP;
+import com.gamesense.client.module.modules.render.Freecam;
+import com.gamesense.client.module.modules.render.Fullbright;
+import com.gamesense.client.module.modules.render.HitSpheres;
+import com.gamesense.client.module.modules.render.HoleESP;
+import com.gamesense.client.module.modules.render.LogoutSpots;
+import com.gamesense.client.module.modules.render.Nametags;
+import com.gamesense.client.module.modules.render.NoRender;
+import com.gamesense.client.module.modules.render.RenderTweaks;
+import com.gamesense.client.module.modules.render.ShulkerViewer;
+import com.gamesense.client.module.modules.render.SkyColor;
+import com.gamesense.client.module.modules.render.Tracers;
+import com.gamesense.client.module.modules.render.ViewModel;
+import com.gamesense.client.module.modules.render.VoidESP;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -99,6 +167,7 @@ public class ModuleManager {
 		addMod(new Notifications());
 		addMod(new Overlay());
 		addMod(new PotionEffects());
+		addMod(new HUDModule(new TabGUIModule()));
 		addMod(new TargetHUD());
 		addMod(new TextRadar());
 		//GUI
@@ -116,6 +185,7 @@ public class ModuleManager {
 
 	public static void onRender() {
 		modules.stream().filter(Module::isEnabled).forEach(Module::onRender);
+		GameSenseMod.getInstance().clickGUI.render();
 	}
 
 	public static void onWorldRender(RenderWorldLastEvent event) {
