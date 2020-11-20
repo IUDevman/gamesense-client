@@ -1,64 +1,50 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Point;
+
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import com.mojang.realmsclient.gui.ChatFormatting;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 
-public class PotionEffects extends Module {
+public class PotionEffects extends ListModule {
+	private static Setting.Boolean sortUp;
+	private static Setting.Boolean sortRight;
+	private static Setting.ColorSetting color;
+	private static PotionList list=new PotionList();
+    
     public PotionEffects(){
-        super("PotionEffects", Category.HUD);
+    	super(new ListModule.ListComponent("PotionEffects",new Point(0,300),list));
     }
-
-    Setting.Integer posX;
-    Setting.Integer posY;
-    Setting.Boolean sortUp;
-    Setting.Boolean sortRight;
-    Setting.ColorSetting color;
 
     public void setup(){
-        posX = registerInteger("X", "X", 0, 0, 1000);
-        posY = registerInteger("Y", "Y", 300, 0, 1000);
-        sortUp = registerBoolean("Sort Up", "SortUp", true);
-        sortRight = registerBoolean("Sort Right", "SortRight", false);
+    	sortUp = registerBoolean("Sort Up", "SortUp", false);
+		sortRight = registerBoolean("Sort Right", "SortRight", false);
         color = registerColor("Color", "Color", new GSColor(0, 255, 0, 255));
     }
+    
+    
+    private static class PotionList implements ListModule.HUDList {
+		@Override
+		public int getListSize() {
+			return mc.player.getActivePotionEffects().size();
+		}
 
-    private int count;
+		@Override
+		public String getListItem(int index) {
+			PotionEffect effect=(PotionEffect)mc.player.getActivePotionEffects().toArray()[index];
+			String name=I18n.format(effect.getPotion().getName());
+	        int amplifier=effect.getAmplifier()+1;
+	        return name+" "+amplifier+ChatFormatting.GRAY+" "+Potion.getPotionDurationString(effect,1.0f);
+		}
 
-    public void onRender(){
-        count = 0;
-        try {
-            mc.player.getActivePotionEffects().forEach(effect -> {
-
-                String name = I18n.format(effect.getPotion().getName());
-                int amplifier = effect.getAmplifier() + 1;
-                String s = name + " " + amplifier + ChatFormatting.GRAY + " " + Potion.getPotionDurationString(effect, 1.0f);
-
-                if (sortUp.getValue()) {
-                    if (sortRight.getValue()) {
-                        FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), s, posX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(),s),posY.getValue() + (count * 10), color.getValue());
-                    }
-                    else {
-                        FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), s, posX.getValue(), posY.getValue() + (count * 10), color.getValue());
-                    }
-                    count++;
-                }
-                else {
-                    if (sortRight.getValue()) {
-                        FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), s, posX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(),s),  posY.getValue() + (count * -10), color.getValue());
-                    }
-                    else {
-                        FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), s, posX.getValue(), posY.getValue() + (count * -10), color.getValue());
-                    }
-                    count++;
-                }
-            });
-        }
-        catch(NullPointerException e){e.printStackTrace();}
+		@Override
+		public Color getItemColor(int index) {
+			return color.getValue();
+		}
     }
 }

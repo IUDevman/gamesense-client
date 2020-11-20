@@ -35,11 +35,12 @@ import com.gamesense.client.module.modules.hud.HUDModule;
 import com.gamesense.client.module.modules.hud.InventoryViewer;
 import com.gamesense.client.module.modules.hud.ModuleArrayList;
 import com.gamesense.client.module.modules.hud.Notifications;
-import com.gamesense.client.module.modules.hud.Overlay;
 import com.gamesense.client.module.modules.hud.PotionEffects;
 import com.gamesense.client.module.modules.hud.TabGUIModule;
 import com.gamesense.client.module.modules.hud.TargetHUD;
 import com.gamesense.client.module.modules.hud.TextRadar;
+import com.gamesense.client.module.modules.hud.Watermark;
+import com.gamesense.client.module.modules.hud.Welcomer;
 import com.gamesense.client.module.modules.misc.Announcer;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
@@ -165,11 +166,12 @@ public class ModuleManager {
 		addMod(new CombatInfo());
 		addMod(new InventoryViewer());
 		addMod(new Notifications());
-		addMod(new Overlay());
 		addMod(new PotionEffects());
 		addMod(new HUDModule(new TabGUIModule()));
 		addMod(new TargetHUD());
 		addMod(new TextRadar());
+		addMod(new Watermark());
+		addMod(new Welcomer());
 		//GUI
 		addMod(new ClickGuiModule());
 		addMod(new ColorMain());

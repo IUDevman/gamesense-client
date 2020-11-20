@@ -213,6 +213,16 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s,x,y,new GSColor(c));
 		begin();
 	}
+	
+	@Override
+	public int getFontWidth(String s) {
+		return (int)Math.round(FontUtils.getStringWidth(ColorMain.customFont.getValue(),s))+4;
+	}
+
+	@Override
+	public int getFontHeight() {
+		return (int)Math.round(FontUtils.getFontHeight(ColorMain.customFont.getValue()))+2;
+	}
 
 	@Override
 	public void fillTriangle(Point pos1, Point pos2, Point pos3, Color c1, Color c2, Color c3) {
