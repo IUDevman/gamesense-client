@@ -432,7 +432,10 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	public static void renderItem (ItemStack item, Point pos) {
 		GlStateManager.enableTexture2D();
 		GlStateManager.depthMask(true);
+		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glPopAttrib();
 		GlStateManager.enableDepth();
 		GlStateManager.disableAlpha();
 		GlStateManager.pushMatrix();
@@ -451,7 +454,10 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	public static void renderEntity (EntityLivingBase entity, Point pos) {
 		GlStateManager.enableTexture2D();
 		GlStateManager.depthMask(true);
+		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glPopAttrib();
 		GlStateManager.enableDepth();
 		GlStateManager.disableAlpha();
         GlStateManager.pushMatrix();
