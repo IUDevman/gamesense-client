@@ -1,13 +1,18 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.combat.AutoCrystal;
-import com.gamesense.client.module.modules.gui.ColorMain;
+
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -15,146 +20,67 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class CombatInfo extends Module {
-    public CombatInfo(){
-        super("CombatInfo", Category.HUD);
+public class CombatInfo extends ListModule {
+    private static Setting.Mode infoType;
+    private static Setting.ColorSetting color1;
+    private static Setting.ColorSetting color2;
+    private static InfoList list=new InfoList();
+    private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};;
+	
+    public CombatInfo() {
+    	super(new ListModule.ListComponent("CombatInfo",new Point(0,150),list));
     }
 
-    Setting.Integer posX;
-    Setting.Integer posY;
-    Setting.Mode infoType;
-    Setting.ColorSetting color1;
-    Setting.ColorSetting color2;
-
-    public void setup(){
+    public void setup() {
         ArrayList<String> infoTypes = new ArrayList<>();
         infoTypes.add("Cyber");
         infoTypes.add("Hoosiers");
-
-        posX = registerInteger("X", "X", 0, 0, 1000);
-        posY = registerInteger("Y", "Y", 150, 0, 1000);
         infoType = registerMode("Type", "Type", infoTypes, "Hoosiers");
         color1 = registerColor("On","On", new GSColor(0, 255, 0, 255));
         color2 = registerColor("Off", "Off", new GSColor(255, 0, 0, 255));
     }
 
-    private int totems;
-    private BlockPos[] surroundOffset;
-
-
-    public void onRender(){
-        GSColor on = new GSColor(color1.getValue());
-        GSColor off = new GSColor(color2.getValue());
-
-        switch (infoType.getValue()){
-            case "Cyber": {
-                totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
-                if (mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) totems++;
-
-                EntityOtherPlayerMP players = mc.world.loadedEntityList.stream()
-                        .filter(entity -> entity instanceof EntityOtherPlayerMP)
-                        .filter(entity -> !Friends.isFriend(entity.getName()))
-                        .filter(e -> mc.player.getDistance(e) <= AutoCrystal.placeRange.getValue())
-                        .map(entity -> (EntityOtherPlayerMP) entity)
-                        .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
-                        .orElse(null);
-
-                final AutoCrystal a = (AutoCrystal) ModuleManager.getModuleByName("AutocrystalGS");
-                this.surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};
-                final List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
-
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "gamesense.cc", posX.getValue(), posY.getValue(), on);
-                if (players != null && mc.player.getDistance(players) <= AutoCrystal.breakRange.getValue()) {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "HTR", posX.getValue(), posY.getValue() + 10, on);
-                } else {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "HTR", posX.getValue(), posY.getValue() + 10, off);
-                }
-
-                if (players != null && mc.player.getDistance(players) <= AutoCrystal.placeRange.getValue()) {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "PLR", posX.getValue(), posY.getValue() + 20, on);
-                } else {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "PLR", posX.getValue(), posY.getValue() + 20, off);
-                }
-
-                if (totems > 0 && ModuleManager.isModuleEnabled("AutoTotem")) {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), totems + "", posX.getValue(), posY.getValue() + 30, on);
-                } else {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), totems + "", posX.getValue(), posY.getValue() + 30, off);
-                }
-
-                if (getPing() > 100) {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "PING " + getPing(), posX.getValue(), posY.getValue() + 40, off);
-                } else {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "PING " + getPing(), posX.getValue(), posY.getValue() + 40, on);
-
-                }
-
-                for (final EntityPlayer e : entities) {
-                    int i = 0;
-                    for (final BlockPos add : this.surroundOffset) {
-                        ++i;
-                        final BlockPos o = new BlockPos(e.getPositionVector().x, e.getPositionVector().y, e.getPositionVector().z).add(add.getX(), add.getY(), add.getZ());
-                        if (mc.world.getBlockState(o).getBlock() == Blocks.OBSIDIAN) {
-                            if (i == 1 && a.canPlaceCrystal(o.north(1).down())) {
-                                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "LBY", posX.getValue(), posY.getValue() + 50, on);
-                            }
-                            if (i == 2 && a.canPlaceCrystal(o.east(1).down())) {
-                                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "LBY", posX.getValue(), posY.getValue() + 50, on);
-                            }
-                            if (i == 3 && a.canPlaceCrystal(o.south(1).down())) {
-                                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "LBY", posX.getValue(), posY.getValue() + 50, on);
-                            }
-                            if (i == 4 && a.canPlaceCrystal(o.west(1).down())) {
-                                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "LBY", posX.getValue(), posY.getValue() + 50, on);
-                            }
-                        } else
-                            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "LBY", posX.getValue(), posY.getValue() + 50, off);
+    public void onRender() {
+    	list.totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+    	list.players = mc.world.loadedEntityList.stream()
+                .filter(entity -> entity instanceof EntityOtherPlayerMP)
+                .filter(entity -> !Friends.isFriend(entity.getName()))
+                .filter(e -> mc.player.getDistance(e) <= AutoCrystal.placeRange.getValue())
+                .map(entity -> (EntityOtherPlayerMP) entity)
+                .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
+                .orElse(null);
+    	list.renderLby=false;
+    	List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
+    	AutoCrystal a = (AutoCrystal) ModuleManager.getModuleByName("AutocrystalGS");
+    	for (EntityPlayer e: entities) {
+            int i = 0;
+            for (BlockPos add: surroundOffset) {
+                ++i;
+                BlockPos o = new BlockPos(e.getPositionVector().x, e.getPositionVector().y, e.getPositionVector().z).add(add.getX(), add.getY(), add.getZ());
+                if (mc.world.getBlockState(o).getBlock() == Blocks.OBSIDIAN) {
+                    if (i == 1 && a.canPlaceCrystal(o.north(1).down())) {
+                        list.lby=true;
+                        list.renderLby=true;
+                    } else if (i == 2 && a.canPlaceCrystal(o.east(1).down())) {
+                    	list.lby=true;
+                        list.renderLby=true;
+                    } else if (i == 3 && a.canPlaceCrystal(o.south(1).down())) {
+                    	list.lby=true;
+                        list.renderLby=true;
+                    } else if (i == 4 && a.canPlaceCrystal(o.west(1).down())) {
+                    	list.lby=true;
+                        list.renderLby=true;
                     }
-                }
-                break;
-            }
-
-            case "Hoosiers": {
-                if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "AC: ENBL", posX.getValue(), posY.getValue(), on);
                 } else {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "AC: DSBL", posX.getValue(), posY.getValue(), off);
+                	list.lby=false;
+                    list.renderLby=true;
                 }
-
-                if (ModuleManager.isModuleEnabled("KillAura")) {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "KA: ENBL", posX.getValue(), posY.getValue() + 10, on);
-                } else {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "KA: DSBL", posX.getValue(), posY.getValue() + 10, off);
-                }
-
-                if (ModuleManager.isModuleEnabled("Surround")) {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "SU: ENBL", posX.getValue(), posY.getValue() + 20, on);
-                } else {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "SU: DSBL", posX.getValue(), posY.getValue() + 20, off);
-                }
-
-                if (ModuleManager.isModuleEnabled("AutoTrap")) {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "AT: ENBL", posX.getValue(), posY.getValue() + 30, on);
-                } else {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "AT: DSBL", posX.getValue(), posY.getValue() + 30, off);
-                }
-
-                if (ModuleManager.isModuleEnabled("SelfTrap")) {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "ST: ENBL", posX.getValue(), posY.getValue() + 40, on);
-                } else {
-                    FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "ST: DSBL", posX.getValue(), posY.getValue() + 40, off);
-                }
-                break;
+                    
             }
         }
     }
 
-    private int getPing () {
+    private static int getPing () {
         int p = -1;
         if (mc.player == null || mc.getConnection() == null || mc.getConnection().getPlayerInfo(mc.player.getName()) == null) {
             p = -1;
@@ -163,4 +89,83 @@ public class CombatInfo extends Module {
         }
         return p;
     }
+    
+    
+    private static class InfoList implements ListModule.HUDList {
+		private static final String[] hoosiersModules={"AutoCrystalGS","KillAura","Surround","AutoTrap","SelfTrap"};
+		private static final String[] hoosiersNames={"AC","KA","SU","AT","ST"};
+		public int totems=0;
+		public EntityOtherPlayerMP players=null;
+		public boolean renderLby=false;
+		public boolean lby=false;
+		
+		@Override
+		public int getSize() {
+			if (infoType.getValue().equals("Hoosiers")) {
+				return hoosiersModules.length;
+			} else if (infoType.getValue().equals("Cyber"))  {
+				return renderLby?6:5;
+			} else {
+				return 0;
+			}
+		}
+	
+		@Override
+		public String getItem(int index) {
+			if (infoType.getValue().equals("Hoosiers")) {
+				if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return hoosiersNames[index]+": ENBL";
+				else return hoosiersNames[index]+": DSBL";
+			} else if (infoType.getValue().equals("Cyber"))  {
+				if (index==0) return "gamesense.cc";
+				else if (index==1) return "HTR";
+				else if (index==2) return "PLR";
+				else if (index==3) return ""+totems;
+				else if (index==4) return "PING "+getPing();
+				else return "LBY";
+			} else {
+				return "";
+			}
+		}
+	
+		@Override
+		public Color getItemColor(int index) {
+			if (infoType.getValue().equals("Hoosiers")) {
+				if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return color1.getValue();
+				else return color2.getValue();
+			} else if (infoType.getValue().equals("Cyber"))  {
+				boolean on=false;
+				if (index==0) {
+					on=true;
+				} else if (index==1) {
+					if (players!=null) {
+						on=mc.player.getDistance(players)<=AutoCrystal.breakRange.getValue();
+					}
+				} else if (index==2) {
+					if (players!=null) {
+						on=mc.player.getDistance(players)<=AutoCrystal.placeRange.getValue();
+					}
+				} else if (index==3) {
+					on=totems>0 && ModuleManager.isModuleEnabled("AutoTotem");
+				} else if (index==4) {
+					on=getPing()<=100;
+				} else {
+					on=lby;
+				}
+				if (on) return color1.getValue();
+				else return color2.getValue();
+			} else {
+				return new Color(255,255,255);
+			}
+		}
+
+		@Override
+		public boolean sortUp() {
+			return false;
+		}
+
+		@Override
+		public boolean sortRight() {
+			return false;
+		}
+	}
 }

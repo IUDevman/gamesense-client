@@ -3,6 +3,9 @@ package com.gamesense.client.module.modules.hud;
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.FixedComponent;
 
+/**
+ * @author lukflug
+ */
 public class HUDModule extends Module {
 	protected final FixedComponent component;
 	

@@ -1,77 +1,72 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
-import java.util.Comparator;
+// PanelStudio rewrite by lukflug
+public class ModuleArrayList extends HUDModule {
+    private static Setting.Boolean sortUp;
+    private static Setting.Boolean sortRight;
+    private static Setting.ColorSetting color;
+	private static ModuleList list=new ModuleList();
 
-public class ModuleArrayList extends Module {
     public ModuleArrayList(){
-        super("ArrayList", Category.HUD);
+    	super(new ListModule.ListComponent("ArrayList",new Point(0,200),list));
     }
 
-    Setting.Integer posX;
-    Setting.Integer posY;
-    Setting.Boolean sortUp;
-    Setting.Boolean sortRight;
-    Setting.ColorSetting color;
-
     public void setup(){
-        posX = registerInteger("X", "X", 0, 0, 1000);
-        posY = registerInteger("Y", "Y", 200, 0, 1000);
         sortUp = registerBoolean("Sort Up", "SortUp", true);
         sortRight = registerBoolean("Sort Right", "SortRight", false);
         color = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
     }
 
-    private int count;
-    private int sort;
-    private GSColor adjColor;
-
     public void onRender(){
-        if(sortUp.getValue()){
-            sort = -1;
-        }
-        else {
-            sort = 1;
-        }
-        count = 0;
-
-        adjColor = new GSColor(color.getValue(), 255);
-
-        ModuleManager.getModules()
-                .stream()
-                .filter(Module::isEnabled)
-                .filter(Module::isDrawn)
-                .sorted(Comparator.comparing(module -> FontUtils.getStringWidth(ColorMain.customFont.getValue(), module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo()) * (-1)))
-                .forEach(module -> {
-                    if(sortUp.getValue()) {
-                        if (sortRight.getValue()) {
-                            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), module.getName() + ChatFormatting.GRAY  + module.getHudInfo(), posX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(), module.getName() + ChatFormatting.GRAY + module.getHudInfo()), posY.getValue() + (count * 10), adjColor);
-                        }
-                        else {
-                            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), module.getName() + ChatFormatting.GRAY  + module.getHudInfo(), posX.getValue(), posY.getValue() + (count * 10), adjColor);
-                        }
-                        count++;
-                    }
-                    else {
-                        if (sortRight.getValue()) {
-                            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), module.getName() + ChatFormatting.GRAY  + module.getHudInfo(), posX.getValue() - FontUtils.getStringWidth(ColorMain.customFont.getValue(),module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo()), posY.getValue() + (count * -10), adjColor);
-                        }
-                        else {
-                            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), module.getName() + ChatFormatting.GRAY  + module.getHudInfo(), posX.getValue(), posY.getValue() + (count * -10), adjColor);
-                        }
-                        count++;
-                    }
-
-                    if (color.getRainbow()) {
-                        adjColor =GSColor.fromHSB(adjColor.getHue()+.02f, adjColor.getSaturation(), adjColor.getBrightness());
-                    }
-                });
+    	list.activeModules.clear();
+    	for (Module module: ModuleManager.getModules()) {
+    		if (module.isEnabled() && module.isDrawn()) list.activeModules.add(module);
+    	}
+    	list.activeModules.sort(Comparator.comparing(module -> -GameSenseMod.getInstance().clickGUI.getFontWidth(module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo())));
     }
+    
+
+    private static class ModuleList implements ListModule.HUDList {
+		public List<Module> activeModules=new ArrayList<Module>();
+		
+		@Override
+		public int getSize() {
+			return activeModules.size();
+		}
+	
+		@Override
+		public String getItem(int index) {
+			Module module=activeModules.get(index);
+			return module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo();
+		}
+	
+		@Override
+		public Color getItemColor(int index) {
+			GSColor c=color.getValue();
+			return Color.getHSBColor(c.getHue()+(color.getRainbow()?.02f*index:0),c.getSaturation(),c.getBrightness());
+		}
+
+		@Override
+		public boolean sortUp() {
+			return sortUp.isOn();
+		}
+
+		@Override
+		public boolean sortRight() {
+			return sortRight.isOn();
+		}
+	}
 }

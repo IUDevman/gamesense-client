@@ -45,12 +45,16 @@ import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class GameSenseGUI extends GuiScreen implements Interface {
@@ -86,7 +90,17 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		
 		for (Module module: ModuleManager.getModules()) {
 			if (module instanceof HUDModule) {
-				gui.addHUDComponent(new HUDPanel(((HUDModule)module).getComponent(),theme.getPanelRenderer(),module,new GameSenseAnimation(),gui,HUD_BORDER));
+				gui.addHUDComponent(new HUDPanel(((HUDModule)module).getComponent(),theme.getPanelRenderer(),module,new GameSenseAnimation(),new Toggleable() {
+					@Override
+					public void toggle() {
+					}
+
+					@Override
+					public boolean isOn() {
+						return gui.isOn() && ClickGuiModule.showHUD.isOn();
+					}
+					
+				},HUD_BORDER));
 			}
 		}
 		TabGUIModule.populate();
@@ -129,10 +143,12 @@ public class GameSenseGUI extends GuiScreen implements Interface {
         if (scroll!=0) {
         	if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
 	        	for (FixedComponent component: gui.getComponents()) {
-	        		Point p=component.getPosition(this);
-	        		if (scroll>0) p.translate(0,ClickGuiModule.scrollSpeed.getValue());
-	        		else p.translate(0,-ClickGuiModule.scrollSpeed.getValue());
-	        		component.setPosition(this,p);
+	        		if (!(component instanceof HUDPanel)) {
+		        		Point p=component.getPosition(this);
+		        		if (scroll>0) p.translate(0,ClickGuiModule.scrollSpeed.getValue());
+		        		else p.translate(0,-ClickGuiModule.scrollSpeed.getValue());
+		        		component.setPosition(this,p);
+	        		}
 	        	}
         	}
         	if (scroll>0) gui.handleScroll(-ClickGuiModule.scrollSpeed.getValue());
@@ -399,7 +415,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(),module));
 	}
 	
-	private void begin() {
+	private static void begin() {
 		GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -407,10 +423,44 @@ public class GameSenseGUI extends GuiScreen implements Interface {
         GlStateManager.glLineWidth(2);
 	}
 	
-	private void end() {
+	private static void end() {
 		GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+	}
+	
+	public static void renderItem (ItemStack item, Point pos) {
+		GlStateManager.enableTexture2D();
+		GlStateManager.depthMask(true);
+		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+		GlStateManager.enableDepth();
+		GlStateManager.disableAlpha();
+		GlStateManager.pushMatrix();
+		Minecraft.getMinecraft().getRenderItem().zLevel = -150.0f;
+        RenderHelper.enableGUIStandardItemLighting();
+        Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(item,pos.x,pos.y);
+        Minecraft.getMinecraft().getRenderItem().renderItemOverlays(Minecraft.getMinecraft().fontRenderer,item,pos.x,pos.y);
+        RenderHelper.disableStandardItemLighting();
+        Minecraft.getMinecraft().getRenderItem().zLevel = 0.0F;
+        GlStateManager.popMatrix();
+		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
+        begin();
+	}
+	
+	public static void renderEntity (EntityLivingBase entity, Point pos) {
+		GlStateManager.enableTexture2D();
+		GlStateManager.depthMask(true);
+		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+		GlStateManager.enableDepth();
+		GlStateManager.disableAlpha();
+        GlStateManager.pushMatrix();
+        GlStateManager.color(1,1,1,1);
+        GuiInventory.drawEntityOnScreen(pos.x,pos.y,43,28,60,entity);
+        GlStateManager.popMatrix();
+		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
+        begin();
 	}
 	
 	

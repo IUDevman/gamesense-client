@@ -17,6 +17,9 @@ import com.lukflug.panelstudio.tabgui.TabGUIItem;
 import com.lukflug.panelstudio.tabgui.TabGUIRenderer;
 import com.lukflug.panelstudio.theme.ColorScheme;
 
+/**
+ * @author lukflug
+ */
 public class TabGUIModule extends TabGUI {
 	private static TabGUI instance;
 	private static final TabGUIRenderer renderer=new GameSenseRenderer();

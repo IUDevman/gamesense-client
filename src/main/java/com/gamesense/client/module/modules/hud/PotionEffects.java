@@ -11,6 +11,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
+// PanelStudio rewrite by lukflug
 public class PotionEffects extends ListModule {
 	private static Setting.Boolean sortUp;
 	private static Setting.Boolean sortRight;
@@ -30,12 +31,12 @@ public class PotionEffects extends ListModule {
     
     private static class PotionList implements ListModule.HUDList {
 		@Override
-		public int getListSize() {
+		public int getSize() {
 			return mc.player.getActivePotionEffects().size();
 		}
 
 		@Override
-		public String getListItem(int index) {
+		public String getItem(int index) {
 			PotionEffect effect=(PotionEffect)mc.player.getActivePotionEffects().toArray()[index];
 			String name=I18n.format(effect.getPotion().getName());
 	        int amplifier=effect.getAmplifier()+1;
@@ -45,6 +46,16 @@ public class PotionEffects extends ListModule {
 		@Override
 		public Color getItemColor(int index) {
 			return color.getValue();
+		}
+
+		@Override
+		public boolean sortUp() {
+			return sortUp.isOn();
+		}
+
+		@Override
+		public boolean sortRight() {
+			return sortRight.isOn();
 		}
     }
 }

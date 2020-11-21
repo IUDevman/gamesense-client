@@ -9,7 +9,10 @@ import com.gamesense.api.settings.Setting;
 
 import net.minecraft.util.text.TextComponentString;
 
+// PanelStudio rewrite by lukflug
 public class Notifications extends ListModule {
+	private static Setting.Boolean sortUp;
+	private static Setting.Boolean sortRight;
 	public static Setting.Boolean disableChat;
 	private static NotificationsList list=new NotificationsList();
 	
@@ -52,18 +55,28 @@ public class Notifications extends ListModule {
 		public List<TextComponentString> list = new ArrayList<>();
 		
 		@Override
-		public int getListSize() {
+		public int getSize() {
 			return list.size();
 		}
 	
 		@Override
-		public String getListItem(int index) {
+		public String getItem(int index) {
 			return list.get(index).getText();
 		}
 	
 		@Override
 		public Color getItemColor(int index) {
 			return new Color(255,255,255);
+		}
+
+		@Override
+		public boolean sortUp() {
+			return sortUp.isOn();
+		}
+
+		@Override
+		public boolean sortRight() {
+			return sortRight.isOn();
 		}
 	}
 }

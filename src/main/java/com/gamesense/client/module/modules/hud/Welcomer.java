@@ -11,11 +11,15 @@ import com.lukflug.panelstudio.hud.HUDComponent;
 
 import net.minecraft.client.Minecraft;
 
+// PanelStudio rewrite by lukflug
 public class Welcomer extends HUDModule {
 	private static Setting.ColorSetting color;
 	
 	public Welcomer() {
 		super(new WelcomerComponent());
+	}
+	
+	public void setup() {
 		color=registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
 	}
 
