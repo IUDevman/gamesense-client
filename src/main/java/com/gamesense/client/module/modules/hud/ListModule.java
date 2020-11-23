@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.hud;
 import java.awt.Color;
 import java.awt.Point;
 
+import com.gamesense.api.config.PositionConfig;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.FixedComponent;
@@ -13,9 +14,8 @@ import com.lukflug.panelstudio.hud.HUDComponent;
  * @author lukflug
  */
 public class ListModule extends HUDModule {
-	
-	public ListModule(FixedComponent component) {
-		super(component);
+	public ListModule(FixedComponent component, Point defaultPos) {
+		super(component,defaultPos);
 	}
 
 	
@@ -28,8 +28,9 @@ public class ListModule extends HUDModule {
 	}
 	
 	
-	protected static class ListComponent extends HUDComponent {
+	protected static class ListComponent extends HUDComponent implements PositionConfig {
 		protected HUDList list;
+		protected boolean lastUp=false;
 		
 		public ListComponent (String name, Point position, HUDList list) {
 			super(name,GameSenseGUI.theme.getPanelRenderer(),position);
@@ -53,6 +54,25 @@ public class ListModule extends HUDModule {
 				context.getInterface().drawString(p,s,list.getItemColor(i));
 			}
 		}
+		
+		@Override
+		public Point getPosition (Interface inter) {
+			int height=renderer.getHeight()+(list.getSize()-1)*inter.getFontHeight();
+			if (lastUp!=list.sortUp()) {
+				if (list.sortUp()) position.translate(0,height);
+				else position.translate(0,-height);
+				lastUp=list.sortUp();
+			}
+			if (list.sortUp()) return new Point(position.x,position.y-height);
+			else return new Point(position);
+		}
+		
+		@Override
+		public void setPosition (Interface inter, Point position) {
+			int height=renderer.getHeight()+(list.getSize()-1)*inter.getFontHeight();
+			if (list.sortUp()) this.position=new Point(position.x,position.y+height);
+			else this.position=new Point(position);
+		}
 
 		@Override
 		public int getWidth(Interface inter) {
@@ -67,6 +87,17 @@ public class ListModule extends HUDModule {
 		@Override
 		public void getHeight(Context context) {
 			context.setHeight(renderer.getHeight()+(list.getSize()-1)*context.getInterface().getFontHeight());
+		}
+
+		@Override
+		public Point getConfigPos() {
+			return position;
+		}
+
+		@Override
+		public void setConfigPos(Point pos) {
+			position=pos;
+			lastUp=list.sortUp();
 		}
 	}
 }

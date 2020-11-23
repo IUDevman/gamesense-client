@@ -21,7 +21,7 @@ import com.lukflug.panelstudio.theme.ColorScheme;
  * @author lukflug
  */
 public class TabGUIModule extends TabGUI {
-	private static TabGUI instance;
+	private static TabGUIModule instance;
 	private static final TabGUIRenderer renderer=new GameSenseRenderer();
 	
 	public TabGUIModule() {
@@ -29,7 +29,12 @@ public class TabGUIModule extends TabGUI {
 		instance=this;
 	}
 	
+	private void reset() {
+		components.clear();
+	}
+	
 	public static void populate() {
+		instance.reset();
 		for (Module.Category category: Module.Category.values()) {
 			TabGUIContainer tab=new TabGUIContainer(category.name(),renderer,new GameSenseAnimation());
 			instance.addComponent(tab);

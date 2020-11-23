@@ -15,7 +15,7 @@ public class Watermark extends HUDModule {
 	private static Setting.ColorSetting color;
 	
 	public Watermark() {
-		super(new WatermarkComponent());
+		super(new WatermarkComponent(),new Point(0,0));
 	}
 	
 	public void setup() {

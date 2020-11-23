@@ -17,7 +17,7 @@ public class Notifications extends ListModule {
 	private static NotificationsList list=new NotificationsList();
 	
 	public Notifications(){
-		super(new ListModule.ListComponent("Notifications",new Point(0,50),list));
+		super(new ListModule.ListComponent("Notifications",new Point(0,50),list),new Point(0,50));
 	}
 
 	public void setup() {

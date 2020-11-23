@@ -22,7 +22,7 @@ public class TextRadar extends ListModule {
 	private static PlayerList list=new PlayerList();
 	
 	public TextRadar(){
-		super(new ListModule.ListComponent("TextRadar",new Point(0,50),list));
+		super(new ListModule.ListComponent("TextRadar",new Point(0,50),list),new Point(0,50));
 	}
 
 	public void setup(){

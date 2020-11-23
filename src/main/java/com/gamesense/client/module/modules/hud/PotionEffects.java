@@ -19,7 +19,7 @@ public class PotionEffects extends ListModule {
 	private static PotionList list=new PotionList();
     
     public PotionEffects(){
-    	super(new ListModule.ListComponent("PotionEffects",new Point(0,300),list));
+    	super(new ListModule.ListComponent("PotionEffects",new Point(0,300),list),new Point(0,300));
     }
 
     public void setup(){

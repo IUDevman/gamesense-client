@@ -14,14 +14,14 @@ import com.gamesense.client.module.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 // PanelStudio rewrite by lukflug
-public class ModuleArrayList extends HUDModule {
+public class ModuleArrayList extends ListModule {
     private static Setting.Boolean sortUp;
     private static Setting.Boolean sortRight;
     private static Setting.ColorSetting color;
 	private static ModuleList list=new ModuleList();
 
     public ModuleArrayList(){
-    	super(new ListModule.ListComponent("ArrayList",new Point(0,200),list));
+    	super(new ListModule.ListComponent("ArrayList",new Point(0,200),list),new Point(0,200));
     }
 
     public void setup(){

@@ -16,6 +16,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
+import com.gamesense.api.config.PositionConfig;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
@@ -90,17 +91,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		
 		for (Module module: ModuleManager.getModules()) {
 			if (module instanceof HUDModule) {
-				gui.addHUDComponent(new HUDPanel(((HUDModule)module).getComponent(),theme.getPanelRenderer(),module,new GameSenseAnimation(),new Toggleable() {
-					@Override
-					public void toggle() {
-					}
-
-					@Override
-					public boolean isOn() {
-						return gui.isOn() && ClickGuiModule.showHUD.isOn();
-					}
-					
-				},HUD_BORDER));
+				gui.addHUDComponent(new GameSenseHUDPanel(((HUDModule)module).getComponent(),module));
 			}
 		}
 		TabGUIModule.populate();
@@ -507,6 +498,41 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		@Override
 		protected int getSpeed() {
 			return ClickGuiModule.animationSpeed.getValue();
+		}
+	}
+	
+	
+	private class GameSenseHUDPanel extends HUDPanel implements PositionConfig {
+		public GameSenseHUDPanel (FixedComponent component, Toggleable module) {
+			super(component,theme.getPanelRenderer(),module,new GameSenseAnimation(),new Toggleable() {
+				@Override
+				public void toggle() {
+				}
+	
+				@Override
+				public boolean isOn() {
+					return gui.isOn() && ClickGuiModule.showHUD.isOn();
+				}
+				
+			},HUD_BORDER);
+		}
+
+		@Override
+		public Point getConfigPos() {
+			if (component instanceof PositionConfig) {
+				return ((PositionConfig)component).getConfigPos();
+			} else {
+				return getPosition(GameSenseGUI.this);
+			}
+		}
+
+		@Override
+		public void setConfigPos(Point pos) {
+			if (component instanceof PositionConfig) {
+				((PositionConfig)component).setConfigPos(pos);
+			} else {
+				setPosition(GameSenseGUI.this,pos);
+			}
 		}
 	}
 }

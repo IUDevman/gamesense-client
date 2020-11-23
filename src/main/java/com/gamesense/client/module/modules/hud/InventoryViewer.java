@@ -22,7 +22,7 @@ public class InventoryViewer extends HUDModule {
     private static Setting.ColorSetting outlineColor;
     
     public InventoryViewer() {
-    	super(new InventoryViewerComponent());
+    	super(new InventoryViewerComponent(),new Point(0,10));
     }
 
     public void setup() {

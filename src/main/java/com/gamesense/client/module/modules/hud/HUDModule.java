@@ -13,10 +13,10 @@ public class HUDModule extends Module {
 	protected final FixedComponent component;
 	protected final Point position;
 	
-	public HUDModule (FixedComponent component) {
+	public HUDModule (FixedComponent component, Point defaultPos) {
 		super(component.getTitle(),Category.HUD);
 		this.component=component;
-		this.position=component.getPosition(null);
+		this.position=defaultPos;
 	}
 
 	public FixedComponent getComponent() {

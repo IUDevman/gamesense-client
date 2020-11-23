@@ -39,7 +39,7 @@ public class TargetHUD extends HUDModule {
     private static EntityPlayer targetPlayer;
     
     public TargetHUD(){
-        super(new TargetHUDComponent());
+        super(new TargetHUDComponent(),new Point(0,70));
     }
 
     public void setup() {

@@ -28,7 +28,7 @@ public class CombatInfo extends ListModule {
     private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};;
 	
     public CombatInfo() {
-    	super(new ListModule.ListComponent("CombatInfo",new Point(0,150),list));
+    	super(new ListModule.ListComponent("CombatInfo",new Point(0,150),list),new Point(0,150));
     }
 
     public void setup() {

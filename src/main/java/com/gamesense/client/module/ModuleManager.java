@@ -1,5 +1,6 @@
 package com.gamesense.client.module;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -167,7 +168,7 @@ public class ModuleManager {
 		addMod(new InventoryViewer());
 		addMod(new Notifications());
 		addMod(new PotionEffects());
-		addMod(new HUDModule(new TabGUIModule()));
+		addMod(new HUDModule(new TabGUIModule(),new Point(10,10)));
 		addMod(new TargetHUD());
 		addMod(new TextRadar());
 		addMod(new Watermark());

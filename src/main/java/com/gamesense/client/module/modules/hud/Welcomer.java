@@ -16,7 +16,7 @@ public class Welcomer extends HUDModule {
 	private static Setting.ColorSetting color;
 	
 	public Welcomer() {
-		super(new WelcomerComponent());
+		super(new WelcomerComponent(),new Point(450,0));
 	}
 	
 	public void setup() {
