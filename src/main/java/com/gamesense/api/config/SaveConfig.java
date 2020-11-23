@@ -1,5 +1,6 @@
 package com.gamesense.api.config;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -262,9 +263,12 @@ public class SaveConfig {
         for (FixedComponent frame : gui.gui.getComponents()){
             JsonObject valueObject = new JsonObject();
 
-            valueObject.add("PosX", new JsonPrimitive(frame.getPosition(gui).x));
-            valueObject.add("PosY", new JsonPrimitive(frame.getPosition(gui).y));
-            if (frame instanceof DraggableContainer) valueObject.add("State", new JsonPrimitive(((DraggableContainer)frame).open.isOn()));
+            Point pos;
+            if (frame instanceof PositionConfig) pos=((PositionConfig) frame).getConfigPos();
+            else pos=frame.getPosition(gui);
+            valueObject.add("PosX", new JsonPrimitive(pos.x));
+            valueObject.add("PosY", new JsonPrimitive(pos.y));
+            if (frame instanceof DraggableContainer) valueObject.add("State", new JsonPrimitive(((DraggableContainer)frame).isOn()));
 
             panelObject.add(frame.getTitle(), valueObject);
         }

@@ -1,19 +1,23 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Comparator;
+import java.util.Objects;
+
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.client.module.Module;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
+import com.lukflug.panelstudio.Context;
+import com.lukflug.panelstudio.Interface;
+import com.lukflug.panelstudio.hud.HUDComponent;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,237 +27,155 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.Comparator;
-import java.util.Objects;
-
 /**
- * @Author Hoosiers on 10/19/2020
- * update by linustouchtips on 10/27/2020
+ * @Author Hoosiers on 10/19/2020,
+ * update by linustouchtips on 10/27/2020,
+ * rewritten by lukflug on 21.11.2020
  */
 
-public class TargetHUD extends Module {
+public class TargetHUD extends HUDModule {
+    private static Setting.ColorSetting outline;
+    private static Setting.ColorSetting background;
+    private static EntityPlayer targetPlayer;
+    
     public TargetHUD(){
-        super("TargetHUD", Category.HUD);
+        super(new TargetHUDComponent(),new Point(0,70));
     }
 
-    Setting.ColorSetting outline;
-    Setting.ColorSetting background;
-    Setting.Integer posX;
-    Setting.Integer posY;
-    Setting.Integer range;
-
-    public void setup(){
-        range = registerInteger("Range", "Range", 100, 1, 260);
-        posX = registerInteger("X", "X", 0, 0, 1000);
-        posY = registerInteger("Y", "Y", 70, 0, 1000);
+    public void setup() {
         outline = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
         background = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
     }
 
-    GSColor outlineColor;
-    GSColor backgroundColor;
-    GSColor nameColor;
-    GSColor healthColor;
-    TextFormatting playercolor;
-    String playerinfo;
-    float ping;
-    public static EntityPlayer targetPlayer;
-
-    public void onRender(){
-        if (mc.world != null && mc.player.ticksExisted >= 10) {
-            backgroundColor = new GSColor(background.getValue(), 100);
-            outlineColor = new GSColor(outline.getValue(), 255);
-
-            EntityPlayer entityPlayer = (EntityPlayer) mc.world.loadedEntityList.stream()
-                    .filter(entity -> IsValidEntity(entity))
-                    .map(entity -> (EntityLivingBase) entity)
-                    .min(Comparator.comparing(c -> mc.player.getDistance(c)))
-                    .orElse(null);
-
-            if (entityPlayer == null)
-                return;
-
-            if (entityPlayer != null) {
-                String playerName = entityPlayer.getName();
-                int playerHealth = (int) (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount());
-                findNameColor(playerName);
-                findHealthColor(playerHealth);
-
-                //player model
-                drawEntityPlayer(entityPlayer, posX.getValue() + 35, posY.getValue() + 87 - (entityPlayer.isSneaking()?10:0));
-
-                //box
-                drawTargetBox();
-
-                //player name
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.BOLD + playerName, posX.getValue() + 71, posY.getValue() + 11, nameColor);
-
-                //health + absorption
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Health: " + TextFormatting.RESET + playerHealth, posX.getValue() + 71, posY.getValue() + 23, healthColor);
-
-                //distance
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "Distance: " + ((int) entityPlayer.getDistance(mc.player)), posX.getValue() + 71, posY.getValue() + 33, new GSColor(255, 255, 255, 255));
-
-                //status effects
-                drawStatusEffects(entityPlayer, posX.getValue(), posY.getValue());
-
-                //armor + items
-                drawItemTextures(entityPlayer, posX.getValue() + 58, posY.getValue() + 73);
-
-                //player info
-                drawPlayerInfo(entityPlayer, posX.getValue() + 71, posY.getValue() + 43);
-            }
-        }
-    }
-
-    public void drawTargetBox(){
-        //outline
-        Gui.drawRect(posX.getValue() + 1, posY.getValue() + 1, posX.getValue() + 161, posY.getValue() + 93, backgroundColor.getRGB());
-
-        //top
-        Gui.drawRect(posX.getValue(), posY.getValue(), posX.getValue() + 162, posY.getValue() + 1, outlineColor.getRGB());
-        //bottom
-        Gui.drawRect(posX.getValue(), posY.getValue() + 93, posX.getValue() + 162, posY.getValue() + 94, outlineColor.getRGB());
-        //left
-        Gui.drawRect(posX.getValue(), posY.getValue(), posX.getValue() + 1, posY.getValue() + 94, outlineColor.getRGB());
-        //right
-        Gui.drawRect(posX.getValue() + 161, posY.getValue(), posX.getValue() + 162, posY.getValue() + 94, outlineColor.getRGB());
-    }
-
-    public void drawEntityPlayer(EntityPlayer entityPlayer, int x, int y){
-        targetPlayer = entityPlayer;
-        GlStateManager.pushMatrix();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GuiInventory.drawEntityOnScreen(x, y, 43, 28, 60, entityPlayer);
-        GlStateManager.popMatrix();
-    }
-
-    public void drawPlayerInfo(EntityPlayer entityPlayer, int x, int y) {
-
-        if (entityPlayer.inventory.armorItemInSlot(2).getItem().equals(Items.ELYTRA)) {
-            playerinfo = "Wasp";
-            playercolor = TextFormatting.LIGHT_PURPLE;
-        }
-        else if (entityPlayer.inventory.armorItemInSlot(2).getItem().equals(Items.DIAMOND_CHESTPLATE)) {
-            playerinfo = "Threat";
-            playercolor = TextFormatting.RED;
-        }
-        else if (entityPlayer.inventory.armorItemInSlot(3).getItem().equals(Items.AIR)) {
-            playerinfo = "NewFag";
-            playercolor = TextFormatting.GREEN;
-        }
-        else {
-            playerinfo = "None";
-            playercolor = TextFormatting.WHITE;
-        }
-
-        ping = getPing(entityPlayer);
-        FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), playercolor + playerinfo + TextFormatting.WHITE + " | "  + ping + " ms", x, y, new GSColor(255, 255, 255));
-    }
-
-    //having more than one of these displayed at once makes things too crowded
-    GSColor statusColor = new GSColor(255, 255, 255, 255);
-    public void drawStatusEffects(EntityPlayer entityPlayer, int x, int y){
-        int inX = x + 71;
-        int inY = y + 55;
-
-        entityPlayer.getActivePotionEffects().forEach(potionEffect -> {
-            findPotionColor(potionEffect);
-
-            if (potionEffect.getPotion() == MobEffects.WEAKNESS) {
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + "Weakness!", inX, inY, statusColor);
-            }
-            else if (potionEffect.getPotion() == MobEffects.INVISIBILITY){
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + "Invisible!", inX, inY, statusColor);
-            }
-            else if (potionEffect.getPotion() == MobEffects.STRENGTH){
-                FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + "Strength!", inX, inY, statusColor);
-            }
-        });
-    }
-
-    private static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
-    public void drawItemTextures(EntityPlayer entityPlayer, int x, int y){
-        GlStateManager.pushMatrix();
-        RenderHelper.enableGUIStandardItemLighting();
-
-        int iteration = 0;
-        for (ItemStack itemStack : entityPlayer.getArmorInventoryList()) {
-            iteration++;
-            if (itemStack.isEmpty()) continue;
-            int inX = x - 90 + (9 - iteration) * 20 + 2;
-
-            itemRender.zLevel = 200F;
-            itemRender.renderItemAndEffectIntoGUI(itemStack, inX, y);
-            itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, inX, y, "");
-            itemRender.zLevel = 0F;
-        }
-
-        RenderHelper.disableStandardItemLighting();
-        mc.getRenderItem().zLevel = 0.0F;
-        GlStateManager.popMatrix();
-    }
-
-    public void findPotionColor(PotionEffect potionEffect){
-        if (potionEffect.getPotion() == MobEffects.STRENGTH){
-            statusColor = new GSColor(135, 0, 25, 255);
-        }
-        else if (potionEffect.getPotion() == MobEffects.WEAKNESS){
-            statusColor = new GSColor(185, 65, 185, 255);
-        }
-        else if (potionEffect.getPotion() == MobEffects.INVISIBILITY){
-            statusColor = new GSColor(90, 90, 90, 255);
-        }
-    }
-
-    public void findNameColor(String playerName){
+    private static Color getNameColor(String playerName) {
         if (Friends.isFriend(playerName)){
-            nameColor = new GSColor(ColorMain.getFriendGSColor(), 255);
+            return new GSColor(ColorMain.getFriendGSColor(), 255);
         }
         else if (Enemies.isEnemy(playerName)){
-            nameColor = new GSColor(ColorMain.getEnemyGSColor(), 255);
+            return new GSColor(ColorMain.getEnemyGSColor(), 255);
         }
         else {
-            nameColor = new GSColor(255, 255, 255, 255);
+        	return new GSColor(255, 255, 255, 255);
         }
     }
 
-    public void findHealthColor(int health){
+    private static Color getHealthColor(int health) {
         if (health >= 15){
-            healthColor = new GSColor(0, 255, 0, 255);
+            return new GSColor(0, 255, 0, 255);
         }
         else if (health >= 5 && health < 15){
-            healthColor = new GSColor(255, 255, 0, 255);
+            return new GSColor(255, 255, 0, 255);
         }
         else {
-            healthColor = new GSColor(255, 0, 0, 255);
+            return new GSColor(255, 0, 0, 255);
         }
     }
 
-    private boolean IsValidEntity (Entity e){
-        if (!(e instanceof EntityPlayer)) {
-            return false;
-        }
-
-        if (e instanceof EntityPlayer) {
-            return e != mc.player;
-        }
-
-        return true;
+    private static boolean isValidEntity (Entity e){
+    	if (!(e instanceof EntityPlayer)) return false;
+        else return e!=mc.player;
     }
 
-    public float getPing (EntityPlayer player){
+    private static float getPing (EntityPlayer player){
         float ping = 0;
         try { ping = EntityUtil.clamp(Objects.requireNonNull(mc.getConnection()).getPlayerInfo(player.getUniqueID()).getResponseTime(), 1, 300.0f); }
         catch (NullPointerException ignored) {}
         return ping;
     }
-
+    
     public static boolean isRenderingEntity(EntityPlayer entityPlayer){
-        if (targetPlayer == entityPlayer){
-            return true;
-        }
+        return targetPlayer==entityPlayer;
+    }
+    
+    
+    private static class TargetHUDComponent extends HUDComponent {
+		public TargetHUDComponent() {
+			super("TargetHUD",GameSenseGUI.theme.getPanelRenderer(),new Point(0,70));
+		}
+		
+		@Override
+		public void render (Context context) {
+			super.render(context);
+			// Render background
+			Color bgcolor=new GSColor(background.getValue(),100);
+			context.getInterface().fillRect(context.getRect(),bgcolor,bgcolor,bgcolor,bgcolor);
+			// Render outline
+			Color color=outline.getValue();
+			context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(context.getSize().width,1)),color,color,color,color);
+			context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(1,context.getSize().height)),color,color,color,color);
+			context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x+context.getSize().width-1,context.getPos().y),new Dimension(1,context.getSize().height)),color,color,color,color);
+			context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x,context.getPos().y+context.getSize().height-1),new Dimension(context.getSize().width,1)),color,color,color,color);
+			// Render content
+			if (mc.world != null && mc.player.ticksExisted >= 10) {
+				EntityPlayer entityPlayer = (EntityPlayer) mc.world.loadedEntityList.stream()
+						.filter(entity -> isValidEntity(entity))
+						.map(entity -> (EntityLivingBase) entity)
+						.min(Comparator.comparing(c -> mc.player.getDistance(c)))
+						.orElse(null);
+				if (entityPlayer!=null) {
+					// Render player
+					targetPlayer=entityPlayer;
+					GameSenseGUI.renderEntity(entityPlayer,new Point(context.getPos().x+35,context.getPos().y+87-(entityPlayer.isSneaking()?10:0)));
+					targetPlayer=null;
+					// Render name
+					String playerName = entityPlayer.getName();
+					Color nameColor=getNameColor(playerName);
+					context.getInterface().drawString(new Point(context.getPos().x+71,context.getPos().y+11),TextFormatting.BOLD+playerName,nameColor);
+					// Render health
+					int playerHealth = (int) (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount());
+					Color healthColor=getHealthColor(playerHealth);
+					context.getInterface().drawString(new Point(context.getPos().x+71,context.getPos().y+23),TextFormatting.WHITE+"Health: "+TextFormatting.RESET+playerHealth,healthColor);
+					// Render distance
+					context.getInterface().drawString(new Point(context.getPos().x+71,context.getPos().y+33),"Distance: "+((int)entityPlayer.getDistance(mc.player)),new Color(255, 255, 255));
+					// Render ping and info
+					String info;
+					if (entityPlayer.inventory.armorItemInSlot(2).getItem().equals(Items.ELYTRA)) {
+			            info=TextFormatting.LIGHT_PURPLE+"Wasp";
+			        }
+			        else if (entityPlayer.inventory.armorItemInSlot(2).getItem().equals(Items.DIAMOND_CHESTPLATE)) {
+			            info=TextFormatting.RED+"Threat";
+			        }
+			        else if (entityPlayer.inventory.armorItemInSlot(3).getItem().equals(Items.AIR)) {
+			            info=TextFormatting.GREEN+"NewFag";
+			        }
+			        else {
+			            info=TextFormatting.WHITE+"None";
+			        }
+					context.getInterface().drawString(new Point(context.getPos().x+71,context.getPos().y+43),info+TextFormatting.WHITE+" | "+getPing(entityPlayer)+" ms",new Color(255, 255, 255));
+					// Render status effects
+					String status=null;
+					Color statusColor=null;
+					for (PotionEffect effect: entityPlayer.getActivePotionEffects()) {
+						if (effect.getPotion()==MobEffects.WEAKNESS) {
+							status="Weakness!";
+							statusColor=new Color(135,0,25);
+						} else if (effect.getPotion()==MobEffects.INVISIBILITY) {
+							status="Invisible!";
+							statusColor=new Color(90,90,90);
+						} else if (effect.getPotion()==MobEffects.STRENGTH) {
+							status="Strength!";
+							statusColor=new Color(185,65,185);
+						}
+					}
+					if (status!=null) context.getInterface().drawString(new Point(context.getPos().x+71,context.getPos().y+55),TextFormatting.WHITE+"Status: "+TextFormatting.RESET+status,statusColor);
+					// Render items
+					int xPos=context.getPos().x+150;
+					for (ItemStack itemStack : entityPlayer.getArmorInventoryList()) {
+						xPos-=20;
+						GameSenseGUI.renderItem(itemStack,new Point(xPos,context.getPos().y+73));
+					}
+				}
+			}
+		}
 
-        return false;
+		@Override
+		public int getWidth (Interface inter) {
+			return 162;
+		}
+
+		@Override
+		public void getHeight (Context context) {
+			context.setHeight(94);
+		}
     }
 }

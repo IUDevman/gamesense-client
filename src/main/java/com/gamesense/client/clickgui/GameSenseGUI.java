@@ -6,12 +6,17 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.Stack;
 
 import javax.imageio.ImageIO;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
 
+import com.gamesense.api.config.PositionConfig;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
@@ -20,11 +25,15 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import com.lukflug.panelstudio.ClickGUI;
-import com.lukflug.panelstudio.Container;
+import com.gamesense.client.module.modules.hud.HUDModule;
+import com.gamesense.client.module.modules.hud.TabGUIModule;
+import com.lukflug.panelstudio.Animation;
+import com.lukflug.panelstudio.CollapsibleContainer;
 import com.lukflug.panelstudio.DraggableContainer;
 import com.lukflug.panelstudio.FixedComponent;
 import com.lukflug.panelstudio.Interface;
+import com.lukflug.panelstudio.hud.HUDClickGUI;
+import com.lukflug.panelstudio.hud.HUDPanel;
 import com.lukflug.panelstudio.settings.BooleanComponent;
 import com.lukflug.panelstudio.settings.EnumComponent;
 import com.lukflug.panelstudio.settings.NumberComponent;
@@ -37,20 +46,32 @@ import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class GameSenseGUI extends GuiScreen implements Interface {
-	public static final int WIDTH=100,HEIGHT=12,DISTANCE=10;
+	public static final int WIDTH=100,HEIGHT=12,DISTANCE=10,HUD_BORDER=2;
 	private final Toggleable colorToggle;
-	public final ClickGUI gui;
-	private Theme theme;
+	public final HUDClickGUI gui;
+	public static final Theme theme=new GameSenseTheme(new GameSenseScheme(),HEIGHT,2);;
 	private Point mouse=new Point();
 	private boolean lButton=false,rButton=false;
+	
+	// Stuff for glScissor to use
+    private static final FloatBuffer MODELVIEW = GLAllocation.createDirectFloatBuffer(16);
+    private static final FloatBuffer PROJECTION = GLAllocation.createDirectFloatBuffer(16);
+	private static final IntBuffer VIEWPORT = GLAllocation.createDirectIntBuffer(16);
+    private static final FloatBuffer COORDS = GLAllocation.createDirectFloatBuffer(3);
+    private Stack<Rectangle> clipRect=new Stack<Rectangle>();
 	
 	public GameSenseGUI() {
 		colorToggle=new Toggleable() {
@@ -64,12 +85,26 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 				return ColorMain.colorModel.getValue().equals("HSB");
 			}
 		};
-		theme=new GameSenseTheme(new GameSenseScheme(),HEIGHT,2);
 		
 		Point pos=new Point(DISTANCE,DISTANCE);
-		gui=new ClickGUI(this,WIDTH);
+		gui=new HUDClickGUI(this);
+		
+		for (Module module: ModuleManager.getModules()) {
+			if (module instanceof HUDModule) {
+				gui.addHUDComponent(new GameSenseHUDPanel(((HUDModule)module).getComponent(),module));
+			}
+		}
+		TabGUIModule.populate();
 		for (Module.Category category: Module.Category.values()) {
-			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new Point(pos));
+			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new GameSenseAnimation(),new Point(pos),WIDTH) {
+				@Override
+				protected int getScrollHeight (int childHeight) {
+					if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
+						return childHeight;
+					}
+					return Math.min(childHeight,Math.max(HEIGHT*4,GameSenseGUI.this.height-getPosition(GameSenseGUI.this).y-renderer.getHeight()-HEIGHT));
+				}
+			};
 			gui.addComponent(panel);
 			pos.translate(WIDTH+DISTANCE,0);
 			for (Module module: ModuleManager.getModulesInCategory(category)) {
@@ -78,20 +113,37 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		}
 	}
 	
-	@Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-    	mouse=new Point(mouseX,mouseY);
+	public void render() {
+		if (!gui.isOn()) renderGUI();
+	}
+	
+	private void renderGUI() {
+		GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX,MODELVIEW);
+		GlStateManager.getFloat(GL11.GL_PROJECTION_MATRIX,PROJECTION);
+		GlStateManager.glGetInteger(GL11.GL_VIEWPORT,VIEWPORT);
     	begin();
         gui.render();
         end();
+	}
+	
+	@Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		renderGUI();
+    	mouse=new Point(mouseX,mouseY);
         int scroll=Mouse.getDWheel();
         if (scroll!=0) {
-        	for (FixedComponent component: gui.getComponents()) {
-        		Point p=component.getPosition(this);
-        		if (scroll>0) p.translate(0,ClickGuiModule.scrollSpeed.getValue());
-        		else p.translate(0,-ClickGuiModule.scrollSpeed.getValue());
-        		component.setPosition(this,p);
+        	if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
+	        	for (FixedComponent component: gui.getComponents()) {
+	        		if (!(component instanceof HUDPanel)) {
+		        		Point p=component.getPosition(this);
+		        		if (scroll>0) p.translate(0,ClickGuiModule.scrollSpeed.getValue());
+		        		else p.translate(0,-ClickGuiModule.scrollSpeed.getValue());
+		        		component.setPosition(this,p);
+	        		}
+	        	}
         	}
+        	if (scroll>0) gui.handleScroll(-ClickGuiModule.scrollSpeed.getValue());
+        	else gui.handleScroll(ClickGuiModule.scrollSpeed.getValue());
         }
     }
 
@@ -123,11 +175,16 @@ public class GameSenseGUI extends GuiScreen implements Interface {
     	gui.handleButton(releaseButton);
     }
     
+    public void handleKeyEvent (int scancode) {
+    	if (scancode!=1) gui.handleKey(scancode);
+    }
+    
     @Override
     protected void keyTyped(final char typedChar, final int keyCode) {
     	if (keyCode == 1) {
     		gui.exit();
     		this.mc.displayGuiScreen(null);
+    		if (gui.isOn()) gui.toggle();
     	} else gui.handleKey(keyCode);
     }
 
@@ -162,6 +219,16 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		}
 		FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s,x,y,new GSColor(c));
 		begin();
+	}
+	
+	@Override
+	public int getFontWidth(String s) {
+		return (int)Math.round(FontUtils.getStringWidth(ColorMain.customFont.getValue(),s))+4;
+	}
+
+	@Override
+	public int getFontHeight() {
+		return (int)Math.round(FontUtils.getFontHeight(ColorMain.customFont.getValue()))+2;
 	}
 
 	@Override
@@ -212,7 +279,7 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 	@Override
 	public synchronized int loadImage(String name) {
 		try {
-			ResourceLocation rl=new ResourceLocation("cyberhack:gui/"+name);
+			ResourceLocation rl=new ResourceLocation("gamesense:gui/"+name);
 			InputStream stream=Minecraft.getMinecraft().resourceManager.getResource(rl).getInputStream();
 			BufferedImage image=ImageIO.read(stream);
 			int texture=TextureUtil.glGenTextures();
@@ -264,21 +331,64 @@ public class GameSenseGUI extends GuiScreen implements Interface {
         tessellator.draw();
         GlStateManager.disableTexture2D();
 	}
-
-	@Override
-	public void window(Rectangle r) {
-		GL11.glScissor(r.x,r.y,r.width,r.height);
+	
+	private void scissor (Rectangle r) {
+		if (r==null) {
+			GL11.glScissor(0,0,0,0);
+			GL11.glEnable(GL11.GL_SCISSOR_TEST);
+			return;
+		}
+		float x1,y1,x2,y2;
+		GLU.gluProject(r.x,r.y,zLevel,MODELVIEW,PROJECTION,VIEWPORT,COORDS);
+		x1=COORDS.get(0);
+		y1=COORDS.get(1);
+		GLU.gluProject(r.x+r.width,r.y+r.height,zLevel,MODELVIEW,PROJECTION,VIEWPORT,COORDS);
+		x2=COORDS.get(0);
+		y2=COORDS.get(1);
+		GL11.glScissor(Math.round(Math.min(x1,x2)),Math.round(Math.min(y1,y2)),Math.round(Math.abs(x2-x1)),Math.round(Math.abs(y2-y1)));
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 
 	@Override
+	public void window (Rectangle r) {
+		if (clipRect.isEmpty()) {
+			scissor(r);
+			clipRect.push(r);
+		} else {
+			Rectangle top=clipRect.peek();
+			if (top==null) {
+				scissor(null);
+				clipRect.push(null);
+			} else {
+				int x1,y1,x2,y2;
+				x1=Math.max(r.x,top.x);
+				y1=Math.max(r.y,top.y);
+				x2=Math.min(r.x+r.width,top.x+top.width);
+				y2=Math.min(r.y+r.height,top.y+top.height);
+				if (x2>x1 && y2>y1) {
+					Rectangle rect=new Rectangle(x1,y1,x2-x1,y2-y1);
+					scissor(rect);
+					clipRect.push(rect);
+				} else {
+					scissor(null);
+					clipRect.push(null);
+				}
+			}
+		}
+	}
+
+	@Override
 	public void restore() {
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		if (!clipRect.isEmpty()) {
+			clipRect.pop();
+			if (clipRect.isEmpty()) GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			else scissor(clipRect.peek());
+		}
 	}
 	
-	private void addModule (Container panel, Module module) {
-		Container container;
-		container=new ToggleableContainer(module.getName(),theme.getContainerRenderer(),new SimpleToggleable(false),module);
+	private void addModule (CollapsibleContainer panel, Module module) {
+		CollapsibleContainer container;
+		container=new ToggleableContainer(module.getName(),theme.getContainerRenderer(),new SimpleToggleable(false),new GameSenseAnimation(),module);
 		panel.addComponent(container);
 		for (Setting property: GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)) {
 			if (property instanceof Setting.Boolean) {
@@ -290,13 +400,13 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 			} else if (property instanceof Setting.Mode) {
 				container.addComponent(new EnumComponent(property.getName(),theme.getComponentRenderer(),(Setting.Mode)property));
 			} else if (property instanceof Setting.ColorSetting) {
-				container.addComponent(new SyncableColorComponent(theme,(Setting.ColorSetting)property,colorToggle));
+				container.addComponent(new SyncableColorComponent(theme,(Setting.ColorSetting)property,colorToggle,new GameSenseAnimation()));
 			}
 		}
 		container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(),module));
 	}
 	
-	private void begin() {
+	private static void begin() {
 		GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -304,14 +414,54 @@ public class GameSenseGUI extends GuiScreen implements Interface {
         GlStateManager.glLineWidth(2);
 	}
 	
-	private void end() {
+	private static void end() {
 		GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
 	}
 	
+	public static void renderItem (ItemStack item, Point pos) {
+		GlStateManager.enableTexture2D();
+		GlStateManager.depthMask(true);
+		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glPopAttrib();
+		GlStateManager.enableDepth();
+		GlStateManager.disableAlpha();
+		GlStateManager.pushMatrix();
+		Minecraft.getMinecraft().getRenderItem().zLevel = -150.0f;
+        RenderHelper.enableGUIStandardItemLighting();
+        Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(item,pos.x,pos.y);
+        Minecraft.getMinecraft().getRenderItem().renderItemOverlays(Minecraft.getMinecraft().fontRenderer,item,pos.x,pos.y);
+        RenderHelper.disableStandardItemLighting();
+        Minecraft.getMinecraft().getRenderItem().zLevel = 0.0F;
+        GlStateManager.popMatrix();
+		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
+        begin();
+	}
 	
-	private static class GameSenseScheme implements ColorScheme {
+	public static void renderEntity (EntityLivingBase entity, Point pos) {
+		GlStateManager.enableTexture2D();
+		GlStateManager.depthMask(true);
+		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glPopAttrib();
+		GlStateManager.enableDepth();
+		GlStateManager.disableAlpha();
+        GlStateManager.pushMatrix();
+        GlStateManager.color(1,1,1,1);
+        GuiInventory.drawEntityOnScreen(pos.x,pos.y,43,28,60,entity);
+        GlStateManager.popMatrix();
+		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
+        begin();
+	}
+	
+	
+	public static class GameSenseScheme implements ColorScheme {
 		@Override
 		public Color getActiveColor() {
 			return ClickGuiModule.enabledColor.getValue();
@@ -341,5 +491,48 @@ public class GameSenseGUI extends GuiScreen implements Interface {
 		public int getOpacity() {
 			return ClickGuiModule.opacity.getValue();
 		}		
+	}
+	
+	
+	public static class GameSenseAnimation extends Animation {
+		@Override
+		protected int getSpeed() {
+			return ClickGuiModule.animationSpeed.getValue();
+		}
+	}
+	
+	
+	private class GameSenseHUDPanel extends HUDPanel implements PositionConfig {
+		public GameSenseHUDPanel (FixedComponent component, Toggleable module) {
+			super(component,theme.getPanelRenderer(),module,new GameSenseAnimation(),new Toggleable() {
+				@Override
+				public void toggle() {
+				}
+	
+				@Override
+				public boolean isOn() {
+					return gui.isOn() && ClickGuiModule.showHUD.isOn();
+				}
+				
+			},HUD_BORDER);
+		}
+
+		@Override
+		public Point getConfigPos() {
+			if (component instanceof PositionConfig) {
+				return ((PositionConfig)component).getConfigPos();
+			} else {
+				return getPosition(GameSenseGUI.this);
+			}
+		}
+
+		@Override
+		public void setConfigPos(Point pos) {
+			if (component instanceof PositionConfig) {
+				((PositionConfig)component).setConfigPos(pos);
+			} else {
+				setPosition(GameSenseGUI.this,pos);
+			}
+		}
 	}
 }

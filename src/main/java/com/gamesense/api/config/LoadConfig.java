@@ -313,9 +313,7 @@ public class LoadConfig {
 
         JsonObject panelObject = mainObject.get("Panels").getAsJsonObject();
         for (FixedComponent frames : GameSenseMod.getInstance().clickGUI.gui.getComponents()){
-            if (panelObject.get(frames.getTitle()) == null){
-                return;
-            }
+            if (panelObject.get(frames.getTitle()) == null) continue;
 
             JsonObject panelObject2 = panelObject.get(frames.getTitle()).getAsJsonObject();
 
@@ -329,11 +327,14 @@ public class LoadConfig {
             if (panelPosYObject != null && panelPosYObject.isJsonPrimitive()){
                 point.y=panelPosYObject.getAsInt();
             }
-            frames.setPosition(GameSenseMod.getInstance().clickGUI,point);
+            if (frames instanceof PositionConfig) ((PositionConfig) frames).setConfigPos(point);
+            else frames.setPosition(GameSenseMod.getInstance().clickGUI,point);
 
             JsonElement panelOpenObject = panelObject2.get("State");
             if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()){
-                if (frames instanceof DraggableContainer && panelOpenObject.getAsBoolean()) ((DraggableContainer)frames).open.toggle();
+                if (frames instanceof DraggableContainer && panelOpenObject.getAsBoolean()) {
+                	if (!((DraggableContainer)frames).isOn()) ((DraggableContainer)frames).toggle();
+                }
             }
         }
         inputStream.close();

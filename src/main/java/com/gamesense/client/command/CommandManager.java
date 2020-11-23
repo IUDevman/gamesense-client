@@ -22,6 +22,7 @@ public class CommandManager {
         addCommand(new DrawnCommand());
         addCommand(new EnemyCommand());
         addCommand(new FixGUICommand());
+        addCommand(new FixHUDCommand());
         addCommand(new FontCommand());
         addCommand(new FriendCommand());
         addCommand(new ModulesCommand());
