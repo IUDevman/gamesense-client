@@ -13,11 +13,13 @@ import net.minecraft.util.math.BlockPos;
 
 /**
  * @author linustouchtips
- * wip module
+ * @since 11/23/2020
  */
 
 public class Quiver extends Module {
-    public Quiver() {super("Quiver", Category.Combat);}
+    public Quiver() {
+        super("Quiver", Category.Combat);
+    }
 
     public Setting.Boolean strength;
     public Setting.Boolean speed;
