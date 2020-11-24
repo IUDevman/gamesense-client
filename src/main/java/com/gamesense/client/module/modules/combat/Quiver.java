@@ -3,11 +3,13 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.client.module.Module;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemBow;
 import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * @author linustouchtips
@@ -29,18 +31,59 @@ public class Quiver extends Module {
         speed = registerBoolean("Speed", "Speed", true);
     }
 
-    private int findBowInHotbar() {
-        int slot = 0;
-        for (int i = 0; i < 9; i++) {
-            if (mc.player.inventory.getStackInSlot(i).getItem() == Items.BOW) {
-                slot = i;
-                break;
-            }
+    @Override
+    public void onUpdate() {
+        ++tick;
+
+        PotionEffect speedEffect = mc.player.getActivePotionEffect(Potion.getPotionById(1));
+        PotionEffect strengthEffect = mc.player.getActivePotionEffect(Potion.getPotionById(5));
+
+        if (speedEffect != null) {
+            hasSpeed = true;
+        } else {
+            hasSpeed = false;
         }
-        return slot;
+
+        if (strengthEffect != null) {
+            hasStrength = true;
+        } else {
+            hasStrength = false;
+        }
+
+        if (strength.getBVal() == true && !hasStrength) {
+            if (mc.player.inventory.getCurrentItem().getItem() == Items.BOW && ifArrowInHotbar()) {
+                mc.player.connection.sendPacket(new CPacketPlayer.Rotation(0, -90, true));
+                if (mc.player.getItemInUseMaxCount() >= getBowCharge()) {
+                    mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, mc.player.getHorizontalFacing()));
+                    mc.player.stopActiveHand();
+                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+                    mc.player.setActiveHand(EnumHand.MAIN_HAND);
+                } else if (mc.player.getItemInUseMaxCount() == 0) {
+                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+                    mc.player.setActiveHand(EnumHand.MAIN_HAND);
+                }
+            }
+
+            if (speed.getBVal() == true && !hasSpeed) {
+                if (mc.player.inventory.getCurrentItem().getItem() == Items.BOW && ifArrowInHotbar()) {
+                    mc.player.connection.sendPacket(new CPacketPlayer.Rotation(0, -90, true));
+                    if (mc.player.getItemInUseMaxCount() >= getBowCharge()) {
+                        mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, mc.player.getHorizontalFacing()));
+                        mc.player.stopActiveHand();
+                        mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+                        mc.player.setActiveHand(EnumHand.MAIN_HAND);
+                    } else if (mc.player.getItemInUseMaxCount() == 0) {
+                        mc.player.connection.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+                        mc.player.setActiveHand(EnumHand.MAIN_HAND);
+                    }
+                }
+
+            }
+
+        }
     }
 
-    private boolean ifArrowInInventory() {
+    private boolean ifArrowInHotbar() {
         boolean inInv = false;
         for (int i = 0; i < 9; i++) {
             if (mc.player.inventory.getStackInSlot(i).getItem() == Items.TIPPED_ARROW) {
@@ -51,41 +94,9 @@ public class Quiver extends Module {
         return inInv;
     }
 
-    @Override
-    public void onUpdate() {
-        PotionEffect speedEffect = mc.player.getActivePotionEffect(Potion.getPotionById(1));
-        PotionEffect strengthEffect = mc.player.getActivePotionEffect(Potion.getPotionById(5));
-
-        if (speedEffect != null) {
-            hasSpeed = true;
-        }
-
-        if (strengthEffect != null) {
-            hasStrength = true;
-        }
-
-        if (strength.getValue()) {
-            if (hasStrength == false && ifArrowInInventory() == true) {
-                mc.player.inventory.currentItem = findBowInHotbar();
-                mc.player.connection.sendPacket(new CPacketPlayer.Rotation(0, 90, true));
-                if (mc.player.getHeldItemMainhand().getItem() instanceof ItemBow && mc.player.getItemInUseMaxCount() >= 3) {
-                    mc.player.connection.sendPacket(new CPacketPlayerTryUseItem());
-                }
-            }
-
-            if (speed.getValue()) {
-                if (hasSpeed == false && ifArrowInInventory() == true) {
-                    mc.player.inventory.currentItem = findBowInHotbar();
-                    mc.player.connection.sendPacket(new CPacketPlayer.Rotation(0, 90, true));
-                    if (mc.player.getHeldItemMainhand().getItem() instanceof ItemBow && mc.player.getItemInUseMaxCount() >= 3) {
-                        mc.player.connection.sendPacket(new CPacketPlayerTryUseItem());
-                    }
-                }
-
-            }
-
-        }
-
-
+    private int getBowCharge() {
+        if (randomVariation == 0) {
+            randomVariation = 1;
+        } return 3 + randomVariation;
     }
 }
