@@ -27,16 +27,14 @@ public class Quiver extends Module {
     public boolean hasSpeed = false;
     public boolean hasStrength = false;
 
-    @Override
     public void setup(){
         strength = registerBoolean("Strength", "Strength", true);
         speed = registerBoolean("Speed", "Speed", true);
     }
 
-    @Override
-    public void onUpdate() {
-        ++tick;
+    private int randomVariation;
 
+    public void onUpdate() {
         PotionEffect speedEffect = mc.player.getActivePotionEffect(Potion.getPotionById(1));
         PotionEffect strengthEffect = mc.player.getActivePotionEffect(Potion.getPotionById(5));
 
@@ -52,7 +50,7 @@ public class Quiver extends Module {
             hasStrength = false;
         }
 
-        if (strength.getBVal() == true && !hasStrength) {
+        if (strength.getValue() == true && !hasStrength) {
             if (mc.player.inventory.getCurrentItem().getItem() == Items.BOW && ifArrowInHotbar()) {
                 mc.player.connection.sendPacket(new CPacketPlayer.Rotation(0, -90, true));
                 if (mc.player.getItemInUseMaxCount() >= getBowCharge()) {
@@ -66,7 +64,7 @@ public class Quiver extends Module {
                 }
             }
 
-            if (speed.getBVal() == true && !hasSpeed) {
+            if (speed.getValue() == true && !hasSpeed) {
                 if (mc.player.inventory.getCurrentItem().getItem() == Items.BOW && ifArrowInHotbar()) {
                     mc.player.connection.sendPacket(new CPacketPlayer.Rotation(0, -90, true));
                     if (mc.player.getItemInUseMaxCount() >= getBowCharge()) {
