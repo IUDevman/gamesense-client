@@ -36,6 +36,7 @@ import net.minecraft.util.text.TextFormatting;
 public class TargetHUD extends HUDModule {
     private static Setting.ColorSetting outline;
     private static Setting.ColorSetting background;
+    private static Setting.Integer range;
     private static EntityPlayer targetPlayer;
     
     public TargetHUD(){
@@ -43,6 +44,7 @@ public class TargetHUD extends HUDModule {
     }
 
     public void setup() {
+    	range = registerInteger("Range", "Range", 100, 10, 260);
         outline = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
         background = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
     }
@@ -96,15 +98,6 @@ public class TargetHUD extends HUDModule {
 		@Override
 		public void render (Context context) {
 			super.render(context);
-			// Render background
-			Color bgcolor=new GSColor(background.getValue(),100);
-			context.getInterface().fillRect(context.getRect(),bgcolor,bgcolor,bgcolor,bgcolor);
-			// Render outline
-			Color color=outline.getValue();
-			context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(context.getSize().width,1)),color,color,color,color);
-			context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(1,context.getSize().height)),color,color,color,color);
-			context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x+context.getSize().width-1,context.getPos().y),new Dimension(1,context.getSize().height)),color,color,color,color);
-			context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x,context.getPos().y+context.getSize().height-1),new Dimension(context.getSize().width,1)),color,color,color,color);
 			// Render content
 			if (mc.world != null && mc.player.ticksExisted >= 10) {
 				EntityPlayer entityPlayer = (EntityPlayer) mc.world.loadedEntityList.stream()
@@ -112,7 +105,16 @@ public class TargetHUD extends HUDModule {
 						.map(entity -> (EntityLivingBase) entity)
 						.min(Comparator.comparing(c -> mc.player.getDistance(c)))
 						.orElse(null);
-				if (entityPlayer!=null) {
+				if (entityPlayer!=null && entityPlayer.getDistance(mc.player) <= range.getValue()) {
+					// Render background
+					Color bgcolor=new GSColor(background.getValue(),100);
+					context.getInterface().fillRect(context.getRect(),bgcolor,bgcolor,bgcolor,bgcolor);
+					// Render outline
+					Color color=outline.getValue();
+					context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(context.getSize().width,1)),color,color,color,color);
+					context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(1,context.getSize().height)),color,color,color,color);
+					context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x+context.getSize().width-1,context.getPos().y),new Dimension(1,context.getSize().height)),color,color,color,color);
+					context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x,context.getPos().y+context.getSize().height-1),new Dimension(context.getSize().width,1)),color,color,color,color);
 					// Render player
 					targetPlayer=entityPlayer;
 					GameSenseGUI.renderEntity(entityPlayer,new Point(context.getPos().x+35,context.getPos().y+87-(entityPlayer.isSneaking()?10:0)));
