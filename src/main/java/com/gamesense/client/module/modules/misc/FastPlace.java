@@ -14,7 +14,7 @@ public class FastPlace extends Module{
 	public void setup(){
 		exp = registerBoolean("Exp", "Exp", false);
 		crystals = registerBoolean("Crystals", "Crystals", false);
-		everything = registerBoolean("Eveything", "Everything",false);
+		everything = registerBoolean("Everything", "Everything",false);
 	}
 
 	public void onUpdate(){
