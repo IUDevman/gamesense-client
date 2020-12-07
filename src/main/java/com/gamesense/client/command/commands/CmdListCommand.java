@@ -15,7 +15,7 @@ public class CmdListCommand extends Command {
 
         setCommandSyntax(Command.getCommandPrefix() + "commands");
         setCommandAlias(new String[]{
-                "commands", "cmd", "command", "commandlist"
+                "commands", "cmd", "command", "commandlist", "help"
         });
     }
 

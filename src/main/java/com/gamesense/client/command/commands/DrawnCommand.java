@@ -23,6 +23,11 @@ public class DrawnCommand extends Command {
     public void onCommand(String command, String[] message) throws Exception{
         String main = message[0];
 
+        if (ModuleManager.getModules().stream().filter(module -> module.getName() == main).findFirst().orElse(null) == null) {
+            MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
+            return;
+        }
+
         for (Module module : ModuleManager.getModules()){
             if (module.getName().equalsIgnoreCase(main)){
                 if (module.isDrawn()){
@@ -33,9 +38,6 @@ public class DrawnCommand extends Command {
                     module.setDrawn(true);
                     MessageBus.sendClientPrefixMessage("Module " + module.getName() + "drawn set to: TRUE!");
                 }
-            }
-            else {
-                MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
             }
         }
     }

@@ -147,7 +147,7 @@ public class HoleESP extends Module {
 					return;
 				}
 
-				BlockPos blockPos = entityPlayer.getPosition();
+				BlockPos blockPos = new BlockPos(roundValueToCenter(mc.player.posX), mc.player.posY, roundValueToCenter(mc.player.posZ));
 
 				if (blockPos == mc.player.getPosition()) {
 					return;
@@ -273,5 +273,18 @@ public class HoleESP extends Module {
 				break;
 			}
 		}
+	}
+
+	private double roundValueToCenter(double inputVal) {
+		double roundVal = Math.round(inputVal);
+
+		if (roundVal > inputVal) {
+			roundVal -= 0.5;
+		}
+		else if (roundVal <= inputVal) {
+			roundVal += 0.5;
+		}
+
+		return roundVal;
 	}
 }
