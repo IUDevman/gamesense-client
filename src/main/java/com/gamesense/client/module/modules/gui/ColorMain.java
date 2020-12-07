@@ -20,6 +20,7 @@ public class ColorMain extends Module{
 	public static Setting.Mode chatEnableColor;
 	public static Setting.Mode chatDisableColor;
 	public static Setting.Boolean customFont;
+	public static Setting.Boolean textFont;
 
 	public void setup() {
 		ArrayList<String> tab = new ArrayList<>();
@@ -40,6 +41,7 @@ public class ColorMain extends Module{
 		tab.add("Light Purple");
 		tab.add("White");
 		customFont = registerBoolean("Custom Font", "CustomFont", true);
+		textFont = registerBoolean("Custom Text", "CustomText", true);
 		friendColor = registerMode("Friend", "FriendColor", tab, "Blue");
 		enemyColor = registerMode("Enemy", "EnemyColor", tab, "Red");
 		chatEnableColor = registerMode("Msg Enbl", "MsgEnbl", tab, "Green");

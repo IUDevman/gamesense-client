@@ -23,6 +23,7 @@
 	"MixinWorld",
 	"MixinPlayerOverlay",
 	"MixinBlockLiquid",
-	"MixinItemRenderer"
+	"MixinItemRenderer",
+	"MixinFontRenderer"
 ]
 }
