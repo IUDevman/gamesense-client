@@ -134,6 +134,7 @@ public class SelfWeb extends Module {
             firstRun = false;
             if (findWebSlot() == -1){
                 noWeb = true;
+                disable();
             }
         }
         else {
@@ -236,7 +237,7 @@ public class SelfWeb extends Module {
 
         int webSlot = findWebSlot();
 
-        if (mc.player.inventory.currentItem != webSlot){
+        if (mc.player.inventory.currentItem != webSlot && webSlot != -1){
             mc.player.inventory.currentItem = webSlot;
         }
 

@@ -145,6 +145,7 @@ public class Surround extends Module {
             firstRun = false;
             if (findObsidianSlot() == -1){
                 noObby = true;
+                disable();
             }
         }
         else {
@@ -293,7 +294,7 @@ public class Surround extends Module {
 
         int obsidianSlot = findObsidianSlot();
 
-        if (mc.player.inventory.currentItem != obsidianSlot){
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1){
 
             mc.player.inventory.currentItem = obsidianSlot;
         }

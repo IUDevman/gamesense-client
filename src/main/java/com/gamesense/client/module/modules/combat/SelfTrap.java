@@ -147,6 +147,7 @@ public class SelfTrap extends Module {
             firstRun = false;
             if (findObsidianSlot() == -1){
                 noObby = true;
+                disable();
             }
         }
         else {
@@ -297,7 +298,7 @@ public class SelfTrap extends Module {
 
         int obsidianSlot = findObsidianSlot();
 
-        if (mc.player.inventory.currentItem != obsidianSlot){
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1){
             mc.player.inventory.currentItem = obsidianSlot;
         }
 

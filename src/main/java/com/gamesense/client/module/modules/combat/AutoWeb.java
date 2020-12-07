@@ -231,7 +231,7 @@ public class AutoWeb extends Module{
 
 		int webbSlot = findWebSlot();
 
-		if (mc.player.inventory.currentItem != webbSlot){
+		if (mc.player.inventory.currentItem != webbSlot && webbSlot != -1){
 			mc.player.inventory.currentItem = webbSlot;
 		}
 

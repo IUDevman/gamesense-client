@@ -97,7 +97,14 @@ public class HoleFill extends Module {
 
 			if (autoSwitch.getValue()) {
 				int oldHand = mc.player.inventory.currentItem;
-				mc.player.inventory.currentItem = findRightBlock(oldHand);
+				int newHand = findRightBlock(oldHand);
+
+				if (newHand != -1) {
+					mc.player.inventory.currentItem = findRightBlock(oldHand);
+				}
+				else {
+					return;
+				}
 			}
 
 			BlockPos placePos = holePos.stream().sorted(Comparator.comparing(blockPos -> blockPos.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ))).findFirst().orElse(null);
