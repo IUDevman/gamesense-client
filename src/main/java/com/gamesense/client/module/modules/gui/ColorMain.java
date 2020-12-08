@@ -41,7 +41,7 @@ public class ColorMain extends Module{
 		tab.add("Light Purple");
 		tab.add("White");
 		customFont = registerBoolean("Custom Font", "CustomFont", true);
-		textFont = registerBoolean("Custom Text", "CustomText", true);
+		textFont = registerBoolean("Custom Text", "CustomText", false);
 		friendColor = registerMode("Friend", "FriendColor", tab, "Blue");
 		enemyColor = registerMode("Enemy", "EnemyColor", tab, "Red");
 		chatEnableColor = registerMode("Msg Enbl", "MsgEnbl", tab, "Green");
