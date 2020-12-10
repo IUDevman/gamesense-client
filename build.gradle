@@ -22,9 +22,8 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 version project.modVersion
-group project.modGroup // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group project.modGroup
 
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 compileJava {
 	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
@@ -33,7 +32,7 @@ minecraft {
 	version = project.forgeVersion
 	runDir = 'run'
 	mappings = project.mcpVersion
-	coreMod = 'com.gamesense.client.GameSenseMod'
+	coreMod = 'com.gamesense.api.mixin.GameSenseMixinLoader'
 	makeObfSourceJar = false
 }
 
@@ -76,24 +75,18 @@ dependencies {
 }
 
 processResources {
-	// this will ensure that this task is redone when the versions change.
 	inputs.property 'version', project.version
 	inputs.property 'mcversion', project.minecraft.version
 
-	// replace stuff in mcmod.info, nothing else
 	from(sourceSets.main.resources.srcDirs) {
 		include 'mcmod.info'
-
-		// replace version and mcversion
 		expand 'version': project.version, 'mcversion': project.minecraft.version
 	}
 
-	// copy everything else, thats not the mcmod.info
 	from(sourceSets.main.resources.srcDirs) {
 		exclude 'mcmod.info'
 	}
 
-	// move _at.cfg into META-INF
 	rename '(.+_at.cfg)', 'META-INF/$1'
 }
 

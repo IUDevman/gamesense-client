@@ -35,6 +35,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
+import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.*;
@@ -83,6 +84,7 @@ public class AutoCrystal extends Module {
     Setting.Mode handBreak;
     Setting.Mode breakMode;
     Setting.Mode hudDisplay;
+    Setting.Mode breakType;
     Setting.ColorSetting color;
 
     public void setup() {
@@ -100,8 +102,13 @@ public class AutoCrystal extends Module {
         hudModes.add("Mode");
         hudModes.add("None");
 
+        ArrayList<String> breakTypes = new ArrayList<>();
+        breakTypes.add("Swing");
+        breakTypes.add("Packet");
+
         breakMode = registerMode("Target", "Target", breakModes, "All");
         handBreak = registerMode("Hand", "Hand", hands, "Main");
+        breakType = registerMode("Type", "Type", breakTypes, "Swing");
         breakCrystal = registerBoolean("Break", "Break", true);
         placeCrystal = registerBoolean("Place", "Place", true);
         attackSpeed = registerInteger("Attack Speed", "AttackSpeed", 16, 0, 20);
@@ -217,17 +224,12 @@ public class AutoCrystal extends Module {
                     lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
                 }
 
-                mc.playerController.attackEntity(mc.player, crystal);
-
-                if (handBreak.getValue().equalsIgnoreCase("Both") && mc.player.getHeldItemOffhand() != null){
-                    mc.player.swingArm(EnumHand.MAIN_HAND);
-                    mc.player.swingArm(EnumHand.OFF_HAND);
+                if (breakType.getValue().equalsIgnoreCase("Swing")) {
+                    breakCrystal(crystal);
                 }
-                else if (handBreak.getValue().equalsIgnoreCase("Offhand") && mc.player.getHeldItemOffhand() != null){
-                    mc.player.swingArm(EnumHand.OFF_HAND);
-                }
-                else {
-                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                else if (breakType.getValue().equalsIgnoreCase("Packet")) {
+                    mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+                    swingArm();
                 }
 
                 if (cancelCrystal.getValue()){
@@ -311,6 +313,12 @@ public class AutoCrystal extends Module {
                         if (rotate.getValue()) {
                             this.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D, mc.player);
                         }
+
+                        EntityEnderCrystal crystal1 = new EntityEnderCrystal(mc.world, q.getX(), q.getY(), q.getZ());
+                        if (!mc.player.canEntityBeSeen(crystal1) && mc.player.getDistance(crystal1) > wallsRange.getValue()) {
+                            return;
+                        }
+
                         RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D));
                         if (raytrace.getValue()) {
                             if (result == null || result.sideHit == null) {
@@ -617,6 +625,25 @@ public class AutoCrystal extends Module {
         yaw += 90f;
 
         return new double[]{yaw,pitch};
+    }
+
+    private void breakCrystal(EntityEnderCrystal crystal) {
+        mc.playerController.attackEntity(mc.player, crystal);
+
+        swingArm();
+    }
+
+    private void swingArm() {
+        if (handBreak.getValue().equalsIgnoreCase("Both") && mc.player.getHeldItemOffhand() != null){
+            mc.player.swingArm(EnumHand.MAIN_HAND);
+            mc.player.swingArm(EnumHand.OFF_HAND);
+        }
+        else if (handBreak.getValue().equalsIgnoreCase("Offhand") && mc.player.getHeldItemOffhand() != null){
+            mc.player.swingArm(EnumHand.OFF_HAND);
+        }
+        else {
+            mc.player.swingArm(EnumHand.MAIN_HAND);
+        }
     }
 
     @EventHandler
