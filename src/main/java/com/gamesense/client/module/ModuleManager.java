@@ -87,6 +87,7 @@ public class ModuleManager {
 		addMod(new HoleESP());
 		addMod(new LogoutSpots());
 		addMod(new Nametags());
+		addMod(new NekoFov());
 		addMod(new NoRender());
 		addMod(new RenderTweaks());
 		addMod(new ShulkerViewer());
