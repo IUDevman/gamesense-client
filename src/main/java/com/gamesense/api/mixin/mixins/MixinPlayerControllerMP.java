@@ -4,6 +4,7 @@ import com.gamesense.api.event.events.DamageBlockEvent;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.exploits.Reach;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -27,6 +28,13 @@ public class MixinPlayerControllerMP{
 		GameSenseMod.EVENT_BUS.post(event);
 		if (event.isCancelled()){
 			cir.setReturnValue(false);
+		}
+	}
+
+	@Inject(method = "getBlockReachDistance", at = @At("RETURN"), cancellable = true)
+	private void getReachDistanceHook(final CallbackInfoReturnable<Float> distance) {
+		if (ModuleManager.getModuleByName("Reach").isEnabled()) {
+			distance.setReturnValue((float) Reach.distance.getValue());
 		}
 	}
 

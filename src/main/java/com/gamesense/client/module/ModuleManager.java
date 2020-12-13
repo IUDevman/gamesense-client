@@ -48,6 +48,7 @@ public class ModuleManager {
 		addMod(new LiquidInteract());
 		addMod(new NoInteract());
 		addMod(new NoSwing());
+		addMod(new Reach());
 		//addMod(new PacketXP());
 		addMod(new PortalGodMode());
 		//Movement
