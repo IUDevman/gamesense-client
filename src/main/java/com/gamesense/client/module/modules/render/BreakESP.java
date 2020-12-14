@@ -73,9 +73,11 @@ public class BreakESP extends Module {
         double centerX = axisAlignedBB.minX + ((axisAlignedBB.maxX - axisAlignedBB.minX) / 2);
         double centerY = axisAlignedBB.minY + ((axisAlignedBB.maxY - axisAlignedBB.minY) / 2);
         double centerZ = axisAlignedBB.minZ + ((axisAlignedBB.maxZ - axisAlignedBB.minZ) / 2);
-        double progressVal = progress * 0.05;
+        double progressValX = progress * ((axisAlignedBB.maxX - centerX) / 10);
+        double progressValY = progress * ((axisAlignedBB.maxY - centerY) / 10);
+        double progressValZ = progress * ((axisAlignedBB.maxZ - centerZ) / 10);
 
-        AxisAlignedBB axisAlignedBB1 = new AxisAlignedBB(centerX - progressVal, centerY - progressVal, centerZ - progressVal, centerX + progressVal, centerY + progressVal, centerZ + progressVal);
+        AxisAlignedBB axisAlignedBB1 = new AxisAlignedBB(centerX - progressValX, centerY - progressValY, centerZ - progressValZ, centerX + progressValX, centerY + progressValY, centerZ + progressValZ);
 
         switch (renderType.getValue()) {
             case "Fill" : {
