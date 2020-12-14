@@ -17,6 +17,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Comparator;
+import java.util.UUID;
 
 /**
  * @author Hoosiers
@@ -132,7 +133,7 @@ public class TargetInfo extends HUDModule {
                     context.getInterface().fillRect(new Rectangle(context.getPos().x + 32, context.getPos().y + 27, width, 15), distanceBox, distanceBox, distanceBox, distanceBox);
 
                     //player render
-                    renderPlayerFace(context.getPos().x + 1, context.getPos().y + 12, 30, 30);
+                    renderPlayerFace(entityPlayer, context.getPos().x + 1, context.getPos().y + 12, 30, 30);
 
                     //health string
                     String health = "Health: " + healthVal;
@@ -147,8 +148,12 @@ public class TargetInfo extends HUDModule {
             }
         }
 
-        private void renderPlayerFace(int posX, int posY, int width, int height) {
+        private void renderPlayerFace(EntityPlayer entityPlayer, int posX, int posY, int width, int height) {
+            UUID uuid = entityPlayer.getUniqueID();
 
+            //this link creates an 8x8 image of the players face
+            //documentation: https://crafatar.com/
+            String resourceLink = "https://crafatar.com/avatars/" + uuid + "?size=8";
         }
 
         @Override
