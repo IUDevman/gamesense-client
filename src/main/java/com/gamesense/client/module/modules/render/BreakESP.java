@@ -24,6 +24,7 @@ public class BreakESP extends Module {
     Setting.Mode renderType;
     Setting.ColorSetting color;
     Setting.Integer range;
+    Setting.Integer lineWidth;
 
     public void setup() {
         ArrayList<String> renderTypes = new ArrayList<>();
@@ -32,6 +33,7 @@ public class BreakESP extends Module {
         renderTypes.add("Both");
 
         renderType = registerMode("Render", "Render", renderTypes, "Both");
+        lineWidth = registerInteger("Width", "Width", 1, 0, 5);
         range = registerInteger("Range", "Range", 100, 1, 200);
         color = registerColor("Color", "Color", new GSColor(0, 255, 0, 255));
     }
@@ -74,12 +76,12 @@ public class BreakESP extends Module {
                 break;
             }
             case "Outline" : {
-                GameSenseTessellator.drawBoundingBox(axisAlignedBB1, 1, outlineColor);
+                GameSenseTessellator.drawBoundingBox(axisAlignedBB1, lineWidth.getValue(), outlineColor);
                 break;
             }
             case "Both" : {
                 GameSenseTessellator.drawBox(axisAlignedBB1, true, 0, fillColor, GeometryMasks.Quad.ALL);
-                GameSenseTessellator.drawBoundingBox(axisAlignedBB1, 1, outlineColor);
+                GameSenseTessellator.drawBoundingBox(axisAlignedBB1, lineWidth.getValue(), outlineColor);
                 break;
             }
         }
