@@ -1,5 +1,6 @@
 package com.gamesense.client.module.modules.render;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import com.gamesense.api.event.events.RenderEvent;
@@ -26,6 +27,7 @@ public class Tracers extends Module {
 		super("Tracers", Category.Render);
 	}
 
+	Setting.Boolean colorType;
 	Setting.Integer renderDistance;
 	Setting.Mode pointsTo;
 	Setting.ColorSetting nearColor;
@@ -40,6 +42,7 @@ public class Tracers extends Module {
 		link.add("Feet");
 
 		pointsTo = registerMode("Draw To", "DrawTo", link, "Feet");
+		colorType = registerBoolean("Color Sync", "ColorSync", true);
 		nearColor=registerColor("Near Color","NearColor",new GSColor(255,0,0, 255));
 		midColor=registerColor("Middle Color","MidColor",new GSColor(255,255,0, 255));
 		farColor=registerColor("Far Color","FarColor",new GSColor(0,255,0, 255));
@@ -68,6 +71,10 @@ public class Tracers extends Module {
 							}
 							if (mc.player.getDistance(e) >= 50) {
 								tracerColor = farColor.getValue();
+							}
+
+							if (colorType.getValue()) {
+								tracerColor = getDistanceColor((int) mc.player.getDistance(e));
 							}
 						}
 					}
@@ -100,5 +107,16 @@ public class Tracers extends Module {
 		} else {
 			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy, posz, color);
 		}
+	}
+
+	private GSColor getDistanceColor(int distance) {
+		if (distance > 50) {
+			distance = 50;
+		}
+
+		int red = (int) (255 - (distance * 5.1));
+		int green = 255 - red;
+
+		return new GSColor(red, green, 0, 255);
 	}
 }
