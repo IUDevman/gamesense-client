@@ -77,6 +77,7 @@ public class ModuleManager {
 		addMod(new PvPInfo());
 		//Render
 		addMod(new BlockHighlight());
+		addMod(new BreakESP());
 		addMod(new CapesModule());
 		addMod(new CityESP());
 		addMod(new ESP());

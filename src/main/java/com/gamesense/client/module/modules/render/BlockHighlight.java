@@ -41,7 +41,7 @@ public class BlockHighlight extends Module {
         renderLook = registerMode("Render", "Render", renderLooks, "Block");
         renderType = registerMode("Type", "Type", renderTypes, "Outline");
         lineWidth = registerInteger("Width", "Width", 1, 0, 5);
-        renderColor = registerColor("Color", "Color");
+        renderColor = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
     }
 
     private int lookInt;

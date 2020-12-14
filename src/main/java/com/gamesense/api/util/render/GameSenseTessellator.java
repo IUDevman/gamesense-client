@@ -31,7 +31,7 @@ public class GameSenseTessellator {
 		drawBox(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, height, 1, color, sides);
 	}
 
-	public static void drawBox(AxisAlignedBB bb, boolean check,  double height, GSColor color, int sides) {
+	public static void drawBox(AxisAlignedBB bb, boolean check, double height, GSColor color, int sides) {
 		if (check){
 			drawBox(bb.minX,bb.minY,bb.minZ,bb.maxX-bb.minX, bb.maxY-bb.minY,bb.maxZ-bb.minZ,color,sides);
 		}
