@@ -25,6 +25,7 @@ public class BreakESP extends Module {
     Setting.ColorSetting color;
     Setting.Integer range;
     Setting.Integer lineWidth;
+    public static Setting.Boolean cancelAnimation;
 
     public void setup() {
         ArrayList<String> renderTypes = new ArrayList<>();
@@ -35,6 +36,7 @@ public class BreakESP extends Module {
         renderType = registerMode("Render", "Render", renderTypes, "Both");
         lineWidth = registerInteger("Width", "Width", 1, 0, 5);
         range = registerInteger("Range", "Range", 100, 1, 200);
+        cancelAnimation = registerBoolean("No Animation", "NoAnimation", true);
         color = registerColor("Color", "Color", new GSColor(0, 255, 0, 255));
     }
 
