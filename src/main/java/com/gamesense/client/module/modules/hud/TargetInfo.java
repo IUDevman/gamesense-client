@@ -132,7 +132,7 @@ public class TargetInfo extends HUDModule {
                     context.getInterface().fillRect(new Rectangle(context.getPos().x + 32, context.getPos().y + 27, width, 15), distanceBox, distanceBox, distanceBox, distanceBox);
 
                     //player render
-                    //todo: this
+                    renderPlayerFace(context.getPos().x + 1, context.getPos().y + 12, 30, 30);
 
                     //health string
                     String health = "Health: " + healthVal;
@@ -145,6 +145,10 @@ public class TargetInfo extends HUDModule {
                     context.getInterface().drawString(new Point(context.getPos().x + 33, context.getPos().y + 29), distance, distanceColor);
                 }
             }
+        }
+
+        private void renderPlayerFace(int posX, int posY, int width, int height) {
+
         }
 
         @Override
