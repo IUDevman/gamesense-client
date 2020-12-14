@@ -25,6 +25,7 @@
 	"MixinBlockLiquid",
 	"MixinItemRenderer",
 	"MixinFontRenderer",
-	"MixinRenderGlobal"
+	"MixinRenderGlobal",
+	"MixinRenderLivingBase"
 ]
 }
