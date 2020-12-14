@@ -3,6 +3,7 @@ package com.gamesense.api.mixin.mixins;
 import com.gamesense.api.util.misc.Wrapper;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.render.NoRender;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -23,15 +24,14 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends 
         super(null);
     }
 
-    /**
-     * @author LinusTouchTips
-     */
+    protected final Minecraft mc = Minecraft.getMinecraft();
+
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     protected void renderModel(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, CallbackInfo callbackInfo) {
         if (!this.bindEntityTexture(entitylivingbaseIn))
             return;
 
-        if (NoRender.noCluster.getValue() && ModuleManager.getModuleByName("NoRender").isEnabled() && Wrapper.getPlayer().getDistance(entitylivingbaseIn) < 1)
+        if (NoRender.noCluster.getValue() && ModuleManager.getModuleByName("NoRender").isEnabled() && Wrapper.getPlayer().getDistance(entitylivingbaseIn) < 1 && entitylivingbaseIn != mc.player)
             GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
     }
 }
