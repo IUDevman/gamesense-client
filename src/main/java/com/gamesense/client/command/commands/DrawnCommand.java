@@ -32,11 +32,11 @@ public class DrawnCommand extends Command {
             if (module.getName().equalsIgnoreCase(main)){
                 if (module.isDrawn()){
                     module.setDrawn(false);
-                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + "drawn set to: FALSE!");
+                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + " drawn set to: FALSE!");
                 }
                 else if (!module.isDrawn()){
                     module.setDrawn(true);
-                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + "drawn set to: TRUE!");
+                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + " drawn set to: TRUE!");
                 }
             }
         }
