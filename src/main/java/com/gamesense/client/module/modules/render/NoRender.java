@@ -36,7 +36,7 @@ public class NoRender extends Module{
 		noSkylight = registerBoolean("Skylight", "Skylight", false);
 		noOverlay = registerBoolean("No Overlay", "NoOverlay", false); //need to make sure this works better
 		noBossBar = registerBoolean("No Boss Bar", "NoBossBar", false);
-		noCluster = registerBoolean("No Clusterr", "NoCluster", false);
+		noCluster = registerBoolean("No Cluster", "NoCluster", false);
 	}
 
 	public void onUpdate(){

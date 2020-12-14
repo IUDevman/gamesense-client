@@ -8,7 +8,9 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLivingBase;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * @author linustouchtips
@@ -21,8 +23,11 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends 
         super(null);
     }
 
-    @Overwrite
-    protected void renderModel(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    /**
+     * @author LinusTouchTips
+     */
+    @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
+    protected void renderModel(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, CallbackInfo callbackInfo) {
         if (!this.bindEntityTexture(entitylivingbaseIn))
             return;
 
