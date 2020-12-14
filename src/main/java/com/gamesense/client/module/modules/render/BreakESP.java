@@ -6,6 +6,7 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
@@ -49,6 +50,10 @@ public class BreakESP extends Module {
             if (destroyBlockProgress != null) {
 
                 BlockPos blockPos = destroyBlockProgress.getPosition();
+
+                if (mc.world.getBlockState(blockPos).getBlock() == Blocks.AIR) {
+                    return;
+                }
 
                 if (blockPos.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ) <= range.getValue()) {
 
