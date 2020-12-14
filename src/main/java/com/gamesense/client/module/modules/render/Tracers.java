@@ -100,11 +100,13 @@ public class Tracers extends Module {
 
 	public void drawLine1(double posx, double posy, double posz, double up, GSColor color){
 		Vec3d eyes=ActiveRenderInfo.getCameraPosition().add(mc.getRenderManager().viewerPosX,mc.getRenderManager().viewerPosY,mc.getRenderManager().viewerPosZ);
+		GameSenseTessellator.prepare();
 		if (pointsTo.getValue().equalsIgnoreCase("Head")) {
 			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy+up, posz, color);
 		} else {
 			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy, posz, color);
 		}
+		GameSenseTessellator.release();
 	}
 
 	private GSColor getDistanceColor(int distance) {
