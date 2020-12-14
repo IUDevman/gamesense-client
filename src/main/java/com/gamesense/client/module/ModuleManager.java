@@ -103,6 +103,7 @@ public class ModuleManager {
 		addMod(new PotionEffects());
 		addMod(new HUDModule(new TabGUIModule(),new Point(10,10)));
 		addMod(new TargetHUD());
+		addMod(new TargetInfo());
 		addMod(new TextRadar());
 		addMod(new Watermark());
 		addMod(new Welcomer());
