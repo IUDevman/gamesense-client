@@ -174,9 +174,9 @@ public class GameSenseTessellator {
 	}
 
 	public static void drawLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color){
-		GlStateManager.glLineWidth(1.0f);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		GlStateManager.glLineWidth(1.0f);
 		color.glColor();
 		bufferbuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
 		vertex(posx,posy,posz,bufferbuilder);

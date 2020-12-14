@@ -78,9 +78,7 @@ public class Tracers extends Module {
 							}
 						}
 					}
-					GlStateManager.pushMatrix();
 					drawLineToEntityPlayer(e, tracerColor);
-					GlStateManager.popMatrix();
 				});
 	}
 
