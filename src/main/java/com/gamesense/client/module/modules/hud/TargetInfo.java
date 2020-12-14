@@ -17,7 +17,6 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Comparator;
-import java.util.UUID;
 
 /**
  * @author Hoosiers
@@ -81,6 +80,12 @@ public class TargetInfo extends HUDModule {
         return new Color(red, green, 0, 100);
     }
 
+    public static EntityPlayer targetPlayer;
+
+    public static boolean isRenderingEntity(EntityPlayer entityPlayer) {
+        return targetPlayer == entityPlayer;
+    }
+
     private static class TargetInfoComponent extends HUDComponent {
 
         public TargetInfoComponent() {
@@ -132,8 +137,9 @@ public class TargetInfo extends HUDModule {
                     Color distanceBox = getDistanceColor(entityPlayer);
                     context.getInterface().fillRect(new Rectangle(context.getPos().x + 32, context.getPos().y + 27, width, 15), distanceBox, distanceBox, distanceBox, distanceBox);
 
-                    //player render
-                    renderPlayerFace(entityPlayer, context.getPos().x + 1, context.getPos().y + 12, 30, 30);
+                    //player model
+                    targetPlayer = entityPlayer;
+                    GameSenseGUI.renderEntity(entityPlayer, new Point(context.getPos().x + 17, context.getPos().y + 40), 15);
 
                     //health string
                     String health = "Health: " + healthVal;
@@ -146,14 +152,6 @@ public class TargetInfo extends HUDModule {
                     context.getInterface().drawString(new Point(context.getPos().x + 33, context.getPos().y + 29), distance, distanceColor);
                 }
             }
-        }
-
-        private void renderPlayerFace(EntityPlayer entityPlayer, int posX, int posY, int width, int height) {
-            UUID uuid = entityPlayer.getUniqueID();
-
-            //this link creates an 8x8 image of the players face
-            //documentation: https://crafatar.com/
-            String resourceLink = "https://crafatar.com/avatars/" + uuid + "?size=8";
         }
 
         @Override

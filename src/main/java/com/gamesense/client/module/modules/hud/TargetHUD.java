@@ -119,7 +119,7 @@ public class TargetHUD extends HUDModule {
 					context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x,context.getPos().y+context.getSize().height-1),new Dimension(context.getSize().width,1)),color,color,color,color);
 					// Render player
 					targetPlayer=entityPlayer;
-					GameSenseGUI.renderEntity(entityPlayer,new Point(context.getPos().x+35,context.getPos().y+87-(entityPlayer.isSneaking()?10:0)));
+					GameSenseGUI.renderEntity(entityPlayer,new Point(context.getPos().x+35,context.getPos().y+87-(entityPlayer.isSneaking()?10:0)), 43);
 					targetPlayer=null;
 					// Render name
 					String playerName = entityPlayer.getName();

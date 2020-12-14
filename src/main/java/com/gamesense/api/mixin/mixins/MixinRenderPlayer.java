@@ -2,6 +2,7 @@ package com.gamesense.api.mixin.mixins;
 
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.TargetHUD;
+import com.gamesense.client.module.modules.hud.TargetInfo;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,6 +19,10 @@ public abstract class MixinRenderPlayer {
 			callback.cancel();
 		}
 		if (ModuleManager.isModuleEnabled("TargetHUD") && TargetHUD.isRenderingEntity(entity)){
+			callback.cancel();
+		}
+
+		if (ModuleManager.isModuleEnabled("TargetInfo") && TargetInfo.isRenderingEntity(entity)){
 			callback.cancel();
 		}
 	}
