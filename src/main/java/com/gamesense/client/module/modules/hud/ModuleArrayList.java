@@ -35,7 +35,7 @@ public class ModuleArrayList extends ListModule {
     	for (Module module: ModuleManager.getModules()) {
     		if (module.isEnabled() && module.isDrawn()) list.activeModules.add(module);
     	}
-    	list.activeModules.sort(Comparator.comparing(module -> -GameSenseMod.getInstance().clickGUI.getFontWidth(module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo())));
+    	list.activeModules.sort(Comparator.comparing(module -> -GameSenseMod.getInstance().clickGUI.guiInterface.getFontWidth(module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo())));
     }
     
 

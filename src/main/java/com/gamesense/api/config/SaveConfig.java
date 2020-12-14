@@ -265,7 +265,7 @@ public class SaveConfig {
 
             Point pos;
             if (frame instanceof PositionConfig) pos=((PositionConfig) frame).getConfigPos();
-            else pos=frame.getPosition(gui);
+            else pos=frame.getPosition(gui.guiInterface);
             valueObject.add("PosX", new JsonPrimitive(pos.x));
             valueObject.add("PosY", new JsonPrimitive(pos.y));
             if (frame instanceof DraggableContainer) valueObject.add("State", new JsonPrimitive(((DraggableContainer)frame).isOn()));

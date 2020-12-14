@@ -328,7 +328,7 @@ public class LoadConfig {
                 point.y=panelPosYObject.getAsInt();
             }
             if (frames instanceof PositionConfig) ((PositionConfig) frames).setConfigPos(point);
-            else frames.setPosition(GameSenseMod.getInstance().clickGUI,point);
+            else frames.setPosition(GameSenseMod.getInstance().clickGUI.guiInterface,point);
 
             JsonElement panelOpenObject = panelObject2.get("State");
             if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()){

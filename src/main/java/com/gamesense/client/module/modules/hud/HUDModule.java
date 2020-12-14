@@ -24,6 +24,6 @@ public class HUDModule extends Module {
 	}
 	
 	public void resetPosition() {
-		component.setPosition(GameSenseMod.getInstance().clickGUI,position);
+		component.setPosition(GameSenseMod.getInstance().clickGUI.guiInterface,position);
 	}
 }

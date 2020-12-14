@@ -55,8 +55,7 @@ public class ClickGuiModule extends Module{
 	private ResourceLocation shader = new ResourceLocation("minecraft", "shaders/post/blur" + ".json");
 
 	public void onEnable(){
-		mc.displayGuiScreen(GameSenseMod.getInstance().clickGUI);
-		if (!GameSenseMod.getInstance().clickGUI.gui.isOn()) GameSenseMod.getInstance().clickGUI.gui.toggle();
+		GameSenseMod.getInstance().clickGUI.enterGUI();
 
 		if (backgroundBlur.getValue()) {
 			mc.entityRenderer.loadShader(shader);
