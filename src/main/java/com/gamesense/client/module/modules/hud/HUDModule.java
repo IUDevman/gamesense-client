@@ -9,15 +9,16 @@ import com.lukflug.panelstudio.FixedComponent;
 /**
  * @author lukflug
  */
-public class HUDModule extends Module {
-	protected final FixedComponent component;
-	protected final Point position;
+public abstract class HUDModule extends Module {
+	protected FixedComponent component;
+	protected Point position;
 	
-	public HUDModule (FixedComponent component, Point defaultPos) {
-		super(component.getTitle(),Category.HUD);
-		this.component=component;
-		this.position=defaultPos;
+	public HUDModule (String title, Point defaultPos) {
+		super(title,Category.HUD);
+		position=defaultPos;
 	}
+	
+	public abstract void populate();
 
 	public FixedComponent getComponent() {
 		return component;

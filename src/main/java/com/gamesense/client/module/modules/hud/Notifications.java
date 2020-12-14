@@ -10,14 +10,19 @@ import com.gamesense.api.settings.Setting;
 import net.minecraft.util.text.TextComponentString;
 
 // PanelStudio rewrite by lukflug
-public class Notifications extends ListModule {
+public class Notifications extends HUDModule {
 	private static Setting.Boolean sortUp;
 	private static Setting.Boolean sortRight;
 	public static Setting.Boolean disableChat;
 	private static NotificationsList list=new NotificationsList();
 	
 	public Notifications(){
-		super(new ListModule.ListComponent("Notifications",new Point(0,50),list),new Point(0,50));
+		super("Notifications",new Point(0,50));
+	}
+	
+	@Override
+	public void populate() {
+		component=new ListModule.ListComponent(getName(),position,list);
 	}
 
 	public void setup() {

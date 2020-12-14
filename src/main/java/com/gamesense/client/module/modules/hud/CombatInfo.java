@@ -20,15 +20,17 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
-public class CombatInfo extends ListModule {
-    private static Setting.Mode infoType;
-    private static Setting.ColorSetting color1;
-    private static Setting.ColorSetting color2;
-    private static InfoList list=new InfoList();
+public class CombatInfo extends HUDModule {
+    private Setting.Mode infoType;
+    private Setting.ColorSetting color1;
+    private Setting.ColorSetting color2;
+    private InfoList list=new InfoList();
     private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};;
+	private static final String[] hoosiersModules={"AutoCrystalGS","KillAura","Surround","AutoTrap","SelfTrap"};
+	private static final String[] hoosiersNames={"AC","KA","SU","AT","ST"};
 	
     public CombatInfo() {
-    	super(new ListModule.ListComponent("CombatInfo",new Point(0,150),list),new Point(0,150));
+    	super("CombatInfo",new Point(0,150));
     }
 
     public void setup() {
@@ -38,6 +40,11 @@ public class CombatInfo extends ListModule {
         infoType = registerMode("Type", "Type", infoTypes, "Hoosiers");
         color1 = registerColor("On","On", new GSColor(0, 255, 0, 255));
         color2 = registerColor("Off", "Off", new GSColor(255, 0, 0, 255));
+    }
+    
+    @Override
+    public void populate() {
+    	component=new ListModule.ListComponent(getName(),position,list);
     }
 
     public void onRender() {
@@ -91,9 +98,7 @@ public class CombatInfo extends ListModule {
     }
     
     
-    private static class InfoList implements ListModule.HUDList {
-		private static final String[] hoosiersModules={"AutoCrystalGS","KillAura","Surround","AutoTrap","SelfTrap"};
-		private static final String[] hoosiersNames={"AC","KA","SU","AT","ST"};
+    private class InfoList implements ListModule.HUDList {
 		public int totems=0;
 		public EntityOtherPlayerMP players=null;
 		public boolean renderLby=false;

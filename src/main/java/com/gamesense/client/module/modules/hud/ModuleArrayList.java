@@ -14,20 +14,25 @@ import com.gamesense.client.module.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 // PanelStudio rewrite by lukflug
-public class ModuleArrayList extends ListModule {
-    private static Setting.Boolean sortUp;
-    private static Setting.Boolean sortRight;
-    private static Setting.ColorSetting color;
-	private static ModuleList list=new ModuleList();
+public class ModuleArrayList extends HUDModule {
+    private Setting.Boolean sortUp;
+    private Setting.Boolean sortRight;
+    private Setting.ColorSetting color;
+	private ModuleList list=new ModuleList();
 
     public ModuleArrayList(){
-    	super(new ListModule.ListComponent("ArrayList",new Point(0,200),list),new Point(0,200));
+    	super("ArrayList",new Point(0,200));
     }
 
     public void setup(){
         sortUp = registerBoolean("Sort Up", "SortUp", true);
         sortRight = registerBoolean("Sort Right", "SortRight", false);
         color = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
+    }
+    
+    @Override
+    public void populate() {
+    	component=new ListModule.ListComponent("ArrayList",position,list);
     }
 
     public void onRender(){
@@ -39,7 +44,7 @@ public class ModuleArrayList extends ListModule {
     }
     
 
-    private static class ModuleList implements ListModule.HUDList {
+    private class ModuleList implements ListModule.HUDList {
 		public List<Module> activeModules=new ArrayList<Module>();
 		
 		@Override

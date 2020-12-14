@@ -16,7 +16,6 @@ import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.hud.HUDModule;
-import com.gamesense.client.module.modules.hud.TabGUIModule;
 import com.lukflug.panelstudio.CollapsibleContainer;
 import com.lukflug.panelstudio.DraggableContainer;
 import com.lukflug.panelstudio.FixedComponent;
@@ -93,10 +92,10 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 		
 		for (Module module: ModuleManager.getModules()) {
 			if (module instanceof HUDModule) {
+				((HUDModule)module).populate();
 				gui.addHUDComponent(new GameSenseHUDPanel(((HUDModule)module).getComponent(),module));
 			}
 		}
-		TabGUIModule.populate();
 		Point pos=new Point(DISTANCE,DISTANCE);
 		for (Module.Category category: Module.Category.values()) {
 			DraggableContainer panel=new DraggableContainer(category.name(),theme.getPanelRenderer(),new SimpleToggleable(false),new SettingsAnimation(ClickGuiModule.animationSpeed),new Point(pos),WIDTH) {

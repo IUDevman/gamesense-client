@@ -18,11 +18,16 @@ import net.minecraft.util.NonNullList;
 
 // PanelStudio rewrite by lukflug
 public class InventoryViewer extends HUDModule {
-	private static Setting.ColorSetting fillColor;
-    private static Setting.ColorSetting outlineColor;
+	private Setting.ColorSetting fillColor;
+    private Setting.ColorSetting outlineColor;
     
     public InventoryViewer() {
-    	super(new InventoryViewerComponent(),new Point(0,10));
+    	super("InventoryViewer",new Point(0,10));
+    }
+    
+    @Override
+    public void populate() {
+    	component=new InventoryViewerComponent();
     }
 
     public void setup() {
@@ -31,9 +36,9 @@ public class InventoryViewer extends HUDModule {
     }
     
     
-    private static class InventoryViewerComponent extends HUDComponent {
+    private class InventoryViewerComponent extends HUDComponent {
 		public InventoryViewerComponent() {
-			super("InventoryViewer",GameSenseGUI.theme.getPanelRenderer(),new Point(0,10));
+			super(getName(),GameSenseGUI.theme.getPanelRenderer(),InventoryViewer.this.position);
 		}
 		
 		@Override

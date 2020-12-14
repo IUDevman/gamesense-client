@@ -1,6 +1,5 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
 import java.awt.Point;
 
 import org.lwjgl.input.Keyboard;
@@ -16,69 +15,33 @@ import com.lukflug.panelstudio.tabgui.TabGUI;
 import com.lukflug.panelstudio.tabgui.TabGUIContainer;
 import com.lukflug.panelstudio.tabgui.TabGUIItem;
 import com.lukflug.panelstudio.tabgui.TabGUIRenderer;
-import com.lukflug.panelstudio.theme.ColorScheme;
+import com.lukflug.panelstudio.theme.SettingsColorScheme;
 
 /**
  * @author lukflug
  */
-public class TabGUIModule extends TabGUI {
-	private static TabGUIModule instance;
-	private static final TabGUIRenderer renderer=new DefaultRenderer(new GameSenseScheme(),GameSenseGUI.HEIGHT,5,Keyboard.KEY_UP,Keyboard.KEY_DOWN,Keyboard.KEY_LEFT,Keyboard.KEY_RIGHT,Keyboard.KEY_RETURN);
+public class TabGUIModule extends HUDModule {
 	
 	public TabGUIModule() {
-		super("TabGUI",renderer,new Animation() {
+		super ("TabGUI",new Point(GameSenseGUI.DISTANCE,GameSenseGUI.DISTANCE));
+	}
+	
+	@Override
+	public void populate() {
+		TabGUIRenderer renderer=new DefaultRenderer(new SettingsColorScheme(ClickGuiModule.enabledColor,ClickGuiModule.backgroundColor,ClickGuiModule.settingBackgroundColor,ClickGuiModule.backgroundColor,ClickGuiModule.fontColor,ClickGuiModule.opacity),GameSenseGUI.HEIGHT,5,Keyboard.KEY_UP,Keyboard.KEY_DOWN,Keyboard.KEY_LEFT,Keyboard.KEY_RIGHT,Keyboard.KEY_RETURN);
+		TabGUI component=new TabGUI("TabGUI",renderer,new Animation() {
 			@Override
 			protected int getSpeed() {
 				return ClickGuiModule.animationSpeed.getValue();
 			}
-		},new Point(GameSenseGUI.DISTANCE,GameSenseGUI.DISTANCE),75);
-		instance=this;
-	}
-	
-	private void reset() {
-		components.clear();
-	}
-	
-	public static void populate() {
-		instance.reset();
+		},position,75);
 		for (Module.Category category: Module.Category.values()) {
 			TabGUIContainer tab=new TabGUIContainer(category.name(),renderer,new SettingsAnimation(ClickGuiModule.animationSpeed));
-			instance.addComponent(tab);
+			component.addComponent(tab);
 			for (Module module: ModuleManager.getModulesInCategory(category)) {
 				tab.addComponent(new TabGUIItem(module.getName(),module));
 			}
 		}
-	}
-	
-	private static class GameSenseScheme implements ColorScheme {
-		@Override
-		public Color getActiveColor() {
-			return ClickGuiModule.enabledColor.getValue();
-		}
-
-		@Override
-		public Color getInactiveColor() {
-			return ClickGuiModule.backgroundColor.getValue();
-		}
-
-		@Override
-		public Color getBackgroundColor() {
-			return ClickGuiModule.settingBackgroundColor.getValue();
-		}
-
-		@Override
-		public Color getOutlineColor() {
-			return ClickGuiModule.backgroundColor.getValue();
-		}
-
-		@Override
-		public Color getFontColor() {
-			return ClickGuiModule.fontColor.getValue();
-		}
-
-		@Override
-		public int getOpacity() {
-			return ClickGuiModule.opacity.getValue();
-		}
+		this.component=component;
 	}
 }

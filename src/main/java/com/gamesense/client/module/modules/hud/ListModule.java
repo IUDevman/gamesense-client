@@ -6,19 +6,13 @@ import java.awt.Point;
 import com.gamesense.api.config.PositionConfig;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.lukflug.panelstudio.Context;
-import com.lukflug.panelstudio.FixedComponent;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
 
 /**
  * @author lukflug
  */
-public class ListModule extends HUDModule {
-	public ListModule(FixedComponent component, Point defaultPos) {
-		super(component,defaultPos);
-	}
-
-	
+public class ListModule {
 	protected static interface HUDList {
 		public int getSize();
 		public String getItem (int index);
