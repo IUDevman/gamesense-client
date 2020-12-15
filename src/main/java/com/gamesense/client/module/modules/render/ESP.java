@@ -14,6 +14,7 @@ import net.minecraft.entity.item.*;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.*;
 
@@ -63,7 +64,7 @@ public class ESP extends Module {
                 GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);
             }
             if (mobRender.getValue()){
-                if (entity instanceof EntityCreature || entity instanceof EntitySlime){
+                if (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid){
                     GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mobColor);
                 }
             }
@@ -130,7 +131,7 @@ public class ESP extends Module {
         if (entity instanceof EntityMob){
             mobColor = new GSColor(255, 0, 0, opacityGradient);
         }
-        else if (entity instanceof EntityAnimal){
+        else if (entity instanceof EntityAnimal || entity instanceof EntitySquid){
             mobColor = new GSColor(0, 255, 0, opacityGradient);
         }
         else {
