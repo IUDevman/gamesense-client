@@ -136,8 +136,8 @@ public class Radar extends HUDModule {
                 return;
             }
 
-            context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + 1 + distanceX, context.getPos().y + distanceToCenter + distanceY), new Point(context.getPos().x + distanceToCenter - 1 + distanceX, context.getPos().y + distanceToCenter + distanceY), color, color);
-            context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + distanceX, context.getPos().y + distanceToCenter + 1 + distanceY), new Point(context.getPos().x + distanceToCenter + distanceX, context.getPos().y + distanceToCenter -1 + distanceY), color, color);
+            context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + 1 - distanceX, context.getPos().y + distanceToCenter + distanceY), new Point(context.getPos().x + distanceToCenter - 1 - distanceX, context.getPos().y + distanceToCenter + distanceY), color, color);
+            context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter - distanceX, context.getPos().y + distanceToCenter + 1 + distanceY), new Point(context.getPos().x + distanceToCenter - distanceX, context.getPos().y + distanceToCenter - 1 + distanceY), color, color);
         }
 
         private int findDistanceByPoint(double start, double finish) {
