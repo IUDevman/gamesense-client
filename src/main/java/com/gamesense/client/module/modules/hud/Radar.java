@@ -16,6 +16,7 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -119,11 +120,23 @@ public class Radar extends HUDModule {
                 context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x,context.getPos().y+context.getSize().height-1),new Dimension(context.getSize().width,1)),outline,outline,outline,outline);
 
                 //self
+                boolean isNorth = isFacing(EnumFacing.NORTH);
+                boolean isSouth = isFacing(EnumFacing.SOUTH);
+                boolean isEast = isFacing(EnumFacing.EAST);
+                boolean isWest = isFacing(EnumFacing.WEST);
+
                 Color selfColor = new Color(255, 255, 255, 255);
                 int distanceToCenter = context.getSize().height / 2;
-                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + 3, context.getPos().y + distanceToCenter), new Point(context.getPos().x + distanceToCenter - 3, context.getPos().y + distanceToCenter), selfColor, selfColor);
-                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter + 3), new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter -3), selfColor, selfColor);
+                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + 3, context.getPos().y + distanceToCenter), new Point(context.getPos().x + distanceToCenter + (isEast ? 1 : 0), context.getPos().y + distanceToCenter), isEast ? outline : selfColor, isEast ? outline : selfColor);
+                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter + 3), new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter + (isSouth ? 1 : 0)), isSouth ? outline : selfColor, isSouth ? outline : selfColor);
+                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter - (isWest ? 1 : 0), context.getPos().y + distanceToCenter), new Point(context.getPos().x + distanceToCenter - 3, context.getPos().y + distanceToCenter), isWest ? outline : selfColor, isWest ? outline : selfColor);
+                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter - (isNorth ? 1 : 0)), new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter -3), isNorth ? outline : selfColor, isNorth ? outline : selfColor);
+
             }
+        }
+
+        private boolean isFacing(EnumFacing enumFacing) {
+            return mc.player.getHorizontalFacing().equals(enumFacing);
         }
 
         private void renderEntityPoint(Entity entity, Color color, Context context) {
