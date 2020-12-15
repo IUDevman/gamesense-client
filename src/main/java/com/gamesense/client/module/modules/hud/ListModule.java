@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Point;
 
 import com.gamesense.api.config.PositionConfig;
-import com.gamesense.client.clickgui.GameSenseGUI;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
+import com.lukflug.panelstudio.theme.Theme;
 
 /**
  * @author lukflug
@@ -26,8 +26,8 @@ public class ListModule {
 		protected HUDList list;
 		protected boolean lastUp=false;
 		
-		public ListComponent (String name, Point position, HUDList list) {
-			super(name,GameSenseGUI.theme.getPanelRenderer(),position);
+		public ListComponent (String name, Theme theme, Point position, HUDList list) {
+			super(name,theme.getPanelRenderer(),position);
 			this.list=list;
 		}
 

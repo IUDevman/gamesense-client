@@ -5,6 +5,7 @@ import java.awt.Point;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
+import com.lukflug.panelstudio.theme.Theme;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 import net.minecraft.client.resources.I18n;
@@ -29,8 +30,8 @@ public class PotionEffects extends HUDModule {
     }
     
     @Override
-    public void populate() {
-    	component=new ListModule.ListComponent("PotionEffects",position,list);
+    public void populate (Theme theme) {
+    	component=new ListModule.ListComponent(getName(),theme,position,list);
     }
     
     

@@ -17,6 +17,7 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
+import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -50,8 +51,8 @@ public class TargetHUD extends HUDModule {
     }
     
     @Override
-    public void populate() {
-    	component=new TargetHUDComponent();
+    public void populate (Theme theme) {
+    	component=new TargetHUDComponent(theme);
     }
 
     private static Color getNameColor(String playerName) {
@@ -96,8 +97,8 @@ public class TargetHUD extends HUDModule {
     
     
     private class TargetHUDComponent extends HUDComponent {
-		public TargetHUDComponent() {
-			super(getName(),GameSenseGUI.theme.getPanelRenderer(),TargetHUD.this.position);
+		public TargetHUDComponent (Theme theme) {
+			super(getName(),theme.getPanelRenderer(),TargetHUD.this.position);
 		}
 		
 		@Override

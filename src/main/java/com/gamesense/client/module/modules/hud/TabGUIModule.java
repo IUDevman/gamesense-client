@@ -16,6 +16,7 @@ import com.lukflug.panelstudio.tabgui.TabGUIContainer;
 import com.lukflug.panelstudio.tabgui.TabGUIItem;
 import com.lukflug.panelstudio.tabgui.TabGUIRenderer;
 import com.lukflug.panelstudio.theme.SettingsColorScheme;
+import com.lukflug.panelstudio.theme.Theme;
 
 /**
  * @author lukflug
@@ -27,7 +28,7 @@ public class TabGUIModule extends HUDModule {
 	}
 	
 	@Override
-	public void populate() {
+	public void populate (Theme theme) {
 		TabGUIRenderer renderer=new DefaultRenderer(new SettingsColorScheme(ClickGuiModule.enabledColor,ClickGuiModule.backgroundColor,ClickGuiModule.settingBackgroundColor,ClickGuiModule.backgroundColor,ClickGuiModule.fontColor,ClickGuiModule.opacity),GameSenseGUI.HEIGHT,5,Keyboard.KEY_UP,Keyboard.KEY_DOWN,Keyboard.KEY_LEFT,Keyboard.KEY_RIGHT,Keyboard.KEY_RETURN);
 		TabGUI component=new TabGUI("TabGUI",renderer,new Animation() {
 			@Override

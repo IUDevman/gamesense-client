@@ -9,6 +9,7 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
@@ -37,8 +38,8 @@ public class TextRadar extends HUDModule {
 	}
 	
 	@Override
-	public void populate() {
-		component=new ListModule.ListComponent(getName(),position,list);
+	public void populate (Theme theme) {
+		component=new ListModule.ListComponent(getName(),theme,position,list);
 	}
 
 	public void onRender() {

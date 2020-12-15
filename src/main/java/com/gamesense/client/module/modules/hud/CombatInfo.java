@@ -12,6 +12,7 @@ import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.combat.AutoCrystal;
+import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,8 +44,8 @@ public class CombatInfo extends HUDModule {
     }
     
     @Override
-    public void populate() {
-    	component=new ListModule.ListComponent(getName(),position,list);
+    public void populate (Theme theme) {
+    	component=new ListModule.ListComponent(getName(),theme,position,list);
     }
 
     public void onRender() {

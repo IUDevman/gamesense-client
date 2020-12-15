@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gamesense.api.settings.Setting;
+import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.util.text.TextComponentString;
 
@@ -19,16 +20,16 @@ public class Notifications extends HUDModule {
 	public Notifications(){
 		super("Notifications",new Point(0,50));
 	}
-	
-	@Override
-	public void populate() {
-		component=new ListModule.ListComponent(getName(),position,list);
-	}
 
 	public void setup() {
 		sortUp = registerBoolean("Sort Up", "SortUp", false);
 		sortRight = registerBoolean("Sort Right", "SortRight", false);
 		disableChat = registerBoolean("No Chat Msg", "NoChatMsg", true);
+	}
+	
+	@Override
+	public void populate (Theme theme) {
+		component=new ListModule.ListComponent(getName(),theme,position,list);
 	}
 
 	private static int waitCounter;

@@ -11,6 +11,7 @@ import com.gamesense.client.clickgui.GameSenseGUI;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
+import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -24,21 +25,21 @@ public class InventoryViewer extends HUDModule {
     public InventoryViewer() {
     	super("InventoryViewer",new Point(0,10));
     }
-    
-    @Override
-    public void populate() {
-    	component=new InventoryViewerComponent();
-    }
 
     public void setup() {
         fillColor = registerColor("Fill", "Fill", new GSColor(0, 0, 0, 100));
         outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
     }
     
+    @Override
+    public void populate (Theme theme) {
+    	component=new InventoryViewerComponent(theme);
+    }
+    
     
     private class InventoryViewerComponent extends HUDComponent {
-		public InventoryViewerComponent() {
-			super(getName(),GameSenseGUI.theme.getPanelRenderer(),InventoryViewer.this.position);
+		public InventoryViewerComponent (Theme theme) {
+			super(getName(),theme.getPanelRenderer(),InventoryViewer.this.position);
 		}
 		
 		@Override

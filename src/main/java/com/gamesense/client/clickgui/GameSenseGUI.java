@@ -30,8 +30,8 @@ import com.lukflug.panelstudio.settings.NumberComponent;
 import com.lukflug.panelstudio.settings.SimpleToggleable;
 import com.lukflug.panelstudio.settings.Toggleable;
 import com.lukflug.panelstudio.settings.ToggleableContainer;
-import com.lukflug.panelstudio.theme.ColorScheme;
 import com.lukflug.panelstudio.theme.GameSenseTheme;
+import com.lukflug.panelstudio.theme.SettingsColorScheme;
 import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.client.Minecraft;
@@ -46,9 +46,10 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 	private final Toggleable colorToggle;
 	public final GUIInterface guiInterface;
 	public final HUDClickGUI gui;
-	public static final Theme theme=new GameSenseTheme(new GameSenseScheme(),HEIGHT,2);
+	private final Theme theme;
 	
 	public GameSenseGUI() {
+		theme=new GameSenseTheme(new SettingsColorScheme(ClickGuiModule.enabledColor,ClickGuiModule.backgroundColor,ClickGuiModule.settingBackgroundColor,ClickGuiModule.outlineColor,ClickGuiModule.fontColor,ClickGuiModule.opacity),HEIGHT,2);
 		colorToggle=new Toggleable() {
 			@Override
 			public void toggle() {
@@ -92,7 +93,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 		
 		for (Module module: ModuleManager.getModules()) {
 			if (module instanceof HUDModule) {
-				((HUDModule)module).populate();
+				((HUDModule)module).populate(theme);
 				gui.addHUDComponent(new GameSenseHUDPanel(((HUDModule)module).getComponent(),module));
 			}
 		}
@@ -243,38 +244,5 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				setPosition(guiInterface,pos);
 			}
 		}
-	}
-	
-	
-	public static class GameSenseScheme implements ColorScheme {
-		@Override
-		public Color getActiveColor() {
-			return ClickGuiModule.enabledColor.getValue();
-		}
-
-		@Override
-		public Color getInactiveColor() {
-			return ClickGuiModule.backgroundColor.getValue();
-		}
-
-		@Override
-		public Color getBackgroundColor() {
-			return ClickGuiModule.settingBackgroundColor.getValue();
-		}
-
-		@Override
-		public Color getOutlineColor() {
-			return ClickGuiModule.outlineColor.getValue();
-		}
-
-		@Override
-		public Color getFontColor() {
-			return ClickGuiModule.fontColor.getValue();
-		}
-
-		@Override
-		public int getOpacity() {
-			return ClickGuiModule.opacity.getValue();
-		}		
 	}
 }

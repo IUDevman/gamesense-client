@@ -5,6 +5,7 @@ import java.awt.Point;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.FixedComponent;
+import com.lukflug.panelstudio.theme.Theme;
 
 /**
  * @author lukflug
@@ -18,7 +19,7 @@ public abstract class HUDModule extends Module {
 		position=defaultPos;
 	}
 	
-	public abstract void populate();
+	public abstract void populate (Theme theme);
 
 	public FixedComponent getComponent() {
 		return component;
