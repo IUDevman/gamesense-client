@@ -33,11 +33,11 @@ public class Radar extends HUDModule {
         super(new RadarComponent(), new Point(0, 300));
     }
 
-    public static Setting.Boolean renderPlayer;
-    public static Setting.Boolean renderMobs;
-    public static Setting.ColorSetting playerColor;
-    public static Setting.ColorSetting outlineColor;
-    public static Setting.ColorSetting fillColor;
+    private static Setting.Boolean renderPlayer;
+    private static Setting.Boolean renderMobs;
+    private static Setting.ColorSetting playerColor;
+    private static Setting.ColorSetting outlineColor;
+    private static Setting.ColorSetting fillColor;
 
     public void setup() {
         renderPlayer = registerBoolean("Player", "Player", true);
@@ -47,7 +47,7 @@ public class Radar extends HUDModule {
         fillColor = registerColor("Fill Color", "FillColor", new GSColor(0, 0, 0, 255));
     }
 
-    public static Color getPlayerColor(EntityPlayer entityPlayer) {
+    private static Color getPlayerColor(EntityPlayer entityPlayer) {
         if (Friends.isFriend(entityPlayer.getName())) {
             return new GSColor(ColorMain.getFriendGSColor(), 255);
         }
@@ -59,7 +59,7 @@ public class Radar extends HUDModule {
         }
     }
 
-    public static Color getEntityColor(Entity entity) {
+    private static Color getEntityColor(Entity entity) {
         if (entity instanceof EntityMob || entity instanceof EntitySlime) {
             return new GSColor(255, 0, 0, 255);
         }
@@ -136,25 +136,30 @@ public class Radar extends HUDModule {
                 return;
             }
 
-            context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + 1 - distanceX, context.getPos().y + distanceToCenter + distanceY), new Point(context.getPos().x + distanceToCenter - 1 - distanceX, context.getPos().y + distanceToCenter + distanceY), color, color);
-            context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter - distanceX, context.getPos().y + distanceToCenter + 1 + distanceY), new Point(context.getPos().x + distanceToCenter - distanceX, context.getPos().y + distanceToCenter - 1 + distanceY), color, color);
+            context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + 1 + distanceX, context.getPos().y + distanceToCenter + distanceY), new Point(context.getPos().x + distanceToCenter - 1 + distanceX, context.getPos().y + distanceToCenter + distanceY), color, color);
+            context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + distanceX, context.getPos().y + distanceToCenter + 1 + distanceY), new Point(context.getPos().x + distanceToCenter + distanceX, context.getPos().y + distanceToCenter - 1 + distanceY), color, color);
         }
 
+        //this allows for entities to be rendered north/south and east/west of the player (center) no matter the coordinates
         private int findDistanceByPoint(double start, double finish) {
-            int value = 0;
+            double start1 = start;
+            double finish1 = finish;
 
-            if (start >= 0) {
-                value += start;
+            if (start < 0) {
+                start1 = start * -1;
             }
-            else if (start < 0) {
-                value += -1 * start;
+            if (finish < 0) {
+                finish1 = finish * -1;
             }
 
-            if (finish >= 0) {
-                value -= finish;
+            int value = (int) (start1 - finish1);
+
+            if (start - finish != value && start > 0 && finish > 0) {
+                value = value * -1;
             }
-            else if (finish < 0) {
-                value -= -1 * finish;
+
+            if (start < 0 && finish > 0 && value != (start - finish) || start > 0 && finish < 0 && value != (start - finish)) {
+                value = (int) ((-1 * finish) + start);
             }
 
             return value;
