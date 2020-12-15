@@ -2,6 +2,7 @@ package com.gamesense.client;
 
 import java.awt.Font;
 
+import com.gamesense.api.util.misc.VersionChecker;
 import com.gamesense.client.command.CommandManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +37,7 @@ public class GameSenseMod{
 
 	public static final Logger log = LogManager.getLogger(MODNAME);
 
+	public VersionChecker versionChecker;
 	public EventProcessor eventProcessor;
 	public SaveConfig saveConfig;
 	public LoadConfig loadConfig;
@@ -62,6 +64,9 @@ public class GameSenseMod{
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
+		versionChecker = new VersionChecker();
+		log.info("Version checked!");
+
 		eventProcessor = new EventProcessor();
 		eventProcessor.init();
 		log.info("Events initialized!");
