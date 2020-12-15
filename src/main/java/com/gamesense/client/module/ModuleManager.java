@@ -101,6 +101,7 @@ public class ModuleManager {
 		addMod(new InventoryViewer());
 		addMod(new Notifications());
 		addMod(new PotionEffects());
+		addMod(new Radar());
 		addMod(new HUDModule(new TabGUIModule(),new Point(10,10)));
 		addMod(new TargetHUD());
 		addMod(new TargetInfo());
