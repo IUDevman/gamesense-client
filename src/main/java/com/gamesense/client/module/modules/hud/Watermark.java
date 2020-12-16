@@ -6,6 +6,8 @@ import java.awt.Point;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 
 // PanelStudio rewrite by lukflug
@@ -22,11 +24,11 @@ public class Watermark extends HUDModule {
 	
 	@Override
 	public void populate (Theme theme) {
-		component=new ListModule.ListComponent(getName(),theme,position,new WatermarkList());
+		component=new ListComponent(getName(),theme.getPanelRenderer(),position,new WatermarkList());
 	}
 	
 	
-	private class WatermarkList implements ListModule.HUDList {
+	private class WatermarkList implements HUDList {
 		@Override
 		public int getSize() {
 			return 1;

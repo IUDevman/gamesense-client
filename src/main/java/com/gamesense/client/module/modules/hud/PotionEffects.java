@@ -5,6 +5,8 @@ import java.awt.Point;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
@@ -31,11 +33,11 @@ public class PotionEffects extends HUDModule {
     
     @Override
     public void populate (Theme theme) {
-    	component=new ListModule.ListComponent(getName(),theme,position,list);
+    	component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
     }
     
     
-    private class PotionList implements ListModule.HUDList {
+    private class PotionList implements HUDList {
 		@Override
 		public int getSize() {
 			return mc.player.getActivePotionEffects().size();

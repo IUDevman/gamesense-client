@@ -11,6 +11,8 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
@@ -33,7 +35,7 @@ public class ModuleArrayList extends HUDModule {
     
     @Override
     public void populate (Theme theme) {
-    	component=new ListModule.ListComponent(getName(),theme,position,list);
+    	component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
     }
 
     public void onRender(){
@@ -45,7 +47,7 @@ public class ModuleArrayList extends HUDModule {
     }
     
 
-    private class ModuleList implements ListModule.HUDList {
+    private class ModuleList implements HUDList {
 		public List<Module> activeModules=new ArrayList<Module>();
 		
 		@Override

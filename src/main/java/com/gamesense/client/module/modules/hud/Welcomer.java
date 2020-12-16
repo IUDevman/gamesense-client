@@ -5,6 +5,8 @@ import java.awt.Point;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.client.Minecraft;
@@ -23,11 +25,11 @@ public class Welcomer extends HUDModule {
 
 	@Override
 	public void populate (Theme theme) {
-		component=new ListModule.ListComponent(getName(),theme,position,new WelcomerList());
+		component=new ListComponent(getName(),theme.getPanelRenderer(),position,new WelcomerList());
 	}
 	
 	
-	private class WelcomerList implements ListModule.HUDList {
+	private class WelcomerList implements HUDList {
 		@Override
 		public int getSize() {
 			return 1;

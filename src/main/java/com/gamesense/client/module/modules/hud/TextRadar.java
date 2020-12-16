@@ -9,6 +9,8 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,7 +41,7 @@ public class TextRadar extends HUDModule {
 	
 	@Override
 	public void populate (Theme theme) {
-		component=new ListModule.ListComponent(getName(),theme,position,list);
+		component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
 	}
 
 	public void onRender() {
@@ -62,7 +64,7 @@ public class TextRadar extends HUDModule {
 	}
 	
 	
-	private class PlayerList implements ListModule.HUDList {
+	private class PlayerList implements HUDList {
 		public List<EntityPlayer> players=new ArrayList<EntityPlayer>();
 		
 		@Override

@@ -12,6 +12,8 @@ import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.combat.AutoCrystal;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -45,7 +47,7 @@ public class CombatInfo extends HUDModule {
     
     @Override
     public void populate (Theme theme) {
-    	component=new ListModule.ListComponent(getName(),theme,position,list);
+    	component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
     }
 
     public void onRender() {
@@ -99,7 +101,7 @@ public class CombatInfo extends HUDModule {
     }
     
     
-    private class InfoList implements ListModule.HUDList {
+    private class InfoList implements HUDList {
 		public int totems=0;
 		public EntityOtherPlayerMP players=null;
 		public boolean renderLby=false;

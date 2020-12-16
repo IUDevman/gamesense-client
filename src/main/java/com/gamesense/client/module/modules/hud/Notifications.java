@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gamesense.api.settings.Setting;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.util.text.TextComponentString;
@@ -29,7 +31,7 @@ public class Notifications extends HUDModule {
 	
 	@Override
 	public void populate (Theme theme) {
-		component=new ListModule.ListComponent(getName(),theme,position,list);
+		component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
 	}
 
 	private static int waitCounter;
@@ -57,7 +59,7 @@ public class Notifications extends HUDModule {
 	}
 
 
-	private static class NotificationsList implements ListModule.HUDList {
+	private static class NotificationsList implements HUDList {
 		public List<TextComponentString> list = new ArrayList<>();
 		
 		@Override
