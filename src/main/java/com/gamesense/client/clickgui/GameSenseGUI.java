@@ -6,7 +6,6 @@ import java.awt.Point;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import com.gamesense.api.config.PositionConfig;
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
@@ -90,11 +89,21 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			}
 		};
 		gui=new HUDClickGUI(guiInterface);
+		Toggleable hudToggle=new Toggleable() {
+			@Override
+			public void toggle() {
+			}
+
+			@Override
+			public boolean isOn() {
+				return gui.isOn() && ClickGuiModule.showHUD.isOn();
+			}
+		};
 		
 		for (Module module: ModuleManager.getModules()) {
 			if (module instanceof HUDModule) {
 				((HUDModule)module).populate(theme);
-				gui.addHUDComponent(new GameSenseHUDPanel(((HUDModule)module).getComponent(),module));
+				gui.addHUDComponent(new HUDPanel(((HUDModule)module).getComponent(),theme.getPanelRenderer(),module,new SettingsAnimation(ClickGuiModule.animationSpeed),hudToggle,HUD_BORDER));
 			}
 		}
 		Point pos=new Point(DISTANCE,DISTANCE);
@@ -209,40 +218,5 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 	@Override
 	protected int getScrollSpeed() {
 		return ClickGuiModule.scrollSpeed.getValue();
-	}
-	
-	
-	private class GameSenseHUDPanel extends HUDPanel implements PositionConfig {
-		public GameSenseHUDPanel (FixedComponent component, Toggleable module) {
-			super(component,theme.getPanelRenderer(),module,new SettingsAnimation(ClickGuiModule.animationSpeed),new Toggleable() {
-				@Override
-				public void toggle() {
-				}
-	
-				@Override
-				public boolean isOn() {
-					return gui.isOn() && ClickGuiModule.showHUD.isOn();
-				}
-				
-			},HUD_BORDER);
-		}
-
-		@Override
-		public Point getConfigPos() {
-			if (component instanceof PositionConfig) {
-				return ((PositionConfig)component).getConfigPos();
-			} else {
-				return getPosition(guiInterface);
-			}
-		}
-
-		@Override
-		public void setConfigPos(Point pos) {
-			if (component instanceof PositionConfig) {
-				((PositionConfig)component).setConfigPos(pos);
-			} else {
-				setPosition(guiInterface,pos);
-			}
-		}
 	}
 }

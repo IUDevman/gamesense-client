@@ -1,7 +1,6 @@
 package com.gamesense.api.config;
 
 import java.awt.Font;
-import java.awt.Point;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,6 +12,7 @@ import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.clickgui.GuiConfig;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -22,8 +22,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.lukflug.panelstudio.DraggableContainer;
-import com.lukflug.panelstudio.FixedComponent;
 
 /**
  * @Author Hoosiers on 10/15/2020
@@ -298,46 +296,7 @@ public class LoadConfig {
     }
 
     public void loadClickGUIPositions() throws IOException {
-        String fileLocation = fileName + mainName;
-
-        if (!Files.exists(Paths.get(fileLocation + "ClickGUI" + ".json"))){
-            return;
-        }
-
-        InputStream inputStream = Files.newInputStream(Paths.get(fileLocation + "ClickGUI" + ".json"));
-        JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
-
-        if (mainObject.get("Panels") == null){
-            return;
-        }
-
-        JsonObject panelObject = mainObject.get("Panels").getAsJsonObject();
-        for (FixedComponent frames : GameSenseMod.getInstance().clickGUI.gui.getComponents()){
-            if (panelObject.get(frames.getTitle()) == null) continue;
-
-            JsonObject panelObject2 = panelObject.get(frames.getTitle()).getAsJsonObject();
-
-            Point point=new Point();
-            JsonElement panelPosXObject = panelObject2.get("PosX");
-            if (panelPosXObject != null && panelPosXObject.isJsonPrimitive()){
-                point.x=panelPosXObject.getAsInt();
-            }
-
-            JsonElement panelPosYObject = panelObject2.get("PosY");
-            if (panelPosYObject != null && panelPosYObject.isJsonPrimitive()){
-                point.y=panelPosYObject.getAsInt();
-            }
-            if (frames instanceof PositionConfig) ((PositionConfig) frames).setConfigPos(point);
-            else frames.setPosition(GameSenseMod.getInstance().clickGUI.guiInterface,point);
-
-            JsonElement panelOpenObject = panelObject2.get("State");
-            if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()){
-                if (frames instanceof DraggableContainer && panelOpenObject.getAsBoolean()) {
-                	if (!((DraggableContainer)frames).isOn()) ((DraggableContainer)frames).toggle();
-                }
-            }
-        }
-        inputStream.close();
+    	GameSenseMod.getInstance().clickGUI.gui.loadConfig(new GuiConfig(fileName+mainName));
     }
 
     public void loadAutoGG() throws IOException {

@@ -3,9 +3,9 @@ package com.gamesense.client.module.modules.hud;
 import java.awt.Color;
 import java.awt.Point;
 
-import com.gamesense.api.config.PositionConfig;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
+import com.lukflug.panelstudio.PanelConfig;
 import com.lukflug.panelstudio.hud.HUDComponent;
 import com.lukflug.panelstudio.theme.Theme;
 
@@ -22,7 +22,7 @@ public class ListModule {
 	}
 	
 	
-	protected static class ListComponent extends HUDComponent implements PositionConfig {
+	protected static class ListComponent extends HUDComponent {
 		protected HUDList list;
 		protected boolean lastUp=false;
 		
@@ -69,7 +69,7 @@ public class ListModule {
 		}
 
 		@Override
-		public int getWidth(Interface inter) {
+		public int getWidth (Interface inter) {
 			int width=inter.getFontWidth(getTitle());
 			for (int i=0;i<list.getSize();i++) {
 				String s=list.getItem(i);
@@ -79,19 +79,14 @@ public class ListModule {
 		}
 
 		@Override
-		public void getHeight(Context context) {
+		public void getHeight (Context context) {
 			context.setHeight(renderer.getHeight()+(list.getSize()-1)*context.getInterface().getFontHeight());
 		}
-
+		
 		@Override
-		public Point getConfigPos() {
-			return position;
-		}
-
-		@Override
-		public void setConfigPos(Point pos) {
-			position=pos;
-			lastUp=list.sortUp();
+		public void saveConfig (Interface inter, PanelConfig config) {
+			super.saveConfig(inter,config);
+			this.lastUp=list.sortUp();
 		}
 	}
 }
