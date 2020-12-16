@@ -140,8 +140,8 @@ public class Radar extends HUDModule {
         }
 
         private void renderEntityPoint(Entity entity, Color color, Context context) {
-            int distanceX = findDistanceByPoint(mc.player.posX, entity.posX);
-            int distanceY = findDistanceByPoint(mc.player.posZ, entity.posZ);
+            int distanceX = findDistance1D(mc.player.posX, entity.posX);
+            int distanceY = findDistance1D(mc.player.posZ, entity.posZ);
 
             int distanceToCenter = context.getSize().height / 2;
 
@@ -153,26 +153,29 @@ public class Radar extends HUDModule {
             context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + distanceX, context.getPos().y + distanceToCenter + 1 + distanceY), new Point(context.getPos().x + distanceToCenter + distanceX, context.getPos().y + distanceToCenter - 1 + distanceY), color, color);
         }
 
-        //this allows for entities to be rendered north/south and east/west of the player (center) no matter the coordinates
-        private int findDistanceByPoint(double start, double finish) {
-            double start1 = start;
-            double finish1 = finish;
+        private int findDistance1D(double player, double entity) {
+            double player1 = player;
+            double entity1 = entity;
 
-            if (start < 0) {
-                start1 = start * -1;
+            if (player1 < 0) {
+                player1 = player1 * -1;
             }
-            if (finish < 0) {
-                finish1 = finish * -1;
-            }
-
-            int value = (int) (start1 - finish1);
-
-            if (start - finish != value && start > 0 && finish > 0) {
-                value = value * -1;
+            if (entity1 < 0) {
+                entity1 = entity1 * -1;
             }
 
-            if (start < 0 && finish > 0 && value != (start - finish) || start > 0 && finish < 0 && value != (start - finish)) {
-                value = (int) ((-1 * finish) + start);
+            int value = (int) (entity1 - player1);
+
+            if (player > 0 && entity < 0 || player < 0 && entity > 0) {
+                value = (int) ((-1 * player) + entity);
+            }
+
+            if ((player > 0 || player < 0) && entity < 0 && entity1 != player1) {
+                value = (int) ((-1 * player) + entity);
+            }
+
+            if ((player < 0 && entity == 0) || (player == 0 && entity < 0)) {
+                value = (int) (-1 * (entity1 - player1));
             }
 
             return value;
