@@ -32,6 +32,9 @@ jobs:
     
     - name: Decomp Workspace
       run: ./gradlew setupDecompWorkspace
+
+    - name: Download PanelStudio-MC
+      run: ./gradlew unpackPanelstudio
     
     - name: Build
       run: ./gradlew build
