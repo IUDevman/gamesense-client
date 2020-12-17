@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = GameSenseMod.MODID, name = GameSenseMod.FORGENAME, version = GameSenseMod.MODVER, clientSideOnly = true)
-public class GameSenseMod{
+public class GameSenseMod {
 
 	public static final String MODID = "gamesense";
 	public static String MODNAME = "GameSense";
@@ -54,16 +54,17 @@ public class GameSenseMod{
 	@Mod.Instance
 	private static GameSenseMod INSTANCE;
 
-	public GameSenseMod(){
+	public GameSenseMod() {
 		INSTANCE = this;
 	}
 
 	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event){
+	public void preInit(FMLPreInitializationEvent event) {
+
 	}
 
 	@Mod.EventHandler
-	public void init(FMLInitializationEvent event){
+	public void init(FMLInitializationEvent event) {
 		versionChecker = new VersionChecker();
 		log.info("Version checked!");
 
@@ -99,7 +100,7 @@ public class GameSenseMod{
 	}
 
 	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event){
+	public void postInit(FMLPostInitializationEvent event) {
 		Display.setTitle(MODNAME + " " + MODVER);
 
 		capeUtils = new CapeUtils();
@@ -108,7 +109,7 @@ public class GameSenseMod{
 		log.info("PostInitialization complete!\n");
 	}
 
-	public static GameSenseMod getInstance(){
+	public static GameSenseMod getInstance() {
 		return INSTANCE;
 	}
 }
