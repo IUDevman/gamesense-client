@@ -132,8 +132,6 @@ jar {
 
 build.dependsOn(shadowJar)
 
-build.dependsOn(shadowJar)
-
 sourceSets {
 	main {
 		java {

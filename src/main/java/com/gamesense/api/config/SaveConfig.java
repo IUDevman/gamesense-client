@@ -250,7 +250,7 @@ public class SaveConfig {
 
     public void saveClickGUIPositions() throws IOException {
         registerFiles(mainName, "ClickGUI");
-		GameSenseMod.getInstance().clickGUI.gui.saveConfig(new GuiConfig(fileName+mainName));´
+		GameSenseMod.getInstance().clickGUI.gui.saveConfig(new GuiConfig(fileName+mainName));
     }
 
     public void saveAutoGG() throws IOException {
