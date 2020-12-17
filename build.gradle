@@ -71,11 +71,7 @@ dependencies {
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
 	compile group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
-	compile("com.lukflug:panelstudio") {
-		version {
-			branch='dev'
-		}
-	}
+	compile("com.lukflug:panelstudio:0.1.1")
 }
 
 processResources {
@@ -136,6 +132,8 @@ jar {
 
 build.dependsOn(shadowJar)
 
+build.dependsOn(shadowJar)
+
 sourceSets {
 	main {
 		java {
@@ -145,7 +143,11 @@ sourceSets {
 	}
 }
 
-task unpackPanelstudio(type: Copy) {
-    from zipTree("$projectDir/../PanelStudio/panelstudio-mc/build/libs/panelstudio-mc-0.1.0.jar")
+task downloadPanelstudio {
+	new URL("https://github.com/lukflug/PanelStudio/releases/download/v0.1.1/panelstudio-mc-0.1.1.jar").withInputStream{i->new File("${buildDir}/panelstudio-mc-0.1.1.jar").withOutputStream{it<<i}}
+}
+
+task unpackPanelstudio(dependsOn: downloadPanelstudio, type: Copy) {
+    from zipTree("${buildDir}/panelstudio-mc-0.1.1.jar")
     into "${buildDir}/panelstudio"
 }

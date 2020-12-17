@@ -1,5 +1,0 @@
-sourceControl {
-	gitRepository("https://github.com/lukflug/PanelStudio.git") {
-		producesModule("com.lukflug:panelstudio")
-	}
-}

@@ -21,7 +21,7 @@ import com.lukflug.panelstudio.PanelConfig;
 
 public class GuiConfig implements ConfigList {
 	private final String fileLocation;
-	private JsonObject panelObject;
+	private JsonObject panelObject=null;
 	
 	public GuiConfig (String fileLocation) {
 		this.fileLocation=fileLocation;
@@ -52,8 +52,8 @@ public class GuiConfig implements ConfigList {
 
 	@Override
 	public void end(boolean loading) {
-		if (loading) {
-		} else {
+		if (panelObject==null) return;
+		if (!loading) {
 	        try {
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileLocation + "ClickGUI" + ".json"), StandardCharsets.UTF_8);
@@ -66,10 +66,12 @@ public class GuiConfig implements ConfigList {
 				e.printStackTrace();
 			}
 		}
+		panelObject=null;
 	}
 
 	@Override
 	public PanelConfig addPanel(String title) {
+		if (panelObject==null) return null;
         JsonObject valueObject = new JsonObject();
         panelObject.add(title,valueObject);
         return new GSPanelConfig(valueObject);
@@ -77,6 +79,7 @@ public class GuiConfig implements ConfigList {
 
 	@Override
 	public PanelConfig getPanel(String title) {
+		if (panelObject==null) return null;
 		JsonElement configObject = panelObject.get(title);
 		if (configObject!=null && configObject.isJsonObject()) return new GSPanelConfig(configObject.getAsJsonObject());
 		return null;
