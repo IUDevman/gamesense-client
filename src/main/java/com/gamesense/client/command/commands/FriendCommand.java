@@ -28,7 +28,7 @@ public class FriendCommand extends Command {
             MessageBus.sendClientPrefixMessage("Added friend: " + value.toUpperCase() + "!");
         }
         else if (main.equalsIgnoreCase("del") && Friends.isFriend(value)){
-            Friends.addFriend(value);
+            Friends.delFriend(value);
             MessageBus.sendClientPrefixMessage("Deleted friend: " + value.toUpperCase() + "!");
         }
     }

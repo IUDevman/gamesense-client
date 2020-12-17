@@ -2,15 +2,16 @@ package com.gamesense.api.event.events;
 
 import com.gamesense.api.event.GameSenseEvent;
 
-public class RenderEvent extends GameSenseEvent{
-		private final float partialTicks;
+public class RenderEvent extends GameSenseEvent {
 
-		public RenderEvent(float ticks){
-			super();
-			partialTicks = ticks;
-		}
+	private final float partialTicks;
 
-		public float getPartialTicks(){
-			return partialTicks;
-		}
+	public RenderEvent(float partialTicks) {
+		super();
+		this.partialTicks = partialTicks;
+	}
+
+	public float getPartialTicks() {
+		return this.partialTicks;
+	}
 }

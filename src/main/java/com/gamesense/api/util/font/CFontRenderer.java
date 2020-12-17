@@ -25,19 +25,19 @@ public class CFontRenderer extends CFont {
 	}
 	String fontName = "Arial";
 	int fontSize = 18;
-	public String getFontName(){
-		return fontName;
+	public String getFontName() {
+		return this.fontName;
 	}
 
-	public int getFontSize(){
-		return fontSize;
+	public int getFontSize() {
+		return this.fontSize;
 	}
 
-	public void setFontName(String newName){
+	public void setFontName(String newName) {
 		fontName = newName;
 	}
 
-	public void setFontSize(int newSize){
+	public void setFontSize(int newSize) {
 		fontSize = newSize;
 	}
 
@@ -92,7 +92,9 @@ public class CFontRenderer extends CFont {
 					int colorIndex = 21;
 					try {
 						colorIndex = "0123456789abcdefklmnor".indexOf(text.charAt(i + 1));
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
+
 					}
 					if (colorIndex < 16) {
 						bold = false;
@@ -108,7 +110,10 @@ public class CFontRenderer extends CFont {
 						if (shadow) colorIndex += 16;
 						int colorcode = this.colorCode[colorIndex];
 						GlStateManager.color((colorcode >> 16 & 0xFF) / 255.0F, (colorcode >> 8 & 0xFF) / 255.0F, (colorcode & 0xFF) / 255.0F, color.getAlpha());
-					} else if (colorIndex == 16) randomCase = true;
+					}
+					else if (colorIndex == 16) {
+						randomCase = true;
+					}
 					else if (colorIndex == 17) {
 						bold = true;
 						if (italic) {
@@ -116,14 +121,20 @@ public class CFontRenderer extends CFont {
 							// GL11.glBindTexture(GL11.GL_TEXTURE_2D,
 							// texItalicBold.getGlTextureId());
 							currentData = this.boldItalicChars;
-						} else {
+						}
+						else {
 							GlStateManager.bindTexture(texBold.getGlTextureId());
 							// GL11.glBindTexture(GL11.GL_TEXTURE_2D,
 							// texBold.getGlTextureId());
 							currentData = this.boldChars;
 						}
-					} else if (colorIndex == 18) strikethrough = true;
-					else if (colorIndex == 19) underline = true;
+					}
+					else if (colorIndex == 18) {
+						strikethrough = true;
+					}
+					else if (colorIndex == 19) {
+						underline = true;
+					}
 					else if (colorIndex == 20) {
 						italic = true;
 						if (bold) {
@@ -131,13 +142,15 @@ public class CFontRenderer extends CFont {
 							// GL11.glBindTexture(GL11.GL_TEXTURE_2D,
 							// texItalicBold.getGlTextureId());
 							currentData = this.boldItalicChars;
-						} else {
+						}
+						else {
 							GlStateManager.bindTexture(texItalic.getGlTextureId());
 							// GL11.glBindTexture(GL11.GL_TEXTURE_2D,
 							// texItalic.getGlTextureId());
 							currentData = this.italicChars;
 						}
-					} else if (colorIndex == 21) {
+					}
+					else if (colorIndex == 21) {
 						bold = false;
 						italic = false;
 						randomCase = false;
@@ -150,7 +163,8 @@ public class CFontRenderer extends CFont {
 						currentData = this.charData;
 					}
 					i++;
-				} else if ((character < currentData.length) && (character >= 0)) {
+				}
+				else if ((character < currentData.length) && (character >= 0)) {
 					GlStateManager.glBegin(GL11.GL_TRIANGLES);
 					drawChar(currentData, character, (float) x, (float) y);
 					GlStateManager.glEnd();
@@ -183,25 +197,36 @@ public class CFontRenderer extends CFont {
 				if (colorIndex < 16) {
 					bold = false;
 					italic = false;
-				} else if (colorIndex == 17) {
+				}
+				else if (colorIndex == 17) {
 					bold = true;
-					if (italic) currentData = this.boldItalicChars;
-					else currentData = this.boldChars;
-				} else if (colorIndex == 20) {
+					if (italic) {
+						currentData = this.boldItalicChars;
+					}
+					else {
+						currentData = this.boldChars;
+					}
+				}
+				else if (colorIndex == 20) {
 					italic = true;
-					if (bold) currentData = this.boldItalicChars;
-					else currentData = this.italicChars;
-				} else if (colorIndex == 21) {
+					if (bold) {
+						currentData = this.boldItalicChars;
+					}
+					else {
+						currentData = this.italicChars;
+					}
+				}
+				else if (colorIndex == 21) {
 					bold = false;
 					italic = false;
 					currentData = this.charData;
 				}
 				i++;
-			} else if ((character < currentData.length) && (character >= 0)) {
+			}
+			else if ((character < currentData.length) && (character >= 0)) {
 				width += currentData[character].width - 8 + this.charOffset;
 			}
 		}
-
 		return width / 2;
 	}
 
@@ -225,17 +250,17 @@ public class CFontRenderer extends CFont {
 	protected DynamicTexture texItalicBold;
 
 	private void setupBoldItalicIDs() {
-		texBold = setupTexture(this.font.deriveFont(1), this.antiAlias, this.fractionalMetrics, this.boldChars);
-		texItalic = setupTexture(this.font.deriveFont(2), this.antiAlias, this.fractionalMetrics, this.italicChars);
-		texItalicBold = setupTexture(this.font.deriveFont(3), this.antiAlias, this.fractionalMetrics, this.boldItalicChars);
+		this.texBold = setupTexture(this.font.deriveFont(1), this.antiAlias, this.fractionalMetrics, this.boldChars);
+		this.texItalic = setupTexture(this.font.deriveFont(2), this.antiAlias, this.fractionalMetrics, this.italicChars);
+		this.texItalicBold = setupTexture(this.font.deriveFont(3), this.antiAlias, this.fractionalMetrics, this.boldItalicChars);
 	}
 
 	private void drawLine(double x, double y, double x1, double y1, float width) {
 		GlStateManager.disableTexture2D();
 		GlStateManager.glLineWidth(width);
 		GlStateManager.glBegin(GL11.GL_LINES);
-			GL11.glVertex2d(x, y);
-			GL11.glVertex2d(x1, y1);
+		GL11.glVertex2d(x, y);
+		GL11.glVertex2d(x1, y1);
 		GlStateManager.glEnd();
 		GlStateManager.enableTexture2D();
 	}
@@ -257,7 +282,8 @@ public class CFontRenderer extends CFont {
 				}
 				if (getStringWidth(currentWord + word + " ") < width) {
 					currentWord = currentWord + word + " ";
-				} else {
+				}
+				else {
 					finalWords.add(currentWord);
 					currentWord = "\u00A7" + lastColorCode + word + " ";
 				}
@@ -265,11 +291,14 @@ public class CFontRenderer extends CFont {
 			if (currentWord.length() > 0) if (getStringWidth(currentWord) < width) {
 				finalWords.add("\u00A7" + lastColorCode + currentWord + " ");
 				currentWord = "";
-			} else {
-				for (String s : formatString(currentWord, width))
-					finalWords.add(s);
 			}
-		} else {
+			else {
+				for (String s : formatString(currentWord, width)) {
+					finalWords.add(s);
+				}
+			}
+		}
+		else {
 			finalWords.add(text);
 		}
 		return finalWords;
@@ -289,7 +318,8 @@ public class CFontRenderer extends CFont {
 
 			if (getStringWidth(currentWord + c) < width) {
 				currentWord = currentWord + c;
-			} else {
+			}
+			else {
 				finalWords.add(currentWord);
 				currentWord = "\u00A7" + lastColorCode + c;
 			}
@@ -298,7 +328,6 @@ public class CFontRenderer extends CFont {
 		if (currentWord.length() > 0) {
 			finalWords.add(currentWord);
 		}
-
 		return finalWords;
 	}
 

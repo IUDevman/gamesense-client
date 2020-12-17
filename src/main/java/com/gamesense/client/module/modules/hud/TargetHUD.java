@@ -67,17 +67,19 @@ public class TargetHUD extends HUDModule {
         }
     }
 
-    private static Color getHealthColor(int health) {
-        if (health >= 15){
-            return new GSColor(0, 255, 0, 255);
-        }
-        else if (health >= 5 && health < 15){
-            return new GSColor(255, 255, 0, 255);
-        }
-        else {
-            return new GSColor(255, 0, 0, 255);
-        }
-    }
+	private static GSColor getHealthColor(int health) {
+		if (health > 36) {
+			health = 36;
+		}
+		if (health < 0) {
+			health = 0;
+		}
+
+		int red = (int) (255 - (health * 7.0833));
+		int green = 255 - red;
+
+		return new GSColor(red, green, 0, 255);
+	}
 
     private static boolean isValidEntity (Entity e){
     	if (!(e instanceof EntityPlayer)) return false;
@@ -123,7 +125,7 @@ public class TargetHUD extends HUDModule {
 					context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x,context.getPos().y+context.getSize().height-1),new Dimension(context.getSize().width,1)),color,color,color,color);
 					// Render player
 					targetPlayer=entityPlayer;
-					GameSenseGUI.renderEntity(entityPlayer,new Point(context.getPos().x+35,context.getPos().y+87-(entityPlayer.isSneaking()?10:0)));
+					GameSenseGUI.renderEntity(entityPlayer,new Point(context.getPos().x+35,context.getPos().y+87-(entityPlayer.isSneaking()?10:0)), 43);
 					targetPlayer=null;
 					// Render name
 					String playerName = entityPlayer.getName();

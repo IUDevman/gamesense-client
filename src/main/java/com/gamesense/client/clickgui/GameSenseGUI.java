@@ -187,7 +187,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 		GLInterface.begin();
 	}
 	
-	public static void renderEntity (EntityLivingBase entity, Point pos) {
+	public static void renderEntity (EntityLivingBase entity, Point pos, int scale) {
 		GlStateManager.enableTexture2D();
 		GlStateManager.depthMask(true);
 		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
@@ -198,7 +198,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 		GlStateManager.disableAlpha();
         GlStateManager.pushMatrix();
         GlStateManager.color(1,1,1,1);
-        GuiInventory.drawEntityOnScreen(pos.x,pos.y,43,28,60,entity);
+        GuiInventory.drawEntityOnScreen(pos.x,pos.y,scale,28,60,entity);
         GlStateManager.popMatrix();
 		GlStateManager.disableDepth();
 		GlStateManager.depthMask(false);

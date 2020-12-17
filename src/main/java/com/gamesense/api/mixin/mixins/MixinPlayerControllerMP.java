@@ -15,19 +15,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerControllerMP.class)
-public class MixinPlayerControllerMP{
+public class MixinPlayerControllerMP {
 
 	@Inject(method = "onPlayerDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playEvent(ILnet/minecraft/util/math/BlockPos;I)V"), cancellable = true)
-	private void onPlayerDestroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> info){
+	private void onPlayerDestroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
 		GameSenseMod.EVENT_BUS.post(new DestroyBlockEvent(pos));
 	}
 
 	@Inject(method = "onPlayerDamageBlock(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;)Z", at = @At("HEAD"), cancellable = true)
-	private void onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing, CallbackInfoReturnable<Boolean> cir){
+	private void onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
 		DamageBlockEvent event = new DamageBlockEvent(posBlock, directionFacing);
 		GameSenseMod.EVENT_BUS.post(event);
-		if (event.isCancelled()){
-			cir.setReturnValue(false);
+		if (event.isCancelled()) {
+			callbackInfoReturnable.setReturnValue(false);
 		}
 	}
 
@@ -38,10 +38,11 @@ public class MixinPlayerControllerMP{
 		}
 	}
 
-	//credit cookiedragon234
+	//author cookiedragon234
 	@Inject(method = "resetBlockRemoving", at = @At("HEAD"), cancellable = true)
-	private void resetBlock(CallbackInfo ci){
-		if (ModuleManager.isModuleEnabled("MultiTask")) ci.cancel();
+	private void resetBlock(CallbackInfo callbackInfo) {
+		if (ModuleManager.isModuleEnabled("MultiTask")) {
+			callbackInfo.cancel();
+		}
 	}
 }
-

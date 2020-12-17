@@ -25,6 +25,7 @@ public class NoRender extends Module{
 	public Setting.Boolean noOverlay;
 	Setting.Boolean noBossBar;
 	public Setting.Boolean noSkylight;
+	public static Setting.Boolean noCluster;
 
 	public void setup(){
 		armor = registerBoolean("Armor", "Armor", false);
@@ -35,6 +36,7 @@ public class NoRender extends Module{
 		noSkylight = registerBoolean("Skylight", "Skylight", false);
 		noOverlay = registerBoolean("No Overlay", "NoOverlay", false); //need to make sure this works better
 		noBossBar = registerBoolean("No Boss Bar", "NoBossBar", false);
+		noCluster = registerBoolean("No Cluster", "NoCluster", false);
 	}
 
 	public void onUpdate(){

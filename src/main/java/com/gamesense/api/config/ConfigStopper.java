@@ -7,11 +7,11 @@ import java.io.IOException;
 public class ConfigStopper extends Thread {
 
     @Override
-    public void run(){
+    public void run() {
         saveConfig();
     }
 
-    public static void saveConfig(){
+    public static void saveConfig() {
         try {
             GameSenseMod.getInstance().saveConfig.saveConfig();
             GameSenseMod.getInstance().saveConfig.saveModules();

@@ -93,6 +93,7 @@ public class ModuleManager {
 	public ModuleManager(){
 		modules = new ArrayList<>();
 		//Combat
+		addMod(new AutoAnvil());
 		addMod(new AutoArmor());
 		addMod(new AutoCrystal());
 		addMod(new AutoTotem());
@@ -114,7 +115,7 @@ public class ModuleManager {
 		addMod(new NoInteract());
 		addMod(new NoSwing());
 		addMod(new Reach());
-		//addMod(new PacketXP());
+		addMod(new PacketXP());
 		addMod(new PortalGodMode());
 		//Movement
 		addMod(new Anchor());
@@ -144,6 +145,7 @@ public class ModuleManager {
 		addMod(new PvPInfo());
 		//Render
 		addMod(new BlockHighlight());
+		addMod(new BreakESP());
 		addMod(new CapesModule());
 		addMod(new CityESP());
 		addMod(new ESP());
@@ -167,8 +169,10 @@ public class ModuleManager {
 		addMod(new InventoryViewer());
 		addMod(new Notifications());
 		addMod(new PotionEffects());
+		addMod(new Radar());
 		addMod(new TabGUIModule());
 		addMod(new TargetHUD());
+		addMod(new TargetInfo());
 		addMod(new TextRadar());
 		addMod(new Watermark());
 		addMod(new Welcomer());

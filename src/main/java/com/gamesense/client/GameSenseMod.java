@@ -2,6 +2,7 @@ package com.gamesense.client;
 
 import java.awt.Font;
 
+import com.gamesense.api.util.misc.VersionChecker;
 import com.gamesense.client.command.CommandManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,15 +28,16 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = GameSenseMod.MODID, name = GameSenseMod.FORGENAME, version = GameSenseMod.MODVER, clientSideOnly = true)
-public class GameSenseMod{
+public class GameSenseMod {
 
 	public static final String MODID = "gamesense";
 	public static String MODNAME = "GameSense";
 	public static final String FORGENAME = "GameSense";
-	public static final String MODVER = "v2.2.3";
+	public static final String MODVER = "dev2.2.4";
 
 	public static final Logger log = LogManager.getLogger(MODNAME);
 
+	public VersionChecker versionChecker;
 	public EventProcessor eventProcessor;
 	public SaveConfig saveConfig;
 	public LoadConfig loadConfig;
@@ -52,16 +54,20 @@ public class GameSenseMod{
 	@Mod.Instance
 	private static GameSenseMod INSTANCE;
 
-	public GameSenseMod(){
+	public GameSenseMod() {
 		INSTANCE = this;
 	}
 
 	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event){
+	public void preInit(FMLPreInitializationEvent event) {
+
 	}
 
 	@Mod.EventHandler
-	public void init(FMLInitializationEvent event){
+	public void init(FMLInitializationEvent event) {
+		versionChecker = new VersionChecker();
+		log.info("Version checked!");
+
 		eventProcessor = new EventProcessor();
 		eventProcessor.init();
 		log.info("Events initialized!");
@@ -94,7 +100,7 @@ public class GameSenseMod{
 	}
 
 	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event){
+	public void postInit(FMLPostInitializationEvent event) {
 		Display.setTitle(MODNAME + " " + MODVER);
 
 		capeUtils = new CapeUtils();
@@ -103,7 +109,7 @@ public class GameSenseMod{
 		log.info("PostInitialization complete!\n");
 	}
 
-	public static GameSenseMod getInstance(){
+	public static GameSenseMod getInstance() {
 		return INSTANCE;
 	}
 }

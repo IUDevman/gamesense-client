@@ -13,36 +13,38 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** Check ViewModel.class for further credits **/
+/**
+ * Check ViewModel.class for further credits
+ */
 
 @Mixin(ItemRenderer.class)
-public class MixinItemRenderer{
+public class MixinItemRenderer {
 
 	@Inject(method = "transformSideFirstPerson", at = @At("HEAD"))
-	public void transformSideFirstPerson(EnumHandSide hand, float p_187459_2_, CallbackInfo ci){
+	public void transformSideFirstPerson(EnumHandSide hand, float p_187459_2_, CallbackInfo callbackInfo) {
 		TransformSideFirstPersonEvent event = new TransformSideFirstPersonEvent(hand);
 		GameSenseMod.EVENT_BUS.post(event);
 	}
 
 	@Inject(method = "transformEatFirstPerson", at = @At("HEAD"), cancellable = true)
-	public void transformEatFirstPerson(float p_187454_1_, EnumHandSide hand, ItemStack stack, CallbackInfo ci){
+	public void transformEatFirstPerson(float p_187454_1_, EnumHandSide hand, ItemStack stack, CallbackInfo callbackInfo) {
 		TransformSideFirstPersonEvent event = new TransformSideFirstPersonEvent(hand);
 		GameSenseMod.EVENT_BUS.post(event);
-		if (ModuleManager.isModuleEnabled("ViewModel") && ((ViewModel)ModuleManager.getModuleByName("ViewModel")).cancelEating.getValue()){
-			ci.cancel();
+		if (ModuleManager.isModuleEnabled("ViewModel") && ((ViewModel)ModuleManager.getModuleByName("ViewModel")).cancelEating.getValue()) {
+			callbackInfo.cancel();
 		}
 	}
 
 	@Inject(method = "transformFirstPerson", at = @At("HEAD"))
-	public void transformFirstPerson(EnumHandSide hand, float p_187453_2_, CallbackInfo ci){
+	public void transformFirstPerson(EnumHandSide hand, float p_187453_2_, CallbackInfo callbackInfo) {
 		TransformSideFirstPersonEvent event = new TransformSideFirstPersonEvent(hand);
 		GameSenseMod.EVENT_BUS.post(event);
 	}
 
 	@Inject(method = "renderOverlays", at = @At("HEAD"), cancellable = true)
-	public void renderOverlays(float partialTicks, CallbackInfo ci){
-		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noOverlay.getValue()){
-			ci.cancel();
+	public void renderOverlays(float partialTicks, CallbackInfo callbackInfo) {
+		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noOverlay.getValue()) {
+			callbackInfo.cancel();
 		}
 	}
 }

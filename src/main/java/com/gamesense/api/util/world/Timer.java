@@ -33,9 +33,7 @@ public class Timer{
 		return false;
 	}
 
-	public long time(){
+	public long time() {
 		return System.currentTimeMillis() - current;
 	}
 }
-
-
