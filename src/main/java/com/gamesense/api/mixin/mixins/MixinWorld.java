@@ -11,14 +11,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(World.class)
-public class MixinWorld{
+public class MixinWorld {
 
 	@Inject(method = "checkLightFor", at = @At("HEAD"), cancellable = true)
-	private void updateLightmapHook(EnumSkyBlock lightType, BlockPos pos, CallbackInfoReturnable<Boolean> info){
-		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noSkylight.getValue()){
-			if (lightType == EnumSkyBlock.SKY){
-				info.setReturnValue(true);
-				info.cancel();
+	private void updateLightmapHook(EnumSkyBlock lightType, BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noSkylight.getValue()) {
+			if (lightType == EnumSkyBlock.SKY) {
+				callbackInfoReturnable.setReturnValue(true);
+				callbackInfoReturnable.cancel();
 			}
 		}
 	}

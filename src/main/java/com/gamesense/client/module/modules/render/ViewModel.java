@@ -52,9 +52,9 @@ public class ViewModel extends Module{
 	@EventHandler
 	private final Listener<TransformSideFirstPersonEvent> eventListener = new Listener<>(event -> {
 		if (type.getValue().equalsIgnoreCase("Value") || type.getValue().equalsIgnoreCase("Both")) {
-			if (event.getHandSide() == EnumHandSide.RIGHT) {
+			if (event.getEnumHandSide() == EnumHandSide.RIGHT) {
 				GlStateManager.translate(xRight.getValue(), yRight.getValue(), zRight.getValue());
-			} else if (event.getHandSide() == EnumHandSide.LEFT) {
+			} else if (event.getEnumHandSide() == EnumHandSide.LEFT) {
 				GlStateManager.translate(xLeft.getValue(), yLeft.getValue(), zLeft.getValue());
 			}
 		}

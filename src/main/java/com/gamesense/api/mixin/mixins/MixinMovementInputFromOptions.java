@@ -13,14 +13,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = MovementInputFromOptions.class, priority = 10000)
-public abstract class MixinMovementInputFromOptions extends MovementInput{
+public abstract class MixinMovementInputFromOptions extends MovementInput {
 
 	@Redirect(method = "updatePlayerMoveState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/settings/KeyBinding;isKeyDown()Z"))
-	public boolean isKeyPressed(KeyBinding keyBinding){
+	public boolean isKeyPressed(KeyBinding keyBinding) {
 		if (ModuleManager.isModuleEnabled("PlayerTweaks") && ((PlayerTweaks)ModuleManager.getModuleByName("PlayerTweaks")).guiMove.getValue()
 				&& Minecraft.getMinecraft().currentScreen != null
 				&& !(Minecraft.getMinecraft().currentScreen instanceof GuiChat)
-				&& Minecraft.getMinecraft().player != null){
+				&& Minecraft.getMinecraft().player != null) {
 			return Keyboard.isKeyDown(keyBinding.getKeyCode());
 		}
 		return keyBinding.isKeyDown();

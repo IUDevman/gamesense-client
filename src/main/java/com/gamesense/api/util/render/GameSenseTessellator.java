@@ -22,7 +22,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-//Credit 086 for Kami base Tessellator, heavily rewrote/modified by lukflug and others
+/**
+ * @author 086
+ * @author Hoosiers
+ * @author lukflug
+ */
 
 public class GameSenseTessellator {
 	private static final Minecraft mc = Wrapper.getMinecraft();
@@ -32,7 +36,7 @@ public class GameSenseTessellator {
 	}
 
 	public static void drawBox(AxisAlignedBB bb, boolean check, double height, GSColor color, int sides) {
-		if (check){
+		if (check) {
 			drawBox(bb.minX,bb.minY,bb.minZ,bb.maxX-bb.minX, bb.maxY-bb.minY,bb.maxZ-bb.minZ,color,sides);
 		}
 		else {
@@ -113,12 +117,12 @@ public class GameSenseTessellator {
 		tessellator.draw();
 	}
 
-	public static void drawBoundingBoxWithSides(BlockPos blockPos, int width, GSColor color, int sides){
+	public static void drawBoundingBoxWithSides(BlockPos blockPos, int width, GSColor color, int sides) {
 		drawBoundingBoxWithSides(getBoundingBox(blockPos, 1, 1, 1), width, color, sides);
 	}
 
 	//hoosiers put this together with blood, sweat, and tears D:
-	public static void drawBoundingBoxWithSides(AxisAlignedBB axisAlignedBB, int width, GSColor color, int sides){
+	public static void drawBoundingBoxWithSides(AxisAlignedBB axisAlignedBB, int width, GSColor color, int sides) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		GlStateManager.glLineWidth(width);
@@ -173,7 +177,7 @@ public class GameSenseTessellator {
 		tessellator.draw();
 	}
 
-	public static void drawLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color){
+	public static void drawLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		GlStateManager.glLineWidth(1.0f);
@@ -201,7 +205,7 @@ public class GameSenseTessellator {
 
 	public static void drawNametag (double x, double y, double z, String[] text, GSColor color, int type) {
 		double dist=mc.player.getDistance(x,y,z);
-		double scale=1,offset=0;
+		double scale = 1, offset = 0;
 		int start=0;
 		switch (type) {
 			case 0:
@@ -227,23 +231,28 @@ public class GameSenseTessellator {
 		GlStateManager.rotate(-mc.getRenderManager().playerViewY,0,1,0);
 		GlStateManager.rotate(mc.getRenderManager().playerViewX,mc.gameSettings.thirdPersonView==2?-1:1,0,0);
 		GlStateManager.scale(-scale,-scale,scale);
-		if (type==2) {
-			double width=0;
-			GSColor bcolor=new GSColor(0,0,0,51);
-			if (Nametags.customColor.getValue()) bcolor=Nametags.borderColor.getValue();
-			for (int i=0;i<text.length;i++) {
-				double w=FontUtils.getStringWidth(ColorMain.customFont.getValue(),text[i])/2;
-				if (w>width) width=w;
+		if (type == 2) {
+			double width = 0;
+			GSColor bcolor = new GSColor(0,0,0,51);
+			if (Nametags.customColor.getValue()) {
+				bcolor = Nametags.borderColor.getValue();
 			}
-			drawBorderedRect(-width-1,-mc.fontRenderer.FONT_HEIGHT,width+2,1,1.8f,new GSColor(0,4,0,85), bcolor);
+			for (int i = 0; i < text.length; i++) {
+				double w=FontUtils.getStringWidth(ColorMain.customFont.getValue(),text[i])/2;
+				if (w > width) {
+					width = w;
+				}
+			}
+			drawBorderedRect(-width - 1, -mc.fontRenderer.FONT_HEIGHT, width + 2,1,1.8f, new GSColor(0,4,0,85), bcolor);
 		}
 		GlStateManager.enableTexture2D();
 		for (int i=0;i<text.length;i++) {
 			FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),text[i],-FontUtils.getStringWidth(ColorMain.customFont.getValue(),text[i])/2,i*(mc.fontRenderer.FONT_HEIGHT+1)+start,color);
 		}
 		GlStateManager.disableTexture2D();
-		// TODO CFontRenderer state leak exists. Fixing it breaks the GUI. Fixing it, will make disabling GL_TEXTURE_2D unnecessary.
-		if (type!=2) GlStateManager.popMatrix();
+		if (type!=2) {
+			GlStateManager.popMatrix();
+		}
 	}
 
 	private static void drawBorderedRect(double x, double y, double x1, double y1, float lineWidth, GSColor inside, GSColor border) {
@@ -278,7 +287,7 @@ public class GameSenseTessellator {
 		return new AxisAlignedBB(x,y,z,x+width,y+height,z+depth);
 	}
 
-	public static void draw2DRect(int posX, int posY, int width, int height, int zHeight,  GSColor color) {
+	public static void draw2DRect(int posX, int posY, int width, int height, int zHeight, GSColor color) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		GlStateManager.enableBlend();

@@ -14,16 +14,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinRenderPlayer {
 
 	@Inject(method = "renderEntityName", at = @At("HEAD"), cancellable = true)
-	private void renderLivingLabel(AbstractClientPlayer entity, double x, double y, double z, String name, double distanceSq, CallbackInfo callback){
-		if (ModuleManager.isModuleEnabled("Nametags")){
-			callback.cancel();
-		}
-		if (ModuleManager.isModuleEnabled("TargetHUD") && TargetHUD.isRenderingEntity(entity)){
-			callback.cancel();
+	private void renderLivingLabel(AbstractClientPlayer entity, double x, double y, double z, String name, double distanceSq, CallbackInfo callbackInfo) {
+		if (ModuleManager.isModuleEnabled("Nametags")) {
+			callbackInfo.cancel();
 		}
 
-		if (ModuleManager.isModuleEnabled("TargetInfo") && TargetInfo.isRenderingEntity(entity)){
-			callback.cancel();
+		if (ModuleManager.isModuleEnabled("TargetHUD") && TargetHUD.isRenderingEntity(entity)) {
+			callbackInfo.cancel();
+		}
+
+		if (ModuleManager.isModuleEnabled("TargetInfo") && TargetInfo.isRenderingEntity(entity)) {
+			callbackInfo.cancel();
 		}
 	}
 }

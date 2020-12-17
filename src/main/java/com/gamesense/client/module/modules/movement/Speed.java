@@ -16,10 +16,9 @@ import net.minecraft.init.MobEffects;
 import java.util.ArrayList;
 
 /**
- * Rewrote by Hoosiers on 11/1/2020
- *
  * @author Crystallinqq/Auto for original code
  * @source https://github.com/Crystallinqq/Mercury-Client/blob/master/src/main/java/fail/mercury/client/client/modules/movement/Speed.java
+ * @reworked by Hoosiers on 11/1/2020
  */
 
 public class Speed extends Module {

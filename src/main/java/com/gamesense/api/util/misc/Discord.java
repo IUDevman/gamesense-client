@@ -6,7 +6,8 @@ import club.minnced.discord.rpc.DiscordRichPresence;
 import com.gamesense.client.GameSenseMod;
 
 /**
- * @Author Hoosiers on 10/27/2020
+ * @author Hoosiers
+ * @since 10/27/2020
  */
 
 public class Discord {
@@ -17,7 +18,7 @@ public class Discord {
 
     private static String clientVersion = GameSenseMod.MODVER;
 
-    public static void startRPC(){
+    public static void startRPC() {
         DiscordEventHandlers eventHandlers = new DiscordEventHandlers();
         eventHandlers.disconnected = ((var1, var2) -> System.out.println("Discord RPC disconnected, var1: " + var1 + ", var2: " + var2));
 
@@ -31,7 +32,7 @@ public class Discord {
         discordRPC.Discord_UpdatePresence(discordRichPresence);
     }
 
-    public static void stopRPC(){
+    public static void stopRPC() {
         discordRPC.Discord_Shutdown();
         discordRPC.Discord_ClearPresence();
     }

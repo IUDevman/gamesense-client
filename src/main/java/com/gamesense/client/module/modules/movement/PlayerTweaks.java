@@ -19,7 +19,7 @@ public class PlayerTweaks extends Module{
 	}
 
 	public Setting.Boolean guiMove;
-	public Setting.Boolean noPush;
+	public static Setting.Boolean noPush;
 	public Setting.Boolean noSlow;
 	Setting.Boolean antiKnockBack;
 

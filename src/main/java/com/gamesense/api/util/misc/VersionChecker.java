@@ -87,8 +87,6 @@ public class VersionChecker {
 
         editorPane.setEditable(false);
         editorPane.setBackground(label.getBackground());
-
-        // show
         JOptionPane.showMessageDialog(null, editorPane, GameSenseMod.MODNAME + " " + GameSenseMod.MODVER, JOptionPane.WARNING_MESSAGE);
     }
 }

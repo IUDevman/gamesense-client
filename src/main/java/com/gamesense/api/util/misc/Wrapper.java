@@ -6,9 +6,12 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
-// Created by 086 on 11/11/2017.
+/**
+ * @author 086
+ * @on 11/11/2017
+ */
 
-public class Wrapper{
+public class Wrapper {
 
 	private static FontRenderer fontRenderer;
 

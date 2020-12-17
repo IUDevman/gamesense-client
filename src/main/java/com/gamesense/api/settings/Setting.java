@@ -12,7 +12,7 @@ import com.lukflug.panelstudio.settings.Toggleable;
 /**
  * @author Finz0 for Osiris
  * @author Memeszz for some static class/functions for settings
- * 		@src (much newer) https://github.com/Memeszz/Aurora-public
+ * @src (much newer) https://github.com/Memeszz/Aurora-public
  * @author Hoosiers, heavy modifications
  * @author lukflug, PanelStudio integration
  */
@@ -25,7 +25,7 @@ public abstract class Setting {
 	private final Module.Category category;
 	private final Type type;
 
-	public Setting(final String name, final String configName, final Module parent, final Module.Category category, final Type type){
+	public Setting(final String name, final String configName, final Module parent, final Module.Category category, final Type type) {
 		this.name = name;
 		this.configName = configName;
 		this.parent = parent;
@@ -33,27 +33,27 @@ public abstract class Setting {
 		this.category = category;
 	}
 
-	public String getName(){
+	public String getName() {
 		return this.name;
 	}
 
-	public String getConfigName(){
+	public String getConfigName() {
 		return this.configName;
 	}
 
-	public Module getParent(){
+	public Module getParent() {
 		return this.parent;
 	}
 
-	public Type getType(){
+	public Type getType() {
 		return this.type;
 	}
 
-	public Module.Category getCategory(){
+	public Module.Category getCategory() {
 		return this.category;
 	}
 
-	public enum Type{
+	public enum Type {
 		INTEGER,
 		DOUBLE,
 		BOOLEAN,
@@ -62,11 +62,12 @@ public abstract class Setting {
     }
 
 	public static class Integer extends Setting implements NumberSetting {
+
 		private int value;
 		private final int min;
 		private final int max;
 
-		public Integer(final String name, final String configName, final Module parent, final Module.Category category, final int value, final int min, final int max){
+		public Integer(final String name, final String configName, final Module parent, final Module.Category category, final int value, final int min, final int max) {
 			super(name, configName, parent, category, Type.INTEGER);
 			this.value = value;
 			this.min = min;
@@ -74,39 +75,39 @@ public abstract class Setting {
 		}
 		
 		public int getValue() {
-			return value;
+			return this.value;
 		}
 
-		public void setValue(final int value){
+		public void setValue(final int value) {
 			this.value = value;
 		}
 
-		public int getMin(){
+		public int getMin() {
 			return this.min;
 		}
 
-		public int getMax(){
+		public int getMax() {
 			return this.max;
 		}
 
 		@Override
 		public double getNumber() {
-			return value;
+			return this.value;
 		}
 
 		@Override
 		public void setNumber(double value) {
-			this.value=(int)Math.round(value);
+			this.value= (int) Math.round(value);
 		}
 
 		@Override
 		public double getMaximumValue() {
-			return max;
+			return this.max;
 		}
 
 		@Override
 		public double getMinimumValue() {
-			return min;
+			return this.min;
 		}
 
 		@Override
@@ -116,51 +117,52 @@ public abstract class Setting {
 	}
 
 	public static class Double extends Setting implements NumberSetting {
+
 		private double value;
 		private final double min;
 		private final double max;
 
-		public Double(final String name, final String configName, final Module parent, final Module.Category category, final double value, final double min, final double max){
+		public Double(final String name, final String configName, final Module parent, final Module.Category category, final double value, final double min, final double max) {
 			super(name, configName, parent, category, Type.DOUBLE);
 			this.value = value;
 			this.min = min;
 			this.max = max;
 		}
 
-		public double getValue(){
+		public double getValue() {
 			return this.value;
 		}
 
-		public void setValue(final double value){
+		public void setValue(final double value) {
 			this.value = value;
 		}
 
-		public double getMin(){
+		public double getMin() {
 			return this.min;
 		}
 
-		public double getMax(){
+		public double getMax() {
 			return this.max;
 		}
 
 		@Override
 		public double getNumber() {
-			return value;
+			return this.value;
 		}
 
 		@Override
 		public void setNumber(double value) {
-			this.value=value;
+			this.value = value;
 		}
 
 		@Override
 		public double getMaximumValue() {
-			return max;
+			return this.max;
 		}
 
 		@Override
 		public double getMinimumValue() {
-			return min;
+			return this.min;
 		}
 
 		@Override
@@ -170,69 +172,71 @@ public abstract class Setting {
 	}
 
 	public static class Boolean extends Setting implements Toggleable {
+
 		private boolean value;
 
-		public Boolean(final String name, final String configName, final Module parent, final Module.Category category, final boolean value){
+		public Boolean(final String name, final String configName, final Module parent, final Module.Category category, final boolean value) {
 			super(name, configName, parent, category, Type.BOOLEAN);
 			this.value = value;
 		}
 
 		public boolean getValue(){
-			return value;
+			return this.value;
 		}
 
-		public void setValue(final boolean value){
+		public void setValue(final boolean value) {
 			this.value = value;
 		}
 
 		@Override
 		public void toggle() {
-			value=!value;
+			this.value =! this.value;
 		}
 
 		@Override
 		public boolean isOn() {
-			return value;
+			return this.value;
 		}
 	}
 
 	public static class Mode extends Setting implements EnumSetting {
+
 		private String value;
 		private final java.util.List<String> modes;
 
-		public Mode(final String name, final String configName, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value){
+		public Mode(final String name, final String configName, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value) {
 			super(name, configName, parent, category, Type.MODE);
 			this.value = value;
 			this.modes = modes;
 		}
 
-		public String getValue(){
+		public String getValue() {
 			return this.value;
 		}
 
-		public void setValue(final String value){
+		public void setValue(final String value) {
 			this.value = value;
 		}
 
-		public List<String> getModes(){
+		public List<String> getModes() {
 			return this.modes;
 		}
 
 		@Override
 		public void increment() {
-			int modeIndex=modes.indexOf(value);
-			modeIndex=(modeIndex+1)%modes.size();
+			int modeIndex = modes.indexOf(value);
+			modeIndex = (modeIndex + 1) % modes.size();
 			setValue(modes.get(modeIndex));
 		}
 
 		@Override
 		public String getValueName() {
-			return value;
+			return this.value;
 		}
 	}
-	
-	// Color config added by lukflug
+
 	public static class ColorSetting extends Setting implements com.lukflug.panelstudio.settings.ColorSetting {
+
 		private boolean rainbow;
 		private GSColor value;
 		
@@ -245,30 +249,31 @@ public abstract class Setting {
 		public GSColor getValue() {
 			if (rainbow) {
 				return GSColor.fromHSB((System.currentTimeMillis()%(360*32))/(360f * 32),1,1);
-			} return value;
+			}
+			return this.value;
 		}
 		
 		public void setValue (boolean rainbow, final GSColor value) {
-			this.rainbow=rainbow;
-			this.value=value;
+			this.rainbow = rainbow;
+			this.value = value;
 		}
 		
 		public int toInteger() {
-			return value.getRGB()&0xFFFFFF+(rainbow?1:0)*0x1000000;
+			return this.value.getRGB()&0xFFFFFF+(rainbow?1:0)*0x1000000;
 		}
 		
 		public void fromInteger (int number) {
-			value=new GSColor(number&0xFFFFFF);
-			rainbow=((number&0x1000000)!=0);
+			this.value = new GSColor(number&0xFFFFFF);
+			this.rainbow = ((number&0x1000000)!=0);
 		}
 		
 		public GSColor getColor() {
-			return value;
+			return this.value;
 		}
 
 		@Override
 		public boolean getRainbow() {
-			return rainbow;
+			return this.rainbow;
 		}
 
 		@Override

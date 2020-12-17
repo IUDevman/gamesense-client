@@ -11,27 +11,31 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LayerBipedArmor.class)
-public class MixinLayerBipedArmor{
+public class MixinLayerBipedArmor {
 
 	@Inject(method = "setModelSlotVisible", at = @At(value = "HEAD"), cancellable = true)
-	protected void setModelSlotVisible(ModelBiped model, EntityEquipmentSlot slotIn, CallbackInfo info){
-		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).armor.getValue()){
-			info.cancel();
-			switch (slotIn){
-				case HEAD:
+	protected void setModelSlotVisible(ModelBiped model, EntityEquipmentSlot slotIn, CallbackInfo callbackInfo) {
+		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).armor.getValue()) {
+			callbackInfo.cancel();
+			switch (slotIn) {
+				case HEAD: {
 					model.bipedHead.showModel = false;
 					model.bipedHeadwear.showModel = false;
-				case CHEST:
+				}
+				case CHEST: {
 					model.bipedBody.showModel = false;
 					model.bipedRightArm.showModel = false;
 					model.bipedLeftArm.showModel = false;
-				case LEGS:
+				}
+				case LEGS: {
 					model.bipedBody.showModel = false;
 					model.bipedRightLeg.showModel = false;
 					model.bipedLeftLeg.showModel = false;
-				case FEET:
+				}
+				case FEET: {
 					model.bipedRightLeg.showModel = false;
 					model.bipedLeftLeg.showModel = false;
+				}
 			}
 		}
 	}

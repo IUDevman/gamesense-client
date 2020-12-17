@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderLivingBase.class)
 public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends Render<T> {
+
     protected MixinRenderLivingBase() {
         super(null);
     }
@@ -28,10 +29,12 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends 
 
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     protected void renderModel(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, CallbackInfo callbackInfo) {
-        if (!this.bindEntityTexture(entitylivingbaseIn))
+        if (!this.bindEntityTexture(entitylivingbaseIn)) {
             return;
+        }
 
-        if (NoRender.noCluster.getValue() && ModuleManager.getModuleByName("NoRender").isEnabled() && Wrapper.getPlayer().getDistance(entitylivingbaseIn) < 1 && entitylivingbaseIn != mc.player)
+        if (NoRender.noCluster.getValue() && ModuleManager.getModuleByName("NoRender").isEnabled() && Wrapper.getPlayer().getDistance(entitylivingbaseIn) < 1 && entitylivingbaseIn != mc.player) {
             GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
+        }
     }
 }

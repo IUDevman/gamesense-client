@@ -8,11 +8,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Entity.class)
-public class MixinEntity{
+public class MixinEntity {
 
 	@Redirect(method = "applyEntityCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
-	public void velocity(Entity entity, double x, double y, double z){
-		if (((PlayerTweaks)ModuleManager.getModuleByName("PlayerTweaks")).noPush.getValue() == false){
+	public void velocity(Entity entity, double x, double y, double z) {
+		if (!ModuleManager.isModuleEnabled("PlayerTweaks") || ModuleManager.isModuleEnabled("PlayerTweaks") && !PlayerTweaks.noPush.getValue()) {
 			entity.motionX += x;
 			entity.motionY += y;
 			entity.motionZ += z;
@@ -20,4 +20,3 @@ public class MixinEntity{
 		}
 	}
 }
-

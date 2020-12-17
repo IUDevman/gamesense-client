@@ -2,15 +2,16 @@ package com.gamesense.api.event.events;
 
 import com.gamesense.api.event.GameSenseEvent;
 
-public class PlayerJoinEvent extends GameSenseEvent{
+public class PlayerJoinEvent extends GameSenseEvent {
+
 	private final String name;
 
-	public PlayerJoinEvent(String n){
+	public PlayerJoinEvent(String name) {
 		super();
-		name = n;
+		this.name = name;
 	}
 
-	public String getName(){
-		return name;
+	public String getName() {
+		return this.name;
 	}
 }

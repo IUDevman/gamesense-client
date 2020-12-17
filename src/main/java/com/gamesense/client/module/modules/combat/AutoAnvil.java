@@ -392,7 +392,7 @@ public class AutoAnvil extends Module {
             if (Friends.isFriend(entityPlayer.getName())){
                 continue;
             }
-            if (!EntityUtil.isLiving(entityPlayer)) {
+            if (entityPlayer.isDead) {
                 continue;
             }
 

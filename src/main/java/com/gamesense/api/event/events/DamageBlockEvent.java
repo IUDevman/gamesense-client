@@ -4,29 +4,29 @@ import com.gamesense.api.event.GameSenseEvent;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
-public class DamageBlockEvent extends GameSenseEvent{
+public class DamageBlockEvent extends GameSenseEvent {
 
-	private BlockPos pos;
-	private EnumFacing face;
+	private BlockPos blockPos;
+	private EnumFacing enumFacing;
 
-	public DamageBlockEvent(BlockPos pos, EnumFacing face){
-		this.pos = pos;
-		this.face = face;
+	public DamageBlockEvent(BlockPos blockPos, EnumFacing enumFacing) {
+		this.blockPos = blockPos;
+		this.enumFacing = enumFacing;
 	}
 
-	public BlockPos getPos(){
-		return pos;
+	public BlockPos getBlockPos() {
+		return this.blockPos;
 	}
 
-	public void setPos(BlockPos pos){
-		this.pos = pos;
+	public void setBlockPos(BlockPos blockPos) {
+		this.blockPos = blockPos;
 	}
 
-	public EnumFacing getFace(){
-		return face;
+	public EnumFacing getEnumFacing() {
+		return this.enumFacing;
 	}
 
-	public void setFace(EnumFacing face){
-		this.face = face;
+	public void setEnumFacing(EnumFacing enumFacing) {
+		this.enumFacing = enumFacing;
 	}
 }

@@ -31,7 +31,8 @@ import com.lukflug.panelstudio.DraggableContainer;
 import com.lukflug.panelstudio.FixedComponent;
 
 /**
- * @Author Hoosiers on 10/15/2020
+ * @author Hoosiers
+ * @since 10/15/2020
  */
 
 public class SaveConfig {
@@ -51,22 +52,22 @@ public class SaveConfig {
     String miscName = "Misc/";
 
     public void saveConfig() throws IOException {
-        if (!Files.exists(Paths.get(fileName))){
+        if (!Files.exists(Paths.get(fileName))) {
             Files.createDirectories(Paths.get(fileName));
         }
-        if (!Files.exists(Paths.get(fileName + moduleName))){
+        if (!Files.exists(Paths.get(fileName + moduleName))) {
             Files.createDirectories(Paths.get(fileName + moduleName));
         }
-        if (!Files.exists(Paths.get(fileName + mainName))){
+        if (!Files.exists(Paths.get(fileName + mainName))) {
             Files.createDirectories(Paths.get(fileName + mainName));
         }
-        if (!Files.exists(Paths.get(fileName + miscName))){
+        if (!Files.exists(Paths.get(fileName + miscName))) {
             Files.createDirectories(Paths.get(fileName + miscName));
         }
     }
 
-    public void registerFiles(String location, String name) throws IOException{
-        if (!Files.exists(Paths.get(fileName + location + name + ".json"))){
+    public void registerFiles(String location, String name) throws IOException {
+        if (!Files.exists(Paths.get(fileName + location + name + ".json"))) {
             Files.createFile(Paths.get(fileName + location + name + ".json"));
         }
         else {
@@ -78,12 +79,12 @@ public class SaveConfig {
         }
     }
 
-    public void saveModules(){
-        for (Module module : ModuleManager.getModules()){
+    public void saveModules() {
+        for (Module module : ModuleManager.getModules()) {
             try {
                 saveModuleDirect(module);
             }
-            catch (IOException e){
+            catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -98,8 +99,8 @@ public class SaveConfig {
         JsonObject settingObject = new JsonObject();
         moduleObject.add("Module", new JsonPrimitive(module.getName()));
 
-        for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
-            switch (setting.getType()){
+        for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)) {
+            switch (setting.getType()) {
                 case BOOLEAN: {
                     settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Boolean) setting).getValue()));
                     break;
@@ -137,7 +138,7 @@ public class SaveConfig {
         JsonObject moduleObject = new JsonObject();
         JsonObject enabledObject = new JsonObject();
 
-        for (Module module : ModuleManager.getModules()){
+        for (Module module : ModuleManager.getModules()) {
 
             enabledObject.add(module.getName(), new JsonPrimitive(module.isEnabled()));
         }
@@ -156,7 +157,7 @@ public class SaveConfig {
         JsonObject moduleObject = new JsonObject();
         JsonObject bindObject = new JsonObject();
 
-        for (Module module : ModuleManager.getModules()){
+        for (Module module : ModuleManager.getModules()) {
 
             bindObject.add(module.getName(), new JsonPrimitive(module.getBind()));
         }
@@ -175,7 +176,7 @@ public class SaveConfig {
         JsonObject moduleObject = new JsonObject();
         JsonObject drawnObject = new JsonObject();
 
-        for (Module module : ModuleManager.getModules()){
+        for (Module module : ModuleManager.getModules()) {
 
             drawnObject.add(module.getName(), new JsonPrimitive(module.isDrawn()));
         }
@@ -223,7 +224,7 @@ public class SaveConfig {
         JsonObject mainObject = new JsonObject();
         JsonArray friendArray = new JsonArray();
 
-        for (Friend friend : Friends.getFriends()){
+        for (Friend friend : Friends.getFriends()) {
             friendArray.add(friend.getName());
         }
         mainObject.add("Friends", friendArray);
@@ -241,7 +242,7 @@ public class SaveConfig {
         JsonObject mainObject = new JsonObject();
         JsonArray enemyArray = new JsonArray();
 
-        for (Enemy enemy : Enemies.getEnemies()){
+        for (Enemy enemy : Enemies.getEnemies()) {
             enemyArray.add(enemy.getName());
         }
         mainObject.add("Enemies", enemyArray);
@@ -260,15 +261,21 @@ public class SaveConfig {
         JsonObject panelObject = new JsonObject();
 
         GameSenseGUI gui=GameSenseMod.getInstance().clickGUI;
-        for (FixedComponent frame : gui.gui.getComponents()){
+        for (FixedComponent frame : gui.gui.getComponents()) {
             JsonObject valueObject = new JsonObject();
 
             Point pos;
-            if (frame instanceof PositionConfig) pos=((PositionConfig) frame).getConfigPos();
-            else pos=frame.getPosition(gui);
+            if (frame instanceof PositionConfig) {
+                pos=((PositionConfig) frame).getConfigPos();
+            }
+            else {
+                pos=frame.getPosition(gui);
+            }
             valueObject.add("PosX", new JsonPrimitive(pos.x));
             valueObject.add("PosY", new JsonPrimitive(pos.y));
-            if (frame instanceof DraggableContainer) valueObject.add("State", new JsonPrimitive(((DraggableContainer)frame).isOn()));
+            if (frame instanceof DraggableContainer) {
+                valueObject.add("State", new JsonPrimitive(((DraggableContainer)frame).isOn()));
+            }
 
             panelObject.add(frame.getTitle(), valueObject);
         }
@@ -287,7 +294,7 @@ public class SaveConfig {
         JsonObject mainObject = new JsonObject();
         JsonArray messageArray = new JsonArray();
 
-        for (String autoGG : AutoGG.getAutoGgMessages()){
+        for (String autoGG : AutoGG.getAutoGgMessages()) {
             messageArray.add(autoGG);
         }
         mainObject.add("Messages", messageArray);
