@@ -14,6 +14,7 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -280,7 +281,7 @@ public class AutoWeb extends Module{
 			if (Friends.isFriend(entityPlayer.getName())){
 				continue;
 			}
-			if (!EntityUtil.isLiving(entityPlayer)) {
+			if (entityPlayer.isDead) {
 				continue;
 			}
 			if (closestTarget == null){

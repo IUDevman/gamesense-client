@@ -4,10 +4,11 @@ import net.minecraft.util.EnumFacing;
 
 import java.util.HashMap;
 
-public final class GeometryMasks{
+public final class GeometryMasks {
 
 	public static final HashMap<EnumFacing, Integer> FACEMAP = new HashMap<>();
-	static{
+
+	static {
 		FACEMAP.put(EnumFacing.DOWN, Quad.DOWN);
 		FACEMAP.put(EnumFacing.WEST, Quad.WEST);
 		FACEMAP.put(EnumFacing.NORTH, Quad.NORTH);
@@ -16,7 +17,7 @@ public final class GeometryMasks{
 		FACEMAP.put(EnumFacing.UP, Quad.UP);
 	}
 
-	public static final class Quad{
+	public static final class Quad {
 		public static final int DOWN = 0x01;
 		public static final int UP = 0x02;
 		public static final int NORTH = 0x04;
@@ -26,7 +27,7 @@ public final class GeometryMasks{
 		public static final int ALL = DOWN | UP | NORTH | SOUTH | WEST | EAST;
 	}
 
-	public static final class Line{
+	public static final class Line {
 		public static final int DOWN_WEST = 0x11;
 		public static final int UP_WEST = 0x12;
 		public static final int DOWN_EAST = 0x21;

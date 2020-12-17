@@ -3,49 +3,50 @@ package com.gamesense.api.event.events;
 import com.gamesense.api.event.GameSenseEvent;
 import net.minecraft.entity.MoverType;
 
-public class PlayerMoveEvent extends GameSenseEvent{
+public class PlayerMoveEvent extends GameSenseEvent {
 
 	MoverType type;
 	public double x;
 	public double y;
 	public double z;
-	public PlayerMoveEvent(MoverType moverType, double xx, double yy, double zz){
+
+	public PlayerMoveEvent(MoverType moverType, double x, double y, double z) {
 		super();
-		type = moverType;
-		x = xx;
-		y = yy;
-		z =zz;
+		this.type = moverType;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
-	public MoverType getType(){
-		return type;
+	public MoverType getType() {
+		return this.type;
 	}
 
-	public void setType(MoverType type){
+	public void setType(MoverType type) {
 		this.type = type;
 	}
 
-	public double getX(){
-		return x;
+	public double getX() {
+		return this.x;
 	}
 
-	public double getY(){
-		return y;
+	public double getY() {
+		return this.y;
 	}
 
-	public double getZ(){
-		return z;
+	public double getZ() {
+		return this.z;
 	}
 
-	public void setX(double xx){
-		x = xx;
+	public void setX(double x) {
+		this.x = x;
 	}
 
-	public void setY(double yy){
-		y = yy;
+	public void setY(double y) {
+		this.y = y;
 	}
 
-	public void setZ(double zz){
-		z = zz;
+	public void setZ(double z) {
+		this.z = z;
 	}
 }

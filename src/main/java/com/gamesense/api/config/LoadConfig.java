@@ -24,16 +24,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
- * @Author Hoosiers on 10/15/2020
+ * @author Hoosiers
+ * @since 10/15/2020
  */
 
 public class LoadConfig {
 
-    public LoadConfig(){
+    public LoadConfig() {
         try {
             loadConfig();
         }
-        catch (IOException e){
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -61,11 +62,11 @@ public class LoadConfig {
     public void loadModules() {
         String moduleLocation = fileName + moduleName;
 
-        for (Module module : ModuleManager.getModules()){
+        for (Module module : ModuleManager.getModules()) {
             try {
                 loadModuleDirect(moduleLocation, module);
             }
-            catch (IOException e){
+            catch (IOException e) {
                 System.out.println(module.getName());
                 e.printStackTrace();
             }
@@ -73,23 +74,23 @@ public class LoadConfig {
     }
 
     public void loadModuleDirect(String moduleLocation, Module module) throws IOException {
-        if (!Files.exists(Paths.get(moduleLocation + module.getName() + ".json"))){
+        if (!Files.exists(Paths.get(moduleLocation + module.getName() + ".json"))) {
             return;
         }
 
         InputStream inputStream = Files.newInputStream(Paths.get(moduleLocation + module.getName() + ".json"));
         JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
 
-        if (moduleObject.get("Module") == null){
+        if (moduleObject.get("Module") == null) {
             return;
         }
 
         JsonObject settingObject = moduleObject.get("Settings").getAsJsonObject();
-        for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)){
+        for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)) {
             JsonElement dataObject = settingObject.get(setting.getConfigName());
 
             if (dataObject != null && dataObject.isJsonPrimitive()) {
-                switch (setting.getType()){
+                switch (setting.getType()) {
                     case BOOLEAN:
                         ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
                         break;
@@ -126,11 +127,11 @@ public class LoadConfig {
         }
 
         JsonObject settingObject = moduleObject.get("Modules").getAsJsonObject();
-        for (Module module : ModuleManager.getModules()){
+        for (Module module : ModuleManager.getModules()) {
             JsonElement dataObject = settingObject.get(module.getName());
 
             if (dataObject != null && dataObject.isJsonPrimitive()) {
-                if (dataObject.getAsBoolean() == true){
+                if (dataObject.getAsBoolean() == true) {
                     module.enable();
                 }
             }
@@ -153,7 +154,7 @@ public class LoadConfig {
         }
 
         JsonObject settingObject = moduleObject.get("Modules").getAsJsonObject();
-        for (Module module : ModuleManager.getModules()){
+        for (Module module : ModuleManager.getModules()) {
             JsonElement dataObject = settingObject.get(module.getName());
 
             if (dataObject != null && dataObject.isJsonPrimitive()) {
@@ -178,7 +179,7 @@ public class LoadConfig {
         }
 
         JsonObject settingObject = moduleObject.get("Modules").getAsJsonObject();
-        for (Module module : ModuleManager.getModules()){
+        for (Module module : ModuleManager.getModules()) {
             JsonElement dataObject = settingObject.get(module.getName());
 
             if (dataObject != null && dataObject.isJsonPrimitive()) {
@@ -213,14 +214,14 @@ public class LoadConfig {
     public void loadCustomFont() throws IOException {
         String fontLocation = fileName + miscName;
 
-        if (!Files.exists(Paths.get(fontLocation + "CustomFont" + ".json"))){
+        if (!Files.exists(Paths.get(fontLocation + "CustomFont" + ".json"))) {
             return;
         }
 
         InputStream inputStream = Files.newInputStream(Paths.get(fontLocation + "CustomFont" + ".json"));
         JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
 
-        if (mainObject.get("Font Name") == null || mainObject.get("Font Size") == null){
+        if (mainObject.get("Font Name") == null || mainObject.get("Font Size") == null) {
             return;
         }
 
@@ -240,7 +241,7 @@ public class LoadConfig {
             size = fontSizeObject.getAsInt();
         }
 
-        if (name != null && size != -1){
+        if (name != null && size != -1) {
             GameSenseMod.fontRenderer = new CFontRenderer(new Font(name, Font.PLAIN, size), true, true);
             GameSenseMod.fontRenderer.setFont(new Font(name, Font.PLAIN, size));
             GameSenseMod.fontRenderer.setAntiAlias(true);
@@ -254,14 +255,14 @@ public class LoadConfig {
     public void loadFriendsList() throws IOException {
         String friendLocation = fileName + miscName;
 
-        if (!Files.exists(Paths.get(friendLocation + "Friends" + ".json"))){
+        if (!Files.exists(Paths.get(friendLocation + "Friends" + ".json"))) {
             return;
         }
 
         InputStream inputStream = Files.newInputStream(Paths.get(friendLocation + "Friends" + ".json"));
         JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
 
-        if (mainObject.get("Friends") == null){
+        if (mainObject.get("Friends") == null) {
             return;
         }
 
@@ -276,14 +277,14 @@ public class LoadConfig {
     public void loadEnemiesList() throws IOException {
         String enemyLocation = fileName + miscName;
 
-        if (!Files.exists(Paths.get(enemyLocation + "Enemies" + ".json"))){
+        if (!Files.exists(Paths.get(enemyLocation + "Enemies" + ".json"))) {
             return;
         }
 
         InputStream inputStream = Files.newInputStream(Paths.get(enemyLocation + "Enemies" + ".json"));
         JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
 
-        if (mainObject.get("Enemies") == null){
+        if (mainObject.get("Enemies") == null) {
             return;
         }
 
@@ -296,20 +297,20 @@ public class LoadConfig {
     }
 
     public void loadClickGUIPositions() throws IOException {
-    	GameSenseMod.getInstance().clickGUI.gui.loadConfig(new GuiConfig(fileName+mainName));
+		GameSenseMod.getInstance().clickGUI.gui.loadConfig(new GuiConfig(fileName+mainName));
     }
 
     public void loadAutoGG() throws IOException {
         String fileLocation = fileName + miscName;
 
-        if (!Files.exists(Paths.get(fileLocation + "AutoGG" + ".json"))){
+        if (!Files.exists(Paths.get(fileLocation + "AutoGG" + ".json"))) {
             return;
         }
 
         InputStream inputStream = Files.newInputStream(Paths.get(fileLocation + "AutoGG" + ".json"));
         JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
 
-        if (mainObject.get("Messages") == null){
+        if (mainObject.get("Messages") == null) {
             return;
         }
 
@@ -324,14 +325,14 @@ public class LoadConfig {
     public void loadAutoReply() throws IOException {
         String fileLocation = fileName + miscName;
 
-        if (!Files.exists(Paths.get(fileLocation + "AutoReply" + ".json"))){
+        if (!Files.exists(Paths.get(fileLocation + "AutoReply" + ".json"))) {
             return;
         }
 
         InputStream inputStream = Files.newInputStream(Paths.get(fileLocation + "AutoReply" + ".json"));
         JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
 
-        if (mainObject.get("AutoReply") == null){
+        if (mainObject.get("AutoReply") == null) {
             return;
         }
 

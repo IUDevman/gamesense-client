@@ -3,20 +3,20 @@ package com.gamesense.api.event.events;
 import com.gamesense.api.event.GameSenseEvent;
 import net.minecraft.util.math.BlockPos;
 
-public class DestroyBlockEvent extends GameSenseEvent{
+public class DestroyBlockEvent extends GameSenseEvent {
 
-	BlockPos pos;
+	BlockPos blockPos;
 
-	public DestroyBlockEvent(BlockPos blockPos){
+	public DestroyBlockEvent(BlockPos blockPos) {
 		super();
-		pos = blockPos;
+		this.blockPos = blockPos;
 	}
 
-	public BlockPos getBlockPos(){
-		return pos;
+	public BlockPos getBlockPos() {
+		return this.blockPos;
 	}
 
-	public void setPos(BlockPos pos){
-		this.pos = pos;
+	public void setBlockPos(BlockPos blockPos) {
+		this.blockPos = blockPos;
 	}
 }

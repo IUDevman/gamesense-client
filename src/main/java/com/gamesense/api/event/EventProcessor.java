@@ -48,21 +48,22 @@ public class EventProcessor {
 	Minecraft mc = Minecraft.getMinecraft();
 	CommandManager commandManager = new CommandManager();
 
-	public EventProcessor(){
+	public EventProcessor() {
 		INSTANCE = this;
 	}
 
 	@SubscribeEvent
 	public void onTick(TickEvent.ClientTickEvent event) {
-		//Module updates
-		// #TO CYBER: DONT DELETE THIS AGAIN BY ACCIDENT DUMBASS
-		if (mc.player != null)
+		if (mc.player != null) {
 			ModuleManager.onUpdate();
+		}
 	}
 
 	@SubscribeEvent
 	public void onWorldRender(RenderWorldLastEvent event) {
-		if (event.isCanceled()) return;
+		if (event.isCanceled()) {
+			return;
+		}
 		ModuleManager.onWorldRender(event);
 	}
 
@@ -70,25 +71,26 @@ public class EventProcessor {
 	public void onRender(RenderGameOverlayEvent.Post event) {
 		GameSenseMod.EVENT_BUS.post(event);
 		if(event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
-			//module onRender
 			ModuleManager.onRender();
-			//HudComponent stuff
 		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (Keyboard.getEventKeyState()) {
-			if(Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
+			if(Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) {
+				return;
+			}
 			ModuleManager.onBind(Keyboard.getEventKey());
 			GameSenseMod.getInstance().clickGUI.handleKeyEvent(Keyboard.getEventKey());
 		}
 	}
 
 	@SubscribeEvent
-	public void onMouseInput(InputEvent.MouseInputEvent event){
-		if(Mouse.getEventButtonState())
+	public void onMouseInput(InputEvent.MouseInputEvent event) {
+		if(Mouse.getEventButtonState()) {
 			GameSenseMod.EVENT_BUS.post(event);
+		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -99,7 +101,8 @@ public class EventProcessor {
 			try {
 				mc.ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
 				commandManager.callCommand(event.getMessage().substring(1));
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				e.printStackTrace();
 				MessageBus.sendClientPrefixMessage(ChatFormatting.DARK_RED + "Error: " + e.getMessage());
 			}
@@ -130,7 +133,7 @@ public class EventProcessor {
 	}
 
 	@SubscribeEvent
-	public void onChatReceived(ClientChatReceivedEvent event){
+	public void onChatReceived(ClientChatReceivedEvent event) {
 		GameSenseMod.EVENT_BUS.post(event);
 	}
 
@@ -140,20 +143,22 @@ public class EventProcessor {
 	}
 
 	@SubscribeEvent
-	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event){
+	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
 		GameSenseMod.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
-	public void onDrawBlockHighlight(DrawBlockHighlightEvent event){
+	public void onDrawBlockHighlight(DrawBlockHighlightEvent event) {
 		GameSenseMod.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
-	public void onRenderBlockOverlay(RenderBlockOverlayEvent event){ GameSenseMod.EVENT_BUS.post(event); }
+	public void onRenderBlockOverlay(RenderBlockOverlayEvent event) {
+		GameSenseMod.EVENT_BUS.post(event);
+	}
 
 	@SubscribeEvent
-	public void onLivingDamage(LivingDamageEvent event){
+	public void onLivingDamage(LivingDamageEvent event) {
 		GameSenseMod.EVENT_BUS.post(event);
 	}
 	@SubscribeEvent
@@ -162,17 +167,19 @@ public class EventProcessor {
 	}
 
 	@SubscribeEvent
-	public void onInputUpdate(InputUpdateEvent event){
+	public void onInputUpdate(InputUpdateEvent event) {
 		GameSenseMod.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
-	public void onLivingDeath(LivingDeathEvent event){
-		GameSenseMod.EVENT_BUS.post(event);}
+	public void onLivingDeath(LivingDeathEvent event) {
+		GameSenseMod.EVENT_BUS.post(event);
+	}
 
 	@SubscribeEvent
 	public void onPlayerPush(PlayerSPPushOutOfBlocksEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);}
+		GameSenseMod.EVENT_BUS.post(event);
+	}
 
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload event) {
@@ -194,8 +201,9 @@ public class EventProcessor {
 						new Thread(() -> {
 							String name = resolveName(playerData.getProfile().getId().toString());
 							if (name != null) {
-								if (mc.player != null && mc.player.ticksExisted >= 1000)
+								if (mc.player != null && mc.player.ticksExisted >= 1000) {
 									GameSenseMod.EVENT_BUS.post(new PlayerJoinEvent(name));
+								}
 							}
 						}).start();
 					}
@@ -207,8 +215,9 @@ public class EventProcessor {
 						new Thread(() -> {
 							final String name = resolveName(playerData.getProfile().getId().toString());
 							if (name != null) {
-								if (mc.player != null && mc.player.ticksExisted >= 1000)
+								if (mc.player != null && mc.player.ticksExisted >= 1000) {
 									GameSenseMod.EVENT_BUS.post(new PlayerLeaveEvent(name));
+								}
 							}
 						}).start();
 					}
@@ -244,7 +253,7 @@ public class EventProcessor {
 		return null;
 	}
 
-	public void init(){
+	public void init() {
 		GameSenseMod.EVENT_BUS.subscribe(this);
 		MinecraftForge.EVENT_BUS.register(this);
 	}

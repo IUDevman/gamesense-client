@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGuiBossOverlay{
 
 	@Inject(method = "renderBossHealth", at = @At("HEAD"), cancellable = true)
-	private void renderBossHealth(CallbackInfo ci){
+	private void renderBossHealth(CallbackInfo callbackInfo) {
 		BossbarEvent event = new BossbarEvent();
 		GameSenseMod.EVENT_BUS.post(event);
-		if (event.isCancelled()){
-			ci.cancel();
+		if (event.isCancelled()) {
+			callbackInfo.cancel();
 		}
 	}
 }

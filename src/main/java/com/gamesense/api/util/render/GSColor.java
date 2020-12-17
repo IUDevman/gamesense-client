@@ -7,12 +7,9 @@ import net.minecraft.client.renderer.GlStateManager;
 /**
 * @author lukflug
 */
-// Why would anyone ever need to use JavaDoc properly?
 
 public class GSColor extends Color {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	public GSColor (int rgb) {

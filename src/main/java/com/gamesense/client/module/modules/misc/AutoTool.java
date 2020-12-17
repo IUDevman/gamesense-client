@@ -30,7 +30,7 @@ public class AutoTool extends Module{
 
 	@EventHandler
 	private final Listener<DamageBlockEvent> leftClickListener = new Listener<>(event -> {
-		equipBestTool(mc.world.getBlockState(event.getPos()));
+		equipBestTool(mc.world.getBlockState(event.getBlockPos()));
 	});
 
 	public void onUpdate(){

@@ -24,6 +24,8 @@
 	"MixinPlayerOverlay",
 	"MixinBlockLiquid",
 	"MixinItemRenderer",
-	"MixinFontRenderer"
+	"MixinFontRenderer",
+	"MixinRenderGlobal",
+	"MixinRenderLivingBase"
 ]
 }

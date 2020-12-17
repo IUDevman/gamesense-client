@@ -301,7 +301,7 @@ public class AutoTrap extends Module {
             if (Friends.isFriend(entityPlayer.getName())){
                 continue;
             }
-            if (!EntityUtil.isLiving(entityPlayer)) {
+            if (entityPlayer.isDead) {
                 continue;
             }
             if (closestTarget == null){

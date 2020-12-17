@@ -1,8 +1,10 @@
 package com.gamesense.api.util.misc;
 
 /**
- * Created by 086 on 14/03/2018.
+ * @author 086
+ * @on 14/03/2018
  */
+
 public class Pair<T, S> {
     T key;
     S value;

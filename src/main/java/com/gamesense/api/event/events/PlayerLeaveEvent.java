@@ -2,16 +2,16 @@ package com.gamesense.api.event.events;
 
 import com.gamesense.api.event.GameSenseEvent;
 
-public class PlayerLeaveEvent extends GameSenseEvent{
+public class PlayerLeaveEvent extends GameSenseEvent {
 
 	private final String name;
 
-	public PlayerLeaveEvent(String n){
+	public PlayerLeaveEvent(String name) {
 		super();
-		name = n;
+		this.name = name;
 	}
 
-	public String getName(){
-		return name;
+	public String getName() {
+		return this.name;
 	}
 }

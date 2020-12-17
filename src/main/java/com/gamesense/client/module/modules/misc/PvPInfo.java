@@ -67,8 +67,11 @@ public class PvPInfo extends Module {
 	}
 
 	public void onUpdate() {
+		if (mc.player == null || mc.world == null) {
+			return;
+		}
+
 		if (visualRange.getValue()) {
-			if (mc.player == null) return;
 			players = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityPlayer).collect(Collectors.toList());
 			try {
 				for (Entity e : players) {
@@ -80,7 +83,7 @@ public class PvPInfo extends Module {
 					}
 				}
 			} catch (Exception e) {
-			} // ez no crasherino
+			}
 			try {
 				for (Entity e : knownPlayers) {
 					if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())) {
@@ -90,7 +93,7 @@ public class PvPInfo extends Module {
 					}
 				}
 			} catch (Exception e) {
-			} // ez no crasherino pt.2
+			}
 		}
 		if (pearlAlert.getValue()) {
 			pearls = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityEnderPearl).collect(Collectors.toList());
@@ -106,7 +109,7 @@ public class PvPInfo extends Module {
 			} catch (Exception e) {
 			}
 		}
-		if (strengthDetect.getValue() && mc.player != null && mc.world != null) {
+		if (strengthDetect.getValue()) {
 			for (EntityPlayer player : mc.world.playerEntities){
 				if (player.isPotionActive(MobEffects.STRENGTH) && !(strengthedPlayers.contains(player))){
 					MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " has (drank) strength!");
@@ -118,7 +121,7 @@ public class PvPInfo extends Module {
 				}
 			}
 		}
-		if (popCounter.getValue() && mc.world != null && mc.player != null) {
+		if (popCounter.getValue()) {
 			for (EntityPlayer player : mc.world.playerEntities) {
 				if (player.getHealth() <= 0) {
 					if (popCounterHashMap.containsKey(player.getDisplayNameString())) {
@@ -132,10 +135,10 @@ public class PvPInfo extends Module {
 
 	@EventHandler
 	private final Listener<PacketEvent.Receive> packetEventListener = new Listener<>(event -> {
-
 		if (mc.world == null || mc.player == null){
 			return;
 		}
+
 		if (event.getPacket() instanceof SPacketEntityStatus){
 			SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
 			if (packet.getOpCode() == 35){
@@ -147,6 +150,10 @@ public class PvPInfo extends Module {
 
 	@EventHandler
 	private final Listener<TotemPopEvent> totemPopEventListener = new Listener<>(event -> {
+		if (mc.world == null || mc.player == null){
+			return;
+		}
+
 		if (popCounter.getValue()) {
 			if (popCounterHashMap == null) {
 				popCounterHashMap = new HashMap<>();
