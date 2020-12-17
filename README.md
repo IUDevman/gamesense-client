@@ -48,6 +48,7 @@ Most notable features:
 * DarkiBoi (TotemPopCounter)
 * GL_DONT_CARE (Viewmodel Transformations)
 * NekoPvP (First commit, Item FOV)
+* TechAle (AutoAnvil)
 #### Credits
 Check specific class files for full credits.
 Some code used from (not directly referenced in code):
