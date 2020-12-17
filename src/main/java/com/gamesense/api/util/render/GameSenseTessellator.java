@@ -246,7 +246,7 @@ public class GameSenseTessellator {
 		if (type!=2) GlStateManager.popMatrix();
 	}
 
-	private static void drawBorderedRect (double x, double y, double x1, double y1, float lineWidth, GSColor inside, GSColor border) {
+	private static void drawBorderedRect(double x, double y, double x1, double y1, float lineWidth, GSColor inside, GSColor border) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		inside.glColor();
@@ -276,6 +276,23 @@ public class GameSenseTessellator {
 		double y=bp.getY();
 		double z=bp.getZ();
 		return new AxisAlignedBB(x,y,z,x+width,y+height,z+depth);
+	}
+
+	public static void draw2DRect(int posX, int posY, int width, int height, int zHeight,  GSColor color) {
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		color.glColor();
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+		bufferbuilder.pos(posX, posY + height, zHeight).endVertex();
+		bufferbuilder.pos(posX + width, posY + height, zHeight).endVertex();
+		bufferbuilder.pos(posX + width, posY, zHeight).endVertex();
+		bufferbuilder.pos(posX, posY, zHeight).endVertex();
+		tessellator.draw();
+		GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
 	}
 
 	public static void prepare() {

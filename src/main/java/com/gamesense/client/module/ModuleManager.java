@@ -26,8 +26,8 @@ public class ModuleManager {
 	public ModuleManager(){
 		modules = new ArrayList<>();
 		//Combat
-		addMod(new AutoArmor());
 		addMod(new AutoAnvil());
+		addMod(new AutoArmor());
 		addMod(new AutoCrystal());
 		addMod(new AutoTotem());
 		addMod(new AutoTrap());

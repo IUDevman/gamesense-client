@@ -29,6 +29,10 @@ public class VersionChecker {
         boolean isLatest = true;
         String newVersion = "null";
 
+        if (version.startsWith("dev")) {
+            return;
+        }
+
         try {
             URL url = new URL("https://pastebin.com/raw/QxR9CS76");
             Scanner scanner = new Scanner(url.openStream());
