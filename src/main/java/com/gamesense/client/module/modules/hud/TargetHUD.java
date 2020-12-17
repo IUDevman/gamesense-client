@@ -17,6 +17,7 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
+import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -34,19 +35,24 @@ import net.minecraft.util.text.TextFormatting;
  */
 
 public class TargetHUD extends HUDModule {
-    private static Setting.ColorSetting outline;
-    private static Setting.ColorSetting background;
-    private static Setting.Integer range;
+    private Setting.ColorSetting outline;
+    private Setting.ColorSetting background;
+    private Setting.Integer range;
     private static EntityPlayer targetPlayer;
     
     public TargetHUD(){
-        super(new TargetHUDComponent(),new Point(0,70));
+        super("TargetHUD",new Point(0,70));
     }
 
     public void setup() {
     	range = registerInteger("Range", "Range", 100, 10, 260);
         outline = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
         background = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
+    }
+    
+    @Override
+    public void populate (Theme theme) {
+    	component=new TargetHUDComponent(theme);
     }
 
     private static Color getNameColor(String playerName) {
@@ -92,9 +98,9 @@ public class TargetHUD extends HUDModule {
     }
     
     
-    private static class TargetHUDComponent extends HUDComponent {
-		public TargetHUDComponent() {
-			super("TargetHUD",GameSenseGUI.theme.getPanelRenderer(),new Point(0,70));
+    private class TargetHUDComponent extends HUDComponent {
+		public TargetHUDComponent (Theme theme) {
+			super(getName(),theme.getPanelRenderer(),TargetHUD.this.position);
 		}
 		
 		@Override

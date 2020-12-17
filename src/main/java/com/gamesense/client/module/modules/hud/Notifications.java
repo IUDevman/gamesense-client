@@ -6,24 +6,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gamesense.api.settings.Setting;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
+import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.util.text.TextComponentString;
 
 // PanelStudio rewrite by lukflug
-public class Notifications extends ListModule {
+public class Notifications extends HUDModule {
 	private static Setting.Boolean sortUp;
 	private static Setting.Boolean sortRight;
 	public static Setting.Boolean disableChat;
 	private static NotificationsList list=new NotificationsList();
 	
 	public Notifications(){
-		super(new ListModule.ListComponent("Notifications",new Point(0,50),list),new Point(0,50));
+		super("Notifications",new Point(0,50));
 	}
 
 	public void setup() {
 		sortUp = registerBoolean("Sort Up", "SortUp", false);
 		sortRight = registerBoolean("Sort Right", "SortRight", false);
 		disableChat = registerBoolean("No Chat Msg", "NoChatMsg", true);
+	}
+	
+	@Override
+	public void populate (Theme theme) {
+		component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
 	}
 
 	private static int waitCounter;
@@ -51,7 +59,7 @@ public class Notifications extends ListModule {
 	}
 
 
-	private static class NotificationsList implements ListModule.HUDList {
+	private static class NotificationsList implements HUDList {
 		public List<TextComponentString> list = new ArrayList<>();
 		
 		@Override

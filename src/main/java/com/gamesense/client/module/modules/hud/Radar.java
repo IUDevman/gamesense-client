@@ -1,14 +1,20 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
+import com.lukflug.panelstudio.theme.Theme;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.monster.EntityMob;
@@ -18,27 +24,21 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-
 /**
  * @author Hoosiers
  * @since 12/15/2020
  */
 
 public class Radar extends HUDModule {
+    private Setting.Boolean renderPlayer;
+    private Setting.Boolean renderMobs;
+    private Setting.ColorSetting playerColor;
+    private Setting.ColorSetting outlineColor;
+    private Setting.ColorSetting fillColor;
 
     public Radar() {
-        super(new RadarComponent(), new Point(0, 300));
+        super("Radar", new Point(0, 300));
     }
-
-    private static Setting.Boolean renderPlayer;
-    private static Setting.Boolean renderMobs;
-    private static Setting.ColorSetting playerColor;
-    private static Setting.ColorSetting outlineColor;
-    private static Setting.ColorSetting fillColor;
 
     public void setup() {
         renderPlayer = registerBoolean("Player", "Player", true);
@@ -47,8 +47,13 @@ public class Radar extends HUDModule {
         outlineColor = registerColor("Outline Color", "OutlineColor", new GSColor(255, 0, 0, 255));
         fillColor = registerColor("Fill Color", "FillColor", new GSColor(0, 0, 0, 255));
     }
+    
+    @Override
+    public void populate (Theme theme) {
+    	component=new RadarComponent(theme);
+    }
 
-    private static Color getPlayerColor(EntityPlayer entityPlayer) {
+    private Color getPlayerColor(EntityPlayer entityPlayer) {
         if (Friends.isFriend(entityPlayer.getName())) {
             return new GSColor(ColorMain.getFriendGSColor(), 255);
         }
@@ -60,7 +65,7 @@ public class Radar extends HUDModule {
         }
     }
 
-    private static Color getEntityColor(Entity entity) {
+    private Color getEntityColor(Entity entity) {
         if (entity instanceof EntityMob || entity instanceof EntitySlime) {
             return new GSColor(255, 0, 0, 255);
         }
@@ -72,10 +77,10 @@ public class Radar extends HUDModule {
         }
     }
 
-    private static class RadarComponent extends HUDComponent {
+    private class RadarComponent extends HUDComponent {
 
-        public RadarComponent() {
-            super("Radar", GameSenseGUI.theme.getPanelRenderer(), new Point(0, 300));
+        public RadarComponent (Theme theme) {
+            super(getName(), theme.getPanelRenderer(), Radar.this.position);
         }
 
         private int maxRange = 50;

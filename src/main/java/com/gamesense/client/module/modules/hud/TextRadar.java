@@ -9,20 +9,23 @@ import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
+import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
 
 // PanelStudio rewrite by lukflug
-public class TextRadar extends ListModule {
-	private static Setting.Boolean sortUp;
-	private static Setting.Boolean sortRight;
-	private static Setting.Integer range;
-	private static Setting.Mode display;
-	private static PlayerList list=new PlayerList();
+public class TextRadar extends HUDModule {
+	private Setting.Boolean sortUp;
+	private Setting.Boolean sortRight;
+	private Setting.Integer range;
+	private Setting.Mode display;
+	private PlayerList list=new PlayerList();
 	
 	public TextRadar(){
-		super(new ListModule.ListComponent("TextRadar",new Point(0,50),list),new Point(0,50));
+		super("TextRadar",new Point(0,50));
 	}
 
 	public void setup(){
@@ -34,6 +37,11 @@ public class TextRadar extends ListModule {
 		sortUp = registerBoolean("Sort Up", "SortUp", false);
 		sortRight = registerBoolean("Sort Right", "SortRight", false);
 		range = registerInteger("Range", "Range", 100, 1, 260);
+	}
+	
+	@Override
+	public void populate (Theme theme) {
+		component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
 	}
 
 	public void onRender() {
@@ -56,7 +64,7 @@ public class TextRadar extends ListModule {
 	}
 	
 	
-	private static class PlayerList implements ListModule.HUDList {
+	private class PlayerList implements HUDList {
 		public List<EntityPlayer> players=new ArrayList<EntityPlayer>();
 		
 		@Override

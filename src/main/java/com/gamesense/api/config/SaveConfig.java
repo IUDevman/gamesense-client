@@ -1,6 +1,5 @@
 package com.gamesense.api.config;
 
-import java.awt.Point;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,7 +14,7 @@ import com.gamesense.api.util.players.enemy.Enemy;
 import com.gamesense.api.util.players.friends.Friend;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.client.GameSenseMod;
-import com.gamesense.client.clickgui.GameSenseGUI;
+import com.gamesense.client.clickgui.GuiConfig;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -27,8 +26,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import com.lukflug.panelstudio.DraggableContainer;
-import com.lukflug.panelstudio.FixedComponent;
 
 /**
  * @author Hoosiers
@@ -252,37 +249,8 @@ public class SaveConfig {
     }
 
     public void saveClickGUIPositions() throws IOException {
-
         registerFiles(mainName, "ClickGUI");
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "ClickGUI" + ".json"), StandardCharsets.UTF_8);
-        JsonObject mainObject = new JsonObject();
-        JsonObject panelObject = new JsonObject();
-
-        GameSenseGUI gui=GameSenseMod.getInstance().clickGUI;
-        for (FixedComponent frame : gui.gui.getComponents()) {
-            JsonObject valueObject = new JsonObject();
-
-            Point pos;
-            if (frame instanceof PositionConfig) {
-                pos=((PositionConfig) frame).getConfigPos();
-            }
-            else {
-                pos=frame.getPosition(gui);
-            }
-            valueObject.add("PosX", new JsonPrimitive(pos.x));
-            valueObject.add("PosY", new JsonPrimitive(pos.y));
-            if (frame instanceof DraggableContainer) {
-                valueObject.add("State", new JsonPrimitive(((DraggableContainer)frame).isOn()));
-            }
-
-            panelObject.add(frame.getTitle(), valueObject);
-        }
-        mainObject.add("Panels", panelObject);
-        String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
-        fileOutputStreamWriter.write(jsonString);
-        fileOutputStreamWriter.close();
+		GameSenseMod.getInstance().clickGUI.gui.saveConfig(new GuiConfig(fileName+mainName));
     }
 
     public void saveAutoGG() throws IOException {

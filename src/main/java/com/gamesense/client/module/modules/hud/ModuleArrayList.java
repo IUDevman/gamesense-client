@@ -11,17 +11,20 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
+import com.lukflug.panelstudio.theme.Theme;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 // PanelStudio rewrite by lukflug
-public class ModuleArrayList extends ListModule {
-    private static Setting.Boolean sortUp;
-    private static Setting.Boolean sortRight;
-    private static Setting.ColorSetting color;
-	private static ModuleList list=new ModuleList();
+public class ModuleArrayList extends HUDModule {
+    private Setting.Boolean sortUp;
+    private Setting.Boolean sortRight;
+    private Setting.ColorSetting color;
+	private ModuleList list=new ModuleList();
 
     public ModuleArrayList(){
-    	super(new ListModule.ListComponent("ArrayList",new Point(0,200),list),new Point(0,200));
+    	super("ArrayList",new Point(0,200));
     }
 
     public void setup(){
@@ -29,17 +32,22 @@ public class ModuleArrayList extends ListModule {
         sortRight = registerBoolean("Sort Right", "SortRight", false);
         color = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
     }
+    
+    @Override
+    public void populate (Theme theme) {
+    	component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
+    }
 
     public void onRender(){
     	list.activeModules.clear();
     	for (Module module: ModuleManager.getModules()) {
     		if (module.isEnabled() && module.isDrawn()) list.activeModules.add(module);
     	}
-    	list.activeModules.sort(Comparator.comparing(module -> -GameSenseMod.getInstance().clickGUI.getFontWidth(module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo())));
+    	list.activeModules.sort(Comparator.comparing(module -> -GameSenseMod.getInstance().clickGUI.guiInterface.getFontWidth(module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo())));
     }
     
 
-    private static class ModuleList implements ListModule.HUDList {
+    private class ModuleList implements HUDList {
 		public List<Module> activeModules=new ArrayList<Module>();
 		
 		@Override

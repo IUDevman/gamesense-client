@@ -5,25 +5,27 @@ import java.awt.Point;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.FixedComponent;
+import com.lukflug.panelstudio.theme.Theme;
 
 /**
  * @author lukflug
  */
-public class HUDModule extends Module {
-	protected final FixedComponent component;
-	protected final Point position;
+public abstract class HUDModule extends Module {
+	protected FixedComponent component;
+	protected Point position;
 	
-	public HUDModule (FixedComponent component, Point defaultPos) {
-		super(component.getTitle(),Category.HUD);
-		this.component=component;
-		this.position=defaultPos;
+	public HUDModule (String title, Point defaultPos) {
+		super(title,Category.HUD);
+		position=defaultPos;
 	}
+	
+	public abstract void populate (Theme theme);
 
 	public FixedComponent getComponent() {
 		return component;
 	}
 	
 	public void resetPosition() {
-		component.setPosition(GameSenseMod.getInstance().clickGUI,position);
+		component.setPosition(GameSenseMod.getInstance().clickGUI.guiInterface,position);
 	}
 }

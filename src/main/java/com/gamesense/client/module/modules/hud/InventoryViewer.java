@@ -11,6 +11,7 @@ import com.gamesense.client.clickgui.GameSenseGUI;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
+import com.lukflug.panelstudio.theme.Theme;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -18,11 +19,11 @@ import net.minecraft.util.NonNullList;
 
 // PanelStudio rewrite by lukflug
 public class InventoryViewer extends HUDModule {
-	private static Setting.ColorSetting fillColor;
-    private static Setting.ColorSetting outlineColor;
+	private Setting.ColorSetting fillColor;
+    private Setting.ColorSetting outlineColor;
     
     public InventoryViewer() {
-    	super(new InventoryViewerComponent(),new Point(0,10));
+    	super("InventoryViewer",new Point(0,10));
     }
 
     public void setup() {
@@ -30,10 +31,15 @@ public class InventoryViewer extends HUDModule {
         outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
     }
     
+    @Override
+    public void populate (Theme theme) {
+    	component=new InventoryViewerComponent(theme);
+    }
     
-    private static class InventoryViewerComponent extends HUDComponent {
-		public InventoryViewerComponent() {
-			super("InventoryViewer",GameSenseGUI.theme.getPanelRenderer(),new Point(0,10));
+    
+    private class InventoryViewerComponent extends HUDComponent {
+		public InventoryViewerComponent (Theme theme) {
+			super(getName(),theme.getPanelRenderer(),InventoryViewer.this.position);
 		}
 		
 		@Override

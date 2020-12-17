@@ -1,5 +1,11 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Comparator;
+
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
@@ -9,14 +15,10 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
+import com.lukflug.panelstudio.theme.Theme;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.Comparator;
 
 /**
  * @author Hoosiers
@@ -24,22 +26,25 @@ import java.util.Comparator;
  */
 
 public class TargetInfo extends HUDModule {
+    private Setting.Integer range;
+    private Setting.ColorSetting backgroundColor;
+    private Setting.ColorSetting outlineColor;
 
     public TargetInfo() {
-        super(new TargetInfoComponent(), new Point(0, 150));
+        super("TargetInfo", new Point(0, 150));
     }
-
-    private static Setting.Integer range;
-    private static Setting.ColorSetting backgroundColor;
-    private static Setting.ColorSetting outlineColor;
 
     public void setup() {
         range = registerInteger("Range", "Range", 100, 10, 260);
         backgroundColor = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
         outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
     }
+    
+    public void populate (Theme theme) {
+    	component=new TargetInfoComponent(theme);
+    }
 
-    private static Color getNameColor(EntityPlayer entityPlayer) {
+    private Color getNameColor(EntityPlayer entityPlayer) {
         if (Friends.isFriend(entityPlayer.getName())){
             return new GSColor(ColorMain.getFriendGSColor(), 255);
         }
@@ -51,7 +56,7 @@ public class TargetInfo extends HUDModule {
         }
     }
 
-    private static Color getHealthColor(EntityPlayer entityPlayer) {
+    private Color getHealthColor(EntityPlayer entityPlayer) {
         int health = (int) (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount());
 
         if (health > 36) {
@@ -86,10 +91,10 @@ public class TargetInfo extends HUDModule {
         return targetPlayer == entityPlayer;
     }
 
-    private static class TargetInfoComponent extends HUDComponent {
+    private class TargetInfoComponent extends HUDComponent {
 
-        public TargetInfoComponent() {
-            super("TargetInfo", GameSenseGUI.theme.getPanelRenderer(), new Point(0, 150));
+        public TargetInfoComponent (Theme theme) {
+            super(getName(), theme.getPanelRenderer(), TargetInfo.this.position);
         }
 
         @Override

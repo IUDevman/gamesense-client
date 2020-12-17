@@ -5,6 +5,9 @@ import java.awt.Point;
 
 import com.gamesense.api.settings.Setting;
 import com.gamesense.api.util.render.GSColor;
+import com.lukflug.panelstudio.hud.HUDList;
+import com.lukflug.panelstudio.hud.ListComponent;
+import com.lukflug.panelstudio.theme.Theme;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 import net.minecraft.client.resources.I18n;
@@ -12,14 +15,14 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
 // PanelStudio rewrite by lukflug
-public class PotionEffects extends ListModule {
-	private static Setting.Boolean sortUp;
-	private static Setting.Boolean sortRight;
-	private static Setting.ColorSetting color;
-	private static PotionList list=new PotionList();
+public class PotionEffects extends HUDModule {
+	private Setting.Boolean sortUp;
+	private Setting.Boolean sortRight;
+	private Setting.ColorSetting color;
+	private PotionList list=new PotionList();
     
     public PotionEffects(){
-    	super(new ListModule.ListComponent("PotionEffects",new Point(0,300),list),new Point(0,300));
+    	super("PotionEffects",new Point(0,300));
     }
 
     public void setup(){
@@ -28,8 +31,13 @@ public class PotionEffects extends ListModule {
         color = registerColor("Color", "Color", new GSColor(0, 255, 0, 255));
     }
     
+    @Override
+    public void populate (Theme theme) {
+    	component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
+    }
     
-    private static class PotionList implements ListModule.HUDList {
+    
+    private class PotionList implements HUDList {
 		@Override
 		public int getSize() {
 			return mc.player.getActivePotionEffects().size();
