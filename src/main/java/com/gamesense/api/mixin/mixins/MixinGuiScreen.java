@@ -1,5 +1,6 @@
 package com.gamesense.api.mixin.mixins;
 
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.render.ShulkerViewer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemShulkerBox;
@@ -14,7 +15,7 @@ public class MixinGuiScreen {
 
 	@Inject(method = "renderToolTip", at = @At("HEAD"), cancellable = true)
 	public void renderToolTip(ItemStack stack, int x, int y, CallbackInfo info){
-		if (stack.getItem() instanceof ItemShulkerBox) {
+		if (ModuleManager.isModuleEnabled("ShulkerViewer") && stack.getItem() instanceof ItemShulkerBox) {
 			if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("BlockEntityTag", 10)) {
 				if (stack.getTagCompound().getCompoundTag("BlockEntityTag").hasKey("Items", 9)) {
 					info.cancel();
