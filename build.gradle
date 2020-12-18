@@ -25,13 +25,14 @@ version project.modVersion
 group project.modGroup
 
 task downloadPanelstudio {
-	mkdir "${buildDir}"
-	new URL("https://github.com/lukflug/PanelStudio/releases/download/v0.1.1/panelstudio-mc-0.1.1.jar").withInputStream{i->new File("${buildDir}/panelstudio-mc-0.1.1.jar").withOutputStream{it<<i}}
+	doLast {
+		new URL("https://github.com/lukflug/PanelStudio/releases/download/v0.1.1/panelstudio-mc-0.1.1.jar").withInputStream{i->new File("${buildDir}/panelstudio-mc-0.1.1.jar").withOutputStream{it<<i}}
+	}
 }
 
 task unpackPanelstudio(dependsOn: downloadPanelstudio, type: Copy) {
-    from zipTree("${buildDir}/panelstudio-mc-0.1.1.jar")
-    into "${buildDir}/panelstudio"
+	from zipTree("${buildDir}/panelstudio-mc-0.1.1.jar")
+	into "${buildDir}/sources/main/java"
 }
 
 compileJava {
@@ -142,12 +143,3 @@ jar {
 }
 
 build.dependsOn(shadowJar)
-
-sourceSets {
-	main {
-		java {
-			srcDir 'src/main/java'
-			srcDir 'build/panelstudio'
-		}
-	}
-}
