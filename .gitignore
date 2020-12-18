@@ -273,5 +273,5 @@ gradle-app.setting
 # End of https://www.gitignore.io/api/linux,gradle,eclipse,windows,forgegradle,intellij+all,emacs,vim
 
 # PanelStudio
-src/main/java/com/lukflug
+src/main/java/com/lukflug/panelstudio
 src/main/java/META-INF
