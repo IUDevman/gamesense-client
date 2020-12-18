@@ -32,11 +32,10 @@ task downloadPanelstudio {
 
 task unpackPanelstudio(dependsOn: downloadPanelstudio, type: Copy) {
 	from zipTree("${buildDir}/panelstudio-mc-0.1.1.jar")
-	into "${buildDir}/sources/main/java"
+	into "src/main/java"
 }
 
 compileJava {
-	dependsOn unpackPanelstudio
 	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
 
@@ -143,3 +142,4 @@ jar {
 }
 
 build.dependsOn(shadowJar)
+setupDecompWorkspace.dependsOn(unpackPanelstudio)
