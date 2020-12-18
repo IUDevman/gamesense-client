@@ -121,6 +121,98 @@ public class GameSenseTessellator {
 		drawBoundingBoxWithSides(getBoundingBox(blockPos, 1, 1, 1), width, color, sides);
 	}
 
+	/* drawBoxWithDirection start */
+
+	// Children of points, it just contains the 2 coordinates x and y
+	public static class PointDouble {
+		public double x;
+		public double z;
+		public PointDouble(double x, double z) {
+			this.x = x;
+			this.z = z;
+		}
+	}
+	// This contain and elaborate the coordinates
+	public static class Points {
+		// Coordinates
+		private final PointDouble[] point = new PointDouble[4];
+		// For counting when adding to point
+		private int count = 0;
+		// Center of the 2d square
+		private final double xCenter;
+		private final double zCenter;
+		// Feet and Head
+		public final double yMin;
+		public final double yMax;
+		// Rotation
+		private final float rotation;
+		// Constructor
+		public Points(double yMin, double yMax, double xCenter, double zCenter, float rotation) {
+			this.yMin = yMin;
+			this.yMax = yMax;
+			this.xCenter = xCenter;
+			this.zCenter = zCenter;
+			this.rotation = rotation;
+		}
+		// This add and elaborate the points
+		public void addPoints(double x, double z) {
+			/// Creating the rotation
+			// Make center = 0
+			x -= xCenter;
+			z -= zCenter;
+			// Matrix Rotation (https://en.wikipedia.org/wiki/Rotation_matrix)
+			double rotateX = x * Math.cos(rotation) - z * Math.sin(rotation);
+			double rotateZ = x * Math.sin(rotation) + z * Math.cos(rotation);
+			// Return to where we were
+			rotateX += xCenter;
+			rotateZ += zCenter;
+			// Add the point
+			point[count++] = new PointDouble(rotateX, rotateZ);
+		}
+		// Shorter way for getting a point
+		public PointDouble getPoint(int index) {
+			return point[index];
+		}
+
+	}
+
+	public static void drawBoxWithDirection(AxisAlignedBB bb, GSColor color, float rotation) {
+		// Get the center of the 2d square (we are going to rotate based from the cetner)
+		double xCenter = bb.minX + (bb.maxX - bb.minX) / 2;
+		double zCenter = bb.minZ + (bb.maxZ - bb.minZ) / 2;
+		// Collect every points
+		Points square = new Points(bb.minY, bb.maxY, xCenter, zCenter, rotation);
+		// Create every points
+		square.addPoints(bb.minX, bb.minZ);
+		square.addPoints(bb.minX, bb.maxZ);
+		square.addPoints(bb.maxX, bb.maxZ);
+		square.addPoints(bb.maxX, bb.minZ);
+		/// Lets dreaw all the lines
+		// Down
+		for(int i = 0; i < 4; i++) {
+			drawLine(square.getPoint(i).x, square.yMin, square.getPoint(i).z,
+					square.getPoint((i + 1) % 4).x, square.yMin, square.getPoint((i + 1) % 4).z,
+					color
+			);
+		}
+		// Up
+		for(int i = 0; i < 4; i++) {
+			drawLine(square.getPoint(i).x, square.yMax, square.getPoint(i).z,
+					square.getPoint((i + 1) % 4).x, square.yMax, square.getPoint((i + 1) % 4).z,
+					color
+			);
+		}
+		// Vertically
+		for(int i = 0; i < 4; i++) {
+			drawLine(square.getPoint(i).x, square.yMin, square.getPoint(i).z,
+					square.getPoint(i).x, square.yMax, square.getPoint(i).z,
+					color
+			);
+		}
+	}
+
+	/* drawBoxWithDirection end */
+
 	//hoosiers put this together with blood, sweat, and tears D:
 	public static void drawBoundingBoxWithSides(AxisAlignedBB axisAlignedBB, int width, GSColor color, int sides) {
 		Tessellator tessellator = Tessellator.getInstance();

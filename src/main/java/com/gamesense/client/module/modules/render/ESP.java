@@ -30,11 +30,13 @@ public class ESP extends Module {
     }
 
     Setting.Boolean playerRender;
+    Setting.Boolean playerDirection;
     Setting.Boolean mobRender;
     Setting.Boolean containerRender;
     Setting.Boolean itemRender;
     Setting.Boolean entityRender;
     Setting.Boolean glowCrystals;
+    Setting.Boolean glowPlayer;
     Setting.Integer width;
     Setting.Integer range;
     Setting.ColorSetting mainColor;
@@ -44,11 +46,13 @@ public class ESP extends Module {
         range = registerInteger("Range", "Range", 100, 10, 260);
         width = registerInteger("Line Width", "LineWidth", 2, 1, 5);
         playerRender = registerBoolean("Player", "Player", true);
+        playerDirection = registerBoolean("Direction", "Direction", false);
         mobRender = registerBoolean("Mob", "Mob", false);
         entityRender = registerBoolean("Entity", "Entity", false);
         itemRender = registerBoolean("Item", "Item", true);
         containerRender = registerBoolean("Container", "Container", false);
         glowCrystals = registerBoolean("Glow Crystal", "GlowCrystal", false);
+        glowPlayer = registerBoolean("Glow Player", "GlowPlayer", false);
     }
 
     GSColor playerColor;
@@ -61,7 +65,18 @@ public class ESP extends Module {
         mc.world.loadedEntityList.stream().filter(entity -> entity != mc.player).filter(entity -> rangeEntityCheck(entity)).forEach(entity -> {
             defineEntityColors(entity);
             if (playerRender.getValue() && entity instanceof EntityPlayer){
-                GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);
+                // If glowing
+                if (glowPlayer.getValue()) {
+                    entity.setGlowing(true);
+                    System.out.println("");
+                }
+                else if (entity.isGlowing())
+                    entity.setGlowing(false);
+                // If the guy want to see the direction from the box
+                if (playerDirection.getValue())
+                    GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYawHead);
+                else
+                    GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);
             }
             if (mobRender.getValue()){
                 if (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid){
