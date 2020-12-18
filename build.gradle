@@ -24,7 +24,26 @@ apply plugin: 'com.github.johnrengelman.shadow'
 version project.modVersion
 group project.modGroup
 
+sourceSets {
+	main {
+		java {
+			srcDir 'src/main/java'
+			srcDir 'build/panelstudio'
+		}
+	}
+}
+
+task downloadPanelstudio {
+	new URL("https://github.com/lukflug/PanelStudio/releases/download/v0.1.1/panelstudio-mc-0.1.1.jar").withInputStream{i->new File("${buildDir}/panelstudio-mc-0.1.1.jar").withOutputStream{it<<i}}
+}
+
+task unpackPanelstudio(dependsOn: downloadPanelstudio, type: Copy) {
+    from zipTree("${buildDir}/panelstudio-mc-0.1.1.jar")
+    into "${buildDir}/panelstudio"
+}
+
 compileJava {
+	dependsOn unpackPanelstudio
 	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
 
@@ -131,21 +150,3 @@ jar {
 }
 
 build.dependsOn(shadowJar)
-
-sourceSets {
-	main {
-		java {
-			srcDir 'src/main/java'
-			srcDir 'build/panelstudio'
-		}
-	}
-}
-
-task downloadPanelstudio {
-	new URL("https://github.com/lukflug/PanelStudio/releases/download/v0.1.1/panelstudio-mc-0.1.1.jar").withInputStream{i->new File("${buildDir}/panelstudio-mc-0.1.1.jar").withOutputStream{it<<i}}
-}
-
-task unpackPanelstudio(dependsOn: downloadPanelstudio, type: Copy) {
-    from zipTree("${buildDir}/panelstudio-mc-0.1.1.jar")
-    into "${buildDir}/panelstudio"
-}
