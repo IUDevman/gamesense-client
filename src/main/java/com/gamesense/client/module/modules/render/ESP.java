@@ -8,8 +8,10 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySlime;
@@ -17,6 +19,10 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.*;
+import com.gamesense.api.util.misc.MessageBus;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @Author Hoosiers on 09/22/2020
@@ -24,29 +30,33 @@ import net.minecraft.tileentity.*;
  * todo: Basic wallhack/chams option???
  */
 
+
 public class ESP extends Module {
     public ESP(){
         super("ESP", Category.Render);
     }
 
+
     Setting.Boolean playerRender;
     Setting.Boolean playerDirection;
+    Setting.Boolean mobDirection;
     Setting.Boolean mobRender;
     Setting.Boolean containerRender;
     Setting.Boolean itemRender;
     Setting.Boolean entityRender;
     Setting.Boolean glowCrystals;
     Setting.Boolean glowPlayer;
-    Setting.Integer width;
+    Setting.Double width;
     Setting.Integer range;
     Setting.ColorSetting mainColor;
 
     public void setup(){
         mainColor = registerColor("Color", "Color");
         range = registerInteger("Range", "Range", 100, 10, 260);
-        width = registerInteger("Line Width", "LineWidth", 2, 1, 5);
+        width = registerDouble("Line Width", "LineWidth", 2, 1, 5);
         playerRender = registerBoolean("Player", "Player", true);
-        playerDirection = registerBoolean("Direction", "Direction", false);
+        playerDirection = registerBoolean("Player Direction", "playerDirection", false);
+        mobDirection = registerBoolean("Mob Direction", "mobDirection", false);
         mobRender = registerBoolean("Mob", "Mob", false);
         entityRender = registerBoolean("Entity", "Entity", false);
         itemRender = registerBoolean("Item", "Item", true);
@@ -61,6 +71,7 @@ public class ESP extends Module {
     GSColor containerColor;
     int opacityGradient;
 
+
     public void onWorldRender(RenderEvent event){
         mc.world.loadedEntityList.stream().filter(entity -> entity != mc.player).filter(entity -> rangeEntityCheck(entity)).forEach(entity -> {
             defineEntityColors(entity);
@@ -68,19 +79,20 @@ public class ESP extends Module {
                 // If glowing
                 if (glowPlayer.getValue()) {
                     entity.setGlowing(true);
-                    System.out.println("");
                 }
                 else if (entity.isGlowing())
                     entity.setGlowing(false);
                 // If the guy want to see the direction from the box
                 if (playerDirection.getValue())
-                    GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYawHead);
+                    GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYawHead, width.getValue());
                 else
                     GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);
             }
             if (mobRender.getValue()){
                 if (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid){
-                    GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mobColor);
+                    if (mobDirection.getValue()) {
+                        GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), mobColor, ((EntityLiving) entity).rotationYawHead, width.getValue());
+                    }else GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mobColor);
                 }
             }
             if (itemRender.getValue() && entity instanceof EntityItem){
@@ -123,7 +135,7 @@ public class ESP extends Module {
 
     public void onDisable(){
         mc.world.loadedEntityList.stream().forEach(entity -> {
-            if (entity instanceof EntityEnderCrystal && entity.isGlowing()){
+            if ((entity instanceof EntityEnderCrystal || entity instanceof EntityPlayer) && entity.isGlowing()){
                 entity.setGlowing(false);
             }
         });
