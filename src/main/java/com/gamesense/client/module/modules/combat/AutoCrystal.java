@@ -139,14 +139,11 @@ public class AutoCrystal extends Module {
 
     private boolean switchCooldown = false;
     private boolean isAttacking = false;
-    private boolean isPlacing = false;
-    private boolean isBreaking = false;
     public boolean isActive = false;
     public static boolean stopAC = false;
     private static boolean togglePitch = false;
     private int oldSlot = -1;
     private int newSlot;
-    private int waitCounter;
     private Entity renderEnt;
     private BlockPos render;
     private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
@@ -168,8 +165,6 @@ public class AutoCrystal extends Module {
         }
 
         isActive = false;
-        isBreaking = false;
-        isPlacing = false;
 
         EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityEnderCrystal)
@@ -218,7 +213,6 @@ public class AutoCrystal extends Module {
                 timer.reset();
 
                 isActive = true;
-                isBreaking = true;
 
                 if (rotate.getValue()) {
                     lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
@@ -239,7 +233,6 @@ public class AutoCrystal extends Module {
                 }
 
                 isActive = false;
-                isBreaking = false;
             }
 
             if (!multiPlace.getValue()){
@@ -254,7 +247,6 @@ public class AutoCrystal extends Module {
             }
             isAttacking = false;
             isActive = false;
-            isBreaking = false;
         }
 
         int crystalSlot = mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL ? mc.player.inventory.currentItem : -1;
@@ -314,11 +306,6 @@ public class AutoCrystal extends Module {
                             this.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D, mc.player);
                         }
 
-                        EntityEnderCrystal crystal1 = new EntityEnderCrystal(mc.world, q.getX(), q.getY(), q.getZ());
-                        if (!mc.player.canEntityBeSeen(crystal1) && mc.player.getDistance(crystal1) > wallsRange.getValue()) {
-                            return;
-                        }
-
                         RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D));
                         if (raytrace.getValue()) {
                             if (result == null || result.sideHit == null) {
@@ -327,7 +314,6 @@ public class AutoCrystal extends Module {
                                 render = null;
                                 resetRotation();
                                 isActive = false;
-                                isPlacing = false;
                                 return;
                             } else {
                                 enumFacing = result.sideHit;
@@ -341,7 +327,6 @@ public class AutoCrystal extends Module {
 
                         if (q != null && mc.player != null) {
                             isActive = true;
-                            isPlacing = true;
                             if (raytrace.getValue() && enumFacing != null) {
                                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, enumFacing, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
                             } else if (q.getY() == 255) {
@@ -678,8 +663,6 @@ public class AutoCrystal extends Module {
         GameSenseMod.EVENT_BUS.subscribe(this);
         PlacedCrystals.clear();
         isActive = false;
-        isPlacing = false;
-        isBreaking = false;
         if(chat.getValue() && mc.player != null) {
             MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoCrystal turned ON!");
         }
@@ -693,8 +676,6 @@ public class AutoCrystal extends Module {
         resetRotation();
         PlacedCrystals.clear();
         isActive = false;
-        isPlacing = false;
-        isBreaking = false;
         if(chat.getValue()) {
             MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoCrystal turned OFF!");
         }
