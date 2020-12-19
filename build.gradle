@@ -24,17 +24,6 @@ apply plugin: 'com.github.johnrengelman.shadow'
 version project.modVersion
 group project.modGroup
 
-task downloadPanelstudio {
-	doLast {
-		new URL("https://github.com/lukflug/PanelStudio/releases/download/v0.1.1/panelstudio-mc-0.1.1.jar").withInputStream{i->new File("${buildDir}/panelstudio-mc-0.1.1.jar").withOutputStream{it<<i}}
-	}
-}
-
-task unpackPanelstudio(dependsOn: downloadPanelstudio, type: Copy) {
-	from zipTree("${buildDir}/panelstudio-mc-0.1.1.jar")
-	into "src/main/java"
-}
-
 compileJava {
 	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
@@ -82,7 +71,7 @@ dependencies {
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
 	compile group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
-	compile("com.lukflug:panelstudio:0.1.1")
+	compile("com.lukflug:panelstudio:0.1.2")
 }
 
 processResources {
@@ -139,6 +128,17 @@ jar {
 				'FMLAT': 'gamesense_at.cfg'
 		)
 	}
+}
+
+task downloadPanelstudio {
+	doLast {
+		new URL("https://github.com/lukflug/PanelStudio/releases/download/v0.1.2/panelstudio-mc-0.1.1.jar").withInputStream{i->new File("${buildDir}/panelstudio-mc-0.1.1.jar").withOutputStream{it<<i}}
+	}
+}
+
+task unpackPanelstudio(dependsOn: downloadPanelstudio, type: Copy) {
+	from zipTree("${buildDir}/panelstudio-mc-0.1.1.jar")
+	into "src/main/java"
 }
 
 build.dependsOn(shadowJar)
