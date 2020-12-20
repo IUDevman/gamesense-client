@@ -33,7 +33,7 @@ public class GameSenseMod {
 	public static final String MODID = "gamesense";
 	public static String MODNAME = "GameSense";
 	public static final String FORGENAME = "GameSense";
-	public static final String MODVER = "2.2.4";
+	public static final String MODVER = "dev2.2.5";
 
 	public static final Logger log = LogManager.getLogger(MODNAME);
 
