@@ -9,11 +9,13 @@ public class FastPlace extends Module{
 
 	Setting.Boolean exp;
 	Setting.Boolean crystals;
+	Setting.Boolean offhandCrystal;
 	Setting.Boolean everything;
 
 	public void setup(){
 		exp = registerBoolean("Exp", "Exp", false);
 		crystals = registerBoolean("Crystals", "Crystals", false);
+		offhandCrystal = registerBoolean("Offhand Crystal", "OffhandCrystal", false);
 		everything = registerBoolean("Everything", "Everything",false);
 	}
 
@@ -23,6 +25,10 @@ public class FastPlace extends Module{
 		}
 
 		if (crystals.getValue() && mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL){
+			mc.rightClickDelayTimer = 0;
+		}
+
+		if (offhandCrystal.getValue() && mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL) {
 			mc.rightClickDelayTimer = 0;
 		}
 
