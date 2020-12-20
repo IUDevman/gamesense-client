@@ -3,7 +3,6 @@ package com.gamesense.client.clickgui;
 import java.awt.Color;
 import java.awt.Point;
 
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.gamesense.api.settings.Setting;
@@ -88,7 +87,19 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				return "gamesense:gui/";
 			}
 		};
-		gui=new HUDClickGUI(guiInterface);
+		gui=new HUDClickGUI(guiInterface) {
+			@Override
+			public void handleScroll (int diff) {
+				super.handleScroll(diff);
+				for (FixedComponent component: components) {
+	        		if (!hudComponents.contains(component)) {
+		        		Point p=component.getPosition(guiInterface);
+		        		p.translate(0,-diff);
+		        		component.setPosition(guiInterface,p);
+	        		}
+	        	}
+			}
+		};
 		Toggleable hudToggle=new Toggleable() {
 			@Override
 			public void toggle() {
@@ -124,26 +135,6 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			}
 		}
 	}
-	
-	@Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		super.drawScreen(mouseX,mouseY,partialTicks);
-        int scroll=Mouse.getDWheel();
-        if (scroll!=0) {
-        	if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
-	        	for (FixedComponent component: gui.getComponents()) {
-	        		if (!(component instanceof HUDPanel)) {
-		        		Point p=component.getPosition(guiInterface);
-		        		if (scroll>0) p.translate(0,ClickGuiModule.scrollSpeed.getValue());
-		        		else p.translate(0,-ClickGuiModule.scrollSpeed.getValue());
-		        		component.setPosition(guiInterface,p);
-	        		}
-	        	}
-        	}
-        	if (scroll>0) gui.handleScroll(-ClickGuiModule.scrollSpeed.getValue());
-        	else gui.handleScroll(ClickGuiModule.scrollSpeed.getValue());
-        }
-    }
 	
 	private void addModule (CollapsibleContainer panel, Module module) {
 		CollapsibleContainer container;
