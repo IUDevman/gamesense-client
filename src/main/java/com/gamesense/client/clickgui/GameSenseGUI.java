@@ -91,13 +91,15 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			@Override
 			public void handleScroll (int diff) {
 				super.handleScroll(diff);
-				for (FixedComponent component: components) {
-	        		if (!hudComponents.contains(component)) {
-		        		Point p=component.getPosition(guiInterface);
-		        		p.translate(0,-diff);
-		        		component.setPosition(guiInterface,p);
-	        		}
-	        	}
+				if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
+					for (FixedComponent component: components) {
+		        		if (!hudComponents.contains(component)) {
+			        		Point p=component.getPosition(guiInterface);
+			        		p.translate(0,-diff);
+			        		component.setPosition(guiInterface,p);
+		        		}
+		        	}
+				}
 			}
 		};
 		Toggleable hudToggle=new Toggleable() {
