@@ -22,6 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+
 /**
  * @author 086
  * @author Hoosiers
@@ -92,10 +93,10 @@ public class GameSenseTessellator {
 		drawBoundingBox(getBoundingBox(bp,1, height,1),width,color);
 	}
 
-	public static void drawBoundingBox (AxisAlignedBB bb, float width, GSColor color) {
+	public static void drawBoundingBox (AxisAlignedBB bb, double width, GSColor color) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		GlStateManager.glLineWidth(width);
+		GlStateManager.glLineWidth((float) width);
 		color.glColor();
 		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
 		vertex(bb.minX,bb.minY,bb.minZ,bufferbuilder);
@@ -120,6 +121,109 @@ public class GameSenseTessellator {
 	public static void drawBoundingBoxWithSides(BlockPos blockPos, int width, GSColor color, int sides) {
 		drawBoundingBoxWithSides(getBoundingBox(blockPos, 1, 1, 1), width, color, sides);
 	}
+
+	/* drawBoxWithDirection start */
+
+	// Children of points, it just contains the 2 coordinates x and y
+	public static class PointDouble {
+		public double x;
+		public double z;
+		public PointDouble(double x, double z) {
+			this.x = x;
+			this.z = z;
+		}
+	}
+	// This contain and elaborate the coordinates
+	public static class Points {
+		// Coordinates
+		double[][] point = new double[4][2];
+		// For counting when adding to point
+		private int count = 0;
+		// Center of the 2d square
+		private final double xCenter;
+		private final double zCenter;
+		// Feet and Head
+		public final double yMin;
+		public final double yMax;
+		// Rotation
+		private final float rotation;
+		// Constructor
+		public Points(double yMin, double yMax, double xCenter, double zCenter, float rotation) {
+			this.yMin = yMin;
+			this.yMax = yMax;
+			this.xCenter = xCenter;
+			this.zCenter = zCenter;
+			this.rotation = rotation;
+		}
+		// This add and elaborate the points
+		public void addPoints(double x, double z) {
+			/// Creating the rotation
+			// Make center = 0
+			x -= xCenter;
+			z -= zCenter;
+			// Matrix Rotation (https://en.wikipedia.org/wiki/Rotation_matrix)
+			double rotateX = x * Math.cos(rotation) - z * Math.sin(rotation);
+			double rotateZ = x * Math.sin(rotation) + z * Math.cos(rotation);
+			// Return to where we were
+			rotateX += xCenter;
+			rotateZ += zCenter;
+			// Add the point
+			point[count++] = new double[] {rotateX, rotateZ};
+		}
+		// Shorter way for getting a point
+		public double[] getPoint(int index) {
+			return point[index];
+		}
+
+	}
+
+	public static void drawBoxWithDirection(AxisAlignedBB bb, GSColor color, float rotation, double width) {
+		// Get the center of the 2d square (we are going to rotate based from the cetner)
+		double xCenter = bb.minX + (bb.maxX - bb.minX) / 2;
+		double zCenter = bb.minZ + (bb.maxZ - bb.minZ) / 2;
+		// Collect every points
+		Points square = new Points(bb.minY, bb.maxY, xCenter, zCenter, rotation);
+		// Create every points
+		square.addPoints(bb.minX, bb.minZ);
+		square.addPoints(bb.minX, bb.maxZ);
+		square.addPoints(bb.maxX, bb.maxZ);
+		square.addPoints(bb.maxX, bb.minZ);
+		/// Lets dreaw all the lines
+		// Down
+		for(int i = 0; i < 4; i++) {
+			drawLineWidth(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
+					square.getPoint((i + 1) % 4)[0], square.yMin, square.getPoint((i + 1) % 4)[1],
+					color, width
+			);
+		}
+		// Up
+		for(int i = 0; i < 4; i++) {
+			drawLineWidth(square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
+					square.getPoint((i + 1) % 4)[0], square.yMax, square.getPoint((i + 1) % 4)[1],
+					color, width
+			);
+		}
+		// Vertically
+		for(int i = 0; i < 4; i++) {
+			drawLineWidth(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
+					square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
+					color, width
+			);
+		}
+	}
+
+	public static void drawLineWidth(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color, double width) {
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		GlStateManager.glLineWidth((float) width);
+		color.glColor();
+		bufferbuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
+		vertex(posx,posy,posz,bufferbuilder);
+		vertex(posx2,posy2,posz2,bufferbuilder);
+		tessellator.draw();
+	}
+
+	/* drawBoxWithDirection end */
 
 	//hoosiers put this together with blood, sweat, and tears D:
 	public static void drawBoundingBoxWithSides(AxisAlignedBB axisAlignedBB, int width, GSColor color, int sides) {

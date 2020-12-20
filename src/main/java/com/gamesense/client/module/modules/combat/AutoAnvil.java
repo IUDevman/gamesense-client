@@ -241,7 +241,7 @@ public class AutoAnvil extends Module {
                 mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
                 isSneaking = false;
             }
-            if (noKick == 2) {
+            if (noKick == failStop.getValue()) {
                 break;
             }
         }
@@ -257,10 +257,7 @@ public class AutoAnvil extends Module {
         // If it is a ghostblock
         if (step == to_place.size() - 1 && block instanceof BlockAnvil && side != null) {
             // UnGlitch it with a left click
-            mc.player.swingArm(EnumHand.MAIN_HAND);
-            mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                    CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, side
-            ));
+            //mc.player.swingArm(EnumHand.MAIN_HAND);
             mc.player.connection.sendPacket(new CPacketPlayerDigging(
                     CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, side
             ));
