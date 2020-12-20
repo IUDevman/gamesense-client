@@ -56,17 +56,17 @@ public class AutoAnvil extends Module {
         anvilTypesList.add("None");
 
         anvilMode = registerMode("Mode", "Mode", anvilTypesList, "Pick");
-        enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
-        decrease = registerDouble("Decrease", "Decrease",2, 0, 6);
-        rotate = registerBoolean("Rotate", "Rotate", true);
         antiCrystal = registerBoolean("Anti Crystal", "AntiCrystal", false);
         fastAnvil = registerBoolean("Fast Anvil", "FastAnvil", true);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        rotate = registerBoolean("Rotate", "Rotate", true);
+        enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
+        decrease = registerDouble("Decrease", "Decrease",2, 0, 6);
         tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
         blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
         hDistance = registerInteger("H Distance", "HDistance", 7, 1, 10);
         minH = registerInteger("Min H", "MinH", 3, 1, 10);
         failStop = registerInteger("Fail Stop", "FailStop", 2, 1, 10);
+        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
     }
 
     private boolean isSneaking = false;

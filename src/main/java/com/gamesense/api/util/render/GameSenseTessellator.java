@@ -22,11 +22,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-
 /**
  * @author 086
  * @author Hoosiers
  * @author lukflug
+ * @author TechAle
  */
 
 public class GameSenseTessellator {

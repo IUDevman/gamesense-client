@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = GameSenseMod.MODID, name = GameSenseMod.FORGENAME, version = GameSenseMod.MODVER, clientSideOnly = true)
 public class GameSenseMod {
+
 	public static final String MODID = "gamesense";
 	public static String MODNAME = "GameSense";
 	public static final String FORGENAME = "GameSense";
