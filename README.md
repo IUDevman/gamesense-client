@@ -38,6 +38,7 @@ Most notable features:
 * Viewmodel changer
 * Custom renderings that are compatible with other mods such as future
 * Clean GUI and stable config
+* Unique HUD components that are comparable ones seen in paid clients.
 
 #### Contributors
 * Cyber (original developer)
