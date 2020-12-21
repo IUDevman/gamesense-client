@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
-import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.module.modules.render.SkyColor;
 import net.minecraftforge.client.event.*;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
@@ -106,24 +104,6 @@ public class EventProcessor {
 				e.printStackTrace();
 				MessageBus.sendClientPrefixMessage(ChatFormatting.DARK_RED + "Error: " + e.getMessage());
 			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onFogColorRender(EntityViewRenderEvent.FogColors event) {
-		if (ModuleManager.isModuleEnabled("SkyColor")) {
-			GSColor color = SkyColor.color.getValue();
-			event.setRed(color.getRed() / 255f);
-			event.setGreen(color.getGreen() / 255f);
-			event.setBlue(color.getBlue() / 255f);
-		}
-	}
-
-	@SubscribeEvent
-	public void fog(EntityViewRenderEvent.FogDensity event) {
-		if (ModuleManager.isModuleEnabled("SkyColor") && !SkyColor.fog.getValue()) {
-			event.setDensity(0);
-			event.setCanceled(true);
 		}
 	}
 
