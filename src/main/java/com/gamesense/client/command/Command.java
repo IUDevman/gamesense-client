@@ -16,35 +16,35 @@ public abstract class Command {
     String[] commandAlias;
     String commandSyntax;
 
-    public Command(String commandName){
+    public Command(String commandName) {
         this.commandName = commandName;
     }
 
-    public static String getCommandPrefix(){
+    public static String getCommandPrefix() {
         return commandPrefix;
     }
 
-    public String getCommandName(){
+    public String getCommandName() {
         return this.commandName;
     }
 
-    public String getCommandSyntax(){
+    public String getCommandSyntax() {
         return this.commandSyntax;
     }
 
-    public String[] getCommandAlias(){
+    public String[] getCommandAlias() {
         return this.commandAlias;
     }
 
-    public static void setCommandPrefix(String prefix){
+    public static void setCommandPrefix(String prefix) {
         commandPrefix = prefix;
     }
 
-    public void setCommandSyntax(String syntax){
+    public void setCommandSyntax(String syntax) {
         this.commandSyntax = syntax;
     }
 
-    public void setCommandAlias(String[] alias){
+    public void setCommandAlias(String[] alias) {
         this.commandAlias = alias;
     }
 

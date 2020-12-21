@@ -11,7 +11,7 @@ import com.gamesense.client.module.ModuleManager;
 
 public class ToggleCommand extends Command {
 
-    public ToggleCommand(){
+    public ToggleCommand() {
         super("Toggle");
 
         setCommandSyntax(Command.getCommandPrefix() + "toggle [module]");
@@ -20,21 +20,21 @@ public class ToggleCommand extends Command {
         });
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
+    public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
 
-        for (Module module : ModuleManager.getModules()){
-            if (module.getName().equalsIgnoreCase(main) && !module.isEnabled()){
+        for (Module module : ModuleManager.getModules()) {
+            if (module.getName().equalsIgnoreCase(main) && !module.isEnabled()) {
                 module.enable();
                 MessageBus.sendClientPrefixMessage("Module " + module.getName() + " set to: ENABLED!");
             }
-            else if (module.getName().equalsIgnoreCase(main) && module.isEnabled()){
+            else if (module.getName().equalsIgnoreCase(main) && module.isEnabled()) {
                 module.disable();
                 MessageBus.sendClientPrefixMessage("Module " + module.getName() + " set to: DISABLED!");
             }
         }
 
-        if (main == null || ModuleManager.getModuleByName(main) == null){
+        if (main == null || ModuleManager.getModuleByName(main) == null) {
             MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
         }
     }

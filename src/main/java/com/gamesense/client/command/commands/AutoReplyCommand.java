@@ -10,7 +10,7 @@ import com.gamesense.client.module.modules.misc.AutoReply;
 
 public class AutoReplyCommand extends Command {
 
-    public AutoReplyCommand(){
+    public AutoReplyCommand() {
         super("AutoReply");
 
         setCommandSyntax(Command.getCommandPrefix() + "autoreply set [message] (use _ for spaces)");
@@ -19,11 +19,11 @@ public class AutoReplyCommand extends Command {
         });
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
+    public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
         String value = message[1].replace("_", " ");
 
-        if (main.equalsIgnoreCase("set")){
+        if (main.equalsIgnoreCase("set")) {
             AutoReply.setReply(value);
             MessageBus.sendClientPrefixMessage("Set AutoReply message: " + value + "!");
         }

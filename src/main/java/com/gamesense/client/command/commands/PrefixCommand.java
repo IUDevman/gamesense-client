@@ -9,7 +9,7 @@ import com.gamesense.client.command.Command;
 
 public class PrefixCommand extends Command {
 
-    public PrefixCommand(){
+    public PrefixCommand() {
         super("Prefix");
 
         setCommandSyntax(Command.getCommandPrefix() + "prefix value (no letters or numbers)");
@@ -18,17 +18,17 @@ public class PrefixCommand extends Command {
         });
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
+    public void onCommand(String command, String[] message) throws Exception {
         //this makes sure all inputs do not include letters or numbers, sets them to the default prefix instead
         String main = message[0].toUpperCase().replaceAll("[a-zA-Z0-9]",null);
         int size = message[0].length();
 
         //we don't want the prefix to be more than 1 character
-        if (main != null && size == 1){
+        if (main != null && size == 1) {
             Command.setCommandPrefix(main);
             MessageBus.sendClientPrefixMessage("Prefix set: \"" + main + "\"!");
         }
-        else if (size > 1 || size < 1){
+        else if (size > 1 || size < 1) {
             MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
         }
     }

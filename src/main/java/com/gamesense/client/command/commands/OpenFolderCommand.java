@@ -13,7 +13,7 @@ import java.io.File;
 
 public class OpenFolderCommand extends Command {
 
-    public OpenFolderCommand(){
+    public OpenFolderCommand() {
         super("OpenFolder");
 
         setCommandSyntax(Command.getCommandPrefix() + "openfolder");
@@ -22,7 +22,7 @@ public class OpenFolderCommand extends Command {
         });
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
+    public void onCommand(String command, String[] message) throws Exception {
         Desktop.getDesktop().open(new File(SaveConfig.fileName.replace("/", "")));
         MessageBus.sendClientPrefixMessage("Opened config folder!");
     }

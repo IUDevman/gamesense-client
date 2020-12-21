@@ -11,7 +11,7 @@ import com.gamesense.client.command.Command;
 
 public class FixGUICommand extends Command {
 
-    public FixGUICommand(){
+    public FixGUICommand() {
         super("FixGUI");
 
         setCommandSyntax(Command.getCommandPrefix() + "fixgui");
@@ -20,7 +20,7 @@ public class FixGUICommand extends Command {
         });
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
+    public void onCommand(String command, String[] message) throws Exception {
         GameSenseMod.getInstance().clickGUI = new GameSenseGUI();
         MessageBus.sendClientPrefixMessage("ClickGUI positions reset!");
     }

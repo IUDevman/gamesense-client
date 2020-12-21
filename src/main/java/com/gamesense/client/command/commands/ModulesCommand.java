@@ -16,7 +16,7 @@ import net.minecraft.util.text.event.HoverEvent;
 
 public class ModulesCommand extends Command {
 
-    public ModulesCommand(){
+    public ModulesCommand() {
         super("Modules");
 
         setCommandSyntax(Command.getCommandPrefix() + "modules (click to toggle)");
@@ -26,13 +26,13 @@ public class ModulesCommand extends Command {
     }
 
     /** ported from the old commands, @Author Seth for Seppuku **/
-    public void onCommand(String command, String[] message) throws Exception{
+    public void onCommand(String command, String[] message) throws Exception {
         int size = ModuleManager.getModules().size();
         TextComponentString msg = new TextComponentString("\2477Modules: " + "\247f ");
 
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             Module module = ModuleManager.getModules().get(i);
-            if (module != null){
+            if (module != null) {
                 msg.appendSibling(new TextComponentString((module.isEnabled() ? ChatFormatting.GREEN : ChatFormatting.RED) + module.getName() + "\2477" + ((i == size - 1) ? "" : ", "))
                         .setStyle(new Style()
                                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(module.getCategory().name())))

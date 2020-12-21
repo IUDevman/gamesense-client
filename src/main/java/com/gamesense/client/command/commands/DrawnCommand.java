@@ -11,7 +11,7 @@ import com.gamesense.client.module.ModuleManager;
 
 public class DrawnCommand extends Command {
 
-    public DrawnCommand(){
+    public DrawnCommand() {
         super("Drawn");
 
         setCommandSyntax(Command.getCommandPrefix() + "drawn [module]");
@@ -20,7 +20,7 @@ public class DrawnCommand extends Command {
         });
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
+    public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
 
         if (ModuleManager.getModuleByName(main) == null) {
@@ -28,13 +28,13 @@ public class DrawnCommand extends Command {
             return;
         }
 
-        for (Module module : ModuleManager.getModules()){
-            if (module.getName().equalsIgnoreCase(main)){
-                if (module.isDrawn()){
+        for (Module module : ModuleManager.getModules()) {
+            if (module.getName().equalsIgnoreCase(main)) {
+                if (module.isDrawn()) {
                     module.setDrawn(false);
                     MessageBus.sendClientPrefixMessage("Module " + module.getName() + " drawn set to: FALSE!");
                 }
-                else if (!module.isDrawn()){
+                else if (!module.isDrawn()) {
                     module.setDrawn(true);
                     MessageBus.sendClientPrefixMessage("Module " + module.getName() + " drawn set to: TRUE!");
                 }

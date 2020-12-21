@@ -13,7 +13,7 @@ public class CommandManager {
 
     public static ArrayList<Command> commands = new ArrayList<>();
 
-    public static void registerCommands(){
+    public static void registerCommands() {
         addCommand(new AutoGGCommand());
         addCommand(new AutoReplyCommand());
         addCommand(new BindCommand());
@@ -32,17 +32,17 @@ public class CommandManager {
         addCommand(new ToggleCommand());
     }
 
-    public static void addCommand(Command command){
+    public static void addCommand(Command command) {
         commands.add(command);
     }
 
-    public static ArrayList<Command> getCommands(){
+    public static ArrayList<Command> getCommands() {
         return commands;
     }
 
-    public static Command getCommandByName(String name){
-        for (Command command : commands){
-            if (command.getCommandName() == name){
+    public static Command getCommandByName(String name) {
+        for (Command command : commands) {
+            if (command.getCommandName() == name) {
                 return command;
             }
         }
@@ -52,7 +52,7 @@ public class CommandManager {
     boolean isValidCommand = false;
 
     /** @Author 086 for KAMI, regex is a bitch **/
-    public void callCommand(String input){
+    public void callCommand(String input) {
         String[] split = input.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
         String command1 = split[0];
         String args = input.substring(command1.length()).trim();
@@ -60,13 +60,13 @@ public class CommandManager {
         isValidCommand = false;
 
         commands.forEach(command -> {
-            for (String string : command.getCommandAlias()){
-                if (string.equalsIgnoreCase(command1)){
+            for (String string : command.getCommandAlias()) {
+                if (string.equalsIgnoreCase(command1)) {
                     isValidCommand = true;
-                    try{
+                    try {
                         command.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
                     }
-                    catch (Exception e){
+                    catch (Exception e) {
                         MessageBus.sendClientPrefixMessage(command.getCommandSyntax());
                     }
                 }

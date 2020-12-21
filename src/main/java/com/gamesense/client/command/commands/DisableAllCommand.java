@@ -11,7 +11,7 @@ import com.gamesense.client.module.ModuleManager;
 
 public class DisableAllCommand extends Command {
 
-    public DisableAllCommand(){
+    public DisableAllCommand() {
         super("DisableAll");
 
         setCommandSyntax(Command.getCommandPrefix() + "disableall");
@@ -20,11 +20,11 @@ public class DisableAllCommand extends Command {
         });
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
+    public void onCommand(String command, String[] message) throws Exception {
         int count = 0;
 
-        for (Module module : ModuleManager.getModules()){
-            if (module.isEnabled()){
+        for (Module module : ModuleManager.getModules()) {
+            if (module.isEnabled()) {
                 module.disable();
                 count++;
             }

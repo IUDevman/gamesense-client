@@ -10,7 +10,7 @@ import com.gamesense.client.command.Command;
 
 public class FriendCommand extends Command {
 
-    public FriendCommand(){
+    public FriendCommand() {
         super("Friend");
 
         setCommandSyntax(Command.getCommandPrefix() + "friend add/del [player]");
@@ -19,15 +19,15 @@ public class FriendCommand extends Command {
         });
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
+    public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
         String value = message[1];
 
-        if (main.equalsIgnoreCase("add") && !Friends.isFriend(value)){
+        if (main.equalsIgnoreCase("add") && !Friends.isFriend(value)) {
             Friends.addFriend(value);
             MessageBus.sendClientPrefixMessage("Added friend: " + value.toUpperCase() + "!");
         }
-        else if (main.equalsIgnoreCase("del") && Friends.isFriend(value)){
+        else if (main.equalsIgnoreCase("del") && Friends.isFriend(value)) {
             Friends.delFriend(value);
             MessageBus.sendClientPrefixMessage("Deleted friend: " + value.toUpperCase() + "!");
         }

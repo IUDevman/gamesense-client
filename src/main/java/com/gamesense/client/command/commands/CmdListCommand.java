@@ -10,7 +10,7 @@ import com.gamesense.client.command.CommandManager;
 
 public class CmdListCommand extends Command {
 
-    public CmdListCommand(){
+    public CmdListCommand() {
         super("Commands");
 
         setCommandSyntax(Command.getCommandPrefix() + "commands");
@@ -19,8 +19,8 @@ public class CmdListCommand extends Command {
         });
     }
 
-    public void onCommand(String command, String[] message) throws Exception{
-        for (Command command1 : CommandManager.getCommands()){
+    public void onCommand(String command, String[] message) throws Exception {
+        for (Command command1 : CommandManager.getCommands()) {
             MessageBus.sendClientPrefixMessage(command1.getCommandName() + ": " + "\"" + command1.getCommandSyntax() + "\"!");
         }
     }
