@@ -52,10 +52,8 @@ Most notable features:
 * TechAle (AutoAnvil)
 #### Credits
 Check specific class files for full credits.
-Some code used from (not directly referenced in code):
-* KAMI / 086
-* Osiris / Finz0 (old base)
-* Backdoored / CookieDragon234
+This client started out based off of FINZ0's Osiris, which in turn was based off of 086's KAMI. 
+Without these projects, GameSense would not exist so a lot of credit is due to them for their work.
 
 This client also implements the ClickGUI using PanelStudio: https://github.com/lukflug/PanelStudio/.
 If you believe that we are using your code and credits are not properly given, please message GooberTown#7384 on Discord.
