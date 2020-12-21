@@ -20,9 +20,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 public class ModuleManager {
+
 	public static ArrayList<Module> modules;
 
-	public ModuleManager(){
+	public ModuleManager() {
 		modules = new ArrayList<>();
 		//Combat
 		addMod(new AutoAnvil());
@@ -113,8 +114,8 @@ public class ModuleManager {
 		addMod(new ColorMain());
 	}
 
-	public static void addMod(Module m){
-		modules.add(m);
+	public static void addMod(Module module) {
+		modules.add(module);
 	}
 
 	public static void onUpdate() {
@@ -149,8 +150,8 @@ public class ModuleManager {
 		return modules;
 	}
 
-	public static ArrayList<Module> getModulesInCategory(Module.Category c){
-		ArrayList<Module> list = (ArrayList<Module>) getModules().stream().filter(m -> m.getCategory().equals(c)).collect(Collectors.toList());
+	public static ArrayList<Module> getModulesInCategory(Module.Category category) {
+		ArrayList<Module> list = (ArrayList<Module>) getModules().stream().filter(m -> m.getCategory().equals(category)).collect(Collectors.toList());
 		return list;
 	}
 
@@ -163,17 +164,17 @@ public class ModuleManager {
 		});
 	}
 
-	public static Module getModuleByName(String name){
-		Module m = getModules().stream().filter(mm->mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-		return m;
+	public static Module getModuleByName(String name) {
+		Module module = getModules().stream().filter(mm->mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+		return module;
 	}
 
-	public static boolean isModuleEnabled(String name){
-		Module m = getModules().stream().filter(mm->mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-		return m.isEnabled();
+	public static boolean isModuleEnabled(String name) {
+		Module module = getModules().stream().filter(mm->mm.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+		return module.isEnabled();
 	}
 
-	public static boolean isModuleEnabled(Module m){
-		return m.isEnabled();
+	public static boolean isModuleEnabled(Module module) {
+		return module.isEnabled();
 	}
 }

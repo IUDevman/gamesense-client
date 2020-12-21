@@ -14,6 +14,7 @@ import com.lukflug.panelstudio.settings.Toggleable;
 import net.minecraft.client.Minecraft;
 
 public abstract class Module implements Toggleable,KeybindSetting {
+
 	protected static final Minecraft mc = Minecraft.getMinecraft();
 
 	String name;
@@ -22,88 +23,100 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	boolean enabled;
 	boolean drawn;
 
-	public Module(String n, Category c) {
-		name = n;
-		category = c;
-		bind = Keyboard.KEY_NONE;
-		enabled = false;
-		drawn = true;
+	public Module(String name, Category category) {
+		this.name = name;
+		this.category = category;
+		this.bind = Keyboard.KEY_NONE;
+		this.enabled = false;
+		this.drawn = true;
 		setup();
 	}
 
-	public String getName(){
-		return name;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setName(String n){
-		name = n;
+	public void setName(String name){
+		this.name = name;
 	}
 
-	public Category getCategory(){
-		return category;
+	public Category getCategory() {
+		return this.category;
 	}
 
-	public void setCategory(Category c){
-		category = c;
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
-	public int getBind(){
-		return bind;
+	public int getBind() {
+		return this.bind;
 	}
 
-	public void setBind(int b){
-		bind = b;
+	public void setBind(int bind){
+		this.bind = bind;
 	}
 
-	protected void onEnable(){ }
+	protected void onEnable() {
 
-	protected void onDisable(){ }
-
-	public void onUpdate(){}
-
-	public void onRender(){}
-
-	public void onWorldRender(RenderEvent event) {}
-
-	public boolean isEnabled(){
-		return enabled;
 	}
 
-	public void setEnabled(boolean e){
-		enabled = e;
+	protected void onDisable() {
+
 	}
 
-	public void enable(){
+	public void onUpdate() {
+
+	}
+
+	public void onRender() {
+
+	}
+
+	public void onWorldRender(RenderEvent event) {
+
+	}
+
+	public boolean isEnabled() {
+		return this.enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public void enable() {
 		setEnabled(true);
 		onEnable();
 	}
 
-	public void disable(){
+	public void disable() {
 		setEnabled(false);
 		onDisable();
 	}
 
-	public void toggle(){
+	public void toggle() {
 		if(isEnabled()) {
 			disable();
 		}
-		else if(!isEnabled()){
+		else if(!isEnabled()) {
 			enable();
 		}
 	}
 
-	public String getHudInfo(){
+	public String getHudInfo() {
 		return "";
 	}
 
-	public void setup(){}
+	public void setup() {
 
-	public boolean isDrawn(){
-		return drawn;
 	}
 
-	public void setDrawn(boolean d){
-		drawn = d;
+	public boolean isDrawn() {
+		return this.drawn;
+	}
+
+	public void setDrawn(boolean drawn) {
+		this.drawn = drawn;
 	}
 
 	/** Check Setting.java */
@@ -142,7 +155,7 @@ public abstract class Module implements Toggleable,KeybindSetting {
 		return registerColor(name,configName,new GSColor(90,145,240));
 	}
 
-	public enum Category{
+	public enum Category {
 		Combat,
 		Exploits,
 		Movement,
@@ -154,21 +167,21 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	
 	@Override
 	public boolean isOn() {
-		return enabled;
+		return this.enabled;
 	}
 	
 	@Override
 	public int getKey() {
-		return bind;
+		return this.bind;
 	}
 	
 	@Override
 	public void setKey(int key) {
-		bind=key;
+		this.bind = key;
 	}
     
 	@Override
 	public String getKeyName() {
-		return Keyboard.getKeyName(bind);
+		return Keyboard.getKeyName(this.bind);
 	}
 }
