@@ -1,6 +1,5 @@
 package com.gamesense.api.util.world;
 
-import com.gamesense.api.util.misc.Wrapper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -19,7 +18,7 @@ public class BlockUtils {
 
 	public static final List blackList;
 	public static final List shulkerList;
-	static Minecraft mc = Minecraft.getMinecraft();
+	private static final Minecraft mc = Minecraft.getMinecraft();
 
 	public static IBlockState getState(BlockPos pos) {
 		return mc.world.getBlockState(pos);
@@ -42,7 +41,7 @@ public class BlockUtils {
 	private static boolean hasNeighbour(BlockPos blockPos) {
 		for (EnumFacing side : EnumFacing.values()) {
 			BlockPos neighbour = blockPos.offset(side);
-			if (!Wrapper.getWorld().getBlockState(neighbour).getMaterial().isReplaceable()) {
+			if (!mc.world.getBlockState(neighbour).getMaterial().isReplaceable()) {
 				return true;
 			}
 		}
@@ -105,7 +104,6 @@ public class BlockUtils {
 	static {
 		blackList = Arrays.asList(Blocks.ENDER_CHEST, Blocks.CHEST, Blocks.TRAPPED_CHEST, Blocks.CRAFTING_TABLE, Blocks.ANVIL, Blocks.BREWING_STAND, Blocks.HOPPER, Blocks.DROPPER, Blocks.DISPENSER);
 		shulkerList = Arrays.asList(Blocks.WHITE_SHULKER_BOX, Blocks.ORANGE_SHULKER_BOX, Blocks.MAGENTA_SHULKER_BOX, Blocks.LIGHT_BLUE_SHULKER_BOX, Blocks.YELLOW_SHULKER_BOX, Blocks.LIME_SHULKER_BOX, Blocks.PINK_SHULKER_BOX, Blocks.GRAY_SHULKER_BOX, Blocks.SILVER_SHULKER_BOX, Blocks.CYAN_SHULKER_BOX, Blocks.PURPLE_SHULKER_BOX, Blocks.BLUE_SHULKER_BOX, Blocks.BROWN_SHULKER_BOX, Blocks.GREEN_SHULKER_BOX, Blocks.RED_SHULKER_BOX, Blocks.BLACK_SHULKER_BOX);
-		mc = Minecraft.getMinecraft();
 	}
 
 	public static EnumFacing getPlaceableSide(BlockPos pos) {

@@ -40,6 +40,6 @@ public class ModulesCommand extends Command {
             }
         }
         msg.appendSibling(new TextComponentString(ChatFormatting.GRAY + "!"));
-        Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(msg);
+        mc.ingameGUI.getChatGUI().printChatMessage(msg);
     }
 }

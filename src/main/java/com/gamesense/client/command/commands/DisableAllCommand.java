@@ -30,6 +30,6 @@ public class DisableAllCommand extends Command {
             }
         }
 
-        MessageBus.sendClientPrefixMessage("Disabled " + count + " modules!");
+        MessageBus.sendCommandMessage("Disabled " + count + " modules!", true);
     }
 }

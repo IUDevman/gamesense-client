@@ -26,10 +26,10 @@ public class PrefixCommand extends Command {
         //we don't want the prefix to be more than 1 character
         if (main != null && size == 1) {
             Command.setCommandPrefix(main);
-            MessageBus.sendClientPrefixMessage("Prefix set: \"" + main + "\"!");
+            MessageBus.sendCommandMessage("Prefix set: \"" + main + "\"!", true);
         }
         else if (size > 1 || size < 1) {
-            MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
+            MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
         }
     }
 }

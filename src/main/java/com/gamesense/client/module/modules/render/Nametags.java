@@ -8,7 +8,6 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;
 import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.misc.Wrapper;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
@@ -79,7 +78,7 @@ public class Nametags extends Module {
 	}
 
 	public static double timerPos(final double n, final double n2) {
-		return n2 + (n - n2) * Wrapper.getMinecraft().timer.renderPartialTicks;
+		return n2 + (n - n2) * mc.timer.renderPartialTicks;
 	}
 
 	public static Vec3d renderPosEntity(final Entity entity) {

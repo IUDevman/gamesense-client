@@ -22,6 +22,6 @@ public class FixGUICommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {
         GameSenseMod.getInstance().clickGUI = new GameSenseGUI();
-        MessageBus.sendClientPrefixMessage("ClickGUI positions reset!");
+        MessageBus.sendCommandMessage("ClickGUI positions reset!", true);
     }
 }

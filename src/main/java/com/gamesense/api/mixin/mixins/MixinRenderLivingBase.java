@@ -1,6 +1,5 @@
 package com.gamesense.api.mixin.mixins;
 
-import com.gamesense.api.util.misc.Wrapper;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.render.NoRender;
 import net.minecraft.client.Minecraft;
@@ -33,7 +32,7 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends 
             return;
         }
 
-        if (NoRender.noCluster.getValue() && ModuleManager.getModuleByName("NoRender").isEnabled() && Wrapper.getPlayer().getDistance(entitylivingbaseIn) < 1 && entitylivingbaseIn != mc.player) {
+        if (NoRender.noCluster.getValue() && ModuleManager.getModuleByName("NoRender").isEnabled() && mc.player.getDistance(entitylivingbaseIn) < 1 && entitylivingbaseIn != mc.player) {
             GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
         }
     }

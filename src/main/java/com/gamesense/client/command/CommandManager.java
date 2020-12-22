@@ -67,14 +67,14 @@ public class CommandManager {
                         command.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
                     }
                     catch (Exception e) {
-                        MessageBus.sendClientPrefixMessage(command.getCommandSyntax());
+                        MessageBus.sendCommandMessage(command.getCommandSyntax(), true);
                     }
                 }
             }
         });
 
         if (!isValidCommand) {
-            MessageBus.sendClientPrefixMessage("Error! Invalid command!");
+            MessageBus.sendCommandMessage("Error! Invalid command!", true);
         }
     }
 }

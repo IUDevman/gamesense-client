@@ -22,7 +22,7 @@ public class FixHUDCommand extends Command {
 				((HUDModule)module).resetPosition();
 			}
 		}
-        MessageBus.sendClientPrefixMessage("HUD positions reset!");
+        MessageBus.sendCommandMessage("HUD positions reset!", true);
 	}
 
 }

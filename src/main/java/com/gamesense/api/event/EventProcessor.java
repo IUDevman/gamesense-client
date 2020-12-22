@@ -102,7 +102,7 @@ public class EventProcessor {
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				MessageBus.sendClientPrefixMessage(ChatFormatting.DARK_RED + "Error: " + e.getMessage());
+				MessageBus.sendCommandMessage(ChatFormatting.DARK_RED + "Error: " + e.getMessage(), true);
 			}
 		}
 	}

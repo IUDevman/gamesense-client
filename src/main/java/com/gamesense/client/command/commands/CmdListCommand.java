@@ -21,7 +21,7 @@ public class CmdListCommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {
         for (Command command1 : CommandManager.getCommands()) {
-            MessageBus.sendClientPrefixMessage(command1.getCommandName() + ": " + "\"" + command1.getCommandSyntax() + "\"!");
+            MessageBus.sendCommandMessage(command1.getCommandName() + ": " + "\"" + command1.getCommandSyntax() + "\"!", true);
         }
     }
 }

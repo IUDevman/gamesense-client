@@ -32,6 +32,14 @@ public class MessageBus {
         mc.player.sendMessage(string1);
     }
 
+    /** Command-oriented message, with the nature of commands we don't want them being a notification **/
+    public static void sendCommandMessage(String message, boolean prefix) {
+        String watermark1 = prefix ? watermark : "";
+        TextComponentString string = new TextComponentString(watermark1 + messageFormatting + message);
+
+        mc.player.sendMessage(string);
+    }
+
     /** @Unused Sends a client-sided message WITHOUT the client prefix **/
     public static void sendClientRawMessage(String message) {
         TextComponentString string = new TextComponentString(messageFormatting + message);

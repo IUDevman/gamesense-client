@@ -25,11 +25,11 @@ public class FriendCommand extends Command {
 
         if (main.equalsIgnoreCase("add") && !Friends.isFriend(value)) {
             Friends.addFriend(value);
-            MessageBus.sendClientPrefixMessage("Added friend: " + value.toUpperCase() + "!");
+            MessageBus.sendCommandMessage("Added friend: " + value.toUpperCase() + "!", true);
         }
         else if (main.equalsIgnoreCase("del") && Friends.isFriend(value)) {
             Friends.delFriend(value);
-            MessageBus.sendClientPrefixMessage("Deleted friend: " + value.toUpperCase() + "!");
+            MessageBus.sendCommandMessage("Deleted friend: " + value.toUpperCase() + "!", true);
         }
     }
 }

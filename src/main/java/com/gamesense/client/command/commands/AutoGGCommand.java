@@ -25,11 +25,11 @@ public class AutoGGCommand extends Command {
 
         if (main.equalsIgnoreCase("add") && !(AutoGG.getAutoGgMessages().contains(value))) {
             AutoGG.addAutoGgMessage(value);
-            MessageBus.sendClientPrefixMessage("Added AutoGG message: " + value + "!");
+            MessageBus.sendCommandMessage("Added AutoGG message: " + value + "!", true);
         }
         else if (main.equalsIgnoreCase("del") && AutoGG.getAutoGgMessages().contains(value)) {
             AutoGG.getAutoGgMessages().remove(value);
-            MessageBus.sendClientPrefixMessage("Deleted AutoGG message: " + value + "!");
+            MessageBus.sendCommandMessage("Deleted AutoGG message: " + value + "!", true);
         }
     }
 }

@@ -24,6 +24,6 @@ public class OpenFolderCommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {
         Desktop.getDesktop().open(new File(SaveConfig.fileName.replace("/", "")));
-        MessageBus.sendClientPrefixMessage("Opened config folder!");
+        MessageBus.sendCommandMessage("Opened config folder!", true);
     }
 }

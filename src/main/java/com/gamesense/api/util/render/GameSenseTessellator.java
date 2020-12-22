@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
 
-import com.gamesense.api.util.misc.Wrapper;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
@@ -30,7 +29,7 @@ import net.minecraft.util.math.Vec3d;
  */
 
 public class GameSenseTessellator {
-	private static final Minecraft mc = Wrapper.getMinecraft();
+	private static final Minecraft mc = Minecraft.getMinecraft();
 
 	public static void drawBox(BlockPos blockPos, double height, GSColor color, int sides) {
 		drawBox(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, height, 1, color, sides);

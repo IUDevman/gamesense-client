@@ -25,11 +25,11 @@ public class EnemyCommand extends Command {
 
         if (main.equalsIgnoreCase("add") && !Enemies.isEnemy(value)) {
             Enemies.addEnemy(value);
-            MessageBus.sendClientPrefixMessage("Added enemy: " + value.toUpperCase() + "!");
+            MessageBus.sendCommandMessage("Added enemy: " + value.toUpperCase() + "!", true);
         }
         else if (main.equalsIgnoreCase("del") && Enemies.isEnemy(value)) {
             Enemies.delEnemy(value);
-            MessageBus.sendClientPrefixMessage("Deleted enemy: " + value.toUpperCase() + "!");
+            MessageBus.sendCommandMessage("Deleted enemy: " + value.toUpperCase() + "!", true);
         }
     }
 }

@@ -25,7 +25,7 @@ public class AutoReplyCommand extends Command {
 
         if (main.equalsIgnoreCase("set")) {
             AutoReply.setReply(value);
-            MessageBus.sendClientPrefixMessage("Set AutoReply message: " + value + "!");
+            MessageBus.sendCommandMessage("Set AutoReply message: " + value + "!", true);
         }
     }
 }

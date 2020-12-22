@@ -24,7 +24,7 @@ public class DrawnCommand extends Command {
         String main = message[0];
 
         if (ModuleManager.getModuleByName(main) == null) {
-            MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
+            MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
             return;
         }
 
@@ -32,11 +32,11 @@ public class DrawnCommand extends Command {
             if (module.getName().equalsIgnoreCase(main)) {
                 if (module.isDrawn()) {
                     module.setDrawn(false);
-                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + " drawn set to: FALSE!");
+                    MessageBus.sendCommandMessage("Module " + module.getName() + " drawn set to: FALSE!", true);
                 }
                 else if (!module.isDrawn()) {
                     module.setDrawn(true);
-                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + " drawn set to: TRUE!");
+                    MessageBus.sendCommandMessage("Module " + module.getName() + " drawn set to: TRUE!", true);
                 }
             }
         }

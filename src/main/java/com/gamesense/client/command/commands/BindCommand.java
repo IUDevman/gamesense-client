@@ -29,17 +29,17 @@ public class BindCommand extends Command {
             if (module.getName().equalsIgnoreCase(main)) {
                 if (value.equalsIgnoreCase("none")) {
                     module.setBind(Keyboard.KEY_NONE);
-                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + " bind set to: " + value + "!");
+                    MessageBus.sendCommandMessage("Module " + module.getName() + " bind set to: " + value + "!", true);
                 }
                 //keeps people from accidentally binding things such as ESC, TAB, exc.
                 else if (value.length() == 1) {
                     int key = Keyboard.getKeyIndex(value);
 
                     module.setBind(key);
-                    MessageBus.sendClientPrefixMessage("Module " + module.getName() + " bind set to: " + value + "!");
+                    MessageBus.sendCommandMessage("Module " + module.getName() + " bind set to: " + value + "!", true);
                 }
                 else if (value.length() > 1) {
-                    MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
+                    MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
                 }
             }
         }

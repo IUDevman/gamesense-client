@@ -33,6 +33,6 @@ public class FontCommand extends Command {
         GameSenseMod.fontRenderer.setFontName(main);
         GameSenseMod.fontRenderer.setFontSize(value);
 
-        MessageBus.sendClientPrefixMessage("Font set to: " + main.toUpperCase() + ", size " + value + "!");
+        MessageBus.sendCommandMessage("Font set to: " + main.toUpperCase() + ", size " + value + "!", true);
     }
 }

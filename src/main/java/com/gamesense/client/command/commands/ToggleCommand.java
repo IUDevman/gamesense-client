@@ -26,16 +26,16 @@ public class ToggleCommand extends Command {
         for (Module module : ModuleManager.getModules()) {
             if (module.getName().equalsIgnoreCase(main) && !module.isEnabled()) {
                 module.enable();
-                MessageBus.sendClientPrefixMessage("Module " + module.getName() + " set to: ENABLED!");
+                MessageBus.sendCommandMessage("Module " + module.getName() + " set to: ENABLED!", true);
             }
             else if (module.getName().equalsIgnoreCase(main) && module.isEnabled()) {
                 module.disable();
-                MessageBus.sendClientPrefixMessage("Module " + module.getName() + " set to: DISABLED!");
+                MessageBus.sendCommandMessage("Module " + module.getName() + " set to: DISABLED!", true);
             }
         }
 
         if (main == null || ModuleManager.getModuleByName(main) == null) {
-            MessageBus.sendClientPrefixMessage(this.getCommandSyntax());
+            MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
         }
     }
 }
