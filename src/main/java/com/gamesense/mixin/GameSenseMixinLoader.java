@@ -1,4 +1,4 @@
-package com.gamesense.api.mixin;
+package com.gamesense.mixin;
 
 import com.gamesense.client.GameSenseMod;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;

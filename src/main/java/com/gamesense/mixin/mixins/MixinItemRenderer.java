@@ -1,4 +1,4 @@
-package com.gamesense.api.mixin.mixins;
+package com.gamesense.mixin.mixins;
 
 import com.gamesense.api.event.events.TransformSideFirstPersonEvent;
 import com.gamesense.client.GameSenseMod;

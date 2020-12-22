@@ -1,4 +1,4 @@
-package com.gamesense.api.mixin.mixins;
+package com.gamesense.mixin.mixins;
 
 import com.gamesense.api.util.players.enemy.Enemies;
 import com.gamesense.api.util.players.friends.Friends;

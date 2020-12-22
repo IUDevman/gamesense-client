@@ -1,7 +1,7 @@
 {
 "required": true,
 "compatibilityLevel": "JAVA_8",
-"package": "com.gamesense.api.mixin.mixins",
+"package": "com.gamesense.mixin.mixins",
 "refmap": "mixins.gamesense.refmap.json",
 "mixins": [
 	"MixinAbstractClientPlayer",

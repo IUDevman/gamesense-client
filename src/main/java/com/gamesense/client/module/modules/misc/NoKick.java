@@ -10,7 +10,7 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 
-// @see com.gamesense.api.mixin.mixins.MixinNetworkManager for PacketKick
+// @see com.gamesense.mixin.mixins.MixinNetworkManager for PacketKick
 
 public class NoKick extends Module{
 	public NoKick(){super("NoKick", Category.Misc);}

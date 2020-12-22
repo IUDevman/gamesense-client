@@ -1,4 +1,4 @@
-package com.gamesense.api.mixin.mixins;
+package com.gamesense.mixin.mixins;
 
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.render.NoRender;

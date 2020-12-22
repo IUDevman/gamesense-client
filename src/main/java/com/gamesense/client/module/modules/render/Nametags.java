@@ -28,7 +28,6 @@ import net.minecraft.util.text.TextFormatting;
 
 /**
  * Author: CyberTF2
- * Check com.gamesense.api.mixin.mixins.MixinNametags
  * Edited by Hoosiers :D
  */
 
