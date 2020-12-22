@@ -1,4 +1,4 @@
-package com.gamesense.api.util.players.friends;
+package com.gamesense.api.util.player.friends;
 
 public class Friend {
 

@@ -1,6 +1,6 @@
 package com.gamesense.client.command.commands;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.command.Command;

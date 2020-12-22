@@ -1,10 +1,9 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.players.friends.Friends;
+import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.world.BlockUtils;
-import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -23,7 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.util.players.friends.Friends;
+import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.module.Module;

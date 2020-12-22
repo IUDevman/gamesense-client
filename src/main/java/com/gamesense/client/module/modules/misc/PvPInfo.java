@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.TotemPopEvent;
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;

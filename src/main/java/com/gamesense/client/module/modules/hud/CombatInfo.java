@@ -7,8 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.gamesense.api.settings.Setting;
-import com.gamesense.api.util.players.friends.Friends;
+import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.combat.AutoCrystal;

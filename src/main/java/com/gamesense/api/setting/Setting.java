@@ -1,4 +1,4 @@
-package com.gamesense.api.settings;
+package com.gamesense.api.setting;
 
 import java.awt.Color;
 import java.util.List;

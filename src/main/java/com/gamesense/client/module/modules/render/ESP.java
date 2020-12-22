@@ -1,16 +1,15 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.util.players.enemy.Enemies;
-import com.gamesense.api.util.players.friends.Friends;
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.player.enemy.Enemies;
+import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySlime;

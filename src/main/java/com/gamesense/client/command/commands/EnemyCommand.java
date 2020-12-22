@@ -1,7 +1,7 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.players.enemy.Enemies;
+import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.client.command.Command;
 
 /**

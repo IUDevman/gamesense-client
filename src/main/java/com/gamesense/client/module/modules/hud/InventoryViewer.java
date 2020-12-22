@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.lukflug.panelstudio.Context;

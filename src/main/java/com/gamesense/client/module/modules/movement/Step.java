@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.movement;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.MotionUtils;
 import com.gamesense.client.module.Module;

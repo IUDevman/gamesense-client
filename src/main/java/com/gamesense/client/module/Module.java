@@ -5,7 +5,7 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.lukflug.panelstudio.settings.KeybindSetting;

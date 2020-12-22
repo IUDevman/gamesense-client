@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.module.Module;

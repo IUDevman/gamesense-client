@@ -1,4 +1,4 @@
-package com.gamesense.api.util.players.enemy;
+package com.gamesense.api.util.player.enemy;
 
 public class Enemy {
 

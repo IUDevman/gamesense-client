@@ -5,7 +5,7 @@ import java.awt.Point;
 
 import org.lwjgl.opengl.GL11;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;

@@ -7,10 +7,10 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
-import com.gamesense.api.util.players.enemy.Enemies;
-import com.gamesense.api.util.players.friends.Friends;
+import com.gamesense.api.util.player.enemy.Enemies;
+import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.client.clickgui.GuiConfig;
 import com.gamesense.client.command.Command;

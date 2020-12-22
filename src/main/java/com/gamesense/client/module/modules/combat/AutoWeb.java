@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.gamesense.api.util.players.friends.Friends;
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.BlockUtils;
-import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;

@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.api.event.events.PacketEvent;

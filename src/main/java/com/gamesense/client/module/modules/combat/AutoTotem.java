@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.inventory.GuiContainer;

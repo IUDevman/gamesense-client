@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.gui;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.gamesense.api.util.misc.MessageBus;

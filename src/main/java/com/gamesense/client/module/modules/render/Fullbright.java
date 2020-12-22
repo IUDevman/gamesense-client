@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.render;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;

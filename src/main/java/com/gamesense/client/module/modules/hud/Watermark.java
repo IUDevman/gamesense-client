@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.hud;
 import java.awt.Color;
 import java.awt.Point;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSenseMod;
 import com.lukflug.panelstudio.hud.HUDList;

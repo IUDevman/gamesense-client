@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.movement;
 
-import com.gamesense.api.settings.Setting;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
