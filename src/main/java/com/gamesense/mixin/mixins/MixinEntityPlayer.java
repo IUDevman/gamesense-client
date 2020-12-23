@@ -1,7 +1,7 @@
 package com.gamesense.mixin.mixins;
 
 import com.gamesense.api.event.events.WaterPushEvent;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.api.event.events.PlayerJumpEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,14 +20,14 @@ public abstract class MixinEntityPlayer {
 	@Inject(method = "jump", at = @At("HEAD"), cancellable = true)
 	public void onJump(CallbackInfo callbackInfo) {
 		if (Minecraft.getMinecraft().player.getName() == this.getName()) {
-			GameSenseMod.EVENT_BUS.post(new PlayerJumpEvent());
+			GameSense.EVENT_BUS.post(new PlayerJumpEvent());
 		}
 	}
 
 	@Inject(method = "isPushedByWater", at = @At("HEAD"), cancellable = true)
 	private void onPushedByWater(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
 		WaterPushEvent event = new WaterPushEvent();
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 		if (event.isCancelled()) {
 			callbackInfoReturnable.setReturnValue(false);
 		}

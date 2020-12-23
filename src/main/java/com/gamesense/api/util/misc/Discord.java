@@ -3,7 +3,7 @@ package com.gamesense.api.util.misc;
 import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 
 /**
  * @author Hoosiers
@@ -16,7 +16,7 @@ public class Discord {
     private static DiscordRichPresence discordRichPresence = new DiscordRichPresence();
     private static DiscordRPC discordRPC = DiscordRPC.INSTANCE;
 
-    private static String clientVersion = GameSenseMod.MODVER;
+    private static String clientVersion = GameSense.MODVER;
 
     public static void startRPC() {
         DiscordEventHandlers eventHandlers = new DiscordEventHandlers();

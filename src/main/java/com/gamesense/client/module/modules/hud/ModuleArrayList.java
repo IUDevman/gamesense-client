@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.lukflug.panelstudio.hud.HUDList;
@@ -43,9 +43,8 @@ public class ModuleArrayList extends HUDModule {
     	for (Module module: ModuleManager.getModules()) {
     		if (module.isEnabled() && module.isDrawn()) list.activeModules.add(module);
     	}
-    	list.activeModules.sort(Comparator.comparing(module -> -GameSenseMod.getInstance().clickGUI.guiInterface.getFontWidth(module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo())));
+    	list.activeModules.sort(Comparator.comparing(module -> -GameSense.getInstance().gameSenseGUI.guiInterface.getFontWidth(module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo())));
     }
-    
 
     private class ModuleList implements HUDList {
 		public List<Module> activeModules=new ArrayList<Module>();

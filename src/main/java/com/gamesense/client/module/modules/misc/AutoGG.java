@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
@@ -73,12 +73,12 @@ public class AutoGG extends Module{
 
 	public void onEnable(){
 		this.targetedPlayers = new ConcurrentHashMap();
-		GameSenseMod.EVENT_BUS.subscribe(this);
+		GameSense.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable(){
 		this.targetedPlayers = null;
-		GameSenseMod.EVENT_BUS.unsubscribe(this);
+		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 
 	public void onUpdate(){
@@ -124,7 +124,7 @@ public class AutoGG extends Module{
 		if (AutoGgMessages.size() > 0)
 			message = AutoGgMessages.get(index);
 		else
-			message = "GG! GameSense " + GameSenseMod.MODVER + " is on top!";
+			message = "GG! GameSense " + GameSense.MODVER + " is on top!";
 
 		String messageSanitized = message.replaceAll("ยง", "").replace("{name}", name);
 		if (messageSanitized.length() > 255){

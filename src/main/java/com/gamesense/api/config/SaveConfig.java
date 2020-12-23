@@ -13,7 +13,7 @@ import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.enemy.Enemy;
 import com.gamesense.api.util.player.friends.Friend;
 import com.gamesense.api.util.player.friends.Friends;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GuiConfig;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
@@ -96,7 +96,7 @@ public class SaveConfig {
         JsonObject settingObject = new JsonObject();
         moduleObject.add("Module", new JsonPrimitive(module.getName()));
 
-        for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)) {
+        for (Setting setting : GameSense.getInstance().settingsManager.getSettingsForMod(module)) {
             switch (setting.getType()) {
                 case BOOLEAN: {
                     settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Boolean) setting).getValue()));
@@ -205,8 +205,8 @@ public class SaveConfig {
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "CustomFont" + ".json"), StandardCharsets.UTF_8);
         JsonObject fontObject = new JsonObject();
 
-        fontObject.add("Font Name", new JsonPrimitive(GameSenseMod.fontRenderer.getFontName()));
-        fontObject.add("Font Size", new JsonPrimitive(GameSenseMod.fontRenderer.getFontSize()));
+        fontObject.add("Font Name", new JsonPrimitive(GameSense.getInstance().cFontRenderer.getFontName()));
+        fontObject.add("Font Size", new JsonPrimitive(GameSense.getInstance().cFontRenderer.getFontSize()));
         String jsonString = gson.toJson(new JsonParser().parse(fontObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();
@@ -250,7 +250,7 @@ public class SaveConfig {
 
     public void saveClickGUIPositions() throws IOException {
         registerFiles(mainName, "ClickGUI");
-		GameSenseMod.getInstance().clickGUI.gui.saveConfig(new GuiConfig(fileName+mainName));
+		GameSense.getInstance().gameSenseGUI.gui.saveConfig(new GuiConfig(fileName+mainName));
     }
 
     public void saveAutoGG() throws IOException {

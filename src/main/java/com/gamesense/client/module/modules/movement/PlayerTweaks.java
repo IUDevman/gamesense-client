@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.movement;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.WaterPushEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -90,10 +90,10 @@ public class PlayerTweaks extends Module{
 	});
 
 	public void onEnable(){
-		GameSenseMod.EVENT_BUS.subscribe(this);
+		GameSense.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable(){
-		GameSenseMod.EVENT_BUS.unsubscribe(this);
+		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 }

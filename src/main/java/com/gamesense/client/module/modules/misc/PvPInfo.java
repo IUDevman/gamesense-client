@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.TotemPopEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -143,7 +143,7 @@ public class PvPInfo extends Module {
 			SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
 			if (packet.getOpCode() == 35){
 				Entity entity = packet.getEntity(mc.world);
-				GameSenseMod.EVENT_BUS.post(new TotemPopEvent(entity));
+				GameSense.EVENT_BUS.post(new TotemPopEvent(entity));
 			}
 		}
 	});
@@ -224,12 +224,12 @@ public class PvPInfo extends Module {
 	}
 
 	public void onEnable(){
-		GameSenseMod.EVENT_BUS.subscribe(this);
+		GameSense.EVENT_BUS.subscribe(this);
 		popCounterHashMap = new HashMap<>();
 	}
 
 	public void onDisable(){
 		knownPlayers.clear();
-		GameSenseMod.EVENT_BUS.unsubscribe(this);
+		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 }

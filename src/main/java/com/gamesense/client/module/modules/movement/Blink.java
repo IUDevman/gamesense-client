@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -29,7 +29,7 @@ public class Blink extends Module {
     private final Queue<Packet> packets = new ConcurrentLinkedQueue();
 
     public void onEnable() {
-        GameSenseMod.EVENT_BUS.subscribe(this);
+        GameSense.EVENT_BUS.subscribe(this);
 
         if (ghostPlayer.getValue() && mc.player != null) {
             entity = new EntityOtherPlayerMP(mc.world, mc.getSession().getProfile());
@@ -48,7 +48,7 @@ public class Blink extends Module {
     }
 
     public void onDisable() {
-        GameSenseMod.EVENT_BUS.unsubscribe(this);
+        GameSense.EVENT_BUS.unsubscribe(this);
 
         if (entity != null) {
             mc.world.removeEntity(entity);

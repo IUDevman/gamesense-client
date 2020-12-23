@@ -5,7 +5,7 @@ import java.awt.Point;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -36,7 +36,7 @@ public class Watermark extends HUDModule {
 
 		@Override
 		public String getItem(int index) {
-			return "GameSense "+GameSenseMod.MODVER;
+			return "GameSense "+ GameSense.MODVER;
 		}
 
 		@Override

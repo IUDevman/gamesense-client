@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
@@ -33,10 +33,10 @@ public class AutoReply extends Module{
 	}
 
 	public void onEnable(){
-		GameSenseMod.EVENT_BUS.subscribe(this);
+		GameSense.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable(){
-		GameSenseMod.EVENT_BUS.unsubscribe(this);
+		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 }

@@ -7,7 +7,7 @@ import org.lwjgl.input.Keyboard;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.render.GameSenseTessellator;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.modules.combat.*;
 import com.gamesense.client.module.modules.exploits.*;
 import com.gamesense.client.module.modules.movement.*;
@@ -124,7 +124,7 @@ public class ModuleManager {
 
 	public static void onRender() {
 		modules.stream().filter(Module::isEnabled).forEach(Module::onRender);
-		GameSenseMod.getInstance().clickGUI.render();
+		GameSense.getInstance().gameSenseGUI.render();
 	}
 
 	public static void onWorldRender(RenderWorldLastEvent event) {

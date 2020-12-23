@@ -7,7 +7,7 @@ import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.Timer;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -660,7 +660,7 @@ public class AutoCrystal extends Module {
 
     @Override
     public void onEnable() {
-        GameSenseMod.EVENT_BUS.subscribe(this);
+        GameSense.EVENT_BUS.subscribe(this);
         PlacedCrystals.clear();
         isActive = false;
         if(chat.getValue() && mc.player != null) {
@@ -670,7 +670,7 @@ public class AutoCrystal extends Module {
 
     @Override
     public void onDisable() {
-        GameSenseMod.EVENT_BUS.unsubscribe(this);
+        GameSense.EVENT_BUS.unsubscribe(this);
         render = null;
         renderEnt = null;
         resetRotation();

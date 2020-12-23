@@ -5,7 +5,7 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.MotionUtils;
 import com.gamesense.api.util.world.Timer;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
@@ -50,12 +50,12 @@ public class Speed extends Module {
 	private Timer timer = new Timer();
 
 	public void onEnable(){
-		GameSenseMod.EVENT_BUS.subscribe(this);
+		GameSense.EVENT_BUS.subscribe(this);
 		playerSpeed = MotionUtils.getBaseMoveSpeed();
 	}
 
 	public void onDisable(){
-		GameSenseMod.EVENT_BUS.unsubscribe(this);
+		GameSense.EVENT_BUS.unsubscribe(this);
 		timer.reset();
 		EntityUtil.resetTimer();
 	}

@@ -2,7 +2,7 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.command.Command;
 import java.awt.Font;
 
@@ -29,9 +29,9 @@ public class FontCommand extends Command {
             value = 18;
         }
 
-        GameSenseMod.fontRenderer = new CFontRenderer(new Font(main, Font.PLAIN, value), true, true);
-        GameSenseMod.fontRenderer.setFontName(main);
-        GameSenseMod.fontRenderer.setFontSize(value);
+        GameSense.getInstance().cFontRenderer = new CFontRenderer(new Font(main, Font.PLAIN, value), true, true);
+        GameSense.getInstance().cFontRenderer.setFontName(main);
+        GameSense.getInstance().cFontRenderer.setFontSize(value);
 
         MessageBus.sendCommandMessage("Font set to: " + main.toUpperCase() + ", size " + value + "!", true);
     }

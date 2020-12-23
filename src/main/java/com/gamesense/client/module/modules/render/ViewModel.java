@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.TransformSideFirstPersonEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -68,12 +68,12 @@ public class ViewModel extends Module{
 	}
 
 	public void onEnable(){
-		GameSenseMod.EVENT_BUS.subscribe(this);
+		GameSense.EVENT_BUS.subscribe(this);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	public void onDisable(){
-		GameSenseMod.EVENT_BUS.unsubscribe(this);
+		GameSense.EVENT_BUS.unsubscribe(this);
 		MinecraftForge.EVENT_BUS.unregister(this);
 	}
 }

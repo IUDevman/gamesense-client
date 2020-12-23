@@ -1,6 +1,6 @@
 package com.gamesense.api.config;
 
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 
 import java.io.IOException;
 
@@ -13,19 +13,19 @@ public class ConfigStopper extends Thread {
 
     public static void saveConfig() {
         try {
-            GameSenseMod.getInstance().saveConfig.saveConfig();
-            GameSenseMod.getInstance().saveConfig.saveModules();
-            GameSenseMod.getInstance().saveConfig.saveEnabledModules();
-            GameSenseMod.getInstance().saveConfig.saveModuleKeybinds();
-            GameSenseMod.getInstance().saveConfig.saveDrawnModules();
-            GameSenseMod.getInstance().saveConfig.saveCommandPrefix();
-            GameSenseMod.getInstance().saveConfig.saveCustomFont();
-            GameSenseMod.getInstance().saveConfig.saveFriendsList();
-            GameSenseMod.getInstance().saveConfig.saveEnemiesList();
-            GameSenseMod.getInstance().saveConfig.saveClickGUIPositions();
-            GameSenseMod.getInstance().saveConfig.saveAutoGG();
-            GameSenseMod.getInstance().saveConfig.saveAutoReply();
-            GameSenseMod.log.info("Saved Config!");
+            GameSense.getInstance().saveConfig.saveConfig();
+            GameSense.getInstance().saveConfig.saveModules();
+            GameSense.getInstance().saveConfig.saveEnabledModules();
+            GameSense.getInstance().saveConfig.saveModuleKeybinds();
+            GameSense.getInstance().saveConfig.saveDrawnModules();
+            GameSense.getInstance().saveConfig.saveCommandPrefix();
+            GameSense.getInstance().saveConfig.saveCustomFont();
+            GameSense.getInstance().saveConfig.saveFriendsList();
+            GameSense.getInstance().saveConfig.saveEnemiesList();
+            GameSense.getInstance().saveConfig.saveClickGUIPositions();
+            GameSense.getInstance().saveConfig.saveAutoGG();
+            GameSense.getInstance().saveConfig.saveAutoReply();
+            GameSense.LOGGER.info("Saved Config!");
         }
         catch (IOException e) {
             e.printStackTrace();

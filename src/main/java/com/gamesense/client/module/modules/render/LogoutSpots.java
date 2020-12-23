@@ -8,7 +8,7 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.Timer;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
@@ -74,12 +74,12 @@ public class LogoutSpots extends Module {
 	public void onEnable(){
 		loggedPlayers.clear();
 		worldPlayers = new ArrayList<>();
-		GameSenseMod.EVENT_BUS.subscribe(this);
+		GameSense.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable(){
 		worldPlayers.clear();
-		GameSenseMod.EVENT_BUS.unsubscribe(this);
+		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 
 	private void startFunction(Entity entity, String string){

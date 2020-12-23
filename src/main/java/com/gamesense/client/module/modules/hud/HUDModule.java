@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.hud;
 
 import java.awt.Point;
 
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.FixedComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -26,6 +26,6 @@ public abstract class HUDModule extends Module {
 	}
 	
 	public void resetPosition() {
-		component.setPosition(GameSenseMod.getInstance().clickGUI.guiInterface,position);
+		component.setPosition(GameSense.getInstance().gameSenseGUI.guiInterface,position);
 	}
 }

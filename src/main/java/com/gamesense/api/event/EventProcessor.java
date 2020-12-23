@@ -19,7 +19,7 @@ import org.lwjgl.input.Mouse;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
 import com.google.common.collect.Maps;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -67,7 +67,7 @@ public class EventProcessor {
 
 	@SubscribeEvent
 	public void onRender(RenderGameOverlayEvent.Post event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 		if(event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
 			ModuleManager.onRender();
 		}
@@ -80,14 +80,14 @@ public class EventProcessor {
 				return;
 			}
 			ModuleManager.onBind(Keyboard.getEventKey());
-			GameSenseMod.getInstance().clickGUI.handleKeyEvent(Keyboard.getEventKey());
+			GameSense.getInstance().gameSenseGUI.handleKeyEvent(Keyboard.getEventKey());
 		}
 	}
 
 	@SubscribeEvent
 	public void onMouseInput(InputEvent.MouseInputEvent event) {
 		if(Mouse.getEventButtonState()) {
-			GameSenseMod.EVENT_BUS.post(event);
+			GameSense.EVENT_BUS.post(event);
 		}
 	}
 
@@ -109,66 +109,66 @@ public class EventProcessor {
 
 	@SubscribeEvent
 	public void onRenderScreen(RenderGameOverlayEvent.Text event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onChatReceived(ClientChatReceivedEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onAttackEntity(AttackEntityEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onDrawBlockHighlight(DrawBlockHighlightEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onRenderBlockOverlay(RenderBlockOverlayEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onLivingDamage(LivingDamageEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 	@SubscribeEvent
 	public void onLivingEntityUseItemFinish(LivingEntityUseItemEvent.Finish event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onInputUpdate(InputUpdateEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onLivingDeath(LivingDeathEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onPlayerPush(PlayerSPPushOutOfBlocksEvent event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load event) {
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@EventHandler
@@ -182,7 +182,7 @@ public class EventProcessor {
 							String name = resolveName(playerData.getProfile().getId().toString());
 							if (name != null) {
 								if (mc.player != null && mc.player.ticksExisted >= 1000) {
-									GameSenseMod.EVENT_BUS.post(new PlayerJoinEvent(name));
+									GameSense.EVENT_BUS.post(new PlayerJoinEvent(name));
 								}
 							}
 						}).start();
@@ -196,7 +196,7 @@ public class EventProcessor {
 							final String name = resolveName(playerData.getProfile().getId().toString());
 							if (name != null) {
 								if (mc.player != null && mc.player.ticksExisted >= 1000) {
-									GameSenseMod.EVENT_BUS.post(new PlayerLeaveEvent(name));
+									GameSense.EVENT_BUS.post(new PlayerLeaveEvent(name));
 								}
 							}
 						}).start();
@@ -234,7 +234,7 @@ public class EventProcessor {
 	}
 
 	public void init() {
-		GameSenseMod.EVENT_BUS.subscribe(this);
+		GameSense.EVENT_BUS.subscribe(this);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 }

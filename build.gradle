@@ -32,7 +32,7 @@ minecraft {
 	version = project.forgeVersion
 	runDir = 'run'
 	mappings = project.mcpVersion
-	coreMod = 'com.gamesense.mixin.GameSenseMixinLoader'
+	coreMod = 'com.gamesense.client.GameSense'
 	makeObfSourceJar = false
 }
 
@@ -123,7 +123,7 @@ jar {
 				'tweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
 				'TweakOrder': 0,
 				'FMLCorePluginContainsFMLMod': 'true',
-				'FMLCorePlugin': 'com.gamesense.client.GameSenseMod',
+				'FMLCorePlugin': 'com.gamesense.client.GameSense',
 				'ForceLoadAsMod': 'true',
 				'FMLAT': 'gamesense_at.cfg'
 		)

@@ -11,7 +11,7 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friends.Friends;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GuiConfig;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
@@ -86,7 +86,7 @@ public class LoadConfig {
         }
 
         JsonObject settingObject = moduleObject.get("Settings").getAsJsonObject();
-        for (Setting setting : GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)) {
+        for (Setting setting : GameSense.getInstance().settingsManager.getSettingsForMod(module)) {
             JsonElement dataObject = settingObject.get(setting.getConfigName());
 
             if (dataObject != null && dataObject.isJsonPrimitive()) {
@@ -242,12 +242,12 @@ public class LoadConfig {
         }
 
         if (name != null && size != -1) {
-            GameSenseMod.fontRenderer = new CFontRenderer(new Font(name, Font.PLAIN, size), true, true);
-            GameSenseMod.fontRenderer.setFont(new Font(name, Font.PLAIN, size));
-            GameSenseMod.fontRenderer.setAntiAlias(true);
-            GameSenseMod.fontRenderer.setFractionalMetrics(true);
-            GameSenseMod.fontRenderer.setFontName(name);
-            GameSenseMod.fontRenderer.setFontSize(size);
+            GameSense.getInstance().cFontRenderer = new CFontRenderer(new Font(name, Font.PLAIN, size), true, true);
+            GameSense.getInstance().cFontRenderer.setFont(new Font(name, Font.PLAIN, size));
+            GameSense.getInstance().cFontRenderer.setAntiAlias(true);
+            GameSense.getInstance().cFontRenderer.setFractionalMetrics(true);
+            GameSense.getInstance().cFontRenderer.setFontName(name);
+            GameSense.getInstance().cFontRenderer.setFontSize(size);
         }
         inputStream.close();
     }
@@ -297,7 +297,7 @@ public class LoadConfig {
     }
 
     public void loadClickGUIPositions() throws IOException {
-		GameSenseMod.getInstance().clickGUI.gui.loadConfig(new GuiConfig(fileName+mainName));
+		GameSense.getInstance().gameSenseGUI.gui.loadConfig(new GuiConfig(fileName+mainName));
     }
 
     public void loadAutoGG() throws IOException {

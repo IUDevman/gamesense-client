@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.gui;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -55,7 +55,7 @@ public class ClickGuiModule extends Module{
 	private ResourceLocation shader = new ResourceLocation("minecraft", "shaders/post/blur" + ".json");
 
 	public void onEnable(){
-		GameSenseMod.getInstance().clickGUI.enterGUI();
+		GameSense.getInstance().gameSenseGUI.enterGUI();
 
 		if (backgroundBlur.getValue()) {
 			mc.entityRenderer.loadShader(shader);

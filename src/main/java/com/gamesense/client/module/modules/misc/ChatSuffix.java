@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
@@ -45,7 +45,7 @@ public class ChatSuffix extends Module{
 				Separator2 = " \u23D0 ";
 			}
 			String old = ((CPacketChatMessage) event.getPacket()).getMessage();
-			String suffix = Separator2 + toUnicode(GameSenseMod.MODNAME);
+			String suffix = Separator2 + toUnicode(GameSense.MODNAME);
 			String s = old + suffix;
 			if (s.length() > 255) return;
 			((CPacketChatMessage) event.getPacket()).message = s;
@@ -53,11 +53,11 @@ public class ChatSuffix extends Module{
 	});
 
 	public void onEnable(){
-		GameSenseMod.EVENT_BUS.subscribe(this);
+		GameSense.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable(){
-		GameSenseMod.EVENT_BUS.unsubscribe(this);
+		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 
 	public String toUnicode(String s){

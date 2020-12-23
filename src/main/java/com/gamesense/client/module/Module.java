@@ -7,7 +7,7 @@ import org.lwjgl.input.Keyboard;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.lukflug.panelstudio.settings.KeybindSetting;
 import com.lukflug.panelstudio.settings.Toggleable;
 
@@ -123,31 +123,31 @@ public abstract class Module implements Toggleable,KeybindSetting {
 
 	protected Setting.Integer registerInteger(final String name, final String configName, final int value, final int min, final int max) {
 		final Setting.Integer setting = new Setting.Integer(name, configName, this, getCategory(), value, min, max);
-		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		GameSense.getInstance().settingsManager.addSetting(setting);
 		return setting;
 	}
 
 	protected Setting.Double registerDouble(final String name, final String configName, final double value, final double min, final double max) {
 		final Setting.Double setting = new Setting.Double(name, configName, this, getCategory(), value, min, max);
-		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		GameSense.getInstance().settingsManager.addSetting(setting);
 		return setting;
 	}
 
 	protected Setting.Boolean registerBoolean(final String name, final String configName, final boolean value) {
 		final Setting.Boolean setting = new Setting.Boolean(name, configName, this, getCategory(), value);
-		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		GameSense.getInstance().settingsManager.addSetting(setting);
 		return setting;
 	}
 
 	protected Setting.Mode registerMode(final String name, final String configName, final List<String> modes, final String value) {
 		final Setting.Mode setting = new Setting.Mode(name, configName, this, getCategory(), modes, value);
-		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		GameSense.getInstance().settingsManager.addSetting(setting);
 		return setting;
 	}
 	
 	protected Setting.ColorSetting registerColor (final String name, final String configName, GSColor color) {
 		final Setting.ColorSetting setting = new Setting.ColorSetting(name, configName, this, getCategory(), false, color);
-		GameSenseMod.getInstance().settingsManager.addSetting(setting);
+		GameSense.getInstance().settingsManager.addSetting(setting);
 		return setting;
 	}
 	

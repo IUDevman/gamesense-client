@@ -2,7 +2,7 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -30,7 +30,7 @@ public class SetCommand extends Command {
 
         for (Module module : ModuleManager.getModules()) {
             if (module.getName().equalsIgnoreCase(main)) {
-                GameSenseMod.getInstance().settingsManager.getSettingsForMod(module).stream().filter(setting -> setting.getConfigName().equalsIgnoreCase(message[1])).forEach(setting -> {
+                GameSense.getInstance().settingsManager.getSettingsForMod(module).stream().filter(setting -> setting.getConfigName().equalsIgnoreCase(message[1])).forEach(setting -> {
                     if (setting.getType().equals(Setting.Type.BOOLEAN)) {
                         if (message[2].equalsIgnoreCase("true") || message[2].equalsIgnoreCase("false")) {
                             ((Setting.Boolean) setting).setValue(Boolean.parseBoolean(message[2]));

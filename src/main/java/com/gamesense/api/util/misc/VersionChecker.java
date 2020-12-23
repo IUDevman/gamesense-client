@@ -1,6 +1,6 @@
 package com.gamesense.api.util.misc;
 
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 
 import javax.swing.JLabel;
 import javax.swing.JEditorPane;
@@ -22,7 +22,7 @@ import java.util.Scanner;
 public class VersionChecker {
 
     public VersionChecker() {
-        checkVersion(GameSenseMod.MODVER);
+        checkVersion(GameSense.MODVER);
     }
 
     private void checkVersion(String version) {
@@ -87,6 +87,6 @@ public class VersionChecker {
 
         editorPane.setEditable(false);
         editorPane.setBackground(label.getBackground());
-        JOptionPane.showMessageDialog(null, editorPane, GameSenseMod.MODNAME + " " + GameSenseMod.MODVER, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(null, editorPane, GameSense.MODNAME + " " + GameSense.MODVER, JOptionPane.WARNING_MESSAGE);
     }
 }

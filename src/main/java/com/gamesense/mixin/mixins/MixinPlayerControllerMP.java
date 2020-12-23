@@ -1,7 +1,7 @@
 package com.gamesense.mixin.mixins;
 
 import com.gamesense.api.event.events.DamageBlockEvent;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.exploits.Reach;
@@ -19,13 +19,13 @@ public class MixinPlayerControllerMP {
 
 	@Inject(method = "onPlayerDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playEvent(ILnet/minecraft/util/math/BlockPos;I)V"), cancellable = true)
 	private void onPlayerDestroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		GameSenseMod.EVENT_BUS.post(new DestroyBlockEvent(pos));
+		GameSense.EVENT_BUS.post(new DestroyBlockEvent(pos));
 	}
 
 	@Inject(method = "onPlayerDamageBlock(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;)Z", at = @At("HEAD"), cancellable = true)
 	private void onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
 		DamageBlockEvent event = new DamageBlockEvent(posBlock, directionFacing);
-		GameSenseMod.EVENT_BUS.post(event);
+		GameSense.EVENT_BUS.post(event);
 		if (event.isCancelled()) {
 			callbackInfoReturnable.setReturnValue(false);
 		}

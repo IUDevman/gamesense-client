@@ -1,7 +1,7 @@
 package com.gamesense.api.util.font;
 
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import net.minecraft.client.Minecraft;
 
 public class FontUtils {
@@ -10,7 +10,7 @@ public class FontUtils {
 	
 	public static float drawStringWithShadow(boolean customFont, String text, int x, int y, GSColor color) {
 		if(customFont) {
-			return GameSenseMod.fontRenderer.drawStringWithShadow(text, x, y, color);
+			return GameSense.getInstance().cFontRenderer.drawStringWithShadow(text, x, y, color);
 		}
 		else {
 			return mc.fontRenderer.drawStringWithShadow(text, x, y, color.getRGB());
@@ -19,7 +19,7 @@ public class FontUtils {
 
 	public static int getStringWidth(boolean customFont, String string) {
 		if (customFont) {
-			return GameSenseMod.fontRenderer.getStringWidth(string);
+			return GameSense.getInstance().cFontRenderer.getStringWidth(string);
 		}
 		else {
 			return mc.fontRenderer.getStringWidth(string);
@@ -28,7 +28,7 @@ public class FontUtils {
 
 	public static int getFontHeight(boolean customFont) {
 		if (customFont) {
-			return GameSenseMod.fontRenderer.getHeight();
+			return GameSense.getInstance().cFontRenderer.getHeight();
 		}
 		else {
 			return mc.fontRenderer.FONT_HEIGHT;

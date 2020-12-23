@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.FontUtils;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSenseMod;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
@@ -142,7 +142,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 		CollapsibleContainer container;
 		container=new ToggleableContainer(module.getName(),theme.getContainerRenderer(),new SimpleToggleable(false),new SettingsAnimation(ClickGuiModule.animationSpeed),module);
 		panel.addComponent(container);
-		for (Setting property: GameSenseMod.getInstance().settingsManager.getSettingsForMod(module)) {
+		for (Setting property: GameSense.getInstance().settingsManager.getSettingsForMod(module)) {
 			if (property instanceof Setting.Boolean) {
 				container.addComponent(new BooleanComponent(property.getName(),theme.getComponentRenderer(),(Setting.Boolean)property));
 			} else if (property instanceof Setting.Integer) {
