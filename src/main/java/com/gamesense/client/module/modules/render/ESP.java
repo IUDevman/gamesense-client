@@ -8,9 +8,6 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.item.*;
@@ -23,11 +20,8 @@ import net.minecraft.tileentity.*;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @Author Hoosiers on 09/22/2020
@@ -53,14 +47,15 @@ public class ESP extends Module {
     Setting.Integer range;
     Setting.ColorSetting mainColor;
 
-    boolean prevChamsPlayer = false;
-
 
     @SubscribeEvent
     public void onRenderLayers(RenderPlayerEvent.Pre e) {
         switch (playerChamsChoose.getValue()) {
             case "Texture":
                 GameSenseTessellator.createChamsPre();
+                break;
+            case "Color":
+                GameSenseTessellator.createColorPre(mainColor.getColor());
                 break;
         }
 
@@ -69,10 +64,10 @@ public class ESP extends Module {
     @SubscribeEvent
     public void onRenderLayers1(RenderPlayerEvent.Post e) {
         switch (playerChamsChoose.getValue()) {
+            case "Color":
             case "Texture":
                 GameSenseTessellator.createChamsPost();
                 break;
-
         }
 
     }
@@ -94,7 +89,8 @@ public class ESP extends Module {
         ArrayList<String> playerChams = new ArrayList<>();
         playerChams.add("None");
         playerChams.add("Texture");
-        playerChams.add("Outline");
+        playerChams.add("Color");
+
 
 
         mainColor = registerColor("Color", "Color");
@@ -114,24 +110,20 @@ public class ESP extends Module {
     GSColor mainIntColor;
     GSColor containerColor;
     int opacityGradient;
+    int count = 0;
 
     public void onWorldRender(RenderEvent event){
 
+        // If first run
+        if (count == 0) {
+            MinecraftForge.EVENT_BUS.register(this);
+            count++;
+        }
+
         mc.world.loadedEntityList.stream().filter(entity -> entity != mc.player).filter(entity -> rangeEntityCheck(entity)).forEach(entity -> {
             defineEntityColors(entity);
-            if ((!playerEspChoose.getValue().equals("None") || !playerChamsChoose.getValue().equals("None") || prevChamsPlayer) && entity instanceof EntityPlayer){
 
-                /// Check for chams
-                // If it has been actived before
-                if (!prevChamsPlayer && !playerChamsChoose.getValue().equals("None")) {
-                    prevChamsPlayer = true;
-                    // Active the module above
-                    MinecraftForge.EVENT_BUS.register(this);
-                }else if (prevChamsPlayer && !playerChamsChoose.getValue().equals("None")) {
-                    prevChamsPlayer = false;
-                    // De-active the module above
-                    MinecraftForge.EVENT_BUS.unregister(this);
-                }
+            if ((!playerEspChoose.getValue().equals("None")) && entity instanceof EntityPlayer){
 
                 // If the guy want to esp a player
                 if (!playerEspChoose.getValue().equals("None")) {
@@ -143,15 +135,21 @@ public class ESP extends Module {
                     } else if (entity.isGlowing())
                         entity.setGlowing(false);
                     else
-                    // If the guy want to see the direction
-                    if (playerEspChoose.getValue().equals("BoxDirection"))
-                        GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYawHead, width.getValue());
-                    // If the guy want to see only a box (why would you? It's horrible)
-                    else
-                        GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);
+                    {
+                        switch (playerEspChoose.getValue()) {
+                            case "BoxDirection":
+                                GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYaw, width.getValue(), 0);
+                                break;
+                            case "Box":
+                                GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);
+                                break;
+                        }
+                    }
                 }
             }
+
             if (!mobEspChoose.getValue().equals("None")){
+
                 if (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid){
 
                     if (mobEspChoose.getValue().equals("Glowing")) {
@@ -162,11 +160,13 @@ public class ESP extends Module {
 
                     // If the guy want to see the direction
                     else if (mobEspChoose.getValue().equals("BoxDirection"))
-                        GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), mobColor, entity.rotationYaw, width.getValue());
+                        GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), mobColor, entity.rotationYaw, width.getValue(), 0);
                     else
                         GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mobColor);
                 }
             }
+
+
             if (itemRender.getValue() && entity instanceof EntityItem){
                 GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
             }
@@ -183,6 +183,8 @@ public class ESP extends Module {
                 entity.setGlowing(false);
             }
         });
+
+
         if (containerRender.getValue()) {
             mc.world.loadedTileEntityList.stream().filter(tileEntity -> rangeTileCheck(tileEntity)).forEach(tileEntity -> {
                 if (tileEntity instanceof TileEntityChest){
@@ -203,16 +205,14 @@ public class ESP extends Module {
                 }
             });
         }
+
+
     }
 
     public void onDisable(){
-
-        // Disable chams
-        if (prevChamsPlayer && playerChamsChoose.getValue().equals("Texture")) {
-            prevChamsPlayer = false;
-            // De-active the module above
+        count = 0;
+        if (!playerChamsChoose.getValue().equals("None"))
             MinecraftForge.EVENT_BUS.unregister(this);
-        }
 
         mc.world.loadedEntityList.stream().forEach(entity -> {
             if ((entity instanceof EntityEnderCrystal || entity instanceof EntityPlayer) && entity.isGlowing()){

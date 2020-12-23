@@ -1,14 +1,7 @@
 package com.gamesense.api.util.render;
 
-import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
@@ -140,46 +133,56 @@ public class GameSenseTessellator {
 		I didnt only "copy" and "pasted", i also tried to understand what is happening
 		(you can see this by reading every lines i commented)
 		https://github.com/seppukudevelopment/seppuku/blob/master/src/main/java/me/rigamortis/seppuku/impl/module/render/ChamsModule.java
+		Thank to lukflug for helping me to understand
+		and for finding a bug
 	 */
 
 	public static void createChamsPre() {
-		glClear(GL11.GL_DEPTH_BUFFER_BIT);
 		// Disable shadows and outlines for preventing them (i dont wanna see their shadow in the chams)
 		Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
 		Minecraft.getMinecraft().getRenderManager().setRenderOutlines(false);
-		// Basically with this we are allowing, for what is belove, to be at first in our stack (so the last to be draw)
-		GlStateManager.pushMatrix();
 		// I think we illuminate the skin
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		// We enable  the fill
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		// We put what we are going to draw on the deepest level
 		glPolygonOffset(1, -9000000);
-		// We remove the skin that was going to be drawn
-		GlStateManager.popMatrix();
 	}
 
 	public static void createChamsPost() {
 		// In case we had shadow active, re-enable them
 		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
 		Minecraft.getMinecraft().getRenderManager().setRenderShadow(shadow);
-		// Push the stack
-		GlStateManager.pushMatrix();
 		// Disable what we did before
 		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1, 9000000);
-		GlStateManager.popMatrix();
 	}
 
 	/* Chams end */
 
-	/* drawBoxWithDirection start */
+	/* Color start */
 
-	// Children of points, it just contains the 2 coordinates x and y
-	// This contain and elaborate the coordinates
+	public static void createColorPre(GSColor color) {
+		// Disable shadows and outlines for preventing them (i dont wanna see their shadow in the chams)
+		Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
+		Minecraft.getMinecraft().getRenderManager().setRenderOutlines(false);
+		// I think we illuminate the skin
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+		// We enable  the fill
+		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+		// We put what we are going to draw on the deepest level
+		glPolygonOffset(1, -9000000);
+		// Add the color
+		color.glColor();
+	}
+
+	/* Color end */
+
+	/* Base for direction start */
+
 	public static class Points {
 		// Coordinates
-		double[][] point = new double[4][2];
+		double[][] point = new double[10][2];
 		// For counting when adding to point
 		private int count = 0;
 		// Center of the 2d square
@@ -220,17 +223,41 @@ public class GameSenseTessellator {
 
 	}
 
-	public static void drawBoxWithDirection(AxisAlignedBB bb, GSColor color, float rotation, double width) {
+	/*
+		Mode:
+		0 -> boxDirection
+		(maybe in the future if i want to add something)
+	 */
+
+	public static void drawBoxWithDirection(AxisAlignedBB bb, GSColor color, float rotation, double width, int mode) {
 		// Get the center of the 2d square (we are going to rotate based from the cetner)
 		double xCenter = bb.minX + (bb.maxX - bb.minX) / 2;
 		double zCenter = bb.minZ + (bb.maxZ - bb.minZ) / 2;
 		// Collect every points
 		Points square = new Points(bb.minY, bb.maxY, xCenter, zCenter, rotation);
-		// Create every points
-		square.addPoints(bb.minX, bb.minZ);
-		square.addPoints(bb.minX, bb.maxZ);
-		square.addPoints(bb.maxX, bb.maxZ);
-		square.addPoints(bb.maxX, bb.minZ);
+		/// Create every points
+		// For direction
+		if (mode == 0) {
+			square.addPoints(bb.minX, bb.minZ);
+			square.addPoints(bb.minX, bb.maxZ);
+			square.addPoints(bb.maxX, bb.maxZ);
+			square.addPoints(bb.maxX, bb.minZ);
+		}
+		// Direct to the drawning
+		switch (mode) {
+			case 0:
+				drawDirection(square, color, width);
+				break;
+		}
+	}
+
+
+	/* Base for direction end */
+
+
+	/* drawBoxWithDirection start */
+
+	public static void drawDirection(Points square, GSColor color, double width) {
 		/// Lets dreaw all the lines
 		// Down
 		for(int i = 0; i < 4; i++) {
