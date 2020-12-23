@@ -1,6 +1,14 @@
 package com.gamesense.api.util.render;
 
+import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
@@ -20,6 +28,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author 086
@@ -121,17 +131,51 @@ public class GameSenseTessellator {
 		drawBoundingBoxWithSides(getBoundingBox(blockPos, 1, 1, 1), width, color, sides);
 	}
 
+
+
+	/* Chams start */
+	/*
+		Thank to seppuku for the code that i can understand,
+		is this a skid? It depends by how you are looking this.
+		I didnt only "copy" and "pasted", i also tried to understand what is happening
+		(you can see this by reading every lines i commented)
+		https://github.com/seppukudevelopment/seppuku/blob/master/src/main/java/me/rigamortis/seppuku/impl/module/render/ChamsModule.java
+	 */
+
+	public static void createChamsPre() {
+		glClear(GL11.GL_DEPTH_BUFFER_BIT);
+		// Disable shadows and outlines for preventing them (i dont wanna see their shadow in the chams)
+		Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
+		Minecraft.getMinecraft().getRenderManager().setRenderOutlines(false);
+		// Basically with this we are allowing, for what is belove, to be at first in our stack (so the last to be draw)
+		GlStateManager.pushMatrix();
+		// I think we illuminate the skin
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+		// We enable  the fill
+		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+		// We put what we are going to draw on the deepest level
+		glPolygonOffset(1, -9000000);
+		// We remove the skin that was going to be drawn
+		GlStateManager.popMatrix();
+	}
+
+	public static void createChamsPost() {
+		// In case we had shadow active, re-enable them
+		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
+		Minecraft.getMinecraft().getRenderManager().setRenderShadow(shadow);
+		// Push the stack
+		GlStateManager.pushMatrix();
+		// Disable what we did before
+		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(1, 9000000);
+		GlStateManager.popMatrix();
+	}
+
+	/* Chams end */
+
 	/* drawBoxWithDirection start */
 
 	// Children of points, it just contains the 2 coordinates x and y
-	public static class PointDouble {
-		public double x;
-		public double z;
-		public PointDouble(double x, double z) {
-			this.x = x;
-			this.z = z;
-		}
-	}
 	// This contain and elaborate the coordinates
 	public static class Points {
 		// Coordinates
@@ -408,7 +452,7 @@ public class GameSenseTessellator {
 	}
 
 	public static void prepare() {
-		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+		glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ZERO, GL11.GL_ONE);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		GlStateManager.depthMask(false);
@@ -418,8 +462,8 @@ public class GameSenseTessellator {
 		GlStateManager.disableLighting();
 		GlStateManager.disableCull();
 		GlStateManager.enableAlpha();
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		GL11.glEnable(GL32.GL_DEPTH_CLAMP);
+		glEnable(GL11.GL_LINE_SMOOTH);
+		glEnable(GL32.GL_DEPTH_CLAMP);
 	}
 
 	public static void release() {
@@ -434,6 +478,6 @@ public class GameSenseTessellator {
 		GlStateManager.depthMask(true);
 		GlStateManager.glLineWidth(1.0f);
 		GlStateManager.shadeModel(GL11.GL_FLAT);
-		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
+		glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
 	}
 }
