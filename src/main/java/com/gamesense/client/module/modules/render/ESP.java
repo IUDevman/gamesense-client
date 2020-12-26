@@ -70,18 +70,17 @@ public class ESP extends Module {
     }
 
     public void setup(){
-
         ArrayList<String> playerEsp = new ArrayList<>();
         playerEsp.add("None");
         playerEsp.add("Glowing");
         playerEsp.add("Box");
-        playerEsp.add("BoxDirection");
+        playerEsp.add("Direction");
 
         ArrayList<String> mobEsp = new ArrayList<>();
         mobEsp.add("None");
         mobEsp.add("Glowing");
         mobEsp.add("Box");
-        mobEsp.add("BoxDirection");
+        mobEsp.add("Direction");
 
         ArrayList<String> playerChams = new ArrayList<>();
         playerChams.add("None");
@@ -91,9 +90,9 @@ public class ESP extends Module {
         mainColor = registerColor("Color", "Color");
         range = registerInteger("Range", "Range", 100, 10, 260);
         width = registerDouble("Line Width", "LineWidth", 2, 1, 5);
-        playerEspChoose = registerMode("Player ESP", "PlayerESP", playerEsp, "None");
-        playerChamsChoose = registerMode("Player Chams", "PlayerChams", playerChams, "None");
-        mobEspChoose = registerMode("Mob ESP", "MobESP", mobEsp, "None");
+        playerEspChoose = registerMode("Player", "Player", playerEsp, "Box");
+        playerChamsChoose = registerMode("Chams", "Chams", playerChams, "None");
+        mobEspChoose = registerMode("Mob", "Mob", mobEsp, "Box");
         entityRender = registerBoolean("Entity", "Entity", false);
         itemRender = registerBoolean("Item", "Item", true);
         containerRender = registerBoolean("Container", "Container", false);
@@ -132,7 +131,7 @@ public class ESP extends Module {
                     else
                     {
                         switch (playerEspChoose.getValue()) {
-                            case "BoxDirection":
+                            case "Direction":
                                 GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYaw, width.getValue(), 0);
                                 break;
                             case "Box":
@@ -154,7 +153,7 @@ public class ESP extends Module {
                         entity.setGlowing(false);
 
                     // If the guy want to see the direction
-                    else if (mobEspChoose.getValue().equals("BoxDirection"))
+                    else if (mobEspChoose.getValue().equals("Direction"))
                         GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), mobColor, entity.rotationYaw, width.getValue(), 0);
                     else
                         GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mobColor);

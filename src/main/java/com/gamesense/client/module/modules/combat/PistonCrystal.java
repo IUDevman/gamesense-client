@@ -27,8 +27,8 @@ import java.util.List;
  * Ported and modified from AutoAnvil.java
  */
 
-public class pistonCrystal extends Module {
-    public pistonCrystal(){
+public class PistonCrystal extends Module {
+    public PistonCrystal(){
         super("pistonCrystal", Category.Combat);
     }
     
