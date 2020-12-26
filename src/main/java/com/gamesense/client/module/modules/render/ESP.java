@@ -96,9 +96,9 @@ public class ESP extends Module {
         mainColor = registerColor("Color", "Color");
         range = registerInteger("Range", "Range", 100, 10, 260);
         width = registerDouble("Line Width", "LineWidth", 2, 1, 5);
-        playerEspChoose = registerMode("PlayerEsp", "playerEspChoose", playerEsp, "None");
-        playerChamsChoose = registerMode("PlayerChams", "playerEspChams", playerChams, "None");
-        mobEspChoose = registerMode("MobEsp", "mobEspChoose", mobEsp, "None");
+        playerEspChoose = registerMode("Player ESP", "PlayerESP", playerEsp, "None");
+        playerChamsChoose = registerMode("Player Chams", "PlayerChams", playerChams, "None");
+        mobEspChoose = registerMode("Mob ESP", "MobESP", mobEsp, "None");
         entityRender = registerBoolean("Entity", "Entity", false);
         itemRender = registerBoolean("Item", "Item", true);
         containerRender = registerBoolean("Container", "Container", false);
