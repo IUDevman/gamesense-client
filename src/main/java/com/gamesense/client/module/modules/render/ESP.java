@@ -210,7 +210,7 @@ public class ESP extends Module {
             MinecraftForge.EVENT_BUS.unregister(this);
 
         mc.world.loadedEntityList.stream().forEach(entity -> {
-            if ((entity instanceof EntityEnderCrystal || entity instanceof EntityPlayer) && entity.isGlowing()){
+            if ((entity instanceof EntityEnderCrystal || entity instanceof EntityPlayer || entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid) && entity.isGlowing()){
                 entity.setGlowing(false);
             }
         });
