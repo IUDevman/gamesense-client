@@ -25,10 +25,7 @@ import java.util.ArrayList;
 
 /**
  * @Author Hoosiers on 09/22/2020
- * todo: Create custom outlines for entities
- * todo: Basic wallhack/chams option???
  */
-
 
 public class ESP extends Module {
 
@@ -90,8 +87,6 @@ public class ESP extends Module {
         playerChams.add("None");
         playerChams.add("Texture");
         playerChams.add("Color");
-
-
 
         mainColor = registerColor("Color", "Color");
         range = registerInteger("Range", "Range", 100, 10, 260);
