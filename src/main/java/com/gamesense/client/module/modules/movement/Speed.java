@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.movement;
 import com.gamesense.api.event.events.PlayerMoveEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.api.util.world.MotionUtils;
+import com.gamesense.api.util.world.MotionUtil;
 import com.gamesense.api.util.world.Timer;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
@@ -51,7 +51,7 @@ public class Speed extends Module {
 
 	public void onEnable(){
 		GameSense.EVENT_BUS.subscribe(this);
-		playerSpeed = MotionUtils.getBaseMoveSpeed();
+		playerSpeed = MotionUtil.getBaseMoveSpeed();
 	}
 
 	public void onDisable(){
@@ -72,14 +72,14 @@ public class Speed extends Module {
 	}
 
 	private void handleYPortSpeed(){
-		if (!MotionUtils.isMoving(mc.player) || mc.player.isInWater() && mc.player.isInLava() || mc.player.collidedHorizontally){
+		if (!MotionUtil.isMoving(mc.player) || mc.player.isInWater() && mc.player.isInLava() || mc.player.collidedHorizontally){
 			return;
 		}
 
 		if (mc.player.onGround) {
 			EntityUtil.setTimer(1.15f);
 			mc.player.jump();
-			MotionUtils.setSpeed(mc.player, MotionUtils.getBaseMoveSpeed() + yPortSpeed.getValue());
+			MotionUtil.setSpeed(mc.player, MotionUtil.getBaseMoveSpeed() + yPortSpeed.getValue());
 		}
 		else {
 			mc.player.motionY = -1;
@@ -96,29 +96,29 @@ public class Speed extends Module {
 		if (mode.getValue().equalsIgnoreCase("Strafe")){
 			double speedY = jumpHeight.getValue();
 
-			if (mc.player.onGround && MotionUtils.isMoving(mc.player) && timer.hasReached(300)){
+			if (mc.player.onGround && MotionUtil.isMoving(mc.player) && timer.hasReached(300)){
 				EntityUtil.setTimer((float)timerVal.getValue());
 				if (mc.player.isPotionActive(MobEffects.JUMP_BOOST)){
 					speedY += (mc.player.getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1f;
 				}
 
 				event.setY(mc.player.motionY = speedY);
-				playerSpeed = MotionUtils.getBaseMoveSpeed() * (EntityUtil.isColliding(0, -0.5, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid() ? 0.9 : 1.901);
+				playerSpeed = MotionUtil.getBaseMoveSpeed() * (EntityUtil.isColliding(0, -0.5, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid() ? 0.9 : 1.901);
 				slowDown = true;
 				timer.reset();
 			}
 			else{
 				EntityUtil.resetTimer();
 				if (slowDown || mc.player.collidedHorizontally){
-					playerSpeed -= (EntityUtil.isColliding(0, -0.8, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid()) ? 0.4 : 0.7 * (playerSpeed = MotionUtils.getBaseMoveSpeed());
+					playerSpeed -= (EntityUtil.isColliding(0, -0.8, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid()) ? 0.4 : 0.7 * (playerSpeed = MotionUtil.getBaseMoveSpeed());
 					slowDown = false;
 				}
 				else{
 					playerSpeed -= playerSpeed / 159.0;
 				}
 			}
-			playerSpeed = Math.max(playerSpeed, MotionUtils.getBaseMoveSpeed());
-			double[] dir = MotionUtils.forward(playerSpeed);
+			playerSpeed = Math.max(playerSpeed, MotionUtil.getBaseMoveSpeed());
+			double[] dir = MotionUtil.forward(playerSpeed);
 			event.setX(dir[0]);
 			event.setZ(dir[1]);
 		}

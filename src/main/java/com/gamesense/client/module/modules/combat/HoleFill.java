@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtils;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -225,7 +225,7 @@ public class HoleFill extends Module {
 			return false;
 		}
 
-		EnumFacing side = BlockUtils.getPlaceableSide(blockPos);
+		EnumFacing side = BlockUtil.getPlaceableSide(blockPos);
 
 		if (side == null){
 			return false;
@@ -234,14 +234,14 @@ public class HoleFill extends Module {
 		BlockPos neighbour = blockPos.offset(side);
 		EnumFacing opposite = side.getOpposite();
 
-		if (!BlockUtils.canBeClicked(neighbour)){
+		if (!BlockUtil.canBeClicked(neighbour)){
 			return false;
 		}
 
 		Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
 		Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
-		if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)){
+		if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)){
 			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
 			isSneaking = true;
 		}
@@ -254,7 +254,7 @@ public class HoleFill extends Module {
 		}
 
 		if (rotate.getValue()){
-			BlockUtils.faceVectorPacketInstant(hitVec);
+			BlockUtil.faceVectorPacketInstant(hitVec);
 		}
 
 		mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);

@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.event.events.JumpEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.MotionUtils;
+import com.gamesense.api.util.world.MotionUtil;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -36,7 +36,7 @@ public class Sprint extends Module {
 	@EventHandler
 	private final Listener<JumpEvent> jumpEventListener = new Listener<>(event -> {
 		if (reverseSprint.getValue()){
-			double[] direction = MotionUtils.forward(0.017453292F);
+			double[] direction = MotionUtil.forward(0.017453292F);
 			event.getLocation().setX(direction[0] * 0.2F);
 			event.getLocation().setZ(direction[1] * 0.2F);
 		}

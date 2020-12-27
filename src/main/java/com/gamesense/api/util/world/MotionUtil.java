@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 
-public class MotionUtils {
+public class MotionUtil {
 
 	public static boolean isMoving(EntityLivingBase entity) {
 		return entity.moveForward != 0 || entity.moveStrafing != 0;

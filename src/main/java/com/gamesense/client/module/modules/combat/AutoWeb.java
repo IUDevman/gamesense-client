@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtils;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 
@@ -208,7 +208,7 @@ public class AutoWeb extends Module{
 			return false;
 		}
 
-		EnumFacing side = BlockUtils.getPlaceableSide(pos);
+		EnumFacing side = BlockUtil.getPlaceableSide(pos);
 
 		if (side == null){
 			return false;
@@ -217,7 +217,7 @@ public class AutoWeb extends Module{
 		BlockPos neighbour = pos.offset(side);
 		EnumFacing opposite = side.getOpposite();
 
-		if (!BlockUtils.canBeClicked(neighbour)){
+		if (!BlockUtil.canBeClicked(neighbour)){
 			return false;
 		}
 
@@ -234,7 +234,7 @@ public class AutoWeb extends Module{
 			mc.player.inventory.currentItem = webbSlot;
 		}
 
-		if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)){
+		if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)){
 			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
 			isSneaking = true;
 		}
@@ -252,7 +252,7 @@ public class AutoWeb extends Module{
 		}
 
 		if (rotate.getValue()){
-			BlockUtils.faceVectorPacketInstant(hitVec);
+			BlockUtil.faceVectorPacketInstant(hitVec);
 		}
 
 		mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
