@@ -211,7 +211,7 @@ public class pistonCrystal extends Module {
         if (supportsBlocks()) {
             BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 1));
             BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-            placeBlock(targetPos, 1, 1);
+            placeBlock(targetPos, 1, 1, toPlace.offsetX, toPlace.offsetZ);
         }
 
 
@@ -233,7 +233,7 @@ public class pistonCrystal extends Module {
                 BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
                 // I wont check if there is an entity in the block i'm trying to place. I dont think it's necessary
-                if (placeBlock(targetPos, 0, -1)) {
+                if (placeBlock(targetPos, 0, -1, 0, 0)) {
                     blockPlaced++;
                 }
 
@@ -249,7 +249,7 @@ public class pistonCrystal extends Module {
         else return false;
     }
 
-    private boolean placeBlock(BlockPos pos, int step, int direction){
+    private boolean placeBlock(BlockPos pos, int step, int direction, double offsetX, double offsetZ){
         // Get the block
         Block block = mc.world.getBlockState(pos).getBlock();
         // Get all sides
@@ -274,7 +274,7 @@ public class pistonCrystal extends Module {
         }
 
         // Get the position where we are gonna click
-        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Vec3d hitVec = new Vec3d(neighbour).add(0.5 + offsetX, 0.5, 0.5 + offsetZ).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
         /*
@@ -445,6 +445,8 @@ public class pistonCrystal extends Module {
         public int supportBlock;
         public List<Vec3d> to_place;
         public int direction;
+        public float offsetX;
+        public float offsetZ;
 
         public structureTemp(double distance, int supportBlock, List<Vec3d> to_place) {
             this.distance = distance;
@@ -453,11 +455,13 @@ public class pistonCrystal extends Module {
             this.direction = -1;
         }
 
-        public void replaceValues(double distance, int supportBlock, List<Vec3d> to_place, int direction) {
+        public void replaceValues(double distance, int supportBlock, List<Vec3d> to_place, int direction, float offsetX, float offsetZ) {
             this.distance = distance;
             this.supportBlock = supportBlock;
             this.to_place = to_place;
             this.direction = direction;
+            this.offsetX = offsetX;
+            this.offsetZ = offsetZ;
         }
     }
 
@@ -481,7 +485,7 @@ public class pistonCrystal extends Module {
             double[] crystalCords = {cord_b[0], cord_b[1], cord_b[2]};
             BlockPos positionCrystal = new BlockPos(crystalCords[0], crystalCords[1], crystalCords[2]);
             // Check if we are enough near him
-            if ((distance_now = mc.player.getDistanceSq(positionCrystal)) < strutturaAggiunta.distance) {
+            if ((distance_now = mc.player.getDistance(crystalCords[0], crystalCords[1] + 1, crystalCords[2])) < strutturaAggiunta.distance) {
                 // if there is enough space (3 in total: 1 for the crystal, 1 for the piston and 1 for the redstoneTorch)
                 if (positionCrystal.y != meCord[1] || /* we have to check the y level. if it's the same, we have to check */
                     (meCord[0] != positionCrystal.x || Math.abs(meCord[2] - positionCrystal.z) > 3 && /* if we are at the same x/z level. If yes*/
@@ -499,7 +503,7 @@ public class pistonCrystal extends Module {
                         // Get coordinates of the piston
                         Block blockPiston = get_block(pistonCord[0], pistonCord[1], pistonCord[2]);
                         // Check if it's possible to place a block and if someone is in that block
-                        if (blockPiston instanceof BlockAir && someoneInCoords(pistonCord[0], pistonCord[1], pistonCord[2]) &&
+                        if ((blockPiston instanceof BlockAir || blockPiston instanceof BlockPistonBase) && someoneInCoords(pistonCord[0], pistonCord[1], pistonCord[2]) &&
                             /* If rotate, check if we are in the same position*/
                             (!rotate.getValue() || !(
                             (int) crystalCords[0] == meCord[0] && (closestTarget.posZ > meCord[2]) == (closestTarget.posZ > crystalCords[2]) ||
@@ -511,8 +515,14 @@ public class pistonCrystal extends Module {
 
                             if (!rotate.getValue())
                                 enter = true;
-                            else if ((meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2]) ||
-                                      mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 2.5)
+                            else if ((meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ)) {
+                                  if (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 2.8)
+                                    enter = true;
+                                  else if (meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2])
+                                      enter = true;
+                            }
+                            else if (!(meCord[0] == (int) pistonCord[0] || meCord[2] == (int) pistonCord[2])
+                            )
                                 enter = true;
 
                             if (enter) {
@@ -567,10 +577,20 @@ public class pistonCrystal extends Module {
 
                                     // Add the redstoneTorch
                                     toPlaceTemp.add(new Vec3d(disp_surblock[i][0] * 2 + poss[0], disp_surblock[i][1] + 1, disp_surblock[i][2] * 2 + poss[2]));
+                                    float offsetX, offsetZ;
+                                    // Calculate the offset
+                                    if (meCord[0] > pistonCord[0])
+                                        offsetX = -0.5f;
+                                    else
+                                        offsetX = 0.5f;
 
+                                    if (meCord[2] > pistonCord[2])
+                                        offsetZ = -0.5f;
+                                    else
+                                        offsetZ = 0.5f;
 
                                     // Replace
-                                    strutturaAggiunta.replaceValues(distance_now, supportBlock, toPlaceTemp, -1);
+                                    strutturaAggiunta.replaceValues(distance_now, supportBlock, toPlaceTemp, -1, offsetX, offsetZ);
                                     // No place for a torch error (this is for me)
                                 }
                             }
