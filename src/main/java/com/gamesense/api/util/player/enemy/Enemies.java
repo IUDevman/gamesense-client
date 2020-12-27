@@ -15,6 +15,15 @@ public class Enemies {
 		return enemies;
 	}
 
+	public static List<String> getEnemiesByName() {
+		ArrayList<String> enemiesName = new ArrayList<>();
+		enemies.forEach(enemy -> {
+			enemiesName.add(enemy.getName());
+		});
+
+		return enemiesName;
+	}
+
 	public static boolean isEnemy(String name) {
 		boolean b = false;
 		for (Enemy e : getEnemies()) {

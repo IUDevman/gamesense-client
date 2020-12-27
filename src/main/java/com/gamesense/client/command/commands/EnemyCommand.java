@@ -13,7 +13,7 @@ public class EnemyCommand extends Command {
     public EnemyCommand() {
         super("Enemy");
 
-        setCommandSyntax(Command.getCommandPrefix() + "enemy add/del [player]");
+        setCommandSyntax(Command.getCommandPrefix() + "enemy list/add/del [player]");
         setCommandAlias(new String[]{
                 "enemy", "enemies", "e"
         });
@@ -21,6 +21,12 @@ public class EnemyCommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
+
+        if (main.equalsIgnoreCase("list")) {
+            MessageBus.sendClientPrefixMessage("Enemies: " + Enemies.getEnemiesByName() + "!");
+            return;
+        }
+
         String value = message[1];
 
         if (main.equalsIgnoreCase("add") && !Enemies.isEnemy(value)) {

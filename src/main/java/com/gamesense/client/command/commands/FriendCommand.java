@@ -13,7 +13,7 @@ public class FriendCommand extends Command {
     public FriendCommand() {
         super("Friend");
 
-        setCommandSyntax(Command.getCommandPrefix() + "friend add/del [player]");
+        setCommandSyntax(Command.getCommandPrefix() + "friend list/add/del [player]");
         setCommandAlias(new String[]{
                 "friend", "friends", "f"
         });
@@ -21,6 +21,12 @@ public class FriendCommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
+
+        if (main.equalsIgnoreCase("list")) {
+            MessageBus.sendClientPrefixMessage("Friends: " + Friends.getFriendsByName() + "!");
+            return;
+        }
+
         String value = message[1];
 
         if (main.equalsIgnoreCase("add") && !Friends.isFriend(value)) {
