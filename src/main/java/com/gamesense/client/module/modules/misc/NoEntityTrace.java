@@ -4,26 +4,26 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
 import net.minecraft.item.ItemPickaxe;
 
-public class NoEntityTrace extends Module{
-	public NoEntityTrace(){
+public class NoEntityTrace extends Module {
+
+	public NoEntityTrace() {
 		super("NoEntityTrace", Category.Misc);
 	}
 
 	Setting.Boolean pickaxeOnly;
 
-	public void setup(){
+	public void setup() {
 		pickaxeOnly = registerBoolean("Pickaxe Only", "PickaxeOnly", true);
 	}
 
 	boolean isHoldingPickaxe = false;
 
-	public void onUpdate(){
+	public void onUpdate() {
 		isHoldingPickaxe = mc.player.getHeldItemMainhand().getItem() instanceof ItemPickaxe;
 	}
 
-	public boolean noTrace(){
+	public boolean noTrace() {
 		if (pickaxeOnly.getValue()) return isEnabled() && isHoldingPickaxe;
 		return isEnabled();
 	}
 }
-

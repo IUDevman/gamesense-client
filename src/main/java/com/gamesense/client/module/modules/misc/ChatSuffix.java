@@ -11,16 +11,15 @@ import net.minecraft.network.play.client.CPacketChatMessage;
 
 import java.util.ArrayList;
 
-public class ChatSuffix extends Module{
-	public ChatSuffix(){
+public class ChatSuffix extends Module {
+
+	public ChatSuffix() {
 		super("ChatSuffix", Category.Misc);
 	}
 
-
 	Setting.Mode Separator;
 
-	public void setup(){
-
+	public void setup() {
 		ArrayList<String> Separators = new ArrayList<>();
 		Separators.add(">>");
 		Separators.add("<<");
@@ -31,17 +30,17 @@ public class ChatSuffix extends Module{
 
 	@EventHandler
 	private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
-		if (event.getPacket() instanceof CPacketChatMessage){
+		if (event.getPacket() instanceof CPacketChatMessage) {
 			if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(Command.getCommandPrefix()))
 				return;
 			String Separator2 = null;
-			if (Separator.getValue().equalsIgnoreCase(">>")){
+			if (Separator.getValue().equalsIgnoreCase(">>")) {
 				Separator2 = " \u300b";
 			}
-			if (Separator.getValue().equalsIgnoreCase("<<")){
+			if (Separator.getValue().equalsIgnoreCase("<<")) {
 				Separator2 = " \u300a";
 			}
-			else if (Separator.getValue().equalsIgnoreCase("|")){
+			else if (Separator.getValue().equalsIgnoreCase("|")) {
 				Separator2 = " \u23D0 ";
 			}
 			String old = ((CPacketChatMessage) event.getPacket()).getMessage();
@@ -52,15 +51,15 @@ public class ChatSuffix extends Module{
 		}
 	});
 
-	public void onEnable(){
+	public void onEnable() {
 		GameSense.EVENT_BUS.subscribe(this);
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 
-	public String toUnicode(String s){
+	public String toUnicode(String s) {
 		return s.toLowerCase()
 				.replace("a", "\u1d00")
 				.replace("b", "\u0299")

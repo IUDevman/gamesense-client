@@ -12,19 +12,19 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Mouse;
 
-public class AutoTool extends Module{
-	public AutoTool(){
+public class AutoTool extends Module {
+
+	public AutoTool() {
 		super("AutoTool", Category.Misc);
 	}
 
 	Setting.Boolean switchBack;
 
-
 	boolean shouldMoveBack = false;
 	int lastSlot = 0;
 	long lastChange = 0L;
 
-	public void setup(){
+	public void setup() {
 		switchBack = registerBoolean("Switch Back", "SwitchBack", false);
 	}
 
@@ -33,20 +33,20 @@ public class AutoTool extends Module{
 		equipBestTool(mc.world.getBlockState(event.getBlockPos()));
 	});
 
-	public void onUpdate(){
-
+	public void onUpdate() {
 		if (!switchBack.getValue())
 			shouldMoveBack = false;
 
 		if (mc.currentScreen != null || !switchBack.getValue()) return;
 
 		boolean mouse = Mouse.isButtonDown(0);
-		if (mouse && !shouldMoveBack){
+		if (mouse && !shouldMoveBack) {
 			lastChange = System.currentTimeMillis();
 			shouldMoveBack = true;
 			lastSlot = mc.player.inventory.currentItem;
 			mc.playerController.syncCurrentPlayItem();
-		} else if (!mouse && shouldMoveBack){
+		}
+		else if (!mouse && shouldMoveBack) {
 			shouldMoveBack = false;
 			mc.player.inventory.currentItem = lastSlot;
 			mc.playerController.syncCurrentPlayItem();
@@ -54,19 +54,17 @@ public class AutoTool extends Module{
 
 	}
 
-
-
-	private void equipBestTool(IBlockState blockState){
+	private void equipBestTool(IBlockState blockState) {
 		int bestSlot = -1;
 		double max = 0;
-		for (int i = 0; i < 9; i++){
+		for (int i = 0; i < 9; i++) {
 			ItemStack stack = mc.player.inventory.getStackInSlot(i);
 			if (stack.isEmpty()) continue;
 			float speed = stack.getDestroySpeed(blockState);
 			int eff;
-			if (speed > 1){
+			if (speed > 1) {
 				speed += ((eff = EnchantmentHelper.getEnchantmentLevel(Enchantments.EFFICIENCY, stack)) > 0 ? (Math.pow(eff, 2) + 1) : 0);
-				if (speed > max){
+				if (speed > max) {
 					max = speed;
 					bestSlot = i;
 				}
@@ -76,17 +74,17 @@ public class AutoTool extends Module{
 	}
 
 
-	private static void equip(int slot){
+	private static void equip(int slot) {
 		mc.player.inventory.currentItem = slot;
 		mc.playerController.syncCurrentPlayItem();
 	}
 
 
-	public void onEnable(){
+	public void onEnable() {
 		GameSense.EVENT_BUS.subscribe(this);
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 }

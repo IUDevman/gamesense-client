@@ -16,8 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ChatModifier extends Module{
-	public ChatModifier(){
+public class ChatModifier extends Module {
+
+	public ChatModifier() {
 		super("ChatModifier", Category.Misc);
 	}
 
@@ -29,8 +30,7 @@ public class ChatModifier extends Module{
 	Setting.Boolean space;
 	Setting.Boolean greenText;
 
-	public void setup(){
-
+	public void setup() {
 		ArrayList<String> formats = new ArrayList<>();
 		formats.add("H24:mm");
 		formats.add("H12:mm");
@@ -40,7 +40,7 @@ public class ChatModifier extends Module{
 		formats.add("H12:mm:ss a");
 		ArrayList<String> deco = new ArrayList<>(); deco.add("< >"); deco.add("[ ]"); deco.add("{ }"); deco.add(" ");
 		ArrayList<String> colors = new ArrayList<>();
-		for (ChatFormatting cf : ChatFormatting.values()){
+		for (ChatFormatting cf : ChatFormatting.values()) {
 			colors.add(cf.getName());
 		}
 
@@ -57,7 +57,7 @@ public class ChatModifier extends Module{
 	@EventHandler
 	private final Listener<ClientChatReceivedEvent> chatReceivedEventListener = new Listener<>(event -> {
 		//Chat Time Stamps
-		if (chatTimeStamps.getValue()){
+		if (chatTimeStamps.getValue()) {
 			String decoLeft = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[0];
 			String decoRight = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[1];
 			if (space.getValue()) decoRight += " ";
@@ -70,8 +70,8 @@ public class ChatModifier extends Module{
 
 	@EventHandler
 	private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
-		if (greenText.getValue()){
-			if (event.getPacket() instanceof CPacketChatMessage){
+		if (greenText.getValue()) {
+			if (event.getPacket() instanceof CPacketChatMessage) {
 				if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(Command.getCommandPrefix()))
 					return;
 				String message = ((CPacketChatMessage) event.getPacket()).getMessage();
@@ -84,11 +84,11 @@ public class ChatModifier extends Module{
 		}
 	});
 
-	public void onEnable(){
+	public void onEnable() {
 		GameSense.EVENT_BUS.subscribe(this);
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 }
