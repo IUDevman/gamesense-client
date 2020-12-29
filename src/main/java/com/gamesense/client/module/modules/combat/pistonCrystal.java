@@ -27,8 +27,8 @@ import java.util.List;
 /**
  * @Author TechAle on (remember me to insert the date)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
- * TODO: Without raytrace
  * TODO: place all the other things
+ * TODO: Break crystal and loop
  * TODO: Testing and implementing six's idea + redstoneBlock
  */
 
@@ -48,12 +48,10 @@ public class pistonCrystal extends Module {
     Setting.Integer pistonDelay;
     Setting.Integer crystalDelay;
     Setting.Integer hitDelay;
-    Setting.Double xOf;
-    Setting.Double zOf;
 
     public void setup(){
 
-        rotate = registerBoolean("Rotate", "Rotate", true);
+        rotate = registerBoolean("Rotate", "Rotate", false);
         blockPlayer = registerBoolean("blockPlayer", "blockPlayer", true);
         enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
         blocksPerTick = registerInteger("blocksPerTIck", "blocksPerTick", 4, 0, 10);
@@ -322,10 +320,10 @@ public class pistonCrystal extends Module {
         }
 
         // For the rotation
-        if (rotate.getValue()){
+        if (rotate.getValue() || step == 1){
             BlockUtils.faceVectorPacketInstant(hitVec);
         }
-
+        /* -225 84 169*/
         // Place the block
         mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
         mc.player.swingArm(EnumHand.MAIN_HAND);
@@ -548,7 +546,7 @@ public class pistonCrystal extends Module {
                                 // Check if the distance + position
                                 boolean enter = (!rotate.getValue() || (
                                         (meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ) ?
-                                                (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 2.8 || (meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2])) :
+                                                (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 3.5 || (meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2])) :
                                                 (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)));
                                 // Extended version
                                 /*
@@ -619,7 +617,7 @@ public class pistonCrystal extends Module {
                                         /// Calculate the offset
                                         // If horrizontaly
                                         if (disp_surblock[i][0] != 0) {
-                                            offsetX = disp_surblock[i][0] / 2f;
+                                            offsetX = rotate.getValue() ? disp_surblock[i][0] / 2f : disp_surblock[i][0] * 10;
                                             // Check which is better for distance
                                             if (mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] + 0.5) > mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] - 0.5))
                                                 offsetZ = -0.5f;
@@ -627,7 +625,7 @@ public class pistonCrystal extends Module {
                                                 offsetZ = 0.5f;
                                             // If vertically
                                         }else {
-                                            offsetZ = disp_surblock[i][2] / 2f;
+                                            offsetZ = rotate.getValue() ? disp_surblock[i][2] / 2f : disp_surblock[i][2] * 10;
                                             // Check which is better for distance
                                             if (mc.player.getDistanceSq(pistonCord[0] + 0.5, pistonCord[1], pistonCord[2]) > mc.player.getDistanceSq(pistonCord[0] - 0.5, pistonCord[1], pistonCord[2]))
                                                 offsetX = -0.5f;
