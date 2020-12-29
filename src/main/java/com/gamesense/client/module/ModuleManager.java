@@ -80,6 +80,7 @@ public class ModuleManager {
 		addMod(new BlockHighlight());
 		addMod(new BreakESP());
 		addMod(new CapesModule());
+		addMod(new Chams());
 		addMod(new CityESP());
 		addMod(new ESP());
 		addMod(new Freecam());
