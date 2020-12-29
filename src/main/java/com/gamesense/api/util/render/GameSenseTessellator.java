@@ -177,6 +177,7 @@ public class GameSenseTessellator {
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		// We put what we are going to draw on the deepest level
 		glPolygonOffset(1, -9000000);
+		//we don't want to see the player texture
 		glDisable(GL11.GL_TEXTURE_2D);
 		// Add the color
 		color.glColor();

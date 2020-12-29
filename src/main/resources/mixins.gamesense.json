@@ -25,6 +25,7 @@
 	"MixinPlayerOverlay",
 	"MixinRenderGlobal",
 	"MixinRenderLivingBase",
+	"MixinRenderManager",
 	"MixinRenderPlayer",
 	"MixinWorld"
 ]
