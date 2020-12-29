@@ -22,6 +22,7 @@ public class Chams extends Module {
 
     Setting.Mode chamsType;
     Setting.ColorSetting chamsColor;
+    Setting.Integer colorOpacity;
 
     public void setup() {
         ArrayList<String> chamsTypes = new ArrayList<>();
@@ -29,10 +30,9 @@ public class Chams extends Module {
         chamsTypes.add("Color");
 
         chamsType = registerMode("Type", "Type", chamsTypes, "Texture");
+        colorOpacity = registerInteger("Opacity", "Opacity", 155, 10, 255);
         chamsColor = registerColor("Color", "Color", new GSColor(0, 255, 255, 255));
     }
-
-    GSColor color = new GSColor(chamsColor.getValue(), 255);
 
     @SubscribeEvent
     public void onRenderLayers(RenderPlayerEvent.Pre e) {
@@ -41,7 +41,7 @@ public class Chams extends Module {
                 GameSenseTessellator.createChamsPre();
                 break;
             case "Color":
-                GameSenseTessellator.createColorPre(chamsColor.getColor());
+                GameSenseTessellator.createColorPre(new GSColor(chamsColor.getValue(), colorOpacity.getValue()));
                 break;
         }
     }

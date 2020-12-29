@@ -138,6 +138,7 @@ public class GameSenseTessellator {
 	 */
 
 	public static void createChamsPre() {
+		GlStateManager.pushMatrix();
 		// Disable shadows and outlines for preventing them (i dont wanna see their shadow in the chams)
 		Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
 		Minecraft.getMinecraft().getRenderManager().setRenderOutlines(false);
@@ -147,15 +148,18 @@ public class GameSenseTessellator {
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		// We put what we are going to draw on the deepest level
 		glPolygonOffset(1, -9000000);
+		GlStateManager.popMatrix();
 	}
 
 	public static void createChamsPost() {
+		GlStateManager.pushMatrix();
 		// In case we had shadow active, re-enable them
 		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
 		Minecraft.getMinecraft().getRenderManager().setRenderShadow(shadow);
 		// Disable what we did before
 		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1, 9000000);
+		GlStateManager.popMatrix();
 	}
 
 	/* Chams end */
@@ -163,6 +167,7 @@ public class GameSenseTessellator {
 	/* Color start */
 
 	public static void createColorPre(GSColor color) {
+		GlStateManager.pushMatrix();
 		// Disable shadows and outlines for preventing them (i dont wanna see their shadow in the chams)
 		Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
 		Minecraft.getMinecraft().getRenderManager().setRenderOutlines(false);
@@ -172,8 +177,10 @@ public class GameSenseTessellator {
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		// We put what we are going to draw on the deepest level
 		glPolygonOffset(1, -9000000);
+		glDisable(GL11.GL_TEXTURE_2D);
 		// Add the color
 		color.glColor();
+		GlStateManager.popMatrix();
 	}
 
 	/* Color end */
