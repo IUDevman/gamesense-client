@@ -37,7 +37,7 @@ public class pistonCrystal extends Module {
     public pistonCrystal(){
         super("pistonCrystal", Category.Combat);
     }
-    
+
     Setting.Double enemyRange;
     Setting.Boolean rotate;
     Setting.Boolean chatMsg;
@@ -93,11 +93,11 @@ public class pistonCrystal extends Module {
         coordsD = new double[3];
         // Create new delay table
         delayTable = new int[] {
-            startDelay.getValue(),
-            supBlocksDelay.getValue(),
-            pistonDelay.getValue(),
-            crystalDelay.getValue(),
-            hitDelay.getValue()
+                startDelay.getValue(),
+                supBlocksDelay.getValue(),
+                pistonDelay.getValue(),
+                crystalDelay.getValue(),
+                hitDelay.getValue()
         };
         // Default values
         toPlace = new structureTemp(0,0,null);
@@ -249,7 +249,7 @@ public class pistonCrystal extends Module {
                 // If we reached the limit
                 if (blockPlaced == blocksPerTick.getValue())
                     return false;
-                // If we have reached the max supportBlock
+                    // If we have reached the max supportBlock
                 else if (++i >= toPlace.supportBlock) {
                     return true;
                 }
@@ -397,7 +397,7 @@ public class pistonCrystal extends Module {
             // If endCrystal
             if (stack.getItem() instanceof ItemEndCrystal) {
                 slot_mat[2] = i;
-            // if sword
+                // if sword
             }else if (stack.getItem() instanceof ItemSword) {
                 slot_mat[4] = i;
             }else
@@ -410,14 +410,14 @@ public class pistonCrystal extends Module {
                 if (block instanceof BlockObsidian) {
                     slot_mat[0] = i;
                 } else
-                // PistonBlock
-                if (block instanceof BlockPistonBase) {
-                    slot_mat[1] = i;
-                } else
-                // RedstoneTorch / RedstoneBlock
-                if (block instanceof BlockRedstoneTorch || block.translationKey.equals("blockRedstone")) {
-                    slot_mat[3] = i;
-                }
+                    // PistonBlock
+                    if (block instanceof BlockPistonBase) {
+                        slot_mat[1] = i;
+                    } else
+                        // RedstoneTorch / RedstoneBlock
+                        if (block instanceof BlockRedstoneTorch || block.translationKey.equals("blockRedstone")) {
+                            slot_mat[3] = i;
+                        }
             }
         }
         // Count what we found
@@ -498,8 +498,8 @@ public class pistonCrystal extends Module {
             if ((distance_now = mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2])) < addedStructure.distance) {
                 // if there is enough space (3 in total: 1 for the crystal, 1 for the piston and 1 for the redstoneTorch)
                 if (positionCrystal.y != meCord[1] || /* we have to check the y level. if it's the same, we have to check */
-                    (meCord[0] != positionCrystal.x || Math.abs(meCord[2] - positionCrystal.z) > 3 && /* if we are at the same x/z level. If yes*/
-                     meCord[2] != positionCrystal.z || Math.abs(meCord[0] - positionCrystal.x) > 3) ) { /* check if there is enough space */
+                        (meCord[0] != positionCrystal.x || Math.abs(meCord[2] - positionCrystal.z) > 3 && /* if we are at the same x/z level. If yes*/
+                                meCord[2] != positionCrystal.z || Math.abs(meCord[0] - positionCrystal.x) > 3) ) { /* check if there is enough space */
                     // Up to 1
                     cord_b[1] += 1;
                     // Check for the position of the crystal (it must be air)
@@ -554,7 +554,6 @@ public class pistonCrystal extends Module {
                                 /*
                                 // If rotate, remove the first two near
                                 boolean enter = false;
-
                                 if (!rotate.getValue())
                                     enter = true;
                                 else if ((meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ)) {
@@ -620,20 +619,20 @@ public class pistonCrystal extends Module {
                                         /// Calculate the offset
                                         // If horrizontaly
                                         if (disp_surblock[i][0] != 0) {
-                                            offsetX = -disp_surblock[i][0] / 2f;
+                                            offsetX = disp_surblock[i][0] / 2f;
                                             // Check which is better for distance
                                             if (mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] + 0.5) > mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] - 0.5))
-                                                offsetZ = 0.5f;
-                                            else
                                                 offsetZ = -0.5f;
-                                        // If vertically
+                                            else
+                                                offsetZ = 0.5f;
+                                            // If vertically
                                         }else {
                                             offsetZ = disp_surblock[i][2] / 2f;
                                             // Check which is better for distance
                                             if (mc.player.getDistanceSq(pistonCord[0] + 0.5, pistonCord[1], pistonCord[2]) > mc.player.getDistanceSq(pistonCord[0] - 0.5, pistonCord[1], pistonCord[2]))
-                                                offsetX = 0.5f;
-                                            else
                                                 offsetX = -0.5f;
+                                            else
+                                                offsetX = 0.5f;
                                         }
 
                                         // Replace
@@ -685,7 +684,7 @@ public class pistonCrystal extends Module {
         for(EntityPlayer player : playerList) {
             // If the coordinates are the same (the y can be yCheck -+ 1 )
             if ((int) player.posX == xCheck && (int) player.posZ == zCheck &&
-                ((int) player.posY >= yCheck - 1 && (int) player.posY <= yCheck + 1))
+                    ((int) player.posY >= yCheck - 1 && (int) player.posY <= yCheck + 1))
                 return false;
         }
 
