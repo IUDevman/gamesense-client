@@ -71,7 +71,11 @@ dependencies {
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
 	compile group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
-	compile("com.lukflug:panelstudio:0.1.2")
+	compile("com.lukflug:panelstudio") {
+		version {
+			branch='dev'
+		}
+	}
 }
 
 processResources {
@@ -137,7 +141,7 @@ task downloadPanelstudio {
 }
 
 task unpackPanelstudio(dependsOn: downloadPanelstudio, type: Copy) {
-	from zipTree("${buildDir}/panelstudio-mc-0.1.1.jar")
+	from zipTree("../PanelStudio/panelstudio-mc/build/libs/panelstudio-mc-0.1.2.jar")
 	into "src/main/java"
 }
 
