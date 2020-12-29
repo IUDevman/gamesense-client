@@ -27,10 +27,9 @@ import java.util.List;
 /**
  * @Author TechAle on (remember me to insert the date)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
- * TODO: The code is a mess, tidy up a bit
  * TODO: Without raytrace
  * TODO: place all the other things
- * TODO: Testing and implementing six's idea
+ * TODO: Testing and implementing six's idea + redstoneBlock
  */
 
 
@@ -287,9 +286,8 @@ public class pistonCrystal extends Module {
         }
 
         // Get the position where we are gonna click
-        Vec3d hitVec = new Vec3d(neighbour).add(0.5 - offsetX, 1, 0.5 + offsetZ).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Vec3d hitVec = new Vec3d(neighbour).add(0.5 + offsetX, 1, 0.5 + offsetZ).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
-        printChat(String.format("%f %f %f", hitVec.x, hitVec.y, hitVec.z), true);
 
         /*
 			// I use this as a remind to which index refers to what
@@ -482,7 +480,7 @@ public class pistonCrystal extends Module {
     private boolean createStructure() {
         /// Get in what block the client is going to tower
         // Calculate for each blocks the distance and find the min
-        structureTemp strutturaAggiunta = new structureTemp(Double.MAX_VALUE, 0, null);
+        structureTemp addedStructure = new structureTemp(Double.MAX_VALUE, 0, null);
         double distance_now;
         int i = 0;
         // Our coordinates
@@ -492,17 +490,12 @@ public class pistonCrystal extends Module {
 
         // Iterate for every blocks around, find the closest
         for(Double[] cord_b : sur_block) {
-            // First of all, lets make some checks in case we have rotation on
-
             /// Check if there is enough space
             // Cord block we are checking
             double[] crystalCords = {cord_b[0], cord_b[1] + 1, cord_b[2]};
-            /*
-            1: -233 83 169
-             */
             BlockPos positionCrystal = new BlockPos(crystalCords[0], crystalCords[1], crystalCords[2]);
             // Check if we are enough near him
-            if ((distance_now = mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2])) < strutturaAggiunta.distance) {
+            if ((distance_now = mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2])) < addedStructure.distance) {
                 // if there is enough space (3 in total: 1 for the crystal, 1 for the piston and 1 for the redstoneTorch)
                 if (positionCrystal.y != meCord[1] || /* we have to check the y level. if it's the same, we have to check */
                     (meCord[0] != positionCrystal.x || Math.abs(meCord[2] - positionCrystal.z) > 3 && /* if we are at the same x/z level. If yes*/
@@ -519,24 +512,46 @@ public class pistonCrystal extends Module {
                         // Check if it's possible to place a block and if someone is in that block
                         if ((blockPiston instanceof BlockAir || blockPiston instanceof BlockPistonBase) && someoneInCoords(pistonCord[0], pistonCord[1], pistonCord[2])){
 
-                            boolean join = false;
+                            // |I decided to separate join and enter because, else, it would be hard for fixing in case of errors|
 
+                            // if the position is right
+                            boolean join =
+                                    !rotate.getValue() || ((int) pistonCord[0] == meCord[0] ?
+                                            ((closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2])
+                                                    || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1) :
+                                            (int) pistonCord[2] != meCord[2] || (((closestTarget.posX > mc.player.posX) != (closestTarget.posX > pistonCord[0])
+                                                    || (Math.abs((int) closestTarget.posX - (int) mc.player.posX)) == 1) && (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1))));
+                            // Extended version :
+                            /*
+                            boolean join = false;
+                            // If rotate
                             if (rotate.getValue()) {
+                                // If same X
                                 if ((int) pistonCord[0] == meCord[0]) {
+                                    // If we are not in the same quarter ot the distance is 1
                                     if ((closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2]) || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1)
                                         join = true;
                                 }else
+                                // If same z
                                 if ((int) pistonCord[2] == meCord[2]) {
+                                    // If we are not in the same quarter or the distance is 1
                                     if ((closestTarget.posX > mc.player.posX) != (closestTarget.posX > pistonCord[0]) || (Math.abs((int) closestTarget.posX - (int) mc.player.posX)) == 1)
+                                        // I dunno why but i need this, else in some points it wont work
                                         if (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1))
                                             join = true;
                                 }else join = true;
                             }else join = true;
-
+                            */
 
 
                             if (join) {
-                                printChat(String.format("%d", (Math.abs((int) closestTarget.posX - (int) mc.player.posX))), true);
+                                // Check if the distance + position
+                                boolean enter = (!rotate.getValue() || (
+                                        (meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ) ?
+                                                (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 2.8 || (meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2])) :
+                                                (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)));
+                                // Extended version
+                                /*
                                 // If rotate, remove the first two near
                                 boolean enter = false;
 
@@ -548,7 +563,7 @@ public class pistonCrystal extends Module {
                                     else if (meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2])
                                         enter = true;
                                 } else if (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)
-                                    enter = true;
+                                    enter = true;*/
 
                                 if (enter) {
 
@@ -570,7 +585,7 @@ public class pistonCrystal extends Module {
                                                 && someoneInCoords(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2])) {
                                             // We can exit
                                             poss = possibilites;
-                                            break; /* 218, 86, 18 */
+                                            break;
                                         }
                                     }
                                     if (poss != null) {
@@ -583,7 +598,6 @@ public class pistonCrystal extends Module {
                                         // Check for the piston If under there is nothing
                                         if (get_block(cord_b[0] + disp_surblock[i][0], cord_b[1] - 1, cord_b[2] + disp_surblock[i][2]) instanceof BlockAir) {
                                             // Add a block
-                                            /* -219 85 187 */
                                             toPlaceTemp.add(new Vec3d(disp_surblock[i][0] * 2, disp_surblock[i][1], disp_surblock[i][2] * 2));
                                             supportBlock++;
                                         }
@@ -602,16 +616,20 @@ public class pistonCrystal extends Module {
 
                                         // Add the redstoneTorch
                                         toPlaceTemp.add(new Vec3d(disp_surblock[i][0] * 2 + poss[0], disp_surblock[i][1] + 1, disp_surblock[i][2] * 2 + poss[2]));
-                                        float offsetX = 0, offsetZ = 0;
-                                        // Calculate the offset
+                                        float offsetX, offsetZ ;
+                                        /// Calculate the offset
+                                        // If horrizontaly
                                         if (disp_surblock[i][0] != 0) {
                                             offsetX = -disp_surblock[i][0] / 2f;
+                                            // Check which is better for distance
                                             if (mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] + 0.5) > mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] - 0.5))
-                                                offsetZ = -0.5f;
-                                            else
                                                 offsetZ = 0.5f;
+                                            else
+                                                offsetZ = -0.5f;
+                                        // If vertically
                                         }else {
                                             offsetZ = disp_surblock[i][2] / 2f;
+                                            // Check which is better for distance
                                             if (mc.player.getDistanceSq(pistonCord[0] + 0.5, pistonCord[1], pistonCord[2]) > mc.player.getDistanceSq(pistonCord[0] - 0.5, pistonCord[1], pistonCord[2]))
                                                 offsetX = 0.5f;
                                             else
@@ -619,38 +637,38 @@ public class pistonCrystal extends Module {
                                         }
 
                                         // Replace
-                                        strutturaAggiunta.replaceValues(distance_now, supportBlock, toPlaceTemp, -1, offsetX, offsetZ);
-                                        // No place for a torch error (this is for me)
+                                        addedStructure.replaceValues(distance_now, supportBlock, toPlaceTemp, -1, offsetX, offsetZ);
                                     }
                                 }
                             }
-                        // No place for a piston error (this is for me)
+
                         }
-                    // No place for a crystal error (this is for me)
+
                     }
-                // No place for placing error (this is for me)
+
                 }
-            // Better distance error (this is for me)
+
             }
+            // Incr i
             i++;
         }
         // We need this for see if we are going to find at list 1 spot for placing
         // If we found at list 1 value
-        if (strutturaAggiunta.to_place != null) {
+        if (addedStructure.to_place != null) {
             // Check if we have to block the guy
             if (blockPlayer.getValue()) {
                 // Get the values
-                Vec3d valuesStart = strutturaAggiunta.to_place.get(strutturaAggiunta.supportBlock);
+                Vec3d valuesStart = addedStructure.to_place.get(addedStructure.supportBlock);
                 // Get the opposit
                 int[] valueBegin = new int[] {(int) -valuesStart.x, (int) valuesStart.y, (int) -valuesStart.z};
                 // Add
-                strutturaAggiunta.to_place.add(0, new Vec3d(0, 2, 0));
-                strutturaAggiunta.to_place.add(0, new Vec3d(valueBegin[0], valueBegin[1] + 1, valueBegin[2]));
-                strutturaAggiunta.to_place.add(0, new Vec3d(valueBegin[0], valueBegin[1], valueBegin[2]));
-                strutturaAggiunta.supportBlock += 3;
+                addedStructure.to_place.add(0, new Vec3d(0, 2, 0));
+                addedStructure.to_place.add(0, new Vec3d(valueBegin[0], valueBegin[1] + 1, valueBegin[2]));
+                addedStructure.to_place.add(0, new Vec3d(valueBegin[0], valueBegin[1], valueBegin[2]));
+                addedStructure.supportBlock += 3;
             }
             // Add to the global value
-            toPlace = strutturaAggiunta;
+            toPlace = addedStructure;
             return true;
         }
 
