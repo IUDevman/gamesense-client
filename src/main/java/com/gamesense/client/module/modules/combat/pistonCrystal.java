@@ -1,5 +1,6 @@
 package com.gamesense.client.module.modules.combat;
 
+import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.friends.Friends;
@@ -8,15 +9,21 @@ import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemEndCrystal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -26,27 +33,35 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @Author TechAle on (remember me to insert the date)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
- * TODO: Break crystal all modes
- * TODO: resolve the bug that place obsidian isntead of piston sometimes
- * TODO: resolve bug place even if you are under
- * TODO: resolve bug sometimes miss place piston
+ * Break crystal from AutoCrystal
+ * TOD: resolve the bug that place obsidian isntead of piston sometimes (probably supportBlocks)
+ *  (It never happened during the recent testing)
+ * TODO: resolve the bug that the crystal does not spawn
+ * TODO: resolve bug place even if you are up (probably change 0.5 to 1)
+ * TOD: resolve bug sometimes miss place piston (it's rare, it happened just 1 time in hours)
+ *  (It never happened during the recent testing)
  * TODO: Testing and implementing six's idea + redstoneBlock
+ * TODO: Optimize update cicle (i fell like is not efficent / is a mess)
  */
 
+// Count of bugs solved: A lot
 
 public class pistonCrystal extends Module {
     public pistonCrystal(){
         super("pistonCrystal", Category.Combat);
     }
 
+    Setting.Mode breakType;
     Setting.Double enemyRange;
     Setting.Boolean rotate;
     Setting.Boolean chatMsg;
     Setting.Boolean blockPlayer;
+    Setting.Boolean antiWeakness;
     Setting.Integer blocksPerTick;
     Setting.Integer startDelay;
     Setting.Integer supBlocksDelay;
@@ -56,16 +71,21 @@ public class pistonCrystal extends Module {
 
     public void setup(){
 
+        ArrayList<String> breakTypes = new ArrayList<>();
+        breakTypes.add("Swing");
+        breakTypes.add("Packet");
+        breakType = registerMode("Type", "Type", breakTypes, "Swing");
         rotate = registerBoolean("Rotate", "Rotate", false);
         blockPlayer = registerBoolean("blockPlayer", "blockPlayer", true);
         enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
-        blocksPerTick = registerInteger("blocksPerTIck", "blocksPerTick", 4, 0, 10);
-        startDelay = registerInteger("startDelay", "startDelay", 4, 0, 40);
-        supBlocksDelay = registerInteger("supBlocksDelay", "supBlocksDelay", 4, 0, 10);
-        pistonDelay = registerInteger("pistonDelay", "pistonDelat", 2, 0, 10);
-        crystalDelay = registerInteger("crystalDelay", "crystalDelay", 2, 0, 10);
-        hitDelay = registerInteger("hitDelay", "hitDelay", 2, 0, 10);
+        blocksPerTick = registerInteger("blocksPerTIck", "blocksPerTick", 4, 0, 20);
+        startDelay = registerInteger("startDelay", "startDelay", 4, 0, 20);
+        supBlocksDelay = registerInteger("supBlocksDelay", "supBlocksDelay", 4, 0, 20);
+        pistonDelay = registerInteger("pistonDelay", "pistonDelat", 2, 0, 20);
+        crystalDelay = registerInteger("crystalDelay", "crystalDelay", 2, 0, 20);
+        hitDelay = registerInteger("hitDelay", "hitDelay", 2, 0, 20);
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        antiWeakness = registerBoolean("antiWeakness", "antiWeakness", false);
     }
 
     private boolean isSneaking = false;
@@ -75,7 +95,7 @@ public class pistonCrystal extends Module {
     private boolean isHole = true;
     private boolean enoughSpace = true;
     private int oldSlot = -1;
-    private int[] slot_mat = {-1, -1, -1, -1, -1};
+    private int[] slot_mat;
     private int[] delayTable;
     private int stage;
     private int delayTimeTicks;
@@ -107,7 +127,7 @@ public class pistonCrystal extends Module {
         isHole = true;
         hasMoved = false;
         firstRun = true;
-        slot_mat = new int[]{-1, -1, -1, -1};
+        slot_mat = new int[]{-1, -1, -1, -1, -1};
         stage = delayTimeTicks = 0;
 
         if (mc.player == null){
@@ -220,38 +240,81 @@ public class pistonCrystal extends Module {
 
         // A)
         if (supportsBlocks()) {
-            // B)
+            // B) Piston
             if (stage == 1) {
                 BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock));
                 BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
                 placeBlock(targetPos, 1, 1, toPlace.offsetX, toPlace.offsetZ);
                 stage++;
+            // C) Crystal
             }else if(stage == 2) {
-                BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 1));
-                BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-                placeBlock(targetPos, 2, 1, toPlace.offsetX, toPlace.offsetZ);
-                stage++;
+                // Check for the piston
+                BlockPos offsetPosPist = new BlockPos(toPlace.to_place.get(toPlace.supportBlock));
+                BlockPos targetPosPist = new BlockPos(closestTarget.getPositionVector()).add(offsetPosPist.getX(), offsetPosPist.getY(), offsetPosPist.getZ());
+                if (!(get_block(targetPosPist.x, targetPosPist.y, targetPosPist.z) instanceof BlockPistonBase)) {
+                    stage--;
+                }
+                if (stage == 2) {
+                    BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 1));
+                    BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                    placeBlock(targetPos, 2, 1, toPlace.offsetX, toPlace.offsetZ);
+                    stage++;
+                }
+            // D) Redstone
             }else if(stage == 3) {
-                BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 2));
-                BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-                placeBlock(targetPos, 3, 1, toPlace.offsetX, toPlace.offsetZ);
-                stage++;
+                // Check if the crystal has been placed
+                boolean found = false;
+                for(Entity t : mc.world.loadedEntityList) {
+                    if (t instanceof EntityEnderCrystal
+                            && (int) t.posX == (int) toPlace.to_place.get(toPlace.supportBlock + 1).x &&
+                            (int) t.posZ == (int) toPlace.to_place.get(toPlace.supportBlock + 1).z ) {
+                        found = true;
+                        stage--;
+                        break;
+                    }
+                }
+                // If the crystal is ok, place
+                if (stage == 3) {
+                    BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 2));
+                    BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                    placeBlock(targetPos, 3, 1, toPlace.offsetX, toPlace.offsetZ);
+                    stage++;
+                }
+            // E) Destroy
             }else if(stage == 4) {
-                EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
-                        .filter(entity -> entity instanceof EntityEnderCrystal)
-                        .filter(entity -> (int) entity.posX == (int) closestTarget.posX && (int) entity.posZ == (int) closestTarget.posZ)
-                        .map(entity -> (EntityEnderCrystal) entity)
-                        .min(Comparator.comparing(c -> mc.player.getDistance(c)))
-                        .orElse(null);
+                // Get the crystal
+                Entity crystal = null;
+                for(Entity t : mc.world.loadedEntityList) {
+                    if (t instanceof EntityEnderCrystal
+                        && t.posX == (int) t.posX || t.posZ == (int) t.posZ)
+                        crystal = t;
+                }
+                // If found
                 if (crystal != null) {
-                    mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                    // If weaknes
+                    if (antiWeakness.getValue())
+                        mc.player.inventory.currentItem = slot_mat[4];
+                    // If rotate
+                    if (rotate.getValue()) {
+                        lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+                    }
+                    /// Break type
+                    // Swing
+                    if (breakType.getValue().equals("Swing")) {
+                        breakCrystal(crystal);
+                    // Packet
+                    }else if(breakType.getValue().equals("Packet")) {
+                        mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+                        mc.player.swingArm(EnumHand.MAIN_HAND);
+                    }
+                    // Rotate
+                    if (rotate.getValue())
+                        resetRotation();
+                    // Reset
+                    stage = 0;
                 }
             }
         }
-
-
-
 
     }
 
@@ -456,7 +519,7 @@ public class pistonCrystal extends Module {
         }
 
         // If we have everything we need, return true
-        return count == 4;
+        return count == 4 + (antiWeakness.getValue() ? 1 : 0);
 
     }
 
@@ -721,5 +784,62 @@ public class pistonCrystal extends Module {
 
     private Block get_block(double x, double y, double z) {
         return mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
+    }
+
+
+    /// AutoCrystal break things ///
+    private void lookAtPacket(double px, double py, double pz, EntityPlayer me) {
+        double[] v = calculateLookAt(px, py, pz, me);
+        setYawAndPitch((float) v[0], (float) v[1]);
+    }
+    public static double[] calculateLookAt(double px, double py, double pz, EntityPlayer me) {
+        double dirx = me.posX - px;
+        double diry = me.posY - py;
+        double dirz = me.posZ - pz;
+
+        double len = Math.sqrt(dirx*dirx + diry*diry + dirz*dirz);
+
+        dirx /= len;
+        diry /= len;
+        dirz /= len;
+
+        double pitch = Math.asin(diry);
+        double yaw = Math.atan2(dirz, dirx);
+
+        pitch = pitch * 180.0d / Math.PI;
+        yaw = yaw * 180.0d / Math.PI;
+
+        yaw += 90f;
+
+        return new double[]{yaw,pitch};
+    }
+    private static boolean isSpoofingAngles;
+    private static double yaw;
+    private static double pitch;
+    private static void setYawAndPitch(float yaw1, float pitch1) {
+        yaw = yaw1;
+        pitch = pitch1;
+        isSpoofingAngles = true;
+    }
+    private void breakCrystal(Entity crystal) {
+        mc.playerController.attackEntity(mc.player, crystal);
+        mc.player.swingArm(EnumHand.MAIN_HAND);
+    }
+    @EventHandler
+    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
+        Packet packet = event.getPacket();
+        if (packet instanceof CPacketPlayer) {
+            if (isSpoofingAngles) {
+                ((CPacketPlayer) packet).yaw = (float) yaw;
+                ((CPacketPlayer) packet).pitch = (float) pitch;
+            }
+        }
+    });
+    private static void resetRotation() {
+        if (isSpoofingAngles) {
+            yaw = mc.player.rotationYaw;
+            pitch = mc.player.rotationPitch;
+            isSpoofingAngles = false;
+        }
     }
 }
