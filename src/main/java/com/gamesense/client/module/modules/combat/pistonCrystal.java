@@ -68,6 +68,7 @@ public class pistonCrystal extends Module {
     Setting.Integer pistonDelay;
     Setting.Integer crystalDelay;
     Setting.Integer hitDelay;
+    Setting.Integer stuckDetector;
 
     public void setup(){
 
@@ -79,6 +80,7 @@ public class pistonCrystal extends Module {
         blockPlayer = registerBoolean("blockPlayer", "blockPlayer", true);
         enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
         blocksPerTick = registerInteger("blocksPerTIck", "blocksPerTick", 4, 0, 20);
+        stuckDetector = registerInteger("stuckDetector", "stuckDetector", 35, 0, 200);
         startDelay = registerInteger("startDelay", "startDelay", 4, 0, 20);
         supBlocksDelay = registerInteger("supBlocksDelay", "supBlocksDelay", 4, 0, 20);
         pistonDelay = registerInteger("pistonDelay", "pistonDelat", 2, 0, 20);
@@ -108,6 +110,7 @@ public class pistonCrystal extends Module {
             {0,0,-1}
     };
     Double[][] sur_block;
+    private int stuck = 0;
 
 
     private EntityPlayer closestTarget;
@@ -128,7 +131,7 @@ public class pistonCrystal extends Module {
         hasMoved = false;
         firstRun = true;
         slot_mat = new int[]{-1, -1, -1, -1, -1};
-        stage = delayTimeTicks = 0;
+        stage = delayTimeTicks = stuck = 0;
 
         if (mc.player == null){
             disable();
@@ -253,22 +256,20 @@ public class pistonCrystal extends Module {
                 BlockPos targetPosPist = new BlockPos(closestTarget.getPositionVector()).add(offsetPosPist.getX(), offsetPosPist.getY(), offsetPosPist.getZ());
                 if (!(get_block(targetPosPist.x, targetPosPist.y, targetPosPist.z) instanceof BlockPistonBase)) {
                     stage--;
-                }
-                if (stage == 2) {
+                }else {
                     BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 1));
                     BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-                    placeBlock(targetPos, 2, 1, toPlace.offsetX, toPlace.offsetZ);
-                    stage++;
+                    if (placeBlock(targetPos, 2, 1, toPlace.offsetX, toPlace.offsetZ))
+                        stage++;
                 }
             // D) Redstone
             }else if(stage == 3) {
+                /// TODO check if this code is broken
                 // Check if the crystal has been placed
-                boolean found = false;
                 for(Entity t : mc.world.loadedEntityList) {
                     if (t instanceof EntityEnderCrystal
                             && (int) t.posX == (int) toPlace.to_place.get(toPlace.supportBlock + 1).x &&
                             (int) t.posZ == (int) toPlace.to_place.get(toPlace.supportBlock + 1).z ) {
-                        found = true;
                         stage--;
                         break;
                     }
@@ -311,7 +312,28 @@ public class pistonCrystal extends Module {
                     if (rotate.getValue())
                         resetRotation();
                     // Reset
-                    stage = 0;
+                    stage = stuck = 0;
+                }else {
+                    // If it stuck
+                    if (++stuck >= stuckDetector.getValue()) {
+                        /// Try to find the error
+                        // First error: crystal not found
+                        boolean found = false;
+                        for(Entity t : mc.world.loadedEntityList) {
+                            if (t instanceof EntityEnderCrystal
+                                    && (int) t.posX == (int) toPlace.to_place.get(toPlace.supportBlock + 1).x &&
+                                    (int) t.posZ == (int) toPlace.to_place.get(toPlace.supportBlock + 1).z ) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            /// The error is that the crystal has not been placed
+                            // Destroy the redstone torch
+                            // Restart from the crystal
+                            printChat("Stuck detected: crystal not placed", true);
+                        }
+                    }
                 }
             }
         }
@@ -489,7 +511,7 @@ public class pistonCrystal extends Module {
             if (stack.getItem() instanceof ItemEndCrystal) {
                 slot_mat[2] = i;
                 // if sword
-            }else if (stack.getItem() instanceof ItemSword) {
+            }else if (antiWeakness.getValue() && stack.getItem() instanceof ItemSword) {
                 slot_mat[4] = i;
             }else
             if (stack.getItem() instanceof ItemBlock){
