@@ -39,7 +39,6 @@ public class Chams extends Module {
     Setting.Boolean player;
     Setting.Boolean mob;
     Setting.Boolean entity;
-    Setting.Boolean item;
 
     public void setup() {
         ArrayList<String> chamsTypes = new ArrayList<>();
@@ -51,12 +50,10 @@ public class Chams extends Module {
         player = registerBoolean("Player", "Player", true);
         mob = registerBoolean("Mob", "Mob", false);
         entity = registerBoolean("Entity", "Entity", false);
-        item = registerBoolean("Item", "Item", false);
         colorOpacity = registerInteger("Opacity", "Opacity", 155, 10, 255);
         playerColor = registerColor("Player Color", "PlayerColor", new GSColor(0, 255, 255, 255));
         mobColor = registerColor("Mob Color", "Mob Color", new GSColor(255, 255, 0, 255));
         entityColor = registerColor("Entity Color", "EntityColor", new GSColor(0, 255, 0, 255));
-        itemColor = registerColor("Item Color", "ItemColor", new GSColor(255, 0, 255, 255));
     }
 
     @EventHandler
@@ -72,19 +69,15 @@ public class Chams extends Module {
         }
 
         if (player.getValue() && entity1 instanceof EntityPlayer && entity1 != mc.player) {
-            renderChamsPre(new GSColor(playerColor.getValue(), colorOpacity.getValue()));
+            renderChamsPre(new GSColor(playerColor.getValue(), 255));
         }
 
         if (mob.getValue() && (entity1 instanceof EntityCreature || entity1 instanceof EntitySlime || entity1 instanceof EntitySquid)) {
-            renderChamsPre(new GSColor(mobColor.getValue(), colorOpacity.getValue()));
+            renderChamsPre(new GSColor(mobColor.getValue(), 255));
         }
 
         if (entity.getValue() && (entity1 instanceof EntityEnderPearl || entity1 instanceof EntityXPOrb || entity1 instanceof EntityExpBottle || entity1 instanceof EntityEnderCrystal)) {
-            renderChamsPre(new GSColor(entityColor.getValue(), colorOpacity.getValue()));
-        }
-
-        if (item.getValue() && entity1 instanceof EntityItem) {
-            renderChamsPre(new GSColor(itemColor.getValue(), colorOpacity.getValue()));
+            renderChamsPre(new GSColor(entityColor.getValue(), 255));
         }
     });
 
@@ -111,10 +104,6 @@ public class Chams extends Module {
         if (entity.getValue() && (entity1 instanceof EntityEnderPearl || entity1 instanceof EntityXPOrb || entity1 instanceof EntityExpBottle || entity1 instanceof EntityEnderCrystal)) {
             renderChamsPost();
         }
-
-        if (item.getValue() && entity1 instanceof EntityItem) {
-            renderChamsPost();
-        }
     });
 
     private void renderChamsPre(GSColor color) {
@@ -123,7 +112,7 @@ public class Chams extends Module {
                 GameSenseTessellator.createChamsPre();
                 break;
             case "Color":
-                GameSenseTessellator.createColorPre(color);
+                GameSenseTessellator.createColorPre(new GSColor(color, colorOpacity.getValue()));
                 break;
         }
     }
@@ -131,6 +120,7 @@ public class Chams extends Module {
     private void renderChamsPost() {
         switch (chamsType.getValue()) {
             case "Color":
+                GameSenseTessellator.createColorPost();
             case "Texture":
                 GameSenseTessellator.createChamsPost();
                 break;

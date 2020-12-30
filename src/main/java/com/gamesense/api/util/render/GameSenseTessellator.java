@@ -135,59 +135,51 @@ public class GameSenseTessellator {
 		https://github.com/seppukudevelopment/seppuku/blob/master/src/main/java/me/rigamortis/seppuku/impl/module/render/ChamsModule.java
 		Thank to lukflug for helping me to understand
 		and for finding a bug
+
+		Hoosiers here- Techale was right above, but I ended up porting in a few fuctions from the above link so credit to Seppuku
 	 */
 
 	public static void createChamsPre() {
+		mc.getRenderManager().setRenderShadow(false);
+		mc.getRenderManager().setRenderOutlines(false);
 		GlStateManager.pushMatrix();
-		// Disable shadows and outlines for preventing them (i dont wanna see their shadow in the chams)
-		Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
-		Minecraft.getMinecraft().getRenderManager().setRenderOutlines(false);
-		// I think we illuminate the skin
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-		// We enable  the fill
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-		// We put what we are going to draw on the deepest level
-		glPolygonOffset(1, -9000000);
+		glPolygonOffset(1.0f, -1100000.0f);
 		GlStateManager.popMatrix();
 	}
 
 	public static void createChamsPost() {
-		GlStateManager.pushMatrix();
-		// In case we had shadow active, re-enable them
 		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
-		Minecraft.getMinecraft().getRenderManager().setRenderShadow(shadow);
-		// Disable what we did before
+		mc.getRenderManager().setRenderShadow(shadow);
+		GlStateManager.pushMatrix();
 		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1, 9000000);
+		glPolygonOffset(1.0f, 1100000.0f);
 		GlStateManager.popMatrix();
 	}
 
-	/* Chams end */
-
-	/* Color start */
-
 	public static void createColorPre(GSColor color) {
+		mc.getRenderManager().setRenderShadow(false);
+		mc.getRenderManager().setRenderOutlines(false);
 		GlStateManager.pushMatrix();
-		// Disable shadows and outlines for preventing them (i dont wanna see their shadow in the chams)
-		Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
-		Minecraft.getMinecraft().getRenderManager().setRenderOutlines(false);
-		// I think we illuminate the skin
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-		// We enable  the fill
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-		// We put what we are going to draw on the deepest level
-		glPolygonOffset(1, -9000000);
-		//we don't want to see the player texture
+		glPolygonOffset(1.0f, -1100000.0f);
 		glDisable(GL11.GL_TEXTURE_2D);
-		// Add the color
 		color.glColor();
 		GlStateManager.popMatrix();
 	}
 
-	/* Color end */
+	public static void createColorPost() {
+		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
+		mc.getRenderManager().setRenderShadow(shadow);
+		GlStateManager.pushMatrix();
+		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(1.0f, 1100000.0f);
+		glEnable(GL11.GL_TEXTURE_2D);
+		GlStateManager.popMatrix();
+	}
 
 	/* Base for direction start */
-
 	public static class Points {
 		// Coordinates
 		double[][] point = new double[10][2];
@@ -230,7 +222,6 @@ public class GameSenseTessellator {
 		}
 
 	}
-
 	/*
 		Mode:
 		0 -> boxDirection
@@ -258,13 +249,9 @@ public class GameSenseTessellator {
 				break;
 		}
 	}
-
-
 	/* Base for direction end */
 
-
 	/* drawBoxWithDirection start */
-
 	public static void drawDirection(Points square, GSColor color, double width) {
 		/// Lets dreaw all the lines
 		// Down
@@ -300,7 +287,6 @@ public class GameSenseTessellator {
 		vertex(posx2,posy2,posz2,bufferbuilder);
 		tessellator.draw();
 	}
-
 	/* drawBoxWithDirection end */
 
 	//hoosiers put this together with blood, sweat, and tears D:
