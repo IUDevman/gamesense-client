@@ -10,25 +10,30 @@ import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemEndCrystal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * @Author TechAle on (remember me to insert the date)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
- * TODO: place all the other things
- * TODO: Break crystal and loop
+ * TODO: Break crystal all modes
+ * TODO: resolve the bug that place obsidian isntead of piston sometimes
+ * TODO: resolve bug place even if you are under
+ * TODO: resolve bug sometimes miss place piston
  * TODO: Testing and implementing six's idea + redstoneBlock
  */
 
@@ -56,10 +61,10 @@ public class pistonCrystal extends Module {
         enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
         blocksPerTick = registerInteger("blocksPerTIck", "blocksPerTick", 4, 0, 10);
         startDelay = registerInteger("startDelay", "startDelay", 4, 0, 40);
-        supBlocksDelay = registerInteger("supBlocksDelay", "supBlocksDelay", 1, 0, 3000);
-        pistonDelay = registerInteger("pistonDelay", "pistonDelat", 1, 0, 3000);
-        crystalDelay = registerInteger("crystalDelay", "crystalDelay", 1, 0, 3000);
-        hitDelay = registerInteger("hitDelay", "hitDelay", 1, 0, 3000);
+        supBlocksDelay = registerInteger("supBlocksDelay", "supBlocksDelay", 4, 0, 10);
+        pistonDelay = registerInteger("pistonDelay", "pistonDelat", 2, 0, 10);
+        crystalDelay = registerInteger("crystalDelay", "crystalDelay", 2, 0, 10);
+        hitDelay = registerInteger("hitDelay", "hitDelay", 2, 0, 10);
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
     }
 
@@ -216,9 +221,33 @@ public class pistonCrystal extends Module {
         // A)
         if (supportsBlocks()) {
             // B)
-            BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 1));
-            BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-            placeBlock(targetPos, 1, 1, toPlace.offsetX, toPlace.offsetZ);
+            if (stage == 1) {
+                BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock));
+                BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                placeBlock(targetPos, 1, 1, toPlace.offsetX, toPlace.offsetZ);
+                stage++;
+            }else if(stage == 2) {
+                BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 1));
+                BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                placeBlock(targetPos, 2, 1, toPlace.offsetX, toPlace.offsetZ);
+                stage++;
+            }else if(stage == 3) {
+                BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 2));
+                BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                placeBlock(targetPos, 3, 1, toPlace.offsetX, toPlace.offsetZ);
+                stage++;
+            }else if(stage == 4) {
+                EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
+                        .filter(entity -> entity instanceof EntityEnderCrystal)
+                        .filter(entity -> (int) entity.posX == (int) closestTarget.posX && (int) entity.posZ == (int) closestTarget.posZ)
+                        .map(entity -> (EntityEnderCrystal) entity)
+                        .min(Comparator.comparing(c -> mc.player.getDistance(c)))
+                        .orElse(null);
+                if (crystal != null) {
+                    mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                }
+            }
         }
 
 
@@ -245,10 +274,12 @@ public class pistonCrystal extends Module {
                 }
 
                 // If we reached the limit
-                if (blockPlaced == blocksPerTick.getValue())
+                if (blockPlaced == blocksPerTick.getValue()) {
                     return false;
+                }
                     // If we have reached the max supportBlock
                 else if (++i >= toPlace.supportBlock) {
+                    stage = stage == 0 ? 1 : stage;
                     return true;
                 }
 
@@ -323,7 +354,6 @@ public class pistonCrystal extends Module {
         if (rotate.getValue() || step == 1){
             BlockUtils.faceVectorPacketInstant(hitVec);
         }
-        /* -225 84 169*/
         // Place the block
         mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
         mc.player.swingArm(EnumHand.MAIN_HAND);
@@ -605,11 +635,11 @@ public class pistonCrystal extends Module {
                                             supportBlock++;
                                         }
 
-                                        // Add the crystal
-                                        toPlaceTemp.add(new Vec3d(disp_surblock[i][0], disp_surblock[i][1] + 1, disp_surblock[i][2]));
-
                                         // Add the piston
                                         toPlaceTemp.add(new Vec3d(disp_surblock[i][0] * 2, disp_surblock[i][1] + 1, disp_surblock[i][2] * 2));
+
+                                        // Add the crystal
+                                        toPlaceTemp.add(new Vec3d(disp_surblock[i][0], disp_surblock[i][1] + 1, disp_surblock[i][2]));
 
                                         // Add the redstoneTorch
                                         toPlaceTemp.add(new Vec3d(disp_surblock[i][0] * 2 + poss[0], disp_surblock[i][1] + 1, disp_surblock[i][2] * 2 + poss[2]));
@@ -655,7 +685,7 @@ public class pistonCrystal extends Module {
             // Check if we have to block the guy
             if (blockPlayer.getValue()) {
                 // Get the values
-                Vec3d valuesStart = addedStructure.to_place.get(addedStructure.supportBlock);
+                Vec3d valuesStart = addedStructure.to_place.get(addedStructure.supportBlock + 1);
                 // Get the opposit
                 int[] valueBegin = new int[] {(int) -valuesStart.x, (int) valuesStart.y, (int) -valuesStart.z};
                 // Add
