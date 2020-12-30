@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.friends.Friends;
-import com.gamesense.api.util.world.BlockUtils;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -251,7 +251,7 @@ public class AutoAnvil extends Module {
         // Get the block
         Block block = mc.world.getBlockState(pos).getBlock();
         // Get all sides
-        EnumFacing side = BlockUtils.getPlaceableSide(pos);
+        EnumFacing side = BlockUtil.getPlaceableSide(pos);
         // If it is a ghostblock
         if (step == to_place.size() - 1 && block instanceof BlockAnvil && side != null) {
             // UnGlitch it with a left click
@@ -275,7 +275,7 @@ public class AutoAnvil extends Module {
         EnumFacing opposite = side.getOpposite();
 
         // If that block can be clicked
-        if (!BlockUtils.canBeClicked(neighbour)){
+        if (!BlockUtil.canBeClicked(neighbour)){
             return false;
         }
 
@@ -305,7 +305,7 @@ public class AutoAnvil extends Module {
         }else return false;
 
         // Why?
-        if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)){
+        if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)){
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
             isSneaking = true;
         }
@@ -320,7 +320,7 @@ public class AutoAnvil extends Module {
 
         // For the rotation
         if (rotate.getValue()){
-            BlockUtils.faceVectorPacketInstant(hitVec);
+            BlockUtil.faceVectorPacketInstant(hitVec);
         }
 
         // FastAnvil
@@ -358,7 +358,7 @@ public class AutoAnvil extends Module {
 
         // Breaking the anvil
         if (pick_d && step == to_place.size() - 1) {
-            EnumFacing prova = BlockUtils.getPlaceableSide(new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]));
+            EnumFacing prova = BlockUtil.getPlaceableSide(new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]));
             if (prova != null) {
                 mc.player.inventory.currentItem = slot_mat[3];
                 mc.player.swingArm(EnumHand.MAIN_HAND);

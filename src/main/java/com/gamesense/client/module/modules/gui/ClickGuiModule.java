@@ -13,9 +13,11 @@ import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
 
-public class ClickGuiModule extends Module{
+public class ClickGuiModule extends Module {
+
 	public ClickGuiModule INSTANCE;
-	public ClickGuiModule(){
+
+	public ClickGuiModule() {
 		super("ClickGUI", Category.GUI);
 		setBind(Keyboard.KEY_O);
 		setDrawn(false);
@@ -34,7 +36,11 @@ public class ClickGuiModule extends Module{
 	public static Setting.Mode scrolling;
 	public static Setting.Boolean showHUD;
 
-	public void setup(){
+	public void setup() {
+		ArrayList<String> models=new ArrayList<>();
+		models.add("Screen");
+		models.add("Container");
+
 		backgroundBlur = registerBoolean("Blur", "Blur", false);
 		opacity = registerInteger("Opacity", "Opacity", 150,50,255);
 		scrollSpeed = registerInteger("Scroll Speed", "ScrollSpeed", 10, 1, 20);
@@ -44,9 +50,6 @@ public class ClickGuiModule extends Module{
 		settingBackgroundColor = registerColor("Setting", "Setting", new GSColor(30, 30, 30, 255));
 		fontColor = registerColor("Font", "Font", new GSColor(255, 255, 255 ,255));
 		animationSpeed = registerInteger("Animation Speed", "AnimationSpeed", 200, 0, 1000);
-		ArrayList<String> models=new ArrayList<>();
-		models.add("Screen");
-		models.add("Container");
 		scrolling=registerMode("Scrolling","ScrollingMode",models,"Screen");
 		showHUD=registerBoolean("Show HUD Panels","ShowHUD",true);
 	}
@@ -54,7 +57,7 @@ public class ClickGuiModule extends Module{
 	/** This uses minecraft's old "super secret" shaders, which means it could be modified to be a bunch of things in the future */
 	private ResourceLocation shader = new ResourceLocation("minecraft", "shaders/post/blur" + ".json");
 
-	public void onEnable(){
+	public void onEnable() {
 		GameSense.getInstance().gameSenseGUI.enterGUI();
 
 		if (backgroundBlur.getValue()) {
@@ -71,21 +74,21 @@ public class ClickGuiModule extends Module{
 		}
 	}
 
-	public void onUpdate(){
-		if (backgroundBlur.getValue() && !mc.entityRenderer.isShaderActive()){
+	public void onUpdate() {
+		if (backgroundBlur.getValue() && !mc.entityRenderer.isShaderActive()) {
 			mc.entityRenderer.loadShader(shader);
 		}
 
-		if (!backgroundBlur.getValue() && mc.entityRenderer.isShaderActive()){
+		if (!backgroundBlur.getValue() && mc.entityRenderer.isShaderActive()) {
 			mc.entityRenderer.stopUseShader();
 		}
 
-		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			this.disable();
 		}
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		if (mc.entityRenderer.isShaderActive()) {
 			mc.entityRenderer.stopUseShader();
 		}

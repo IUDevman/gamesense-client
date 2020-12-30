@@ -26,7 +26,10 @@ import java.util.stream.Collectors;
  **/
 
 public class PvPInfo extends Module {
-	public PvPInfo(){super("PvPInfo", Category.Misc);}
+
+	public PvPInfo() {
+		super("PvPInfo", Category.Misc);
+	}
 
 	List<Entity> knownPlayers = new ArrayList<>();
 	List<Entity> antipearlspamplz = new ArrayList<>();
@@ -41,7 +44,7 @@ public class PvPInfo extends Module {
 	Setting.Boolean popCounter;
 	Setting.Mode ChatColor;
 
-	public void setup(){
+	public void setup() {
 		ArrayList<String> colors = new ArrayList<>();
 		colors.add("Black");
 		colors.add("Dark Green");
@@ -82,8 +85,8 @@ public class PvPInfo extends Module {
 						}
 					}
 				}
-			} catch (Exception e) {
 			}
+			catch (Exception e) { }
 			try {
 				for (Entity e : knownPlayers) {
 					if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())) {
@@ -92,8 +95,8 @@ public class PvPInfo extends Module {
 						}
 					}
 				}
-			} catch (Exception e) {
 			}
+			catch (Exception e) { }
 		}
 		if (pearlAlert.getValue()) {
 			pearls = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityEnderPearl).collect(Collectors.toList());
@@ -110,12 +113,12 @@ public class PvPInfo extends Module {
 			}
 		}
 		if (strengthDetect.getValue()) {
-			for (EntityPlayer player : mc.world.playerEntities){
-				if (player.isPotionActive(MobEffects.STRENGTH) && !(strengthedPlayers.contains(player))){
+			for (EntityPlayer player : mc.world.playerEntities) {
+				if (player.isPotionActive(MobEffects.STRENGTH) && !(strengthedPlayers.contains(player))) {
 					MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " has (drank) strength!");
 					strengthedPlayers.add(player);
 				}
-				if (!(player.isPotionActive(MobEffects.STRENGTH)) && strengthedPlayers.contains(player)){
+				if (!(player.isPotionActive(MobEffects.STRENGTH)) && strengthedPlayers.contains(player)) {
 					MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " no longer has strength!");
 					strengthedPlayers.remove(player);
 				}
@@ -135,13 +138,13 @@ public class PvPInfo extends Module {
 
 	@EventHandler
 	private final Listener<PacketEvent.Receive> packetEventListener = new Listener<>(event -> {
-		if (mc.world == null || mc.player == null){
+		if (mc.world == null || mc.player == null) {
 			return;
 		}
 
-		if (event.getPacket() instanceof SPacketEntityStatus){
+		if (event.getPacket() instanceof SPacketEntityStatus) {
 			SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
-			if (packet.getOpCode() == 35){
+			if (packet.getOpCode() == 35) {
 				Entity entity = packet.getEntity(mc.world);
 				GameSense.EVENT_BUS.post(new TotemPopEvent(entity));
 			}
@@ -150,7 +153,7 @@ public class PvPInfo extends Module {
 
 	@EventHandler
 	private final Listener<TotemPopEvent> totemPopEventListener = new Listener<>(event -> {
-		if (mc.world == null || mc.player == null){
+		if (mc.world == null || mc.player == null) {
 			return;
 		}
 
@@ -162,7 +165,8 @@ public class PvPInfo extends Module {
 			if (popCounterHashMap.get(event.getEntity().getName()) == null) {
 				popCounterHashMap.put(event.getEntity().getName(), 1);
 				MessageBus.sendClientPrefixMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
-			} else if (popCounterHashMap.get(event.getEntity().getName()) != null) {
+			}
+			else if (popCounterHashMap.get(event.getEntity().getName()) != null) {
 				int popCounter = popCounterHashMap.get(event.getEntity().getName());
 				int newPopCounter = popCounter += 1;
 				popCounterHashMap.put(event.getEntity().getName(), newPopCounter);
@@ -171,64 +175,64 @@ public class PvPInfo extends Module {
 		}
 	});
 
-	public ChatFormatting getTextColor(){
-		if (ChatColor.getValue().equalsIgnoreCase("Black")){
+	public ChatFormatting getTextColor() {
+		if (ChatColor.getValue().equalsIgnoreCase("Black")) {
 			return ChatFormatting.BLACK;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Dark Green")){
+		if (ChatColor.getValue().equalsIgnoreCase("Dark Green")) {
 			return ChatFormatting.DARK_GREEN;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Dark Red")){
+		if (ChatColor.getValue().equalsIgnoreCase("Dark Red")) {
 			return ChatFormatting.DARK_RED;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Gold")){
+		if (ChatColor.getValue().equalsIgnoreCase("Gold")) {
 			return ChatFormatting.GOLD;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Dark Gray")){
+		if (ChatColor.getValue().equalsIgnoreCase("Dark Gray")) {
 			return ChatFormatting.DARK_GRAY;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Green")){
+		if (ChatColor.getValue().equalsIgnoreCase("Green")) {
 			return ChatFormatting.GREEN;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Red")){
+		if (ChatColor.getValue().equalsIgnoreCase("Red")) {
 			return ChatFormatting.RED;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Yellow")){
+		if (ChatColor.getValue().equalsIgnoreCase("Yellow")) {
 			return ChatFormatting.YELLOW;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Dark Blue")){
+		if (ChatColor.getValue().equalsIgnoreCase("Dark Blue")) {
 			return ChatFormatting.DARK_BLUE;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Dark Aqua")){
+		if (ChatColor.getValue().equalsIgnoreCase("Dark Aqua")) {
 			return ChatFormatting.DARK_AQUA;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Dark Purple")){
+		if (ChatColor.getValue().equalsIgnoreCase("Dark Purple")) {
 			return ChatFormatting.DARK_PURPLE;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Gray")){
+		if (ChatColor.getValue().equalsIgnoreCase("Gray")) {
 			return ChatFormatting.GRAY;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Blue")){
+		if (ChatColor.getValue().equalsIgnoreCase("Blue")) {
 			return ChatFormatting.BLUE;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Light Purple")){
+		if (ChatColor.getValue().equalsIgnoreCase("Light Purple")) {
 			return ChatFormatting.LIGHT_PURPLE;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("White")){
+		if (ChatColor.getValue().equalsIgnoreCase("White")) {
 			return ChatFormatting.WHITE;
 		}
-		if (ChatColor.getValue().equalsIgnoreCase("Aqua")){
+		if (ChatColor.getValue().equalsIgnoreCase("Aqua")) {
 			return ChatFormatting.AQUA;
 		}
 		return null;
 	}
 
-	public void onEnable(){
+	public void onEnable() {
 		GameSense.EVENT_BUS.subscribe(this);
 		popCounterHashMap = new HashMap<>();
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		knownPlayers.clear();
 		GameSense.EVENT_BUS.unsubscribe(this);
 	}

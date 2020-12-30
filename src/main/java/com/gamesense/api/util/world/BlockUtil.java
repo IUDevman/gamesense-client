@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BlockUtils {
+public class BlockUtil {
 
 	public static final List blackList;
 	public static final List shulkerList;

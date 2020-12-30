@@ -8,8 +8,9 @@ import net.minecraft.util.text.TextFormatting;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ColorMain extends Module{
-	public ColorMain(){
+public class ColorMain extends Module {
+
+	public ColorMain() {
 		super("Colors", Category.GUI);
 		setDrawn(false);
 	}
@@ -40,75 +41,77 @@ public class ColorMain extends Module{
 		tab.add("Aqua");
 		tab.add("Light Purple");
 		tab.add("White");
+
+		ArrayList<String> models = new ArrayList<>();
+		models.add("RGB");
+		models.add("HSB");
+
 		customFont = registerBoolean("Custom Font", "CustomFont", true);
 		textFont = registerBoolean("Custom Text", "CustomText", false);
 		friendColor = registerMode("Friend", "FriendColor", tab, "Blue");
 		enemyColor = registerMode("Enemy", "EnemyColor", tab, "Red");
 		chatEnableColor = registerMode("Msg Enbl", "MsgEnbl", tab, "Green");
 		chatDisableColor = registerMode("Msg Dsbl", "MsgDsbl", tab, "Red");
-		ArrayList<String> models=new ArrayList<>();
-		models.add("RGB");
-		models.add("HSB");
-		colorModel=registerMode("Color Model","ColorModel",models,"HSB");
+		colorModel=registerMode("Color Model","ColorModel", models,"HSB");
 	}
 
-	public void onEnable(){
+	public void onEnable() {
 		this.disable();
 	}
 	
 	private static TextFormatting settingToFormatting (Setting.Mode setting) {
-		if (setting.getValue().equalsIgnoreCase("Black")){
+		if (setting.getValue().equalsIgnoreCase("Black")) {
 			return TextFormatting.BLACK;
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Green")){
+		if (setting.getValue().equalsIgnoreCase("Dark Green")) {
 			return TextFormatting.DARK_GREEN;
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Red")){
+		if (setting.getValue().equalsIgnoreCase("Dark Red")) {
 			return TextFormatting.DARK_RED;
 		}
-		if (setting.getValue().equalsIgnoreCase("Gold")){
+		if (setting.getValue().equalsIgnoreCase("Gold")) {
 			return TextFormatting.GOLD;
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Gray")){
+		if (setting.getValue().equalsIgnoreCase("Dark Gray")) {
 			return TextFormatting.DARK_GRAY;
 		}
-		if (setting.getValue().equalsIgnoreCase("Green")){
+		if (setting.getValue().equalsIgnoreCase("Green")) {
 			return TextFormatting.GREEN;
 		}
-		if (setting.getValue().equalsIgnoreCase("Red")){
+		if (setting.getValue().equalsIgnoreCase("Red")) {
 			return TextFormatting.RED;
 		}
-		if (setting.getValue().equalsIgnoreCase("Yellow")){
+		if (setting.getValue().equalsIgnoreCase("Yellow")) {
 			return TextFormatting.YELLOW;
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Blue")){
+		if (setting.getValue().equalsIgnoreCase("Dark Blue")) {
 			return TextFormatting.DARK_BLUE;
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Aqua")){
+		if (setting.getValue().equalsIgnoreCase("Dark Aqua")) {
 			return TextFormatting.DARK_AQUA;
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Purple")){
+		if (setting.getValue().equalsIgnoreCase("Dark Purple")) {
 			return TextFormatting.DARK_PURPLE;
 		}
-		if (setting.getValue().equalsIgnoreCase("Gray")){
+		if (setting.getValue().equalsIgnoreCase("Gray")) {
 			return TextFormatting.GRAY;
 		}
-		if (setting.getValue().equalsIgnoreCase("Blue")){
+		if (setting.getValue().equalsIgnoreCase("Blue")) {
 			return TextFormatting.BLUE;
 		}
-		if (setting.getValue().equalsIgnoreCase("Light Purple")){
+		if (setting.getValue().equalsIgnoreCase("Light Purple")) {
 			return TextFormatting.LIGHT_PURPLE;
 		}
-		if (setting.getValue().equalsIgnoreCase("White")){
+		if (setting.getValue().equalsIgnoreCase("White")) {
 			return TextFormatting.WHITE;
 		}
-		if (setting.getValue().equalsIgnoreCase("Aqua")){
+		if (setting.getValue().equalsIgnoreCase("Aqua")) {
 			return TextFormatting.AQUA;
 		}
 		return null;
 	}
 
-	public static TextFormatting getFriendColor(){
+	public static TextFormatting getFriendColor() {
 		return settingToFormatting(friendColor);
 	}
 
@@ -116,67 +119,71 @@ public class ColorMain extends Module{
 		return settingToFormatting(enemyColor);
 	}
 
-	public static TextFormatting getEnabledColor(){return settingToFormatting(chatEnableColor);}
+	public static TextFormatting getEnabledColor() {
+		return settingToFormatting(chatEnableColor);
+	}
 
-	public static TextFormatting getDisabledColor(){return settingToFormatting(chatDisableColor);}
+	public static TextFormatting getDisabledColor() {
+		return settingToFormatting(chatDisableColor);
+	}
 	
 	private static Color settingToColor (Setting.Mode setting) {
-		if (setting.getValue().equalsIgnoreCase("Black")){
+		if (setting.getValue().equalsIgnoreCase("Black")) {
 			return Color.BLACK;
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Green")){
+		if (setting.getValue().equalsIgnoreCase("Dark Green")) {
 			return Color.GREEN.darker();
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Red")){
+		if (setting.getValue().equalsIgnoreCase("Dark Red")) {
 			return Color.RED.darker();
 		}
-		if (setting.getValue().equalsIgnoreCase("Gold")){
+		if (setting.getValue().equalsIgnoreCase("Gold")) {
 			return Color.yellow.darker();
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Gray")){
+		if (setting.getValue().equalsIgnoreCase("Dark Gray")) {
 			return Color.DARK_GRAY;
 		}
-		if (setting.getValue().equalsIgnoreCase("Green")){
+		if (setting.getValue().equalsIgnoreCase("Green")) {
 			return Color.green;
 		}
-		if (setting.getValue().equalsIgnoreCase("Red")){
+		if (setting.getValue().equalsIgnoreCase("Red")) {
 			return Color.red;
 		}
-		if (setting.getValue().equalsIgnoreCase("Yellow")){
+		if (setting.getValue().equalsIgnoreCase("Yellow")) {
 			return Color.yellow;
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Blue")){
+		if (setting.getValue().equalsIgnoreCase("Dark Blue")) {
 			return Color.blue.darker();
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Aqua")){
+		if (setting.getValue().equalsIgnoreCase("Dark Aqua")) {
 			return Color.CYAN.darker();
 		}
-		if (setting.getValue().equalsIgnoreCase("Dark Purple")){
+		if (setting.getValue().equalsIgnoreCase("Dark Purple")) {
 			return Color.MAGENTA.darker();
 		}
-		if (setting.getValue().equalsIgnoreCase("Gray")){
+		if (setting.getValue().equalsIgnoreCase("Gray")) {
 			return Color.GRAY;
 		}
-		if (setting.getValue().equalsIgnoreCase("Blue")){
+		if (setting.getValue().equalsIgnoreCase("Blue")) {
 			return Color.blue;
 		}
-		if (setting.getValue().equalsIgnoreCase("Light Purple")){
+		if (setting.getValue().equalsIgnoreCase("Light Purple")) {
 			return Color.magenta;
 		}
-		if (setting.getValue().equalsIgnoreCase("White")){
+		if (setting.getValue().equalsIgnoreCase("White")) {
 			return Color.WHITE;
 		}
-		if (setting.getValue().equalsIgnoreCase("Aqua")){
+		if (setting.getValue().equalsIgnoreCase("Aqua")) {
 			return Color.cyan;
 		}
 		return Color.WHITE;
 	}
 
-	public static GSColor getFriendGSColor(){
+	public static GSColor getFriendGSColor() {
 		return new GSColor(settingToColor(friendColor));
 	}
 
-	public static GSColor getEnemyGSColor(){
+	public static GSColor getEnemyGSColor() {
 		return new GSColor(settingToColor(enemyColor));
 	}
 }

@@ -14,7 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HotbarRefill extends Module {
-    public HotbarRefill(){
+
+    public HotbarRefill() {
         super("HotbarRefill", Category.Misc);
     }
 
@@ -62,7 +63,8 @@ public class HotbarRefill extends Module {
         if (delayStep < tickDelay.getValue()) {
             delayStep++;
             return;
-        } else {
+        }
+        else {
             delayStep = 0;
         }
 

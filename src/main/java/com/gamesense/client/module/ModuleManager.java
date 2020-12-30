@@ -27,7 +27,7 @@ public class ModuleManager {
 		modules = new ArrayList<>();
 		//Combat
 		addMod(new AutoAnvil());
-		addMod(new pistonCrystal());
+		addMod(new PistonCrystal());
 		addMod(new AutoArmor());
 		addMod(new AutoCrystal());
 		addMod(new AutoTotem());
@@ -38,7 +38,6 @@ public class ModuleManager {
 		addMod(new KillAura());
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
-		addMod(new Quiver());
 		addMod(new SelfTrap());
 		addMod(new SelfWeb());
 		addMod(new Surround());
@@ -81,6 +80,7 @@ public class ModuleManager {
 		addMod(new BlockHighlight());
 		addMod(new BreakESP());
 		addMod(new CapesModule());
+		addMod(new Chams());
 		addMod(new CityESP());
 		addMod(new ESP());
 		addMod(new Freecam());
@@ -159,7 +159,7 @@ public class ModuleManager {
 	public static void onBind(int key) {
 		if (key == 0 || key == Keyboard.KEY_NONE) return;
 		modules.forEach(module -> {
-			if(module.getBind() == key){
+			if(module.getBind() == key) {
 				module.toggle();
 			}
 		});

@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.api.util.world.MotionUtils;
+import com.gamesense.api.util.world.MotionUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -55,7 +55,7 @@ public class Step extends Module{
 					}
 				}
 			}
-			double[] dir = MotionUtils.forward(0.1);
+			double[] dir = MotionUtil.forward(0.1);
 			boolean twofive = false;
 			boolean two = false;
 			boolean onefive = false;

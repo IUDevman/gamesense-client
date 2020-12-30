@@ -15,6 +15,15 @@ public class Friends {
 		return friends;
 	}
 
+	public static List<String> getFriendsByName() {
+		ArrayList<String> friendsName = new ArrayList<>();
+		friends.forEach(friend -> {
+			friendsName.add(friend.getName());
+		});
+
+		return friendsName;
+	}
+
 	public static boolean isFriend(String name) {
 		boolean b = false;
 		for (Friend f : getFriends()) {

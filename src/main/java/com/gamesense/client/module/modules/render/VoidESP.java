@@ -7,7 +7,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
-import com.gamesense.api.util.world.BlockUtils;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
 
@@ -65,7 +65,7 @@ public class VoidESP extends Module {
 			voidHoles.clear();
 		}
 
-		List<BlockPos> blockPosList = BlockUtils.getCircle(getPlayerPos(), 0, renderDistance.getValue(), false);
+		List<BlockPos> blockPosList = BlockUtil.getCircle(getPlayerPos(), 0, renderDistance.getValue(), false);
 
 		for (BlockPos blockPos : blockPosList){
 			if (mc.world.getBlockState(blockPos).getBlock().equals(Blocks.BEDROCK)) {

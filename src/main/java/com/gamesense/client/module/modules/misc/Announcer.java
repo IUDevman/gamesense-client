@@ -22,23 +22,23 @@ import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Announcer extends Module{
-	public Announcer(){
+public class Announcer extends Module {
+
+	public Announcer() {
 		super("Announcer", Category.Misc);
 	}
+
 	public static int blockBrokeDelay = 0;
 	static int blockPlacedDelay = 0;
 	static int jumpDelay = 0;
 	static int attackDelay = 0;
 	static int eattingDelay = 0;
-
 	static long lastPositionUpdate;
 	static double lastPositionX;
 	static double lastPositionY;
 	static double lastPositionZ;
 	private static double speed;
 	String heldItem = "";
-
 	int blocksPlaced = 0;
 	int blocksBroken = 0;
 	int eaten = 0;
@@ -70,8 +70,7 @@ public class Announcer extends Module{
 	public static String[] eatMessages ={"I just ate{amount}{name} thanks to GameSense!", "\u0644\u0642\u062f \u0623\u0643\u0644\u062a \u0644\u0644\u062a\u0648{amount}{name} \u0628\u0641\u0636\u0644 GameSense!", "\u00a1Acabo de comer{amount}{name} gracias a GameSense!", "Je viens de manger{amount}{name} gr\u00e2ce \u00e0 GameSense!", "\u05e4\u05e9\u05d5\u05d8 \u05d0\u05db\u05dc\u05ea\u05d9{amount}{name} \u05d1\u05d6\u05db\u05d5\u05ea GameSense!", "Ich habe gerade dank GameSense{amount}{name} gegessen!", "GameSense\u306e\u304a\u304b\u3052\u3067{amount}{name}\u3092\u98df\u3079\u307e\u3057\u305f\u3002", "Ik heb zojuist{amount}{name} gegeten dankzij GameSense!", "\u039c\u03cc\u03bb\u03b9\u03c2 \u03ad\u03c6\u03b1\u03b3\u03b1{amount}{name} \u03c7\u03ac\u03c1\u03b7 \u03c3\u03c4\u03bf GameSense!", "GameSense sayesinde sadece{amount}{name} yedim!", "W\u0142a\u015bnie zjad\u0142em{amount}{name} dzi\u0119ki GameSense!", "Jeg spiste lige{amount}{name} takket v\u00e6re GameSense!", "\u042f \u0442\u043e\u043b\u044c\u043a\u043e \u0447\u0442\u043e \u0441\u044a\u0435\u043b{amount}{name} \u0431\u043b\u0430\u0433\u043e\u0434\u0430\u0440\u044f GameSense!", "Un\u00eb thjesht h\u00ebngra{amount}{name} fal\u00eb GameSense!", "\u611f\u8c22GameSense\uff0c\u6211\u521a\u5403\u4e86{amount}{name}\uff01", "S\u00f6in juuri{amount}{name} Gamessenin ansiosta!"};
 
 
-	public void setup(){
-
+	public void setup() {
 		clientSide = registerBoolean("Client Side", "ClientSide", false);
 		walk = registerBoolean("Walk", "Walk", true);
 		place = registerBoolean("Place", "Place", true);
@@ -83,8 +82,7 @@ public class Announcer extends Module{
 		delay = registerInteger("Delay", "Delay",1,1,20);
 	}
 
-
-	public void onUpdate(){
+	public void onUpdate() {
 		blockBrokeDelay++;
 		blockPlacedDelay++;
 		jumpDelay++;
@@ -92,8 +90,8 @@ public class Announcer extends Module{
 		eattingDelay++;
 		heldItem = mc.player.getHeldItemMainhand().getDisplayName();
 
-		if (walk.getValue()){
-			if (lastPositionUpdate + (5000L * delay.getValue()) < System.currentTimeMillis()){
+		if (walk.getValue()) {
+			if (lastPositionUpdate + (5000L * delay.getValue()) < System.currentTimeMillis()) {
 
 				double d0 = lastPositionX - mc.player.lastTickPosX;
 				double d2 = lastPositionY - mc.player.lastTickPosY;
@@ -102,13 +100,14 @@ public class Announcer extends Module{
 
 				speed = Math.sqrt(d0 * d0 + d2 * d2 + d3 * d3);
 
-				if (!(speed <= 1) && !(speed > 5000)){
+				if (!(speed <= 1) && !(speed > 5000)) {
 					String walkAmount = new DecimalFormat("0.00").format(speed);
 
 					Random random = new Random();
-					if (clientSide.getValue()){
+					if (clientSide.getValue()) {
 						MessageBus.sendClientPrefixMessage(walkMessage.replace("{blocks}", " " + walkAmount));
-					} else{
+					}
+					else {
 						MessageBus.sendServerMessage(walkMessages[random.nextInt(walkMessages.length)].replace("{blocks}", " " + walkAmount));
 					}
 					lastPositionUpdate = System.currentTimeMillis();
@@ -124,15 +123,16 @@ public class Announcer extends Module{
 	@EventHandler
 	private final Listener<LivingEntityUseItemEvent.Finish> eatListener = new Listener<>(event -> {
 		int randomNum = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-		if (event.getEntity() == mc.player){
+		if (event.getEntity() == mc.player) {
 			if (event.getItem().getItem() instanceof ItemFood || event.getItem().getItem() instanceof ItemAppleGold){
 				eaten++;
-				if (eattingDelay >= 300 * delay.getValue()){
-					if (eat.getValue() && eaten > randomNum){
+				if (eattingDelay >= 300 * delay.getValue()) {
+					if (eat.getValue() && eaten > randomNum) {
 						Random random = new Random();
-						if (clientSide.getValue()){
+						if (clientSide.getValue()) {
 							MessageBus.sendClientPrefixMessage(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", " " + eaten).replace("{name}", " " + mc.player.getHeldItemMainhand().getDisplayName()));
-						} else{
+						}
+						else {
 							MessageBus.sendServerMessage(eatMessages[random.nextInt(eatMessages.length)].replace("{amount}", " " + eaten).replace("{name}", " " + mc.player.getHeldItemMainhand().getDisplayName()));
 						}
 						eaten = 0;
@@ -148,13 +148,14 @@ public class Announcer extends Module{
 		if (event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock && mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemBlock){
 			blocksPlaced++;
 			int randomNum = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-			if (blockPlacedDelay >= 150 * delay.getValue()){
-				if (place.getValue() && blocksPlaced > randomNum){
+			if (blockPlacedDelay >= 150 * delay.getValue()) {
+				if (place.getValue() && blocksPlaced > randomNum) {
 					Random random = new Random();
 					String msg = placeMessages[random.nextInt(placeMessages.length)].replace("{amount}", " " + blocksPlaced).replace("{name}"," " + mc.player.getHeldItemMainhand().getDisplayName());
-					if (clientSide.getValue()){
+					if (clientSide.getValue()) {
 						MessageBus.sendClientPrefixMessage(msg);
-					} else{
+					}
+					else {
 						MessageBus.sendServerMessage(msg);
 					}
 					blocksPlaced = 0;
@@ -169,14 +170,15 @@ public class Announcer extends Module{
 		blocksBroken++;
 		int randomNum = ThreadLocalRandom.current().nextInt(1, 10 + 1);
 		if (blockBrokeDelay >= 300 * delay.getValue()){
-			if (breaking.getValue() && blocksBroken > randomNum){
+			if (breaking.getValue() && blocksBroken > randomNum) {
 				Random random = new Random();
 				String msg = breakMessages[random.nextInt(breakMessages.length)]
 						.replace("{amount}", " " + blocksBroken)
 						.replace("{name}", " " + mc.world.getBlockState(event.getBlockPos()).getBlock().getLocalizedName());
-				if (clientSide.getValue()){
+				if (clientSide.getValue()) {
 					MessageBus.sendClientPrefixMessage(msg);
-				} else{
+				}
+				else {
 					MessageBus.sendServerMessage(msg);
 				}
 				blocksBroken = 0;
@@ -188,11 +190,12 @@ public class Announcer extends Module{
 	@EventHandler
 	private final Listener<AttackEntityEvent> attackListener = new Listener<>(event -> {
 		if (attack.getValue() && !(event.getTarget() instanceof EntityEnderCrystal)){
-			if (attackDelay >= 300 * delay.getValue()){
+			if (attackDelay >= 300 * delay.getValue()) {
 				String msg = attackMessage.replace("{name}", " " + event.getTarget().getName()).replace("{item}", " " + mc.player.getHeldItemMainhand().getDisplayName());
-				if (clientSide.getValue()){
+				if (clientSide.getValue()) {
 					MessageBus.sendClientPrefixMessage(msg);
-				} else{
+				}
+				else {
 					MessageBus.sendServerMessage(msg);
 				}
 				attackDelay = 0;
@@ -203,11 +206,12 @@ public class Announcer extends Module{
 	@EventHandler
 	private final Listener<PlayerJumpEvent> jumpListener = new Listener<>(event -> {
 		if (jump.getValue()){
-			if (jumpDelay >= 300 * delay.getValue()){
-				if (clientSide.getValue()){
+			if (jumpDelay >= 300 * delay.getValue()) {
+				if (clientSide.getValue()) {
 					Random random = new Random();
 					MessageBus.sendClientPrefixMessage(jumpMessages[random.nextInt(jumpMessages.length)]);
-				} else{
+				}
+				else {
 					Random random = new Random();
 					MessageBus.sendServerMessage(jumpMessages[random.nextInt(jumpMessages.length)]);
 				}
@@ -216,7 +220,7 @@ public class Announcer extends Module{
 		}
 	});
 
-	public void onEnable(){
+	public void onEnable() {
 		GameSense.EVENT_BUS.subscribe(this);
 		blocksPlaced = 0;
 		blocksBroken = 0;
@@ -229,8 +233,7 @@ public class Announcer extends Module{
 		eattingDelay = 0;
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		GameSense.EVENT_BUS.unsubscribe(this);
 	}
-
 }

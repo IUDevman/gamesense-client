@@ -12,51 +12,53 @@ import net.minecraft.network.play.server.SPacketSoundEffect;
 
 // @see com.gamesense.mixin.mixins.MixinNetworkManager for PacketKick
 
-public class NoKick extends Module{
-	public NoKick(){super("NoKick", Category.Misc);}
+public class NoKick extends Module {
+
+	public NoKick() {
+		super("NoKick", Category.Misc);
+	}
 
 	public Setting.Boolean noPacketKick;
 	Setting.Boolean noSlimeCrash;
 	Setting.Boolean noOffhandCrash;
 
-	public void setup(){
+	public void setup() {
 		noPacketKick = registerBoolean("Packet", "Packet", true);
 		noSlimeCrash = registerBoolean("Slime", "Slime", false);
 		noOffhandCrash = registerBoolean("Offhand", "Offhand", false);
 	}
 
 	//slime
-	public void onUpdate(){
-		if (mc.world != null && noSlimeCrash.getValue()){
-			mc.world.loadedEntityList
-					.forEach(entity -> {
-						if (entity instanceof EntitySlime){
-							EntitySlime slime = (EntitySlime) entity;
-							if (slime.getSlimeSize() > 4){
-								mc.world.removeEntity(entity);
-							}
-						}
-					});
+	public void onUpdate() {
+		if (mc.world != null && noSlimeCrash.getValue()) {
+			mc.world.loadedEntityList.forEach(entity -> {
+				if (entity instanceof EntitySlime) {
+					EntitySlime slime = (EntitySlime) entity;
+					if (slime.getSlimeSize() > 4) {
+						mc.world.removeEntity(entity);
+					}
+				}
+			});
 		}
 	}
 
 	//Offhand
 	@EventHandler
 	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
-		if (noOffhandCrash.getValue()){
-			if (event.getPacket() instanceof SPacketSoundEffect){
-				if (((SPacketSoundEffect) event.getPacket()).getSound() == SoundEvents.ITEM_ARMOR_EQUIP_GENERIC){
+		if (noOffhandCrash.getValue()) {
+			if (event.getPacket() instanceof SPacketSoundEffect) {
+				if (((SPacketSoundEffect) event.getPacket()).getSound() == SoundEvents.ITEM_ARMOR_EQUIP_GENERIC) {
 					event.cancel();
 				}
 			}
 		}
 	});
 
-	public void onEnable(){
+	public void onEnable() {
 		GameSense.EVENT_BUS.subscribe(this);
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 }

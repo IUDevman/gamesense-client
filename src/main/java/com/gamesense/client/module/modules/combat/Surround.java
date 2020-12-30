@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtils;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -22,7 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import static com.gamesense.api.util.world.BlockUtils.faceVectorPacketInstant;
+import static com.gamesense.api.util.world.BlockUtil.faceVectorPacketInstant;
 
 /**
  * @Author Hoosiers on 09/18/20
@@ -276,7 +276,7 @@ public class Surround extends Module {
             return false;
         }
 
-        EnumFacing side = BlockUtils.getPlaceableSide(pos);
+        EnumFacing side = BlockUtil.getPlaceableSide(pos);
 
         if (side == null){
             return false;
@@ -285,7 +285,7 @@ public class Surround extends Module {
         BlockPos neighbour = pos.offset(side);
         EnumFacing opposite = side.getOpposite();
 
-        if (!BlockUtils.canBeClicked(neighbour)){
+        if (!BlockUtil.canBeClicked(neighbour)){
             return false;
         }
 
@@ -299,7 +299,7 @@ public class Surround extends Module {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
-        if (!isSneaking && BlockUtils.blackList.contains(neighbourBlock) || BlockUtils.shulkerList.contains(neighbourBlock)){
+        if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)){
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
             isSneaking = true;
         }

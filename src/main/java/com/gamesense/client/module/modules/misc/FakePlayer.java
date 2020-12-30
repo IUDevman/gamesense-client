@@ -9,15 +9,15 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.world.GameType;
 
 public class FakePlayer extends Module {
-    public FakePlayer(){
+
+    public FakePlayer() {
         super("FakePlayer", Category.Misc);
     }
 
     private EntityOtherPlayerMP clonedPlayer;
 
-    public void onEnable(){
-
-        if (mc.player == null || mc.player.isDead){
+    public void onEnable() {
+        if (mc.player == null || mc.player.isDead) {
             disable();
             return;
         }
@@ -33,7 +33,7 @@ public class FakePlayer extends Module {
         clonedPlayer.onLivingUpdate();
     }
 
-    public void onDisable(){
+    public void onDisable() {
         if (mc.world != null) {
             mc.world.removeEntityFromWorld(-1234);
         }

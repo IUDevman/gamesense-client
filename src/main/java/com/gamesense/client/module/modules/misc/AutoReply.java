@@ -7,8 +7,9 @@ import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
-public class AutoReply extends Module{
-	public AutoReply(){
+public class AutoReply extends Module {
+
+	public AutoReply() {
 		super("AutoReply", Category.Misc);
 	}
 
@@ -16,27 +17,27 @@ public class AutoReply extends Module{
 
 	@EventHandler
 	private final Listener<ClientChatReceivedEvent> listener = new Listener<>(event -> {
-		if (event.getMessage().getUnformattedText().contains("whispers: ") && !event.getMessage().getUnformattedText().startsWith(mc.player.getName())){
+		if (event.getMessage().getUnformattedText().contains("whispers: ") && !event.getMessage().getUnformattedText().startsWith(mc.player.getName())) {
 			MessageBus.sendServerMessage("/r " + reply);
 		}
-		else if (event.getMessage().getUnformattedText().contains("whispers: I don't speak to newfags!") && !event.getMessage().getUnformattedText().startsWith(mc.player.getName())){
+		else if (event.getMessage().getUnformattedText().contains("whispers: I don't speak to newfags!") && !event.getMessage().getUnformattedText().startsWith(mc.player.getName())) {
 			return; //should prevent most instances of users spam replying back to each other in a loop, this is for you Mini :P
 		}
 	});
 
-	public static String getReply(){
+	public static String getReply() {
 		return reply;
 	}
 
-	public static void setReply(String r){
+	public static void setReply(String r) {
 		reply = r;
 	}
 
-	public void onEnable(){
+	public void onEnable() {
 		GameSense.EVENT_BUS.subscribe(this);
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 }
