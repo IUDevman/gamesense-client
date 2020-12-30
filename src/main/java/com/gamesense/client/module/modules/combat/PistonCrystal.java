@@ -70,18 +70,18 @@ public class PistonCrystal extends Module {
         breakTypes.add("Packet");
         breakType = registerMode("Type", "Type", breakTypes, "Swing");
         rotate = registerBoolean("Rotate", "Rotate", false);
-        blockPlayer = registerBoolean("blockPlayer", "blockPlayer", true);
-        confirmBreak = registerBoolean("confirmBreak", "confirmBreak", true);
+        blockPlayer = registerBoolean("Trap Player", "TrapPlayer", true);
+        confirmBreak = registerBoolean("No Glitch Blocks", "NoGlitchBlocks", true);
         enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
-        blocksPerTick = registerInteger("blocksPerTIck", "blocksPerTick", 4, 0, 20);
-        stuckDetector = registerInteger("stuckDetector", "stuckDetector", 35, 0, 200);
-        startDelay = registerInteger("startDelay", "startDelay", 4, 0, 20);
-        supBlocksDelay = registerInteger("supBlocksDelay", "supBlocksDelay", 4, 0, 20);
-        pistonDelay = registerInteger("pistonDelay", "pistonDelat", 2, 0, 20);
-        crystalDelay = registerInteger("crystalDelay", "crystalDelay", 2, 0, 20);
-        hitDelay = registerInteger("hitDelay", "hitDelay", 2, 0, 20);
+        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 20);
+        stuckDetector = registerInteger("Stuck Check", "StuckCheck", 35, 0, 200);
+        startDelay = registerInteger("Start Delay", "StartDelay", 4, 0, 20);
+        supBlocksDelay = registerInteger("Surround Delay", "SurroundDelay", 4, 0, 20);
+        pistonDelay = registerInteger("Piston Delay", "PistonDelay", 2, 0, 20);
+        crystalDelay = registerInteger("Crystal Delay", "Crystal Delay", 2, 0, 20);
+        hitDelay = registerInteger("Hit Delay", "HitDelay", 2, 0, 20);
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
-        antiWeakness = registerBoolean("antiWeakness", "antiWeakness", false);
+        antiWeakness = registerBoolean("Anti Weakness", "AntiWeakness", false);
     }
 
     private boolean isSneaking = false;
