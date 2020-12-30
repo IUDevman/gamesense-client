@@ -4,7 +4,6 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.friends.Friends;
-import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.api.util.world.BlockUtils;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -12,9 +11,7 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -24,6 +21,7 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -31,20 +29,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * @Author TechAle on (remember me to insert the date)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
  * Break crystal from AutoCrystal
- * TOD: resolve the bug that place obsidian isntead of piston sometimes (probably supportBlocks)
- *  (It never happened during the recent testing)
- * TODO: resolve the bug that the crystal does not spawn
- * TODO: resolve bug place even if you are up (probably change 0.5 to 1)
- * TOD: resolve bug sometimes miss place piston (it's rare, it happened just 1 time in hours)
- *  (It never happened during the recent testing)
+ * TODO: resolve the bug that the crystal does not spawn (hard solver, try to make a soft one)
+ * TODO: resolve bug place even if you are up
+ * TODO: Resolve the thing if you are under with rotate on
  * TODO: Testing and implementing six's idea + redstoneBlock
  * TODO: Optimize update cicle (i fell like is not efficent / is a mess)
  */
@@ -62,6 +55,7 @@ public class pistonCrystal extends Module {
     Setting.Boolean chatMsg;
     Setting.Boolean blockPlayer;
     Setting.Boolean antiWeakness;
+    Setting.Boolean confirmBreak;
     Setting.Integer blocksPerTick;
     Setting.Integer startDelay;
     Setting.Integer supBlocksDelay;
@@ -78,6 +72,7 @@ public class pistonCrystal extends Module {
         breakType = registerMode("Type", "Type", breakTypes, "Swing");
         rotate = registerBoolean("Rotate", "Rotate", false);
         blockPlayer = registerBoolean("blockPlayer", "blockPlayer", true);
+        confirmBreak = registerBoolean("confirmBreak", "confirmBreak", true);
         enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
         blocksPerTick = registerInteger("blocksPerTIck", "blocksPerTick", 4, 0, 20);
         stuckDetector = registerInteger("stuckDetector", "stuckDetector", 35, 0, 200);
@@ -111,6 +106,7 @@ public class pistonCrystal extends Module {
     };
     Double[][] sur_block;
     private int stuck = 0;
+    boolean broken, brokenCrystalBug, brokenRedstoneTorch;
 
 
     private EntityPlayer closestTarget;
@@ -128,7 +124,7 @@ public class pistonCrystal extends Module {
         // Default values
         toPlace = new structureTemp(0,0,null);
         isHole = true;
-        hasMoved = false;
+        hasMoved = broken = brokenCrystalBug = brokenRedstoneTorch = false;
         firstRun = true;
         slot_mat = new int[]{-1, -1, -1, -1, -1};
         stage = delayTimeTicks = stuck = 0;
@@ -287,32 +283,21 @@ public class pistonCrystal extends Module {
                 Entity crystal = null;
                 for(Entity t : mc.world.loadedEntityList) {
                     if (t instanceof EntityEnderCrystal
-                        && t.posX == (int) t.posX || t.posZ == (int) t.posZ)
+                        && ((t.posX == (int) t.posX || t.posZ == (int) t.posZ) || ((int) t.posX == (int) closestTarget.posX && (int) t.posZ == (int) closestTarget.posZ)))
                         crystal = t;
+                }
+                if (confirmBreak.getValue() && broken && crystal == null) {
+                    // Reset
+                    stage = stuck = 0;
+                    broken = false;
                 }
                 // If found
                 if (crystal != null) {
-                    // If weaknes
-                    if (antiWeakness.getValue())
-                        mc.player.inventory.currentItem = slot_mat[4];
-                    // If rotate
-                    if (rotate.getValue()) {
-                        lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
-                    }
-                    /// Break type
-                    // Swing
-                    if (breakType.getValue().equals("Swing")) {
-                        breakCrystal(crystal);
-                    // Packet
-                    }else if(breakType.getValue().equals("Packet")) {
-                        mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-                        mc.player.swingArm(EnumHand.MAIN_HAND);
-                    }
-                    // Rotate
-                    if (rotate.getValue())
-                        resetRotation();
-                    // Reset
-                    stage = stuck = 0;
+                    breakCrystalPiston(crystal);
+                    if (confirmBreak.getValue())
+                        broken = true;
+                    else
+                        stage = stuck = 0;
                 }else {
                     // If it stuck
                     if (++stuck >= stuckDetector.getValue()) {
@@ -327,17 +312,98 @@ public class pistonCrystal extends Module {
                                 break;
                             }
                         }
+
                         if (!found) {
-                            /// The error is that the crystal has not been placed
-                            // Destroy the redstone torch
-                            // Restart from the crystal
-                            printChat("Stuck detected: crystal not placed", true);
+                            //// The error is that the crystal has not been placed
+                            /// Destroy the redstone torch
+                            // If rotation
+                            BlockPos offsetPosPist = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 2));
+                            BlockPos pos = new BlockPos(closestTarget.getPositionVector()).add(offsetPosPist.getX(), offsetPosPist.getY(), offsetPosPist.getZ());
+
+                            // Check if there is the redstone torch
+                            if (confirmBreak.getValue() && brokenRedstoneTorch && get_block(pos.x, pos.y, pos.z) instanceof BlockAir) {
+                                stage = 1;
+                                brokenRedstoneTorch = false;
+                            } else {
+
+                                EnumFacing side = BlockUtils.getPlaceableSide(pos);
+                                if (side != null) {
+                                    if (rotate.getValue()) {
+                                        BlockPos neighbour = pos.offset(side);
+                                        EnumFacing opposite = side.getOpposite();
+                                        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 1, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+                                        BlockUtils.faceVectorPacketInstant(hitVec);
+
+                                    }
+                                    // -235 84 171
+                                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                                    mc.player.connection.sendPacket(new CPacketPlayerDigging(
+                                            CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, side
+                                    ));
+                                    mc.player.connection.sendPacket(new CPacketPlayerDigging(
+                                            CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, side
+                                    ));
+                                    /// Restart from the crystal
+                                    if (confirmBreak.getValue())
+                                        brokenRedstoneTorch = true;
+                                    else
+                                        stage = 1;
+                                    printChat("Stuck detected: crystal not placed", true);
+                                }
+                            }
+
+                        }else {
+                            // Try to see if the crystal, somehow, is in the piston extended thing
+                            boolean ext = false;
+                            for(Entity t : mc.world.loadedEntityList) {
+                                if (t instanceof EntityEnderCrystal
+                                        && (int) t.posX == (int) toPlace.to_place.get(toPlace.supportBlock + 1).x &&
+                                        (int) t.posZ == (int) toPlace.to_place.get(toPlace.supportBlock + 1).z ) {
+                                    ext = true;
+                                    break;
+                                }
+                            }
+                            if (confirmBreak.getValue() && brokenCrystalBug && !ext) {
+                                // Reset
+                                stage = stuck = 0;
+                                brokenCrystalBug = false;
+                            }
+                            if (ext) {
+                                // Break the crystal
+                                breakCrystalPiston(crystal);
+                                if (confirmBreak.getValue())
+                                    brokenCrystalBug = true;
+                                else
+                                    stage = stuck = 0;
+                                printChat("Stuck detected: crystal is stuck in the moving piston", true);
+                            }
                         }
                     }
                 }
             }
         }
 
+    }
+    private void breakCrystalPiston (Entity crystal) {
+        // If weaknes
+        if (antiWeakness.getValue())
+            mc.player.inventory.currentItem = slot_mat[4];
+        // If rotate
+        if (rotate.getValue()) {
+            lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+        }
+        /// Break type
+        // Swing
+        if (breakType.getValue().equals("Swing")) {
+            breakCrystal(crystal);
+            // Packet
+        }else if(breakType.getValue().equals("Packet")) {
+            mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+            mc.player.swingArm(EnumHand.MAIN_HAND);
+        }
+        // Rotate
+        if (rotate.getValue())
+            resetRotation();
     }
 
     private boolean supportsBlocks() {
@@ -347,7 +413,7 @@ public class pistonCrystal extends Module {
         int i = 0;
         // N^ blocks placed
         int blockPlaced = 0;
-        if (toPlace.to_place.size() > 0)
+        if (toPlace.to_place.size() > 0 && toPlace.supportBlock > 0)
             do {
                 // Get position where we are going to check
                 BlockPos offsetPos = new BlockPos(toPlace.to_place.get(i));
@@ -369,7 +435,10 @@ public class pistonCrystal extends Module {
                 }
 
             }while (true);
-        else return false;
+        else {
+            stage = stage == 0 ? 1 : stage;
+            return true;
+        }
     }
 
     private boolean placeBlock(BlockPos pos, int step, int direction, double offsetX, double offsetZ){
