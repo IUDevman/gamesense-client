@@ -31,14 +31,14 @@ public class Chams extends Module {
     Setting.Mode chamsType;
     Setting.ColorSetting playerColor;
     Setting.ColorSetting mobColor;
-    Setting.ColorSetting entityColor;
+    Setting.ColorSetting crystalColor;
     Setting.Integer colorOpacity;
     Setting.Integer wireOpacity;
     Setting.Integer lineWidth;
     Setting.Integer range;
     Setting.Boolean player;
     Setting.Boolean mob;
-    Setting.Boolean entity;
+    Setting.Boolean crystal;
 
     public void setup() {
         ArrayList<String> chamsTypes = new ArrayList<>();
@@ -50,13 +50,13 @@ public class Chams extends Module {
         range = registerInteger("Range", "Range", 100, 10, 260);
         player = registerBoolean("Player", "Player", true);
         mob = registerBoolean("Mob", "Mob", false);
-        entity = registerBoolean("Entity", "Entity", false);
+        crystal = registerBoolean("Crystal", "Crystal", false);
         lineWidth = registerInteger("Line Width", "LineWidth", 1, 1, 5);
         colorOpacity = registerInteger("Color Opacity", "Opacity", 100, 0, 255);
         wireOpacity = registerInteger("Wire Opacity", "WireOpacity", 200, 0, 255);
         playerColor = registerColor("Player Color", "PlayerColor", new GSColor(0, 255, 255, 255));
         mobColor = registerColor("Mob Color", "Mob Color", new GSColor(255, 255, 0, 255));
-        entityColor = registerColor("Entity Color", "EntityColor", new GSColor(0, 255, 0, 255));
+        crystalColor = registerColor("Crystal Color", "CrystalColor", new GSColor(0, 255, 0, 255));
     }
 
     @EventHandler
@@ -86,8 +86,8 @@ public class Chams extends Module {
             renderChamsPre(new GSColor(mobColor.getValue(), 255), false);
         }
 
-        if (entity.getValue() && (entity1 instanceof EntityEnderPearl || entity1 instanceof EntityXPOrb || entity1 instanceof EntityExpBottle || entity1 instanceof EntityEnderCrystal)) {
-            renderChamsPre(new GSColor(entityColor.getValue(), 255), false);
+        if (crystal.getValue() && entity1 instanceof EntityEnderCrystal) {
+            renderChamsPre(new GSColor(crystalColor.getValue(), 255), false);
         }
     });
 
@@ -118,7 +118,7 @@ public class Chams extends Module {
             renderChamsPost(false);
         }
 
-        if (entity.getValue() && (entity1 instanceof EntityEnderPearl || entity1 instanceof EntityXPOrb || entity1 instanceof EntityExpBottle || entity1 instanceof EntityEnderCrystal)) {
+        if (crystal.getValue() && entity1 instanceof EntityEnderCrystal) {
             renderChamsPost(false);
         }
     });
