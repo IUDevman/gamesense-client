@@ -52,7 +52,7 @@ Most notable features:
 * NekoPvP (First commit, Item FOV)
 * TechAle (AutoAnvil)
 #### Credits
-Check specific class files for full credits.
+***Check specific class files for full credits.***
 This client started out based off of FINZ0's Osiris, which in turn was based off of 086's KAMI. 
 Without these projects, GameSense would not exist so a lot of credit is due to them for their work.
 
