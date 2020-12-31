@@ -22,7 +22,8 @@ import java.util.ArrayList;
  */
 
 public class Speed extends Module {
-	public Speed(){
+
+	public Speed() {
 		super("Speed", Category.Movement);
 	}
 
@@ -32,7 +33,7 @@ public class Speed extends Module {
 	Setting.Double yPortSpeed;
 	Setting.Mode mode;
 
-	public void setup(){
+	public void setup() {
 		ArrayList<String> modes = new ArrayList<>();
 		modes.add("Strafe");
 		modes.add("Fake");
@@ -49,30 +50,30 @@ public class Speed extends Module {
 	private double playerSpeed;
 	private Timer timer = new Timer();
 
-	public void onEnable(){
+	public void onEnable() {
 		GameSense.EVENT_BUS.subscribe(this);
 		playerSpeed = MotionUtil.getBaseMoveSpeed();
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		GameSense.EVENT_BUS.unsubscribe(this);
 		timer.reset();
 		EntityUtil.resetTimer();
 	}
 
-	public void onUpdate(){
-		if (mc.player == null || mc.world == null){
+	public void onUpdate() {
+		if (mc.player == null || mc.world == null) {
 			disable();
 			return;
 		}
 
-		if (mode.getValue().equalsIgnoreCase("YPort")){
+		if (mode.getValue().equalsIgnoreCase("YPort")) {
 			handleYPortSpeed();
 		}
 	}
 
-	private void handleYPortSpeed(){
-		if (!MotionUtil.isMoving(mc.player) || mc.player.isInWater() && mc.player.isInLava() || mc.player.collidedHorizontally){
+	private void handleYPortSpeed() {
+		if (!MotionUtil.isMoving(mc.player) || mc.player.isInWater() && mc.player.isInLava() || mc.player.collidedHorizontally) {
 			return;
 		}
 
@@ -89,16 +90,16 @@ public class Speed extends Module {
 
 	@EventHandler
 	private final Listener<PlayerMoveEvent> playerMoveEventListener = new Listener<>(event -> {
-		if (mc.player.isInLava() || mc.player.isInWater() || mc.player.isOnLadder() || mc.player.isInWeb){
+		if (mc.player.isInLava() || mc.player.isInWater() || mc.player.isOnLadder() || mc.player.isInWeb) {
 			return;
 		}
 
-		if (mode.getValue().equalsIgnoreCase("Strafe")){
+		if (mode.getValue().equalsIgnoreCase("Strafe")) {
 			double speedY = jumpHeight.getValue();
 
-			if (mc.player.onGround && MotionUtil.isMoving(mc.player) && timer.hasReached(300)){
+			if (mc.player.onGround && MotionUtil.isMoving(mc.player) && timer.hasReached(300)) {
 				EntityUtil.setTimer((float)timerVal.getValue());
-				if (mc.player.isPotionActive(MobEffects.JUMP_BOOST)){
+				if (mc.player.isPotionActive(MobEffects.JUMP_BOOST)) {
 					speedY += (mc.player.getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1f;
 				}
 
@@ -107,13 +108,13 @@ public class Speed extends Module {
 				slowDown = true;
 				timer.reset();
 			}
-			else{
+			else {
 				EntityUtil.resetTimer();
-				if (slowDown || mc.player.collidedHorizontally){
+				if (slowDown || mc.player.collidedHorizontally) {
 					playerSpeed -= (EntityUtil.isColliding(0, -0.8, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid()) ? 0.4 : 0.7 * (playerSpeed = MotionUtil.getBaseMoveSpeed());
 					slowDown = false;
 				}
-				else{
+				else {
 					playerSpeed -= playerSpeed / 159.0;
 				}
 			}
@@ -124,15 +125,15 @@ public class Speed extends Module {
 		}
 	});
 
-	public String getHudInfo(){
+	public String getHudInfo() {
 		String t = "";
-		if (mode.getValue().equalsIgnoreCase("Strafe")){
+		if (mode.getValue().equalsIgnoreCase("Strafe")) {
 			t = "[" + ChatFormatting.WHITE + "Strafe" + ChatFormatting.GRAY + "]";
 		}
-		else if (mode.getValue().equalsIgnoreCase("YPort")){
+		else if (mode.getValue().equalsIgnoreCase("YPort")) {
 			t = "[" + ChatFormatting.WHITE + "YPort" + ChatFormatting.GRAY + "]";
 		}
-		else if (mode.getValue().equalsIgnoreCase("Fake")){
+		else if (mode.getValue().equalsIgnoreCase("Fake")) {
 			t = "[" + ChatFormatting.WHITE + "Fake" + ChatFormatting.GRAY + "]";
 		}
 		return t;

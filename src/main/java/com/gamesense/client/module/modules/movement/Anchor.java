@@ -10,28 +10,29 @@ import net.minecraft.util.math.BlockPos;
  */
 
 public class Anchor extends Module {
-    public Anchor(){
+
+    public Anchor() {
         super("Anchor", Category.Movement);
     }
 
     Setting.Integer activateYLevel;
 
-    public void setup(){
+    public void setup() {
         activateYLevel = registerInteger("Activate Y", "ActivateY", 20, 0, 256);
     }
 
     BlockPos playerPos;
 
-    public void onUpdate(){
-        if (mc.player == null){
+    public void onUpdate() {
+        if (mc.player == null) {
             return;
         }
 
-        if (mc.player.posY < 0){
+        if (mc.player.posY < 0) {
             return;
         }
 
-        if (mc.player.posY > activateYLevel.getValue()){
+        if (mc.player.posY > activateYLevel.getValue()) {
             return;
         }
 
@@ -39,20 +40,20 @@ public class Anchor extends Module {
         double newZ;
 
         //specifies the x and z coordinates to be centered- should prevent people from getting stuck up on side blocks
-        if (mc.player.posX > Math.round(mc.player.posX)){
+        if (mc.player.posX > Math.round(mc.player.posX)) {
             newX = Math.round(mc.player.posX) + 0.5;
         }
-        else if (mc.player.posX < Math.round(mc.player.posX)){
+        else if (mc.player.posX < Math.round(mc.player.posX)) {
             newX = Math.round(mc.player.posX) - 0.5;
         }
         else {
             newX = mc.player.posX;
         }
 
-        if (mc.player.posZ > Math.round(mc.player.posZ)){
+        if (mc.player.posZ > Math.round(mc.player.posZ)) {
             newZ = Math.round(mc.player.posZ) + 0.5;
         }
-        else if (mc.player.posZ < Math.round(mc.player.posZ)){
+        else if (mc.player.posZ < Math.round(mc.player.posZ)) {
             newZ = Math.round(mc.player.posZ) - 0.5;
         }
         else {
@@ -61,7 +62,7 @@ public class Anchor extends Module {
 
         playerPos = new BlockPos(newX, mc.player.posY, newZ);
 
-        if (mc.world.getBlockState(playerPos).getBlock() != Blocks.AIR){
+        if (mc.world.getBlockState(playerPos).getBlock() != Blocks.AIR) {
             return;
         }
 
@@ -71,7 +72,7 @@ public class Anchor extends Module {
                 && mc.world.getBlockState(playerPos.down().west()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(playerPos.down().north()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(playerPos.down().south()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down(2)).getBlock() != Blocks.AIR){
+                && mc.world.getBlockState(playerPos.down(2)).getBlock() != Blocks.AIR) {
 
             mc.player.motionX = 0;
             mc.player.motionZ = 0;
@@ -82,7 +83,7 @@ public class Anchor extends Module {
                 && mc.world.getBlockState(playerPos.down(2).west()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(playerPos.down(2).north()).getBlock() != Blocks.AIR
                 && mc.world.getBlockState(playerPos.down(2).south()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down(3)).getBlock() != Blocks.AIR){
+                && mc.world.getBlockState(playerPos.down(3)).getBlock() != Blocks.AIR) {
 
             mc.player.motionX = 0;
             mc.player.motionZ = 0;

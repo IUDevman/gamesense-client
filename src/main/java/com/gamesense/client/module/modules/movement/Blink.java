@@ -15,13 +15,14 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Blink extends Module {
+
     public Blink() {
         super("Blink", Category.Movement);
     }
 
     Setting.Boolean ghostPlayer;
 
-    public void setup(){
+    public void setup() {
         ghostPlayer = registerBoolean("Ghost Player", "GhostPlayer", true);
     }
 
@@ -41,8 +42,8 @@ public class Blink extends Module {
         }
     }
 
-    public void onUpdate(){
-        if (!ghostPlayer.getValue() && entity != null){
+    public void onUpdate() {
+        if (!ghostPlayer.getValue() && entity != null) {
             mc.world.removeEntity(entity);
         }
     }
@@ -75,7 +76,7 @@ public class Blink extends Module {
         }
     });
 
-    public String getHudInfo(){
+    public String getHudInfo() {
         String t = "[" + ChatFormatting.WHITE + packets.size() + ChatFormatting.GRAY + "]";
 
         return t;
