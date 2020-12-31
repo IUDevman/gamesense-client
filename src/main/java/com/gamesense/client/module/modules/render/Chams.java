@@ -74,15 +74,15 @@ public class Chams extends Module {
         }
 
         if (player.getValue() && entity1 instanceof EntityPlayer && entity1 != mc.player) {
-            renderChamsPre(new GSColor(playerColor.getValue(), 255));
+            renderChamsPre(new GSColor(playerColor.getValue(), 255), true);
         }
 
         if (mob.getValue() && (entity1 instanceof EntityCreature || entity1 instanceof EntitySlime || entity1 instanceof EntitySquid)) {
-            renderChamsPre(new GSColor(mobColor.getValue(), 255));
+            renderChamsPre(new GSColor(mobColor.getValue(), 255), false);
         }
 
         if (entity.getValue() && (entity1 instanceof EntityEnderPearl || entity1 instanceof EntityXPOrb || entity1 instanceof EntityExpBottle || entity1 instanceof EntityEnderCrystal)) {
-            renderChamsPre(new GSColor(entityColor.getValue(), 255));
+            renderChamsPre(new GSColor(entityColor.getValue(), 255), false);
         }
     });
 
@@ -106,33 +106,34 @@ public class Chams extends Module {
         }
 
         if (player.getValue() && entity1 instanceof EntityPlayer && entity1 != mc.player) {
-            renderChamsPost();
+            renderChamsPost(true);
         }
 
         if (mob.getValue() && (entity1 instanceof EntityCreature || entity1 instanceof EntitySlime || entity1 instanceof EntitySquid)) {
-            renderChamsPost();
+            renderChamsPost(false);
         }
 
         if (entity.getValue() && (entity1 instanceof EntityEnderPearl || entity1 instanceof EntityXPOrb || entity1 instanceof EntityExpBottle || entity1 instanceof EntityEnderCrystal)) {
-            renderChamsPost();
+            renderChamsPost(false);
         }
     });
 
-    private void renderChamsPre(GSColor color) {
+    private void renderChamsPre(GSColor color, boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Texture":
                 GameSenseTessellator.createChamsPre();
                 break;
             case "Color":
-                GameSenseTessellator.createColorPre(new GSColor(color, colorOpacity.getValue()));
+                GameSenseTessellator.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
                 break;
         }
     }
 
-    private void renderChamsPost() {
+    private void renderChamsPost(boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Color":
-                GameSenseTessellator.createColorPost();
+                GameSenseTessellator.createColorPost(isPlayer);
+                break;
             case "Texture":
                 GameSenseTessellator.createChamsPost();
                 break;

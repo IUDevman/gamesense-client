@@ -4,6 +4,10 @@ import com.gamesense.api.event.events.RenderEntityEvent;
 import com.gamesense.client.GameSense;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.entity.item.EntityEnderPearl;
+import net.minecraft.entity.item.EntityExpBottle;
+import net.minecraft.entity.item.EntityXPOrb;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,6 +27,16 @@ public class MixinRenderManager {
 
         GameSense.EVENT_BUS.post(renderEntityHeadEvent);
 
+        if (entityIn instanceof EntityEnderPearl || entityIn instanceof EntityXPOrb || entityIn instanceof EntityExpBottle || entityIn instanceof EntityEnderCrystal) {
+            RenderEntityEvent.Head renderEntityEvent = new RenderEntityEvent.Head(entityIn, RenderEntityEvent.Type.COLOR);
+
+            GameSense.EVENT_BUS.post(renderEntityEvent);
+
+            if (renderEntityEvent.isCancelled()) {
+                callbackInfo.cancel();
+            }
+        }
+
         if (renderEntityHeadEvent.isCancelled()) {
             callbackInfo.cancel();
         }
@@ -33,6 +47,16 @@ public class MixinRenderManager {
         RenderEntityEvent.Return renderEntityReturnEvent = new RenderEntityEvent.Return(entityIn, RenderEntityEvent.Type.TEXTURE);
 
         GameSense.EVENT_BUS.post(renderEntityReturnEvent);
+
+        if (entityIn instanceof EntityEnderPearl || entityIn instanceof EntityXPOrb || entityIn instanceof EntityExpBottle || entityIn instanceof EntityEnderCrystal) {
+            RenderEntityEvent.Return renderEntityEvent = new RenderEntityEvent.Return(entityIn, RenderEntityEvent.Type.COLOR);
+
+            GameSense.EVENT_BUS.post(renderEntityEvent);
+
+            if (renderEntityEvent.isCancelled()) {
+                callbackInfo.cancel();
+            }
+        }
 
         if (renderEntityReturnEvent.isCancelled()) {
             callbackInfo.cancel();

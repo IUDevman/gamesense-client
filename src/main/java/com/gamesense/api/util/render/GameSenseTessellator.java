@@ -136,7 +136,7 @@ public class GameSenseTessellator {
 		Thank to lukflug for helping me to understand
 		and for finding a bug
 
-		Hoosiers here- Techale was right above, but I ended up porting in a few fuctions from the above link so credit to Seppuku
+		Hoosiers here- Techale was right above, but I ended up porting in and modifying a few functions from the above link so credit to Seppuku
 	 */
 
 	public static void createChamsPre() {
@@ -158,21 +158,27 @@ public class GameSenseTessellator {
 		GlStateManager.popMatrix();
 	}
 
-	public static void createColorPre(GSColor color) {
+	public static void createColorPre(GSColor color, boolean isPlayer) {
 		mc.getRenderManager().setRenderShadow(false);
 		mc.getRenderManager().setRenderOutlines(false);
 		GlStateManager.pushMatrix();
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0f, -1100000.0f);
 		glDisable(GL11.GL_TEXTURE_2D);
+		if (!isPlayer) {
+			GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
+		}
 		color.glColor();
 		GlStateManager.popMatrix();
 	}
 
-	public static void createColorPost() {
+	public static void createColorPost(boolean isPlayer) {
 		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
+		if (!isPlayer) {
+			GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
+		}
 		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0f, 1100000.0f);
 		glEnable(GL11.GL_TEXTURE_2D);
