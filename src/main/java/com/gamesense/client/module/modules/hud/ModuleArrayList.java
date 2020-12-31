@@ -18,16 +18,17 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 
 // PanelStudio rewrite by lukflug
 public class ModuleArrayList extends HUDModule {
+
     private Setting.Boolean sortUp;
     private Setting.Boolean sortRight;
     private Setting.ColorSetting color;
 	private ModuleList list=new ModuleList();
 
-    public ModuleArrayList(){
+    public ModuleArrayList() {
     	super("ArrayList",new Point(0,200));
     }
 
-    public void setup(){
+    public void setup() {
         sortUp = registerBoolean("Sort Up", "SortUp", true);
         sortRight = registerBoolean("Sort Right", "SortRight", false);
         color = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
@@ -35,10 +36,10 @@ public class ModuleArrayList extends HUDModule {
     
     @Override
     public void populate (Theme theme) {
-    	component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
+    	component = new ListComponent(getName(),theme.getPanelRenderer(),position,list);
     }
 
-    public void onRender(){
+    public void onRender() {
     	list.activeModules.clear();
     	for (Module module: ModuleManager.getModules()) {
     		if (module.isEnabled() && module.isDrawn()) list.activeModules.add(module);
@@ -47,6 +48,7 @@ public class ModuleArrayList extends HUDModule {
     }
 
     private class ModuleList implements HUDList {
+
 		public List<Module> activeModules=new ArrayList<Module>();
 		
 		@Override
@@ -56,14 +58,14 @@ public class ModuleArrayList extends HUDModule {
 	
 		@Override
 		public String getItem(int index) {
-			Module module=activeModules.get(index);
-			return module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo();
+			Module module = activeModules.get(index);
+			return module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo();
 		}
 	
 		@Override
 		public Color getItemColor(int index) {
-			GSColor c=color.getValue();
-			return Color.getHSBColor(c.getHue()+(color.getRainbow()?.02f*index:0),c.getSaturation(),c.getBrightness());
+			GSColor c = color.getValue();
+			return Color.getHSBColor(c.getHue() + (color.getRainbow() ? .02f * index : 0), c.getSaturation(), c.getBrightness());
 		}
 
 		@Override

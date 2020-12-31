@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 
 public class TargetInfo extends HUDModule {
+
     private Setting.Integer range;
     private Setting.ColorSetting backgroundColor;
     private Setting.ColorSetting outlineColor;
@@ -41,14 +42,14 @@ public class TargetInfo extends HUDModule {
     }
     
     public void populate (Theme theme) {
-    	component=new TargetInfoComponent(theme);
+    	component = new TargetInfoComponent(theme);
     }
 
     private Color getNameColor(EntityPlayer entityPlayer) {
-        if (Friends.isFriend(entityPlayer.getName())){
+        if (Friends.isFriend(entityPlayer.getName())) {
             return new GSColor(ColorMain.getFriendGSColor(), 255);
         }
-        else if (Enemies.isEnemy(entityPlayer.getName())){
+        else if (Enemies.isEnemy(entityPlayer.getName())) {
             return new GSColor(ColorMain.getEnemyGSColor(), 255);
         }
         else {

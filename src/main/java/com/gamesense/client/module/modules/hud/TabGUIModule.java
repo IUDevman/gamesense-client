@@ -21,6 +21,7 @@ import com.lukflug.panelstudio.theme.Theme;
 /**
  * @author lukflug
  */
+
 public class TabGUIModule extends HUDModule {
 	
 	public TabGUIModule() {

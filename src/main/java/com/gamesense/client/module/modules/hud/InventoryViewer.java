@@ -19,6 +19,7 @@ import net.minecraft.util.NonNullList;
 
 // PanelStudio rewrite by lukflug
 public class InventoryViewer extends HUDModule {
+
 	private Setting.ColorSetting fillColor;
     private Setting.ColorSetting outlineColor;
     
@@ -33,11 +34,11 @@ public class InventoryViewer extends HUDModule {
     
     @Override
     public void populate (Theme theme) {
-    	component=new InventoryViewerComponent(theme);
+    	component = new InventoryViewerComponent(theme);
     }
-    
-    
+
     private class InventoryViewerComponent extends HUDComponent {
+
 		public InventoryViewerComponent (Theme theme) {
 			super(getName(),theme.getPanelRenderer(),InventoryViewer.this.position);
 		}

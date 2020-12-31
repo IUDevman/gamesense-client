@@ -30,6 +30,7 @@ import net.minecraft.util.EnumFacing;
  */
 
 public class Radar extends HUDModule {
+
     private Setting.Boolean renderPlayer;
     private Setting.Boolean renderMobs;
     private Setting.ColorSetting playerColor;
@@ -50,7 +51,7 @@ public class Radar extends HUDModule {
     
     @Override
     public void populate (Theme theme) {
-    	component=new RadarComponent(theme);
+    	component = new RadarComponent(theme);
     }
 
     private Color getPlayerColor(EntityPlayer entityPlayer) {

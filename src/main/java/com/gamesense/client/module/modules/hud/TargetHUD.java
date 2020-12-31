@@ -35,12 +35,13 @@ import net.minecraft.util.text.TextFormatting;
  */
 
 public class TargetHUD extends HUDModule {
+
     private Setting.ColorSetting outline;
     private Setting.ColorSetting background;
     private Setting.Integer range;
     private static EntityPlayer targetPlayer;
     
-    public TargetHUD(){
+    public TargetHUD() {
         super("TargetHUD",new Point(0,70));
     }
 
@@ -52,14 +53,14 @@ public class TargetHUD extends HUDModule {
     
     @Override
     public void populate (Theme theme) {
-    	component=new TargetHUDComponent(theme);
+    	component = new TargetHUDComponent(theme);
     }
 
     private static Color getNameColor(String playerName) {
-        if (Friends.isFriend(playerName)){
+        if (Friends.isFriend(playerName)) {
             return new GSColor(ColorMain.getFriendGSColor(), 255);
         }
-        else if (Enemies.isEnemy(playerName)){
+        else if (Enemies.isEnemy(playerName)) {
             return new GSColor(ColorMain.getEnemyGSColor(), 255);
         }
         else {
@@ -81,26 +82,28 @@ public class TargetHUD extends HUDModule {
 		return new GSColor(red, green, 0, 255);
 	}
 
-    private static boolean isValidEntity (Entity e){
+    private static boolean isValidEntity (Entity e) {
     	if (!(e instanceof EntityPlayer)) return false;
         else return e!=mc.player;
     }
 
-    private static float getPing (EntityPlayer player){
+    private static float getPing (EntityPlayer player) {
         float ping = 0;
-        try { ping = EntityUtil.clamp(Objects.requireNonNull(mc.getConnection()).getPlayerInfo(player.getUniqueID()).getResponseTime(), 1, 300.0f); }
+        try {
+        	ping = EntityUtil.clamp(Objects.requireNonNull(mc.getConnection()).getPlayerInfo(player.getUniqueID()).getResponseTime(), 1, 300.0f);
+        }
         catch (NullPointerException ignored) {}
         return ping;
     }
     
-    public static boolean isRenderingEntity(EntityPlayer entityPlayer){
+    public static boolean isRenderingEntity(EntityPlayer entityPlayer) {
         return targetPlayer==entityPlayer;
     }
-    
-    
+
     private class TargetHUDComponent extends HUDComponent {
+
 		public TargetHUDComponent (Theme theme) {
-			super(getName(),theme.getPanelRenderer(),TargetHUD.this.position);
+			super(getName(), theme.getPanelRenderer(), TargetHUD.this.position);
 		}
 		
 		@Override
@@ -159,10 +162,12 @@ public class TargetHUD extends HUDModule {
 						if (effect.getPotion()==MobEffects.WEAKNESS) {
 							status="Weakness!";
 							statusColor=new Color(135,0,25);
-						} else if (effect.getPotion()==MobEffects.INVISIBILITY) {
+						}
+						else if (effect.getPotion()==MobEffects.INVISIBILITY) {
 							status="Invisible!";
 							statusColor=new Color(90,90,90);
-						} else if (effect.getPotion()==MobEffects.STRENGTH) {
+						}
+						else if (effect.getPotion()==MobEffects.STRENGTH) {
 							status="Strength!";
 							statusColor=new Color(185,65,185);
 						}

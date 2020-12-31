@@ -12,6 +12,7 @@ import com.lukflug.panelstudio.theme.Theme;
 
 // PanelStudio rewrite by lukflug
 public class Watermark extends HUDModule {
+
 	private Setting.ColorSetting color;
 	
 	public Watermark() {
@@ -24,11 +25,12 @@ public class Watermark extends HUDModule {
 	
 	@Override
 	public void populate (Theme theme) {
-		component=new ListComponent(getName(),theme.getPanelRenderer(),position,new WatermarkList());
+		component = new ListComponent(getName(), theme.getPanelRenderer(), position, new WatermarkList());
 	}
 	
 	
 	private class WatermarkList implements HUDList {
+
 		@Override
 		public int getSize() {
 			return 1;

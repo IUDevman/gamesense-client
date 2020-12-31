@@ -11,13 +11,14 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 
 public class ArmorHUD extends Module {
-    public ArmorHUD(){
+
+    public ArmorHUD() {
         super("ArmorHUD", Category.HUD);
     }
 
-    private static final RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
+    private static final RenderItem itemRender = mc.getRenderItem();
 
-    public void onRender(){
+    public void onRender() {
         GlStateManager.pushMatrix();
         GlStateManager.enableTexture2D();
 

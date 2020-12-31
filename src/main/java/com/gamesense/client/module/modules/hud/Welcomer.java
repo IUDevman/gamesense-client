@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 
 // PanelStudio rewrite by lukflug
 public class Welcomer extends HUDModule {
+
 	private Setting.ColorSetting color;
 	
 	public Welcomer() {
@@ -25,11 +26,12 @@ public class Welcomer extends HUDModule {
 
 	@Override
 	public void populate (Theme theme) {
-		component=new ListComponent(getName(),theme.getPanelRenderer(),position,new WelcomerList());
+		component = new ListComponent(getName(),theme.getPanelRenderer(),position,new WelcomerList());
 	}
 	
 	
 	private class WelcomerList implements HUDList {
+
 		@Override
 		public int getSize() {
 			return 1;
@@ -37,7 +39,7 @@ public class Welcomer extends HUDModule {
 
 		@Override
 		public String getItem(int index) {
-			return "Hello "+Minecraft.getMinecraft().player.getName()+" :^)";
+			return "Hello " + mc.player.getName() + " :^)";
 		}
 
 		@Override

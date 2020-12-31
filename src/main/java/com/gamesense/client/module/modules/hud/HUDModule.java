@@ -11,12 +11,13 @@ import com.lukflug.panelstudio.theme.Theme;
  * @author lukflug
  */
 public abstract class HUDModule extends Module {
+
 	protected FixedComponent component;
 	protected Point position;
 	
 	public HUDModule (String title, Point defaultPos) {
 		super(title,Category.HUD);
-		position=defaultPos;
+		position = defaultPos;
 	}
 	
 	public abstract void populate (Theme theme);

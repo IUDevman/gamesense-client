@@ -18,17 +18,18 @@ import net.minecraft.util.text.TextFormatting;
 
 // PanelStudio rewrite by lukflug
 public class TextRadar extends HUDModule {
+
 	private Setting.Boolean sortUp;
 	private Setting.Boolean sortRight;
 	private Setting.Integer range;
 	private Setting.Mode display;
 	private PlayerList list=new PlayerList();
 	
-	public TextRadar(){
+	public TextRadar() {
 		super("TextRadar",new Point(0,50));
 	}
 
-	public void setup(){
+	public void setup() {
 		ArrayList<String> displayModes = new ArrayList<>();
 		displayModes.add("All");
 		displayModes.add("Friend");
@@ -41,7 +42,7 @@ public class TextRadar extends HUDModule {
 	
 	@Override
 	public void populate (Theme theme) {
-		component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
+		component = new ListComponent(getName(),theme.getPanelRenderer(),position,list);
 	}
 
 	public void onRender() {
@@ -50,13 +51,13 @@ public class TextRadar extends HUDModule {
 				.filter(e->e instanceof EntityPlayer)
 				.filter(e->e != mc.player)
 				.forEach(e->{
-					if (mc.player.getDistance(e) > range.getValue()){
+					if (mc.player.getDistance(e) > range.getValue()) {
 						return;
 					}
-					if (display.getValue().equalsIgnoreCase("Friend") && !(Friends.isFriend(e.getName()))){
+					if (display.getValue().equalsIgnoreCase("Friend") && !(Friends.isFriend(e.getName()))) {
 						return;
 					}
-					if (display.getValue().equalsIgnoreCase("Enemy") && !(Enemies.isEnemy(e.getName()))){
+					if (display.getValue().equalsIgnoreCase("Enemy") && !(Enemies.isEnemy(e.getName()))) {
 						return;
 					}
 					list.players.add((EntityPlayer)e);
@@ -65,6 +66,7 @@ public class TextRadar extends HUDModule {
 	
 	
 	private class PlayerList implements HUDList {
+
 		public List<EntityPlayer> players=new ArrayList<EntityPlayer>();
 		
 		@Override
@@ -78,27 +80,33 @@ public class TextRadar extends HUDModule {
 			TextFormatting friendcolor;
 			if (Friends.isFriend(e.getName())) {
 				friendcolor = ColorMain.getFriendColor();
-			} else if (Enemies.isEnemy(e.getName())) {
+			}
+			else if (Enemies.isEnemy(e.getName())) {
 				friendcolor = ColorMain.getEnemyColor();
-			} else {
+			}
+			else {
 				friendcolor = TextFormatting.GRAY;
 			}
 			TextFormatting healthcolor;
 			float health=e.getHealth()+e.getAbsorptionAmount();
 			if (health<=5) {
 				healthcolor = TextFormatting.RED;
-			} else if (health>5 && health<15) {
+			}
+			else if (health>5 && health<15) {
 				healthcolor = TextFormatting.YELLOW;
-			} else {
+			}
+			else {
 				healthcolor = TextFormatting.GREEN;
 			}
 			TextFormatting distancecolor;
 			float distance=mc.player.getDistance(e);
 			if (distance<20) {
 				distancecolor = TextFormatting.RED;
-			} else if (distance>=20 && distance<50){
+			}
+			else if (distance>=20 && distance<50) {
 				distancecolor = TextFormatting.YELLOW;
-			} else {
+			}
+			else {
 				distancecolor = TextFormatting.GREEN;
 			}
 			return TextFormatting.GRAY+"["+healthcolor+((int)health)+TextFormatting.GRAY +"] "+friendcolor+e.getName()+TextFormatting.GRAY+" ["+distancecolor+((int)distance)+TextFormatting.GRAY+"]";

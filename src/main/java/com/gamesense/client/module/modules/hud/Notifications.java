@@ -14,12 +14,13 @@ import net.minecraft.util.text.TextComponentString;
 
 // PanelStudio rewrite by lukflug
 public class Notifications extends HUDModule {
+
 	private static Setting.Boolean sortUp;
 	private static Setting.Boolean sortRight;
 	public static Setting.Boolean disableChat;
 	private static NotificationsList list=new NotificationsList();
 	
-	public Notifications(){
+	public Notifications() {
 		super("Notifications",new Point(0,50));
 	}
 
@@ -31,7 +32,7 @@ public class Notifications extends HUDModule {
 	
 	@Override
 	public void populate (Theme theme) {
-		component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
+		component = new ListComponent(getName(), theme.getPanelRenderer(), position, list);
 	}
 
 	private static int waitCounter;
@@ -40,7 +41,8 @@ public class Notifications extends HUDModule {
 		if (waitCounter < 500) {
 			waitCounter++;
 			return;
-		} else {
+		}
+		else {
 			waitCounter = 0;
 		}
 		if (list.list.size() > 0)
@@ -51,15 +53,16 @@ public class Notifications extends HUDModule {
 		if(list.list.size() < 3) {
 			list.list.remove(m);
 			list.list.add(m);
-		}else {
+		}
+		else {
 			list.list.remove(0);
 			list.list.remove(m);
 			list.list.add(m);
 		}
 	}
 
-
 	private static class NotificationsList implements HUDList {
+
 		public List<TextComponentString> list = new ArrayList<>();
 		
 		@Override

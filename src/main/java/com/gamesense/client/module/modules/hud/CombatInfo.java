@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 public class CombatInfo extends HUDModule {
+
     private Setting.Mode infoType;
     private Setting.ColorSetting color1;
     private Setting.ColorSetting color2;
@@ -47,7 +48,7 @@ public class CombatInfo extends HUDModule {
     
     @Override
     public void populate (Theme theme) {
-    	component=new ListComponent(getName(),theme.getPanelRenderer(),position,list);
+    	component = new ListComponent(getName(),theme.getPanelRenderer(),position,list);
     }
 
     public void onRender() {
@@ -71,17 +72,21 @@ public class CombatInfo extends HUDModule {
                     if (i == 1 && a.canPlaceCrystal(o.north(1).down())) {
                         list.lby=true;
                         list.renderLby=true;
-                    } else if (i == 2 && a.canPlaceCrystal(o.east(1).down())) {
-                    	list.lby=true;
-                        list.renderLby=true;
-                    } else if (i == 3 && a.canPlaceCrystal(o.south(1).down())) {
-                    	list.lby=true;
-                        list.renderLby=true;
-                    } else if (i == 4 && a.canPlaceCrystal(o.west(1).down())) {
+                    }
+                    else if (i == 2 && a.canPlaceCrystal(o.east(1).down())) {
                     	list.lby=true;
                         list.renderLby=true;
                     }
-                } else {
+                    else if (i == 3 && a.canPlaceCrystal(o.south(1).down())) {
+                    	list.lby=true;
+                        list.renderLby=true;
+                    }
+                    else if (i == 4 && a.canPlaceCrystal(o.west(1).down())) {
+                    	list.lby=true;
+                        list.renderLby=true;
+                    }
+                }
+                else {
                 	list.lby=false;
                     list.renderLby=true;
                 }
@@ -94,14 +99,15 @@ public class CombatInfo extends HUDModule {
         int p = -1;
         if (mc.player == null || mc.getConnection() == null || mc.getConnection().getPlayerInfo(mc.player.getName()) == null) {
             p = -1;
-        } else {
+        }
+        else {
             p = mc.getConnection().getPlayerInfo(mc.player.getName()).getResponseTime();
         }
         return p;
     }
-    
-    
+
     private class InfoList implements HUDList {
+
 		public int totems=0;
 		public EntityOtherPlayerMP players=null;
 		public boolean renderLby=false;
@@ -111,9 +117,11 @@ public class CombatInfo extends HUDModule {
 		public int getSize() {
 			if (infoType.getValue().equals("Hoosiers")) {
 				return hoosiersModules.length;
-			} else if (infoType.getValue().equals("Cyber"))  {
+			}
+			else if (infoType.getValue().equals("Cyber")) {
 				return renderLby?6:5;
-			} else {
+			}
+			else {
 				return 0;
 			}
 		}
@@ -123,14 +131,16 @@ public class CombatInfo extends HUDModule {
 			if (infoType.getValue().equals("Hoosiers")) {
 				if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return hoosiersNames[index]+": ENBL";
 				else return hoosiersNames[index]+": DSBL";
-			} else if (infoType.getValue().equals("Cyber"))  {
+			}
+			else if (infoType.getValue().equals("Cyber")) {
 				if (index==0) return "gamesense.cc";
 				else if (index==1) return "HTR";
 				else if (index==2) return "PLR";
 				else if (index==3) return ""+totems;
 				else if (index==4) return "PING "+getPing();
 				else return "LBY";
-			} else {
+			}
+			else {
 				return "";
 			}
 		}
@@ -140,28 +150,35 @@ public class CombatInfo extends HUDModule {
 			if (infoType.getValue().equals("Hoosiers")) {
 				if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return color1.getValue();
 				else return color2.getValue();
-			} else if (infoType.getValue().equals("Cyber"))  {
+			}
+			else if (infoType.getValue().equals("Cyber")) {
 				boolean on=false;
 				if (index==0) {
 					on=true;
-				} else if (index==1) {
+				}
+				else if (index==1) {
 					if (players!=null) {
 						on=mc.player.getDistance(players)<=AutoCrystal.breakRange.getValue();
 					}
-				} else if (index==2) {
+				}
+				else if (index==2) {
 					if (players!=null) {
 						on=mc.player.getDistance(players)<=AutoCrystal.placeRange.getValue();
 					}
-				} else if (index==3) {
+				}
+				else if (index==3) {
 					on=totems>0 && ModuleManager.isModuleEnabled("AutoTotem");
-				} else if (index==4) {
+				}
+				else if (index==4) {
 					on=getPing()<=100;
-				} else {
+				}
+				else {
 					on=lby;
 				}
 				if (on) return color1.getValue();
 				else return color2.getValue();
-			} else {
+			}
+			else {
 				return new Color(255,255,255);
 			}
 		}
