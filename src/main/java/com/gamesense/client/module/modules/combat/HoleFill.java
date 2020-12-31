@@ -30,7 +30,8 @@ import java.util.List;
  */
 
 public class HoleFill extends Module {
-	public HoleFill(){
+
+	public HoleFill() {
 		super("HoleFill", Category.Combat);
 	}
 
@@ -42,7 +43,7 @@ public class HoleFill extends Module {
 	Setting.Double verticalRange;
 	Setting.Mode mode;
 
-	public void setup(){
+	public void setup() {
 		ArrayList<String> modes = new ArrayList<>();
 		modes.add("Obby");
 		modes.add("Echest");
@@ -62,30 +63,30 @@ public class HoleFill extends Module {
 	private int delayTicks = 0;
 	private int oldHandEnable = -1;
 
-	public void onEnable(){
-		if (chatMsgs.getValue() && mc.player != null){
+	public void onEnable() {
+		if (chatMsgs.getValue() && mc.player != null) {
 			MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "HoleFill turned ON!");
 		}
-		if (autoSwitch.getValue() && mc.player != null){
+		if (autoSwitch.getValue() && mc.player != null) {
 			oldHandEnable = mc.player.inventory.currentItem;
 		}
 	}
 
-	public void onDisable(){
-		if (chatMsgs.getValue() && mc.player != null){
+	public void onDisable() {
+		if (chatMsgs.getValue() && mc.player != null) {
 			MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "HoleFill turned OFF!");
 		}
-		if (autoSwitch.getValue() && mc.player != null){
+		if (autoSwitch.getValue() && mc.player != null) {
 			mc.player.inventory.currentItem = oldHandEnable;
 		}
-		if (isSneaking){
+		if (isSneaking) {
 			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
 			isSneaking = false;
 		}
 	}
 
-	public void onUpdate(){
-		if (mc.player == null || mc.world == null){
+	public void onUpdate() {
+		if (mc.player == null || mc.world == null) {
 			disable();
 			return;
 		}
@@ -109,31 +110,31 @@ public class HoleFill extends Module {
 
 			BlockPos placePos = holePos.stream().sorted(Comparator.comparing(blockPos -> blockPos.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ))).findFirst().orElse(null);
 
-			if (placePos == null){
+			if (placePos == null) {
 				return;
 			}
 
-			for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(placePos))){
-				if (entity instanceof EntityPlayer){
+			for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(placePos))) {
+				if (entity instanceof EntityPlayer) {
 					return;
 				}
 			}
 
-			if (delayTicks >= placeDelay.getValue() && isHoldingRightBlock(mc.player.inventory.currentItem, mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem()) && placeBlock(placePos)){
+			if (delayTicks >= placeDelay.getValue() && isHoldingRightBlock(mc.player.inventory.currentItem, mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem()) && placeBlock(placePos)) {
 				delayTicks = 0;
 			}
 			delayTicks++;
 		}
 	}
 
-	private List<BlockPos> findHoles(){
+	private List<BlockPos> findHoles() {
 		NonNullList<BlockPos> holes = NonNullList.create();
 
 		//from old HoleFill module, really good way to do this
 		Iterable<BlockPos> worldPosBlockPos = BlockPos.getAllInBox(mc.player.getPosition().add(-horizontalRange.getValue(), -verticalRange.getValue(), -horizontalRange.getValue()), mc.player.getPosition().add(horizontalRange.getValue(), verticalRange.getValue(), horizontalRange.getValue()));
 
-		for (BlockPos blockPos : worldPosBlockPos){
-			if (isSurrounded(blockPos)){
+		for (BlockPos blockPos : worldPosBlockPos) {
+			if (isSurrounded(blockPos)) {
 				holes.add(blockPos);
 			}
 		}
@@ -141,7 +142,7 @@ public class HoleFill extends Module {
 		return holes;
 	}
 
-	private boolean isSurrounded(BlockPos blockPos){
+	private boolean isSurrounded(BlockPos blockPos) {
 		if (mc.world.getBlockState(blockPos).getBlock() == Blocks.AIR
 				&& mc.world.getBlockState(blockPos.east()).getBlock() != Blocks.AIR
 				&& mc.world.getBlockState(blockPos.west()).getBlock() != Blocks.AIR
@@ -149,14 +150,14 @@ public class HoleFill extends Module {
 				&& mc.world.getBlockState(blockPos.south()).getBlock() != Blocks.AIR
 				&& mc.world.getBlockState(blockPos.down()).getBlock() != Blocks.AIR
 				&& mc.world.getBlockState(blockPos.up()).getBlock() == Blocks.AIR
-				&& mc.world.getBlockState(blockPos.up(2)).getBlock() == Blocks.AIR){
+				&& mc.world.getBlockState(blockPos.up(2)).getBlock() == Blocks.AIR) {
 			return true;
 		}
 
 		return false;
 	}
 
-	private int findRightBlock(int oldHand){
+	private int findRightBlock(int oldHand) {
 		int newHand = -1;
 
 		for (int i = 0; i < 9; i++) {
@@ -181,31 +182,31 @@ public class HoleFill extends Module {
 			}
 		}
 
-		if (newHand == -1){
+		if (newHand == -1) {
 			newHand = oldHand;
 		}
 
 		return newHand;
 	}
 
-	private Boolean isHoldingRightBlock(int hand, Item item){
-		if (hand == -1){
+	private Boolean isHoldingRightBlock(int hand, Item item) {
+		if (hand == -1) {
 			return false;
 		}
 
 		if (item instanceof ItemBlock) {
 			Block block = ((ItemBlock) item).getBlock();
 
-			if (mode.getValue().equalsIgnoreCase("Obby") && block instanceof BlockObsidian){
+			if (mode.getValue().equalsIgnoreCase("Obby") && block instanceof BlockObsidian) {
 				return true;
 			}
-			else if (mode.getValue().equalsIgnoreCase("Echest") && block instanceof BlockEnderChest){
+			else if (mode.getValue().equalsIgnoreCase("Echest") && block instanceof BlockEnderChest) {
 				return true;
 			}
-			else if (mode.getValue().equalsIgnoreCase("Both") && (block instanceof BlockObsidian || block instanceof BlockEnderChest)){
+			else if (mode.getValue().equalsIgnoreCase("Both") && (block instanceof BlockObsidian || block instanceof BlockEnderChest)) {
 				return true;
 			}
-			else if (mode.getValue().equalsIgnoreCase("Web") && block instanceof BlockWeb){
+			else if (mode.getValue().equalsIgnoreCase("Web") && block instanceof BlockWeb) {
 				return true;
 			}
 		}
@@ -214,46 +215,46 @@ public class HoleFill extends Module {
 	}
 
 	/** Mostly ported from Surround, best way to do it */
-	private Boolean placeBlock(BlockPos blockPos){
-		if (blockPos == null){
+	private Boolean placeBlock(BlockPos blockPos) {
+		if (blockPos == null) {
 			return false;
 		}
 
 		Block block = mc.world.getBlockState(blockPos).getBlock();
 
-		if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)){
+		if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
 			return false;
 		}
 
 		EnumFacing side = BlockUtil.getPlaceableSide(blockPos);
 
-		if (side == null){
+		if (side == null) {
 			return false;
 		}
 
 		BlockPos neighbour = blockPos.offset(side);
 		EnumFacing opposite = side.getOpposite();
 
-		if (!BlockUtil.canBeClicked(neighbour)){
+		if (!BlockUtil.canBeClicked(neighbour)) {
 			return false;
 		}
 
 		Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
 		Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
-		if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)){
+		if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
 			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
 			isSneaking = true;
 		}
 
 		boolean stoppedAC = false;
 
-		if (ModuleManager.isModuleEnabled("AutoCrystalGS")){
+		if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
 			AutoCrystal.stopAC = true;
 			stoppedAC = true;
 		}
 
-		if (rotate.getValue()){
+		if (rotate.getValue()) {
 			BlockUtil.faceVectorPacketInstant(hitVec);
 		}
 
@@ -261,7 +262,7 @@ public class HoleFill extends Module {
 		mc.player.swingArm(EnumHand.MAIN_HAND);
 		mc.rightClickDelayTimer = 4;
 
-		if (stoppedAC){
+		if (stoppedAC) {
 			AutoCrystal.stopAC = false;
 			stoppedAC = false;
 		}

@@ -25,7 +25,8 @@ import static com.gamesense.api.util.world.BlockUtil.faceVectorPacketInstant;
  */
 
 public class SelfWeb extends Module {
-    public SelfWeb(){
+
+    public SelfWeb() {
         super("SelfWeb", Category.Combat);
     }
 
@@ -38,7 +39,7 @@ public class SelfWeb extends Module {
     Setting.Integer blocksPerTick;
     Setting.Mode placeType;
 
-    public void setup(){
+    public void setup() {
         ArrayList<String> placeModes = new ArrayList<>();
         placeModes.add("Single");
         placeModes.add("Double");
@@ -63,30 +64,30 @@ public class SelfWeb extends Module {
     private int offsetSteps = 0;
     private int oldSlot = -1;
 
-    public void onEnable(){
-        if (mc.player == null){
+    public void onEnable() {
+        if (mc.player == null) {
             disable();
             return;
         }
 
-        if (chatMsg.getValue()){
+        if (chatMsg.getValue()) {
             MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "SelfWeb turned ON!");
         }
 
         oldSlot = mc.player.inventory.currentItem;
 
-        if (findWebSlot() != -1){
+        if (findWebSlot() != -1) {
             mc.player.inventory.currentItem = findWebSlot();
         }
     }
 
-    public void onDisable(){
-        if (mc.player == null){
+    public void onDisable() {
+        if (mc.player == null) {
             return;
         }
 
-        if (chatMsg.getValue()){
-            if (noWeb){
+        if (chatMsg.getValue()) {
+            if (noWeb) {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... SelfWeb turned OFF!");
             }
             else {
@@ -94,12 +95,12 @@ public class SelfWeb extends Module {
             }
         }
 
-        if (isSneaking){
+        if (isSneaking) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             isSneaking = false;
         }
 
-        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1){
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
             mc.player.inventory.currentItem = oldSlot;
             oldSlot = -1;
         }
@@ -109,36 +110,36 @@ public class SelfWeb extends Module {
         AutoCrystal.stopAC = false;
     }
 
-    public void onUpdate(){
-        if (mc.player == null){
+    public void onUpdate() {
+        if (mc.player == null) {
             disable();
             return;
         }
 
-        if (disableNone.getValue() && noWeb){
+        if (disableNone.getValue() && noWeb) {
             disable();
             return;
         }
 
-        if (mc.player.posY <= 0){
+        if (mc.player.posY <= 0) {
             return;
         }
 
-        if (singleWeb.getValue() && blocksPlaced >= 1){
+        if (singleWeb.getValue() && blocksPlaced >= 1) {
             blocksPlaced = 0;
             disable();
             return;
         }
 
-        if (firstRun){
+        if (firstRun) {
             firstRun = false;
-            if (findWebSlot() == -1){
+            if (findWebSlot() == -1) {
                 noWeb = true;
                 disable();
             }
         }
         else {
-            if (delayTimeTicks < tickDelay.getValue()){
+            if (delayTimeTicks < tickDelay.getValue()) {
                 delayTimeTicks++;
                 return;
             }
@@ -147,17 +148,17 @@ public class SelfWeb extends Module {
             }
         }
 
-        if (shiftOnly.getValue() && !mc.player.isSneaking()){
+        if (shiftOnly.getValue() && !mc.player.isSneaking()) {
             return;
         }
 
         blocksPlaced = 0;
 
-        while (blocksPlaced <= blocksPerTick.getValue()){
+        while (blocksPlaced <= blocksPerTick.getValue()) {
             Vec3d[] offsetPattern;
             int maxSteps;
 
-            if (placeType.getValue().equalsIgnoreCase("Double")){
+            if (placeType.getValue().equalsIgnoreCase("Double")) {
                 offsetPattern = Offsets.DOUBLE;
                 maxSteps = Offsets.DOUBLE.length;
             }
@@ -166,7 +167,7 @@ public class SelfWeb extends Module {
                 maxSteps = Offsets.SINGLE.length;
             }
 
-            if (offsetSteps >= maxSteps){
+            if (offsetSteps >= maxSteps) {
                 offsetSteps = 0;
                 break;
             }
@@ -176,35 +177,35 @@ public class SelfWeb extends Module {
 
             boolean tryPlacing = true;
 
-            if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()){
+            if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
                 tryPlacing = false;
             }
 
-            if (tryPlacing && placeBlock(targetPos)){
+            if (tryPlacing && placeBlock(targetPos)) {
                 blocksPlaced++;
             }
 
             offsetSteps++;
 
-            if (isSneaking){
+            if (isSneaking) {
                 mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
                 isSneaking = false;
             }
         }
     }
 
-    private int findWebSlot(){
+    private int findWebSlot() {
         int slot = -1;
 
-        for (int i = 0; i < 9; i++){
+        for (int i = 0; i < 9; i++) {
             ItemStack stack = mc.player.inventory.getStackInSlot(i);
 
-            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)){
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
                 continue;
             }
 
             Block block = ((ItemBlock) stack.getItem()).getBlock();
-            if (block instanceof BlockWeb){
+            if (block instanceof BlockWeb) {
                 slot = i;
                 break;
             }
@@ -212,23 +213,23 @@ public class SelfWeb extends Module {
         return slot;
     }
 
-    private boolean placeBlock(BlockPos pos){
+    private boolean placeBlock(BlockPos pos) {
         Block block = mc.world.getBlockState(pos).getBlock();
 
-        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)){
+        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
             return false;
         }
 
         EnumFacing side = BlockUtil.getPlaceableSide(pos);
 
-        if (side == null){
+        if (side == null) {
             return false;
         }
 
         BlockPos neighbour = pos.offset(side);
         EnumFacing opposite = side.getOpposite();
 
-        if (!BlockUtil.canBeClicked(neighbour)){
+        if (!BlockUtil.canBeClicked(neighbour)) {
             return false;
         }
 
@@ -237,23 +238,23 @@ public class SelfWeb extends Module {
 
         int webSlot = findWebSlot();
 
-        if (mc.player.inventory.currentItem != webSlot && webSlot != -1){
+        if (mc.player.inventory.currentItem != webSlot && webSlot != -1) {
             mc.player.inventory.currentItem = webSlot;
         }
 
-        if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)){
+        if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
             isSneaking = true;
         }
 
-        if (webSlot == -1){
+        if (webSlot == -1) {
             noWeb = true;
             return false;
         }
 
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")){
+        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
             AutoCrystal.stopAC = true;
             stoppedAC = true;
         }
@@ -266,7 +267,7 @@ public class SelfWeb extends Module {
         mc.player.swingArm(EnumHand.MAIN_HAND);
         mc.rightClickDelayTimer = 4;
 
-        if (stoppedAC){
+        if (stoppedAC) {
             AutoCrystal.stopAC = false;
             stoppedAC = false;
         }
@@ -275,11 +276,11 @@ public class SelfWeb extends Module {
     }
 
     private static class Offsets {
-        private static final Vec3d[] SINGLE ={
+        private static final Vec3d[] SINGLE = {
                 new Vec3d(0, 0, 0)
         };
 
-        private static final Vec3d[] DOUBLE ={
+        private static final Vec3d[] DOUBLE = {
                 new Vec3d(0, 0, 0),
                 new Vec3d(0, 1, 0)
         };

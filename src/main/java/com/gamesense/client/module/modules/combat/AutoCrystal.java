@@ -53,6 +53,7 @@ import java.util.stream.Collectors;
  */
 
 public class AutoCrystal extends Module {
+
     public AutoCrystal() {
         super("AutoCrystalGS", Category.Combat);
     }
@@ -150,17 +151,17 @@ public class AutoCrystal extends Module {
     private EnumFacing enumFacing;
     Timer timer = new Timer();
 
-    public void onUpdate(){
-        if (mc.player == null || mc.world == null || mc.player.isDead){
+    public void onUpdate() {
+        if (mc.player == null || mc.world == null || mc.player.isDead) {
             disable();
             return;
         }
 
-        if (stopAC){
+        if (stopAC) {
             return;
         }
 
-        if (antiSuicide.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount()) <= antiSuicideValue.getValue()){
+        if (antiSuicide.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount()) <= antiSuicideValue.getValue()) {
             return;
         }
 
@@ -176,7 +177,7 @@ public class AutoCrystal extends Module {
 
         if (breakCrystal.getValue() && crystal != null) {
 
-            if (!mc.player.canEntityBeSeen(crystal) && mc.player.getDistance(crystal) > wallsRange.getValue()){
+            if (!mc.player.canEntityBeSeen(crystal) && mc.player.getDistance(crystal) > wallsRange.getValue()) {
                 return;
             }
 
@@ -226,7 +227,7 @@ public class AutoCrystal extends Module {
                     swingArm();
                 }
 
-                if (cancelCrystal.getValue()){
+                if (cancelCrystal.getValue()) {
                     crystal.setDead();
                     mc.world.removeAllEntities();
                     mc.world.getLoadedEntityList();
@@ -235,7 +236,7 @@ public class AutoCrystal extends Module {
                 isActive = false;
             }
 
-            if (!multiPlace.getValue()){
+            if (!multiPlace.getValue()) {
                 return;
             }
         }
@@ -263,7 +264,8 @@ public class AutoCrystal extends Module {
         boolean offhand = false;
         if (mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL) {
             offhand = true;
-        } else if (crystalSlot == -1) {
+        }
+        else if (crystalSlot == -1) {
             return;
         }
 
@@ -293,7 +295,7 @@ public class AutoCrystal extends Module {
 
                         if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
                             if (this.autoSwitch.getValue()) {
-                                if ((noGapSwitch.getValue() && !(mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE)) || !noGapSwitch.getValue()){
+                                if ((noGapSwitch.getValue() && !(mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE)) || !noGapSwitch.getValue()) {
                                     mc.player.inventory.currentItem = crystalSlot;
                                     resetRotation();
                                     this.switchCooldown = true;
@@ -315,7 +317,8 @@ public class AutoCrystal extends Module {
                                 resetRotation();
                                 isActive = false;
                                 return;
-                            } else {
+                            }
+                            else {
                                 enumFacing = result.sideHit;
                             }
                         }
@@ -329,10 +332,12 @@ public class AutoCrystal extends Module {
                             isActive = true;
                             if (raytrace.getValue() && enumFacing != null) {
                                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, enumFacing, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
-                            } else if (q.getY() == 255) {
+                            }
+                            else if (q.getY() == 255) {
                                 // For Hoosiers. This is how we do buildheight. If the target block (q) is at Y 255. Then we send a placement packet to the bottom part of the block. Thus the EnumFacing.DOWN.
                                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.DOWN, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
-                            } else {
+                            }
+                            else {
                                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
                             }
                             mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
@@ -348,7 +353,8 @@ public class AutoCrystal extends Module {
                                 var10000 = mc.player;
                                 var10000.rotationPitch = (float) ((double) var10000.rotationPitch + 4.0E-4D);
                                 togglePitch = false;
-                            } else {
+                            }
+                            else {
                                 var10000 = mc.player;
                                 var10000.rotationPitch = (float) ((double) var10000.rotationPitch - 4.0E-4D);
                                 togglePitch = true;
@@ -412,7 +418,7 @@ public class AutoCrystal extends Module {
             GameSenseTessellator.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(),255));
         }
 
-        if(showDamage.getValue()){
+        if(showDamage.getValue()) {
             if (this.render != null && this.renderEnt != null) {
                 double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
                 String[] damageText=new String[1];
@@ -433,17 +439,17 @@ public class AutoCrystal extends Module {
             return false;
         }
 
-        if (breakMode.getValue().equalsIgnoreCase("All")){
+        if (breakMode.getValue().equalsIgnoreCase("All")) {
             return true;
         }
-        else if (breakMode.getValue().equalsIgnoreCase("Own")){
+        else if (breakMode.getValue().equalsIgnoreCase("Own")) {
             for (BlockPos pos : new ArrayList<>(PlacedCrystals)) {
                 if (pos != null && pos.getDistance((int)crystal.posX, (int)crystal.posY, (int)crystal.posZ) <= 3.0) {
                     return true;
                 }
             }
         }
-        else if (breakMode.getValue().equalsIgnoreCase("Smart")){
+        else if (breakMode.getValue().equalsIgnoreCase("Smart")) {
             EntityLivingBase target = renderEnt != null ? (EntityLivingBase) renderEnt : GetNearTarget(crystal);
 
             if (target == null || target == mc.player) {
@@ -619,11 +625,11 @@ public class AutoCrystal extends Module {
     }
 
     private void swingArm() {
-        if (handBreak.getValue().equalsIgnoreCase("Both") && mc.player.getHeldItemOffhand() != null){
+        if (handBreak.getValue().equalsIgnoreCase("Both") && mc.player.getHeldItemOffhand() != null) {
             mc.player.swingArm(EnumHand.MAIN_HAND);
             mc.player.swingArm(EnumHand.OFF_HAND);
         }
-        else if (handBreak.getValue().equalsIgnoreCase("Offhand") && mc.player.getHeldItemOffhand() != null){
+        else if (handBreak.getValue().equalsIgnoreCase("Offhand") && mc.player.getHeldItemOffhand() != null) {
             mc.player.swingArm(EnumHand.OFF_HAND);
         }
         else {
@@ -658,7 +664,6 @@ public class AutoCrystal extends Module {
         }
     });
 
-    @Override
     public void onEnable() {
         GameSense.EVENT_BUS.subscribe(this);
         PlacedCrystals.clear();
@@ -668,7 +673,6 @@ public class AutoCrystal extends Module {
         }
     }
 
-    @Override
     public void onDisable() {
         GameSense.EVENT_BUS.unsubscribe(this);
         render = null;
@@ -681,21 +685,20 @@ public class AutoCrystal extends Module {
         }
     }
 
-    @Override
-    public String getHudInfo(){
+    public String getHudInfo() {
         String t = "";
         if (hudDisplay.getValue().equalsIgnoreCase("Mode")){
-            if (breakMode.getValue().equalsIgnoreCase("All")){
+            if (breakMode.getValue().equalsIgnoreCase("All")) {
                 t = "[" + ChatFormatting.WHITE + "All" + ChatFormatting.GRAY + "]";
             }
-            if (breakMode.getValue().equalsIgnoreCase("Smart")){
+            if (breakMode.getValue().equalsIgnoreCase("Smart")) {
                 t = "[" + ChatFormatting.WHITE + "Smart" + ChatFormatting.GRAY + "]";
             }
-            if (breakMode.getValue().equalsIgnoreCase("Own")){
+            if (breakMode.getValue().equalsIgnoreCase("Own")) {
                 t = "[" + ChatFormatting.WHITE + "Own" + ChatFormatting.GRAY + "]";
             }
         }
-        if (hudDisplay.getValue().equalsIgnoreCase("None")){
+        if (hudDisplay.getValue().equalsIgnoreCase("None")) {
             t = "";
         }
         return t;

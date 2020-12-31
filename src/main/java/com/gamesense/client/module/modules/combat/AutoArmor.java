@@ -8,11 +8,13 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
-public class AutoArmor extends Module{
-	public AutoArmor(){super("AutoArmor", Category.Combat);}
+public class AutoArmor extends Module {
 
-	@Override
-	public void onUpdate(){
+	public AutoArmor() {
+		super("AutoArmor", Category.Combat);
+	}
+
+	public void onUpdate() {
 		if (mc.player.ticksExisted % 2 == 0) return;
 		// check screen
 		if (mc.currentScreen instanceof GuiContainer
@@ -24,8 +26,7 @@ public class AutoArmor extends Module{
 		int[] bestArmorValues = new int[4];
 
 		// initialize with currently equipped armor
-		for (int armorType = 0; armorType < 4; armorType++)
-		{
+		for (int armorType = 0; armorType < 4; armorType++) {
 			ItemStack oldArmor = mc.player.inventory.armorItemInSlot(armorType);
 
 			if (oldArmor != null && oldArmor.getItem() instanceof ItemArmor)
@@ -36,8 +37,7 @@ public class AutoArmor extends Module{
 		}
 
 		// search inventory for better armor
-		for (int slot = 0; slot < 36; slot++)
-		{
+		for (int slot = 0; slot < 36; slot++) {
 			ItemStack stack = mc.player.inventory.getStackInSlot(slot);
 
 			if (stack.getCount() > 1)
@@ -53,16 +53,14 @@ public class AutoArmor extends Module{
 
 			int armorValue = armor.damageReduceAmount;
 
-			if (armorValue > bestArmorValues[armorType])
-			{
+			if (armorValue > bestArmorValues[armorType]) {
 				bestArmorSlots[armorType] = slot;
 				bestArmorValues[armorType] = armorValue;
 			}
 		}
 
 		// equip better armor
-		for (int armorType = 0; armorType < 4; armorType++)
-		{
+		for (int armorType = 0; armorType < 4; armorType++) {
 			// check if better armor was found
 			int slot = bestArmorSlots[armorType];
 			if (slot == -1)
@@ -72,8 +70,7 @@ public class AutoArmor extends Module{
 			// needs 1 free slot where it can put the old armor
 			ItemStack oldArmor = mc.player.inventory.armorItemInSlot(armorType);
 			if (oldArmor == null || oldArmor != ItemStack.EMPTY
-					|| mc.player.inventory.getFirstEmptyStack() != -1)
-			{
+					|| mc.player.inventory.getFirstEmptyStack() != -1) {
 				// hotbar fix
 				if (slot < 9)
 					slot += 36;

@@ -30,7 +30,8 @@ import java.util.List;
  */
 
 public class AutoAnvil extends Module {
-    public AutoAnvil(){
+
+    public AutoAnvil() {
         super("AutoAnvil", Category.Combat);
     }
 
@@ -47,7 +48,7 @@ public class AutoAnvil extends Module {
     Setting.Integer minH;
     Setting.Integer failStop;
 
-    public void setup(){
+    public void setup() {
         ArrayList<String> anvilTypesList = new ArrayList<>();
         anvilTypesList.add("Pick");
         anvilTypesList.add("Feet");
@@ -92,9 +93,9 @@ public class AutoAnvil extends Module {
 
     private EntityPlayer closestTarget;
 
-    public void onEnable(){
+    public void onEnable() {
         // Setup
-        if (anvilMode.getValue().equalsIgnoreCase("Pick")){
+        if (anvilMode.getValue().equalsIgnoreCase("Pick")) {
             pick_d = true;
         }
         blocksPlaced = 0;
@@ -104,32 +105,34 @@ public class AutoAnvil extends Module {
         slot_mat = new int[]{-1, -1, -1, -1};
         to_place = new ArrayList<>();
 
-        if (mc.player == null){
+        if (mc.player == null) {
             disable();
             return;
         }
 
-        if (chatMsg.getValue()){
+        if (chatMsg.getValue()) {
             printChat("AutoAnvil turned ON!", false);
         }
 
         oldSlot = mc.player.inventory.currentItem;
-
     }
 
-    public void onDisable(){
-        if (mc.player == null){
+    public void onDisable() {
+        if (mc.player == null) {
             return;
         }
 
-        if (chatMsg.getValue()){
-            if (noMaterials){
+        if (chatMsg.getValue()) {
+            if (noMaterials) {
                 printChat("No Materials Detected... AutoAnvil turned OFF!", true);
-            }else if (!isHole) {
+            }
+            else if (!isHole) {
                 printChat("The enemy is not in a hole... AutoAnvil turned OFF!", true);
-            }else if(!enoughSpace) {
+            }
+            else if(!enoughSpace) {
                 printChat("Not enough space... AutoAnvil turned OFF!", true);
-            }else if(hasMoved) {
+            }
+            else if(hasMoved) {
                 printChat("He moved away from the hole... AutoAnvil turned OFF!", true);
             }
             else {
@@ -137,12 +140,12 @@ public class AutoAnvil extends Module {
             }
         }
 
-        if (isSneaking){
+        if (isSneaking) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             isSneaking = false;
         }
 
-        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1){
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
             mc.player.inventory.currentItem = oldSlot;
             oldSlot = -1;
         }
@@ -152,19 +155,18 @@ public class AutoAnvil extends Module {
         AutoCrystal.stopAC = false;
     }
 
-    public void onUpdate(){
-
-        if (mc.player == null){
+    public void onUpdate() {
+        if (mc.player == null) {
             disable();
             return;
         }
 
-        if (firstRun){
+        if (firstRun) {
 
             // All the setup
             closestTarget = findClosestTarget();
 
-            if (closestTarget == null){
+            if (closestTarget == null) {
                 return;
             }
             firstRun = false;
@@ -176,16 +178,18 @@ public class AutoAnvil extends Module {
                     // Start choosing where to place what
                     enoughSpace = createStructure();
 
-                } else {
+                }
+                else {
                     isHole = false;
                 }
-            }else noMaterials = true;
+            }
+            else noMaterials = true;
 
 
         }
         else {
             // Wait
-            if (delayTimeTicks < tickDelay.getValue()){
+            if (delayTimeTicks < tickDelay.getValue()) {
                 delayTimeTicks++;
                 return;
             }
@@ -196,20 +200,20 @@ public class AutoAnvil extends Module {
 
         blocksPlaced = 0;
         // If we have to left
-        if (noMaterials || !isHole || !enoughSpace || hasMoved){
+        if (noMaterials || !isHole || !enoughSpace || hasMoved) {
             disable();
             return;
         }
 
         noKick = 0;
-        while (blocksPlaced <= blocksPerTick.getValue()){
+        while (blocksPlaced <= blocksPerTick.getValue()) {
 
             // Max of blocks we have to place
             int maxSteps;
             maxSteps = AutoAnvil.to_place.size();
 
             // If we are at the end
-            if (offsetSteps >= maxSteps){
+            if (offsetSteps >= maxSteps) {
                 offsetSteps = 0;
                 break;
             }
@@ -222,20 +226,20 @@ public class AutoAnvil extends Module {
 
             // If there is an entity
             if(offsetSteps > 0 && offsetSteps < AutoAnvil.to_place.size() - 1)
-                for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetPos))){
-                    if (entity instanceof EntityPlayer){
+                for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetPos))) {
+                    if (entity instanceof EntityPlayer) {
                         tryPlacing = false;
                         break;
                     }
                 }
 
-            if (tryPlacing && placeBlock(targetPos, offsetSteps)){
+            if (tryPlacing && placeBlock(targetPos, offsetSteps)) {
                 blocksPlaced++;
             }
 
             offsetSteps++;
             // Why?
-            if (isSneaking){
+            if (isSneaking) {
                 mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
                 isSneaking = false;
             }
@@ -247,7 +251,7 @@ public class AutoAnvil extends Module {
 
     }
 
-    private boolean placeBlock(BlockPos pos, int step){
+    private boolean placeBlock(BlockPos pos, int step) {
         // Get the block
         Block block = mc.world.getBlockState(pos).getBlock();
         // Get all sides
@@ -256,17 +260,15 @@ public class AutoAnvil extends Module {
         if (step == to_place.size() - 1 && block instanceof BlockAnvil && side != null) {
             // UnGlitch it with a left click
             //mc.player.swingArm(EnumHand.MAIN_HAND);
-            mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                    CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, side
-            ));
+            mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, side));
             noKick++;
         }
         // If there is a solid block
-        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)){
+        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
             return false;
         }
         // If we cannot find any side
-        if (side == null){
+        if (side == null) {
             return false;
         }
 
@@ -275,7 +277,7 @@ public class AutoAnvil extends Module {
         EnumFacing opposite = side.getOpposite();
 
         // If that block can be clicked
-        if (!BlockUtil.canBeClicked(neighbour)){
+        if (!BlockUtil.canBeClicked(neighbour)) {
             return false;
         }
 
@@ -293,8 +295,8 @@ public class AutoAnvil extends Module {
         // Get what slot we are going to select
         int utilSlot =
                 (step == 0 && (anvilMode.getValue().equalsIgnoreCase("feet")))
-                ? 2 :
-                (step == to_place.size() - 1) ? 1 : 0;
+                        ? 2 :
+                        (step == to_place.size() - 1) ? 1 : 0;
         // If it's not empty
         if (mc.player.inventory.getStackInSlot(slot_mat[utilSlot]) != ItemStack.EMPTY) {
             // Is it is correct
@@ -302,10 +304,11 @@ public class AutoAnvil extends Module {
                 // Change the hand's item
                 mc.player.inventory.currentItem = slot_mat[utilSlot];
             }
-        }else return false;
+        }
+        else return false;
 
         // Why?
-        if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)){
+        if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
             isSneaking = true;
         }
@@ -313,13 +316,13 @@ public class AutoAnvil extends Module {
         // Stop CA
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")){
+        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
             AutoCrystal.stopAC = true;
             stoppedAC = true;
         }
 
         // For the rotation
-        if (rotate.getValue()){
+        if (rotate.getValue()) {
             BlockUtil.faceVectorPacketInstant(hitVec);
         }
 
@@ -351,7 +354,7 @@ public class AutoAnvil extends Module {
         }
 
         // Re-Active ca
-        if (stoppedAC){
+        if (stoppedAC) {
             AutoCrystal.stopAC = false;
             stoppedAC = false;
         }
@@ -369,33 +372,32 @@ public class AutoAnvil extends Module {
                         CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]), prova
                 ));
             }
-
         }
 
         return true;
     }
 
-    private EntityPlayer findClosestTarget(){
+    private EntityPlayer findClosestTarget() {
         List<EntityPlayer> playerList = mc.world.playerEntities;
 
         EntityPlayer closestTarget_test = null;
 
-        for (EntityPlayer entityPlayer : playerList){
-            if (entityPlayer == mc.player){
+        for (EntityPlayer entityPlayer : playerList) {
+            if (entityPlayer == mc.player) {
                 continue;
             }
-            if (Friends.isFriend(entityPlayer.getName())){
+            if (Friends.isFriend(entityPlayer.getName())) {
                 continue;
             }
             if (entityPlayer.isDead) {
                 continue;
             }
 
-            if (closestTarget == null && mc.player.getDistance(entityPlayer) <= enemyRange.getValue()){
+            if (closestTarget == null && mc.player.getDistance(entityPlayer) <= enemyRange.getValue()) {
                 closestTarget_test = entityPlayer;
                 continue;
             }
-            if (closestTarget != null && mc.player.getDistance(entityPlayer) <= enemyRange.getValue() && mc.player.getDistance(entityPlayer) < mc.player.getDistance(closestTarget)){
+            if (closestTarget != null && mc.player.getDistance(entityPlayer) <= enemyRange.getValue() && mc.player.getDistance(entityPlayer) < mc.player.getDistance(closestTarget)) {
                 closestTarget_test = entityPlayer;
             }
         }
@@ -433,10 +435,10 @@ public class AutoAnvil extends Module {
         boolean pick = false;
 
         // If we have to search also for a button/pressure plate
-        if (anvilMode.getValue().equalsIgnoreCase("Feet")){
+        if (anvilMode.getValue().equalsIgnoreCase("Feet")) {
             feet = true;
         }
-        if (anvilMode.getValue().equalsIgnoreCase("Pick")){
+        if (anvilMode.getValue().equalsIgnoreCase("Pick")) {
             pick = true;
         }
 
@@ -445,13 +447,13 @@ public class AutoAnvil extends Module {
             ItemStack stack = mc.player.inventory.getStackInSlot(i);
 
             // If there is no block
-            if (stack == ItemStack.EMPTY){
+            if (stack == ItemStack.EMPTY) {
                 continue;
             }
             if (pick && stack.getItem() instanceof ItemPickaxe) {
                 slot_mat[3] = i;
             }
-            if (stack.getItem() instanceof ItemBlock){
+            if (stack.getItem() instanceof ItemBlock) {
 
                 // If yes, get the block
                 Block block = ((ItemBlock) stack.getItem()).getBlock();
@@ -459,11 +461,13 @@ public class AutoAnvil extends Module {
                 // Obsidian
                 if (block instanceof BlockObsidian) {
                     slot_mat[0] = i;
-                } else
+                }
+                else
                     // Anvil
                     if (block instanceof BlockAnvil) {
                         slot_mat[1] = i;
-                    } else
+                    }
+                    else
                         // Button / Pressure Plate
                         if (feet && (block instanceof BlockPressurePlate || block instanceof BlockButton)) {
                             slot_mat[2] = i;
