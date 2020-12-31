@@ -33,6 +33,8 @@ public class Chams extends Module {
     Setting.ColorSetting mobColor;
     Setting.ColorSetting entityColor;
     Setting.Integer colorOpacity;
+    Setting.Integer wireOpacity;
+    Setting.Integer lineWidth;
     Setting.Integer range;
     Setting.Boolean player;
     Setting.Boolean mob;
@@ -42,13 +44,16 @@ public class Chams extends Module {
         ArrayList<String> chamsTypes = new ArrayList<>();
         chamsTypes.add("Texture");
         chamsTypes.add("Color");
+        chamsTypes.add("WireFrame");
 
         chamsType = registerMode("Type", "Type", chamsTypes, "Texture");
         range = registerInteger("Range", "Range", 100, 10, 260);
         player = registerBoolean("Player", "Player", true);
         mob = registerBoolean("Mob", "Mob", false);
         entity = registerBoolean("Entity", "Entity", false);
-        colorOpacity = registerInteger("Opacity", "Opacity", 100, 10, 255);
+        lineWidth = registerInteger("Line Width", "LineWidth", 1, 1, 5);
+        colorOpacity = registerInteger("Color Opacity", "Opacity", 100, 0, 255);
+        wireOpacity = registerInteger("Wire Opacity", "WireOpacity", 200, 0, 255);
         playerColor = registerColor("Player Color", "PlayerColor", new GSColor(0, 255, 255, 255));
         mobColor = registerColor("Mob Color", "Mob Color", new GSColor(255, 255, 0, 255));
         entityColor = registerColor("Entity Color", "EntityColor", new GSColor(0, 255, 0, 255));
@@ -59,7 +64,7 @@ public class Chams extends Module {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
             return;
         }
-        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && chamsType.getValue().equalsIgnoreCase("Color")) {
+        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
             return;
         }
 
@@ -91,7 +96,7 @@ public class Chams extends Module {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
             return;
         }
-        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && chamsType.getValue().equalsIgnoreCase("Color")) {
+        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
             return;
         }
 
@@ -120,23 +125,35 @@ public class Chams extends Module {
 
     private void renderChamsPre(GSColor color, boolean isPlayer) {
         switch (chamsType.getValue()) {
-            case "Texture":
+            case "Texture": {
                 GameSenseTessellator.createChamsPre();
                 break;
-            case "Color":
+            }
+            case "Color": {
                 GameSenseTessellator.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
                 break;
+            }
+            case "WireFrame": {
+                GameSenseTessellator.createWirePre(new GSColor(color, wireOpacity.getValue()), lineWidth.getValue(), isPlayer);
+                break;
+            }
         }
     }
 
     private void renderChamsPost(boolean isPlayer) {
         switch (chamsType.getValue()) {
-            case "Color":
-                GameSenseTessellator.createColorPost(isPlayer);
-                break;
-            case "Texture":
+            case "Texture": {
                 GameSenseTessellator.createChamsPost();
                 break;
+            }
+            case "Color": {
+                GameSenseTessellator.createColorPost(isPlayer);
+                break;
+            }
+            case "WireFrame": {
+                GameSenseTessellator.createWirePost(isPlayer);
+                break;
+            }
         }
     }
 

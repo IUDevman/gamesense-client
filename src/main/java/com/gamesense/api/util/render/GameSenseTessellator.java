@@ -185,6 +185,41 @@ public class GameSenseTessellator {
 		GlStateManager.popMatrix();
 	}
 
+	public static void createWirePre(GSColor color, int lineWidth, boolean isPlayer) {
+		mc.getRenderManager().setRenderShadow(false);
+		mc.getRenderManager().setRenderOutlines(false);
+		GlStateManager.pushMatrix();
+		glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+		glEnable(GL11.GL_POLYGON_OFFSET_LINE);
+		glPolygonOffset(1.0f, -1100000.0f);
+		glDisable(GL11.GL_TEXTURE_2D);
+		glDisable(GL11.GL_LIGHTING);
+		glEnable(GL_LINE_SMOOTH);
+		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+		if (!isPlayer) {
+			GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
+		}
+		glLineWidth(lineWidth);
+		color.glColor();
+		GlStateManager.popMatrix();
+	}
+
+	public static void createWirePost(boolean isPlayer) {
+		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
+		mc.getRenderManager().setRenderShadow(shadow);
+		GlStateManager.pushMatrix();
+		if (!isPlayer) {
+			GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
+		}
+		glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		glDisable(GL11.GL_POLYGON_OFFSET_LINE);
+		glPolygonOffset(1.0f, 1100000.0f);
+		glEnable(GL11.GL_TEXTURE_2D);
+		glEnable(GL11.GL_LIGHTING);
+		glDisable(GL_LINE_SMOOTH);
+		GlStateManager.popMatrix();
+	}
+
 	/* Base for direction start */
 	public static class Points {
 		// Coordinates
