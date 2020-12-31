@@ -1,7 +1,6 @@
 package com.gamesense.client.module.modules.render;
 
-import com.gamesense.api.event.events.RenderEntityHeadEvent;
-import com.gamesense.api.event.events.RenderEntityReturnEvent;
+import com.gamesense.api.event.events.RenderEntityEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
@@ -33,7 +32,6 @@ public class Chams extends Module {
     Setting.ColorSetting playerColor;
     Setting.ColorSetting mobColor;
     Setting.ColorSetting entityColor;
-    Setting.ColorSetting itemColor;
     Setting.Integer colorOpacity;
     Setting.Integer range;
     Setting.Boolean player;
@@ -50,14 +48,21 @@ public class Chams extends Module {
         player = registerBoolean("Player", "Player", true);
         mob = registerBoolean("Mob", "Mob", false);
         entity = registerBoolean("Entity", "Entity", false);
-        colorOpacity = registerInteger("Opacity", "Opacity", 155, 10, 255);
+        colorOpacity = registerInteger("Opacity", "Opacity", 100, 10, 255);
         playerColor = registerColor("Player Color", "PlayerColor", new GSColor(0, 255, 255, 255));
         mobColor = registerColor("Mob Color", "Mob Color", new GSColor(255, 255, 0, 255));
         entityColor = registerColor("Entity Color", "EntityColor", new GSColor(0, 255, 0, 255));
     }
 
     @EventHandler
-    private final Listener<RenderEntityHeadEvent> renderEntityHeadEventListener = new Listener<>(event -> {
+    private final Listener<RenderEntityEvent.Head> renderEntityHeadEventListener = new Listener<>(event -> {
+        if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
+            return;
+        }
+        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && chamsType.getValue().equalsIgnoreCase("Color")) {
+            return;
+        }
+
         if (mc.player == null || mc.world == null) {
             return;
         }
@@ -82,7 +87,14 @@ public class Chams extends Module {
     });
 
     @EventHandler
-    private final Listener<RenderEntityReturnEvent> renderEntityReturnEventListener = new Listener<>(event -> {
+    private final Listener<RenderEntityEvent.Return> renderEntityReturnEventListener = new Listener<>(event -> {
+        if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
+            return;
+        }
+        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && chamsType.getValue().equalsIgnoreCase("Color")) {
+            return;
+        }
+
         if (mc.player == null || mc.world == null) {
             return;
         }
