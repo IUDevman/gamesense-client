@@ -136,7 +136,8 @@ public class GameSenseTessellator {
 		Thank to lukflug for helping me to understand
 		and for finding a bug
 
-		Hoosiers here- Techale was right above, but I ended up porting in and modifying a few functions from the above link so credit to Seppuku
+		Hoosiers here- Techale was right above, but I ended up porting in and modifying a few functions from the above link so credit to Seppuku...
+		we have the same license, so it's safe to port in
 	 */
 
 	public static void createChamsPre() {
@@ -150,7 +151,7 @@ public class GameSenseTessellator {
 	}
 
 	public static void createChamsPost() {
-		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
+		boolean shadow = mc.getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
 		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
@@ -173,7 +174,7 @@ public class GameSenseTessellator {
 	}
 
 	public static void createColorPost(boolean isPlayer) {
-		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
+		boolean shadow = mc.getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
 		if (!isPlayer) {
@@ -205,7 +206,7 @@ public class GameSenseTessellator {
 	}
 
 	public static void createWirePost(boolean isPlayer) {
-		boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
+		boolean shadow = mc.getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
 		if (!isPlayer) {
