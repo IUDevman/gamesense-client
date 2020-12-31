@@ -5,15 +5,16 @@ import com.gamesense.client.module.Module;
 
 import java.util.ArrayList;
 
-public class CapesModule extends Module{
-	public CapesModule(){
+public class CapesModule extends Module {
+
+	public CapesModule() {
 		super("Capes", Category.Render);
 		setDrawn(false);
 	}
 
 	public Setting.Mode capeMode;
 
-	public void setup(){
+	public void setup() {
 		ArrayList<String> CapeType = new ArrayList<>();
 		CapeType.add("Black");
 		CapeType.add("White");

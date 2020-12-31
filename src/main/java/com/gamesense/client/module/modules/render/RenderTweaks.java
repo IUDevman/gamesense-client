@@ -5,8 +5,9 @@ import com.gamesense.client.module.Module;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemSword;
 
-public class RenderTweaks extends Module{
-	public RenderTweaks(){
+public class RenderTweaks extends Module {
+
+	public RenderTweaks() {
 		super("RenderTweaks", Category.Render);
 	}
 
@@ -21,7 +22,7 @@ public class RenderTweaks extends Module{
 
 	private float oldFOV;
 
-	public void setup(){
+	public void setup() {
 		viewClip = registerBoolean("View Clip", "ViewClip", false);
 		nekoAnimation = registerBoolean("Neko Animation", "NekoAnimation", false);
 		lowOffhand = registerBoolean("Low Offhand", "LowOffhand", false);
@@ -31,29 +32,29 @@ public class RenderTweaks extends Module{
 	}
 
 	@Override
-	public void onUpdate(){
-		if (nekoAnimation.getValue()){
-			if (mc.player.getHeldItemMainhand().getItem() instanceof ItemSword && mc.entityRenderer.itemRenderer.prevEquippedProgressMainHand >= 0.9){
+	public void onUpdate() {
+		if (nekoAnimation.getValue()) {
+			if (mc.player.getHeldItemMainhand().getItem() instanceof ItemSword && mc.entityRenderer.itemRenderer.prevEquippedProgressMainHand >= 0.9) {
 				mc.entityRenderer.itemRenderer.equippedProgressMainHand = 1.0f;
 				mc.entityRenderer.itemRenderer.itemStackMainHand = mc.player.getHeldItemMainhand();
 			}
 		}
-		if (lowOffhand.getValue()){
+		if (lowOffhand.getValue()) {
 			itemRenderer.equippedProgressOffHand = (float)lowOffhandSlider.getValue();
 		}
-		if (fovChanger.getValue()){
+		if (fovChanger.getValue()) {
 			mc.gameSettings.fovSetting = (float)fovChangerSlider.getValue();
 		}
-		if (!(fovChanger.getValue())){
+		if (!(fovChanger.getValue())) {
 			mc.gameSettings.fovSetting = oldFOV;
 		}
 	}
 
-	public void onEnable(){
+	public void onEnable() {
 		oldFOV = mc.gameSettings.fovSetting;
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		mc.gameSettings.fovSetting = oldFOV;
 	}
 }

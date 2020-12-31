@@ -8,6 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class SkyColor extends Module {
+
     public SkyColor() {
         super("SkyColor", Category.Render);
     }
@@ -16,7 +17,7 @@ public class SkyColor extends Module {
     public static Setting.Boolean fog;
 
     @Override
-    public void setup(){
+    public void setup() {
         fog = registerBoolean("Fog", "Fog", true);
         color = registerColor("Color", "Color", new GSColor(0, 255, 0, 255));
     }

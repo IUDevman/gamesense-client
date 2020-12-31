@@ -21,7 +21,8 @@ import java.util.List;
  */
 
 public class CityESP extends Module {
-    public CityESP(){
+
+    public CityESP() {
         super("CityESP", Category.Render);
     }
 
@@ -32,7 +33,7 @@ public class CityESP extends Module {
     Setting.Integer width;
     Setting.ColorSetting color;
 
-    public void setup(){
+    public void setup() {
         ArrayList<String> targetModes = new ArrayList<>();
         targetModes.add("Single");
         targetModes.add("All");
@@ -54,27 +55,27 @@ public class CityESP extends Module {
         color = registerColor("Color", "Color", new GSColor(102,51,153));
     }
 
-    public void onWorldRender(RenderEvent event){
-        if (mc.player != null || mc.world != null){
+    public void onWorldRender(RenderEvent event) {
+        if (mc.player != null || mc.world != null) {
             mc.world.playerEntities.stream()
                     .filter(entityPlayer -> entityPlayer.getDistance(mc.player) <= range.getValue())
                     .filter(entityPlayer -> entityPlayer != mc.player)
                     .filter(entityPlayer ->  !Friends.isFriend(entityPlayer.getName()))
                     .forEach(entityPlayer -> {
 
-                        if (entityPlayer == mc.player){
+                        if (entityPlayer == mc.player) {
                             return;
                         }
 
-                        if (isTrapped(entityPlayer)){
+                        if (isTrapped(entityPlayer)) {
                             List<BlockPos> renderBlocks = new ArrayList<>();
                             renderBlocks.addAll(getBlocksToRender(entityPlayer));
 
-                            if (renderBlocks != null){
+                            if (renderBlocks != null) {
                                 renderBox(renderBlocks);
                             }
 
-                            if (targetMode.getValue().equalsIgnoreCase("All")){
+                            if (targetMode.getValue().equalsIgnoreCase("All")) {
                                 return;
                             }
                         }
@@ -82,7 +83,7 @@ public class CityESP extends Module {
         }
     }
 
-    private boolean isTrapped(EntityPlayer entityPlayer){
+    private boolean isTrapped(EntityPlayer entityPlayer) {
         BlockPos blockPos = new BlockPos(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ);
 
         //minimum amount of blocks needed to be "trapped"
@@ -95,38 +96,38 @@ public class CityESP extends Module {
     }
 
     //this doesn't check if there is a block below the target block, might add it later if people want it
-    private List<BlockPos> getBlocksToRender(EntityPlayer entityPlayer){
+    private List<BlockPos> getBlocksToRender(EntityPlayer entityPlayer) {
         NonNullList<BlockPos> blockPosList = NonNullList.create();
         BlockPos blockPos = new BlockPos(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ);
 
-        if (mc.world.getBlockState(blockPos.east()).getBlock() != Blocks.BEDROCK){
+        if (mc.world.getBlockState(blockPos.east()).getBlock() != Blocks.BEDROCK) {
             blockPosList.add(blockPos.east());
         }
-        if (mc.world.getBlockState(blockPos.west()).getBlock() != Blocks.BEDROCK){
+        if (mc.world.getBlockState(blockPos.west()).getBlock() != Blocks.BEDROCK) {
             blockPosList.add(blockPos.west());
         }
-        if (mc.world.getBlockState(blockPos.north()).getBlock() != Blocks.BEDROCK){
+        if (mc.world.getBlockState(blockPos.north()).getBlock() != Blocks.BEDROCK) {
             blockPosList.add(blockPos.north());
         }
-        if (mc.world.getBlockState(blockPos.south()).getBlock() != Blocks.BEDROCK){
+        if (mc.world.getBlockState(blockPos.south()).getBlock() != Blocks.BEDROCK) {
             blockPosList.add(blockPos.south());
         }
 
         return blockPosList;
     }
 
-    private void renderBox(List<BlockPos> blockPosList){
-        switch (selectMode.getValue()){
+    private void renderBox(List<BlockPos> blockPosList) {
+        switch (selectMode.getValue()) {
             case "Closest": {
                 BlockPos renderPos = blockPosList.stream().sorted(Comparator.comparing(blockPos -> blockPos.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ))).findFirst().orElse(null);
 
-                if (renderPos != null){
+                if (renderPos != null) {
                     renderBox2(renderPos);
                 }
                 break;
             }
             case "All": {
-                for (BlockPos blockPos : blockPosList){
+                for (BlockPos blockPos : blockPosList) {
                     renderBox2(blockPos);
                 }
                 break;
@@ -134,11 +135,11 @@ public class CityESP extends Module {
         }
     }
 
-    private void renderBox2(BlockPos blockPos){
+    private void renderBox2(BlockPos blockPos) {
         GSColor gsColor1 = new GSColor(color.getValue(), 255);
         GSColor gsColor2 = new GSColor(color.getValue(), 50);
 
-        switch (renderMode.getValue()){
+        switch (renderMode.getValue()) {
             case "Both": {
                 GameSenseTessellator.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
                 GameSenseTessellator.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);

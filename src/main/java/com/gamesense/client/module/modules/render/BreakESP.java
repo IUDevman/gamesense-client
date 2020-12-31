@@ -18,6 +18,7 @@ import java.util.ArrayList;
  */
 
 public class BreakESP extends Module {
+
     public BreakESP() {
         super("BreakESP", Category.Render);
     }

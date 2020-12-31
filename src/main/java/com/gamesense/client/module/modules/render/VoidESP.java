@@ -20,7 +20,8 @@ import net.minecraft.util.math.BlockPos;
  */
 
 public class VoidESP extends Module {
-	public VoidESP(){
+
+	public VoidESP() {
 		super("VoidESP", Category.Render);
 	}
 
@@ -31,7 +32,7 @@ public class VoidESP extends Module {
 	Setting.Integer width;
 	Setting.ColorSetting color;
 
-	public void setup(){
+	public void setup() {
 		ArrayList<String> render = new ArrayList<>();
 		render.add("Outline");
 		render.add("Fill");
@@ -52,22 +53,23 @@ public class VoidESP extends Module {
 	private ConcurrentSet<BlockPos> voidHoles;
 
 	@Override
-	public void onUpdate(){
-		if (mc.player.dimension == 1){
+	public void onUpdate() {
+		if (mc.player.dimension == 1) {
 			return;
 		}
-		if (mc.player.getPosition().getY() > activeYValue.getValue()){
+		if (mc.player.getPosition().getY() > activeYValue.getValue()) {
 			return;
 		}
-		if (voidHoles == null){
+		if (voidHoles == null) {
 			voidHoles = new ConcurrentSet<>();
-		}else {
+		}
+		else {
 			voidHoles.clear();
 		}
 
 		List<BlockPos> blockPosList = BlockUtil.getCircle(getPlayerPos(), 0, renderDistance.getValue(), false);
 
-		for (BlockPos blockPos : blockPosList){
+		for (BlockPos blockPos : blockPosList) {
 			if (mc.world.getBlockState(blockPos).getBlock().equals(Blocks.BEDROCK)) {
 				continue;
 			}
@@ -78,21 +80,21 @@ public class VoidESP extends Module {
 		}
 	}
 
-	@Override
-	public void onWorldRender(RenderEvent event){
-		if (mc.player == null || voidHoles == null){
+	public void onWorldRender(RenderEvent event) {
+		if (mc.player == null || voidHoles == null) {
 			return;
 		}
-		if (mc.player.getPosition().getY() > activeYValue.getValue()){
+		if (mc.player.getPosition().getY() > activeYValue.getValue()) {
 			return;
 		}
-		if (voidHoles.isEmpty()){
+		if (voidHoles.isEmpty()) {
 			return;
 		}
 		voidHoles.forEach(blockPos -> {
-			if (renderMode.getValue().equalsIgnoreCase("Box")){
+			if (renderMode.getValue().equalsIgnoreCase("Box")) {
 				drawBox(blockPos);
-			} else {
+			}
+			else {
 				drawFlat(blockPos);
 			}
 			drawOutline(blockPos,width.getValue());

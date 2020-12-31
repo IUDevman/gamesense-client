@@ -15,7 +15,10 @@ import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 
 public class Freecam extends Module {
-	public Freecam() {super("Freecam", Category.Render);}
+
+	public Freecam() {
+		super("Freecam", Category.Render);
+	}
 
 	Setting.Boolean cancelPackets;
 	Setting.Double speed;

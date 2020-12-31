@@ -27,7 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class LogoutSpots extends Module {
-	public LogoutSpots(){
+
+	public LogoutSpots() {
 		super("LogoutSpots", Category.Render);
 	}
 
@@ -38,7 +39,7 @@ public class LogoutSpots extends Module {
 	Setting.Mode renderMode;
 	Setting.ColorSetting color;
 
-	public void setup(){
+	public void setup() {
 		ArrayList<String> renderModes = new ArrayList<>();
 		renderModes.add("Both");
 		renderModes.add("Outline");
@@ -56,34 +57,34 @@ public class LogoutSpots extends Module {
 	List<EntityPlayer> worldPlayers = new ArrayList<>();
 	Timer timer = new Timer();
 
-	public void onUpdate(){
+	public void onUpdate() {
 		mc.world.playerEntities.stream()
 				.filter(entityPlayer -> entityPlayer != mc.player)
 				.filter(entityPlayer -> entityPlayer.getDistance(mc.player) <= range.getValue())
 				.forEach(entityPlayer -> worldPlayers.add(entityPlayer));
 	}
 
-	public void onWorldRender(RenderEvent event){
-		if (mc.player != null && mc.world != null){
+	public void onWorldRender(RenderEvent event) {
+		if (mc.player != null && mc.world != null) {
 			loggedPlayers.forEach((entity, string) -> {
 				startFunction(entity, string);
 			});
 		}
 	}
 
-	public void onEnable(){
+	public void onEnable() {
 		loggedPlayers.clear();
 		worldPlayers = new ArrayList<>();
 		GameSense.EVENT_BUS.subscribe(this);
 	}
 
-	public void onDisable(){
+	public void onDisable() {
 		worldPlayers.clear();
 		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 
-	private void startFunction(Entity entity, String string){
-		if (entity.getDistance(mc.player) > range.getValue()){
+	private void startFunction(Entity entity, String string) {
+		if (entity.getDistance(mc.player) > range.getValue()) {
 			return;
 		}
 
@@ -98,7 +99,7 @@ public class LogoutSpots extends Module {
 		GlStateManager.pushMatrix();
 		GameSenseTessellator.drawNametag(entity, nameTagMessage, color.getValue(),0);
 
-		switch (renderMode.getValue()){
+		switch (renderMode.getValue()) {
 			case "Both": {
 				GameSenseTessellator.drawBoundingBox(entity.getRenderBoundingBox(), lineWidth.getValue(), color.getValue());
 				GameSenseTessellator.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
@@ -155,7 +156,7 @@ public class LogoutSpots extends Module {
 	@EventHandler
 	private final Listener<WorldEvent.Unload> unloadListener1 = new Listener<>(event -> {
 		worldPlayers.clear();
-		if (mc.player == null || mc.world == null){
+		if (mc.player == null || mc.world == null) {
 			loggedPlayers.clear();
 		}
 	});
@@ -163,7 +164,7 @@ public class LogoutSpots extends Module {
 	@EventHandler
 	private final Listener<WorldEvent.Load> unloadListener2 = new Listener<>(event -> {
 		worldPlayers.clear();
-		if (mc.player == null || mc.world == null){
+		if (mc.player == null || mc.world == null) {
 			loggedPlayers.clear();
 		}
 	});

@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HoleESP extends Module {
-	public HoleESP(){
+
+	public HoleESP() {
 		super("HoleESP", Category.Render);
 	}
 
@@ -31,7 +32,7 @@ public class HoleESP extends Module {
 	Setting.ColorSetting otherColor;
 	Setting.ColorSetting burrowColor;
 
-	public void setup(){
+	public void setup() {
 		ArrayList<String> render = new ArrayList<>();
 		render.add("Outline");
 		render.add("Fill");
@@ -60,7 +61,7 @@ public class HoleESP extends Module {
 	private ConcurrentHashMap<BlockPos, GSColor> renderHoles;
 
 	//defines the render borders
-	private final BlockPos[] surroundOffset ={
+	private final BlockPos[] surroundOffset = {
 			new BlockPos(0, -1, 0), // down
 			new BlockPos(0, 0, -1), // north
 			new BlockPos(1, 0, 0), // east
@@ -69,16 +70,16 @@ public class HoleESP extends Module {
 	};
 
 	//defines the area for the client to search
-	public List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y){
+	public List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
 		List<BlockPos> circleblocks = new ArrayList<>();
 		int cx = loc.getX();
 		int cy = loc.getY();
 		int cz = loc.getZ();
-		for (int x = cx - (int) r; x <= cx + r; x++){
-			for (int z = cz - (int) r; z <= cz + r; z++){
-				for (int y = (sphere ? cy - (int) r : cy); y < (sphere ? cy + r : cy + h); y++){
+		for (int x = cx - (int) r; x <= cx + r; x++) {
+			for (int z = cz - (int) r; z <= cz + r; z++) {
+				for (int y = (sphere ? cy - (int) r : cy); y < (sphere ? cy + r : cy + h); y++) {
 					double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
-					if (dist < r * r && !(hollow && dist < (r - 1) * (r - 1))){
+					if (dist < r * r && !(hollow && dist < (r - 1) * (r - 1))) {
 						BlockPos l = new BlockPos(x, y + plus_y, z);
 						circleblocks.add(l);
 					}
@@ -89,16 +90,16 @@ public class HoleESP extends Module {
 	}
 
 	//gets the players location
-	public static BlockPos getPlayerPos(){
+	public static BlockPos getPlayerPos() {
 		return new BlockPos(Math.floor(mc.player.posX), Math.floor(mc.player.posY), Math.floor(mc.player.posZ));
 	}
 
-	public void onUpdate(){
-		if (mc.player == null || mc.world == null){
+	public void onUpdate() {
+		if (mc.player == null || mc.world == null) {
 			return;
 		}
 
-		if (renderHoles == null){
+		if (renderHoles == null) {
 			renderHoles = new ConcurrentHashMap<>();
 		}
 		else {
@@ -108,35 +109,35 @@ public class HoleESP extends Module {
 		int range = (int) Math.ceil(rangeS.getValue());
 
 		List<BlockPos> blockPosList = getSphere(getPlayerPos(), range, range, false, true, 0);
-		for (BlockPos pos : blockPosList){
+		for (BlockPos pos : blockPosList) {
 
-			if (!mc.world.getBlockState(pos).getBlock().equals(Blocks.AIR)){
+			if (!mc.world.getBlockState(pos).getBlock().equals(Blocks.AIR)) {
 				continue;
 			}
-			if (!mc.world.getBlockState(pos.add(0, 1, 0)).getBlock().equals(Blocks.AIR)){
+			if (!mc.world.getBlockState(pos.add(0, 1, 0)).getBlock().equals(Blocks.AIR)) {
 				continue;
 			}
-			if (!mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals(Blocks.AIR)){
+			if (!mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals(Blocks.AIR)) {
 				continue;
 			}
-			if (this.hideOwn.getValue() && pos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))){
+			if (this.hideOwn.getValue() && pos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
 				continue;
 			}
 
 			boolean isSafe = true;
 			GSColor color = new GSColor(bedrockColor.getValue(), 255);
 
-			for (BlockPos offset : surroundOffset){
+			for (BlockPos offset : surroundOffset) {
 				Block block = mc.world.getBlockState(pos.add(offset)).getBlock();
-				if (block != Blocks.BEDROCK){
+				if (block != Blocks.BEDROCK) {
 					color = new GSColor(otherColor.getValue(), 255);
 				}
-				if (block != Blocks.BEDROCK && block != Blocks.OBSIDIAN && block != Blocks.ENDER_CHEST && block != Blocks.ANVIL){
+				if (block != Blocks.BEDROCK && block != Blocks.OBSIDIAN && block != Blocks.ENDER_CHEST && block != Blocks.ANVIL) {
 					isSafe = false;
 					break;
 				}
 			}
-			if (isSafe){
+			if (isSafe) {
 				renderHoles.put(pos, color);
 			}
 		}
@@ -163,8 +164,8 @@ public class HoleESP extends Module {
 		}
 	}
 
-	public void onWorldRender(RenderEvent event){
-		if (mc.player == null || mc.world == null || renderHoles == null || renderHoles.isEmpty()){
+	public void onWorldRender(RenderEvent event) {
+		if (mc.player == null || mc.world == null || renderHoles == null || renderHoles.isEmpty()) {
 			return;
 		}
 
@@ -173,8 +174,8 @@ public class HoleESP extends Module {
 		}));
 	}
 
-	private void renderHoles(BlockPos blockPos, GSColor color){
-		switch (type.getValue()){
+	private void renderHoles(BlockPos blockPos, GSColor color) {
+		switch (type.getValue()) {
 			case "Outline": {
 				renderOutline(blockPos, color);
 				break;
@@ -191,10 +192,10 @@ public class HoleESP extends Module {
 		}
 	}
 
-	private void renderFill(BlockPos blockPos, GSColor color){
+	private void renderFill(BlockPos blockPos, GSColor color) {
 		GSColor fillColor = new GSColor(color, 50);
 
-		switch (mode.getValue()){
+		switch (mode.getValue()) {
 			case "Air": {
 				if (flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
 					GameSenseTessellator.drawBox(blockPos, 1, fillColor, GeometryMasks.Quad.DOWN);
@@ -233,10 +234,10 @@ public class HoleESP extends Module {
 		}
 	}
 
-	private void renderOutline(BlockPos blockPos, GSColor color){
+	private void renderOutline(BlockPos blockPos, GSColor color) {
 		GSColor outlineColor = new GSColor(color, 255);
 
-		switch (mode.getValue()){
+		switch (mode.getValue()) {
 			case "Air": {
 				if (flatOwn.getValue() && blockPos.equals(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))) {
 					GameSenseTessellator.drawBoundingBoxWithSides(blockPos, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);

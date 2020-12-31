@@ -19,7 +19,8 @@ import java.util.ArrayList;
  */
 
 public class BlockHighlight extends Module {
-    public BlockHighlight(){
+
+    public BlockHighlight() {
         super("BlockHighlight", Category.Render);
     }
 
@@ -28,7 +29,7 @@ public class BlockHighlight extends Module {
     Setting.Mode renderLook;
     Setting.ColorSetting renderColor;
 
-    public void setup(){
+    public void setup() {
         ArrayList<String> renderLooks = new ArrayList<>();
         renderLooks.add("Block");
         renderLooks.add("Side");
@@ -46,7 +47,7 @@ public class BlockHighlight extends Module {
 
     private int lookInt;
 
-    public void onWorldRender(RenderEvent event){
+    public void onWorldRender(RenderEvent event) {
         RayTraceResult rayTraceResult = mc.objectMouseOver;
         EnumFacing enumFacing = mc.objectMouseOver.sideHit;
 
@@ -55,7 +56,7 @@ public class BlockHighlight extends Module {
 
         GSColor colorWithOpacity = new GSColor(renderColor.getValue(), 50);
 
-        switch (renderLook.getValue()){
+        switch (renderLook.getValue()) {
             case "Block" : {
                 lookInt = 0;
                 break;
@@ -92,12 +93,12 @@ public class BlockHighlight extends Module {
         }
     }
 
-    public void renderOutline(AxisAlignedBB axisAlignedBB, int width, GSColor color, EnumFacing enumFacing, int lookInt){
+    public void renderOutline(AxisAlignedBB axisAlignedBB, int width, GSColor color, EnumFacing enumFacing, int lookInt) {
 
-        if (lookInt == 0){
+        if (lookInt == 0) {
             GameSenseTessellator.drawBoundingBox(axisAlignedBB, width, color);
         }
-        else if (lookInt == 1){
+        else if (lookInt == 1) {
             GameSenseTessellator.drawBoundingBoxWithSides(axisAlignedBB, width, color, findRenderingSide(enumFacing));
         }
     }
@@ -108,32 +109,32 @@ public class BlockHighlight extends Module {
         if (lookInt == 0) {
             facing = GeometryMasks.Quad.ALL;
         }
-        else if (lookInt == 1){
+        else if (lookInt == 1) {
             facing = findRenderingSide(enumFacing);
         }
 
         GameSenseTessellator.drawBox(axisAlignedBB, true, 1, color, facing);
     }
 
-    private int findRenderingSide(EnumFacing enumFacing){
+    private int findRenderingSide(EnumFacing enumFacing) {
         int facing = 0;
 
-        if (enumFacing == EnumFacing.EAST){
+        if (enumFacing == EnumFacing.EAST) {
             facing = GeometryMasks.Quad.EAST;
         }
-        else if (enumFacing == EnumFacing.WEST){
+        else if (enumFacing == EnumFacing.WEST) {
             facing = GeometryMasks.Quad.WEST;
         }
-        else if (enumFacing == EnumFacing.NORTH){
+        else if (enumFacing == EnumFacing.NORTH) {
             facing = GeometryMasks.Quad.NORTH;
         }
-        else if (enumFacing == EnumFacing.SOUTH){
+        else if (enumFacing == EnumFacing.SOUTH) {
             facing = GeometryMasks.Quad.SOUTH;
         }
-        else if (enumFacing == EnumFacing.UP){
+        else if (enumFacing == EnumFacing.UP) {
             facing = GeometryMasks.Quad.UP;
         }
-        else if (enumFacing == EnumFacing.DOWN){
+        else if (enumFacing == EnumFacing.DOWN) {
             facing = GeometryMasks.Quad.DOWN;
         }
 

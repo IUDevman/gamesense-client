@@ -41,7 +41,7 @@ public class ESP extends Module {
     Setting.Integer range;
     Setting.ColorSetting mainColor;
 
-    public void setup(){
+    public void setup() {
         ArrayList<String> playerEsp = new ArrayList<>();
         playerEsp.add("None");
         playerEsp.add("Glowing");
@@ -71,11 +71,11 @@ public class ESP extends Module {
     GSColor containerColor;
     int opacityGradient;
 
-    public void onWorldRender(RenderEvent event){
+    public void onWorldRender(RenderEvent event) {
         mc.world.loadedEntityList.stream().filter(entity -> entity != mc.player).filter(entity -> rangeEntityCheck(entity)).forEach(entity -> {
             defineEntityColors(entity);
 
-            if ((!playerESPMode.getValue().equals("None")) && entity instanceof EntityPlayer){
+            if ((!playerESPMode.getValue().equals("None")) && entity instanceof EntityPlayer) {
 
                 // If the guy want to esp a player
                 if (!playerESPMode.getValue().equals("None")) {
@@ -100,9 +100,9 @@ public class ESP extends Module {
                 }
             }
 
-            if (!mobESPMode.getValue().equals("None")){
+            if (!mobESPMode.getValue().equals("None")) {
 
-                if (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid){
+                if (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid) {
 
                     if (mobESPMode.getValue().equals("Glowing")) {
                         entity.setGlowing(true);
@@ -119,19 +119,19 @@ public class ESP extends Module {
             }
 
 
-            if (itemRender.getValue() && entity instanceof EntityItem){
+            if (itemRender.getValue() && entity instanceof EntityItem) {
                 GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
             }
-            if (entityRender.getValue()){
+            if (entityRender.getValue()) {
                 if (entity instanceof EntityEnderPearl || entity instanceof EntityXPOrb || entity instanceof EntityExpBottle || entity instanceof EntityEnderCrystal){
                     GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
                 }
             }
-            if (glowCrystals.getValue() && entity instanceof EntityEnderCrystal){
+            if (glowCrystals.getValue() && entity instanceof EntityEnderCrystal) {
                 entity.setGlowing(true);
             }
 
-            if (!glowCrystals.getValue() && entity instanceof EntityEnderCrystal && entity.isGlowing()){
+            if (!glowCrystals.getValue() && entity instanceof EntityEnderCrystal && entity.isGlowing()) {
                 entity.setGlowing(false);
             }
         });
@@ -139,31 +139,29 @@ public class ESP extends Module {
 
         if (containerRender.getValue()) {
             mc.world.loadedTileEntityList.stream().filter(tileEntity -> rangeTileCheck(tileEntity)).forEach(tileEntity -> {
-                if (tileEntity instanceof TileEntityChest){
+                if (tileEntity instanceof TileEntityChest) {
                     containerColor = new GSColor(255, 255, 0, opacityGradient);
                     GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
-                if (tileEntity instanceof TileEntityEnderChest){
+                if (tileEntity instanceof TileEntityEnderChest) {
                     containerColor = new GSColor(180, 70, 200, opacityGradient);
                     GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
-                if (tileEntity instanceof TileEntityShulkerBox){
+                if (tileEntity instanceof TileEntityShulkerBox) {
                     containerColor = new GSColor(255, 0, 0, opacityGradient);
                     GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
-                if(tileEntity instanceof TileEntityDispenser || tileEntity instanceof TileEntityFurnace || tileEntity instanceof TileEntityHopper || tileEntity instanceof TileEntityDropper){
+                if(tileEntity instanceof TileEntityDispenser || tileEntity instanceof TileEntityFurnace || tileEntity instanceof TileEntityHopper || tileEntity instanceof TileEntityDropper) {
                     containerColor = new GSColor(150, 150, 150, opacityGradient);
                     GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
             });
         }
-
-
     }
 
-    public void onDisable(){
+    public void onDisable() {
         mc.world.loadedEntityList.stream().forEach(entity -> {
-            if ((entity instanceof EntityEnderCrystal || entity instanceof EntityPlayer || entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid) && entity.isGlowing()){
+            if ((entity instanceof EntityEnderCrystal || entity instanceof EntityPlayer || entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid) && entity.isGlowing()) {
                 entity.setGlowing(false);
             }
         });
@@ -171,11 +169,11 @@ public class ESP extends Module {
 
     private void defineEntityColors(Entity entity) {
         //should have everything covered here, mob categorizing is weird
-        if (entity instanceof EntityPlayer){
-            if (Friends.isFriend(entity.getName())){
+        if (entity instanceof EntityPlayer) {
+            if (Friends.isFriend(entity.getName())) {
                 playerColor = ColorMain.getFriendGSColor();
             }
-            else if (Enemies.isEnemy(entity.getName())){
+            else if (Enemies.isEnemy(entity.getName())) {
                 playerColor = ColorMain.getEnemyGSColor();
             }
             else {
@@ -183,17 +181,17 @@ public class ESP extends Module {
             }
         }
 
-        if (entity instanceof EntityMob){
+        if (entity instanceof EntityMob) {
             mobColor = new GSColor(255, 0, 0, opacityGradient);
         }
-        else if (entity instanceof EntityAnimal || entity instanceof EntitySquid){
+        else if (entity instanceof EntityAnimal || entity instanceof EntitySquid) {
             mobColor = new GSColor(0, 255, 0, opacityGradient);
         }
         else {
             mobColor = new GSColor(255, 165, 0, opacityGradient);
         }
 
-        if (entity instanceof EntitySlime){
+        if (entity instanceof EntitySlime) {
             mobColor = new GSColor(255, 0, 0, opacityGradient);
         }
 
@@ -205,20 +203,20 @@ public class ESP extends Module {
     //boolean range check and opacity gradient
 
     private boolean rangeEntityCheck(Entity entity) {
-        if (entity.getDistance(mc.player) > range.getValue()){
+        if (entity.getDistance(mc.player) > range.getValue()) {
             return false;
         }
 
-        if (entity.getDistance(mc.player) >= 180){
+        if (entity.getDistance(mc.player) >= 180) {
             opacityGradient = 50;
         }
-        else if (entity.getDistance(mc.player) >= 130 && entity.getDistance(mc.player) < 180){
+        else if (entity.getDistance(mc.player) >= 130 && entity.getDistance(mc.player) < 180) {
             opacityGradient = 100;
         }
-        else if (entity.getDistance(mc.player) >= 80 && entity.getDistance(mc.player) < 130){
+        else if (entity.getDistance(mc.player) >= 80 && entity.getDistance(mc.player) < 130) {
             opacityGradient = 150;
         }
-        else if (entity.getDistance(mc.player) >= 30 && entity.getDistance(mc.player) < 80){
+        else if (entity.getDistance(mc.player) >= 30 && entity.getDistance(mc.player) < 80) {
             opacityGradient = 200;
         }
         else {
@@ -230,20 +228,20 @@ public class ESP extends Module {
 
     private boolean rangeTileCheck(TileEntity tileEntity) {
         //the range value has to be squared for this
-        if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) > range.getValue() * range.getValue()){
+        if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) > range.getValue() * range.getValue()) {
             return false;
         }
 
-        if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 32400){
+        if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 32400) {
             opacityGradient = 50;
         }
-        else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 16900 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 32400){
+        else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 16900 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 32400) {
             opacityGradient = 100;
         }
-        else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 6400 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 16900){
+        else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 6400 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 16900) {
             opacityGradient = 150;
         }
-        else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 900 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 6400){
+        else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 900 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 6400) {
             opacityGradient = 200;
         }
         else {

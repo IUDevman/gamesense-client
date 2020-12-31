@@ -19,8 +19,11 @@ import java.util.ArrayList;
  * @Author NekoPvP (Item FOV)
  */
 
-public class ViewModel extends Module{
-	public ViewModel(){super("ViewModel", Category.Render);}
+public class ViewModel extends Module {
+
+	public ViewModel() {
+		super("ViewModel", Category.Render);
+	}
 
 	public Setting.Boolean cancelEating;
 	Setting.Mode type;
@@ -32,7 +35,7 @@ public class ViewModel extends Module{
 	Setting.Double zLeft;
 	Setting.Double fov;
 
-	public void setup(){
+	public void setup() {
 		ArrayList<String> types = new ArrayList<>();
 		types.add("Value");
 		types.add("FOV");

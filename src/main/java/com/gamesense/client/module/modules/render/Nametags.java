@@ -32,7 +32,8 @@ import net.minecraft.util.text.TextFormatting;
  */
 
 public class Nametags extends Module {
-	public Nametags(){
+
+	public Nametags() {
 		super("Nametags", Category.Render);
 	}
 

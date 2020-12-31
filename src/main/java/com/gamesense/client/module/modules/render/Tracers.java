@@ -17,11 +17,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 
 /**
- * Made by Hoosiers on 8/12/20, some GL from Osiris/KAMI was referenced.
+ * @author Hoosiers
+ * @since 8/12/20
+ * some GL from Osiris/KAMI was referenced.
  */
 
 public class Tracers extends Module {
-	public Tracers(){
+
+	public Tracers() {
 		super("Tracers", Category.Render);
 	}
 
@@ -32,7 +35,7 @@ public class Tracers extends Module {
 	Setting.ColorSetting midColor;
 	Setting.ColorSetting farColor;
 
-	public void setup(){
+	public void setup() {
 		renderDistance = registerInteger("Distance", "Distance", 100, 10, 260);
 
 		ArrayList<String> link = new ArrayList<>();
@@ -48,19 +51,22 @@ public class Tracers extends Module {
 
 	GSColor tracerColor;
 
-	public void onWorldRender(RenderEvent event){
+	public void onWorldRender(RenderEvent event) {
 		mc.world.loadedEntityList.stream()
 				.filter(e->e instanceof EntityPlayer)
 				.filter(e->e != mc.player)
 				.forEach(e->{
-					if (mc.player.getDistance(e) > renderDistance.getValue()){
+					if (mc.player.getDistance(e) > renderDistance.getValue()) {
 						return;
-					} else {
+					}
+					else {
 						if (Friends.isFriend(e.getName())) {
 							tracerColor = ColorMain.getFriendGSColor();
-						} else if (Enemies.isEnemy(e.getName())) {
+						}
+						else if (Enemies.isEnemy(e.getName())) {
 							tracerColor = ColorMain.getEnemyGSColor();
-						} else {
+						}
+						else {
 							if (mc.player.getDistance(e) < 20) {
 								tracerColor = nearColor.getValue();
 							}
@@ -80,7 +86,7 @@ public class Tracers extends Module {
 				});
 	}
 
-	public void drawLineToEntityPlayer(Entity e, GSColor color){
+	public void drawLineToEntityPlayer(Entity e, GSColor color) {
 		double[] xyz = interpolate(e);
 		drawLine1(xyz[0],xyz[1],xyz[2], e.height, color);
 	}
@@ -96,12 +102,13 @@ public class Tracers extends Module {
 		return then + (now - then) * mc.getRenderPartialTicks();
 	}
 
-	public void drawLine1(double posx, double posy, double posz, double up, GSColor color){
+	public void drawLine1(double posx, double posy, double posz, double up, GSColor color) {
 		Vec3d eyes=ActiveRenderInfo.getCameraPosition().add(mc.getRenderManager().viewerPosX,mc.getRenderManager().viewerPosY,mc.getRenderManager().viewerPosZ);
 		GameSenseTessellator.prepare();
 		if (pointsTo.getValue().equalsIgnoreCase("Head")) {
 			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy+up, posz, color);
-		} else {
+		}
+		else {
 			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy, posz, color);
 		}
 		GameSenseTessellator.release();

@@ -15,6 +15,7 @@ import net.minecraft.util.NonNullList;
 import java.awt.Point;
 
 public class ShulkerViewer extends Module {
+
 	public ShulkerViewer() {
 		super("ShulkerViewer", Category.Render);
 	}
