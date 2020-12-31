@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /**
  * @author linustouchtips
  * @since 12/14/2020
+ * @author Hoosiers
+ * @since 12/31/2020
  */
 
 @Mixin(RenderLivingBase.class)
