@@ -2,6 +2,7 @@ package com.gamesense.client.module.modules.hud;
 
 import java.awt.Point;
 
+import com.gamesense.client.module.HUDModule;
 import org.lwjgl.input.Keyboard;
 
 import com.gamesense.client.clickgui.GameSenseGUI;

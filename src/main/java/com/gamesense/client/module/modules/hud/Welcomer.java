@@ -5,11 +5,10 @@ import java.awt.Point;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.module.HUDModule;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
-
-import net.minecraft.client.Minecraft;
 
 // PanelStudio rewrite by lukflug
 public class Welcomer extends HUDModule {

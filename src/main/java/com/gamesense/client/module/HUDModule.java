@@ -1,4 +1,4 @@
-package com.gamesense.client.module.modules.hud;
+package com.gamesense.client.module;
 
 import java.awt.Point;
 
@@ -10,6 +10,7 @@ import com.lukflug.panelstudio.theme.Theme;
 /**
  * @author lukflug
  */
+
 public abstract class HUDModule extends Module {
 
 	protected FixedComponent component;
