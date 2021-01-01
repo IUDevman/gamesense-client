@@ -35,11 +35,11 @@ import java.util.List;
  * @Author TechAle on (remember me to insert the date)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
  * Break crystal from AutoCrystal
- * TODO: resolve the bug that the crystal does not spawn (hard solver, try to make a soft one)
- * TODO: resolve bug place even if you are up
+ * TODO: resolve the bug that the crystal does not spawn (hard solved, try to make a soft one) (next update)
+ * TODO: Make the placement can be done even 1/2 blocks up the enemy
  * TODO: Resolve the thing if you are under with rotate on
- * TODO: Testing and implementing six's idea + redstoneBlock
- * TODO: Optimize update cicle (i fell like is not efficent / is a mess)
+ * TODO: implementing six's idea + redstoneBlock (next update)
+ * TODO: Optimize update cicle (i fell like is not efficent / is a mess) (next update)
  */
 
 // Count of bugs solved: A lot
@@ -485,7 +485,7 @@ public class PistonCrystal extends Module {
             // Is it is correct
             if (mc.player.inventory.currentItem != slot_mat[step]) {
                 // Change the hand's item
-                mc.player.inventory.currentItem = step == 11 ? slot_mat[4] : slot_mat[step];
+                mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
             }
         }else return false;
 
@@ -507,9 +507,14 @@ public class PistonCrystal extends Module {
         if (rotate.getValue() || step == 1){
             BlockUtil.faceVectorPacketInstant(hitVec);
         }
+
+        EnumHand handSwing = EnumHand.MAIN_HAND;
+        if (slot_mat[step] == 11)
+            handSwing = EnumHand.OFF_HAND;
+
         // Place the block
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
+        mc.player.swingArm(handSwing);
 
         // Re-Active ca
         if (stoppedAC){
