@@ -4,13 +4,12 @@ import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import org.lwjgl.input.Mouse;
 
 public class MCF extends Module {
 
@@ -20,14 +19,14 @@ public class MCF extends Module {
 
 	@EventHandler
 	private final Listener<InputEvent.MouseInputEvent> listener = new Listener<>(event -> {
-		if (mc.objectMouseOver.typeOfHit.equals(RayTraceResult.Type.ENTITY) && mc.objectMouseOver.entityHit instanceof EntityPlayer && Mouse.getEventButton() == 2) {
+		if (mc.objectMouseOver.typeOfHit.equals(RayTraceResult.Type.ENTITY) && mc.objectMouseOver.entityHit instanceof EntityPlayer && mc.gameSettings.keyBindUseItem.isPressed()) {
 			if (Friends.isFriend(mc.objectMouseOver.entityHit.getName())) {
-				GameSense.getInstance().friends.delFriend(mc.objectMouseOver.entityHit.getName());
-				MessageBus.sendClientPrefixMessage(ChatFormatting.RED + "Removed " + mc.objectMouseOver.entityHit.getName() + " from friends list");
+				Friends.delFriend(mc.objectMouseOver.entityHit.getName());
+				MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Removed " + mc.objectMouseOver.entityHit.getName() + " from friends list");
 			}
 			else {
-				GameSense.getInstance().friends.addFriend(mc.objectMouseOver.entityHit.getName());
-				MessageBus.sendClientPrefixMessage(ChatFormatting.GREEN + "Added " + mc.objectMouseOver.entityHit.getName() + " to friends list");
+				Friends.addFriend(mc.objectMouseOver.entityHit.getName());
+				MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "Added " + mc.objectMouseOver.entityHit.getName() + " to friends list");
 			}
 		}
 	});
