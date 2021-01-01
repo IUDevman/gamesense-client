@@ -50,8 +50,8 @@ public class ClickGuiModule extends Module {
 		settingBackgroundColor = registerColor("Setting", "Setting", new GSColor(30, 30, 30, 255));
 		fontColor = registerColor("Font", "Font", new GSColor(255, 255, 255 ,255));
 		animationSpeed = registerInteger("Animation Speed", "AnimationSpeed", 200, 0, 1000);
-		scrolling=registerMode("Scrolling","ScrollingMode",models,"Screen");
-		showHUD=registerBoolean("Show HUD Panels","ShowHUD",true);
+		scrolling = registerMode("Scrolling","Scrolling",models,"Screen");
+		showHUD = registerBoolean("Show HUD Panels","ShowHudPanels",false);
 	}
 
 	/** This uses minecraft's old "super secret" shaders, which means it could be modified to be a bunch of things in the future */
