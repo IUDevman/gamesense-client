@@ -113,6 +113,7 @@ public class ModuleManager {
 		//GUI
 		addMod(new ClickGuiModule());
 		addMod(new ColorMain());
+		addMod(new HUDEditor());
 	}
 
 	public static void addMod(Module module) {

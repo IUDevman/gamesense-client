@@ -72,6 +72,7 @@ public class ClickGuiModule extends Module {
 				MessageBus.sendServerMessage(Announcer.guiMessage);
 			}
 		}
+		disable();
 	}
 
 	public void onUpdate() {

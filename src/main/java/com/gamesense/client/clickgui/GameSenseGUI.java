@@ -2,7 +2,6 @@ package com.gamesense.client.clickgui;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
@@ -28,9 +27,7 @@ import com.lukflug.panelstudio.settings.EnumComponent;
 import com.lukflug.panelstudio.settings.NumberComponent;
 import com.lukflug.panelstudio.settings.SimpleToggleable;
 import com.lukflug.panelstudio.settings.Toggleable;
-import com.lukflug.panelstudio.settings.ToggleableContainer;
 import com.lukflug.panelstudio.theme.GameSenseTheme;
-import com.lukflug.panelstudio.theme.MouseDescription;
 import com.lukflug.panelstudio.theme.SettingsColorScheme;
 import com.lukflug.panelstudio.theme.Theme;
 
@@ -61,7 +58,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				return ColorMain.colorModel.getValue().equals("HSB");
 			}
 		};
-		guiInterface=new GUIInterface(false) {
+		guiInterface=new GUIInterface(true) {
 			@Override
 			public void drawString(Point pos, String s, Color c) {
 				GLInterface.end();
@@ -89,7 +86,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				return "gamesense:gui/";
 			}
 		};
-		gui=new HUDClickGUI(guiInterface,new MouseDescription(new Point(4,0))) {
+		gui=new HUDClickGUI(guiInterface,null) {
 			@Override
 			public void handleScroll (int diff) {
 				super.handleScroll(diff);
@@ -111,7 +108,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 
 			@Override
 			public boolean isOn() {
-				return gui.isOn() && ClickGuiModule.showHUD.isOn();
+				return gui.isOn() && ClickGuiModule.showHUD.isOn() || hudEditor;
 			}
 		};
 		
@@ -123,7 +120,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 		}
 		Point pos=new Point(DISTANCE,DISTANCE);
 		for (Module.Category category: Module.Category.values()) {
-			DraggableContainer panel=new DraggableContainer(category.name(),null,theme.getPanelRenderer(),new SimpleToggleable(false),new SettingsAnimation(ClickGuiModule.animationSpeed),new Point(pos),WIDTH) {
+			DraggableContainer panel=new DraggableContainer(category.name(),null,theme.getPanelRenderer(),new SimpleToggleable(false),new SettingsAnimation(ClickGuiModule.animationSpeed),null,new Point(pos),WIDTH) {
 				@Override
 				protected int getScrollHeight (int childHeight) {
 					if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
@@ -141,12 +138,11 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 	}
 	
 	private void addModule (CollapsibleContainer panel, Module module) {
-		CollapsibleContainer container;
-		container=new ToggleableContainer(module.getName(),Integer.toString(new Random().nextInt()),theme.getContainerRenderer(),new SimpleToggleable(false),new SettingsAnimation(ClickGuiModule.animationSpeed),module);
+		CollapsibleContainer container=new CollapsibleContainer(module.getName(),null,theme.getContainerRenderer(),new SimpleToggleable(false),new SettingsAnimation(ClickGuiModule.animationSpeed),module);
 		panel.addComponent(container);
 		for (Setting property: GameSense.getInstance().settingsManager.getSettingsForMod(module)) {
 			if (property instanceof Setting.Boolean) {
-				container.addComponent(new BooleanComponent(property.getName(),"A boolean!",theme.getComponentRenderer(),(Setting.Boolean)property));
+				container.addComponent(new BooleanComponent(property.getName(),null,theme.getComponentRenderer(),(Setting.Boolean)property));
 			} else if (property instanceof Setting.Integer) {
 				container.addComponent(new NumberComponent(property.getName(),null,theme.getComponentRenderer(),(Setting.Integer)property,((Setting.Integer)property).getMin(),((Setting.Integer)property).getMax()));
 			} else if (property instanceof Setting.Double) {
