@@ -46,6 +46,7 @@ import java.util.List;
     FIX: 1) improved rotation off
          2) fixed offhand bug
          3) Fixed bug when, you have NoGlitchBlock, it stay stuck trying to break a crystal that doesnt exist (basically, another crystal)
+         4) Fixed bug if that doesnt allow you to place a block, on the other side, if you are 3 blocks away
  */
 
 // Count of bugs solved: A lot
@@ -691,8 +692,6 @@ public class PistonCrystal extends Module {
         // Our coordinates
         int[] meCord = new int[] {(int) mc.player.posX,(int) mc.player.posY,(int) mc.player.posZ};
 
-        ArrayList<Double> ignoreList = new ArrayList<>();
-
         // Iterate for every blocks around, find the closest
         for(Double[] cord_b : sur_block) {
             /// Check if there is enough space
@@ -718,14 +717,10 @@ public class PistonCrystal extends Module {
                         if ((blockPiston instanceof BlockAir || blockPiston instanceof BlockPistonBase) && someoneInCoords(pistonCord[0], pistonCord[1], pistonCord[2])){
 
                             // |I decided to separate join and enter because, else, it would be hard for fixing in case of errors|
-
-                            // if the position is right
                             boolean join =
                                     !rotate.getValue() || ((int) pistonCord[0] == meCord[0] ?
-                                            ((closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2])
-                                                    || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1) :
-                                            (int) pistonCord[2] != meCord[2] || (((closestTarget.posX > mc.player.posX) != (closestTarget.posX > pistonCord[0])
-                                                    || (Math.abs((int) closestTarget.posX - (int) mc.player.posX)) == 1) && (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1))));
+                                            (closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2]) || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1
+                                            : ((int) pistonCord[2] != meCord[2] || (((closestTarget.posX > mc.player.posX) != (closestTarget.posX > pistonCord[0]) || (Math.abs((int) closestTarget.posX - (int) mc.player.posX)) == 1) && (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1) || (pistonCord[0] > closestTarget.posX) != (meCord[0] > closestTarget.posX)))));
                             // Extended version :
                             /*
                             boolean join = false;
@@ -734,7 +729,7 @@ public class PistonCrystal extends Module {
                                 // If same X
                                 if ((int) pistonCord[0] == meCord[0]) {
                                     // If we are not in the same quarter ot the distance is 1
-                                    if ((closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2]) || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1)
+                                if ((closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2]) || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1)
                                         join = true;
                                 }else
                                 // If same z
@@ -742,7 +737,7 @@ public class PistonCrystal extends Module {
                                     // If we are not in the same quarter or the distance is 1
                                     if ((closestTarget.posX > mc.player.posX) != (closestTarget.posX > pistonCord[0]) || (Math.abs((int) closestTarget.posX - (int) mc.player.posX)) == 1)
                                         // I dunno why but i need this, else in some points it wont work
-                                        if (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1))
+                                        if (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1) || (pistonCord[0] > closestTarget.posX) != (meCord[0] > closestTarget.posX))
                                             join = true;
                                 }else join = true;
                             }else join = true;
@@ -758,25 +753,22 @@ public class PistonCrystal extends Module {
                                                 (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)));
 
                                 // Extended version
-
-
-                                // If rotate, remove the first two near
                                 /*
+                                // If rotate, remove the first two near
                                 boolean enter = false;
                                 if (!rotate.getValue())
                                     enter = true;
                                 else if ((meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ)) {
                                     if (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 2.8)
                                         enter = true;
-                                    else if (meCord[0] == (int) crystalCords[0])
-                                        if (closestTarget.posX > pistonCord[0] == closestTarget.posX > meCord[0] && (int) pistonCord[0] >= meCord[0])
+                                    else if (meCord[0] == (int) crystalCords[0]) {
                                             enter = true;
+                                    }
                                     else if (meCord[2] == (int) crystalCords[2])
-                                            if (closestTarget.posZ > pistonCord[2] == closestTarget.posZ > meCord[2] && (int) pistonCord[2] >= meCord[2])
                                                 enter = true;
                                 } else if (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)
-                                    enter = true;
-                                */
+                                    enter = true;*/
+
                                 if (enter) {
 
                                     // Check if there is enough space for the redstone torch
