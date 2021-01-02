@@ -42,6 +42,12 @@ import java.util.List;
  * TODO: Optimize update cicle (i fell like is not efficent / is a mess) (next update)
  */
 
+/*
+    FIX: 1) improved rotation off
+         2) fixed offhand bug
+         3) Fixed bug when, you have NoGlitchBlock, it stay stuck trying to break a crystal that doesnt exist (basically, another crystal)
+ */
+
 // Count of bugs solved: A lot
 
 public class PistonCrystal extends Module {
@@ -282,9 +288,17 @@ public class PistonCrystal extends Module {
                 Entity crystal = null;
                 for(Entity t : mc.world.loadedEntityList) {
                     if (t instanceof EntityEnderCrystal
-                            && ((t.posX == (int) t.posX || t.posZ == (int) t.posZ) || ((int) t.posX == (int) closestTarget.posX && (int) t.posZ == (int) closestTarget.posZ)))
+                        && (
+                        (t.posX == (int) t.posX &&
+                            ((int) ((int)(t.posX) - 0.1) == (int) closestTarget.posX || (int) ((int) (t.posX) + 0.1) == (int) closestTarget.posX) &&
+                            (int) t.posZ == (int) closestTarget.posZ)
+                        ||
+                        (t.posZ == (int) t.posZ &&
+                            ((int) ((int)(t.posZ) - 0.1) == (int) closestTarget.posZ || (int) ((int) (t.posZ) + 0.1) == (int) closestTarget.posZ) &&
+                            (int) t.posX == (int) closestTarget.posX)
+                    ))
                         crystal = t;
-                }
+                }// 234.5, 84, 170
                 if (confirmBreak.getValue() && broken && crystal == null) {
                     // Reset
                     stage = stuck = 0;
@@ -505,7 +519,12 @@ public class PistonCrystal extends Module {
 
         // For the rotation
         if (rotate.getValue() || step == 1){
-            BlockUtil.faceVectorPacketInstant(hitVec);
+            Vec3d positionHit = hitVec;
+            // if rotate
+            if (!rotate.getValue() && step == 1) {
+                positionHit = new Vec3d(mc.player.posX + offsetX, mc.player.posY, mc.player.posZ + offsetZ);
+            }
+            BlockUtil.faceVectorPacketInstant(positionHit);
         }
 
         EnumHand handSwing = EnumHand.MAIN_HAND;
@@ -732,24 +751,32 @@ public class PistonCrystal extends Module {
 
                             if (join) {
                                 // Check if the distance + position
+
                                 boolean enter = (!rotate.getValue() || (
                                         (meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ) ?
                                                 (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 3.5 || (meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2])) :
                                                 (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)));
+
                                 // Extended version
-                                /*
+
+
                                 // If rotate, remove the first two near
+                                /*
                                 boolean enter = false;
                                 if (!rotate.getValue())
                                     enter = true;
                                 else if ((meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ)) {
                                     if (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 2.8)
                                         enter = true;
-                                    else if (meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2])
-                                        enter = true;
+                                    else if (meCord[0] == (int) crystalCords[0])
+                                        if (closestTarget.posX > pistonCord[0] == closestTarget.posX > meCord[0] && (int) pistonCord[0] >= meCord[0])
+                                            enter = true;
+                                    else if (meCord[2] == (int) crystalCords[2])
+                                            if (closestTarget.posZ > pistonCord[2] == closestTarget.posZ > meCord[2] && (int) pistonCord[2] >= meCord[2])
+                                                enter = true;
                                 } else if (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)
-                                    enter = true;*/
-
+                                    enter = true;
+                                */
                                 if (enter) {
 
                                     // Check if there is enough space for the redstone torch
@@ -805,20 +832,24 @@ public class PistonCrystal extends Module {
                                         /// Calculate the offset
                                         // If horrizontaly
                                         if (disp_surblock[i][0] != 0) {
-                                            offsetX = rotate.getValue() ? disp_surblock[i][0] / 2f : disp_surblock[i][0] * 10;
+                                            offsetX = rotate.getValue() ? disp_surblock[i][0] / 2f : disp_surblock[i][0];
                                             // Check which is better for distance
-                                            if (mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] + 0.5) > mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] - 0.5))
-                                                offsetZ = -0.5f;
-                                            else
-                                                offsetZ = 0.5f;
+                                            if (rotate.getValue()) {
+                                                if (mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] + 0.5) > mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] - 0.5))
+                                                    offsetZ = -0.5f;
+                                                else
+                                                    offsetZ = 0.5f;
+                                            }else offsetZ = disp_surblock[i][2];
                                             // If vertically
                                         }else {
-                                            offsetZ = rotate.getValue() ? disp_surblock[i][2] / 2f : disp_surblock[i][2] * 10;
+                                            offsetZ = rotate.getValue() ? disp_surblock[i][2] / 2f : disp_surblock[i][2];
                                             // Check which is better for distance
-                                            if (mc.player.getDistanceSq(pistonCord[0] + 0.5, pistonCord[1], pistonCord[2]) > mc.player.getDistanceSq(pistonCord[0] - 0.5, pistonCord[1], pistonCord[2]))
-                                                offsetX = -0.5f;
-                                            else
-                                                offsetX = 0.5f;
+                                            if (rotate.getValue()) {
+                                                if (mc.player.getDistanceSq(pistonCord[0] + 0.5, pistonCord[1], pistonCord[2]) > mc.player.getDistanceSq(pistonCord[0] - 0.5, pistonCord[1], pistonCord[2]))
+                                                    offsetX = -0.5f;
+                                                else
+                                                    offsetX = 0.5f;
+                                            }else offsetX = disp_surblock[i][0];
                                         }
 
                                         // Replace
