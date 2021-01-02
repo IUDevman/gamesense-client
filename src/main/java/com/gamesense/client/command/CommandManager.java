@@ -28,6 +28,7 @@ public class CommandManager {
         addCommand(new ModulesCommand());
         addCommand(new OpenFolderCommand());
         addCommand(new PrefixCommand());
+        addCommand(new SaveConfigCommand());
         addCommand(new SetCommand());
         addCommand(new ToggleCommand());
     }
