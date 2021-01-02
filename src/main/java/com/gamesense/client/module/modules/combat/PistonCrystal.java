@@ -53,6 +53,7 @@ import java.util.List;
 // Count of bugs solved: A lot
 
 public class PistonCrystal extends Module {
+
     public PistonCrystal(){
         super("PistonCrystal", Category.Combat);
     }
@@ -80,7 +81,7 @@ public class PistonCrystal extends Module {
         rotate = registerBoolean("Rotate", "Rotate", false);
         blockPlayer = registerBoolean("Trap Player", "TrapPlayer", true);
         confirmBreak = registerBoolean("No Glitch Blocks", "NoGlitchBlocks", true);
-        enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
+        enemyRange = registerDouble("Range", "Range",4.0, 0, 6);
         blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 20);
         stuckDetector = registerInteger("Stuck Check", "StuckCheck", 35, 0, 200);
         startDelay = registerInteger("Start Delay", "StartDelay", 4, 0, 20);
@@ -115,10 +116,9 @@ public class PistonCrystal extends Module {
     Double[][] sur_block;
     private int stuck = 0;
     boolean broken, brokenCrystalBug, brokenRedstoneTorch;
-
-
     private EntityPlayer closestTarget;
     double[] coordsD;
+
     public void onEnable(){
         coordsD = new double[3];
         // Create new delay table
@@ -978,5 +978,4 @@ public class PistonCrystal extends Module {
             isSpoofingAngles = false;
         }
     }
-
 }
