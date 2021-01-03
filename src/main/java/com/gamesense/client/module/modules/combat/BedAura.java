@@ -227,19 +227,19 @@ public class BedAura extends Module {
                 }
 
                 if (mc.world.getBlockState(targetPos1.east()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1, -90, EnumFacing.DOWN);
-                    return;
-                }
-                else if (mc.world.getBlockState(targetPos1.west()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1, 90, EnumFacing.DOWN);
                     return;
                 }
+                else if (mc.world.getBlockState(targetPos1.west()).getBlock() == Blocks.AIR) {
+                    placeBedFinal(targetPos1, -90, EnumFacing.DOWN);
+                    return;
+                }
                 else if (mc.world.getBlockState(targetPos1.north()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1, 180, EnumFacing.DOWN);
+                    placeBedFinal(targetPos1, 0, EnumFacing.DOWN);
                     return;
                 }
                 else if (mc.world.getBlockState(targetPos1.south()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1, 0, EnumFacing.SOUTH);
+                    placeBedFinal(targetPos1, 180, EnumFacing.SOUTH);
                     return;
                 }
             }
