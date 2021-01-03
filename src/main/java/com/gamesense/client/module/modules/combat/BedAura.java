@@ -17,6 +17,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemBed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
@@ -70,7 +71,7 @@ public class BedAura extends Module {
         placeDelay = registerInteger("Place Delay", "PlaceDelay", 1, 0, 20);
         targetRange = registerDouble("Target Range", "TargetRange", 7, 0, 16);
         rotate = registerBoolean("Rotate", "Rotate", true);
-        disableNone = registerBoolean("Disable No Bed", "DisableNoBed", true);
+        disableNone = registerBoolean("Disable No Bed", "DisableNoBed", false);
         autoSwitch = registerBoolean("Switch", "Switch", true);
         antiSuicide = registerBoolean("Anti Suicide", "AntiSuicide", false);
         antiSuicideHealth = registerInteger("Suicide Health", "SuicideHealth", 14, 1, 36);
@@ -209,24 +210,36 @@ public class BedAura extends Module {
 
                 BlockPos targetPos1 = blockPos.up();
 
+                if (targetPos1.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ) > attackRange.getValue()) {
+                    continue;
+                }
+
+                if (mc.world.getBlockState(targetPos1).getBlock() != Blocks.AIR) {
+                    continue;
+                }
+
+                if (entityPlayer.getPosition() == targetPos1) {
+                    continue;
+                }
+
                 if (calculateDamage(targetPos1.getX(), targetPos1.getY(), targetPos1.getZ(), entityPlayer) < minDamage.getValue()) {
                     continue;
                 }
 
                 if (mc.world.getBlockState(targetPos1.east()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1);
+                    placeBedFinal(targetPos1, -90);
                     return;
                 }
                 else if (mc.world.getBlockState(targetPos1.west()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1);
+                    placeBedFinal(targetPos1, 90);
                     return;
                 }
                 else if (mc.world.getBlockState(targetPos1.north()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1);
+                    placeBedFinal(targetPos1, 180);
                     return;
                 }
                 else if (mc.world.getBlockState(targetPos1.south()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1);
+                    placeBedFinal(targetPos1, 0);
                     return;
                 }
             }
@@ -348,8 +361,6 @@ public class BedAura extends Module {
         return damage * (diff == 0 ? 0 : (diff == 2 ? 1 : (diff == 1 ? 0.5f : 1.5f)));
     }
 
-    /** end port from AutoCrystal */
-
     public static float getBlastReduction(EntityLivingBase entity, float damage, Explosion explosion) {
         if (entity instanceof EntityPlayer) {
             EntityPlayer ep = (EntityPlayer) entity;
@@ -370,6 +381,8 @@ public class BedAura extends Module {
         return damage;
     }
 
+    /** end port from AutoCrystal */
+
     private boolean canPlaceBed(BlockPos blockPos) {
         if (mc.world.getBlockState(blockPos.up()).getBlock() != Blocks.AIR) {
             return false;
@@ -387,7 +400,9 @@ public class BedAura extends Module {
     }
 
     //bon55's bedAura really helped me understand how this all works
-    private void placeBedFinal(BlockPos blockPos) {
+    private void placeBedFinal(BlockPos blockPos, int direction) {
+        mc.player.connection.sendPacket(new CPacketPlayer.Rotation(direction, 0, mc.player.onGround));
+
         for (EnumFacing enumFacing : EnumFacing.values()) {
 
             if (mc.world.getBlockState(blockPos).getBlock() != Blocks.AIR) {
