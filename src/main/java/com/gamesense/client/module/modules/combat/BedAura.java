@@ -148,6 +148,19 @@ public class BedAura extends Module {
             hasNone = true;
         }
 
+        if (mc.player.inventory.getStackInSlot(mc.player.inventory.currentItem).getItem() != Items.BED) {
+            return;
+        }
+
+        if (antiSuicide.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount()) < antiSuicideHealth.getValue()) {
+            return;
+        }
+
+        if (breakTimer.getTimePassed() / 50L >= breakDelay.getValue()) {
+            breakTimer.reset();
+            breakBed();
+        }
+
         if (hasNone) {
 
             if (disableNone.getValue()) {
@@ -158,22 +171,9 @@ public class BedAura extends Module {
             return;
         }
 
-        if (mc.player.inventory.getStackInSlot(mc.player.inventory.currentItem).getItem() != Items.BED) {
-            return;
-        }
-
-        if (antiSuicide.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount()) < antiSuicideHealth.getValue()) {
-            return;
-        }
-
-        if (placeTimer.getTimePassed() / 50L >= breakDelay.getValue()) {
+        if (placeTimer.getTimePassed() / 50L >= placeDelay.getValue()) {
             placeTimer.reset();
             placeBed();
-        }
-
-        if (breakTimer.getTimePassed() / 50L >= placeDelay.getValue()) {
-            breakTimer.reset();
-            breakBed();
         }
     }
 
@@ -405,6 +405,7 @@ public class BedAura extends Module {
 
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
             mc.playerController.processRightClickBlock(mc.player, mc.world, neighbourPos, oppositeFacing, vec3d, EnumHand.MAIN_HAND);
+            mc.player.swingArm(EnumHand.MAIN_HAND);
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             placedPos.add(blockPos);
             return;
