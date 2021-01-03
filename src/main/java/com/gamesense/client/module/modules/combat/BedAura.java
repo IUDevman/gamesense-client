@@ -227,19 +227,19 @@ public class BedAura extends Module {
                 }
 
                 if (mc.world.getBlockState(targetPos1.east()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1, -90);
+                    placeBedFinal(targetPos1, -90, EnumFacing.DOWN);
                     return;
                 }
                 else if (mc.world.getBlockState(targetPos1.west()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1, 90);
+                    placeBedFinal(targetPos1, 90, EnumFacing.DOWN);
                     return;
                 }
                 else if (mc.world.getBlockState(targetPos1.north()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1, 180);
+                    placeBedFinal(targetPos1, 180, EnumFacing.DOWN);
                     return;
                 }
                 else if (mc.world.getBlockState(targetPos1.south()).getBlock() == Blocks.AIR) {
-                    placeBedFinal(targetPos1, 0);
+                    placeBedFinal(targetPos1, 0, EnumFacing.SOUTH);
                     return;
                 }
             }
@@ -400,30 +400,26 @@ public class BedAura extends Module {
     }
 
     //bon55's bedAura really helped me understand how this all works
-    private void placeBedFinal(BlockPos blockPos, int direction) {
+    private void placeBedFinal(BlockPos blockPos, int direction, EnumFacing enumFacing) {
         mc.player.connection.sendPacket(new CPacketPlayer.Rotation(direction, 0, mc.player.onGround));
 
-        for (EnumFacing enumFacing : EnumFacing.values()) {
-
-            if (mc.world.getBlockState(blockPos).getBlock() != Blocks.AIR) {
-                return;
-            }
-
-            BlockPos neighbourPos = blockPos.offset(enumFacing);
-            EnumFacing oppositeFacing = enumFacing.getOpposite();
-
-            Vec3d vec3d = new Vec3d(neighbourPos).add(0.5, 0.5, 0.5).add(new Vec3d(oppositeFacing.getDirectionVec()).scale(0.5));
-
-            if (rotate.getValue()) {
-                BlockUtil.faceVectorPacketInstant(vec3d);
-            }
-
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
-            mc.playerController.processRightClickBlock(mc.player, mc.world, neighbourPos, oppositeFacing, vec3d, EnumHand.MAIN_HAND);
-            mc.player.swingArm(EnumHand.MAIN_HAND);
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-            placedPos.add(blockPos);
+        if (mc.world.getBlockState(blockPos).getBlock() != Blocks.AIR) {
             return;
         }
+
+        BlockPos neighbourPos = blockPos.offset(enumFacing);
+        EnumFacing oppositeFacing = enumFacing.getOpposite();
+
+        Vec3d vec3d = new Vec3d(neighbourPos).add(0.5, 0.5, 0.5).add(new Vec3d(oppositeFacing.getDirectionVec()).scale(0.5));
+
+        if (rotate.getValue()) {
+            BlockUtil.faceVectorPacketInstant(vec3d);
+        }
+
+        mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbourPos, oppositeFacing, vec3d, EnumHand.MAIN_HAND);
+        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+        placedPos.add(blockPos);
     }
 }
