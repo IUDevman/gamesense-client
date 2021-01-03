@@ -37,8 +37,6 @@ import java.util.stream.Collectors;
 /**
  * @author Hoosiers
  * @since 1/2/2020
- *
- * todo: damage calculations
  */
 
 public class BedAura extends Module {
