@@ -22,6 +22,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityBed;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -208,9 +209,9 @@ public class BedAura extends Module {
 
                 BlockPos targetPos1 = blockPos.up();
 
-                //if (calculateDamage(targetPos1.getX(), targetPos1.getY(), targetPos1.getZ(), entityPlayer) < minDamage.getValue()) {
-                    //continue;
-                //}
+                if (calculateDamage(targetPos1.getX(), targetPos1.getY(), targetPos1.getZ(), entityPlayer) < minDamage.getValue()) {
+                    continue;
+                }
 
                 if (mc.world.getBlockState(targetPos1.east()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1);
@@ -284,13 +285,12 @@ public class BedAura extends Module {
         NonNullList<EntityPlayer> targetEntities = NonNullList.create();
 
         mc.world.playerEntities.stream()
-                .filter(entityPlayer1 -> entityPlayer1 == mc.player)
+                .filter(entityPlayer1 -> entityPlayer1 != mc.player)
                 .filter(entityPlayer1 -> !entityPlayer1.isDead)
                 .filter(entityPlayer1 -> !Friends.isFriend(entityPlayer1.getName()))
                 .filter(entityPlayer1 -> entityPlayer1.getDistance(entityPlayer) <= targetRange.getValue())
+                .sorted(Comparator.comparing(entityPlayer1 -> entityPlayer1.getDistance(entityPlayer)))
                 .forEach(targetEntities::add);
-
-        targetEntities.stream().min(Comparator.comparing(entityPlayer1 -> entityPlayer1.getDistance(entityPlayer)));
 
         return targetEntities;
     }
@@ -301,10 +301,8 @@ public class BedAura extends Module {
         targetPlacePos.addAll(getSphere(mc.player.getPosition(), (float) attackRange.getValue(), (int) attackRange.getValue(), false, true, 0)
                 .stream()
                 .filter(this::canPlaceBed)
-                //.sorted(Comparator.comparing(blockPos -> 1 - (calculateDamage(blockPos.up().getX(), blockPos.up().getY(), blockPos.up().getZ(), entityPlayer))))
+                .sorted(Comparator.comparing(blockPos -> 1 - (calculateDamage(blockPos.up().getX(), blockPos.up().getY(), blockPos.up().getZ(), entityPlayer))))
                 .collect(Collectors.toList()));
-
-        targetPlacePos.stream().min(Comparator.comparing(blockPos -> blockPos.getDistance((int) entityPlayer.posX, (int) entityPlayer.posY, (int) entityPlayer.posZ)));
 
         return targetPlacePos;
     }
@@ -381,9 +379,14 @@ public class BedAura extends Module {
             return false;
         }
 
+        if (!mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(blockPos)).isEmpty()) {
+            return false;
+        }
+
         return true;
     }
 
+    //bon55's bedAura really helped me understand how this all works
     private void placeBedFinal(BlockPos blockPos) {
         for (EnumFacing enumFacing : EnumFacing.values()) {
 
