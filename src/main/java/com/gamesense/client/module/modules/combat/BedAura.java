@@ -148,10 +148,6 @@ public class BedAura extends Module {
             hasNone = true;
         }
 
-        if (mc.player.inventory.getStackInSlot(mc.player.inventory.currentItem).getItem() != Items.BED) {
-            return;
-        }
-
         if (antiSuicide.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount()) < antiSuicideHealth.getValue()) {
             return;
         }
@@ -168,6 +164,10 @@ public class BedAura extends Module {
                 return;
             }
 
+            return;
+        }
+
+        if (mc.player.inventory.getStackInSlot(mc.player.inventory.currentItem).getItem() != Items.BED) {
             return;
         }
 
