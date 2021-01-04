@@ -48,7 +48,7 @@ public class ClickGuiModule extends Module {
 		fontColor = registerColor("Font", "Font", new GSColor(255, 255, 255 ,255));
 		animationSpeed = registerInteger("Animation Speed", "AnimationSpeed", 200, 0, 1000);
 		scrolling = registerMode("Scrolling","Scrolling",models,"Screen");
-		showHUD = registerBoolean("Show HUD Panels","ShowHudPanels",false);
+		showHUD = registerBoolean("Show HUD Panels","ShowHUDPanels",false);
 	}
 
 	public void onEnable() {
