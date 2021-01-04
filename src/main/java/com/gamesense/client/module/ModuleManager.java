@@ -33,6 +33,7 @@ public class ModuleManager {
 		addMod(new AutoTotem());
 		addMod(new AutoTrap());
 		addMod(new AutoWeb());
+		addMod(new BedAura());
 		addMod(new FastBow());
 		addMod(new HoleFill());
 		addMod(new KillAura());

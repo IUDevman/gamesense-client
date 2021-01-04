@@ -39,6 +39,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
 public class GameSenseGUI extends MinecraftHUDGUI {
+
 	public static final int WIDTH=100,HEIGHT=12,DISTANCE=10,HUD_BORDER=2;
 	private final Toggleable colorToggle;
 	public final GUIInterface guiInterface;
