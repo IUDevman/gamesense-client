@@ -32,21 +32,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author TechAle on (remember me to insert the date)
+ * @Author TechAle on (04/01/21)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
  * Break crystal from AutoCrystal
  */
 
 /*
-    Added:
-        1) Support if you are above the enemy
-        2) maxYincr option
-        3) Compatiblity with redstone block
-        4) six's idea
-        5) Fast mode
-    Misc:
-        1) Now, everything it's relative on the createStructure
-        2) Merge
+    Fix: 1) Now it try to search the better position of the torch (before there was a break, ops)
+         2) Fix relative position
+
+    Misc: 1) Merge
  */
 
 // Count of bugs solved: A lot
@@ -895,28 +890,31 @@ public class PistonCrystal extends Module {
 
                                         // Check if there is enough space for the redstone torch
                                         int[] poss = null;
+                                        double minFound = Double.MAX_VALUE;
                                         for (int[] possibilites : disp_surblock) {
                                             // Check if there is a block and if we are not checking the crystal
-                                            double[] coordinatesTemp = {cord_b[0] + relativePistonCord[0] + possibilites[0], cord_b[1], cord_b[2] + relativePistonCord[2] + possibilites[2]};
+                                            double[] coordinatesTemp = {pistonCord[0] + possibilites[0], cord_b[1], pistonCord[2] + possibilites[2]};
 
                                             /* Get all values for the torch */
                                             // Torch
                                             int[] torchCoords = {(int) coordinatesTemp[0], (int) coordinatesTemp[1], (int) coordinatesTemp[2]};
                                             // Crystal
                                             int[] crystalCoords = {(int) crystalCords[0], (int) crystalCords[1], (int) crystalCords[2]};
-                                            // 219 190
+                                            // 220 189
                                             if (    /* Redstone Block cases*/
-                                                    (!redstoneBlockMode || (torchCoords[0] == (int) pistonCord[0] || torchCoords[2] == (int) pistonCord[2])) &&
+                                                    (!redstoneBlockMode &&
+                                                    mc.player.getDistanceSq(new BlockPos(torchCoords[0], torchCoords[1], torchCoords[2])) < minFound
+                                                    || (torchCoords[0] == (int) pistonCord[0] || torchCoords[2] == (int) pistonCord[2])) &&
                                                     /* Both block and torch cases */
                                                     get_block(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]) instanceof BlockAir
                                                     /* Check if the space is avaible */
                                                     && !(torchCoords[0] == crystalCoords[0] && crystalCoords[2] == torchCoords[2])
                                                     && !(torchCoords[0] == (int) pistonCord[0] && torchCoords[2] == (int) pistonCord[2])
                                                     /* Check if there is someone */
-                                                    && someoneInCoords(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2])) {
+                                                    && (someoneInCoords(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]))) {
                                                 // We can exit
                                                 poss = possibilites;
-                                                break;
+                                                minFound = mc.player.getDistanceSq(new BlockPos(torchCoords[0], torchCoords[1], torchCoords[2]));
                                             }
                                         }
                                         if (poss != null) {
@@ -928,6 +926,7 @@ public class PistonCrystal extends Module {
                                                     // Check for the redstone block
                                                     if (get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1] - 1, crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir) {
                                                         relativePistonCord = new int[] {crystalRelativeCords[0] * 3, crystalRelativeCords[1], crystalRelativeCords[2] * 3};
+                                                        pistonCord = new double[] {crystalCords[0] + relativePistonCord[0], crystalCords[1], crystalCords[2] + relativePistonCord[2]};
                                                         poss = new int[] {0, -1, 0};
                                                         fastModeActive = true;
                                                     }
@@ -941,14 +940,14 @@ public class PistonCrystal extends Module {
 
                                             /// First of all, lets check for the support's blocks
                                             // Check for the piston If under there is nothing
-                                            if (!fastModeActive && get_block(cord_b[0] + relativePistonCord[0], cord_b[1] + incr - 1, cord_b[2] + relativePistonCord[2]) instanceof BlockAir) {
+                                            if (!fastModeActive && get_block(pistonCord[0], cord_b[1] + incr - 1, pistonCord[2]) instanceof BlockAir) {
                                                 // Add a block
                                                 toPlaceTemp.add(new Vec3d(relativePistonCord[0], disp_surblock[i][1] + incr - 1, relativePistonCord[2]));
                                                 supportBlock++;
                                             }
                                             // -219 190
                                             // Check for the redstone torch If under there is nothing
-                                            if (!fastModeActive && get_block(cord_b[0] + relativePistonCord[0] + poss[0], cord_b[1] + incr - 1, cord_b[2] + relativePistonCord[2] + poss[2]) instanceof BlockAir) {
+                                            if (!fastModeActive && get_block(pistonCord[0] + poss[0], cord_b[1] + incr - 1, pistonCord[2] + poss[2]) instanceof BlockAir) {
                                                 // Add a block
                                                 toPlaceTemp.add(new Vec3d(relativePistonCord[0] + poss[0], relativePistonCord[1] + incr - 1, relativePistonCord[2] + poss[2]));
                                                 supportBlock++;
