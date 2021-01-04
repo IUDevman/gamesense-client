@@ -29,7 +29,7 @@ public class GameSense {
 
 	public static final String MODNAME = "GameSense";
 	public static final String MODID = "gamesense";
-	public static final String MODVER = "dev2.2.5";
+	public static final String MODVER = "v2.2.5";
 
 	public static final Logger LOGGER = LogManager.getLogger(MODNAME);
 	public static final EventBus EVENT_BUS = new EventManager();
