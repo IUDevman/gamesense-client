@@ -38,10 +38,8 @@ import java.util.List;
  */
 
 /*
-    Fix: 1) Now it try to search the better position of the torch (before there was a break, ops)
-         2) Fix relative position
-
-    Misc: 1) Merge
+    Fix: 1) Redstone block that try to act like a redstone torch
+         2) Fast Mode missing check
  */
 
 // Count of bugs solved: A lot
@@ -76,14 +74,14 @@ public class PistonCrystal extends Module {
         breakTypes.add("Swing");
         breakTypes.add("Packet");
         breakType = registerMode("Type", "Type", breakTypes, "Swing");
-        enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
+        enemyRange = registerDouble("Range", "Range",4.9, 0, 6);
         blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 20);
-        stuckDetector = registerInteger("Stuck Check", "StuckCheck", 35, 0, 200);
         startDelay = registerInteger("Start Delay", "StartDelay", 4, 0, 20);
-        supBlocksDelay = registerInteger("Surround Delay", "SurroundDelay", 4, 0, 20);
+        stuckDetector = registerInteger("Stuck Check", "StuckCheck", 35, 0, 200);
         pistonDelay = registerInteger("Piston Delay", "PistonDelay", 2, 0, 20);
         crystalDelay = registerInteger("Crystal Delay", "Crystal Delay", 2, 0, 20);
         hitDelay = registerInteger("Hit Delay", "HitDelay", 2, 0, 20);
+        supBlocksDelay = registerInteger("Surround Delay", "SurroundDelay", 4, 0, 20);
         maxYincr = registerInteger("max Y incr", "maxYincr", 3, 0, 5);
         rotate = registerBoolean("Rotate", "Rotate", false);
         blockPlayer = registerBoolean("Trap Player", "TrapPlayer", true);
@@ -761,7 +759,7 @@ public class PistonCrystal extends Module {
         // Our coordinates
         int[] meCord = new int[] {(int) mc.player.posX,(int) mc.player.posY,(int) mc.player.posZ};
         // If we are 2 blocks under the enemy, dont allow to enter
-        if (meCord[1] - closestTarget.posY >= -1 && meCord[1] - closestTarget.posY <= maxYincr.getValue()) {
+        if (meCord[1] - closestTarget.posY > -1 && meCord[1] - closestTarget.posY <= maxYincr.getValue()) {
             /// Add the blocks that are going to support
             // If we are at an yLevel that is higher then the yLevel of the enemy
             int incr = 0;
@@ -902,11 +900,13 @@ public class PistonCrystal extends Module {
                                             int[] crystalCoords = {(int) crystalCords[0], (int) crystalCords[1], (int) crystalCords[2]};
                                             // 220 189
                                             if (    /* Redstone Block cases*/
-                                                    (!redstoneBlockMode &&
-                                                    mc.player.getDistanceSq(new BlockPos(torchCoords[0], torchCoords[1], torchCoords[2])) < minFound
-                                                    || (torchCoords[0] == (int) pistonCord[0] || torchCoords[2] == (int) pistonCord[2])) &&
+                                                    (!redstoneBlockMode
+                                                        || ((crystalRelativeCords[0] - relativePistonCord[0] != 0 && possibilites[0] != 0)
+                                                        || (crystalRelativeCords[2] - relativePistonCord[2] != 0 && possibilites[2] != 0))
+                                                    )
+                                                    && mc.player.getDistanceSq(new BlockPos(torchCoords[0], torchCoords[1], torchCoords[2])) < minFound
                                                     /* Both block and torch cases */
-                                                    get_block(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]) instanceof BlockAir
+                                                    && get_block(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]) instanceof BlockAir
                                                     /* Check if the space is avaible */
                                                     && !(torchCoords[0] == crystalCoords[0] && crystalCoords[2] == torchCoords[2])
                                                     && !(torchCoords[0] == (int) pistonCord[0] && torchCoords[2] == (int) pistonCord[2])
@@ -922,7 +922,8 @@ public class PistonCrystal extends Module {
                                             if (redstoneBlockMode && allowFastMode.getValue()) {
                                                 /// Lets see if it's possible
                                                 // Check for the redstone block
-                                                if (get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1], crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir) {
+                                                if (get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1], crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir
+                                                    && get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1] - 1, crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir) {
                                                     // Check for the redstone block
                                                     if (get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1] - 1, crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir) {
                                                         relativePistonCord = new int[] {crystalRelativeCords[0] * 3, crystalRelativeCords[1], crystalRelativeCords[2] * 3};
