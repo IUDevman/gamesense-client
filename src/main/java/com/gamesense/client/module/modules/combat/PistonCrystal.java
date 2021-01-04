@@ -38,8 +38,7 @@ import java.util.List;
  */
 
 /*
-    Fix: 1) Redstone block that try to act like a redstone torch
-         2) Fast Mode missing check
+    Fix: 1) Now the torch wont be placed in front of the piston
  */
 
 // Count of bugs solved: A lot
@@ -911,7 +910,11 @@ public class PistonCrystal extends Module {
                                                     && !(torchCoords[0] == crystalCoords[0] && crystalCoords[2] == torchCoords[2])
                                                     && !(torchCoords[0] == (int) pistonCord[0] && torchCoords[2] == (int) pistonCord[2])
                                                     /* Check if there is someone */
-                                                    && (someoneInCoords(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]))) {
+                                                    && (someoneInCoords(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]))
+                                                    /* If we are placing the torch in front of the piston*/
+                                                    && ( possibilites[0] == (int) (pistonCord[0] - closestTarget.posX)
+                                                        || possibilites[2] == (int) (pistonCord[2] - closestTarget.posZ) )
+                                                    ) {
                                                 // We can exit
                                                 poss = possibilites;
                                                 minFound = mc.player.getDistanceSq(new BlockPos(torchCoords[0], torchCoords[1], torchCoords[2]));
