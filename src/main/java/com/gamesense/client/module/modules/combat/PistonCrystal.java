@@ -66,9 +66,7 @@ public class PistonCrystal extends Module {
     Setting.Boolean antiWeakness;
     Setting.Boolean chatMsg;
 
-
     public void setup(){
-
         ArrayList<String> breakTypes = new ArrayList<>();
         breakTypes.add("Swing");
         breakTypes.add("Packet");
@@ -81,7 +79,7 @@ public class PistonCrystal extends Module {
         crystalDelay = registerInteger("Crystal Delay", "Crystal Delay", 2, 0, 20);
         hitDelay = registerInteger("Hit Delay", "HitDelay", 2, 0, 20);
         supBlocksDelay = registerInteger("Surround Delay", "SurroundDelay", 4, 0, 20);
-        maxYincr = registerInteger("max Y incr", "maxYincr", 3, 0, 5);
+        maxYincr = registerInteger("Max Y", "MaxY", 3, 0, 5);
         rotate = registerBoolean("Rotate", "Rotate", false);
         blockPlayer = registerBoolean("Trap Player", "TrapPlayer", true);
         confirmBreak = registerBoolean("No Glitch Break", "NoGlitchBreak", true);
@@ -158,7 +156,7 @@ public class PistonCrystal extends Module {
 
         if (chatMsg.getValue()){
             if (yUnder) {
-                printChat(String.format("Sorry but you cannot be under 2+ blocks the enemy or %d above... PistonCrystal turned OFF!", maxYincr.getValue()), true);
+                printChat(String.format("Sorry but you cannot be 2+ blocks under the enemy or %d above... PistonCrystal turned OFF!", maxYincr.getValue()), true);
             }else if (noMaterials){
                 printChat("No Materials Detected... PistonCrystal turned OFF!", true);
             }else if (!isHole) {
@@ -166,7 +164,7 @@ public class PistonCrystal extends Module {
             }else if(!enoughSpace) {
                 printChat("Not enough space... PistonCrystal turned OFF!", true);
             }else if(hasMoved) {
-                printChat("He moved away from the hole... PistonCrystal turned OFF!", true);
+                printChat("Out of range... PistonCrystal turned OFF!", true);
             }
             else {
                 printChat("PystonCrystal turned OFF!", true);
