@@ -7,7 +7,6 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.Announcer;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 
@@ -32,7 +31,6 @@ public class ClickGuiModule extends Module {
 	public static Setting.ColorSetting settingBackgroundColor;
 	public static Setting.ColorSetting fontColor;
 	public static Setting.Integer animationSpeed;
-	Setting.Boolean backgroundBlur;
 	public static Setting.Mode scrolling;
 	public static Setting.Boolean showHUD;
 
@@ -41,7 +39,6 @@ public class ClickGuiModule extends Module {
 		models.add("Screen");
 		models.add("Container");
 
-		backgroundBlur = registerBoolean("Blur", "Blur", false);
 		opacity = registerInteger("Opacity", "Opacity", 150,50,255);
 		scrollSpeed = registerInteger("Scroll Speed", "ScrollSpeed", 10, 1, 20);
 		outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
@@ -54,15 +51,8 @@ public class ClickGuiModule extends Module {
 		showHUD = registerBoolean("Show HUD Panels","ShowHudPanels",false);
 	}
 
-	/** This uses minecraft's old "super secret" shaders, which means it could be modified to be a bunch of things in the future */
-	private ResourceLocation shader = new ResourceLocation("minecraft", "shaders/post/blur" + ".json");
-
 	public void onEnable() {
 		GameSense.getInstance().gameSenseGUI.enterGUI();
-
-		if (backgroundBlur.getValue()) {
-			mc.entityRenderer.loadShader(shader);
-		}
 
 		if(((Announcer) ModuleManager.getModuleByName("Announcer")).clickGui.getValue() && ModuleManager.isModuleEnabled("Announcer") && mc.player != null) {
 			if (((Announcer) ModuleManager.getModuleByName("Announcer")).clientSide.getValue()) {
@@ -73,25 +63,5 @@ public class ClickGuiModule extends Module {
 			}
 		}
 		disable();
-	}
-
-	public void onUpdate() {
-		if (backgroundBlur.getValue() && !mc.entityRenderer.isShaderActive()) {
-			mc.entityRenderer.loadShader(shader);
-		}
-
-		if (!backgroundBlur.getValue() && mc.entityRenderer.isShaderActive()) {
-			mc.entityRenderer.stopUseShader();
-		}
-
-		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-			this.disable();
-		}
-	}
-
-	public void onDisable() {
-		if (mc.entityRenderer.isShaderActive()) {
-			mc.entityRenderer.stopUseShader();
-		}
 	}
 }
