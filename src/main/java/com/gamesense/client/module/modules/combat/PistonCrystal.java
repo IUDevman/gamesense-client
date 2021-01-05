@@ -27,6 +27,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ import java.util.List;
  */
 
 /*
-    Fix: 1) Now the torch wont be placed in front of the piston
+    Added try catch + output errors for java.lang.IllegalAccessError error
  */
 
 // Count of bugs solved: A lot
@@ -756,83 +758,83 @@ public class PistonCrystal extends Module {
         // Our coordinates
         int[] meCord = new int[] {(int) mc.player.posX,(int) mc.player.posY,(int) mc.player.posZ};
         // If we are 2 blocks under the enemy, dont allow to enter
-        if (meCord[1] - closestTarget.posY > -1 && meCord[1] - closestTarget.posY <= maxYincr.getValue()) {
-            /// Add the blocks that are going to support
-            // If we are at an yLevel that is higher then the yLevel of the enemy
-            int incr = 0;
-            List<Vec3d> highSup = new ArrayList<Vec3d>();
-            while (meCord[1] > (int) closestTarget.posY + incr + 1) {
+        try {
+            if (meCord[1] - closestTarget.posY > -1 && meCord[1] - closestTarget.posY <= maxYincr.getValue()) {
+                /// Add the blocks that are going to support
+                // If we are at an yLevel that is higher then the yLevel of the enemy
+                int incr = 0;
+                List<Vec3d> highSup = new ArrayList<Vec3d>();
+                while (meCord[1] > (int) closestTarget.posY + incr + 1) {
+                    incr++;
+                    for (int[] cordSupport : disp_surblock)
+                        highSup.add(new Vec3d(cordSupport[0], incr, cordSupport[2]));
+                }
                 incr++;
-                for(int[] cordSupport : disp_surblock)
-                    highSup.add(new Vec3d(cordSupport[0], incr, cordSupport[2]));
-            }
-            incr++;
 
-            // Iterate for every blocks around, find the closest
-            for (Double[] cord_b : sur_block) {
+                // Iterate for every blocks around, find the closest
+                for (Double[] cord_b : sur_block) {
 
-                /// Check if there is enough space
-                // Cord block we are checking
-                double[] crystalCords = {cord_b[0], cord_b[1] + incr, cord_b[2]};
-                BlockPos positionCrystal = new BlockPos(crystalCords[0], crystalCords[1], crystalCords[2]);
-                int[] crystalRelativeCords = disp_surblock[i];
-                // Check if we are enough near him
-                if ((distance_now = mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2])) < addedStructure.distance) {
-                    // if there is enough space (3 in total: 1 for the crystal, 1 for the piston and 1 for the redstoneTorch)
-                    if ((positionCrystal.y != meCord[1]) || /* we have to check the y level. if it's the same, we have to check */
-                            (meCord[0] != positionCrystal.x || Math.abs(meCord[2] - positionCrystal.z) > 3 || meCord[2] != positionCrystal.z && /* if we are at the same x/z level. If yes*/
-                             meCord[2] != positionCrystal.z || Math.abs(meCord[0] - positionCrystal.x) > 3)){
-                        /* check if there is enough space  for the crystal*/
-                        // Up to 1
-                        cord_b[1] += incr;
-                        // Check for the position of the crystal (it must be air)
-                        if (get_block(crystalCords[0], crystalCords[1], crystalCords[2]) instanceof BlockAir && get_block(crystalCords[0], crystalCords[1] + 1, crystalCords[2]) instanceof BlockAir) {
-                            /// if yes, lets check for the piston
-                            double[] pistonCord = new double[3];
-                            int[] relativePistonCord = new int[3];
-                            // If we are using redstoneBlock or we dont want the perfect place
-                            if (redstoneBlockMode || !betterPlacement.getValue()){
-                                pistonCord = new double[]{crystalCords[0] + disp_surblock[i][0], crystalCords[1], crystalCords[2] + disp_surblock[i][2]};
-                                relativePistonCord = new int[] {crystalRelativeCords[0]*2, 0,crystalRelativeCords[2]*2};
-                            }
-                            else {
-                                // Else, try taking from the distance
-                                double distancePist = Double.MAX_VALUE;
-                                for(int[] disp : disp_surblock) {
-                                    // Get the block
-                                    BlockPos blockPiston = new BlockPos(crystalCords[0] + disp[0], crystalCords[1], crystalCords[2] + disp[2]);
-                                    Block getBlockState = get_block(crystalCords[0] + disp[0], crystalCords[1], crystalCords[2] + disp[2]);
-                                    // Checks
+                    /// Check if there is enough space
+                    // Cord block we are checking
+                    double[] crystalCords = {cord_b[0], cord_b[1] + incr, cord_b[2]};
+                    BlockPos positionCrystal = new BlockPos(crystalCords[0], crystalCords[1], crystalCords[2]);
+                    int[] crystalRelativeCords = disp_surblock[i];
+                    // Check if we are enough near him
+                    if ((distance_now = mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2])) < addedStructure.distance) {
+                        // if there is enough space (3 in total: 1 for the crystal, 1 for the piston and 1 for the redstoneTorch)
+                        if ((positionCrystal.y != meCord[1]) || /* we have to check the y level. if it's the same, we have to check */
+                                (meCord[0] != positionCrystal.x || Math.abs(meCord[2] - positionCrystal.z) > 3 || meCord[2] != positionCrystal.z && /* if we are at the same x/z level. If yes*/
+                                        meCord[2] != positionCrystal.z || Math.abs(meCord[0] - positionCrystal.x) > 3)) {
+                            /* check if there is enough space  for the crystal*/
+                            // Up to 1
+                            cord_b[1] += incr;
+                            // Check for the position of the crystal (it must be air)
+                            if (get_block(crystalCords[0], crystalCords[1], crystalCords[2]) instanceof BlockAir && get_block(crystalCords[0], crystalCords[1] + 1, crystalCords[2]) instanceof BlockAir) {
+                                /// if yes, lets check for the piston
+                                double[] pistonCord = new double[3];
+                                int[] relativePistonCord = new int[3];
+                                // If we are using redstoneBlock or we dont want the perfect place
+                                if (redstoneBlockMode || !betterPlacement.getValue()) {
+                                    pistonCord = new double[]{crystalCords[0] + disp_surblock[i][0], crystalCords[1], crystalCords[2] + disp_surblock[i][2]};
+                                    relativePistonCord = new int[]{crystalRelativeCords[0] * 2, 0, crystalRelativeCords[2] * 2};
+                                } else {
+                                    // Else, try taking from the distance
+                                    double distancePist = Double.MAX_VALUE;
+                                    for (int[] disp : disp_surblock) {
+                                        // Get the block
+                                        BlockPos blockPiston = new BlockPos(crystalCords[0] + disp[0], crystalCords[1], crystalCords[2] + disp[2]);
+                                        Block getBlockState = get_block(crystalCords[0] + disp[0], crystalCords[1], crystalCords[2] + disp[2]);
+                                        // Checks
                                         /* Min distance */
-                                    if (mc.player.getDistanceSq(blockPiston) < distancePist &&
-                                        // It's or air or pisotn
-                                        (getBlockState instanceof BlockAir || getBlockState instanceof BlockPistonBase)
-                                            // There is not anyone
-                                        && someoneInCoords(crystalCords[0] + disp[0], crystalCords[1], crystalCords[2] + disp[2])) {
-                                        // In front of the piston, there should be must to be air
-                                        if (get_block(crystalCords[0] + disp[0] + (crystalRelativeCords[0] == 0 ? 0 : - crystalRelativeCords[0]), crystalCords[1], crystalCords[2] + disp[2] + + (crystalRelativeCords[2] == 0 ? 0 : - crystalRelativeCords[2])) instanceof BlockAir) {
-                                            // New distance
-                                            distancePist = mc.player.getDistanceSq(blockPiston);
-                                            // New coords
-                                            pistonCord = new double[]{crystalCords[0] + disp[0], crystalCords[1], crystalCords[2] + disp[2]};
-                                            relativePistonCord = new int[]{crystalRelativeCords[0] + disp[0], 0, crystalRelativeCords[2] + disp[2]};
-                                            System.out.print("");
+                                        if (mc.player.getDistanceSq(blockPiston) < distancePist &&
+                                                // It's or air or pisotn
+                                                (getBlockState instanceof BlockAir || getBlockState instanceof BlockPistonBase)
+                                                // There is not anyone
+                                                && someoneInCoords(crystalCords[0] + disp[0], crystalCords[1], crystalCords[2] + disp[2])) {
+                                            // In front of the piston, there should be must to be air
+                                            if (get_block(crystalCords[0] + disp[0] + (crystalRelativeCords[0] == 0 ? 0 : -crystalRelativeCords[0]), crystalCords[1], crystalCords[2] + disp[2] + +(crystalRelativeCords[2] == 0 ? 0 : -crystalRelativeCords[2])) instanceof BlockAir) {
+                                                // New distance
+                                                distancePist = mc.player.getDistanceSq(blockPiston);
+                                                // New coords
+                                                pistonCord = new double[]{crystalCords[0] + disp[0], crystalCords[1], crystalCords[2] + disp[2]};
+                                                relativePistonCord = new int[]{crystalRelativeCords[0] + disp[0], 0, crystalRelativeCords[2] + disp[2]};
+                                                System.out.print("");
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            // Get coordinates of the piston
-                            Block blockPiston = get_block(pistonCord[0], pistonCord[1], pistonCord[2]);
-                            // Check if it's possible to place a block and if someone is in that block
-                            if ((blockPiston instanceof BlockAir || blockPiston instanceof BlockPistonBase) && someoneInCoords(pistonCord[0], pistonCord[1], pistonCord[2])) {
+                                // Get coordinates of the piston
+                                Block blockPiston = get_block(pistonCord[0], pistonCord[1], pistonCord[2]);
+                                // Check if it's possible to place a block and if someone is in that block
+                                if ((blockPiston instanceof BlockAir || blockPiston instanceof BlockPistonBase) && someoneInCoords(pistonCord[0], pistonCord[1], pistonCord[2])) {
 
-                                // |I decided to separate join and enter because, else, it would be hard for fixing in case of errors|
-                                boolean join =
-                                        !rotate.getValue() || ((int) pistonCord[0] == meCord[0] ?
-                                                (closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2]) || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1
-                                                : ((int) pistonCord[2] != meCord[2] || (((closestTarget.posX > mc.player.posX) != (closestTarget.posX > pistonCord[0]) || (Math.abs((int) closestTarget.posX - (int) mc.player.posX)) == 1) && (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1) || (pistonCord[0] > closestTarget.posX) != (meCord[0] > closestTarget.posX)))));
-                                // Extended version :
+                                    // |I decided to separate join and enter because, else, it would be hard for fixing in case of errors|
+                                    boolean join =
+                                            !rotate.getValue() || ((int) pistonCord[0] == meCord[0] ?
+                                                    (closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2]) || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1
+                                                    : ((int) pistonCord[2] != meCord[2] || (((closestTarget.posX > mc.player.posX) != (closestTarget.posX > pistonCord[0]) || (Math.abs((int) closestTarget.posX - (int) mc.player.posX)) == 1) && (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1) || (pistonCord[0] > closestTarget.posX) != (meCord[0] > closestTarget.posX)))));
+                                    // Extended version :
                                 /*
                             boolean join = false;
                             // If rotate
@@ -855,15 +857,15 @@ public class PistonCrystal extends Module {
                             */
 
 
-                                if (join) {
-                                    // Check if the distance + position
+                                    if (join) {
+                                        // Check if the distance + position
 
-                                    boolean enter = (!rotate.getValue() || (
-                                            (meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ) ?
-                                                    (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 3.5 || (meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2])) :
-                                                    (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)));
+                                        boolean enter = (!rotate.getValue() || (
+                                                (meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ) ?
+                                                        (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 3.5 || (meCord[0] == (int) crystalCords[0] || meCord[2] == (int) crystalCords[2])) :
+                                                        (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)));
 
-                                    // Extended version
+                                        // Extended version
                                     /*
                                     // If rotate, remove the first two near
                                     boolean enter = false;
@@ -880,127 +882,129 @@ public class PistonCrystal extends Module {
                                     } else if (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)
                                         enter = true;*/
 
-                                    if (enter) {
+                                        if (enter) {
 
 
-                                        // Check if there is enough space for the redstone torch
-                                        int[] poss = null;
-                                        double minFound = Double.MAX_VALUE;
-                                        for (int[] possibilites : disp_surblock) {
-                                            // Check if there is a block and if we are not checking the crystal
-                                            double[] coordinatesTemp = {pistonCord[0] + possibilites[0], cord_b[1], pistonCord[2] + possibilites[2]};
+                                            // Check if there is enough space for the redstone torch
+                                            int[] poss = null;
+                                            double minFound = Double.MAX_VALUE;
+                                            for (int[] possibilites : disp_surblock) {
+                                                // Check if there is a block and if we are not checking the crystal
+                                                double[] coordinatesTemp = {pistonCord[0] + possibilites[0], cord_b[1], pistonCord[2] + possibilites[2]};
 
-                                            /* Get all values for the torch */
-                                            // Torch
-                                            int[] torchCoords = {(int) coordinatesTemp[0], (int) coordinatesTemp[1], (int) coordinatesTemp[2]};
-                                            // Crystal
-                                            int[] crystalCoords = {(int) crystalCords[0], (int) crystalCords[1], (int) crystalCords[2]};
-                                            // 220 189
-                                            if (    /* Redstone Block cases*/
-                                                    (!redstoneBlockMode
-                                                        || ((crystalRelativeCords[0] - relativePistonCord[0] != 0 && possibilites[0] != 0)
-                                                        || (crystalRelativeCords[2] - relativePistonCord[2] != 0 && possibilites[2] != 0))
-                                                    )
-                                                    && mc.player.getDistanceSq(new BlockPos(torchCoords[0], torchCoords[1], torchCoords[2])) < minFound
-                                                    /* Both block and torch cases */
-                                                    && get_block(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]) instanceof BlockAir
-                                                    /* Check if the space is avaible */
-                                                    && !(torchCoords[0] == crystalCoords[0] && crystalCoords[2] == torchCoords[2])
-                                                    && !(torchCoords[0] == (int) pistonCord[0] && torchCoords[2] == (int) pistonCord[2])
-                                                    /* Check if there is someone */
-                                                    && (someoneInCoords(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]))
-                                                    /* If we are placing the torch in front of the piston*/
-                                                    && ( possibilites[0] == (int) (pistonCord[0] - closestTarget.posX)
-                                                        || possibilites[2] == (int) (pistonCord[2] - closestTarget.posZ) )
-                                                    ) {
-                                                // We can exit
-                                                poss = possibilites;
-                                                minFound = mc.player.getDistanceSq(new BlockPos(torchCoords[0], torchCoords[1], torchCoords[2]));
+                                                /* Get all values for the torch */
+                                                // Torch
+                                                int[] torchCoords = {(int) coordinatesTemp[0], (int) coordinatesTemp[1], (int) coordinatesTemp[2]};
+                                                // Crystal
+                                                int[] crystalCoords = {(int) crystalCords[0], (int) crystalCords[1], (int) crystalCords[2]};
+                                                // 220 189
+                                                if (    /* Redstone Block cases*/
+                                                        (!redstoneBlockMode
+                                                                || ((crystalRelativeCords[0] - relativePistonCord[0] != 0 && possibilites[0] != 0)
+                                                                || (crystalRelativeCords[2] - relativePistonCord[2] != 0 && possibilites[2] != 0))
+                                                        )
+                                                                && mc.player.getDistanceSq(new BlockPos(torchCoords[0], torchCoords[1], torchCoords[2])) < minFound
+                                                                /* Both block and torch cases */
+                                                                && get_block(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]) instanceof BlockAir
+                                                                /* Check if the space is avaible */
+                                                                && !(torchCoords[0] == crystalCoords[0] && crystalCoords[2] == torchCoords[2])
+                                                                && !(torchCoords[0] == (int) pistonCord[0] && torchCoords[2] == (int) pistonCord[2])
+                                                                /* Check if there is someone */
+                                                                && (someoneInCoords(coordinatesTemp[0], coordinatesTemp[1], coordinatesTemp[2]))
+                                                                /* If we are placing the torch in front of the piston*/
+                                                                && (possibilites[0] == (int) (pistonCord[0] - closestTarget.posX)
+                                                                || possibilites[2] == (int) (pistonCord[2] - closestTarget.posZ))
+                                                ) {
+                                                    // We can exit
+                                                    poss = possibilites;
+                                                    minFound = mc.player.getDistanceSq(new BlockPos(torchCoords[0], torchCoords[1], torchCoords[2]));
+                                                }
                                             }
-                                        }
-                                        if (poss != null) {
-                                            // Lets see if the fast mode is enabled
-                                            if (redstoneBlockMode && allowFastMode.getValue()) {
-                                                /// Lets see if it's possible
-                                                // Check for the redstone block
-                                                if (get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1], crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir
-                                                    && get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1] - 1, crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir) {
+                                            if (poss != null) {
+                                                // Lets see if the fast mode is enabled
+                                                if (redstoneBlockMode && allowFastMode.getValue()) {
+                                                    /// Lets see if it's possible
                                                     // Check for the redstone block
-                                                    if (get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1] - 1, crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir) {
-                                                        relativePistonCord = new int[] {crystalRelativeCords[0] * 3, crystalRelativeCords[1], crystalRelativeCords[2] * 3};
-                                                        pistonCord = new double[] {crystalCords[0] + relativePistonCord[0], crystalCords[1], crystalCords[2] + relativePistonCord[2]};
-                                                        poss = new int[] {0, -1, 0};
-                                                        fastModeActive = true;
+                                                    if (get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1], crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir
+                                                            && get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1] - 1, crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir) {
+                                                        // Check for the redstone block
+                                                        if (get_block(crystalCords[0] + crystalRelativeCords[0] * 3, crystalCords[1] - 1, crystalCords[2] + crystalRelativeCords[2] * 3) instanceof BlockAir) {
+                                                            relativePistonCord = new int[]{crystalRelativeCords[0] * 3, crystalRelativeCords[1], crystalRelativeCords[2] * 3};
+                                                            pistonCord = new double[]{crystalCords[0] + relativePistonCord[0], crystalCords[1], crystalCords[2] + relativePistonCord[2]};
+                                                            poss = new int[]{0, -1, 0};
+                                                            fastModeActive = true;
+                                                        }
                                                     }
                                                 }
-                                            }
 
-                                            /// Calculate the structure
-                                            // Variables
-                                            List<Vec3d> toPlaceTemp = new ArrayList<Vec3d>();
-                                            int supportBlock = 0;
+                                                /// Calculate the structure
+                                                // Variables
+                                                List<Vec3d> toPlaceTemp = new ArrayList<Vec3d>();
+                                                int supportBlock = 0;
 
-                                            /// First of all, lets check for the support's blocks
-                                            // Check for the piston If under there is nothing
-                                            if (!fastModeActive && get_block(pistonCord[0], cord_b[1] + incr - 1, pistonCord[2]) instanceof BlockAir) {
-                                                // Add a block
-                                                toPlaceTemp.add(new Vec3d(relativePistonCord[0], disp_surblock[i][1] + incr - 1, relativePistonCord[2]));
-                                                supportBlock++;
-                                            }
-                                            // -219 190
-                                            // Check for the redstone torch If under there is nothing
-                                            if (!fastModeActive && get_block(pistonCord[0] + poss[0], cord_b[1] + incr - 1, pistonCord[2] + poss[2]) instanceof BlockAir) {
-                                                // Add a block
-                                                toPlaceTemp.add(new Vec3d(relativePistonCord[0] + poss[0], relativePistonCord[1] + incr - 1, relativePistonCord[2] + poss[2]));
-                                                supportBlock++;
-                                            }
-
-                                            // Add the piston
-                                            toPlaceTemp.add(new Vec3d(relativePistonCord[0], disp_surblock[i][1] + incr, relativePistonCord[2]));
-
-                                            // Add the crystal
-                                            toPlaceTemp.add(new Vec3d(crystalRelativeCords[0], crystalRelativeCords[1] + incr, crystalRelativeCords[2]));
-
-                                            // Add the redstoneTorch
-                                            toPlaceTemp.add(new Vec3d(relativePistonCord[0] + poss[0], disp_surblock[i][1] + incr + poss[1] , relativePistonCord[2] + poss[2]));
-
-                                            // If we are up
-                                            if (incr > 1) {
-                                                // Lets add everything else
-                                                for(int i2 = 0; i2 < highSup.size(); i2++) {
-                                                    toPlaceTemp.add(0, highSup.get(i2));
+                                                /// First of all, lets check for the support's blocks
+                                                // Check for the piston If under there is nothing
+                                                if (!fastModeActive && get_block(pistonCord[0], cord_b[1] + incr - 1, pistonCord[2]) instanceof BlockAir) {
+                                                    // Add a block
+                                                    toPlaceTemp.add(new Vec3d(relativePistonCord[0], disp_surblock[i][1] + incr - 1, relativePistonCord[2]));
                                                     supportBlock++;
                                                 }
-                                            }
+                                                // -219 190
+                                                // Check for the redstone torch If under there is nothing
+                                                if (!fastModeActive && get_block(pistonCord[0] + poss[0], cord_b[1] + incr - 1, pistonCord[2] + poss[2]) instanceof BlockAir) {
+                                                    // Add a block
+                                                    toPlaceTemp.add(new Vec3d(relativePistonCord[0] + poss[0], relativePistonCord[1] + incr - 1, relativePistonCord[2] + poss[2]));
+                                                    supportBlock++;
+                                                }
 
-                                            float offsetX, offsetZ;
-                                            /// Calculate the offset
-                                            // If horrizontaly
-                                            if (disp_surblock[i][0] != 0) {
-                                                offsetX = rotate.getValue() ? disp_surblock[i][0] / 2f : disp_surblock[i][0];
-                                                // Check which is better for distance
-                                                if (rotate.getValue()) {
-                                                    if (mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] + 0.5) > mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] - 0.5))
-                                                        offsetZ = -0.5f;
-                                                    else
-                                                        offsetZ = 0.5f;
-                                                } else offsetZ = disp_surblock[i][2];
-                                                // If vertically
-                                            } else {
-                                                offsetZ = rotate.getValue() ? disp_surblock[i][2] / 2f : disp_surblock[i][2];
-                                                // Check which is better for distance
-                                                if (rotate.getValue()) {
-                                                    if (mc.player.getDistanceSq(pistonCord[0] + 0.5, pistonCord[1], pistonCord[2]) > mc.player.getDistanceSq(pistonCord[0] - 0.5, pistonCord[1], pistonCord[2]))
-                                                        offsetX = -0.5f;
-                                                    else
-                                                        offsetX = 0.5f;
-                                                } else offsetX = disp_surblock[i][0];
-                                            }
+                                                // Add the piston
+                                                toPlaceTemp.add(new Vec3d(relativePistonCord[0], disp_surblock[i][1] + incr, relativePistonCord[2]));
 
-                                            // Replace
-                                            addedStructure.replaceValues(distance_now, supportBlock, toPlaceTemp, -1, offsetX, offsetZ);
+                                                // Add the crystal
+                                                toPlaceTemp.add(new Vec3d(crystalRelativeCords[0], crystalRelativeCords[1] + incr, crystalRelativeCords[2]));
+
+                                                // Add the redstoneTorch
+                                                toPlaceTemp.add(new Vec3d(relativePistonCord[0] + poss[0], disp_surblock[i][1] + incr + poss[1], relativePistonCord[2] + poss[2]));
+
+                                                // If we are up
+                                                if (incr > 1) {
+                                                    // Lets add everything else
+                                                    for (int i2 = 0; i2 < highSup.size(); i2++) {
+                                                        toPlaceTemp.add(0, highSup.get(i2));
+                                                        supportBlock++;
+                                                    }
+                                                }
+
+                                                float offsetX, offsetZ;
+                                                /// Calculate the offset
+                                                // If horrizontaly
+                                                if (disp_surblock[i][0] != 0) {
+                                                    offsetX = rotate.getValue() ? disp_surblock[i][0] / 2f : disp_surblock[i][0];
+                                                    // Check which is better for distance
+                                                    if (rotate.getValue()) {
+                                                        if (mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] + 0.5) > mc.player.getDistanceSq(pistonCord[0], pistonCord[1], pistonCord[2] - 0.5))
+                                                            offsetZ = -0.5f;
+                                                        else
+                                                            offsetZ = 0.5f;
+                                                    } else offsetZ = disp_surblock[i][2];
+                                                    // If vertically
+                                                } else {
+                                                    offsetZ = rotate.getValue() ? disp_surblock[i][2] / 2f : disp_surblock[i][2];
+                                                    // Check which is better for distance
+                                                    if (rotate.getValue()) {
+                                                        if (mc.player.getDistanceSq(pistonCord[0] + 0.5, pistonCord[1], pistonCord[2]) > mc.player.getDistanceSq(pistonCord[0] - 0.5, pistonCord[1], pistonCord[2]))
+                                                            offsetX = -0.5f;
+                                                        else
+                                                            offsetX = 0.5f;
+                                                    } else offsetX = disp_surblock[i][0];
+                                                }
+
+                                                // Replace
+                                                addedStructure.replaceValues(distance_now, supportBlock, toPlaceTemp, -1, offsetX, offsetZ);
+                                            }
                                         }
                                     }
+
                                 }
 
                             }
@@ -1008,32 +1012,51 @@ public class PistonCrystal extends Module {
                         }
 
                     }
-
+                    // Incr i
+                    i++;
                 }
-                // Incr i
-                i++;
-            }
-            // We need this for see if we are going to find at list 1 spot for placing
-            // If we found at list 1 value
-            if (addedStructure.to_place != null) {
-                // Check if we have to block the guy
-                if (blockPlayer.getValue()) {
-                    // Get the values
-                    Vec3d valuesStart = addedStructure.to_place.get(addedStructure.supportBlock + 1);
-                    // Get the opposit
-                    int[] valueBegin = new int[]{(int) -valuesStart.x, (int) valuesStart.y, (int) -valuesStart.z};
-                    // Add
-                    addedStructure.to_place.add(0, new Vec3d(0, incr + 1, 0));
-                    addedStructure.to_place.add(0, new Vec3d(valueBegin[0], incr + 1, valueBegin[2]));
-                    addedStructure.to_place.add(0, new Vec3d(valueBegin[0], incr, valueBegin[2]));
-                    addedStructure.supportBlock += 3;
+                // We need this for see if we are going to find at list 1 spot for placing
+                // If we found at list 1 value
+                if (addedStructure.to_place != null) {
+                    // Check if we have to block the guy
+                    if (blockPlayer.getValue()) {
+                        // Get the values
+                        Vec3d valuesStart = addedStructure.to_place.get(addedStructure.supportBlock + 1);
+                        // Get the opposit
+                        int[] valueBegin = new int[]{(int) -valuesStart.x, (int) valuesStart.y, (int) -valuesStart.z};
+                        // Add
+                        addedStructure.to_place.add(0, new Vec3d(0, incr + 1, 0));
+                        addedStructure.to_place.add(0, new Vec3d(valueBegin[0], incr + 1, valueBegin[2]));
+                        addedStructure.to_place.add(0, new Vec3d(valueBegin[0], incr, valueBegin[2]));
+                        addedStructure.supportBlock += 3;
+                    }
+                    // Add to the global value
+                    toPlace = addedStructure;
+                    return true;
                 }
-                // Add to the global value
-                toPlace = addedStructure;
-                return true;
+            } else yUnder = true;
+        }catch (Exception e) {
+            printChat("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
+            final Logger LOGGER = LogManager.getLogger("GameSense");
+            LOGGER.error("[PistonCrystal] error during the creation of the structure.");
+            if (e.getCause() != null)
+                LOGGER.error("[PistonCrystal] error message: " + e.getMessage());
+            else
+                LOGGER.error("[PistonCrystal] cannot find the cause");
+            int i5 = 0;
+            if (closestTarget != null) {
+                LOGGER.error("[PistonCrystal] closest target is not null");
+            }else LOGGER.error("[PistonCrystal] closest target is null somehow");
+            for (Double[] cord_b : sur_block) {
+                if (cord_b != null) {
+                    LOGGER.error("[PistonCrystal] " + i5 + " is not null");
+                }else {
+                    LOGGER.error("[PistonCrystal] " + i5 + " is null");
+                }
+                i5++;
             }
-        }else yUnder = true;
 
+        }
         return false;
     }
 
