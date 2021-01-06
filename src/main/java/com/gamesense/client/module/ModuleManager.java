@@ -27,6 +27,7 @@ public class ModuleManager {
 		modules = new ArrayList<>();
 		//Combat
 		addMod(new AutoAnvil());
+		addMod(new PistonCrystal());
 		addMod(new AutoArmor());
 		addMod(new AutoCrystal());
 		addMod(new AutoTotem());
@@ -38,7 +39,6 @@ public class ModuleManager {
 		addMod(new KillAura());
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
-		addMod(new PistonCrystal());
 		addMod(new SelfTrap());
 		addMod(new SelfWeb());
 		addMod(new Surround());
