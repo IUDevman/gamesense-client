@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
 
-import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.modules.render.Nametags;
@@ -448,7 +448,7 @@ public class GameSenseTessellator {
 				bcolor = Nametags.borderColor.getValue();
 			}
 			for (int i = 0; i < text.length; i++) {
-				double w=FontUtils.getStringWidth(ColorMain.customFont.getValue(),text[i])/2;
+				double w= FontUtil.getStringWidth(ColorMain.customFont.getValue(),text[i])/2;
 				if (w > width) {
 					width = w;
 				}
@@ -457,7 +457,7 @@ public class GameSenseTessellator {
 		}
 		GlStateManager.enableTexture2D();
 		for (int i=0;i<text.length;i++) {
-			FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),text[i],-FontUtils.getStringWidth(ColorMain.customFont.getValue(),text[i])/2,i*(mc.fontRenderer.FONT_HEIGHT+1)+start,color);
+			FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(),text[i],-FontUtil.getStringWidth(ColorMain.customFont.getValue(),text[i])/2,i*(mc.fontRenderer.FONT_HEIGHT+1)+start,color);
 		}
 		GlStateManager.disableTexture2D();
 		if (type!=2) {
