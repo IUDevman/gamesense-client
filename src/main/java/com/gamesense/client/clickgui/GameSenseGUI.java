@@ -127,7 +127,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 					if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
 						return childHeight;
 					}
-					return Math.min(childHeight,Math.max(HEIGHT*4,GameSenseGUI.this.height-getPosition(guiInterface).y-renderer.getHeight()-HEIGHT));
+					return Math.min(childHeight,Math.max(HEIGHT*4,GameSenseGUI.this.height-getPosition(guiInterface).y-renderer.getHeight(open.getValue()!=0)-HEIGHT));
 				}
 			};
 			gui.addComponent(panel);
