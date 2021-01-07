@@ -6,7 +6,7 @@ import java.awt.Point;
 import org.lwjgl.opengl.GL11;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
@@ -68,18 +68,18 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 					x+=1;
 					y+=1;
 				}
-				FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),s,x,y,new GSColor(c));
+				FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(),s,x,y,new GSColor(c));
 				GLInterface.begin();
 			}
 			
 			@Override
 			public int getFontWidth(String s) {
-				return (int)Math.round(FontUtils.getStringWidth(ColorMain.customFont.getValue(),s))+4;
+				return (int)Math.round(FontUtil.getStringWidth(ColorMain.customFont.getValue(),s))+4;
 			}
 
 			@Override
 			public int getFontHeight() {
-				return (int)Math.round(FontUtils.getFontHeight(ColorMain.customFont.getValue()))+2;
+				return (int)Math.round(FontUtil.getFontHeight(ColorMain.customFont.getValue()))+2;
 			}
 			
 			@Override
@@ -127,7 +127,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 					if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
 						return childHeight;
 					}
-					return Math.min(childHeight,Math.max(HEIGHT*4,GameSenseGUI.this.height-getPosition(guiInterface).y-renderer.getHeight()-HEIGHT));
+					return Math.min(childHeight,Math.max(HEIGHT*4,GameSenseGUI.this.height-getPosition(guiInterface).y-renderer.getHeight(open.getValue()!=0)-HEIGHT));
 				}
 			};
 			gui.addComponent(panel);

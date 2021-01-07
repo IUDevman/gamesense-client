@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.GameSenseTessellator;
 import com.gamesense.client.clickgui.GameSenseGUI;
@@ -43,7 +43,7 @@ public class ShulkerViewer extends Module {
 
 		//name
 		GlStateManager.disableDepth();
-		FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), posX + 3, posY + 3, new GSColor(255, 255, 255, 255));
+		FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), posX + 3, posY + 3, new GSColor(255, 255, 255, 255));
 		GlStateManager.enableDepth();
 
 		//items

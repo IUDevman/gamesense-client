@@ -1,10 +1,9 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
@@ -61,7 +60,7 @@ public class ArmorHUD extends Module {
                 dmg = 0;
             }
 
-            FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, y - 11, new GSColor((int) (red * 255), (int) (green * 255), 0));
+            FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), dmg + "", x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2, y - 11, new GSColor((int) (red * 255), (int) (green * 255), 0));
         }
 
         GlStateManager.enableDepth();

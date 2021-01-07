@@ -4,7 +4,7 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
 import net.minecraft.client.Minecraft;
 
-public class FontUtils {
+public class FontUtil {
 
 	private static final Minecraft mc = Minecraft.getMinecraft();
 	

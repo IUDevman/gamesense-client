@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CapeUtils {
+public class CapeUtil {
 
 	List<UUID> uuids = new ArrayList<>();
 
-	public CapeUtils() {
+	public CapeUtil() {
 		try {
 			URL pastebin = new URL("https://pastebin.com/raw/6D5JSYdC");
 			BufferedReader in = new BufferedReader(new InputStreamReader(pastebin.openStream()));
