@@ -41,6 +41,7 @@ import java.util.List;
 
 /*
     Added try catch + output errors for java.lang.IllegalAccessError error
+    Fix but where, if the guy jump, all the position fucked up
  */
 
 // Count of bugs solved: A lot
@@ -456,7 +457,7 @@ public class PistonCrystal extends Module {
         // Get enemy's relative position of the block
         BlockPos offsetPos = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + step - 1));
         // Get absolute position and return
-        return new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+        return new BlockPos(enemyCoords[0] + offsetPos.getX(), enemyCoords[1] + offsetPos.getY(), enemyCoords[2] + offsetPos.getZ());
 
     }
 
@@ -493,7 +494,7 @@ public class PistonCrystal extends Module {
             do {
                 // Get position where we are going to check
                 BlockPos offsetPos = new BlockPos(toPlace.to_place.get(i));
-                BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                BlockPos targetPos = new BlockPos(enemyCoords[0] + offsetPos.getX(), enemyCoords[1] + offsetPos.getY(), enemyCoords[2] + offsetPos.getZ());
 
                 // I wont check if there is an entity in the block i'm trying to place. I dont think it's necessary
                 if (placeBlock(targetPos, 0, 0, 0)) {
