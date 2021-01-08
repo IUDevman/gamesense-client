@@ -906,26 +906,26 @@ public class PistonCrystal extends Module {
                                                             (aimTarget.posZ > mc.player.posZ) != (aimTarget.posZ > pistonCord[2]) || (Math.abs((int) aimTarget.posZ - (int) mc.player.posZ)) == 1
                                                             : ((int) pistonCord[2] != meCord[2] || (((aimTarget.posX > mc.player.posX) != (aimTarget.posX > pistonCord[0]) || (Math.abs((int) aimTarget.posX - (int) mc.player.posX)) == 1) && (!((Math.abs((int) aimTarget.posX - (int) mc.player.posX)) > 1) || (pistonCord[0] > aimTarget.posX) != (meCord[0] > aimTarget.posX)))));
                                             // Extended version :
-                                /*
-                            boolean join = false;
-                            // If rotate
-                            if (rotate.getValue()) {
-                                // If same X
-                                if ((int) pistonCord[0] == meCord[0]) {
-                                    // If we are not in the same quarter ot the distance is 1
-                                if ((closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2]) || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1)
-                                        join = true;
-                                }else
-                                // If same z
-                                if ((int) pistonCord[2] == meCord[2]) {
-                                    // If we are not in the same quarter or the distance is 1
-                                    if ((closestTarget.posX > mc.player.posX) != (closestTarget.posX > pistonCord[0]) || (Math.abs((int) closestTarget.posX - (int) mc.player.posX)) == 1)
-                                        // I dunno why but i need this, else in some points it wont work
-                                        if (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1) || (pistonCord[0] > closestTarget.posX) != (meCord[0] > closestTarget.posX))
-                                            join = true;
-                                }else join = true;
-                            }else join = true;
-                            */
+                                            /*
+                                        boolean join = false;
+                                        // If rotate
+                                        if (rotate.getValue()) {
+                                            // If same X
+                                            if ((int) pistonCord[0] == meCord[0]) {
+                                                // If we are not in the same quarter ot the distance is 1
+                                            if ((closestTarget.posZ > mc.player.posZ) != (closestTarget.posZ > pistonCord[2]) || (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) == 1)
+                                                    join = true;
+                                            }else
+                                            // If same z
+                                            if ((int) pistonCord[2] == meCord[2]) {
+                                                // If we are not in the same quarter or the distance is 1
+                                                if ((closestTarget.posX > mc.player.posX) != (closestTarget.posX > pistonCord[0]) || (Math.abs((int) closestTarget.posX - (int) mc.player.posX)) == 1)
+                                                    // I dunno why but i need this, else in some points it wont work
+                                                    if (!((Math.abs((int) closestTarget.posX - (int) mc.player.posX)) > 1) || (pistonCord[0] > closestTarget.posX) != (meCord[0] > closestTarget.posX))
+                                                        join = true;
+                                            }else join = true;
+                                        }else join = true;
+                                        */
 
 
                                             if (join) {
@@ -937,21 +937,21 @@ public class PistonCrystal extends Module {
                                                                 (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) aimTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) aimTarget.posZ - (int) mc.player.posZ)) != 1)));
 
                                                 // Extended version
-                                    /*
-                                    // If rotate, remove the first two near
-                                    boolean enter = false;
-                                    if (!rotate.getValue())
-                                        enter = true;
-                                    else if ((meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ)) {
-                                        if (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 2.8)
-                                            enter = true;
-                                        else if (meCord[0] == (int) crystalCords[0]) {
-                                                enter = true;
-                                        }
-                                        else if (meCord[2] == (int) crystalCords[2])
+                                                /*
+                                                // If rotate, remove the first two near
+                                                boolean enter = false;
+                                                if (!rotate.getValue())
                                                     enter = true;
-                                    } else if (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)
-                                        enter = true;*/
+                                                else if ((meCord[0] == (int) closestTarget.posX || meCord[2] == (int) closestTarget.posZ)) {
+                                                    if (mc.player.getDistance(crystalCords[0], crystalCords[1], crystalCords[2]) <= 2.8)
+                                                        enter = true;
+                                                    else if (meCord[0] == (int) crystalCords[0]) {
+                                                            enter = true;
+                                                    }
+                                                    else if (meCord[2] == (int) crystalCords[2])
+                                                                enter = true;
+                                                } else if (!((meCord[0] == (int) pistonCord[0] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)) || meCord[2] == (int) pistonCord[2] && (Math.abs((int) closestTarget.posZ - (int) mc.player.posZ)) != 1)
+                                                    enter = true;*/
 
                                                 if (enter) {
 
@@ -1143,7 +1143,7 @@ public class PistonCrystal extends Module {
         return false;
     }
 
-    private boolean someoneInCoords(double x, double y, double z) {
+    public static boolean someoneInCoords(double x, double y, double z) {
         int xCheck = (int) x;
         int yCheck = (int) y;
         int zCheck = (int) z;
@@ -1166,7 +1166,7 @@ public class PistonCrystal extends Module {
 
 
     /// AutoCrystal break things ///
-    private void lookAtPacket(double px, double py, double pz, EntityPlayer me) {
+    public static void lookAtPacket(double px, double py, double pz, EntityPlayer me) {
         double[] v = calculateLookAt(px, py, pz, me);
         setYawAndPitch((float) v[0], (float) v[1]);
     }
@@ -1194,12 +1194,12 @@ public class PistonCrystal extends Module {
     private static boolean isSpoofingAngles;
     private static double yaw;
     private static double pitch;
-    private static void setYawAndPitch(float yaw1, float pitch1) {
+    public static void setYawAndPitch(float yaw1, float pitch1) {
         yaw = yaw1;
         pitch = pitch1;
         isSpoofingAngles = true;
     }
-    private void breakCrystal(Entity crystal) {
+    public static void breakCrystal(Entity crystal) {
         mc.playerController.attackEntity(mc.player, crystal);
         mc.player.swingArm(EnumHand.MAIN_HAND);
     }
@@ -1213,7 +1213,7 @@ public class PistonCrystal extends Module {
             }
         }
     });
-    private static void resetRotation() {
+    public static void resetRotation() {
         if (isSpoofingAngles) {
             yaw = mc.player.rotationYaw;
             pitch = mc.player.rotationPitch;
