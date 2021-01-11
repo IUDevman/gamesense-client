@@ -27,18 +27,19 @@ public class ModuleManager {
 		modules = new ArrayList<>();
 		//Combat
 		addMod(new AutoAnvil());
-		addMod(new PistonCrystal());
 		addMod(new AutoArmor());
 		addMod(new AutoCrystal());
 		addMod(new AutoTotem());
 		addMod(new AutoTrap());
 		addMod(new AutoWeb());
 		addMod(new BedAura());
+		addMod(new Blocker());
 		addMod(new FastBow());
 		addMod(new HoleFill());
 		addMod(new KillAura());
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
+		addMod(new PistonCrystal());
 		addMod(new SelfTrap());
 		addMod(new SelfWeb());
 		addMod(new Surround());

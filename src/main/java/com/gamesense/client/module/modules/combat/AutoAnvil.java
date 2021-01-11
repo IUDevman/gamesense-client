@@ -29,10 +29,7 @@ import java.util.List;
  * Ported and modified from Surround.java
  */
 /*
-    Now, if the enemy go out from the hole, the module is going to disable itself
-    Added new mode: target. this allow to choose in which way he is going to choose the target
-    2 modes: nearest (who is cloosest), looking (who you are looking)
-    Now some modules are in common (closestTarget, lookingAt)
+    Now AutoAnvil is going to stop himself if the player place a block above him
  */
 
 public class AutoAnvil extends Module {
@@ -85,6 +82,7 @@ public class AutoAnvil extends Module {
     private boolean hasMoved = false;
     private boolean isHole = true;
     private boolean enoughSpace = true;
+    private boolean blockUp = false;
     private int oldSlot = -1;
     private int[] slot_mat = {-1, -1, -1, -1};
     private double[] enemyCoords;
@@ -111,7 +109,7 @@ public class AutoAnvil extends Module {
         }
         blocksPlaced = 0;
         isHole = true;
-        hasMoved = false;
+        hasMoved = blockUp = false;
         firstRun = true;
         slot_mat = new int[]{-1, -1, -1, -1};
         to_place = new ArrayList<>();
@@ -145,6 +143,9 @@ public class AutoAnvil extends Module {
             }
             else if(hasMoved) {
                 printChat("He moved away from the hole... AutoAnvil turned OFF!", true);
+            }
+            else if(blockUp) {
+                printChat("There is a block on the head of your enemy.. AutoAnvil turned OFF!", true);
             }
             else {
                 printChat("AutoAnvil turned OFF!", true);
@@ -209,16 +210,25 @@ public class AutoAnvil extends Module {
             }
             else {
                 delayTimeTicks = 0;
+
+                // Check if he has moved away
+                if ((int) enemyCoords[0] != (int) aimTarget.posX || (int) enemyCoords[2] != (int) aimTarget.posZ)
+                    hasMoved = true;
+
+                // Check a block on the enemy's head
+                if (!(get_block(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAir)
+                        || !(get_block(enemyCoords[0], enemyCoords[1] + 3, enemyCoords[2]) instanceof BlockAir)) {
+                    blockUp = true;
+                }
+
+
             }
         }
 
         blocksPlaced = 0;
 
-        if ((int) enemyCoords[0] != (int) aimTarget.posX || (int) enemyCoords[2] != (int) aimTarget.posZ)
-            hasMoved = true;
-
         // If we have to left
-        if (noMaterials || !isHole || !enoughSpace || hasMoved) {
+        if (noMaterials || !isHole || !enoughSpace || hasMoved || blockUp) {
             disable();
             return;
         }
