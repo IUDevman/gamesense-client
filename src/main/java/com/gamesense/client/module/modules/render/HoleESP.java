@@ -48,9 +48,9 @@ public class HoleESP extends Module {
 
     public void setup() {
         ArrayList<String> holes = new ArrayList<>();
-        holes.add("None");
+        holes.add("Single");
         // https://github.com/IUDevman/gamesense-client/issues/57
-        holes.add("Two Wide");
+        holes.add("Double");
         /*
          * This refers to two wide holes with one down block being blast resistant
          * and the other being air or a breakable block
@@ -76,12 +76,12 @@ public class HoleESP extends Module {
         modes.add("Double");
 
         rangeS = registerInteger("Range", "Range", 5, 1, 20);
-        // renderBurrow = registerBoolean("Burrow", "Burrow", true);
-        hideOwn = registerBoolean("Hide Own", "HideOwn", false);
-        flatOwn = registerBoolean("Flat Own", "FlatOwn", false);
-        customHoles = registerMode("Custom Holes", "CustomHoles", holes, "None");
+        //renderBurrow = registerBoolean("Burrow", "Burrow", true);
+        customHoles = registerMode("Show", "Show", holes, "Single");
         type = registerMode("Render", "Render", render, "Both");
         mode = registerMode("Mode", "Mode", modes, "Air");
+        hideOwn = registerBoolean("Hide Own", "HideOwn", false);
+        flatOwn = registerBoolean("Flat Own", "FlatOwn", false);
         slabHeight = registerDouble("Slab Height", "SlabHeight", 0.5, 0.1, 1.5);
         width = registerInteger("Width","Width",1,1,10);
         bedrockColor = registerColor("Bedrock Color","BedrockColor", new GSColor(0,255,0));
@@ -150,10 +150,6 @@ public class HoleESP extends Module {
             if (!mc.world.getBlockState(pos.add(0, 1, 0)).getBlock().equals(Blocks.AIR)) {
                 continue;
             }
-            // could be standing on enderchest
-            if (this.hideOwn.getValue() && pos.equals(new BlockPos(mc.player.posX, mc.player.posY + 0.1f, mc.player.posZ))) {
-                continue;
-            }
 
             if (mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals(Blocks.AIR)) {
                 possibleFullHoles.add(pos);
@@ -196,7 +192,7 @@ public class HoleESP extends Module {
         // we can guarantee all holes in possibleWideHoles
         // have only one open side
         String customHoleMode = customHoles.getValue();
-        if (!customHoleMode.equalsIgnoreCase("None")) {
+        if (!customHoleMode.equalsIgnoreCase("Single")) {
             possibleWideHoles.forEach((pos, pair) -> {
                 GSColor color = pair.getValue();
                 BlockPos unsafePos = pair.getKey().offset(pos);
@@ -301,6 +297,8 @@ public class HoleESP extends Module {
     private void renderFill(AxisAlignedBB hole, GSColor color) {
         GSColor fillColor = new GSColor(color, 50);
 
+        if (hideOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) return;
+
         switch (mode.getValue()) {
             case "Air": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
@@ -324,7 +322,7 @@ public class HoleESP extends Module {
                     GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBox(hole, true, slabHeight.getValue(), fillColor, GeometryMasks.Quad.ALL);
+                    GameSenseTessellator.drawBox(hole, false, slabHeight.getValue(), fillColor, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
@@ -342,6 +340,8 @@ public class HoleESP extends Module {
 
     private void renderOutline(AxisAlignedBB hole, GSColor color) {
         GSColor outlineColor = new GSColor(color, 255);
+
+        if (hideOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) return;
 
         switch (mode.getValue()) {
             case "Air": {
