@@ -34,7 +34,7 @@ public class HoleESP extends Module {
     public static Setting.Integer rangeS;
     Setting.Boolean hideOwn;
     Setting.Boolean flatOwn;
-    //Setting.Boolean renderBurrow;
+    // Setting.Boolean renderBurrow;
     Setting.Mode customHoles;
     Setting.Mode mode;
     Setting.Mode type;
@@ -44,7 +44,7 @@ public class HoleESP extends Module {
     Setting.ColorSetting obsidianColor;
     Setting.ColorSetting customColor;
     // TODO: fix burrow
-    //Setting.ColorSetting burrowColor;
+    // Setting.ColorSetting burrowColor;
 
     public void setup() {
         ArrayList<String> holes = new ArrayList<>();
@@ -87,12 +87,12 @@ public class HoleESP extends Module {
         bedrockColor = registerColor("Bedrock Color","BedrockColor", new GSColor(0,255,0));
         obsidianColor = registerColor("Obsidian Color","ObsidianColor", new GSColor(255,0,0));
         customColor = registerColor("Custom Color","CustomColor", new GSColor(0,0,255));
-        //burrowColor = registerColor("Burrow Color", "BurrowColor", new GSColor(255, 255, 0));
+        // burrowColor = registerColor("Burrow Color", "BurrowColor", new GSColor(255, 255, 0));
     }
 
     private ConcurrentHashMap<AxisAlignedBB, GSColor> holes;
 
-    //defines the area for the client to search
+    // defines the area for the client to search
     public List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
         List<BlockPos> circleblocks = new ArrayList<>();
         int cx = loc.getX();
@@ -112,7 +112,7 @@ public class HoleESP extends Module {
         return circleblocks;
     }
 
-    //gets the entities location
+    // gets the entities location
     public static BlockPos getEntityPos(Entity entity) {
         return new BlockPos(Math.floor(entity.posX), Math.floor(entity.posY), Math.floor(entity.posZ));
     }
@@ -131,19 +131,19 @@ public class HoleESP extends Module {
 
         int range = (int) Math.ceil(rangeS.getValue());
 
-        // HashSets are easier to navigate
+        // hashSets are easier to navigate
         HashSet<BlockPos> possibleFullHoles = Sets.newHashSet();
         HashMap<BlockPos, Pair<BlockOffset, GSColor>> possibleWideHoles = new HashMap<>();
         List<BlockPos> blockPosList = getSphere(getEntityPos(mc.player), range, range, false, true, 0);
 
-        // Find all holes
+        // find all holes
         for (BlockPos pos : blockPosList) {
 
             if (!mc.world.getBlockState(pos).getBlock().equals(Blocks.AIR)) {
                 continue;
             }
-            // If air below, we are wasting our time and hashset space
-            // We do not remove check from surround offset as potentially a weak block
+            // if air below, we are wasting our time and hashset space
+            // we do not remove check from surround offset as potentially a weak block
             if (mc.world.getBlockState(pos.add(0, -1, 0)).getBlock().equals(Blocks.AIR)) {
                 continue;
             }
@@ -171,7 +171,7 @@ public class HoleESP extends Module {
 
             unsafeSides.entrySet().removeIf(entry -> entry.getValue() == BlockSafety.RESISTANT);
 
-            // Size has changed so must have weak side
+            // size has changed so must have weak side
             if (unsafeSides.size() != size)
                 color = new GSColor(obsidianColor.getValue(), 255);
 
@@ -188,8 +188,8 @@ public class HoleESP extends Module {
             }
         });
 
-        // Two wide and/or custom holes is enabled
-        // We can guarantee all holes in possibleWideHoles
+        // two wide and/or custom holes is enabled
+        // we can guarantee all holes in possibleWideHoles
         // have only one open side
         String customHoleMode = customHoles.getValue();
         if (!customHoleMode.equalsIgnoreCase("Single")) {
@@ -205,7 +205,7 @@ public class HoleESP extends Module {
 
                 unsafeSides.entrySet().removeIf(entry -> entry.getValue() == BlockSafety.RESISTANT);
 
-                // Size has changed so must have weak side
+                // size has changed so must have weak side
                 if (unsafeSides.size() != size)
                     color = new GSColor(obsidianColor.getValue(), 255);
 
@@ -215,11 +215,11 @@ public class HoleESP extends Module {
                     unsafeSides.remove(BlockOffset.DOWN);
                 }
 
-                // Is it a safe hole
+                // is it a safe hole
                 if (unsafeSides.size() >  1)
                     return;
 
-                //It is
+                // it is
                 double minX = Math.min(pos.x, unsafePos.x);
                 double maxX = Math.max(pos.x, unsafePos.x) + 1;
                 double minZ = Math.min(pos.z, unsafePos.z);
