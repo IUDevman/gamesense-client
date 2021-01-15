@@ -34,7 +34,6 @@ public class HoleESP extends Module {
     public static Setting.Integer rangeS;
     Setting.Boolean hideOwn;
     Setting.Boolean flatOwn;
-    // Setting.Boolean renderBurrow;
     Setting.Mode customHoles;
     Setting.Mode mode;
     Setting.Mode type;
@@ -43,8 +42,6 @@ public class HoleESP extends Module {
     Setting.ColorSetting bedrockColor;
     Setting.ColorSetting obsidianColor;
     Setting.ColorSetting customColor;
-    // TODO: fix burrow
-    // Setting.ColorSetting burrowColor;
 
     public void setup() {
         ArrayList<String> holes = new ArrayList<>();
@@ -76,7 +73,6 @@ public class HoleESP extends Module {
         modes.add("Double");
 
         rangeS = registerInteger("Range", "Range", 5, 1, 20);
-        //renderBurrow = registerBoolean("Burrow", "Burrow", true);
         customHoles = registerMode("Show", "Show", holes, "Single");
         type = registerMode("Render", "Render", render, "Both");
         mode = registerMode("Mode", "Mode", modes, "Air");
@@ -87,7 +83,6 @@ public class HoleESP extends Module {
         bedrockColor = registerColor("Bedrock Color","BedrockColor", new GSColor(0,255,0));
         obsidianColor = registerColor("Obsidian Color","ObsidianColor", new GSColor(255,0,0));
         customColor = registerColor("Custom Color","CustomColor", new GSColor(0,0,255));
-        // burrowColor = registerColor("Burrow Color", "BurrowColor", new GSColor(255, 255, 0));
     }
 
     private ConcurrentHashMap<AxisAlignedBB, GSColor> holes;
@@ -161,10 +156,10 @@ public class HoleESP extends Module {
 
             HashMap<BlockOffset, BlockSafety> unsafeSides = getUnsafeSides(pos);
 
-            if (unsafeSides.containsKey(BlockOffset.DOWN))
-            {
-                if (unsafeSides.remove(BlockOffset.DOWN, BlockSafety.BREAKABLE))
+            if (unsafeSides.containsKey(BlockOffset.DOWN)) {
+                if (unsafeSides.remove(BlockOffset.DOWN, BlockSafety.BREAKABLE)) {
                     return;
+                }
             }
 
             int size = unsafeSides.size();
@@ -400,8 +395,7 @@ public class HoleESP extends Module {
         private final int y;
         private final int z;
 
-        BlockOffset(int x, int y, int z)
-        {
+        BlockOffset(int x, int y, int z) {
             this.x = x;
             this.y = y;
             this.z = z;
