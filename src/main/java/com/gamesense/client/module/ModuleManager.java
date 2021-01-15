@@ -39,7 +39,8 @@ public class ModuleManager {
 		addMod(new KillAura());
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
-		addMod(new PistonCrystal());
+		//addMod(new PistonCrystal());
+		addMod(new PistonCrystalRewritten());
 		addMod(new SelfTrap());
 		addMod(new SelfWeb());
 		addMod(new Surround());

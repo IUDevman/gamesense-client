@@ -74,6 +74,7 @@ public class PistonCrystal extends Module {
                     confirmPlace,
                     allowFastMode,
                     betterPlacement,
+                    bypassObsidian,
                     antiWeakness,
                     chatMsg;
 
@@ -135,6 +136,7 @@ public class PistonCrystal extends Module {
         maxYincr = registerInteger("Max Y", "MaxY", 3, 0, 5);
         rotate = registerBoolean("Rotate", "Rotate", false);
         blockPlayer = registerBoolean("Trap Player", "TrapPlayer", true);
+        bypassObsidian = registerBoolean("BypassObsidian", "BypassObsidian", false);
         confirmBreak = registerBoolean("No Glitch Break", "NoGlitchBreak", true);
         confirmPlace = registerBoolean("No Glitch Place", "NoGlitchPlace", true);
         allowFastMode = registerBoolean("Allow Fast Mode", "allowFastMode", false);
@@ -287,6 +289,27 @@ public class PistonCrystal extends Module {
                 // B) Piston
                 case 1:
                     placeBlockThings(step);
+                    BlockPos offsetPosPist = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 2));
+                    BlockPos pos = new BlockPos(aimTarget.getPositionVector()).add(offsetPosPist.getX(), offsetPosPist.getY(), offsetPosPist.getZ());
+                    if (!(get_block(pos.x, pos.y , pos.z) instanceof BlockAir)) {
+                        EnumFacing side = BlockUtil.getPlaceableSide(pos);
+                        // If rotate, look at the redstone torch
+                        if (rotate.getValue()) {
+                            BlockPos neighbour = pos.offset(side);
+                            EnumFacing opposite = side.getOpposite();
+                            Vec3d hitVec = new Vec3d(neighbour).add(0.5, 1, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+                            BlockUtil.faceVectorPacketInstant(hitVec);
+
+                        }
+                        // Destroy it
+                        mc.player.swingArm(EnumHand.MAIN_HAND);
+                        mc.player.connection.sendPacket(new CPacketPlayerDigging(
+                                CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, side
+                        ));
+                        mc.player.connection.sendPacket(new CPacketPlayerDigging(
+                                CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, side
+                        ));
+                    }
                     break;
                 // C) Crystal
                 case 2:
@@ -304,6 +327,7 @@ public class PistonCrystal extends Module {
                 // E) Break
                 case 4:
                     destroyCrystalAlgo();
+
             }
         }
 
@@ -839,7 +863,7 @@ public class PistonCrystal extends Module {
         // If we are 2 blocks under the enemy, dont allow to enter
         try {
             if (meCord[1] - aimTarget.posY > -1 && meCord[1] - aimTarget.posY <= maxYincr.getValue()) {
-                for(int l = 0; l < 2; l++) {
+                for(int l = 1; l >= 0; l--) {
                     int i = 0;
                     /// Add the blocks that are going to support
                     // If we are at an yLevel that is higher then the yLevel of the enemy
@@ -851,12 +875,15 @@ public class PistonCrystal extends Module {
                             highSup.add(new Vec3d(cordSupport[0], incr, cordSupport[2]));
                     }
                     incr++;
-                    if (l != 1 || (addedStructure.to_place == null && (int) enemyCoords[1] != (int) mc.player.posY)) {
+                    if ((l != 1 || (addedStructure.to_place == null && (int) enemyCoords[1] != (int) mc.player.posY))) {
                         incr += l;
                         // Iterate for every blocks around, find the closest
                         for (Double[] cord_b : sur_block) {
+                            if ((int) mc.player.posY != (int) enemyCoords[1])
+                                cord_b[1] += l;
                             /// Check if there is enough space
                             // Cord block we are checking
+                            // 229, 3, -4 | 2 | 1
                             double[] crystalCords = {cord_b[0], cord_b[1] + incr - l, cord_b[2]};
                             BlockPos positionCrystal = new BlockPos(crystalCords[0], crystalCords[1], crystalCords[2]);
                             int[] crystalRelativeCords = disp_surblock[i];
@@ -1116,10 +1143,16 @@ public class PistonCrystal extends Module {
                                 // Get the opposit
                                 int[] valueBegin = new int[]{(int) -valuesStart.x, (int) valuesStart.y, (int) -valuesStart.z};
                                 // Add
-                                addedStructure.to_place.add(0, new Vec3d(0, incr + 1, 0));
-                                addedStructure.to_place.add(0, new Vec3d(valueBegin[0], incr + 1, valueBegin[2]));
-                                addedStructure.to_place.add(0, new Vec3d(valueBegin[0], incr, valueBegin[2]));
-                                addedStructure.supportBlock += 3;
+                                if (!bypassObsidian.getValue() || (int) mc.player.posY == (int) enemyCoords[1]) {
+                                    addedStructure.to_place.add(0, new Vec3d(0, incr + 1, 0));
+                                    addedStructure.to_place.add(0, new Vec3d(valueBegin[0], incr + 1, valueBegin[2]));
+                                    addedStructure.to_place.add(0, new Vec3d(valueBegin[0], incr, valueBegin[2]));
+                                    addedStructure.supportBlock += 3;
+                                }else {
+                                    addedStructure.to_place.add(0, new Vec3d(0, incr, 0));
+                                    addedStructure.to_place.add(0, new Vec3d(valueBegin[0], incr, valueBegin[2]));
+                                    addedStructure.supportBlock += 2;
+                                }
                             }
                             // Add to the global value
                             toPlace = addedStructure;
