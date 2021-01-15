@@ -44,10 +44,10 @@ public class Blocker extends Module {
 
     public void setup() {
         rotate = registerBoolean("Rotate", "Rotate", true);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
-        anvilBlocker = registerBoolean("anvilBlocker", "anvilBlocker", true);
-        pistonBlocker = registerBoolean("pistonBlocker", "pistonBlocker", true);
+        anvilBlocker = registerBoolean("Anvil", "Anvil", true);
+        pistonBlocker = registerBoolean("Piston", "Piston", true);
         tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
+        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
     }
 
     private int delayTimeTicks = 0;
@@ -65,9 +65,9 @@ public class Blocker extends Module {
             String output = "";
 
             if (anvilBlocker.getValue())
-                output += "anvilBlocker ";
+                output += "Anvil ";
             if (pistonBlocker.getValue())
-                output += " pistonBlocker ";
+                output += " Piston ";
 
             if (!output.equals("")) {
                 noActive = false;
@@ -86,11 +86,11 @@ public class Blocker extends Module {
         }
         if (chatMsg.getValue()) {
             if (noActive) {
-                printChat("Nothing is active, Blocker turned off", true);
+                printChat("Nothing is active... Blocker turned OFF!", true);
             }else if(noObby)
-                printChat("Obsidian not found, Blocker turned off", true);
+                printChat("Obsidian not found... Blocker turned OFF!", true);
             else
-                printChat("Blocker turned off", true);
+                printChat("Blocker turned OFF!", true);
         }
 
     }
@@ -137,7 +137,7 @@ public class Blocker extends Module {
                     && get_block(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
                     // Place the block
                     placeBlock(new BlockPos(mc.player.posX, mc.player.posY + 2, mc.player.posZ));
-                    printChat("AutoAnvil detected. Anvil Blocked", false);
+                    printChat("AutoAnvil detected... Anvil Blocked!", false);
                 }
             }
         }
@@ -162,7 +162,7 @@ public class Blocker extends Module {
                             if (get_block(t.posX + i, t.posY, t.posZ + j) instanceof BlockPistonBase) {
                                 // Break
                                 breakCrystalPiston(t);
-                                printChat("PistonCrystal detected. Destroyed crystal", false);
+                                printChat("PistonCrystal detected... Destroyed crystal!", false);
                             }
                         }
                     }
