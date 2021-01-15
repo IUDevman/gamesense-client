@@ -105,6 +105,7 @@ public class LoadConfig {
                         break;
                     case TEXT:
                         ((Setting.Text) setting).setValue(dataObject.getAsString());
+                        break;
                     case MODE:
                         ((Setting.Mode) setting).setValue(dataObject.getAsString());
                         break;
