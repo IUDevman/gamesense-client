@@ -53,7 +53,7 @@ public class CombatInfo extends HUDModule {
     }
 
     public void onRender() {
-    	list.totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+    	list.totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum() + ((mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) ? 1 : 0);
     	list.players = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityOtherPlayerMP)
                 .filter(entity -> !Friends.isFriend(entity.getName()))
@@ -109,7 +109,7 @@ public class CombatInfo extends HUDModule {
 
     private class InfoList implements HUDList {
 
-		public int totems=0;
+		public int totems = 0;
 		public EntityOtherPlayerMP players=null;
 		public boolean renderLby=false;
 		public boolean lby=false;
