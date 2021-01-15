@@ -124,9 +124,9 @@ public class PistonCrystal extends Module {
         ArrayList<String> targetChoose = new ArrayList<>();
         targetChoose.add("Nearest");
         targetChoose.add("Looking");
-        target = registerMode("Target", "Target", targetChoose, "Nearest");
         breakType = registerMode("Type", "Type", breakTypes, "Swing");
         placeMode = registerMode("Place", "Place", placeModes, "Torch");
+        target = registerMode("Target", "Target", targetChoose, "Nearest");
         enemyRange = registerDouble("Range", "Range",4.9, 0, 6);
         torchRange = registerDouble("TorchRange", "TorchRange",5.5, 0, 6);
         crystalDeltaBreak = registerDouble("crystalDeltaBreak", "crystalDeltaBreak",0.1, 0, 0.5);
@@ -135,8 +135,8 @@ public class PistonCrystal extends Module {
         startDelay = registerInteger("Start Delay", "StartDelay", 4, 0, 20);
         pistonDelay = registerInteger("Piston Delay", "PistonDelay", 2, 0, 20);
         crystalDelay = registerInteger("Crystal Delay", "Crystal Delay", 2, 0, 20);
-        hitDelay = registerInteger("Hit Delay", "HitDelay", 2, 0, 20);
         midHitDelay = registerInteger("midHitDelay", "midHitDelay", 5, 0, 20);
+        hitDelay = registerInteger("Hit Delay", "HitDelay", 2, 0, 20);
         stuckDetector = registerInteger("Stuck Check", "StuckCheck", 35, 0, 200);
         maxYincr = registerInteger("Max Y", "MaxY", 3, 0, 5);
         rotate = registerBoolean("Rotate", "Rotate", false);
@@ -365,8 +365,12 @@ public class PistonCrystal extends Module {
                 // Place the piston
                 case 1:
                     // Check if there is a redstone torch to break
-                    if (breakRedstone())
-                        placeBlockThings(stage);
+                    if (fastModeActive || breakRedstone()) {
+                        if (!fastModeActive || checkCrystalPlace())
+                            placeBlockThings(stage);
+                        else
+                            stage = 2;
+                    }
                     break;
 
                 // Place crystal
@@ -382,6 +386,8 @@ public class PistonCrystal extends Module {
                     if (fastModeActive || !confirmPlace.getValue() || checkCrystalPlace()) {
                         placeBlockThings(stage);
                         hitTryTick = 0;
+                        if (fastModeActive && !checkPistonPlace())
+                            stage = 1;
                     }
                     break;
 
@@ -457,7 +463,7 @@ public class PistonCrystal extends Module {
                     BlockPos pos = new BlockPos(aimTarget.getPositionVector()).add(offsetPosPist.getX(), offsetPosPist.getY(), offsetPosPist.getZ());
 
                     // Check if there is the redstone torch. It is has been destroyed before
-                    if (confirmBreak.getValue() && brokenRedstoneTorch && get_block(pos.x, pos.y, pos.z) instanceof BlockAir) {
+                    if (confirmBreak.getValue() && brokenRedstoneTorch && get_block(pos.getX(), pos.getY(), pos.getZ()) instanceof BlockAir) {
                         // Reset
                         stage = 1;
                         brokenRedstoneTorch = false;
@@ -543,7 +549,7 @@ public class PistonCrystal extends Module {
     private boolean breakRedstone() {
         BlockPos offsetPosPist = new BlockPos(toPlace.to_place.get(toPlace.supportBlock + 2));
         BlockPos pos = new BlockPos(aimTarget.getPositionVector()).add(offsetPosPist.getX(), offsetPosPist.getY(), offsetPosPist.getZ());
-        if (!(get_block(pos.x, pos.y , pos.z) instanceof BlockAir)) {
+        if (!(get_block(pos.getX(), pos.getY() , pos.getZ()) instanceof BlockAir)) {
             breakBlock(pos);
             return false;
         }
@@ -580,8 +586,8 @@ public class PistonCrystal extends Module {
 
     // Check if the piston has been placed
     private boolean checkPistonPlace() {
-        // Check for the piston
-        BlockPos targetPosPist = compactBlockPos(stage - 1);
+        // Check for the piston 255 3 -56
+        BlockPos targetPosPist = compactBlockPos(1);
         if (!(get_block(targetPosPist.x, targetPosPist.y, targetPosPist.z) instanceof BlockPistonBase)) {
             // Go back placing the piston
             stage--;
@@ -674,13 +680,34 @@ public class PistonCrystal extends Module {
 		 */
         // Get what slot we are going to select
         // If it's not empty
-        if (mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
-            // Is it is correct
-            if (mc.player.inventory.currentItem != slot_mat[step]) {
-                // Change the hand's item
-                mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
+        try {
+            if (mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
+                // Is it is correct
+                if (mc.player.inventory.currentItem != slot_mat[step]) {
+                    // Change the hand's item
+                    mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
+                }
+            } else return false;
+        }catch (Exception e) {
+            printChat("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
+            final Logger LOGGER = LogManager.getLogger("GameSense");
+            LOGGER.error("[PistonCrystal] error during the creation of the structure.");
+            if (e.getMessage() != null)
+                LOGGER.error("[PistonCrystal] error message: " + e.getClass().getName() + " " + e.getMessage());
+            else
+                LOGGER.error("[PistonCrystal] cannot find the cause");
+            int i5 = 0;
+
+            if (e.getStackTrace().length != 0) {
+                LOGGER.error("[PistonCrystal] StackTrace Start");
+                for (StackTraceElement errorMess : e.getStackTrace()) {
+                    LOGGER.error("[PistonCrystal] " + errorMess.toString());
+                }
+                LOGGER.error("[PistonCrystal] StackTrace End");
             }
-        }else return false;
+            printChat(Integer.toString(step), true);
+            disable();
+        }
 
         // Why?
         if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)){
@@ -734,7 +761,7 @@ public class PistonCrystal extends Module {
     // Given a index of a block, get the target position (this is used for support blocks)
     private BlockPos getTargetPos(int idx) {
         BlockPos offsetPos = new BlockPos(toPlace.to_place.get(idx));
-        return new BlockPos(enemyCoordsDouble[0] + offsetPos.x, enemyCoordsDouble[1] + offsetPos.y, enemyCoordsDouble[2] + offsetPos.z);
+        return new BlockPos(enemyCoordsDouble[0] + offsetPos.getX(), enemyCoordsDouble[1] + offsetPos.getY(), enemyCoordsDouble[2] + offsetPos.getZ());
     }
 
     // Check if we have to disable
@@ -944,7 +971,7 @@ public class PistonCrystal extends Module {
                                 if ((minNow = mc.player.getDistance(torchCoords[0], torchCoords[1], torchCoords[2])) >= minFound)
                                     continue;
                                 // if it's a redstone block, lets remove all the sides
-                                if (redstoneBlockMode && (pos[0] == pistonCordRel[0]))
+                                if (redstoneBlockMode && !(pos[0] == crystalCordsRel[0]))
                                     continue;
                                 /*
                                 tempBlock = get_block(pistonCordAbs[0], pistonCordAbs[1], pistonCordAbs[2])) instanceof BlockPistonBase
@@ -1009,9 +1036,14 @@ public class PistonCrystal extends Module {
                                 supportBlock++;
                             }
                             // Redstone
-                            if(get_block(redstoneCoordsAbs[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2]) instanceof BlockAir) {
+                            if(!redstoneBlockMode && get_block(redstoneCoordsAbs[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2]) instanceof BlockAir) {
                                 toPlaceTemp.add(new Vec3d(redstoneCoordsRel[0], redstoneCoordsRel[1] - 1, redstoneCoordsRel[2]));
                                 supportBlock++;
+                            }else {
+                                if (get_block(redstoneCoordsAbs[0] - crystalCordsRel[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2] - crystalCordsRel[2]) instanceof BlockAir) {
+                                    toPlaceTemp.add(new Vec3d(redstoneCoordsRel[0] - crystalCordsRel[0], redstoneCoordsRel[1], redstoneCoordsRel[2] - crystalCordsRel[2]));
+                                    supportBlock++;
+                                }
                             }
 
                             /// Add all others blocks
@@ -1161,6 +1193,9 @@ public class PistonCrystal extends Module {
             slot_mat[2] = 11;
         }
 
+        if (placeMode.getValue().equals("Block"))
+            redstoneBlockMode = true;
+
         // Iterate for all the inventory
         for(int i = 0; i < 9; i++) {
             ItemStack stack = mc.player.inventory.getStackInSlot(i);
@@ -1177,7 +1212,7 @@ public class PistonCrystal extends Module {
                 slot_mat[4] = i;
             }else
             // If Pick
-            if (!placeMode.getValue().equals("Torch") && stack.getItem() instanceof ItemPickaxe) {
+            if (stack.getItem() instanceof ItemPickaxe) {
                 slot_mat[5] = i;
             }
             if (stack.getItem() instanceof ItemBlock){
@@ -1198,12 +1233,14 @@ public class PistonCrystal extends Module {
                             slot_mat[3] = i;
                             redstoneBlockMode = false;
                         }
-                        else if (!placeMode.getValue().equals("Torch") &&block.translationKey.equals("blockRedstone")) {
+                        else if (!placeMode.getValue().equals("Torch") && block.translationKey.equals("blockRedstone")) {
                             slot_mat[3] = i;
                             redstoneBlockMode = true;
                         }
             }
         }
+        if (!redstoneBlockMode)
+            slot_mat[5] = -1;
         // Count what we found
         int count = 0;
         for(int val : slot_mat) {
@@ -1212,7 +1249,7 @@ public class PistonCrystal extends Module {
         }
 
         // If we have everything we need, return true
-        return count == 4 + (antiWeakness.getValue() ? 1 : 0) + (redstoneBlockMode ? 1 : 0);
+        return count >= 4 + (antiWeakness.getValue() ? 1 : 0) + (redstoneBlockMode ? 1 : 0);
 
     }
 
