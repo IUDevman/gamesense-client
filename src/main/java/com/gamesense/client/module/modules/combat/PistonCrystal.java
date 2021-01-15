@@ -4,6 +4,7 @@ package com.gamesense.client.module.modules.combat;
  * @Author TechAle on (Insert data official release)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
  * Break crystal from AutoCrystal
+ * TODO: limit the possibility
  */
 
 
@@ -588,7 +589,7 @@ public class PistonCrystal extends Module {
     private boolean checkPistonPlace() {
         // Check for the piston 255 3 -56
         BlockPos targetPosPist = compactBlockPos(1);
-        if (!(get_block(targetPosPist.x, targetPosPist.y, targetPosPist.z) instanceof BlockPistonBase)) {
+        if (!(get_block(targetPosPist.getX(), targetPosPist.getY(), targetPosPist.getZ()) instanceof BlockPistonBase)) {
             // Go back placing the piston
             stage--;
             return false;
@@ -903,12 +904,12 @@ public class PistonCrystal extends Module {
                                     if ((distanceNowPiston = mc.player.getDistanceSqToCenter(blockPiston)) > distancePist)
                                         continue;
                                     // If it's not air or piston and if someone is here
-                                    if (!(     get_block(blockPiston.x, blockPiston.y, blockPiston.z) instanceof BlockPistonBase
-                                            || get_block(blockPiston.x, blockPiston.y, blockPiston.z) instanceof BlockAir)
+                                    if (!(     get_block(blockPiston.getX(), blockPiston.getY(), blockPiston.getZ()) instanceof BlockPistonBase
+                                            || get_block(blockPiston.getX(), blockPiston.getY(), blockPiston.getZ()) instanceof BlockAir)
                                             || someoneInCoords(crystalCordsAbs[0] + disp[0], crystalCordsAbs[2] + disp[2]))
                                         continue;
                                     // The block in front of the piston should be air
-                                    if (!(get_block(blockPiston.x - crystalCordsRel[0], blockPiston.y, blockPiston.z - crystalCordsRel[2]) instanceof BlockAir))
+                                    if (!(get_block(blockPiston.getX() - crystalCordsRel[0], blockPiston.getY(), blockPiston.getZ() - crystalCordsRel[2]) instanceof BlockAir))
                                         continue;
                                     // Add new coordinates
                                     distancePist = distanceNowPiston;
@@ -1036,9 +1037,11 @@ public class PistonCrystal extends Module {
                                 supportBlock++;
                             }
                             // Redstone
-                            if(!redstoneBlockMode && get_block(redstoneCoordsAbs[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2]) instanceof BlockAir) {
-                                toPlaceTemp.add(new Vec3d(redstoneCoordsRel[0], redstoneCoordsRel[1] - 1, redstoneCoordsRel[2]));
-                                supportBlock++;
+                            if(!fastModeActive && get_block(redstoneCoordsAbs[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2]) instanceof BlockAir) {
+                                if (!redstoneBlockMode) {
+                                    toPlaceTemp.add(new Vec3d(redstoneCoordsRel[0], redstoneCoordsRel[1] - 1, redstoneCoordsRel[2]));
+                                    supportBlock++;
+                                }
                             }else {
                                 if (get_block(redstoneCoordsAbs[0] - crystalCordsRel[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2] - crystalCordsRel[2]) instanceof BlockAir) {
                                     toPlaceTemp.add(new Vec3d(redstoneCoordsRel[0] - crystalCordsRel[0], redstoneCoordsRel[1], redstoneCoordsRel[2] - crystalCordsRel[2]));
