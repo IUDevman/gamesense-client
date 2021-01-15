@@ -79,6 +79,7 @@ public class ModuleManager {
 		addMod(new NoEntityTrace());
 		addMod(new NoKick());
 		addMod(new PvPInfo());
+		addMod(new RespawnCommand());
 		//Render
 		addMod(new BlockHighlight());
 		addMod(new BreakESP());

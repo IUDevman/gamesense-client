@@ -152,6 +152,8 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				container.addComponent(new EnumComponent(property.getName(),null,theme.getComponentRenderer(),(Setting.Mode)property));
 			} else if (property instanceof Setting.ColorSetting) {
 				container.addComponent(new SyncableColorComponent(theme,(Setting.ColorSetting)property,colorToggle,new SettingsAnimation(ClickGuiModule.animationSpeed)));
+			} else if (property instanceof Setting.Text) {
+				container.addComponent(new TextComponent(theme, (Setting.Text)property,new SettingsAnimation(ClickGuiModule.animationSpeed)));
 			}
 		}
 		container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(),module));

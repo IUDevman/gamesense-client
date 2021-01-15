@@ -103,6 +103,8 @@ public class LoadConfig {
                     case COLOR:
                         ((Setting.ColorSetting) setting).fromInteger(dataObject.getAsInt());
                         break;
+                    case TEXT:
+                        ((Setting.Text) setting).setValue(dataObject.getAsString());
                     case MODE:
                         ((Setting.Mode) setting).setValue(dataObject.getAsString());
                         break;

@@ -114,6 +114,10 @@ public class SaveConfig {
                     settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.ColorSetting) setting).toInteger()));
                     break;
                 }
+                case TEXT: {
+                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Text) setting).getValue()));
+                    break;
+                }
                 case MODE: {
                     settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Mode) setting).getValue()));
                     break;

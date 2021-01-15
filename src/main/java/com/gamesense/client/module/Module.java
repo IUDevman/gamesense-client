@@ -155,6 +155,12 @@ public abstract class Module implements Toggleable,KeybindSetting {
 		return registerColor(name,configName,new GSColor(90,145,240));
 	}
 
+	protected Setting.Text registerText(final String name, final String configName, final String value) {
+		final Setting.Text setting = new Setting.Text(name, configName, this, getCategory(), value);
+		GameSense.getInstance().settingsManager.addSetting(setting);
+		return setting;
+	}
+
 	public enum Category {
 		Combat,
 		Exploits,

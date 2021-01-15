@@ -58,7 +58,8 @@ public abstract class Setting {
 		DOUBLE,
 		BOOLEAN,
 		MODE,
-		COLOR
+		COLOR,
+		TEXT
     }
 
 	public static class Integer extends Setting implements NumberSetting {
@@ -284,6 +285,24 @@ public abstract class Setting {
 		@Override
 		public void setRainbow(boolean rainbow) {
 			this.rainbow=rainbow;
+		}
+	}
+
+	public static class Text extends Setting {
+
+		private String value;
+
+		public Text(final String name, final String configName, final Module parent, final Module.Category category, final String value) {
+			super(name,configName,parent,category,Type.TEXT);
+			this.value=value;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue (String value) {
+			this.value = value;
 		}
 	}
 }
