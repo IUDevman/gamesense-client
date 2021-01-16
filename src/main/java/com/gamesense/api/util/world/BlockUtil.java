@@ -3,6 +3,8 @@ package com.gamesense.api.util.world;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.EnumFacing;
@@ -123,5 +125,34 @@ public class BlockUtil {
 		}
 
 		return null;
+	}
+
+	public enum Type {
+		BOTH,
+		OBBY,
+		BEDROCK
+	}
+
+		public static boolean isEntityInHole(Entity entity, Type searchType){
+			if (entity == null){
+				return false;
+			}
+			BlockPos entityPos = entity.getPosition();
+			BlockPos[] surroundingBlocks = new BlockPos[] {entityPos.north(), entityPos.south(), entityPos.east(), entityPos.west(), entityPos.down()};
+			for ( BlockPos block : surroundingBlocks){
+				if (mc.world.getBlockState(block).getBlock() == Blocks.AIR){
+					return false;
+				}
+				if (mc.world.getBlockState(block).getBlock() != Blocks.OBSIDIAN || mc.world.getBlockState(block).getBlock() != Blocks.BEDROCK){
+					return false;
+				}
+				if (mc.world.getBlockState(block).getBlock() == Blocks.OBSIDIAN && searchType == Type.BEDROCK){
+					return false;
+				}
+				if (mc.world.getBlockState(block).getBlock() == Blocks.BEDROCK && searchType == Type.OBBY){
+					return false;
+				}
+			}
+			return true;
 	}
 }
