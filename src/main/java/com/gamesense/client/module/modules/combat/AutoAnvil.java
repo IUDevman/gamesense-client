@@ -136,16 +136,16 @@ public class AutoAnvil extends Module {
                 printChat("No Materials Detected... AutoAnvil turned OFF!", true);
             }
             else if (!isHole) {
-                printChat("The enemy is not in a hole... AutoAnvil turned OFF!", true);
+                printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
             }
             else if(!enoughSpace) {
                 printChat("Not enough space... AutoAnvil turned OFF!", true);
             }
             else if(hasMoved) {
-                printChat("He moved away from the hole... AutoAnvil turned OFF!", true);
+                printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
             }
             else if(blockUp) {
-                printChat("There is a block on the head of your enemy.. AutoAnvil turned OFF!", true);
+                printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
             }
             else {
                 printChat("AutoAnvil turned OFF!", true);
