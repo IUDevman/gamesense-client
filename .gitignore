@@ -271,7 +271,3 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 # End of https://www.gitignore.io/api/linux,gradle,eclipse,windows,forgegradle,intellij+all,emacs,vim
-
-# PanelStudio
-src/main/java/com/lukflug/panelstudio
-src/main/java/META-INF
