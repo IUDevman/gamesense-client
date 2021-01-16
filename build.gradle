@@ -71,8 +71,8 @@ dependencies {
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
 	compile group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
-	compile files('$buildDir/../../PanelStudio/panelstudio/build/libs/panelstudio-0.1.7.jar')
-	compile files('$buildDir/../../PanelStudio/panelstudio-mc12/build/libs/panelstudio-mc12-0.1.7.jar')
+	compile('com.lukflug:panelstudio:0.1.7')
+	compile('com.lukflug:panelstudio-mc12:0.1.7')
 }
 
 processResources {
