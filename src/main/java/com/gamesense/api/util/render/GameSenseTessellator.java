@@ -144,6 +144,7 @@ public class GameSenseTessellator {
 		mc.getRenderManager().setRenderShadow(false);
 		mc.getRenderManager().setRenderOutlines(false);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(true);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0f, -1100000.0f);
@@ -154,6 +155,7 @@ public class GameSenseTessellator {
 		boolean shadow = mc.getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(false);
 		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0f, 1100000.0f);
 		GlStateManager.popMatrix();
@@ -163,6 +165,7 @@ public class GameSenseTessellator {
 		mc.getRenderManager().setRenderShadow(false);
 		mc.getRenderManager().setRenderOutlines(false);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(true);
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0f, -1100000.0f);
 		glDisable(GL11.GL_TEXTURE_2D);
@@ -177,6 +180,7 @@ public class GameSenseTessellator {
 		boolean shadow = mc.getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(false);
 		if (!isPlayer) {
 			GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
 		}
@@ -190,6 +194,7 @@ public class GameSenseTessellator {
 		mc.getRenderManager().setRenderShadow(false);
 		mc.getRenderManager().setRenderOutlines(false);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(true);
 		glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		glEnable(GL11.GL_POLYGON_OFFSET_LINE);
 		glPolygonOffset(1.0f, -1100000.0f);
@@ -209,6 +214,7 @@ public class GameSenseTessellator {
 		boolean shadow = mc.getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(false);
 		if (!isPlayer) {
 			GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
 		}
