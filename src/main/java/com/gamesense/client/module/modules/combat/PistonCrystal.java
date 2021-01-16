@@ -85,7 +85,8 @@ public class PistonCrystal extends Module {
                     brokenCrystalBug,
                     brokenRedstoneTorch,
                     stoppedCa,
-                    deadPl;
+                    deadPl,
+                    rotationPlayerMoved;
 
     private int oldSlot = -1,
             stage,
@@ -95,7 +96,7 @@ public class PistonCrystal extends Module {
 
     private int[]   slot_mat,
                     delayTable,
-            meCoordsInt,
+                    meCoordsInt,
                     enemyCoordsInt;
 
     private double[] enemyCoordsDouble;
@@ -130,7 +131,7 @@ public class PistonCrystal extends Module {
         target = registerMode("Target", "Target", targetChoose, "Nearest");
         enemyRange = registerDouble("Range", "Range",4.9, 0, 6);
         torchRange = registerDouble("TorchRange", "TorchRange",5.5, 0, 6);
-        crystalDeltaBreak = registerDouble("crystalDeltaBreak", "crystalDeltaBreak",0.1, 0, 0.5);
+        crystalDeltaBreak = registerDouble("centerBreak", "crystalDeltaBreak",0.1, 0, 0.5);
         blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 20);
         supBlocksDelay = registerInteger("Surround Delay", "SurroundDelay", 4, 0, 20);
         startDelay = registerInteger("Start Delay", "StartDelay", 4, 0, 20);
@@ -161,7 +162,6 @@ public class PistonCrystal extends Module {
             return;
         // Make checks
         playerChecks();
-
     }
 
     // Get target function
@@ -197,6 +197,8 @@ public class PistonCrystal extends Module {
                 enemyCoordsInt = new int[] {(int) enemyCoordsDouble[0], (int) enemyCoordsDouble[1], (int) enemyCoordsDouble[2]};
                 // Get me coordinates
                 meCoordsInt = new int[] {(int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ};
+                // Make that things wont confict with other things
+                antiAutoDestruction();
                 // Start choosing where to place what
                 enoughSpace = createStructure();
             // Is not in a hoke
@@ -205,6 +207,12 @@ public class PistonCrystal extends Module {
             }
         // No materials
         }else noMaterials = true;
+    }
+
+    private void antiAutoDestruction() {
+        // You cannot use betterplacement if you are using or a redstone block or rotation on
+        if (redstoneBlockMode || rotate.getValue())
+            betterPlacement.setValue(false);
     }
 
     // Init some values
@@ -222,7 +230,7 @@ public class PistonCrystal extends Module {
         // Default values reset
         toPlace = new structureTemp(0,0,null);
         isHole = true;
-        hasMoved = deadPl = broken = brokenCrystalBug = brokenRedstoneTorch = yUnder = redstoneBlockMode = fastModeActive = false;
+        hasMoved = rotationPlayerMoved = deadPl = broken = brokenCrystalBug = brokenRedstoneTorch = yUnder = redstoneBlockMode = fastModeActive = false;
         slot_mat = new int[]{-1, -1, -1, -1, -1, -1};
         stage = delayTimeTicks = stuck = 0;
 
@@ -260,7 +268,7 @@ public class PistonCrystal extends Module {
             }else
             // H distance not avaible
             if (yUnder) {
-                output = "Sorry but you cannot be 2+ blocks under the enemy or %d above...";
+                output = String.format("Sorry but you cannot be 2+ blocks under the enemy or %d above...", maxYincr.getValue());
             // No Materials
             }else if (noMaterials){
                 output = "No Materials Detected...";
@@ -275,6 +283,8 @@ public class PistonCrystal extends Module {
                output = "Out of range...";
             }else if(deadPl) {
                 output = "Enemy is dead, gg! ";
+            }else if(rotationPlayerMoved) {
+                output = "You cannot move from your hole if you have rotation on. ";
             }
             // Output in chat
             printChat(output + "PistonCrystal turned OFF!", true);
@@ -335,6 +345,9 @@ public class PistonCrystal extends Module {
         if (aimTarget.isDead) {
             deadPl = true;
         }
+        // If the guy moved from his hole with rotation on
+        if (rotate.getValue() && !((int) mc.player.posX == meCoordsInt[0] || (int) mc.player.posZ == meCoordsInt[2]))
+            rotationPlayerMoved = true;
 
         // Check if he is not in the hole
         if ((int) aimTarget.posX != (int) enemyCoordsDouble[0] || (int) aimTarget.posZ != (int) enemyCoordsDouble[2])
@@ -768,7 +781,7 @@ public class PistonCrystal extends Module {
     // Check if we have to disable
     private boolean checkVariable() {
         // If something went wrong
-        if (noMaterials || !isHole || !enoughSpace || hasMoved || deadPl){
+        if (noMaterials || !isHole || !enoughSpace || hasMoved || deadPl || rotationPlayerMoved){
             disable();
             return true;
         }
