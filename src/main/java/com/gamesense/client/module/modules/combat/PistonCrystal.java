@@ -744,13 +744,16 @@ public class PistonCrystal extends Module {
         // Get what slot we are going to select
         // If it's not empty
         try {
-            if (mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
+            if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
                 // Is it is correct
                 if (mc.player.inventory.currentItem != slot_mat[step]) {
-                    // Change the hand's item
+                    // Change the hand's item (è qui l'errore)
                     mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
                 }
-            } else return false;
+            } else {
+                noMaterials = true;
+                return false;
+            }
         }catch (Exception e) {
             printChat("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
             final Logger LOGGER = LogManager.getLogger("GameSense");
@@ -806,7 +809,7 @@ public class PistonCrystal extends Module {
     public void placeBlockThings(int step) {
         // Get absolute position
         BlockPos targetPos = compactBlockPos(step);
-        // Place
+        // Place 93 4 -29
         placeBlock(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY);
         // Next step
         stage++;
@@ -1099,8 +1102,9 @@ public class PistonCrystal extends Module {
                                 supportBlock++;
                             }
                             // Redstone
-                            if(!fastModeActive && get_block(redstoneCoordsAbs[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2]) instanceof BlockAir) {
-                                if (!redstoneBlockMode) {
+
+                            if (!fastModeActive) {
+                                if (!redstoneBlockMode && get_block(redstoneCoordsAbs[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2]) instanceof BlockAir) {
                                     toPlaceTemp.add(new Vec3d(redstoneCoordsRel[0], redstoneCoordsRel[1] - 1, redstoneCoordsRel[2]));
                                     supportBlock++;
                                 }
@@ -1110,6 +1114,7 @@ public class PistonCrystal extends Module {
                                     supportBlock++;
                                 }
                             }
+
 
                             /// Add all others blocks
                             // Piston
@@ -1225,6 +1230,7 @@ public class PistonCrystal extends Module {
             }
         }
 
+
         return addedStructure.to_place != null;
     }
 
@@ -1313,6 +1319,9 @@ public class PistonCrystal extends Module {
             if (val != -1)
                 count++;
         }
+
+        if (debugMode.getValue())
+            printChat(String.format("%d %d %d %d %d %d", slot_mat[0], slot_mat[1], slot_mat[2], slot_mat[3], slot_mat[4], slot_mat[5]), false);
 
         // If we have everything we need, return true
         return count >= 4 + (antiWeakness.getValue() ? 1 : 0) + (redstoneBlockMode ? 1 : 0);
@@ -1453,8 +1462,12 @@ public class PistonCrystal extends Module {
         isSpoofingAngles = true;
     }
     public static void breakCrystal(Entity crystal) {
-        mc.playerController.attackEntity(mc.player, crystal);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
+        try {
+            mc.playerController.attackEntity(mc.player, crystal);
+            mc.player.swingArm(EnumHand.MAIN_HAND);
+        }catch (NullPointerException e) {
+
+        }
     }
     @EventHandler
     private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
