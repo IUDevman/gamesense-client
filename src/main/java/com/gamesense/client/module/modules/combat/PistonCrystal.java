@@ -66,7 +66,7 @@ public class PistonCrystal extends Module {
                     blockPlayer,
                     confirmBreak,
                     confirmPlace,
-            allowCheapMode,
+                    allowCheapMode,
                     betterPlacement,
                     bypassObsidian,
                     antiWeakness,
@@ -92,7 +92,10 @@ public class PistonCrystal extends Module {
             stage,
             delayTimeTicks,
             stuck = 0,
-            hitTryTick;
+            hitTryTick,
+            round,
+            nCrystal;
+    private long startTime, endTime;
 
     private int[]   slot_mat,
                     delayTable,
@@ -149,8 +152,10 @@ public class PistonCrystal extends Module {
         betterPlacement = registerBoolean("Better Place", "betterPlacement", true);
         bypassObsidian = registerBoolean("BypassObsidian", "BypassObsidian", false);
         antiWeakness = registerBoolean("Anti Weakness", "AntiWeakness", false);
-        debugMode = registerBoolean("debugMode", "debugMode", false);
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        debugMode = registerBoolean("debugMode", "debugMode", false);
+        // Reset round
+        round = 0;
     }
 
     // Everytime you enable
@@ -252,6 +257,12 @@ public class PistonCrystal extends Module {
             AutoCrystal.stopAC = true;
             stoppedCa = true;
         }
+        // Debug mode
+        if (debugMode.getValue()) {
+            printChat("Started pistonCrystal n^" + (++round), false);
+            startTime = System.currentTimeMillis();
+            nCrystal = 0;
+        }
     }
 
     // On disable of the module
@@ -309,6 +320,9 @@ public class PistonCrystal extends Module {
 
         noMaterials = false;
         AutoCrystal.stopAC = false;
+        // Debug mode
+        if (debugMode.getValue())
+            printChat("Ended pistonCrystal n^" + round, false);
     }
 
     // Every updates
@@ -378,6 +392,9 @@ public class PistonCrystal extends Module {
             switch (stage) {
                 // Place the piston
                 case 1:
+                    // Debug mode
+                    if (debugMode.getValue())
+                        printChat("step 1", false);
                     // Check if there is a redstone torch to break
                     if (fastModeActive || breakRedstone()) {
                         if (!fastModeActive || checkCrystalPlace())
@@ -389,6 +406,9 @@ public class PistonCrystal extends Module {
 
                 // Place crystal
                 case 2:
+                    // Debug mode
+                    if (debugMode.getValue())
+                        printChat("step 2", false);
                     // Check pistonPlace if confirmPlace
                     if (fastModeActive || !confirmPlace.getValue() || checkPistonPlace())
                         placeBlockThings(stage);
@@ -396,6 +416,9 @@ public class PistonCrystal extends Module {
 
                 // Place redstone torch
                 case 3:
+                    // Debug mode
+                    if (debugMode.getValue())
+                        printChat("step 3", false);
                     // Check crystal if confirmPlace
                     if (fastModeActive || !confirmPlace.getValue() || checkCrystalPlace()) {
                         placeBlockThings(stage);
@@ -407,6 +430,10 @@ public class PistonCrystal extends Module {
 
                 // Break crystal
                 case 4:
+                    // Debug mode
+                    if (debugMode.getValue())
+                        printChat("step 4", false);
+                    // Start destroy crystal
                     destroyCrystalAlgo();
                     break;
             }
@@ -440,6 +467,10 @@ public class PistonCrystal extends Module {
             // Reset
             stage = stuck = 0;
             broken = false;
+            // If debug mode
+            if (debugMode.getValue())
+                if(++nCrystal == 3)
+                    printTimeCrystals();
         }
         // If found the crystal
         if (crystal != null) {
@@ -449,8 +480,13 @@ public class PistonCrystal extends Module {
             if (confirmBreak.getValue())
                 broken = true;
                 // If not, left
-            else
+            else {
                 stage = stuck = 0;
+                // If debug mode
+                if (debugMode.getValue())
+                    if(++nCrystal == 3)
+                        printTimeCrystals();
+            }
         }else {
             // If it got stuck
             if (++stuck >= stuckDetector.getValue()) {
@@ -489,8 +525,13 @@ public class PistonCrystal extends Module {
                             /// Restart from the crystal
                             if (confirmBreak.getValue())
                                 brokenRedstoneTorch = true;
-                            else
+                            else {
                                 stage = 1;
+                                // If debug mode
+                                if (debugMode.getValue())
+                                    if(++nCrystal == 3)
+                                        printTimeCrystals();
+                            }
                             // print
                             printChat("Stuck detected: crystal not placed", true);
                         }
@@ -529,6 +570,14 @@ public class PistonCrystal extends Module {
                 }
             }
         }
+    }
+
+    // Get time for 3 crystals
+    private void printTimeCrystals() {
+        endTime = System.currentTimeMillis();
+        printChat("3 crystal, time took: " + (endTime - startTime), false);
+        nCrystal = 0;
+        startTime = System.currentTimeMillis();
     }
 
     // Actual break crystal
@@ -1170,6 +1219,7 @@ public class PistonCrystal extends Module {
         }
 
         if (debugMode.getValue() && addedStructure.to_place != null) {
+            printChat("Skeleton structure:", false);
             for(Vec3d parte : addedStructure.to_place) {
                 printChat(String.format("%f %f %f", parte.x, parte.y, parte.z), false);
             }
