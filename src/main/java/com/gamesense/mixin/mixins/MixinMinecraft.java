@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = Minecraft.class, priority = 9999)
+@Mixin(value = Minecraft.class)
 public class MixinMinecraft {
 
 	@Shadow public EntityPlayerSP player;
