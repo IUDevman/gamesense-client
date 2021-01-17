@@ -602,8 +602,12 @@ public class PistonCrystal extends Module {
             breakCrystal(crystal);
             // Packet
         }else if(breakType.getValue().equals("Packet")) {
-            mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-            mc.player.swingArm(EnumHand.MAIN_HAND);
+            try {
+                mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+                mc.player.swingArm(EnumHand.MAIN_HAND);
+            }catch(NullPointerException e) {
+
+            }
         }
         // Rotate
         if (rotate.getValue())
