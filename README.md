@@ -51,7 +51,7 @@ Most notable features:
 * GL_DONT_CARE (Viewmodel Transformations)
 * NekoPvP (First commit, Item FOV)
 * TechAle (AutoAnvil, PistonCrystal, Blocker)
-* 0b00101010 (HoleESP rewrite)
+* 0b00101010 (HoleESP rewrite, misc render)
 * A2H (Bug fixes, compatability)
 
 #### Credits
