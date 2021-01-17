@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -61,19 +60,19 @@ public class AutoAnvil extends Module {
         targetChoose.add("Nearest");
         targetChoose.add("Looking");
 
-        anvilMode = registerMode("Mode", "Mode", anvilTypesList, "Pick");
-        target = registerMode("Target", "Target", targetChoose, "Nearest");
-        antiCrystal = registerBoolean("Anti Crystal", "AntiCrystal", false);
-        fastAnvil = registerBoolean("Fast Anvil", "FastAnvil", true);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
-        decrease = registerDouble("Decrease", "Decrease",2, 0, 6);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
-        hDistance = registerInteger("H Distance", "HDistance", 7, 1, 10);
-        minH = registerInteger("Min H", "MinH", 3, 1, 10);
-        failStop = registerInteger("Fail Stop", "FailStop", 2, 1, 10);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        anvilMode = registerMode("Mode", anvilTypesList, "Pick");
+        target = registerMode("Target", targetChoose, "Nearest");
+        antiCrystal = registerBoolean("Anti Crystal", false);
+        fastAnvil = registerBoolean("Fast Anvil", true);
+        rotate = registerBoolean("Rotate", true);
+        enemyRange = registerDouble("Range",5.9, 0, 6);
+        decrease = registerDouble("Decrease",2, 0, 6);
+        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+        hDistance = registerInteger("H Distance", 7, 1, 10);
+        minH = registerInteger("Min H", 3, 1, 10);
+        failStop = registerInteger("Fail Stop", 2, 1, 10);
+        chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     private boolean isSneaking = false;
@@ -136,16 +135,16 @@ public class AutoAnvil extends Module {
                 printChat("No Materials Detected... AutoAnvil turned OFF!", true);
             }
             else if (!isHole) {
-                printChat("The enemy is not in a hole... AutoAnvil turned OFF!", true);
+                printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
             }
             else if(!enoughSpace) {
                 printChat("Not enough space... AutoAnvil turned OFF!", true);
             }
             else if(hasMoved) {
-                printChat("He moved away from the hole... AutoAnvil turned OFF!", true);
+                printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
             }
             else if(blockUp) {
-                printChat("There is a block on the head of your enemy.. AutoAnvil turned OFF!", true);
+                printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
             }
             else {
                 printChat("AutoAnvil turned OFF!", true);
@@ -164,7 +163,7 @@ public class AutoAnvil extends Module {
 
         noMaterials = false;
         firstRun = true;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
     }
 
     public void onUpdate() {
@@ -345,7 +344,7 @@ public class AutoAnvil extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -383,7 +382,7 @@ public class AutoAnvil extends Module {
 
         // Re-Active ca
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 

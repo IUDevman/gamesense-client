@@ -44,14 +44,14 @@ public class SelfWeb extends Module {
         placeModes.add("Single");
         placeModes.add("Double");
 
-        placeType = registerMode("Place", "Place", placeModes, "Single");
-        shiftOnly = registerBoolean("Shift Only", "ShiftOnly", false);
-        singleWeb = registerBoolean("One Place", "OnePlace", false);
-        disableNone = registerBoolean("Disable No Web", "DisableNoWeb", true);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        placeType = registerMode("Place", placeModes, "Single");
+        shiftOnly = registerBoolean("Shift Only", false);
+        singleWeb = registerBoolean("One Place", false);
+        disableNone = registerBoolean("Disable No Web", true);
+        rotate = registerBoolean("Rotate", true);
+        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+        chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     private boolean noWeb = false;
@@ -107,7 +107,7 @@ public class SelfWeb extends Module {
 
         noWeb = false;
         firstRun = true;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
     }
 
     public void onUpdate() {
@@ -255,7 +255,7 @@ public class SelfWeb extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -268,7 +268,7 @@ public class SelfWeb extends Module {
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 

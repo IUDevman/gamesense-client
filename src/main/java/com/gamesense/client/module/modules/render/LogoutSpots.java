@@ -5,7 +5,7 @@ import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.Timer;
 import com.gamesense.client.GameSense;
@@ -45,12 +45,12 @@ public class LogoutSpots extends Module {
 		renderModes.add("Outline");
 		renderModes.add("Fill");
 
-		range = registerInteger("Range", "Range", 100, 10, 260);
-		chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
-		nameTag = registerBoolean("Nametag", "Nametag", true);
-		lineWidth = registerInteger("Width", "Width", 1, 1, 10);
-		renderMode = registerMode("Render", "Render", renderModes, "Both");
-		color = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
+		range = registerInteger("Range", 100, 10, 260);
+		chatMsg = registerBoolean("Chat Msgs", true);
+		nameTag = registerBoolean("Nametag", true);
+		lineWidth = registerInteger("Width", 1, 1, 10);
+		renderMode = registerMode("Render", renderModes, "Both");
+		color = registerColor("Color", new GSColor(255, 0, 0, 255));
 	}
 
 	Map<net.minecraft.entity.Entity, String> loggedPlayers = new ConcurrentHashMap<>();
@@ -97,20 +97,20 @@ public class LogoutSpots extends Module {
 		nameTagMessage[1] = "(" + posX + "," + posY + "," + posZ + ")";
 
 		GlStateManager.pushMatrix();
-		GameSenseTessellator.drawNametag(entity, nameTagMessage, color.getValue(),0);
+		RenderUtil.drawNametag(entity, nameTagMessage, color.getValue(),0);
 
 		switch (renderMode.getValue()) {
 			case "Both": {
-				GameSenseTessellator.drawBoundingBox(entity.getRenderBoundingBox(), lineWidth.getValue(), color.getValue());
-				GameSenseTessellator.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
+				RenderUtil.drawBoundingBox(entity.getRenderBoundingBox(), lineWidth.getValue(), color.getValue());
+				RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
 				break;
 			}
 			case "Outline": {
-				GameSenseTessellator.drawBoundingBox(entity.getRenderBoundingBox(), lineWidth.getValue(), color.getValue());
+				RenderUtil.drawBoundingBox(entity.getRenderBoundingBox(), lineWidth.getValue(), color.getValue());
 				break;
 			}
 			case "Fill": {
-				GameSenseTessellator.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
+				RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
 				break;
 			}
 		}

@@ -46,16 +46,16 @@ public class Surround extends Module {
     Setting.Integer blocksPerTick;
 
     public void setup() {
-        triggerSurround = registerBoolean("Triggerable", "Triggerable", false);
-        shiftOnly = registerBoolean("Shift Only", "ShiftOnly", false);
-        disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
-        disableOnJump = registerBoolean("Disable On Jump", "DisableOnJump", false);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        centerPlayer = registerBoolean("Center Player", "CenterPlayer", false);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        timeOutTicks = registerInteger("Timeout Ticks", "TimeoutTicks", 40, 1, 100);
-        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        triggerSurround = registerBoolean("Triggerable", false);
+        shiftOnly = registerBoolean("Shift Only", false);
+        disableNone = registerBoolean("Disable No Obby", true);
+        disableOnJump = registerBoolean("Disable On Jump", false);
+        rotate = registerBoolean("Rotate", true);
+        centerPlayer = registerBoolean("Center Player", false);
+        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+        timeOutTicks = registerInteger("Timeout Ticks", 40, 1, 100);
+        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+        chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     private boolean noObby = false;
@@ -124,7 +124,7 @@ public class Surround extends Module {
 
         noObby = false;
         firstRun = true;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
     }
 
     public void onUpdate() {
@@ -313,7 +313,7 @@ public class Surround extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -326,7 +326,7 @@ public class Surround extends Module {
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 

@@ -1,13 +1,5 @@
 package com.gamesense.client.module.modules.combat;
 
-/**
- * @Author TechAle on (Insert data official release)
- * Ported and modified from AutoAnvil.java that is modified from Surround.java
- * Break crystal from AutoCrystal
- * TODO: limit the possibility
- */
-
-
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
@@ -38,6 +30,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * @Author TechAle on (Insert data official release)
+ * Ported and modified from AutoAnvil.java that is modified from Surround.java
+ * Break crystal from AutoCrystal
+ * TODO: limit the possibility
+ */
 
 public class PistonCrystal extends Module {
 
@@ -256,7 +255,7 @@ public class PistonCrystal extends Module {
         stoppedCa = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")){
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedCa = true;
         }
         // Debug mode
@@ -304,10 +303,9 @@ public class PistonCrystal extends Module {
 
             // Re-Active ca
             if (stoppedCa){
-                AutoCrystal.stopAC = false;
+                AutoCrystalGS.stopAC = false;
                 stoppedCa = false;
             }
-
         }
 
         if (isSneaking){
@@ -321,7 +319,7 @@ public class PistonCrystal extends Module {
         }
 
         noMaterials = false;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
         // Debug mode
         if (debugMode.getValue() || speedMeter.getValue())
             printChat("Ended pistonCrystal n^" + round, false);
@@ -1462,6 +1460,7 @@ public class PistonCrystal extends Module {
     private static boolean isSpoofingAngles;
     private static double yaw;
     private static double pitch;
+
     public static void setYawAndPitch(float yaw1, float pitch1) {
         yaw = yaw1;
         pitch = pitch1;
@@ -1475,6 +1474,15 @@ public class PistonCrystal extends Module {
 
         }
     }
+
+    public static void resetRotation() {
+        if (isSpoofingAngles) {
+            yaw = mc.player.rotationYaw;
+            pitch = mc.player.rotationPitch;
+            isSpoofingAngles = false;
+        }
+    }
+
     @EventHandler
     private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
         Packet packet = event.getPacket();
@@ -1485,12 +1493,4 @@ public class PistonCrystal extends Module {
             }
         }
     });
-    public static void resetRotation() {
-        if (isSpoofingAngles) {
-            yaw = mc.player.rotationYaw;
-            pitch = mc.player.rotationPitch;
-            isSpoofingAngles = false;
-        }
-    }
-
 }

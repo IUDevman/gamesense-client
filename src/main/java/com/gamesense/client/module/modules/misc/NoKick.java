@@ -23,9 +23,9 @@ public class NoKick extends Module {
 	Setting.Boolean noOffhandCrash;
 
 	public void setup() {
-		noPacketKick = registerBoolean("Packet", "Packet", true);
-		noSlimeCrash = registerBoolean("Slime", "Slime", false);
-		noOffhandCrash = registerBoolean("Offhand", "Offhand", false);
+		noPacketKick = registerBoolean("Packet", true);
+		noSlimeCrash = registerBoolean("Slime", false);
+		noOffhandCrash = registerBoolean("Offhand", false);
 	}
 
 	//slime

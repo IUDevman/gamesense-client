@@ -16,10 +16,10 @@ public class FastPlace extends Module {
 	Setting.Boolean everything;
 
 	public void setup() {
-		exp = registerBoolean("Exp", "Exp", false);
-		crystals = registerBoolean("Crystals", "Crystals", false);
-		offhandCrystal = registerBoolean("Offhand Crystal", "OffhandCrystal", false);
-		everything = registerBoolean("Everything", "Everything",false);
+		exp = registerBoolean("Exp", false);
+		crystals = registerBoolean("Crystals", false);
+		offhandCrystal = registerBoolean("Offhand Crystal", false);
+		everything = registerBoolean("Everything",false);
 	}
 
 	public void onUpdate() {

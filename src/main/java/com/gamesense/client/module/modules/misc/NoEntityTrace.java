@@ -13,7 +13,7 @@ public class NoEntityTrace extends Module {
 	Setting.Boolean pickaxeOnly;
 
 	public void setup() {
-		pickaxeOnly = registerBoolean("Pickaxe Only", "PickaxeOnly", true);
+		pickaxeOnly = registerBoolean("Pickaxe Only", true);
 	}
 
 	boolean isHoldingPickaxe = false;

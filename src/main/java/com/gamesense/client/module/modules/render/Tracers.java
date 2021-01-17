@@ -7,7 +7,7 @@ import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 
@@ -36,17 +36,17 @@ public class Tracers extends Module {
 	Setting.ColorSetting farColor;
 
 	public void setup() {
-		renderDistance = registerInteger("Distance", "Distance", 100, 10, 260);
+		renderDistance = registerInteger("Distance", 100, 10, 260);
 
 		ArrayList<String> link = new ArrayList<>();
 		link.add("Head");
 		link.add("Feet");
 
-		pointsTo = registerMode("Draw To", "DrawTo", link, "Feet");
-		colorType = registerBoolean("Color Sync", "ColorSync", true);
-		nearColor=registerColor("Near Color","NearColor",new GSColor(255,0,0, 255));
-		midColor=registerColor("Middle Color","MidColor",new GSColor(255,255,0, 255));
-		farColor=registerColor("Far Color","FarColor",new GSColor(0,255,0, 255));
+		pointsTo = registerMode("Draw To", link, "Feet");
+		colorType = registerBoolean("Color Sync", true);
+		nearColor=registerColor("Near Color", new GSColor(255,0,0, 255));
+		midColor=registerColor("Middle Color", new GSColor(255,255,0, 255));
+		farColor=registerColor("Far Color", new GSColor(0,255,0, 255));
 	}
 
 	GSColor tracerColor;
@@ -104,14 +104,14 @@ public class Tracers extends Module {
 
 	public void drawLine1(double posx, double posy, double posz, double up, GSColor color) {
 		Vec3d eyes=ActiveRenderInfo.getCameraPosition().add(mc.getRenderManager().viewerPosX,mc.getRenderManager().viewerPosY,mc.getRenderManager().viewerPosZ);
-		GameSenseTessellator.prepare();
+		RenderUtil.prepare();
 		if (pointsTo.getValue().equalsIgnoreCase("Head")) {
-			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy+up, posz, color);
+			RenderUtil.drawLine(eyes.x, eyes.y, eyes.z, posx, posy+up, posz, color);
 		}
 		else {
-			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy, posz, color);
+			RenderUtil.drawLine(eyes.x, eyes.y, eyes.z, posx, posy, posz, color);
 		}
-		GameSenseTessellator.release();
+		RenderUtil.release();
 	}
 
 	private GSColor getDistanceColor(int distance) {

@@ -45,12 +45,15 @@ Most notable features:
 * Hoosiers (original developer, head developer, maintainer)
 * lukflug (color settings, OpenGL, ClickGUI and minor optimizations, issue tracker)
 * auburnhud2 (whitespace and continuous integration, issue tracker)
-* linustouchtips (TargetHUD, SkyColor, and Quiver)
+* linustouchtips (TargetHUD, SkyColor, Misc Rendering)
 * Dngerr (Blink and HotbarRefill)
 * DarkiBoi (TotemPopCounter)
 * GL_DONT_CARE (Viewmodel Transformations)
 * NekoPvP (First commit, Item FOV)
-* TechAle (AutoAnvil, PistonCrystal)
+* TechAle (AutoAnvil, PistonCrystal, Blocker)
+* 0b00101010 (HoleESP rewrite)
+* A2H (Bug fixes, compatability)
+
 #### Credits
 ***Check specific class files for full credits.***
 This client started out based off of FINZ0's Osiris, which in turn was based off of 086's KAMI. 

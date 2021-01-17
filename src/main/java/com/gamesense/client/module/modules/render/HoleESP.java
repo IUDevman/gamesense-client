@@ -4,7 +4,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
 import com.google.common.collect.Sets;
@@ -34,7 +34,6 @@ public class HoleESP extends Module {
     public static Setting.Integer rangeS;
     Setting.Boolean hideOwn;
     Setting.Boolean flatOwn;
-    // Setting.Boolean renderBurrow;
     Setting.Mode customHoles;
     Setting.Mode mode;
     Setting.Mode type;
@@ -43,8 +42,6 @@ public class HoleESP extends Module {
     Setting.ColorSetting bedrockColor;
     Setting.ColorSetting obsidianColor;
     Setting.ColorSetting customColor;
-    // TODO: fix burrow
-    // Setting.ColorSetting burrowColor;
 
     public void setup() {
         ArrayList<String> holes = new ArrayList<>();
@@ -75,19 +72,17 @@ public class HoleESP extends Module {
         modes.add("Slab");
         modes.add("Double");
 
-        rangeS = registerInteger("Range", "Range", 5, 1, 20);
-        //renderBurrow = registerBoolean("Burrow", "Burrow", true);
-        customHoles = registerMode("Show", "Show", holes, "Single");
-        type = registerMode("Render", "Render", render, "Both");
-        mode = registerMode("Mode", "Mode", modes, "Air");
-        hideOwn = registerBoolean("Hide Own", "HideOwn", false);
-        flatOwn = registerBoolean("Flat Own", "FlatOwn", false);
-        slabHeight = registerDouble("Slab Height", "SlabHeight", 0.5, 0.1, 1.5);
-        width = registerInteger("Width","Width",1,1,10);
-        bedrockColor = registerColor("Bedrock Color","BedrockColor", new GSColor(0,255,0));
-        obsidianColor = registerColor("Obsidian Color","ObsidianColor", new GSColor(255,0,0));
-        customColor = registerColor("Custom Color","CustomColor", new GSColor(0,0,255));
-        // burrowColor = registerColor("Burrow Color", "BurrowColor", new GSColor(255, 255, 0));
+        rangeS = registerInteger("Range", 5, 1, 20);
+        customHoles = registerMode("Show", holes, "Single");
+        type = registerMode("Render", render, "Both");
+        mode = registerMode("Mode", modes, "Air");
+        hideOwn = registerBoolean("Hide Own", false);
+        flatOwn = registerBoolean("Flat Own", false);
+        slabHeight = registerDouble("Slab Height", 0.5, 0.1, 1.5);
+        width = registerInteger("Width",1,1,10);
+        bedrockColor = registerColor("Bedrock Color", new GSColor(0,255,0));
+        obsidianColor = registerColor("Obsidian Color", new GSColor(255,0,0));
+        customColor = registerColor("Custom Color", new GSColor(0,0,255));
     }
 
     private ConcurrentHashMap<AxisAlignedBB, GSColor> holes;
@@ -161,10 +156,10 @@ public class HoleESP extends Module {
 
             HashMap<BlockOffset, BlockSafety> unsafeSides = getUnsafeSides(pos);
 
-            if (unsafeSides.containsKey(BlockOffset.DOWN))
-            {
-                if (unsafeSides.remove(BlockOffset.DOWN, BlockSafety.BREAKABLE))
+            if (unsafeSides.containsKey(BlockOffset.DOWN)) {
+                if (unsafeSides.remove(BlockOffset.DOWN, BlockSafety.BREAKABLE)) {
                     return;
+                }
             }
 
             int size = unsafeSides.size();
@@ -302,36 +297,36 @@ public class HoleESP extends Module {
         switch (mode.getValue()) {
             case "Air": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.ALL);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
             case "Ground": {
-                GameSenseTessellator.drawBox(hole.offset(0, -1, 0), true, 1, fillColor, GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(hole.offset(0, -1, 0), true, 1, fillColor, GeometryMasks.Quad.ALL);
                 break;
             }
             case "Flat": {
-                GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
                 break;
             }
             case "Slab": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBox(hole, false, slabHeight.getValue(), fillColor, GeometryMasks.Quad.ALL);
+                    RenderUtil.drawBox(hole, false, slabHeight.getValue(), fillColor, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
             case "Double": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBox(hole.setMaxY(hole.maxY + 1), true, 2, fillColor, GeometryMasks.Quad.ALL);
+                    RenderUtil.drawBox(hole.setMaxY(hole.maxY + 1), true, 2, fillColor, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
@@ -346,36 +341,36 @@ public class HoleESP extends Module {
         switch (mode.getValue()) {
             case "Air": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBoundingBox(hole, width.getValue(), outlineColor);
+                    RenderUtil.drawBoundingBox(hole, width.getValue(), outlineColor);
                 }
                 break;
             }
             case "Ground": {
-                GameSenseTessellator.drawBoundingBox(hole.offset(0, -1, 0), width.getValue(), outlineColor);
+                RenderUtil.drawBoundingBox(hole.offset(0, -1, 0), width.getValue(), outlineColor);
                 break;
             }
             case "Flat": {
-                GameSenseTessellator.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
                 break;
             }
             case "Slab": {
                 if (this.flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBoundingBox(hole.setMaxY(hole.minY + slabHeight.getValue()), width.getValue(), outlineColor);
+                    RenderUtil.drawBoundingBox(hole.setMaxY(hole.minY + slabHeight.getValue()), width.getValue(), outlineColor);
                 }
                 break;
             }
             case "Double": {
                 if (this.flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBoundingBox(hole.setMaxY(hole.maxY + 1), width.getValue(), outlineColor);
+                    RenderUtil.drawBoundingBox(hole.setMaxY(hole.maxY + 1), width.getValue(), outlineColor);
                 }
                 break;
             }
@@ -400,8 +395,7 @@ public class HoleESP extends Module {
         private final int y;
         private final int z;
 
-        BlockOffset(int x, int y, int z)
-        {
+        BlockOffset(int x, int y, int z) {
             this.x = x;
             this.y = y;
             this.z = z;

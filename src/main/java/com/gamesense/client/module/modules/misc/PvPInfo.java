@@ -12,8 +12,10 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderPearl;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.network.play.server.SPacketEntityStatus;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +37,7 @@ public class PvPInfo extends Module {
 	List<Entity> antipearlspamplz = new ArrayList<>();
 	List<Entity> players;
 	List<Entity> pearls;
+	List<Entity> burrowedPlayers = new ArrayList<>();
 	List<Entity> strengthedPlayers = new ArrayList<>();
 	private HashMap<String, Integer> popCounterHashMap = new HashMap<>();
 
@@ -42,6 +45,7 @@ public class PvPInfo extends Module {
 	Setting.Boolean pearlAlert;
 	Setting.Boolean strengthDetect;
 	Setting.Boolean popCounter;
+	Setting.Boolean burrowAlert;
 	Setting.Mode ChatColor;
 
 	public void setup() {
@@ -62,11 +66,12 @@ public class PvPInfo extends Module {
 		colors.add("Aqua");
 		colors.add("Light Purple");
 		colors.add("White");
-		visualRange = registerBoolean("Visual Range", "VisualRange", false);
-		pearlAlert = registerBoolean("Pearl Alert", "PearlAlert",false);
-		strengthDetect = registerBoolean("Strength Detect", "StrengthDetect", false);
-		popCounter = registerBoolean("Pop Counter", "PopCounter", false);
-		ChatColor = registerMode("Color", "Color", colors, "Light Purple");
+		visualRange = registerBoolean("Visual Range", false);
+		pearlAlert = registerBoolean("Pearl Alert", false);
+		burrowAlert = registerBoolean("Burrow Alert", false);
+		strengthDetect = registerBoolean("Strength Detect", false);
+		popCounter = registerBoolean("Pop Counter", false);
+		ChatColor = registerMode("Color", colors, "Light Purple");
 	}
 
 	public void onUpdate() {
@@ -98,6 +103,24 @@ public class PvPInfo extends Module {
 			}
 			catch (Exception e) { }
 		}
+
+		if (burrowAlert.getValue()) {
+			for (Entity entity : mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityPlayer).collect(Collectors.toList())) {
+				if (!(entity instanceof EntityPlayer)){
+					continue;
+				}
+
+				if (!burrowedPlayers.contains(entity) && isBurrowed(entity)) {
+					burrowedPlayers.add(entity);
+					MessageBus.sendClientPrefixMessage(getTextColor() + entity.getName() + " has just burrowed!");
+				}
+				else if (burrowedPlayers.contains(entity) && !isBurrowed(entity)) {
+					burrowedPlayers.remove(entity);
+					MessageBus.sendClientPrefixMessage(getTextColor() + entity.getName() + " is no longer burrowed!");
+				}
+			}
+		}
+
 		if (pearlAlert.getValue()) {
 			pearls = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityEnderPearl).collect(Collectors.toList());
 			try {
@@ -134,6 +157,29 @@ public class PvPInfo extends Module {
 				}
 			}
 		}
+	}
+
+	private boolean isBurrowed(Entity entity) {
+		BlockPos entityPos = new BlockPos(roundValueToCenter(entity.posX), entity.posY, roundValueToCenter(entity.posZ));
+
+		if (mc.world.getBlockState(entityPos).getBlock() == Blocks.OBSIDIAN || mc.world.getBlockState(entityPos).getBlock() == Blocks.ENDER_CHEST) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private double roundValueToCenter(double inputVal) {
+		double roundVal = Math.round(inputVal);
+
+		if (roundVal > inputVal) {
+			roundVal -= 0.5;
+		}
+		else if (roundVal <= inputVal) {
+			roundVal += 0.5;
+		}
+
+		return roundVal;
 	}
 
 	@EventHandler

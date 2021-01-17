@@ -25,9 +25,9 @@ public abstract class Setting {
 	private final Module.Category category;
 	private final Type type;
 
-	public Setting(final String name, final String configName, final Module parent, final Module.Category category, final Type type) {
+	public Setting(final String name, final Module parent, final Module.Category category, final Type type) {
 		this.name = name;
-		this.configName = configName;
+		this.configName = name.replace(" ", "");
 		this.parent = parent;
 		this.type = type;
 		this.category = category;
@@ -67,8 +67,8 @@ public abstract class Setting {
 		private final int min;
 		private final int max;
 
-		public Integer(final String name, final String configName, final Module parent, final Module.Category category, final int value, final int min, final int max) {
-			super(name, configName, parent, category, Type.INTEGER);
+		public Integer(final String name, final Module parent, final Module.Category category, final int value, final int min, final int max) {
+			super(name, parent, category, Type.INTEGER);
 			this.value = value;
 			this.min = min;
 			this.max = max;
@@ -122,8 +122,8 @@ public abstract class Setting {
 		private final double min;
 		private final double max;
 
-		public Double(final String name, final String configName, final Module parent, final Module.Category category, final double value, final double min, final double max) {
-			super(name, configName, parent, category, Type.DOUBLE);
+		public Double(final String name, final Module parent, final Module.Category category, final double value, final double min, final double max) {
+			super(name, parent, category, Type.DOUBLE);
 			this.value = value;
 			this.min = min;
 			this.max = max;
@@ -175,8 +175,8 @@ public abstract class Setting {
 
 		private boolean value;
 
-		public Boolean(final String name, final String configName, final Module parent, final Module.Category category, final boolean value) {
-			super(name, configName, parent, category, Type.BOOLEAN);
+		public Boolean(final String name, final Module parent, final Module.Category category, final boolean value) {
+			super(name, parent, category, Type.BOOLEAN);
 			this.value = value;
 		}
 
@@ -204,8 +204,8 @@ public abstract class Setting {
 		private String value;
 		private final java.util.List<String> modes;
 
-		public Mode(final String name, final String configName, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value) {
-			super(name, configName, parent, category, Type.MODE);
+		public Mode(final String name, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value) {
+			super(name, parent, category, Type.MODE);
 			this.value = value;
 			this.modes = modes;
 		}
@@ -240,8 +240,8 @@ public abstract class Setting {
 		private boolean rainbow;
 		private GSColor value;
 		
-		public ColorSetting (final String name, final String configName, final Module parent, final Module.Category category, boolean rainbow, final GSColor value) {
-			super(name,configName,parent,category,Type.COLOR);
+		public ColorSetting (final String name, final Module parent, final Module.Category category, boolean rainbow, final GSColor value) {
+			super(name, parent, category, Type.COLOR);
 			this.rainbow=rainbow;
 			this.value=value;
 		}

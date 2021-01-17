@@ -59,14 +59,14 @@ public class AutoTrap extends Module {
         targetChoose.add("Nearest");
         targetChoose.add("Looking");
 
-        trapType = registerMode("Mode", "Mode", trapTypes, "Normal");
-        target = registerMode("Target", "Target", targetChoose, "Nearest");
-        disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
-        enemyRange = registerInteger("Range", "Range",4, 0, 6);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        trapType = registerMode("Mode", trapTypes, "Normal");
+        target = registerMode("Target", targetChoose, "Nearest");
+        disableNone = registerBoolean("Disable No Obby", true);
+        rotate = registerBoolean("Rotate", true);
+        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+        enemyRange = registerInteger("Range",4, 0, 6);
+        chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     private boolean noObby = false;
@@ -122,7 +122,7 @@ public class AutoTrap extends Module {
 
         noObby = false;
         firstRun = true;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
     }
 
     public void onUpdate() {
@@ -281,7 +281,7 @@ public class AutoTrap extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -294,7 +294,7 @@ public class AutoTrap extends Module {
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 

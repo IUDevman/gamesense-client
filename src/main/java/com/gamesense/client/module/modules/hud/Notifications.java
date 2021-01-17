@@ -26,9 +26,9 @@ public class Notifications extends HUDModule {
 	}
 
 	public void setup() {
-		sortUp = registerBoolean("Sort Up", "SortUp", false);
-		sortRight = registerBoolean("Sort Right", "SortRight", false);
-		disableChat = registerBoolean("No Chat Msg", "NoChatMsg", true);
+		sortUp = registerBoolean("Sort Up", false);
+		sortRight = registerBoolean("Sort Right", false);
+		disableChat = registerBoolean("No Chat Msg", true);
 	}
 	
 	@Override

@@ -29,8 +29,8 @@ public class InventoryViewer extends HUDModule {
     }
 
     public void setup() {
-        fillColor = registerColor("Fill", "Fill", new GSColor(0, 0, 0, 100));
-        outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
+        fillColor = registerColor("Fill", new GSColor(0, 0, 0, 100));
+        outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
     }
     
     @Override

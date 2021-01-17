@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.render;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
 import net.minecraft.block.material.Material;
@@ -39,10 +39,10 @@ public class BlockHighlight extends Module {
         renderTypes.add("Fill");
         renderTypes.add("Both");
 
-        renderLook = registerMode("Render", "Render", renderLooks, "Block");
-        renderType = registerMode("Type", "Type", renderTypes, "Outline");
-        lineWidth = registerInteger("Width", "Width", 1, 1, 5);
-        renderColor = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
+        renderLook = registerMode("Render", renderLooks, "Block");
+        renderType = registerMode("Type", renderTypes, "Outline");
+        lineWidth = registerInteger("Width", 1, 1, 5);
+        renderColor = registerColor("Color", new GSColor(255, 0, 0, 255));
     }
 
     private int lookInt;
@@ -96,10 +96,10 @@ public class BlockHighlight extends Module {
     public void renderOutline(AxisAlignedBB axisAlignedBB, int width, GSColor color, EnumFacing enumFacing, int lookInt) {
 
         if (lookInt == 0) {
-            GameSenseTessellator.drawBoundingBox(axisAlignedBB, width, color);
+            RenderUtil.drawBoundingBox(axisAlignedBB, width, color);
         }
         else if (lookInt == 1) {
-            GameSenseTessellator.drawBoundingBoxWithSides(axisAlignedBB, width, color, findRenderingSide(enumFacing));
+            RenderUtil.drawBoundingBoxWithSides(axisAlignedBB, width, color, findRenderingSide(enumFacing));
         }
     }
 
@@ -113,7 +113,7 @@ public class BlockHighlight extends Module {
             facing = findRenderingSide(enumFacing);
         }
 
-        GameSenseTessellator.drawBox(axisAlignedBB, true, 1, color, facing);
+        RenderUtil.drawBox(axisAlignedBB, true, 1, color, facing);
     }
 
     private int findRenderingSide(EnumFacing enumFacing) {

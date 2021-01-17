@@ -25,7 +25,7 @@ public class ChatSuffix extends Module {
 		Separators.add("<<");
 		Separators.add("|");
 
-		Separator = registerMode("Separator", "Separator", Separators, "|");
+		Separator = registerMode("Separator", Separators, "|");
 	}
 
 	@EventHandler

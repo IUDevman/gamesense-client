@@ -28,9 +28,9 @@ public class PotionEffects extends HUDModule {
     }
 
     public void setup() {
-    	sortUp = registerBoolean("Sort Up", "SortUp", false);
-		sortRight = registerBoolean("Sort Right", "SortRight", false);
-        color = registerColor("Color", "Color", new GSColor(0, 255, 0, 255));
+    	sortUp = registerBoolean("Sort Up", false);
+		sortRight = registerBoolean("Sort Right", false);
+        color = registerColor("Color", new GSColor(0, 255, 0, 255));
     }
     
     @Override

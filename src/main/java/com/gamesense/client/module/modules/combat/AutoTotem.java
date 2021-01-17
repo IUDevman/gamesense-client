@@ -20,7 +20,7 @@ public class AutoTotem extends Module {
 	Setting.Boolean soft;
 
 	public void setup() {
-		soft = registerBoolean("Soft", "Soft", true);
+		soft = registerBoolean("Soft", true);
 	}
 
 	@Override

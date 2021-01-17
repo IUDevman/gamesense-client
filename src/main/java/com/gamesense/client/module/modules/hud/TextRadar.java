@@ -35,10 +35,10 @@ public class TextRadar extends HUDModule {
 		displayModes.add("All");
 		displayModes.add("Friend");
 		displayModes.add("Enemy");
-		display = registerMode("Display", "Display", displayModes, "All");
-		sortUp = registerBoolean("Sort Up", "SortUp", false);
-		sortRight = registerBoolean("Sort Right", "SortRight", false);
-		range = registerInteger("Range", "Range", 100, 1, 260);
+		display = registerMode("Display", displayModes, "All");
+		sortUp = registerBoolean("Sort Up", false);
+		sortRight = registerBoolean("Sort Right", false);
+		range = registerInteger("Range", 100, 1, 260);
 	}
 	
 	@Override

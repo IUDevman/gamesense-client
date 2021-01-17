@@ -41,13 +41,13 @@ public class AutoWeb extends Module {
 		trapTypes.add("Single");
 		trapTypes.add("Double");
 
-		trapType = registerMode("Mode", "Mode", trapTypes, "Double");
-		disableNone = registerBoolean("Disable No Web", "DisableNoWb", true);
-		rotate = registerBoolean("Rotate", "Rotate", true);
-		tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-		blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
-		enemyRange = registerInteger("Range", "Range",4, 0, 6);
-		chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+		trapType = registerMode("Mode", trapTypes, "Double");
+		disableNone = registerBoolean("Disable No Web", true);
+		rotate = registerBoolean("Rotate", true);
+		tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+		blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+		enemyRange = registerInteger("Range",4, 0, 6);
+		chatMsg = registerBoolean("Chat Msgs", true);
 	}
 
 	private boolean noWeb = false;
@@ -104,7 +104,7 @@ public class AutoWeb extends Module {
 
 		noWeb = false;
 		firstRun = true;
-		AutoCrystal.stopAC = false;
+		AutoCrystalGS.stopAC = false;
 	}
 
 	public void onUpdate() {
@@ -248,7 +248,7 @@ public class AutoWeb extends Module {
 		boolean stoppedAC = false;
 
 		if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-			AutoCrystal.stopAC = true;
+			AutoCrystalGS.stopAC = true;
 			stoppedAC = true;
 		}
 
@@ -261,7 +261,7 @@ public class AutoWeb extends Module {
 		mc.rightClickDelayTimer = 4;
 
 		if (stoppedAC) {
-			AutoCrystal.stopAC = false;
+			AutoCrystalGS.stopAC = false;
 			stoppedAC = false;
 		}
 

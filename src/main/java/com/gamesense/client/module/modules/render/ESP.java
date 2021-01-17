@@ -5,7 +5,7 @@ import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.entity.Entity;
@@ -54,15 +54,15 @@ public class ESP extends Module {
         mobEsp.add("Box");
         mobEsp.add("Direction");
 
-        mainColor = registerColor("Color", "Color");
-        range = registerInteger("Range", "Range", 100, 10, 260);
-        width = registerInteger("Line Width", "LineWidth", 2, 1, 5);
-        playerESPMode = registerMode("Player", "Player", playerEsp, "Box");
-        mobESPMode = registerMode("Mob", "Mob", mobEsp, "Box");
-        entityRender = registerBoolean("Entity", "Entity", false);
-        itemRender = registerBoolean("Item", "Item", true);
-        containerRender = registerBoolean("Container", "Container", false);
-        glowCrystals = registerBoolean("Glow Crystal", "GlowCrystal", false);
+        mainColor = registerColor("Color");
+        range = registerInteger("Range", 100, 10, 260);
+        width = registerInteger("Line Width", 2, 1, 5);
+        playerESPMode = registerMode("Player", playerEsp, "Box");
+        mobESPMode = registerMode("Mob", mobEsp, "Box");
+        entityRender = registerBoolean("Entity", false);
+        itemRender = registerBoolean("Item", true);
+        containerRender = registerBoolean("Container", false);
+        glowCrystals = registerBoolean("Glow Crystal", false);
     }
 
     GSColor playerColor;
@@ -90,10 +90,10 @@ public class ESP extends Module {
                     {
                         switch (playerESPMode.getValue()) {
                             case "Direction":
-                                GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYaw, width.getValue(), 0);
+                                RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYaw, width.getValue(), 0);
                                 break;
                             case "Box":
-                                GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);
+                                RenderUtil.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);
                                 break;
                         }
                     }
@@ -112,19 +112,19 @@ public class ESP extends Module {
 
                     // If the guy want to see the direction
                     else if (mobESPMode.getValue().equals("Direction"))
-                        GameSenseTessellator.drawBoxWithDirection(entity.getEntityBoundingBox(), mobColor, entity.rotationYaw, width.getValue(), 0);
+                        RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), mobColor, entity.rotationYaw, width.getValue(), 0);
                     else
-                        GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mobColor);
+                        RenderUtil.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mobColor);
                 }
             }
 
 
             if (itemRender.getValue() && entity instanceof EntityItem) {
-                GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
+                RenderUtil.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
             }
             if (entityRender.getValue()) {
                 if (entity instanceof EntityEnderPearl || entity instanceof EntityXPOrb || entity instanceof EntityExpBottle || entity instanceof EntityEnderCrystal){
-                    GameSenseTessellator.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
+                    RenderUtil.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
                 }
             }
             if (glowCrystals.getValue() && entity instanceof EntityEnderCrystal) {
@@ -141,19 +141,19 @@ public class ESP extends Module {
             mc.world.loadedTileEntityList.stream().filter(tileEntity -> rangeTileCheck(tileEntity)).forEach(tileEntity -> {
                 if (tileEntity instanceof TileEntityChest) {
                     containerColor = new GSColor(255, 255, 0, opacityGradient);
-                    GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
+                    RenderUtil.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
                 if (tileEntity instanceof TileEntityEnderChest) {
                     containerColor = new GSColor(180, 70, 200, opacityGradient);
-                    GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
+                    RenderUtil.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
                 if (tileEntity instanceof TileEntityShulkerBox) {
                     containerColor = new GSColor(255, 0, 0, opacityGradient);
-                    GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
+                    RenderUtil.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
                 if(tileEntity instanceof TileEntityDispenser || tileEntity instanceof TileEntityFurnace || tileEntity instanceof TileEntityHopper || tileEntity instanceof TileEntityDropper) {
                     containerColor = new GSColor(150, 150, 150, opacityGradient);
-                    GameSenseTessellator.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
+                    RenderUtil.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
             });
         }

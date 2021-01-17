@@ -29,15 +29,15 @@ public class NoRender extends Module {
 	public static Setting.Boolean noCluster;
 
 	public void setup() {
-		armor = registerBoolean("Armor", "Armor", false);
-		fire = registerBoolean("Fire", "Fire", false);
-		blind = registerBoolean("Blind", "Blind", false);
-		nausea = registerBoolean("Nausea", "Nausea", false);
-		hurtCam = registerBoolean("HurtCam", "HurtCam", false);
-		noSkylight = registerBoolean("Skylight", "Skylight", false);
-		noOverlay = registerBoolean("No Overlay", "NoOverlay", false); //need to make sure this works better
-		noBossBar = registerBoolean("No Boss Bar", "NoBossBar", false);
-		noCluster = registerBoolean("No Cluster", "NoCluster", false);
+		armor = registerBoolean("Armor", false);
+		fire = registerBoolean("Fire", false);
+		blind = registerBoolean("Blind", false);
+		nausea = registerBoolean("Nausea", false);
+		hurtCam = registerBoolean("HurtCam", false);
+		noSkylight = registerBoolean("Skylight", false);
+		noOverlay = registerBoolean("No Overlay", false); //need to make sure this works better
+		noBossBar = registerBoolean("No Boss Bar", false);
+		noCluster = registerBoolean("No Cluster", false);
 	}
 
 	public void onUpdate() {

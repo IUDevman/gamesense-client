@@ -23,7 +23,7 @@ public class Blink extends Module {
     Setting.Boolean ghostPlayer;
 
     public void setup() {
-        ghostPlayer = registerBoolean("Ghost Player", "GhostPlayer", true);
+        ghostPlayer = registerBoolean("Ghost Player", true);
     }
 
     EntityOtherPlayerMP entity;
