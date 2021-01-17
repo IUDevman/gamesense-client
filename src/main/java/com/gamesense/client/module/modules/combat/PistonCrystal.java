@@ -70,6 +70,7 @@ public class PistonCrystal extends Module {
                     bypassObsidian,
                     antiWeakness,
                     debugMode,
+                    speedMeter,
                     chatMsg;
 
     private boolean noMaterials = false,
@@ -128,15 +129,14 @@ public class PistonCrystal extends Module {
         ArrayList<String> targetChoose = new ArrayList<>();
         targetChoose.add("Nearest");
         targetChoose.add("Looking");
-
         breakType = registerMode("Type", breakTypes, "Swing");
         placeMode = registerMode("Place", placeModes, "Torch");
         target = registerMode("Target", targetChoose, "Nearest");
         enemyRange = registerDouble("Range",4.9, 0, 6);
-        torchRange = registerDouble("Torch Range",5.5, 0, 6);
-        crystalDeltaBreak = registerDouble("Center break",0.1, 0, 0.5);
+        torchRange = registerDouble("Torch Range", 5.5, 0, 6);
+        crystalDeltaBreak = registerDouble("Center Break",0.1, 0, 0.5);
         blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 20);
-        supBlocksDelay = registerInteger("Surround Delay", 4, 0, 20);
+        supBlocksDelay = registerInteger("Surround Delay",  4, 0, 20);
         startDelay = registerInteger("Start Delay", 4, 0, 20);
         pistonDelay = registerInteger("Piston Delay", 2, 0, 20);
         crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
@@ -144,16 +144,17 @@ public class PistonCrystal extends Module {
         hitDelay = registerInteger("Hit Delay", 2, 0, 20);
         stuckDetector = registerInteger("Stuck Check", 35, 0, 200);
         maxYincr = registerInteger("Max Y", 3, 0, 5);
+        blockPlayer = registerBoolean("Trap Player",  true);
         rotate = registerBoolean("Rotate", false);
-        blockPlayer = registerBoolean("Trap Player", true);
         confirmBreak = registerBoolean("No Glitch Break", true);
         confirmPlace = registerBoolean("No Glitch Place", true);
         allowCheapMode = registerBoolean("Cheap Mode", false);
         betterPlacement = registerBoolean("Better Place", true);
         bypassObsidian = registerBoolean("Bypass Obsidian", false);
         antiWeakness = registerBoolean("Anti Weakness", false);
+        debugMode = registerBoolean("Debug Mode", false);
+        speedMeter = registerBoolean("Speed Meter", false);
         chatMsg = registerBoolean("Chat Msgs", true);
-        debugMode = registerBoolean("Debug", false);
         // Reset round
         round = 0;
     }
@@ -258,7 +259,7 @@ public class PistonCrystal extends Module {
             stoppedCa = true;
         }
         // Debug mode
-        if (debugMode.getValue()) {
+        if (debugMode.getValue() || speedMeter.getValue()) {
             printChat("Started pistonCrystal n^" + (++round), false);
             startTime = System.currentTimeMillis();
             nCrystal = 0;
@@ -320,7 +321,7 @@ public class PistonCrystal extends Module {
         noMaterials = false;
         AutoCrystalGS.stopAC = false;
         // Debug mode
-        if (debugMode.getValue())
+        if (debugMode.getValue() || speedMeter.getValue())
             printChat("Ended pistonCrystal n^" + round, false);
     }
 
@@ -467,7 +468,7 @@ public class PistonCrystal extends Module {
             stage = stuck = 0;
             broken = false;
             // If debug mode
-            if (debugMode.getValue())
+            if (debugMode.getValue() || speedMeter.getValue())
                 if(++nCrystal == 3)
                     printTimeCrystals();
         }
@@ -482,7 +483,7 @@ public class PistonCrystal extends Module {
             else {
                 stage = stuck = 0;
                 // If debug mode
-                if (debugMode.getValue())
+                if (debugMode.getValue() || speedMeter.getValue())
                     if(++nCrystal == 3)
                         printTimeCrystals();
             }
@@ -527,7 +528,7 @@ public class PistonCrystal extends Module {
                             else {
                                 stage = 1;
                                 // If debug mode
-                                if (debugMode.getValue())
+                                if (debugMode.getValue() || speedMeter.getValue())
                                     if(++nCrystal == 3)
                                         printTimeCrystals();
                             }
@@ -599,8 +600,12 @@ public class PistonCrystal extends Module {
             breakCrystal(crystal);
             // Packet
         }else if(breakType.getValue().equals("Packet")) {
-            mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-            mc.player.swingArm(EnumHand.MAIN_HAND);
+            try {
+                mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+                mc.player.swingArm(EnumHand.MAIN_HAND);
+            }catch(NullPointerException e) {
+
+            }
         }
         // Rotate
         if (rotate.getValue())
