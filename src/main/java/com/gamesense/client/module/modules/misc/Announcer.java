@@ -78,7 +78,7 @@ public class Announcer extends Module {
 		breaking = registerBoolean("Breaking", true);
 		attack = registerBoolean("Attack", true);
 		eat = registerBoolean("Eat",true);
-		clickGui = registerBoolean("DevGUI",true);
+		clickGui = registerBoolean("GUI",true);
 		delay = registerInteger("Delay",1,1,20);
 	}
 
