@@ -25,10 +25,10 @@ public class PlayerTweaks extends Module {
 	Setting.Boolean antiKnockBack;
 
 	public void setup() {
-		guiMove = registerBoolean("Gui Move", "GuiMove", false);
-		noPush = registerBoolean("No Push", "NoPush", false);
-		noSlow = registerBoolean("No Slow", "NoSlow", false);
-		antiKnockBack = registerBoolean("Velocity", "Velocity", false);
+		guiMove = registerBoolean("Gui Move", false);
+		noPush = registerBoolean("No Push", false);
+		noSlow = registerBoolean("No Slow", false);
+		antiKnockBack = registerBoolean("Velocity", false);
 	}
 
 	//No Slow

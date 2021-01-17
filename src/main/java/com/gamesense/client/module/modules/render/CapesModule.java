@@ -19,6 +19,6 @@ public class CapesModule extends Module {
 		CapeType.add("Black");
 		CapeType.add("White");
 
-		capeMode = registerMode("Type", "Type", CapeType, "Black");
+		capeMode = registerMode("Type", CapeType, "Black");
 	}
 }

@@ -41,11 +41,11 @@ public class Blocker extends Module {
     Setting.Integer tickDelay;
 
     public void setup() {
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        anvilBlocker = registerBoolean("Anvil", "Anvil", true);
-        pistonBlocker = registerBoolean("Piston", "Piston", true);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        rotate = registerBoolean("Rotate", true);
+        anvilBlocker = registerBoolean("Anvil", true);
+        pistonBlocker = registerBoolean("Piston", true);
+        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+        chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     private int delayTimeTicks = 0;

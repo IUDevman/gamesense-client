@@ -41,15 +41,15 @@ public class ViewModel extends Module {
 		types.add("FOV");
 		types.add("Both");
 
-		type = registerMode("Type", "Type", types, "Value");
-		cancelEating = registerBoolean("No Eat", "NoEat", false);
-		xLeft = registerDouble("Left X", "LeftX", 0.0, -2.0, 2.0);
-		yLeft = registerDouble("Left Y", "LeftY", 0.2, -2.0, 2.0);
-		zLeft = registerDouble("Left Z", "LeftZ", -1.2, -2.0, 2.0);
-		xRight = registerDouble("Right X", "RightX", 0.0, -2.0, 2.0);
-		yRight = registerDouble("Right Y", "RightY", 0.2, -2.0, 2.0);
-		zRight = registerDouble("Right Z", "RightZ", -1.2, -2.0, 2.0);
-		fov = registerDouble("Item FOV", "ItemFOV", 130, 70, 200);
+		type = registerMode("Type", types, "Value");
+		cancelEating = registerBoolean("No Eat", false);
+		xLeft = registerDouble("Left X", 0.0, -2.0, 2.0);
+		yLeft = registerDouble("Left Y", 0.2, -2.0, 2.0);
+		zLeft = registerDouble("Left Z", -1.2, -2.0, 2.0);
+		xRight = registerDouble("Right X", 0.0, -2.0, 2.0);
+		yRight = registerDouble("Right Y", 0.2, -2.0, 2.0);
+		zRight = registerDouble("Right Z", -1.2, -2.0, 2.0);
+		fov = registerDouble("Item FOV", 130, 70, 200);
 	}
 
 	@EventHandler

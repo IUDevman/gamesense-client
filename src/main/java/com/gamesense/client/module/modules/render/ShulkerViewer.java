@@ -24,8 +24,8 @@ public class ShulkerViewer extends Module {
 	public static Setting.ColorSetting fillColor;
 
 	public void setup() {
-		outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
-		fillColor = registerColor("Fill", "Fill", new GSColor(0, 0, 0, 255));
+		outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
+		fillColor = registerColor("Fill", new GSColor(0, 0, 0, 255));
 	}
 
 	public static void renderShulkerPreview(ItemStack itemStack, int posX, int posY, int width, int height) {

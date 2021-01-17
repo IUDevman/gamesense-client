@@ -42,9 +42,9 @@ public class CombatInfo extends HUDModule {
         ArrayList<String> infoTypes = new ArrayList<>();
         infoTypes.add("Cyber");
         infoTypes.add("Hoosiers");
-        infoType = registerMode("Type", "Type", infoTypes, "Hoosiers");
-        color1 = registerColor("On","On", new GSColor(0, 255, 0, 255));
-        color2 = registerColor("Off", "Off", new GSColor(255, 0, 0, 255));
+        infoType = registerMode("Type", infoTypes, "Hoosiers");
+        color1 = registerColor("On", new GSColor(0, 255, 0, 255));
+        color2 = registerColor("Off", new GSColor(255, 0, 0, 255));
     }
     
     @Override

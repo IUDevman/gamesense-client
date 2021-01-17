@@ -45,12 +45,12 @@ public class LogoutSpots extends Module {
 		renderModes.add("Outline");
 		renderModes.add("Fill");
 
-		range = registerInteger("Range", "Range", 100, 10, 260);
-		chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
-		nameTag = registerBoolean("Nametag", "Nametag", true);
-		lineWidth = registerInteger("Width", "Width", 1, 1, 10);
-		renderMode = registerMode("Render", "Render", renderModes, "Both");
-		color = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
+		range = registerInteger("Range", 100, 10, 260);
+		chatMsg = registerBoolean("Chat Msgs", true);
+		nameTag = registerBoolean("Nametag", true);
+		lineWidth = registerInteger("Width", 1, 1, 10);
+		renderMode = registerMode("Render", renderModes, "Both");
+		color = registerColor("Color", new GSColor(255, 0, 0, 255));
 	}
 
 	Map<net.minecraft.entity.Entity, String> loggedPlayers = new ConcurrentHashMap<>();

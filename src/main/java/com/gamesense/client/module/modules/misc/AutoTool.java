@@ -25,7 +25,7 @@ public class AutoTool extends Module {
 	long lastChange = 0L;
 
 	public void setup() {
-		switchBack = registerBoolean("Switch Back", "SwitchBack", false);
+		switchBack = registerBoolean("Switch Back", false);
 	}
 
 	@EventHandler

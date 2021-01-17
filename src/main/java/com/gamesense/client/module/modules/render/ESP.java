@@ -54,15 +54,15 @@ public class ESP extends Module {
         mobEsp.add("Box");
         mobEsp.add("Direction");
 
-        mainColor = registerColor("Color", "Color");
-        range = registerInteger("Range", "Range", 100, 10, 260);
-        width = registerInteger("Line Width", "LineWidth", 2, 1, 5);
-        playerESPMode = registerMode("Player", "Player", playerEsp, "Box");
-        mobESPMode = registerMode("Mob", "Mob", mobEsp, "Box");
-        entityRender = registerBoolean("Entity", "Entity", false);
-        itemRender = registerBoolean("Item", "Item", true);
-        containerRender = registerBoolean("Container", "Container", false);
-        glowCrystals = registerBoolean("Glow Crystal", "GlowCrystal", false);
+        mainColor = registerColor("Color");
+        range = registerInteger("Range", 100, 10, 260);
+        width = registerInteger("Line Width", 2, 1, 5);
+        playerESPMode = registerMode("Player", playerEsp, "Box");
+        mobESPMode = registerMode("Mob", mobEsp, "Box");
+        entityRender = registerBoolean("Entity", false);
+        itemRender = registerBoolean("Item", true);
+        containerRender = registerBoolean("Container", false);
+        glowCrystals = registerBoolean("Glow Crystal", false);
     }
 
     GSColor playerColor;

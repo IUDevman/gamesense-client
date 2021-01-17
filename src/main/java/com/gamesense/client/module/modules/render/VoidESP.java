@@ -42,12 +42,12 @@ public class VoidESP extends Module {
 		modes.add("Box");
 		modes.add("Flat");
 
-		renderDistance = registerInteger("Distance", "Distance", 10, 1, 40);
-		activeYValue = registerInteger("Activate Y", "ActivateY", 20, 0, 256);
-		renderType = registerMode("Render", "Render", render, "Both");
-		renderMode = registerMode("Mode", "Mode", modes, "Flat");
-		width=registerInteger("Width","Width",1,1,10);
-		color=registerColor("Color","Color",new GSColor(255,255,0));
+		renderDistance = registerInteger("Distance", 10, 1, 40);
+		activeYValue = registerInteger("Activate Y", 20, 0, 256);
+		renderType = registerMode("Render", render, "Both");
+		renderMode = registerMode("Mode", modes, "Flat");
+		width=registerInteger("Width",1,1,10);
+		color=registerColor("Color", new GSColor(255,255,0));
 	}
 
 	private ConcurrentSet<BlockPos> voidHoles;

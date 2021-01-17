@@ -23,12 +23,12 @@ public class RenderTweaks extends Module {
 	private float oldFOV;
 
 	public void setup() {
-		viewClip = registerBoolean("View Clip", "ViewClip", false);
-		nekoAnimation = registerBoolean("Neko Animation", "NekoAnimation", false);
-		lowOffhand = registerBoolean("Low Offhand", "LowOffhand", false);
-		lowOffhandSlider = registerDouble("Offhand Height", "OffhandHeight", 1.0, 0.1, 1.0);
-		fovChanger = registerBoolean("FOV", "FOV", false);
-		fovChangerSlider = registerInteger("FOV Slider", "FOVSlider", 90, 70, 200);
+		viewClip = registerBoolean("View Clip", false);
+		nekoAnimation = registerBoolean("Neko Animation", false);
+		lowOffhand = registerBoolean("Low Offhand", false);
+		lowOffhandSlider = registerDouble("Offhand Height", 1.0, 0.1, 1.0);
+		fovChanger = registerBoolean("FOV", false);
+		fovChangerSlider = registerInteger("FOV Slider", 90, 70, 200);
 	}
 
 	@Override

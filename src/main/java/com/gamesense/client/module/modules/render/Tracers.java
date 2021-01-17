@@ -36,17 +36,17 @@ public class Tracers extends Module {
 	Setting.ColorSetting farColor;
 
 	public void setup() {
-		renderDistance = registerInteger("Distance", "Distance", 100, 10, 260);
+		renderDistance = registerInteger("Distance", 100, 10, 260);
 
 		ArrayList<String> link = new ArrayList<>();
 		link.add("Head");
 		link.add("Feet");
 
-		pointsTo = registerMode("Draw To", "DrawTo", link, "Feet");
-		colorType = registerBoolean("Color Sync", "ColorSync", true);
-		nearColor=registerColor("Near Color","NearColor",new GSColor(255,0,0, 255));
-		midColor=registerColor("Middle Color","MidColor",new GSColor(255,255,0, 255));
-		farColor=registerColor("Far Color","FarColor",new GSColor(0,255,0, 255));
+		pointsTo = registerMode("Draw To", link, "Feet");
+		colorType = registerBoolean("Color Sync", true);
+		nearColor=registerColor("Near Color", new GSColor(255,0,0, 255));
+		midColor=registerColor("Middle Color", new GSColor(255,255,0, 255));
+		farColor=registerColor("Far Color", new GSColor(0,255,0, 255));
 	}
 
 	GSColor tracerColor;

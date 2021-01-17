@@ -52,14 +52,14 @@ public class SelfTrap extends Module {
         trapTypes.add("No Step");
         trapTypes.add("Simple");
 
-        trapType = registerMode("Mode", "Mode", trapTypes, "Normal");
-        shiftOnly = registerBoolean("Shift Only", "ShiftOnly", false);
-        disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        centerPlayer = registerBoolean("Center Player", "CenterPlayer", false);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        trapType = registerMode("Mode", trapTypes, "Normal");
+        shiftOnly = registerBoolean("Shift Only", false);
+        disableNone = registerBoolean("Disable No Obby", true);
+        rotate = registerBoolean("Rotate", true);
+        centerPlayer = registerBoolean("Center Player", false);
+        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+        chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     private boolean noObby = false;

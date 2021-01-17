@@ -63,18 +63,18 @@ public class BedAura extends Module {
         attackModes.add("Normal");
         attackModes.add("Own");
 
-        attackMode = registerMode("Mode", "Mode", attackModes, "Own");
-        attackRange = registerDouble("Attack Range", "AttackRange", 4, 0, 10);
-        breakDelay = registerInteger("Break Delay", "BreakDelay", 1, 0, 20);
-        placeDelay = registerInteger("Place Delay", "PlaceDelay", 1, 0, 20);
-        targetRange = registerDouble("Target Range", "TargetRange", 7, 0, 16);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        disableNone = registerBoolean("Disable No Bed", "DisableNoBed", false);
-        autoSwitch = registerBoolean("Switch", "Switch", true);
-        antiSuicide = registerBoolean("Anti Suicide", "AntiSuicide", false);
-        antiSuicideHealth = registerInteger("Suicide Health", "SuicideHealth", 14, 1, 36);
-        minDamage = registerInteger("Min Damage", "MinDamage", 5, 1, 36);
-        chatMsgs = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        attackMode = registerMode("Mode", attackModes, "Own");
+        attackRange = registerDouble("Attack Range", 4, 0, 10);
+        breakDelay = registerInteger("Break Delay", 1, 0, 20);
+        placeDelay = registerInteger("Place Delay", 1, 0, 20);
+        targetRange = registerDouble("Target Range", 7, 0, 16);
+        rotate = registerBoolean("Rotate", true);
+        disableNone = registerBoolean("Disable No Bed", false);
+        autoSwitch = registerBoolean("Switch", true);
+        antiSuicide = registerBoolean("Anti Suicide", false);
+        antiSuicideHealth = registerInteger("Suicide Health", 14, 1, 36);
+        minDamage = registerInteger("Min Damage", 5, 1, 36);
+        chatMsgs = registerBoolean("Chat Msgs", true);
     }
 
     private boolean hasNone = false;

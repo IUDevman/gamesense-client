@@ -47,9 +47,9 @@ public class TargetHUD extends HUDModule {
     }
 
     public void setup() {
-    	range = registerInteger("Range", "Range", 100, 10, 260);
-        outline = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
-        background = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
+    	range = registerInteger("Range", 100, 10, 260);
+        outline = registerColor("Outline", new GSColor(255, 0, 0, 255));
+        background = registerColor("Background", new GSColor(0, 0, 0, 255));
     }
     
     @Override

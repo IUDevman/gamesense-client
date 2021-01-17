@@ -13,7 +13,7 @@ public class ReverseStep extends Module {
 	Setting.Double height;
 
 	public void setup() {
-		height = registerDouble("Height", "Height", 2.5, 0.5, 2.5);
+		height = registerDouble("Height", 2.5, 0.5, 2.5);
 	}
 
 	public void onUpdate() {

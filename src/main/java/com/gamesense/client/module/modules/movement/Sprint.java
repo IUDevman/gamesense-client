@@ -16,7 +16,7 @@ public class Sprint extends Module {
 	Setting.Boolean reverseSprint;
 
 	public void setup() {
-		reverseSprint = registerBoolean("Reverse", "Reverse", false);
+		reverseSprint = registerBoolean("Reverse", false);
 	}
 
 	public void onUpdate() {

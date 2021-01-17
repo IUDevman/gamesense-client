@@ -50,13 +50,13 @@ public class HoleFill extends Module {
 		modes.add("Both");
 		modes.add("Web");
 
-		mode = registerMode("Type", "Type", modes, "Obby");
-		placeDelay = registerInteger("Delay", "Delay", 3, 0, 10);
-		horizontalRange = registerDouble("H-Range", "H-Range", 4, 0, 10);
-		verticalRange = registerDouble("V-Range", "V-Range", 2, 0, 5);
-		rotate = registerBoolean("Rotate", "Rotate", true);
-		autoSwitch = registerBoolean("Switch", "Switch", true);
-		chatMsgs = registerBoolean("Chat Msgs", "ChatMsgs", true);
+		mode = registerMode("Type", modes, "Obby");
+		placeDelay = registerInteger("Delay", 3, 0, 10);
+		horizontalRange = registerDouble("H Range", 4, 0, 10);
+		verticalRange = registerDouble("V Range", 2, 0, 5);
+		rotate = registerBoolean("Rotate", true);
+		autoSwitch = registerBoolean("Switch", true);
+		chatMsgs = registerBoolean("Chat Msgs", true);
 	}
 
 	private boolean isSneaking = false;

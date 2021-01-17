@@ -50,17 +50,17 @@ public class Nametags extends Module {
 	public static Setting.ColorSetting borderColor;
 
 	public void setup() {
-		range = registerInteger("Range", "Range", 100, 10, 260);
-		durability = registerBoolean("Durability", "Durability", true);
-		armor = registerBoolean("Armor", "Armor", true);
-		enchantnames = registerBoolean("Enchants", "Enchants", true);
-		itemName = registerBoolean("Item Name", "ItemName", false);
-		gamemode = registerBoolean("Gamemode", "Gamemode", false);
-		health = registerBoolean("Health", "Health", true);
-		ping = registerBoolean("Ping", "Ping", false);
-		entityId = registerBoolean("Entity Id", "EntityId", false);
-		customColor = registerBoolean("Custom Color", "CustomColor", true);
-		borderColor = registerColor("Border Color","BorderColor");
+		range = registerInteger("Range", 100, 10, 260);
+		durability = registerBoolean("Durability", true);
+		armor = registerBoolean("Armor", true);
+		enchantnames = registerBoolean("Enchants", true);
+		itemName = registerBoolean("Item Name", false);
+		gamemode = registerBoolean("Gamemode", false);
+		health = registerBoolean("Health", true);
+		ping = registerBoolean("Ping", false);
+		entityId = registerBoolean("Entity Id", false);
+		customColor = registerBoolean("Custom Color", true);
+		borderColor = registerColor("Border Color");
 	}
 
 	public void onWorldRender(RenderEvent event) {

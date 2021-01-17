@@ -20,7 +20,7 @@ public class Fullbright extends Module {
 		modes.add("Gamma");
 		modes.add("Potion");
 
-		mode = registerMode("Mode", "Mode", modes, "Gamma");
+		mode = registerMode("Mode", modes, "Gamma");
 	}
 
 	float oldGamma;

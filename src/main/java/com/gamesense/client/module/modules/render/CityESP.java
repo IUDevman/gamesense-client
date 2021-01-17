@@ -47,12 +47,12 @@ public class CityESP extends Module {
         renderModes.add("Fill");
         renderModes.add("Both");
 
-        range = registerInteger("Range", "Range", 20, 1, 30);
-        targetMode = registerMode("Target", "Target", targetModes, "Single");
-        selectMode = registerMode("Select", "Select", selectModes, "Closest");
-        renderMode = registerMode("Render", "Render", renderModes, "Both");
-        width = registerInteger("Width", "Width", 1, 1, 10);
-        color = registerColor("Color", "Color", new GSColor(102,51,153));
+        range = registerInteger("Range", 20, 1, 30);
+        targetMode = registerMode("Target", targetModes, "Single");
+        selectMode = registerMode("Select", selectModes, "Closest");
+        renderMode = registerMode("Render", renderModes, "Both");
+        width = registerInteger("Width", 1, 1, 10);
+        color = registerColor("Color", new GSColor(102,51,153));
     }
 
     public void onWorldRender(RenderEvent event) {

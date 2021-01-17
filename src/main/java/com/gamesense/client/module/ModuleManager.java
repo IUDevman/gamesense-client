@@ -52,7 +52,7 @@ public class ModuleManager {
 		addMod(new Reach());
 		addMod(new PacketEat());
 		addMod(new PacketXP());
-		addMod(new PortalGodMode());
+		addMod(new PortalGodmode());
 		//Movement
 		addMod(new Anchor());
 		addMod(new Blink());
@@ -101,7 +101,7 @@ public class ModuleManager {
 		addMod(new VoidESP());
 		//HUD
 		addMod(new ArmorHUD());
-		addMod(new ModuleArrayList());
+		addMod(new ArrayListModule());
 		addMod(new CombatInfo());
 		addMod(new InventoryViewer());
 		addMod(new Notifications());

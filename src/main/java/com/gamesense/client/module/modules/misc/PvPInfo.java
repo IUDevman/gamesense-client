@@ -66,12 +66,12 @@ public class PvPInfo extends Module {
 		colors.add("Aqua");
 		colors.add("Light Purple");
 		colors.add("White");
-		visualRange = registerBoolean("Visual Range", "VisualRange", false);
-		pearlAlert = registerBoolean("Pearl Alert", "PearlAlert",false);
-		burrowAlert = registerBoolean("Burrow Alert", "BurrowAlert", false);
-		strengthDetect = registerBoolean("Strength Detect", "StrengthDetect", false);
-		popCounter = registerBoolean("Pop Counter", "PopCounter", false);
-		ChatColor = registerMode("Color", "Color", colors, "Light Purple");
+		visualRange = registerBoolean("Visual Range", false);
+		pearlAlert = registerBoolean("Pearl Alert", false);
+		burrowAlert = registerBoolean("Burrow Alert", false);
+		strengthDetect = registerBoolean("Strength Detect", false);
+		popCounter = registerBoolean("Pop Counter", false);
+		ChatColor = registerMode("Color", colors, "Light Purple");
 	}
 
 	public void onUpdate() {

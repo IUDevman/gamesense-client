@@ -35,11 +35,11 @@ public class BreakESP extends Module {
         renderTypes.add("Fill");
         renderTypes.add("Both");
 
-        renderType = registerMode("Render", "Render", renderTypes, "Both");
-        lineWidth = registerInteger("Width", "Width", 1, 0, 5);
-        range = registerInteger("Range", "Range", 100, 1, 200);
-        cancelAnimation = registerBoolean("No Animation", "NoAnimation", true);
-        color = registerColor("Color", "Color", new GSColor(0, 255, 0, 255));
+        renderType = registerMode("Render", renderTypes, "Both");
+        lineWidth = registerInteger("Width", 1, 0, 5);
+        range = registerInteger("Range", 100, 1, 200);
+        cancelAnimation = registerBoolean("No Animation", true);
+        color = registerColor("Color", new GSColor(0, 255, 0, 255));
     }
 
     public void onWorldRender(RenderEvent event) {

@@ -37,9 +37,9 @@ public class TargetInfo extends HUDModule {
     }
 
     public void setup() {
-        range = registerInteger("Range", "Range", 100, 10, 260);
-        backgroundColor = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
-        outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
+        range = registerInteger("Range", 100, 10, 260);
+        backgroundColor = registerColor("Background", new GSColor(0, 0, 0, 255));
+        outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
     }
     
     public void populate (Theme theme) {

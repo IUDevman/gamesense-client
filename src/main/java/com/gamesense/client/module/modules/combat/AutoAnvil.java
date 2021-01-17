@@ -60,19 +60,19 @@ public class AutoAnvil extends Module {
         targetChoose.add("Nearest");
         targetChoose.add("Looking");
 
-        anvilMode = registerMode("Mode", "Mode", anvilTypesList, "Pick");
-        target = registerMode("Target", "Target", targetChoose, "Nearest");
-        antiCrystal = registerBoolean("Anti Crystal", "AntiCrystal", false);
-        fastAnvil = registerBoolean("Fast Anvil", "FastAnvil", true);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
-        decrease = registerDouble("Decrease", "Decrease",2, 0, 6);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
-        hDistance = registerInteger("H Distance", "HDistance", 7, 1, 10);
-        minH = registerInteger("Min H", "MinH", 3, 1, 10);
-        failStop = registerInteger("Fail Stop", "FailStop", 2, 1, 10);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        anvilMode = registerMode("Mode", anvilTypesList, "Pick");
+        target = registerMode("Target", targetChoose, "Nearest");
+        antiCrystal = registerBoolean("Anti Crystal", false);
+        fastAnvil = registerBoolean("Fast Anvil", true);
+        rotate = registerBoolean("Rotate", true);
+        enemyRange = registerDouble("Range",5.9, 0, 6);
+        decrease = registerDouble("Decrease",2, 0, 6);
+        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+        hDistance = registerInteger("H Distance", 7, 1, 10);
+        minH = registerInteger("Min H", 3, 1, 10);
+        failStop = registerInteger("Fail Stop", 2, 1, 10);
+        chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     private boolean isSneaking = false;

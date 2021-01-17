@@ -46,17 +46,17 @@ public class Chams extends Module {
         chamsTypes.add("Color");
         chamsTypes.add("WireFrame");
 
-        chamsType = registerMode("Type", "Type", chamsTypes, "Texture");
-        range = registerInteger("Range", "Range", 100, 10, 260);
-        player = registerBoolean("Player", "Player", true);
-        mob = registerBoolean("Mob", "Mob", false);
-        crystal = registerBoolean("Crystal", "Crystal", false);
-        lineWidth = registerInteger("Line Width", "LineWidth", 1, 1, 5);
-        colorOpacity = registerInteger("Color Opacity", "Opacity", 100, 0, 255);
-        wireOpacity = registerInteger("Wire Opacity", "WireOpacity", 200, 0, 255);
-        playerColor = registerColor("Player Color", "PlayerColor", new GSColor(0, 255, 255, 255));
-        mobColor = registerColor("Mob Color", "Mob Color", new GSColor(255, 255, 0, 255));
-        crystalColor = registerColor("Crystal Color", "CrystalColor", new GSColor(0, 255, 0, 255));
+        chamsType = registerMode("Type", chamsTypes, "Texture");
+        range = registerInteger("Range", 100, 10, 260);
+        player = registerBoolean("Player", true);
+        mob = registerBoolean("Mob", false);
+        crystal = registerBoolean("Crystal", false);
+        lineWidth = registerInteger("Line Width", 1, 1, 5);
+        colorOpacity = registerInteger("Color Opacity", 100, 0, 255);
+        wireOpacity = registerInteger("Wire Opacity", 200, 0, 255);
+        playerColor = registerColor("Player Color", new GSColor(0, 255, 255, 255));
+        mobColor = registerColor("Mob Color", new GSColor(255, 255, 0, 255));
+        crystalColor = registerColor("Crystal Color", new GSColor(0, 255, 0, 255));
     }
 
     @EventHandler

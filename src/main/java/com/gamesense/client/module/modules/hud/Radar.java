@@ -43,11 +43,11 @@ public class Radar extends HUDModule {
     }
 
     public void setup() {
-        renderPlayer = registerBoolean("Player", "Player", true);
-        renderMobs = registerBoolean("Mobs", "Mobs", true);
-        playerColor = registerColor("Player Color", "PlayerColor", new GSColor(0, 0, 255, 255));
-        outlineColor = registerColor("Outline Color", "OutlineColor", new GSColor(255, 0, 0, 255));
-        fillColor = registerColor("Fill Color", "FillColor", new GSColor(0, 0, 0, 255));
+        renderPlayer = registerBoolean("Player", true);
+        renderMobs = registerBoolean("Mobs", true);
+        playerColor = registerColor("Player Color", new GSColor(0, 0, 255, 255));
+        outlineColor = registerColor("Outline Color", new GSColor(255, 0, 0, 255));
+        fillColor = registerColor("Fill Color", new GSColor(0, 0, 0, 255));
     }
     
     @Override

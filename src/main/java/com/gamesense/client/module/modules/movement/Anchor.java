@@ -18,7 +18,7 @@ public class Anchor extends Module {
     Setting.Integer activateYLevel;
 
     public void setup() {
-        activateYLevel = registerInteger("Activate Y", "ActivateY", 20, 0, 256);
+        activateYLevel = registerInteger("Activate Y", 20, 0, 256);
     }
 
     BlockPos playerPos;

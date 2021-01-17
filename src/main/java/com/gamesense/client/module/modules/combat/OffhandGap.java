@@ -33,8 +33,8 @@ public class OffhandGap extends Module {
 	}
 
 	public void setup() {
-		disableCrystal = registerBoolean("Disable Crystal", "DisableCrystal", true);
-		health = registerInteger("Health", "Health", 15, 0, 36);
+		disableCrystal = registerBoolean("Disable Crystal", true);
+		health = registerInteger("Health", 15, 0, 36);
 	}
 
 	public void onEnable() {

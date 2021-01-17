@@ -72,17 +72,17 @@ public class HoleESP extends Module {
         modes.add("Slab");
         modes.add("Double");
 
-        rangeS = registerInteger("Range", "Range", 5, 1, 20);
-        customHoles = registerMode("Show", "Show", holes, "Single");
-        type = registerMode("Render", "Render", render, "Both");
-        mode = registerMode("Mode", "Mode", modes, "Air");
-        hideOwn = registerBoolean("Hide Own", "HideOwn", false);
-        flatOwn = registerBoolean("Flat Own", "FlatOwn", false);
-        slabHeight = registerDouble("Slab Height", "SlabHeight", 0.5, 0.1, 1.5);
-        width = registerInteger("Width","Width",1,1,10);
-        bedrockColor = registerColor("Bedrock Color","BedrockColor", new GSColor(0,255,0));
-        obsidianColor = registerColor("Obsidian Color","ObsidianColor", new GSColor(255,0,0));
-        customColor = registerColor("Custom Color","CustomColor", new GSColor(0,0,255));
+        rangeS = registerInteger("Range", 5, 1, 20);
+        customHoles = registerMode("Show", holes, "Single");
+        type = registerMode("Render", render, "Both");
+        mode = registerMode("Mode", modes, "Air");
+        hideOwn = registerBoolean("Hide Own", false);
+        flatOwn = registerBoolean("Flat Own", false);
+        slabHeight = registerDouble("Slab Height", 0.5, 0.1, 1.5);
+        width = registerInteger("Width",1,1,10);
+        bedrockColor = registerColor("Bedrock Color", new GSColor(0,255,0));
+        obsidianColor = registerColor("Obsidian Color", new GSColor(255,0,0));
+        customColor = registerColor("Custom Color", new GSColor(0,0,255));
     }
 
     private ConcurrentHashMap<AxisAlignedBB, GSColor> holes;
