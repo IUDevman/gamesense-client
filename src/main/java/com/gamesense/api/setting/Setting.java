@@ -286,5 +286,8 @@ public abstract class Setting {
 			this.rainbow=rainbow;
 		}
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 902f0fd... Added a basic String Container for the HUD.
 }
