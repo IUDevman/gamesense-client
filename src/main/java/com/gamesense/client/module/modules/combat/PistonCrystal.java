@@ -470,7 +470,7 @@ public class PistonCrystal extends Module {
             stage = stuck = 0;
             broken = false;
             // If debug mode
-            if (debugMode.getValue())
+            if (debugMode.getValue() || speedMeter.getValue())
                 if(++nCrystal == 3)
                     printTimeCrystals();
         }
