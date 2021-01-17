@@ -1,13 +1,5 @@
 package com.gamesense.client.module.modules.combat;
 
-/**
- * @Author TechAle on (Insert data official release)
- * Ported and modified from AutoAnvil.java that is modified from Surround.java
- * Break crystal from AutoCrystal
- * TODO: limit the possibility
- */
-
-
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
@@ -38,6 +30,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * @Author TechAle on (Insert data official release)
+ * Ported and modified from AutoAnvil.java that is modified from Surround.java
+ * Break crystal from AutoCrystal
+ * TODO: limit the possibility
+ */
 
 public class PistonCrystal extends Module {
 
@@ -129,18 +128,19 @@ public class PistonCrystal extends Module {
         ArrayList<String> targetChoose = new ArrayList<>();
         targetChoose.add("Nearest");
         targetChoose.add("Looking");
+
         breakType = registerMode("Type", "Type", breakTypes, "Swing");
         placeMode = registerMode("Place", "Place", placeModes, "Torch");
         target = registerMode("Target", "Target", targetChoose, "Nearest");
         enemyRange = registerDouble("Range", "Range",4.9, 0, 6);
-        torchRange = registerDouble("TorchRange", "TorchRange",5.5, 0, 6);
-        crystalDeltaBreak = registerDouble("centerBreak", "crystalDeltaBreak",0.1, 0, 0.5);
+        torchRange = registerDouble("Torch Range", "TorchRange",5.5, 0, 6);
+        crystalDeltaBreak = registerDouble("Center break", "CenterBreak",0.1, 0, 0.5);
         blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 20);
         supBlocksDelay = registerInteger("Surround Delay", "SurroundDelay", 4, 0, 20);
         startDelay = registerInteger("Start Delay", "StartDelay", 4, 0, 20);
         pistonDelay = registerInteger("Piston Delay", "PistonDelay", 2, 0, 20);
         crystalDelay = registerInteger("Crystal Delay", "Crystal Delay", 2, 0, 20);
-        midHitDelay = registerInteger("midHitDelay", "midHitDelay", 5, 0, 20);
+        midHitDelay = registerInteger("Mid Hit Delay", "MidHitDelay", 5, 0, 20);
         hitDelay = registerInteger("Hit Delay", "HitDelay", 2, 0, 20);
         stuckDetector = registerInteger("Stuck Check", "StuckCheck", 35, 0, 200);
         maxYincr = registerInteger("Max Y", "MaxY", 3, 0, 5);
@@ -148,12 +148,12 @@ public class PistonCrystal extends Module {
         blockPlayer = registerBoolean("Trap Player", "TrapPlayer", true);
         confirmBreak = registerBoolean("No Glitch Break", "NoGlitchBreak", true);
         confirmPlace = registerBoolean("No Glitch Place", "NoGlitchPlace", true);
-        allowCheapMode = registerBoolean("Cheap Mode", "cheapMode", false);
-        betterPlacement = registerBoolean("Better Place", "betterPlacement", true);
-        bypassObsidian = registerBoolean("BypassObsidian", "BypassObsidian", false);
+        allowCheapMode = registerBoolean("Cheap Mode", "CheapMode", false);
+        betterPlacement = registerBoolean("Better Place", "BetterPlacement", true);
+        bypassObsidian = registerBoolean("Bypass Obsidian", "BypassObsidian", false);
         antiWeakness = registerBoolean("Anti Weakness", "AntiWeakness", false);
         chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
-        debugMode = registerBoolean("debugMode", "debugMode", false);
+        debugMode = registerBoolean("Debug", "Debug", false);
         // Reset round
         round = 0;
     }
@@ -305,7 +305,6 @@ public class PistonCrystal extends Module {
                 AutoCrystal.stopAC = false;
                 stoppedCa = false;
             }
-
         }
 
         if (isSneaking){
@@ -1456,6 +1455,7 @@ public class PistonCrystal extends Module {
     private static boolean isSpoofingAngles;
     private static double yaw;
     private static double pitch;
+
     public static void setYawAndPitch(float yaw1, float pitch1) {
         yaw = yaw1;
         pitch = pitch1;
@@ -1469,6 +1469,15 @@ public class PistonCrystal extends Module {
 
         }
     }
+
+    public static void resetRotation() {
+        if (isSpoofingAngles) {
+            yaw = mc.player.rotationYaw;
+            pitch = mc.player.rotationPitch;
+            isSpoofingAngles = false;
+        }
+    }
+
     @EventHandler
     private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
         Packet packet = event.getPacket();
@@ -1479,12 +1488,4 @@ public class PistonCrystal extends Module {
             }
         }
     });
-    public static void resetRotation() {
-        if (isSpoofingAngles) {
-            yaw = mc.player.rotationYaw;
-            pitch = mc.player.rotationPitch;
-            isSpoofingAngles = false;
-        }
-    }
-
 }
