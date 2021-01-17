@@ -52,6 +52,7 @@ Most notable features:
 * NekoPvP (First commit, Item FOV)
 * TechAle (AutoAnvil, PistonCrystal, Blocker)
 * 0b00101010 (HoleESP rewrite)
+* A2H (Bug fixes, compatability)
 
 #### Credits
 ***Check specific class files for full credits.***
