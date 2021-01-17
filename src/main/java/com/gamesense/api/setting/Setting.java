@@ -286,5 +286,4 @@ public abstract class Setting {
 			this.rainbow=rainbow;
 		}
 	}
-
 }
