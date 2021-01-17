@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -28,6 +27,9 @@ import java.util.List;
  * @Author TechAle on 12/16/20
  * Ported and modified from Surround.java
  */
+/*
+    Now AutoAnvil is going to stop himself if the player place a block above him
+ */
 
 public class AutoAnvil extends Module {
 
@@ -36,6 +38,7 @@ public class AutoAnvil extends Module {
     }
 
     Setting.Mode anvilMode;
+    Setting.Mode target;
     Setting.Double enemyRange;
     Setting.Double decrease;
     Setting.Boolean rotate;
@@ -53,19 +56,23 @@ public class AutoAnvil extends Module {
         anvilTypesList.add("Pick");
         anvilTypesList.add("Feet");
         anvilTypesList.add("None");
+        ArrayList<String> targetChoose = new ArrayList<>();
+        targetChoose.add("Nearest");
+        targetChoose.add("Looking");
 
-        anvilMode = registerMode("Mode", "Mode", anvilTypesList, "Pick");
-        antiCrystal = registerBoolean("Anti Crystal", "AntiCrystal", false);
-        fastAnvil = registerBoolean("Fast Anvil", "FastAnvil", true);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        enemyRange = registerDouble("Range", "Range",5.9, 0, 6);
-        decrease = registerDouble("Decrease", "Decrease",2, 0, 6);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
-        hDistance = registerInteger("H Distance", "HDistance", 7, 1, 10);
-        minH = registerInteger("Min H", "MinH", 3, 1, 10);
-        failStop = registerInteger("Fail Stop", "FailStop", 2, 1, 10);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        anvilMode = registerMode("Mode", anvilTypesList, "Pick");
+        target = registerMode("Target", targetChoose, "Nearest");
+        antiCrystal = registerBoolean("Anti Crystal", false);
+        fastAnvil = registerBoolean("Fast Anvil", true);
+        rotate = registerBoolean("Rotate", true);
+        enemyRange = registerDouble("Range",5.9, 0, 6);
+        decrease = registerDouble("Decrease",2, 0, 6);
+        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+        hDistance = registerInteger("H Distance", 7, 1, 10);
+        minH = registerInteger("Min H", 3, 1, 10);
+        failStop = registerInteger("Fail Stop", 2, 1, 10);
+        chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     private boolean isSneaking = false;
@@ -74,6 +81,7 @@ public class AutoAnvil extends Module {
     private boolean hasMoved = false;
     private boolean isHole = true;
     private boolean enoughSpace = true;
+    private boolean blockUp = false;
     private int oldSlot = -1;
     private int[] slot_mat = {-1, -1, -1, -1};
     private double[] enemyCoords;
@@ -91,7 +99,7 @@ public class AutoAnvil extends Module {
     private int offsetSteps = 0;
     private boolean pick_d = false;
 
-    private EntityPlayer closestTarget;
+    private EntityPlayer aimTarget;
 
     public void onEnable() {
         // Setup
@@ -100,7 +108,7 @@ public class AutoAnvil extends Module {
         }
         blocksPlaced = 0;
         isHole = true;
-        hasMoved = false;
+        hasMoved = blockUp = false;
         firstRun = true;
         slot_mat = new int[]{-1, -1, -1, -1};
         to_place = new ArrayList<>();
@@ -127,13 +135,16 @@ public class AutoAnvil extends Module {
                 printChat("No Materials Detected... AutoAnvil turned OFF!", true);
             }
             else if (!isHole) {
-                printChat("The enemy is not in a hole... AutoAnvil turned OFF!", true);
+                printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
             }
             else if(!enoughSpace) {
                 printChat("Not enough space... AutoAnvil turned OFF!", true);
             }
             else if(hasMoved) {
-                printChat("He moved away from the hole... AutoAnvil turned OFF!", true);
+                printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
+            }
+            else if(blockUp) {
+                printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
             }
             else {
                 printChat("AutoAnvil turned OFF!", true);
@@ -152,7 +163,7 @@ public class AutoAnvil extends Module {
 
         noMaterials = false;
         firstRun = true;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
     }
 
     public void onUpdate() {
@@ -164,9 +175,12 @@ public class AutoAnvil extends Module {
         if (firstRun) {
 
             // All the setup
-            closestTarget = findClosestTarget();
+            if (target.getValue().equals("Nearest"))
+                aimTarget = PistonCrystal.findClosestTarget(enemyRange.getValue(), aimTarget);
+            else if(target.getValue().equals("Looking"))
+                aimTarget = PistonCrystal.findLookingPlayer(enemyRange.getValue());
 
-            if (closestTarget == null) {
+            if (aimTarget == null) {
                 return;
             }
             firstRun = false;
@@ -174,7 +188,7 @@ public class AutoAnvil extends Module {
                 // check if the enemy is in a hole
                 if (is_in_hole()) {
                     // Get enemy coordinates
-                    enemyCoords = new double[] {closestTarget.posX, closestTarget.posY, closestTarget.posZ};
+                    enemyCoords = new double[] {aimTarget.posX, aimTarget.posY, aimTarget.posZ};
                     // Start choosing where to place what
                     enoughSpace = createStructure();
 
@@ -195,12 +209,25 @@ public class AutoAnvil extends Module {
             }
             else {
                 delayTimeTicks = 0;
+
+                // Check if he has moved away
+                if ((int) enemyCoords[0] != (int) aimTarget.posX || (int) enemyCoords[2] != (int) aimTarget.posZ)
+                    hasMoved = true;
+
+                // Check a block on the enemy's head
+                if (!(get_block(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAir)
+                        || !(get_block(enemyCoords[0], enemyCoords[1] + 3, enemyCoords[2]) instanceof BlockAir)) {
+                    blockUp = true;
+                }
+
+
             }
         }
 
         blocksPlaced = 0;
+
         // If we have to left
-        if (noMaterials || !isHole || !enoughSpace || hasMoved) {
+        if (noMaterials || !isHole || !enoughSpace || hasMoved || blockUp) {
             disable();
             return;
         }
@@ -220,7 +247,7 @@ public class AutoAnvil extends Module {
 
             // Get position
             BlockPos offsetPos = new BlockPos(to_place.get(offsetSteps));
-            BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+            BlockPos targetPos = new BlockPos(aimTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
             boolean tryPlacing = true;
 
@@ -317,7 +344,7 @@ public class AutoAnvil extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -332,7 +359,7 @@ public class AutoAnvil extends Module {
         if (step == to_place.size() - 1) {
 
             // Get the name of the player
-            EntityPlayer found = getPlayerFromName(closestTarget.gameProfile.getName());
+            EntityPlayer found = getPlayerFromName(aimTarget.gameProfile.getName());
             // If that player moved
             if (found == null || (int) found.posX != (int) enemyCoords[0] || (int) found.posZ != (int) enemyCoords[2]) {
                 hasMoved = true;
@@ -355,7 +382,7 @@ public class AutoAnvil extends Module {
 
         // Re-Active ca
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 
@@ -375,33 +402,6 @@ public class AutoAnvil extends Module {
         }
 
         return true;
-    }
-
-    private EntityPlayer findClosestTarget() {
-        List<EntityPlayer> playerList = mc.world.playerEntities;
-
-        EntityPlayer closestTarget_test = null;
-
-        for (EntityPlayer entityPlayer : playerList) {
-            if (entityPlayer == mc.player) {
-                continue;
-            }
-            if (Friends.isFriend(entityPlayer.getName())) {
-                continue;
-            }
-            if (entityPlayer.isDead) {
-                continue;
-            }
-
-            if (closestTarget == null && mc.player.getDistance(entityPlayer) <= enemyRange.getValue()) {
-                closestTarget_test = entityPlayer;
-                continue;
-            }
-            if (closestTarget != null && mc.player.getDistance(entityPlayer) <= enemyRange.getValue() && mc.player.getDistance(entityPlayer) < mc.player.getDistance(closestTarget)) {
-                closestTarget_test = entityPlayer;
-            }
-        }
-        return closestTarget_test;
     }
 
     private EntityPlayer getPlayerFromName(String name) {
@@ -488,16 +488,16 @@ public class AutoAnvil extends Module {
 
     private boolean is_in_hole() {
         sur_block = new Double[][] {
-                {closestTarget.posX + 1, closestTarget.posY, closestTarget.posZ},
-                {closestTarget.posX - 1, closestTarget.posY, closestTarget.posZ},
-                {closestTarget.posX, closestTarget.posY, closestTarget.posZ + 1},
-                {closestTarget.posX, closestTarget.posY, closestTarget.posZ - 1}
+                {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
+                {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
+                {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
+                {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
         };
 
         enemyCoords = new double[] {
-                closestTarget.posX,
-                closestTarget.posY,
-                closestTarget.posZ
+                aimTarget.posX,
+                aimTarget.posY,
+                aimTarget.posZ
         };
         // Check if the guy is in a hole
         return !(get_block(sur_block[0][0], sur_block[0][1], sur_block[0][2]) instanceof BlockAir) &&
@@ -524,16 +524,16 @@ public class AutoAnvil extends Module {
         /// Decrease hDistance
         // Get the distance from the enemy
         int hDistanceMod = hDistance.getValue();
-        double distEnemy = mc.player.getDistance(closestTarget);
+        double distEnemy = mc.player.getDistance(aimTarget);
         while (distEnemy > decrease.getValue()) {
             hDistanceMod -= 1;
             distEnemy -= decrease.getValue();
         }
-        int add = (int) (mc.player.posY - closestTarget.posY);
+        int add = (int) (mc.player.posY - aimTarget.posY);
         if (add > 1)
             add = 2;
         // Different Y
-        hDistanceMod += mc.player.posY - closestTarget.posY;
+        hDistanceMod += mc.player.posY - aimTarget.posY;
 
         /// Get in what block the client is going to tower
         // Calculate for each blocks the distance and find the min

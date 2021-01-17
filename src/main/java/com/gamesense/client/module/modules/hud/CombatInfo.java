@@ -12,7 +12,7 @@ import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.combat.AutoCrystal;
+import com.gamesense.client.module.modules.combat.AutoCrystalGS;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -42,9 +42,9 @@ public class CombatInfo extends HUDModule {
         ArrayList<String> infoTypes = new ArrayList<>();
         infoTypes.add("Cyber");
         infoTypes.add("Hoosiers");
-        infoType = registerMode("Type", "Type", infoTypes, "Hoosiers");
-        color1 = registerColor("On","On", new GSColor(0, 255, 0, 255));
-        color2 = registerColor("Off", "Off", new GSColor(255, 0, 0, 255));
+        infoType = registerMode("Type", infoTypes, "Hoosiers");
+        color1 = registerColor("On", new GSColor(0, 255, 0, 255));
+        color2 = registerColor("Off", new GSColor(255, 0, 0, 255));
     }
     
     @Override
@@ -53,17 +53,17 @@ public class CombatInfo extends HUDModule {
     }
 
     public void onRender() {
-    	list.totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+    	list.totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum() + ((mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) ? 1 : 0);
     	list.players = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityOtherPlayerMP)
                 .filter(entity -> !Friends.isFriend(entity.getName()))
-                .filter(e -> mc.player.getDistance(e) <= AutoCrystal.placeRange.getValue())
+                .filter(e -> mc.player.getDistance(e) <= AutoCrystalGS.placeRange.getValue())
                 .map(entity -> (EntityOtherPlayerMP) entity)
                 .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
                 .orElse(null);
     	list.renderLby=false;
     	List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
-    	AutoCrystal a = (AutoCrystal) ModuleManager.getModuleByName("AutocrystalGS");
+    	AutoCrystalGS a = (AutoCrystalGS) ModuleManager.getModuleByName("AutocrystalGS");
     	for (EntityPlayer e: entities) {
             int i = 0;
             for (BlockPos add: surroundOffset) {
@@ -109,7 +109,7 @@ public class CombatInfo extends HUDModule {
 
     private class InfoList implements HUDList {
 
-		public int totems=0;
+		public int totems = 0;
 		public EntityOtherPlayerMP players=null;
 		public boolean renderLby=false;
 		public boolean lby=false;
@@ -159,12 +159,12 @@ public class CombatInfo extends HUDModule {
 				}
 				else if (index==1) {
 					if (players!=null) {
-						on=mc.player.getDistance(players)<=AutoCrystal.breakRange.getValue();
+						on=mc.player.getDistance(players)<= AutoCrystalGS.breakRange.getValue();
 					}
 				}
 				else if (index==2) {
 					if (players!=null) {
-						on=mc.player.getDistance(players)<=AutoCrystal.placeRange.getValue();
+						on=mc.player.getDistance(players)<= AutoCrystalGS.placeRange.getValue();
 					}
 				}
 				else if (index==3) {

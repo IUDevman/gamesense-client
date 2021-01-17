@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.render;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
 
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -35,7 +35,7 @@ public class HitSpheres extends Module {
 						new GSColor(255,(int)(mc.player.getDistance(entity)*255/150f),0).glColor();
 					}
 				}
-				GameSenseTessellator.drawSphere(posX, posY, posZ, 6, 20, 15);
+				RenderUtil.drawSphere(posX, posY, posZ, 6, 20, 15);
 			}
 		}
 	}

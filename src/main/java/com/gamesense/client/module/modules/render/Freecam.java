@@ -24,8 +24,8 @@ public class Freecam extends Module {
 	Setting.Double speed;
 
 	public void setup() {
-		cancelPackets = registerBoolean("Cancel Packets","CancelPackets",true);
-		speed = registerDouble("Speed", "Speed", 10, 0, 20);
+		cancelPackets = registerBoolean("Cancel Packets",true);
+		speed = registerDouble("Speed", 10, 0, 20);
 	}
 
 	private double posX, posY, posZ;

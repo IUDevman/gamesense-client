@@ -29,7 +29,7 @@ public class VersionChecker {
         boolean isLatest = true;
         String newVersion = "null";
 
-        if (version.startsWith("dev")) {
+        if (version.startsWith("d")) {
             return;
         }
 

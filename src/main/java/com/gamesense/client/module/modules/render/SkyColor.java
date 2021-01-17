@@ -18,8 +18,8 @@ public class SkyColor extends Module {
 
     @Override
     public void setup() {
-        fog = registerBoolean("Fog", "Fog", true);
-        color = registerColor("Color", "Color", new GSColor(0, 255, 0, 255));
+        fog = registerBoolean("Fog", true);
+        color = registerColor("Color", new GSColor(0, 255, 0, 255));
     }
 
     @SubscribeEvent

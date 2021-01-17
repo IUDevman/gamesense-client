@@ -21,7 +21,7 @@ public class Watermark extends HUDModule {
 	}
 	
 	public void setup() {
-		color=registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
+		color=registerColor("Color", new GSColor(255, 0, 0, 255));
 	}
 	
 	@Override

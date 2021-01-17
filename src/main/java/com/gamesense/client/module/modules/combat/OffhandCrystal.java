@@ -33,8 +33,8 @@ public class OffhandCrystal extends Module {
 	}
 
 	public void setup() {
-		disableGapple = registerBoolean("Disable Gap", "DisableGap", true);
-		health = registerInteger("Health", "Health", 15, 0, 36);
+		disableGapple = registerBoolean("Disable Gap", true);
+		health = registerInteger("Health", 15, 0, 36);
 	}
 
 	public void onEnable() {

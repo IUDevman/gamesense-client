@@ -1,6 +1,5 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;
@@ -30,6 +29,11 @@ import java.util.List;
  * @Author Hoosiers on 09/19/20
  * Ported and modified from Surround.java
  */
+/*
+    Added new mode: target. this allow to choose in which way he is going to choose the target
+    2 modes: nearest (who is cloosest), looking (who you are looking)
+    Now some modules are in common (closestTarget, lookingAt)
+ */
 
 public class AutoTrap extends Module {
 
@@ -38,6 +42,7 @@ public class AutoTrap extends Module {
     }
 
     Setting.Mode trapType;
+    Setting.Mode target;
     Setting.Boolean chatMsg;
     Setting.Boolean rotate;
     Setting.Boolean disableNone;
@@ -50,14 +55,18 @@ public class AutoTrap extends Module {
         trapTypes.add("Normal");
         trapTypes.add("No Step");
         trapTypes.add("Air");
+        ArrayList<String> targetChoose = new ArrayList<>();
+        targetChoose.add("Nearest");
+        targetChoose.add("Looking");
 
-        trapType = registerMode("Mode", "Mode", trapTypes, "Normal");
-        disableNone = registerBoolean("Disable No Obby", "DisableNoObby", true);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", "BlocksPerTick", 4, 0, 8);
-        enemyRange = registerInteger("Range", "Range",4, 0, 6);
-        chatMsg = registerBoolean("Chat Msgs", "ChatMsgs", true);
+        trapType = registerMode("Mode", trapTypes, "Normal");
+        target = registerMode("Target", targetChoose, "Nearest");
+        disableNone = registerBoolean("Disable No Obby", true);
+        rotate = registerBoolean("Rotate", true);
+        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+        enemyRange = registerInteger("Range",4, 0, 6);
+        chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     private boolean noObby = false;
@@ -69,7 +78,7 @@ public class AutoTrap extends Module {
     private int delayTimeTicks = 0;
     private int offsetSteps = 0;
 
-    private EntityPlayer closestTarget;
+    private EntityPlayer aimTarget;
 
     public void onEnable() {
         if (mc.player == null) {
@@ -113,7 +122,7 @@ public class AutoTrap extends Module {
 
         noObby = false;
         firstRun = true;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
     }
 
     public void onUpdate() {
@@ -127,9 +136,12 @@ public class AutoTrap extends Module {
             return;
         }
 
-        findClosestTarget();
+        if (target.getValue().equals("Nearest"))
+            aimTarget = PistonCrystal.findClosestTarget(enemyRange.getValue(), aimTarget);
+        else if(target.getValue().equals("Looking"))
+            aimTarget = PistonCrystal.findLookingPlayer(enemyRange.getValue());
 
-        if (closestTarget == null) {
+        if (aimTarget == null) {
             return;
         }
 
@@ -176,7 +188,7 @@ public class AutoTrap extends Module {
             }
 
             BlockPos offsetPos = new BlockPos(placeTargets.get(offsetSteps));
-            BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+            BlockPos targetPos = new BlockPos(aimTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
             boolean tryPlacing = true;
 
@@ -269,7 +281,7 @@ public class AutoTrap extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -282,37 +294,13 @@ public class AutoTrap extends Module {
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 
         return true;
     }
 
-    private void findClosestTarget() {
-        List<EntityPlayer> playerList = mc.world.playerEntities;
-
-        closestTarget = null;
-
-        for (EntityPlayer entityPlayer : playerList) {
-            if (entityPlayer == mc.player) {
-                continue;
-            }
-            if (Friends.isFriend(entityPlayer.getName())) {
-                continue;
-            }
-            if (entityPlayer.isDead) {
-                continue;
-            }
-            if (closestTarget == null) {
-                closestTarget = entityPlayer;
-                continue;
-            }
-            if (mc.player.getDistance(entityPlayer) < mc.player.getDistance(closestTarget)) {
-                closestTarget = entityPlayer;
-            }
-        }
-    }
 
     private static class Offsets {
         private static final Vec3d[] TRAP = {

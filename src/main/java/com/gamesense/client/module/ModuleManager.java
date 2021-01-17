@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.lwjgl.input.Keyboard;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.modules.combat.*;
 import com.gamesense.client.module.modules.exploits.*;
@@ -27,18 +27,19 @@ public class ModuleManager {
 		modules = new ArrayList<>();
 		//Combat
 		addMod(new AutoAnvil());
-		addMod(new PistonCrystal());
 		addMod(new AutoArmor());
-		addMod(new AutoCrystal());
+		addMod(new AutoCrystalGS());
 		addMod(new AutoTotem());
 		addMod(new AutoTrap());
 		addMod(new AutoWeb());
 		addMod(new BedAura());
+		addMod(new Blocker());
 		addMod(new FastBow());
 		addMod(new HoleFill());
 		addMod(new KillAura());
 		addMod(new OffhandCrystal());
 		addMod(new OffhandGap());
+		addMod(new PistonCrystal());
 		addMod(new SelfTrap());
 		addMod(new SelfWeb());
 		addMod(new Surround());
@@ -49,8 +50,9 @@ public class ModuleManager {
 		addMod(new NoInteract());
 		addMod(new NoSwing());
 		addMod(new Reach());
+		addMod(new PacketEat());
 		addMod(new PacketXP());
-		addMod(new PortalGodMode());
+		addMod(new PortalGodmode());
 		//Movement
 		addMod(new Anchor());
 		addMod(new Blink());
@@ -99,7 +101,7 @@ public class ModuleManager {
 		addMod(new VoidESP());
 		//HUD
 		addMod(new ArmorHUD());
-		addMod(new ModuleArrayList());
+		addMod(new ArrayListModule());
 		addMod(new CombatInfo());
 		addMod(new InventoryViewer());
 		addMod(new Notifications());
@@ -133,7 +135,7 @@ public class ModuleManager {
 	public static void onWorldRender(RenderWorldLastEvent event) {
 		Minecraft.getMinecraft().profiler.startSection("gamesense");
 		Minecraft.getMinecraft().profiler.startSection("setup");
-		GameSenseTessellator.prepare();
+		RenderUtil.prepare();
 		RenderEvent e = new RenderEvent(event.getPartialTicks());
 		Minecraft.getMinecraft().profiler.endSection();
 
@@ -144,7 +146,7 @@ public class ModuleManager {
 		});
 
 		Minecraft.getMinecraft().profiler.startSection("release");
-		GameSenseTessellator.release();
+		RenderUtil.release();
 		Minecraft.getMinecraft().profiler.endSection();
 		Minecraft.getMinecraft().profiler.endSection();
 	}

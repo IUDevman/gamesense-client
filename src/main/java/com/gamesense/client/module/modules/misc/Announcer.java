@@ -71,15 +71,15 @@ public class Announcer extends Module {
 
 
 	public void setup() {
-		clientSide = registerBoolean("Client Side", "ClientSide", false);
-		walk = registerBoolean("Walk", "Walk", true);
-		place = registerBoolean("Place", "Place", true);
-		jump = registerBoolean("Jump", "Jump", true);
-		breaking = registerBoolean("Breaking", "Breaking", true);
-		attack = registerBoolean("Attack", "Attack",true);
-		eat = registerBoolean("Eat", "Eat",true);
-		clickGui = registerBoolean("DevGUI", "DevGUI",true);
-		delay = registerInteger("Delay", "Delay",1,1,20);
+		clientSide = registerBoolean("Client Side", false);
+		walk = registerBoolean("Walk", true);
+		place = registerBoolean("Place", true);
+		jump = registerBoolean("Jump", true);
+		breaking = registerBoolean("Breaking", true);
+		attack = registerBoolean("Attack", true);
+		eat = registerBoolean("Eat",true);
+		clickGui = registerBoolean("GUI",true);
+		delay = registerInteger("Delay",1,1,20);
 	}
 
 	public void onUpdate() {

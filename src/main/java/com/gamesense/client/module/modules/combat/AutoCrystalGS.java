@@ -5,7 +5,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.Timer;
 import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
@@ -52,9 +52,9 @@ import java.util.stream.Collectors;
  * @Author CyberTF2 and Hoosiers
  */
 
-public class AutoCrystal extends Module {
+public class AutoCrystalGS extends Module {
 
-    public AutoCrystal() {
+    public AutoCrystalGS() {
         super("AutoCrystalGS", Category.Combat);
     }
 
@@ -107,35 +107,35 @@ public class AutoCrystal extends Module {
         breakTypes.add("Swing");
         breakTypes.add("Packet");
 
-        breakMode = registerMode("Target", "Target", breakModes, "All");
-        handBreak = registerMode("Hand", "Hand", hands, "Main");
-        breakType = registerMode("Type", "Type", breakTypes, "Swing");
-        breakCrystal = registerBoolean("Break", "Break", true);
-        placeCrystal = registerBoolean("Place", "Place", true);
-        attackSpeed = registerInteger("Attack Speed", "AttackSpeed", 16, 0, 20);
-        breakRange = registerDouble("Hit Range", "HitRange", 4.4, 0.0, 10.0);
-        placeRange = registerDouble("Place Range", "PlaceRange", 4.4, 0.0, 6.0);
-        wallsRange = registerDouble("Walls Range", "WallsRange", 3.5, 0.0, 10.0);
-        enemyRange = registerDouble("Enemy Range", "EnemyRange", 6.0, 0.0, 16.0);
-        antiWeakness = registerBoolean("Anti Weakness", "AntiWeakness", true);
-        antiSuicide = registerBoolean("Anti Suicide", "AntiSuicide", true);
-        antiSuicideValue = registerInteger("Min Health", "MinHealth", 14, 1, 36);
-        autoSwitch = registerBoolean("Switch", "Switch", true);
-        noGapSwitch = registerBoolean("No Gap Switch", "NoGapSwitch", false);
-        multiPlace = registerBoolean("Multi Place", "MultiPlace", false);
-        endCrystalMode = registerBoolean("1.13 Place", "1.13Place", false);
-        cancelCrystal = registerBoolean("Cancel Crystal", "CancelCrystal", false);
-        minDmg = registerDouble("Min Damage", "MinDamage", 5, 0, 36);
-        minBreakDmg = registerDouble("Min Break Dmg", "MinBreakDmg", 5, 0,36.0);
-        maxSelfDmg = registerDouble("Max Self Dmg", "MaxSelfDmg", 10, 1.0, 36.0);
-        facePlaceValue = registerInteger("FacePlace HP", "FacePlaceHP", 8, 0, 36);
-        rotate = registerBoolean("Rotate", "Rotate", true);
-        spoofRotations = registerBoolean("Spoof Angles", "SpoofAngles", true);
-        raytrace = registerBoolean("Raytrace", "Raytrace", false);
-        showDamage = registerBoolean("Render Dmg", "RenderDmg", true);
-        chat = registerBoolean("Chat Msgs", "ChatMsgs", true);
-        hudDisplay = registerMode("HUD", "HUD", hudModes, "Mode");
-        color = registerColor("Color", "Color", new GSColor(0, 255, 0, 50));
+        breakMode = registerMode("Target", breakModes, "All");
+        handBreak = registerMode("Hand", hands, "Main");
+        breakType = registerMode("Type", breakTypes, "Swing");
+        breakCrystal = registerBoolean("Break", true);
+        placeCrystal = registerBoolean("Place", true);
+        attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
+        breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
+        placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
+        wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
+        enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
+        antiWeakness = registerBoolean("Anti Weakness", true);
+        antiSuicide = registerBoolean("Anti Suicide", true);
+        antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
+        autoSwitch = registerBoolean("Switch", true);
+        noGapSwitch = registerBoolean("No Gap Switch", false);
+        multiPlace = registerBoolean("Multi Place", false);
+        endCrystalMode = registerBoolean("1.13 Place", false);
+        cancelCrystal = registerBoolean("Cancel Crystal", false);
+        minDmg = registerDouble("Min Damage", 5, 0, 36);
+        minBreakDmg = registerDouble("Min Break Dmg", 5, 0,36.0);
+        maxSelfDmg = registerDouble("Max Self Dmg", 10, 1.0, 36.0);
+        facePlaceValue = registerInteger("FacePlace HP", 8, 0, 36);
+        rotate = registerBoolean("Rotate", true);
+        spoofRotations = registerBoolean("Spoof Angles", true);
+        raytrace = registerBoolean("Raytrace", false);
+        showDamage = registerBoolean("Render Dmg", true);
+        chat = registerBoolean("Chat Msgs", true);
+        hudDisplay = registerMode("HUD", hudModes, "Mode");
+        color = registerColor("Color", new GSColor(0, 255, 0, 50));
     }
 
     private boolean switchCooldown = false;
@@ -414,8 +414,8 @@ public class AutoCrystal extends Module {
     public void onWorldRender(RenderEvent event) {
         // As far as I can tell, this code never gets executed, since render is always null :(
         if (this.render != null) {
-            GameSenseTessellator.drawBox(this.render,1, new GSColor(color.getValue(),50), 63);
-            GameSenseTessellator.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(),255));
+            RenderUtil.drawBox(this.render,1, new GSColor(color.getValue(),50), 63);
+            RenderUtil.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(),255));
         }
 
         if(showDamage.getValue()) {
@@ -423,7 +423,7 @@ public class AutoCrystal extends Module {
                 double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
                 String[] damageText=new String[1];
                 damageText[0]=(Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
-                GameSenseTessellator.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ()+0.5,damageText,new GSColor(255,255,255),1);
+                RenderUtil.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ()+0.5,damageText,new GSColor(255,255,255),1);
             }
         }
     }

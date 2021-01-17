@@ -18,21 +18,21 @@ import com.lukflug.panelstudio.theme.Theme;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 // PanelStudio rewrite by lukflug
-public class ModuleArrayList extends HUDModule {
+public class ArrayListModule extends HUDModule {
 
     private Setting.Boolean sortUp;
     private Setting.Boolean sortRight;
     private Setting.ColorSetting color;
 	private ModuleList list=new ModuleList();
 
-    public ModuleArrayList() {
+    public ArrayListModule() {
     	super("ArrayList",new Point(0,200));
     }
 
     public void setup() {
-        sortUp = registerBoolean("Sort Up", "SortUp", true);
-        sortRight = registerBoolean("Sort Right", "SortRight", false);
-        color = registerColor("Color", "Color", new GSColor(255, 0, 0, 255));
+        sortUp = registerBoolean("Sort Up", true);
+        sortRight = registerBoolean("Sort Right", false);
+        color = registerColor("Color", new GSColor(255, 0, 0, 255));
     }
     
     @Override

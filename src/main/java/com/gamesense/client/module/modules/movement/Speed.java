@@ -39,11 +39,11 @@ public class Speed extends Module {
 		modes.add("Fake");
 		modes.add("YPort");
 
-		mode = registerMode("Mode", "Mode", modes, "Strafe");
-		yPortSpeed = registerDouble("Y Port Speed", "YPortSpeed", 0.06, 0.01, 0.15);
-		jumpHeight = registerDouble("Jump Speed", "JumpSpeed", 0.41, 0, 1);
-		timerBool = registerBoolean("Timer", "Timer", true);
-		timerVal = registerDouble("Timer Speed", "TimerSpeed", 1.15, 1, 1.5);
+		mode = registerMode("Mode", modes, "Strafe");
+		yPortSpeed = registerDouble("Y Port Speed", 0.06, 0.01, 0.15);
+		jumpHeight = registerDouble("Jump Speed", 0.41, 0, 1);
+		timerBool = registerBoolean("Timer", true);
+		timerVal = registerDouble("Timer Speed", 1.15, 1, 1.5);
 	}
 
 	private boolean slowDown;

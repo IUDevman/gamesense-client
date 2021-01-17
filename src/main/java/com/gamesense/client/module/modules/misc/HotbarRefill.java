@@ -23,8 +23,8 @@ public class HotbarRefill extends Module {
     Setting.Integer tickDelay;
 
     public void setup() {
-        threshold = registerInteger("Threshold", "Threshold", 32, 1, 63);
-        tickDelay = registerInteger("Tick Delay", "TickDelay", 2, 1, 10);
+        threshold = registerInteger("Threshold", 32, 1, 63);
+        tickDelay = registerInteger("Tick Delay", 2, 1, 10);
     }
 
     private int delayStep = 0;

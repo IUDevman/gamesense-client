@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
 
-import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.modules.render.Nametags;
@@ -31,7 +31,7 @@ import static org.lwjgl.opengl.GL11.*;
  * @author TechAle
  */
 
-public class GameSenseTessellator {
+public class RenderUtil {
 	private static final Minecraft mc = Minecraft.getMinecraft();
 
 	public static void drawBox(BlockPos blockPos, double height, GSColor color, int sides) {
@@ -144,6 +144,7 @@ public class GameSenseTessellator {
 		mc.getRenderManager().setRenderShadow(false);
 		mc.getRenderManager().setRenderOutlines(false);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(true);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0f, -1100000.0f);
@@ -154,6 +155,7 @@ public class GameSenseTessellator {
 		boolean shadow = mc.getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(false);
 		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0f, 1100000.0f);
 		GlStateManager.popMatrix();
@@ -163,6 +165,7 @@ public class GameSenseTessellator {
 		mc.getRenderManager().setRenderShadow(false);
 		mc.getRenderManager().setRenderOutlines(false);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(true);
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0f, -1100000.0f);
 		glDisable(GL11.GL_TEXTURE_2D);
@@ -177,6 +180,7 @@ public class GameSenseTessellator {
 		boolean shadow = mc.getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(false);
 		if (!isPlayer) {
 			GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
 		}
@@ -190,6 +194,7 @@ public class GameSenseTessellator {
 		mc.getRenderManager().setRenderShadow(false);
 		mc.getRenderManager().setRenderOutlines(false);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(true);
 		glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		glEnable(GL11.GL_POLYGON_OFFSET_LINE);
 		glPolygonOffset(1.0f, -1100000.0f);
@@ -209,6 +214,7 @@ public class GameSenseTessellator {
 		boolean shadow = mc.getRenderManager().isRenderShadow();
 		mc.getRenderManager().setRenderShadow(shadow);
 		GlStateManager.pushMatrix();
+		GlStateManager.depthMask(false);
 		if (!isPlayer) {
 			GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
 		}
@@ -448,7 +454,7 @@ public class GameSenseTessellator {
 				bcolor = Nametags.borderColor.getValue();
 			}
 			for (int i = 0; i < text.length; i++) {
-				double w=FontUtils.getStringWidth(ColorMain.customFont.getValue(),text[i])/2;
+				double w= FontUtil.getStringWidth(ColorMain.customFont.getValue(),text[i])/2;
 				if (w > width) {
 					width = w;
 				}
@@ -457,7 +463,7 @@ public class GameSenseTessellator {
 		}
 		GlStateManager.enableTexture2D();
 		for (int i=0;i<text.length;i++) {
-			FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),text[i],-FontUtils.getStringWidth(ColorMain.customFont.getValue(),text[i])/2,i*(mc.fontRenderer.FONT_HEIGHT+1)+start,color);
+			FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(),text[i],-FontUtil.getStringWidth(ColorMain.customFont.getValue(),text[i])/2,i*(mc.fontRenderer.FONT_HEIGHT+1)+start,color);
 		}
 		GlStateManager.disableTexture2D();
 		if (type!=2) {

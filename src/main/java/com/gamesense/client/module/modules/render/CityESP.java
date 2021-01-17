@@ -4,7 +4,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,12 +47,12 @@ public class CityESP extends Module {
         renderModes.add("Fill");
         renderModes.add("Both");
 
-        range = registerInteger("Range", "Range", 20, 1, 30);
-        targetMode = registerMode("Target", "Target", targetModes, "Single");
-        selectMode = registerMode("Select", "Select", selectModes, "Closest");
-        renderMode = registerMode("Render", "Render", renderModes, "Both");
-        width = registerInteger("Width", "Width", 1, 1, 10);
-        color = registerColor("Color", "Color", new GSColor(102,51,153));
+        range = registerInteger("Range", 20, 1, 30);
+        targetMode = registerMode("Target", targetModes, "Single");
+        selectMode = registerMode("Select", selectModes, "Closest");
+        renderMode = registerMode("Render", renderModes, "Both");
+        width = registerInteger("Width", 1, 1, 10);
+        color = registerColor("Color", new GSColor(102,51,153));
     }
 
     public void onWorldRender(RenderEvent event) {
@@ -141,16 +141,16 @@ public class CityESP extends Module {
 
         switch (renderMode.getValue()) {
             case "Both": {
-                GameSenseTessellator.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
-                GameSenseTessellator.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
+                RenderUtil.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
+                RenderUtil.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
                 break;
             }
             case "Outline": {
-                GameSenseTessellator.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
+                RenderUtil.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
                 break;
             }
             case "Fill": {
-                GameSenseTessellator.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
                 break;
             }
         }

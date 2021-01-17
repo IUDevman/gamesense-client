@@ -37,13 +37,13 @@ public class KillAura extends Module {
 	Setting.Double range;
 
 	public void setup() {
-		players = registerBoolean("Players", "Players", true);
-		passiveMobs = registerBoolean("Animals", "Animals", false);
-		hostileMobs = registerBoolean("Monsters", "Monsters", false);
-		range = registerDouble("Range", "Range", 5,0,10);
-		swordOnly = registerBoolean("Sword Only", "SwordOnly",true);
-		criticals = registerBoolean("Criticals", "Criticals",true);
-		caCheck = registerBoolean("AC Check", "ACCheck",false);
+		players = registerBoolean("Players", true);
+		passiveMobs = registerBoolean("Animals", false);
+		hostileMobs = registerBoolean("Monsters", false);
+		range = registerDouble("Range", 5,0,10);
+		swordOnly = registerBoolean("Sword Only",true);
+		criticals = registerBoolean("Criticals",true);
+		caCheck = registerBoolean("AC Check",false);
 	}
 
 	private boolean isAttacking = false;
@@ -62,7 +62,7 @@ public class KillAura extends Module {
 			if (swordOnly.getValue() && !(mc.player.getHeldItemMainhand().getItem() instanceof ItemSword)) {
 				return;
 			}
-			if (caCheck.getValue() && ((AutoCrystal) ModuleManager.getModuleByName("AutoCrystalGS")).isActive) {
+			if (caCheck.getValue() && ((AutoCrystalGS) ModuleManager.getModuleByName("AutoCrystalGS")).isActive) {
 				return;
 			}
 			attack(target);

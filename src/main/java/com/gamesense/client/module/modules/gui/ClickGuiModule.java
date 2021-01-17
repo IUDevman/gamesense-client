@@ -39,16 +39,16 @@ public class ClickGuiModule extends Module {
 		models.add("Screen");
 		models.add("Container");
 
-		opacity = registerInteger("Opacity", "Opacity", 150,50,255);
-		scrollSpeed = registerInteger("Scroll Speed", "ScrollSpeed", 10, 1, 20);
-		outlineColor = registerColor("Outline", "Outline", new GSColor(255, 0, 0, 255));
-		enabledColor =registerColor("Enabled","Enabled", new GSColor(255, 0, 0, 255));
-		backgroundColor = registerColor("Background", "Background", new GSColor(0, 0, 0, 255));
-		settingBackgroundColor = registerColor("Setting", "Setting", new GSColor(30, 30, 30, 255));
-		fontColor = registerColor("Font", "Font", new GSColor(255, 255, 255 ,255));
-		animationSpeed = registerInteger("Animation Speed", "AnimationSpeed", 200, 0, 1000);
-		scrolling = registerMode("Scrolling","Scrolling",models,"Screen");
-		showHUD = registerBoolean("Show HUD Panels","ShowHUDPanels",false);
+		opacity = registerInteger("Opacity", 150,50,255);
+		scrollSpeed = registerInteger("Scroll Speed", 10, 1, 20);
+		outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
+		enabledColor =registerColor("Enabled", new GSColor(255, 0, 0, 255));
+		backgroundColor = registerColor("Background", new GSColor(0, 0, 0, 255));
+		settingBackgroundColor = registerColor("Setting", new GSColor(30, 30, 30, 255));
+		fontColor = registerColor("Font", new GSColor(255, 255, 255 ,255));
+		animationSpeed = registerInteger("Animation Speed", 200, 0, 1000);
+		scrolling = registerMode("Scrolling",models,"Screen");
+		showHUD = registerBoolean("Show HUD Panels",false);
 	}
 
 	public void onEnable() {

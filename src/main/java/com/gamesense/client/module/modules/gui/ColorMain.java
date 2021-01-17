@@ -46,13 +46,13 @@ public class ColorMain extends Module {
 		models.add("RGB");
 		models.add("HSB");
 
-		customFont = registerBoolean("Custom Font", "CustomFont", true);
-		textFont = registerBoolean("Custom Text", "CustomText", false);
-		friendColor = registerMode("Friend", "FriendColor", tab, "Blue");
-		enemyColor = registerMode("Enemy", "EnemyColor", tab, "Red");
-		chatEnableColor = registerMode("Msg Enbl", "MsgEnbl", tab, "Green");
-		chatDisableColor = registerMode("Msg Dsbl", "MsgDsbl", tab, "Red");
-		colorModel=registerMode("Color Model","ColorModel", models,"HSB");
+		customFont = registerBoolean("Custom Font", true);
+		textFont = registerBoolean("Custom Text", false);
+		friendColor = registerMode("Friend Color", tab, "Blue");
+		enemyColor = registerMode("Enemy Color", tab, "Red");
+		chatEnableColor = registerMode("Msg Enbl", tab, "Green");
+		chatDisableColor = registerMode("Msg Dsbl", tab, "Red");
+		colorModel=registerMode("Color Model", models,"HSB");
 	}
 
 	public void onEnable() {

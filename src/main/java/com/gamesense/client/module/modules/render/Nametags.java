@@ -8,9 +8,9 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.font.FontUtils;
+import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 
@@ -50,17 +50,17 @@ public class Nametags extends Module {
 	public static Setting.ColorSetting borderColor;
 
 	public void setup() {
-		range = registerInteger("Range", "Range", 100, 10, 260);
-		durability = registerBoolean("Durability", "Durability", true);
-		armor = registerBoolean("Armor", "Armor", true);
-		enchantnames = registerBoolean("Enchants", "Enchants", true);
-		itemName = registerBoolean("Item Name", "ItemName", false);
-		gamemode = registerBoolean("Gamemode", "Gamemode", false);
-		health = registerBoolean("Health", "Health", true);
-		ping = registerBoolean("Ping", "Ping", false);
-		entityId = registerBoolean("Entity Id", "EntityId", false);
-		customColor = registerBoolean("Custom Color", "CustomColor", true);
-		borderColor = registerColor("Border Color","BorderColor");
+		range = registerInteger("Range", 100, 10, 260);
+		durability = registerBoolean("Durability", true);
+		armor = registerBoolean("Armor", true);
+		enchantnames = registerBoolean("Enchants", true);
+		itemName = registerBoolean("Item Name", false);
+		gamemode = registerBoolean("Gamemode", false);
+		health = registerBoolean("Health", true);
+		ping = registerBoolean("Ping", false);
+		entityId = registerBoolean("Entity Id", false);
+		customColor = registerBoolean("Custom Color", true);
+		borderColor = registerColor("Border Color");
 	}
 
 	public void onWorldRender(RenderEvent event) {
@@ -97,7 +97,7 @@ public class Nametags extends Module {
 			else {
 				final Enchantment enchantment3 = enchantment;
 				if (enchantnames.getValue()) {
-					FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), this.stringForEnchants(enchantment3, EnchantmentHelper.getEnchantmentLevel(enchantment3, itemStack)), (x * 2), y, new GSColor(255,255,255));
+					FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), this.stringForEnchants(enchantment3, EnchantmentHelper.getEnchantmentLevel(enchantment3, itemStack)), (x * 2), y, new GSColor(255,255,255));
 				}
 				else {
 					return;
@@ -107,7 +107,7 @@ public class Nametags extends Module {
 			}
 		}
 		if (itemStack.getItem().equals(Items.GOLDEN_APPLE) && itemStack.hasEffect()) {
-			FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), "God", (x * 2), y,new GSColor(195,77,65));
+			FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), "God", (x * 2), y,new GSColor(195,77,65));
 		}
 		GlStateManager.disableTexture2D();
 	}
@@ -133,7 +133,7 @@ public class Nametags extends Module {
 		GlStateManager.enableTexture2D();
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(.5,.5,.5);
-		FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), -FontUtils.getStringWidth(ColorMain.customFont.getValue(), itemStack.getDisplayName()) /2, y, new GSColor(255,255,255));
+		FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), -FontUtil.getStringWidth(ColorMain.customFont.getValue(), itemStack.getDisplayName()) /2, y, new GSColor(255,255,255));
 		GlStateManager.popMatrix();
 		GlStateManager.disableTexture2D();
 	}
@@ -148,7 +148,7 @@ public class Nametags extends Module {
 		GlStateManager.enableTexture2D();
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(.5,.5,.5);
-		FontUtils.drawStringWithShadow(ColorMain.customFont.getValue(),new StringBuilder().insert(0, (int) (n3 * 100.0f)).append('%').toString(), (x * 2), y, new GSColor((int) (red * 255), (int) (green * 255), 0));
+		FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(),new StringBuilder().insert(0, (int) (n3 * 100.0f)).append('%').toString(), (x * 2), y, new GSColor((int) (red * 255), (int) (green * 255), 0));
 		GlStateManager.popMatrix();
 		GlStateManager.disableTexture2D();
 	}
@@ -166,7 +166,7 @@ public class Nametags extends Module {
 		mc.getRenderItem().renderItemOverlays(mc.fontRenderer, itemStack, n, n2 + n4);
 		RenderHelper.disableStandardItemLighting();
 		mc.getRenderItem().zLevel = 0.0f;
-		GameSenseTessellator.prepare();		// Restore expected state
+		RenderUtil.prepare();		// Restore expected state
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(.5,.5,.5);
 		renderEnchants(itemStack, n, n2 - 24);
@@ -189,7 +189,7 @@ public class Nametags extends Module {
 		distance = entity.getDistance(n, distance, n2);
 		String[] text=new String[1];
 		text[0]=renderEntityName(entityPlayer);
-		GameSenseTessellator.drawNametag(n,tempY+1.4,n2,text,renderPing(entityPlayer),2);
+		RenderUtil.drawNametag(n,tempY+1.4,n2,text,renderPing(entityPlayer),2);
 		// Other stuff
 		final ItemStack heldItemMainhand = entityPlayer.getHeldItemMainhand();
 		final ItemStack heldItemOffhand = entityPlayer.getHeldItemOffhand();
@@ -243,12 +243,12 @@ public class Nametags extends Module {
 			if (this.durability.getValue() && heldItemMainhand.isItemStackDamageable()) {
 				final int n15 = k;
 				this.renderItemDurability(heldItemMainhand, n10, k);
-				k = n15 - (ColorMain.customFont.getValue() ? FontUtils.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
+				k = n15 - (ColorMain.customFont.getValue() ? FontUtil.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
 				nametags = this;
 			}
 			else {
 				if (b) {
-					k -= (ColorMain.customFont.getValue() ? FontUtils.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
+					k -= (ColorMain.customFont.getValue() ? FontUtil.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
 				}
 				nametags = this;
 			}
