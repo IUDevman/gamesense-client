@@ -66,6 +66,7 @@ public class ModuleManager {
 		addMod(new Announcer());
 		addMod(new AutoGG());
 		addMod(new AutoReply());
+		addMod(new AutoRespawn());
 		addMod(new AutoTool());
 		addMod(new ChatModifier());
 		addMod(new ChatSuffix());
@@ -79,7 +80,6 @@ public class ModuleManager {
 		addMod(new NoEntityTrace());
 		addMod(new NoKick());
 		addMod(new PvPInfo());
-		addMod(new RespawnCommand());
 		//Render
 		addMod(new BlockHighlight());
 		addMod(new BreakESP());
