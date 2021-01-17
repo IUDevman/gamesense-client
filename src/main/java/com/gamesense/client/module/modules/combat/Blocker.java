@@ -7,14 +7,12 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import com.gamesense.client.module.modules.combat.PistonCrystal;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
@@ -227,7 +225,7 @@ public class Blocker extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -240,7 +238,7 @@ public class Blocker extends Module {
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 

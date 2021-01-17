@@ -250,7 +250,7 @@ public class HoleFill extends Module {
 		boolean stoppedAC = false;
 
 		if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-			AutoCrystal.stopAC = true;
+			AutoCrystalGS.stopAC = true;
 			stoppedAC = true;
 		}
 
@@ -263,7 +263,7 @@ public class HoleFill extends Module {
 		mc.rightClickDelayTimer = 4;
 
 		if (stoppedAC) {
-			AutoCrystal.stopAC = false;
+			AutoCrystalGS.stopAC = false;
 			stoppedAC = false;
 		}
 

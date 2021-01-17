@@ -7,7 +7,7 @@ import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 
@@ -104,14 +104,14 @@ public class Tracers extends Module {
 
 	public void drawLine1(double posx, double posy, double posz, double up, GSColor color) {
 		Vec3d eyes=ActiveRenderInfo.getCameraPosition().add(mc.getRenderManager().viewerPosX,mc.getRenderManager().viewerPosY,mc.getRenderManager().viewerPosZ);
-		GameSenseTessellator.prepare();
+		RenderUtil.prepare();
 		if (pointsTo.getValue().equalsIgnoreCase("Head")) {
-			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy+up, posz, color);
+			RenderUtil.drawLine(eyes.x, eyes.y, eyes.z, posx, posy+up, posz, color);
 		}
 		else {
-			GameSenseTessellator.drawLine(eyes.x, eyes.y, eyes.z, posx, posy, posz, color);
+			RenderUtil.drawLine(eyes.x, eyes.y, eyes.z, posx, posy, posz, color);
 		}
-		GameSenseTessellator.release();
+		RenderUtil.release();
 	}
 
 	private GSColor getDistanceColor(int distance) {

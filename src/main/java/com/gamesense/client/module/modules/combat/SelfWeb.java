@@ -107,7 +107,7 @@ public class SelfWeb extends Module {
 
         noWeb = false;
         firstRun = true;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
     }
 
     public void onUpdate() {
@@ -255,7 +255,7 @@ public class SelfWeb extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -268,7 +268,7 @@ public class SelfWeb extends Module {
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 

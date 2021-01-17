@@ -10,7 +10,7 @@ import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 
@@ -166,7 +166,7 @@ public class Nametags extends Module {
 		mc.getRenderItem().renderItemOverlays(mc.fontRenderer, itemStack, n, n2 + n4);
 		RenderHelper.disableStandardItemLighting();
 		mc.getRenderItem().zLevel = 0.0f;
-		GameSenseTessellator.prepare();		// Restore expected state
+		RenderUtil.prepare();		// Restore expected state
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(.5,.5,.5);
 		renderEnchants(itemStack, n, n2 - 24);
@@ -189,7 +189,7 @@ public class Nametags extends Module {
 		distance = entity.getDistance(n, distance, n2);
 		String[] text=new String[1];
 		text[0]=renderEntityName(entityPlayer);
-		GameSenseTessellator.drawNametag(n,tempY+1.4,n2,text,renderPing(entityPlayer),2);
+		RenderUtil.drawNametag(n,tempY+1.4,n2,text,renderPing(entityPlayer),2);
 		// Other stuff
 		final ItemStack heldItemMainhand = entityPlayer.getHeldItemMainhand();
 		final ItemStack heldItemOffhand = entityPlayer.getHeldItemOffhand();

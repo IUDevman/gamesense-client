@@ -4,7 +4,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
 import com.google.common.collect.Sets;
@@ -297,36 +297,36 @@ public class HoleESP extends Module {
         switch (mode.getValue()) {
             case "Air": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.ALL);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
             case "Ground": {
-                GameSenseTessellator.drawBox(hole.offset(0, -1, 0), true, 1, fillColor, GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(hole.offset(0, -1, 0), true, 1, fillColor, GeometryMasks.Quad.ALL);
                 break;
             }
             case "Flat": {
-                GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
                 break;
             }
             case "Slab": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBox(hole, false, slabHeight.getValue(), fillColor, GeometryMasks.Quad.ALL);
+                    RenderUtil.drawBox(hole, false, slabHeight.getValue(), fillColor, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
             case "Double": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBox(hole.setMaxY(hole.maxY + 1), true, 2, fillColor, GeometryMasks.Quad.ALL);
+                    RenderUtil.drawBox(hole.setMaxY(hole.maxY + 1), true, 2, fillColor, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
@@ -341,36 +341,36 @@ public class HoleESP extends Module {
         switch (mode.getValue()) {
             case "Air": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBoundingBox(hole, width.getValue(), outlineColor);
+                    RenderUtil.drawBoundingBox(hole, width.getValue(), outlineColor);
                 }
                 break;
             }
             case "Ground": {
-                GameSenseTessellator.drawBoundingBox(hole.offset(0, -1, 0), width.getValue(), outlineColor);
+                RenderUtil.drawBoundingBox(hole.offset(0, -1, 0), width.getValue(), outlineColor);
                 break;
             }
             case "Flat": {
-                GameSenseTessellator.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
                 break;
             }
             case "Slab": {
                 if (this.flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBoundingBox(hole.setMaxY(hole.minY + slabHeight.getValue()), width.getValue(), outlineColor);
+                    RenderUtil.drawBoundingBox(hole.setMaxY(hole.minY + slabHeight.getValue()), width.getValue(), outlineColor);
                 }
                 break;
             }
             case "Double": {
                 if (this.flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    GameSenseTessellator.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    GameSenseTessellator.drawBoundingBox(hole.setMaxY(hole.maxY + 1), width.getValue(), outlineColor);
+                    RenderUtil.drawBoundingBox(hole.setMaxY(hole.maxY + 1), width.getValue(), outlineColor);
                 }
                 break;
             }

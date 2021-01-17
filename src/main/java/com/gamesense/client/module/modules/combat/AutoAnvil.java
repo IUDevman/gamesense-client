@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -164,7 +163,7 @@ public class AutoAnvil extends Module {
 
         noMaterials = false;
         firstRun = true;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
     }
 
     public void onUpdate() {
@@ -345,7 +344,7 @@ public class AutoAnvil extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -383,7 +382,7 @@ public class AutoAnvil extends Module {
 
         // Re-Active ca
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 

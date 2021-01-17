@@ -126,7 +126,7 @@ public class SelfTrap extends Module {
 
         noObby = false;
         firstRun = true;
-        AutoCrystal.stopAC = false;
+        AutoCrystalGS.stopAC = false;
     }
 
     public void onUpdate() {
@@ -316,7 +316,7 @@ public class SelfTrap extends Module {
         boolean stoppedAC = false;
 
         if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystal.stopAC = true;
+            AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
@@ -329,7 +329,7 @@ public class SelfTrap extends Module {
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
-            AutoCrystal.stopAC = false;
+            AutoCrystalGS.stopAC = false;
             stoppedAC = false;
         }
 

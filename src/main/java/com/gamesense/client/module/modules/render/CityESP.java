@@ -4,7 +4,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
 import net.minecraft.entity.player.EntityPlayer;
@@ -141,16 +141,16 @@ public class CityESP extends Module {
 
         switch (renderMode.getValue()) {
             case "Both": {
-                GameSenseTessellator.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
-                GameSenseTessellator.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
+                RenderUtil.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
+                RenderUtil.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
                 break;
             }
             case "Outline": {
-                GameSenseTessellator.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
+                RenderUtil.drawBoundingBox(blockPos, 1, width.getValue(), gsColor1);
                 break;
             }
             case "Fill": {
-                GameSenseTessellator.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(blockPos, 1, gsColor2, GeometryMasks.Quad.ALL);
                 break;
             }
         }

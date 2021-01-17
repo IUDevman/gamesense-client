@@ -31,7 +31,7 @@ import static org.lwjgl.opengl.GL11.*;
  * @author TechAle
  */
 
-public class GameSenseTessellator {
+public class RenderUtil {
 	private static final Minecraft mc = Minecraft.getMinecraft();
 
 	public static void drawBox(BlockPos blockPos, double height, GSColor color, int sides) {

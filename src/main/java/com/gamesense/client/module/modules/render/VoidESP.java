@@ -6,7 +6,7 @@ import java.util.List;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
@@ -125,7 +125,7 @@ public class VoidESP extends Module {
 		if (renderType.getValue().equalsIgnoreCase("Fill") || renderType.getValue().equalsIgnoreCase("Both")) {
 			GSColor c=new GSColor(color.getValue(),50);
 			if (renderMode.getValue().equalsIgnoreCase("Flat")) {
-				GameSenseTessellator.drawBox(blockPos, 1, c, GeometryMasks.Quad.DOWN);
+				RenderUtil.drawBox(blockPos, 1, c, GeometryMasks.Quad.DOWN);
 			}
 		}
 	}
@@ -133,17 +133,17 @@ public class VoidESP extends Module {
 	private void drawBox(BlockPos blockPos) {
 		if (renderType.getValue().equalsIgnoreCase("Fill") || renderType.getValue().equalsIgnoreCase("Both")) {
 			GSColor c=new GSColor(color.getValue(),50);
-			GameSenseTessellator.drawBox(blockPos, 1, c, GeometryMasks.Quad.ALL);
+			RenderUtil.drawBox(blockPos, 1, c, GeometryMasks.Quad.ALL);
 		}
 	}
 
 	private void drawOutline(BlockPos blockPos, int width) {
 		if (renderType.getValue().equalsIgnoreCase("Outline") || renderType.getValue().equalsIgnoreCase("Both")) {
 			if (renderMode.getValue().equalsIgnoreCase("Box")) {
-				GameSenseTessellator.drawBoundingBox(blockPos, 1, width, color.getValue());
+				RenderUtil.drawBoundingBox(blockPos, 1, width, color.getValue());
 			}
 			if (renderMode.getValue().equalsIgnoreCase("Flat")) {
-				GameSenseTessellator.drawBoundingBoxWithSides(blockPos, width, color.getValue(), GeometryMasks.Quad.DOWN);
+				RenderUtil.drawBoundingBoxWithSides(blockPos, width, color.getValue(), GeometryMasks.Quad.DOWN);
 			}
 		}
 	}

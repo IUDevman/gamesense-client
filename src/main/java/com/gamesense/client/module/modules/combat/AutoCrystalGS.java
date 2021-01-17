@@ -5,7 +5,7 @@ import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.GameSenseTessellator;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.Timer;
 import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
@@ -52,9 +52,9 @@ import java.util.stream.Collectors;
  * @Author CyberTF2 and Hoosiers
  */
 
-public class AutoCrystal extends Module {
+public class AutoCrystalGS extends Module {
 
-    public AutoCrystal() {
+    public AutoCrystalGS() {
         super("AutoCrystalGS", Category.Combat);
     }
 
@@ -414,8 +414,8 @@ public class AutoCrystal extends Module {
     public void onWorldRender(RenderEvent event) {
         // As far as I can tell, this code never gets executed, since render is always null :(
         if (this.render != null) {
-            GameSenseTessellator.drawBox(this.render,1, new GSColor(color.getValue(),50), 63);
-            GameSenseTessellator.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(),255));
+            RenderUtil.drawBox(this.render,1, new GSColor(color.getValue(),50), 63);
+            RenderUtil.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(),255));
         }
 
         if(showDamage.getValue()) {
@@ -423,7 +423,7 @@ public class AutoCrystal extends Module {
                 double d = calculateDamage(render.getX() + .5, render.getY() + 1, render.getZ() + .5, renderEnt);
                 String[] damageText=new String[1];
                 damageText[0]=(Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
-                GameSenseTessellator.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ()+0.5,damageText,new GSColor(255,255,255),1);
+                RenderUtil.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ()+0.5,damageText,new GSColor(255,255,255),1);
             }
         }
     }
