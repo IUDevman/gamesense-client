@@ -27,7 +27,7 @@ jobs:
         restore-keys: ${{ runner.os }}-gradle
     
     - name: Decomp Workspace
-      run: ./gradlew setupDecompWorkspace
+      run: ./gradlew setupCIWorkspace
     
     - name: Build
       run: ./gradlew build
