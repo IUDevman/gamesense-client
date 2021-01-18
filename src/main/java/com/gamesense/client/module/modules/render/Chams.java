@@ -1,21 +1,22 @@
 package com.gamesense.client.module.modules.render;
 
+import java.util.ArrayList;
+
 import com.gamesense.api.event.events.RenderEntityEvent;
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.render.ChamsUtil;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.item.*;
+import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.ArrayList;
 
 /**
  * @author Techale
@@ -126,15 +127,15 @@ public class Chams extends Module {
     private void renderChamsPre(GSColor color, boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Texture": {
-                RenderUtil.createChamsPre();
+            	ChamsUtil.createChamsPre();
                 break;
             }
             case "Color": {
-                RenderUtil.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
+            	ChamsUtil.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
                 break;
             }
             case "WireFrame": {
-                RenderUtil.createWirePre(new GSColor(color, wireOpacity.getValue()), lineWidth.getValue(), isPlayer);
+                ChamsUtil.createWirePre(new GSColor(color, wireOpacity.getValue()), lineWidth.getValue(), isPlayer);
                 break;
             }
         }
@@ -143,15 +144,15 @@ public class Chams extends Module {
     private void renderChamsPost(boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Texture": {
-                RenderUtil.createChamsPost();
+            	ChamsUtil.createChamsPost();
                 break;
             }
             case "Color": {
-                RenderUtil.createColorPost(isPlayer);
+            	ChamsUtil.createColorPost(isPlayer);
                 break;
             }
             case "WireFrame": {
-                RenderUtil.createWirePost(isPlayer);
+            	ChamsUtil.createWirePost(isPlayer);
                 break;
             }
         }
