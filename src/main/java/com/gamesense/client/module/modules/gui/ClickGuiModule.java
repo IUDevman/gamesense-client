@@ -33,11 +33,16 @@ public class ClickGuiModule extends Module {
 	public static Setting.Integer animationSpeed;
 	public static Setting.Mode scrolling;
 	public static Setting.Boolean showHUD;
+	public static Setting.Mode theme;
 
 	public void setup() {
 		ArrayList<String> models=new ArrayList<>();
 		models.add("Screen");
 		models.add("Container");
+		ArrayList<String> themes=new ArrayList<>();
+		themes.add("2.2");
+		themes.add("2.1.2");
+		themes.add("2.0");
 
 		opacity = registerInteger("Opacity", 150,50,255);
 		scrollSpeed = registerInteger("Scroll Speed", 10, 1, 20);
@@ -49,6 +54,7 @@ public class ClickGuiModule extends Module {
 		animationSpeed = registerInteger("Animation Speed", 200, 0, 1000);
 		scrolling = registerMode("Scrolling",models,"Screen");
 		showHUD = registerBoolean("Show HUD Panels",false);
+		theme = registerMode("Skin",themes,"2.2");
 	}
 
 	public void onEnable() {
