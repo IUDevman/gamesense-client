@@ -66,6 +66,7 @@ public class ModuleManager {
 		addMod(new Announcer());
 		addMod(new AutoGG());
 		addMod(new AutoReply());
+		addMod(new AutoRespawn());
 		addMod(new AutoTool());
 		addMod(new ChatModifier());
 		addMod(new ChatSuffix());
