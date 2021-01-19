@@ -25,7 +25,9 @@ public class AutoTotem extends Module {
 
 	@Override
 	public void onUpdate() {
+		// Esci se hai aperto un contenitore
 		if (mc.currentScreen instanceof GuiContainer) return;
+		/// DOPO
 		if (returnI) {
 			int t = -1;
 			for (int i = 0; i < 45; i++)
@@ -37,29 +39,41 @@ public class AutoTotem extends Module {
 			mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, mc.player);
 			returnI = false;
 		}
+		// Contatore di totem, questo server per l'hud
 		totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
+		// Se ha un totem in mano
 		if (mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) totems++;
 		else {
+			// Se non hai un totem in mano
+			// Se soft, fà iterare una seconda volta
 			if (soft.getValue() && !AutoTotem.mc.player.getHeldItemOffhand().isEmpty()) return;
 			if (moving) {
+				// Perchè
 				mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, mc.player);
 				moving = false;
 				if (!mc.player.inventory.getItemStack().isEmpty()) returnI = true;
 				return;
 			}
+			// Se non ce l'ha
 			if (mc.player.inventory.getItemStack().isEmpty()) {
+				// Se non hai totem
 				if (totems == 0) return;
 				int t = -1;
+				// Cerca un totem
 				for (int i = 0; i < 45; i++)
 					if (mc.player.inventory.getStackInSlot(i).getItem() == Items.TOTEM_OF_UNDYING) {
 						t = i;
 						break;
 					}
+				// Se non trova un totem
 				if (t == -1) return; // Should never happen!
+				// Cambia
 				mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, mc.player);
 				moving = true;
 			}
+			// Se soft
 			else if (!soft.getValue()) {
+				// Rifai
 				int t = -1;
 				for (int i = 0; i < 45; i++)
 					if (mc.player.inventory.getStackInSlot(i).isEmpty()) {
@@ -72,9 +86,4 @@ public class AutoTotem extends Module {
 		}
 	}
 
-	@Override
-	public String getHudInfo() {
-		String t = "[" + ChatFormatting.WHITE + totems + ChatFormatting.GRAY + "]";
-		return t;
-	}
 }
