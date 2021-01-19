@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.BossbarEvent;
+import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
@@ -27,6 +28,9 @@ public class NoRender extends Module {
 	Setting.Boolean noBossBar;
 	public Setting.Boolean noSkylight;
 	public static Setting.Boolean noCluster;
+	public static Setting.Integer maxNoClusterRender;
+
+	public static int currentClusterAmount = 0;
 
 	public void setup() {
 		armor = registerBoolean("Armor", false);
@@ -38,11 +42,17 @@ public class NoRender extends Module {
 		noOverlay = registerBoolean("No Overlay", false); //need to make sure this works better
 		noBossBar = registerBoolean("No Boss Bar", false);
 		noCluster = registerBoolean("No Cluster", false);
+		maxNoClusterRender = registerInteger("No Cluster Max", 5, 1, 25);
 	}
 
 	public void onUpdate() {
 		if (blind.getValue() && mc.player.isPotionActive(MobEffects.BLINDNESS)) mc.player.removePotionEffect(MobEffects.BLINDNESS);
 		if (nausea.getValue() && mc.player.isPotionActive(MobEffects.NAUSEA)) mc.player.removePotionEffect(MobEffects.NAUSEA);
+	}
+
+	@Override
+	public void onRender() {
+		currentClusterAmount = 0;
 	}
 
 	@EventHandler
@@ -96,5 +106,15 @@ public class NoRender extends Module {
 
 	public void onDisable() {
 		GameSense.EVENT_BUS.unsubscribe(this);
+	}
+
+	// return whether to render or not
+	public static boolean incrementNoClusterRender() {
+		++currentClusterAmount;
+		return currentClusterAmount <= maxNoClusterRender.getValue();
+	}
+
+	public static boolean getNoClusterRender() {
+		return currentClusterAmount <= maxNoClusterRender.getValue();
 	}
 }
