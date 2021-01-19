@@ -108,12 +108,14 @@ public class RenderUtil {
 	}
 
 	public static void drawBox(double x, double y, double z, double w, double h, double d, GSColor color, int alpha, int sides) {
+		GlStateManager.disableAlpha();
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		color.glColor();
 		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-		doVerticies(new AxisAlignedBB(x,y,z,x+w,y+h,z+d),color,color.getAlpha(),bufferbuilder,sides,false);
+		doVerticies(new AxisAlignedBB(x,y,z,x+w,y+h,z+d),color,alpha,bufferbuilder,sides,false);
 		tessellator.draw();
+		GlStateManager.enableAlpha();
 	}
 
 	// Bounding box
