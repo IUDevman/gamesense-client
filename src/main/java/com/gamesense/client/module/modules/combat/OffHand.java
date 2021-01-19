@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.combat;
 /**
  * @Author TechAle and Hossier
  * Ported and modified from the ex module AutoTotem
+ * Crystal Damage calculation ported from AutoCrystal
  */
 
 import com.gamesense.api.setting.Setting;

@@ -29,7 +29,6 @@ public class ModuleManager {
 		addMod(new AutoAnvil());
 		addMod(new AutoArmor());
 		addMod(new AutoCrystalGS());
-		addMod(new AutoTotem());
 		addMod(new AutoTrap());
 		addMod(new AutoWeb());
 		addMod(new BedAura());
@@ -37,8 +36,6 @@ public class ModuleManager {
 		addMod(new FastBow());
 		addMod(new HoleFill());
 		addMod(new KillAura());
-		addMod(new OffhandCrystal());
-		addMod(new OffhandGap());
 		addMod(new OffHand());
 		addMod(new PistonCrystal());
 		addMod(new SelfTrap());
