@@ -90,7 +90,7 @@ public class AutoTrap extends Module {
             MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
         }
 
-        mc.player.inventory.currentItem = oldSlot;
+        //mc.player.inventory.currentItem = oldSlot;
         if (findObsidianSlot() != -1) {
             mc.player.inventory.currentItem = findObsidianSlot();
         }
@@ -112,7 +112,6 @@ public class AutoTrap extends Module {
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
             mc.player.inventory.currentItem = oldSlot;
-            oldSlot = -1;
         }
 
         if (isSneaking) {
@@ -131,11 +130,6 @@ public class AutoTrap extends Module {
             return;
         }
 
-        if (disableNone.getValue() && noObby) {
-            disable();
-            return;
-        }
-
         if (target.getValue().equals("Nearest"))
             aimTarget = PistonCrystal.findClosestTarget(enemyRange.getValue(), aimTarget);
         else if(target.getValue().equals("Looking"))
@@ -145,14 +139,16 @@ public class AutoTrap extends Module {
             return;
         }
 
-        if (firstRun) {
+        if (firstRun || noObby) {
             firstRun = false;
             if (findObsidianSlot() == -1) {
                 noObby = true;
-                disable();
-            }
+                return;
+            }else
+                noObby = false;
         }
         else {
+
             if (delayTimeTicks < tickDelay.getValue()) {
                 delayTimeTicks++;
                 return;
@@ -162,8 +158,13 @@ public class AutoTrap extends Module {
             }
         }
 
-        blocksPlaced = 0;
+        if (disableNone.getValue() && noObby) {
+            disable();
+            return;
+        }
 
+        blocksPlaced = 0;
+        if (!noObby)
         while (blocksPlaced <= blocksPerTick.getValue()) {
 
             List<Vec3d> placeTargets = new ArrayList<>();
@@ -232,6 +233,8 @@ public class AutoTrap extends Module {
                 break;
             }
         }
+        if (slot == -1)
+            noObby = true;
         return slot;
     }
 
