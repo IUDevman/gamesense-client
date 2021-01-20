@@ -46,9 +46,10 @@ public class OffHand extends Module {
     Setting.Integer tickDelay;
     Setting.Integer fallDistance;
     Setting.Double biasDamage;
-    Setting.Boolean shiftObby;
-    Setting.Boolean swordGap;
-    Setting.Boolean swordPot;
+    Setting.Boolean crystalObby;
+    Setting.Boolean leftGap;
+    Setting.Boolean shiftPot;
+    Setting.Boolean swordCheck;
     Setting.Boolean fallDistanceBol;
     Setting.Boolean crystalCheck;
     Setting.Boolean antiWeakness;
@@ -107,11 +108,13 @@ public class OffHand extends Module {
         // Bias Damage
         biasDamage = registerDouble("Bias Damage", 1, 0, 3);
         // obby
-        shiftObby = registerBoolean("shiftObby", true);
+        crystalObby = registerBoolean("shiftCrystObby", true);
         // Gapple
-        swordGap = registerBoolean("SwordClickGap", true);
+        leftGap = registerBoolean("leftClickGap", true);
         // Potion
-        swordPot = registerBoolean("SwordShiftPot", true);
+        shiftPot = registerBoolean("ShiftPot", true);
+        // Sword check
+        swordCheck = registerBoolean("swordCheck", true);
         // Fall Distance
         fallDistanceBol = registerBoolean("Fall Distance", true);
         // Crystal Check
@@ -207,23 +210,24 @@ public class OffHand extends Module {
             itemCheck = "Crystal";
         }
 
-        if (normalOffHand && mc.gameSettings.keyBindUseItem.isKeyDown() && mc.player.getHeldItemMainhand().getItem() == Items.DIAMOND_SWORD) {
+        // If obby
+        if(normalOffHand && crystalObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
+                && mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL) {
+            itemCheck = "Obby";
+            normalOffHand = false;
+        }
+
+        if (normalOffHand && mc.gameSettings.keyBindUseItem.isKeyDown() && (swordCheck.getValue() || mc.player.getHeldItemMainhand().getItem() == Items.DIAMOND_SWORD)) {
             if(mc.gameSettings.keyBindSneak.isKeyDown()) {
-                if(swordPot.getValue()) {
+                if(shiftPot.getValue()) {
                     itemCheck = "Pot";
                     normalOffHand = false;
                 }
             }else
-            if (swordGap.getValue() ) {
+            if (leftGap.getValue() ) {
                 itemCheck = "Gapple";
                 normalOffHand = false;
             }
-        }
-
-        if(normalOffHand && shiftObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
-            && mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL) {
-            itemCheck = "Obby";
-            normalOffHand = false;
         }
 
         // Get item to check based from the health
