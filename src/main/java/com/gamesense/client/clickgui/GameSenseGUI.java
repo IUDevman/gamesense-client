@@ -56,8 +56,8 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 		theme=new ThemeMultiplexer() {
 			@Override
 			protected Theme getTheme() {
-				if (ClickGuiModule.theme.getValue()=="2.0") return clearTheme;
-				else if (ClickGuiModule.theme.getValue()=="2.1.2") return cleargradientTheme;
+				if (ClickGuiModule.theme.getValue().equals("2.0")) return clearTheme;
+				else if (ClickGuiModule.theme.getValue().equals("2.1.2")) return cleargradientTheme;
 				else return gamesenseTheme;
 			}
 		};
