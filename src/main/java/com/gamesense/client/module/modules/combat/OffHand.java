@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.combat;
 /**
  * @Author TechAle and Hossier
  * Ported and modified from the ex module AutoTotem
- * Crystal Damage calculation ported from AutoCrystal
+ * Crystal Damage calculation autoCrystal
  */
 
 import com.gamesense.api.setting.Setting;
@@ -12,15 +12,23 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.util.CombatRules;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 
@@ -37,12 +45,15 @@ public class OffHand extends Module {
     Setting.Integer healthSwitch;
     Setting.Integer tickDelay;
     Setting.Integer fallDistance;
-    Setting.Integer biasDamage;
+    Setting.Double biasDamage;
+    Setting.Boolean shiftObby;
     Setting.Boolean swordGap;
     Setting.Boolean swordPot;
     Setting.Boolean fallDistanceBol;
     Setting.Boolean crystalCheck;
+    Setting.Boolean antiWeakness;
     Setting.Boolean chatMsg;
+    Setting.Boolean noHotBar;
 
     int prevSlot,
         tickWaited,
@@ -62,6 +73,7 @@ public class OffHand extends Module {
     Map<String, net.minecraft.block.Block> allowedItemsBlock = new HashMap<String, net.minecraft.block.Block>() {
         {
             put("Plates", Blocks.WOODEN_PRESSURE_PLATE);
+            put("Obby", Blocks.OBSIDIAN);
         }
     };
 
@@ -72,7 +84,7 @@ public class OffHand extends Module {
 
     @Override
     public void setup() {
-        String[] allowedItems = {"Totem", "Crystal", "Gapple", "Plates", "Pot"};
+        String[] allowedItems = {"Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot"};
         String[] allowedPotions = {"first", "strength", "swiftness"};
         /// Initialize values
         // Default items
@@ -91,9 +103,11 @@ public class OffHand extends Module {
         // TickDelay
         tickDelay = registerInteger("Tick Delay", 0, 0, 20);
         // Fall distance
-        fallDistance = registerInteger("Fall Distance", 0, 0, 30);
+        fallDistance = registerInteger("Fall Distance", 8, 0, 30);
         // Bias Damage
-        biasDamage = registerInteger("Bias Damage", 0, 0, 10);
+        biasDamage = registerDouble("Bias Damage", 1, 0, 3);
+        // obby
+        shiftObby = registerBoolean("shiftObby", true);
         // Gapple
         swordGap = registerBoolean("SwordClickGap", true);
         // Potion
@@ -102,6 +116,10 @@ public class OffHand extends Module {
         fallDistanceBol = registerBoolean("Fall Distance", true);
         // Crystal Check
         crystalCheck = registerBoolean("Crystal Check", true);
+        // Anti Weakness
+        antiWeakness = registerBoolean("AntiWeakness", true);
+        // NoHotbar
+        noHotBar = registerBoolean("noHotBar", false);
         // Chat
         chatMsg = registerBoolean("Chat Msg", true);
     }
@@ -177,28 +195,39 @@ public class OffHand extends Module {
             2) he has not an elytra
             or crystalCheck
          */
-        if (fallDistanceBol.getValue() && mc.player.fallDistance >= fallDistance.getValue() && mc.player.prevPosY != mc.player.posY && !mc.player.isElytraFlying()
-            || crystalCheck.getValue() && crystalDamage()) {
+        if ( (fallDistanceBol.getValue() && mc.player.fallDistance >= fallDistance.getValue() && mc.player.prevPosY != mc.player.posY && !mc.player.isElytraFlying())
+            || (crystalCheck.getValue() && crystalDamage())) {
             normalOffHand = false;
             itemCheck = "Totem";
         }
 
-        if (normalOffHand && mc.gameSettings.keyBindUseItem.isKeyDown()) {
-            if (swordGap.getValue() && mc.player.getHeldItemMainhand().getItem() == Items.DIAMOND_SWORD) {
+        // If weakness
+        if (normalOffHand && antiWeakness.getValue() && mc.player.isPotionActive(MobEffects.WEAKNESS)) {
+            normalOffHand = false;
+            itemCheck = "Crystal";
+        }
+
+        if (normalOffHand && mc.gameSettings.keyBindUseItem.isKeyDown() && mc.player.getHeldItemMainhand().getItem() == Items.DIAMOND_SWORD) {
+            if(mc.gameSettings.keyBindSneak.isKeyDown()) {
+                if(swordPot.getValue()) {
+                    itemCheck = "Pot";
+                    normalOffHand = false;
+                }
+            }else
+            if (swordGap.getValue() ) {
                 itemCheck = "Gapple";
-                normalOffHand = false;
-            }
-        }else
-        if(normalOffHand && mc.gameSettings.keyBindSneak.isKeyDown()) {
-            if(swordPot.getValue() && mc.player.getHeldItemMainhand().getItem() == Items.DIAMOND_SWORD) {
-                itemCheck = "Pot";
                 normalOffHand = false;
             }
         }
 
-        if (normalOffHand)
-            // Get item to check based from the health
-            itemCheck = getItemToCheck();
+        if(normalOffHand && shiftObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
+            && mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL) {
+            itemCheck = "Obby";
+            normalOffHand = false;
+        }
+
+        // Get item to check based from the health
+        itemCheck = getItemToCheck(itemCheck);
 
         // If our offhand is okay
         if (offHandSame(itemCheck)) {
@@ -214,29 +243,68 @@ public class OffHand extends Module {
     }
 
     private boolean crystalDamage() {
+        double ris2 = 0;
         // Check if the crystal exist
         for(Entity t : mc.world.loadedEntityList) {
             // If it's a crystal
-            if (t instanceof EntityEnderCrystal) {
-                if (calculateDamage(t.posX, t.posY, t.posZ, mc.player) + biasDamage.getValue() >= mc.player.getHealth())
+            if (t instanceof EntityEnderCrystal && mc.player.getDistance(t) <= 12) {
+                if ((ris2 = calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue()) >= mc.player.getHealth()) {
                     return true;
+                }
             }
         }
         return false;
     }
 
-    public static float calculateDamage(double posX, double posY, double posZ, Entity entity) {
+
+    public static float calculateDamage (double posX, double posY, double posZ, Entity entity) {
         float doubleExplosionSize = 12.0F;
-        double distancedsize = entity.getDistance(posX, posY, posZ) / (double) doubleExplosionSize;
+
+        double l_Distance = entity.getDistance(posX, posY, posZ);
+
+
+        double distancedsize = l_Distance / (double) doubleExplosionSize;
         Vec3d vec3d = new Vec3d(posX, posY, posZ);
-        double blockDensity = entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
+        double blockDensity = (double) entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
         double v = (1.0D - distancedsize) * blockDensity;
-        float damage = (float) ((int) ((v * v + v) / 2.0D * 7.0D * (double) doubleExplosionSize + 1.0D));
+        float damage = (int)((v * v + v) / 2.0D * 7.0D * doubleExplosionSize + 1.0D);
         double finald = 1.0D;
 
-        finald = AutoCrystalGS.getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage), new Explosion(mc.world, null, posX, posY, posZ, 6F, false, true));
-
+        if (entity instanceof EntityLivingBase)
+        {
+            try {
+                finald = getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage),
+                        new Explosion(mc.world, null, posX, posY, posZ, 6F, false, true));
+            }catch(NullPointerException e) {
+                finald = 1.0D;
+            }
+        }
         return (float) finald;
+    }
+
+    public static float getBlastReduction(EntityLivingBase entity, float damage, Explosion explosion) {
+        if (entity instanceof EntityPlayer)
+        {
+            EntityPlayer ep = (EntityPlayer) entity;
+            DamageSource ds = DamageSource.causeExplosionDamage(explosion);
+            damage = CombatRules.getDamageAfterAbsorb(damage, (float) ep.getTotalArmorValue(),
+                    (float) ep.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
+
+            int k = EnchantmentHelper.getEnchantmentModifierDamage(ep.getArmorInventoryList(), ds);
+            float f = MathHelper.clamp(k, 0.0F, 20.0F);
+            damage *= 1.0F - f / 25.0F;
+
+            if (entity.isPotionActive(Potion.getPotionById(11)))
+            {
+                damage -= damage / 4;
+            }
+            // damage = Math.max(damage - ep.getAbsorptionAmount(), 0.0F);
+            return damage;
+        }
+
+        damage = CombatRules.getDamageAfterAbsorb(damage, (float) entity.getTotalArmorValue(),
+                (float) entity.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
+        return damage;
     }
 
     private static float getDamageMultiplied(float damage) {
@@ -271,8 +339,12 @@ public class OffHand extends Module {
         return true;
     }
 
-    private String getItemToCheck() {
-        return (mc.player.getHealth() + mc.player.getAbsorptionAmount() > healthSwitch.getValue()) ? nonDefaultItem.getValue() : defaultItem.getValue();
+    private String getItemToCheck(String str) {
+        return !str.equals("") ? str
+                : mc.player.getHealth() + mc.player.getAbsorptionAmount() > healthSwitch.getValue()
+                    ? nonDefaultItem.getValue()
+                    : defaultItem.getValue();
+
     }
 
     private int getInventorySlot(String itemName) {
@@ -289,7 +361,7 @@ public class OffHand extends Module {
         // Temporany variable
         Item temp;
         // Iterate
-        for (int i = 35; i > -1; i--) {
+        for (int i = 35; i > (noHotBar.getValue() ? 9 : -1); i--) {
             // Get item
             temp = mc.player.inventory.getStackInSlot(i).getItem();
 
