@@ -32,10 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author TechAle on (Insert data official release)
+ * @Author TechAle on (17/01/21)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
  * Break crystal from AutoCrystal
- * TODO: limit the possibility
  */
 
 public class PistonCrystal extends Module {
@@ -1427,7 +1426,7 @@ public class PistonCrystal extends Module {
     }
 
     // PrintChat
-    private void printChat(String text, Boolean error) {
+    public static void printChat(String text, Boolean error) {
         MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
     }
 
