@@ -5,7 +5,9 @@ package com.gamesense.client.module.modules.combat;
  * Ported and modified from the ex module AutoTotem
  * Crystal Damage calculation autoCrystal
  */
-
+/*
+ Fix: SwordCheck was inverted
+*/
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -23,6 +25,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemAppleGold;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -39,8 +42,8 @@ import java.util.Map;
 
 public class OffHand extends Module {
 
-    Setting.Mode    defaultItem;
-    Setting.Mode    nonDefaultItem;
+    public static Setting.Mode    defaultItem;
+    public static Setting.Mode    nonDefaultItem;
     Setting.Mode    potionChoose;
     Setting.Integer healthSwitch;
     Setting.Integer tickDelay;
@@ -61,6 +64,7 @@ public class OffHand extends Module {
         totems;
     boolean returnBack,
             stepChanging;
+
 
 
     // Create maps of allowed items
@@ -114,7 +118,7 @@ public class OffHand extends Module {
         // Potion
         shiftPot = registerBoolean("ShiftPot", true);
         // Sword check
-        swordCheck = registerBoolean("swordCheck", true);
+        swordCheck = registerBoolean("nonSword", true);
         // Fall Distance
         fallDistanceBol = registerBoolean("Fall Distance", true);
         // Crystal Check
@@ -217,14 +221,14 @@ public class OffHand extends Module {
             normalOffHand = false;
         }
 
-        if (normalOffHand && mc.gameSettings.keyBindUseItem.isKeyDown() && (swordCheck.getValue() || mc.player.getHeldItemMainhand().getItem() == Items.DIAMOND_SWORD)) {
+        if (normalOffHand && mc.gameSettings.keyBindUseItem.isKeyDown() && (!swordCheck.getValue() || mc.player.getHeldItemMainhand().getItem() == Items.DIAMOND_SWORD)) {
             if(mc.gameSettings.keyBindSneak.isKeyDown()) {
                 if(shiftPot.getValue()) {
                     itemCheck = "Pot";
                     normalOffHand = false;
                 }
             }else
-            if (leftGap.getValue() ) {
+            if (leftGap.getValue() && mc.player.getHeldItemMainhand().getItem() != Items.GOLDEN_APPLE) {
                 itemCheck = "Gapple";
                 normalOffHand = false;
             }
@@ -259,7 +263,6 @@ public class OffHand extends Module {
         }
         return false;
     }
-
 
     public static float calculateDamage (double posX, double posY, double posZ, Entity entity) {
         float doubleExplosionSize = 12.0F;
