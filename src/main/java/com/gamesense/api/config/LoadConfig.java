@@ -88,25 +88,28 @@ public class LoadConfig {
         JsonObject settingObject = moduleObject.get("Settings").getAsJsonObject();
         for (Setting setting : GameSense.getInstance().settingsManager.getSettingsForMod(module)) {
             JsonElement dataObject = settingObject.get(setting.getConfigName());
-
-            if (dataObject != null && dataObject.isJsonPrimitive()) {
-                switch (setting.getType()) {
-                    case BOOLEAN:
-                        ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
-                        break;
-                    case INTEGER:
-                        ((Setting.Integer) setting).setValue(dataObject.getAsInt());
-                        break;
-                    case DOUBLE:
-                        ((Setting.Double) setting).setValue(dataObject.getAsDouble());
-                        break;
-                    case COLOR:
-                        ((Setting.ColorSetting) setting).fromInteger(dataObject.getAsInt());
-                        break;
-                    case MODE:
-                        ((Setting.Mode) setting).setValue(dataObject.getAsString());
-                        break;
+            try {
+                if (dataObject != null && dataObject.isJsonPrimitive()) {
+                    switch (setting.getType()) {
+                        case BOOLEAN:
+                            ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
+                            break;
+                        case INTEGER:
+                            ((Setting.Integer) setting).setValue(dataObject.getAsInt());
+                            break;
+                        case DOUBLE:
+                            ((Setting.Double) setting).setValue(dataObject.getAsDouble());
+                            break;
+                        case COLOR:
+                            ((Setting.ColorSetting) setting).fromInteger(dataObject.getAsInt());
+                            break;
+                        case MODE:
+                            ((Setting.Mode) setting).setValue(dataObject.getAsString());
+                            break;
+                    }
                 }
+            }catch(java.lang.NumberFormatException e) {
+                System.out.println(dataObject);
             }
         }
         inputStream.close();
