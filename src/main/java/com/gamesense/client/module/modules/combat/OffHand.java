@@ -118,7 +118,7 @@ public class OffHand extends Module {
         // Potion
         shiftPot = registerBoolean("ShiftPot", true);
         // Sword check
-        swordCheck = registerBoolean("nonSword", true);
+        swordCheck = registerBoolean("onlySword", true);
         // Fall Distance
         fallDistanceBol = registerBoolean("Fall Distance", true);
         // Crystal Check
