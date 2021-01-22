@@ -24,19 +24,25 @@ import net.minecraft.util.math.Vec3d;
 
 public class AntiCrystal extends Module {
 
-    Setting.Double rangePlace;
-    Setting.Double damageMin;
-    Setting.Double enemyRange;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
-    Setting.Boolean rotate;
-    Setting.Boolean offHandMode;
-    Setting.Boolean onlyIfEnemy;
-    Setting.Boolean checkDamage;
-    Setting.Boolean chatMsg;
+    Setting.Double  rangePlace,
+                    damageMin,
+                    enemyRange,
+                    biasDamage;
 
-    private int delayTimeTicks,
-                blocksPlaced;
+    Setting.Integer     tickDelay,
+                        blocksPerTick;
+
+    Setting.Boolean rotate,
+                    offHandMode,
+                    onlyIfEnemy,
+                    nonAbusive,
+                    checkDamage,
+                    switchBack,
+                    notOurCrystals,
+                    chatMsg;
+
+
+    private int delayTimeTicks;
     private boolean isSneaking = false;
 
     public AntiCrystal() {
@@ -51,6 +57,8 @@ public class AntiCrystal extends Module {
         enemyRange = registerDouble("EnemyRange",12, 0, 20);
         // Damage
         damageMin = registerDouble("DamageMin", 4, 0, 15);
+        // Bias Damage
+        biasDamage = registerDouble("Bias Damage", 1, 0, 3);
         // Tick delay every wait
         tickDelay = registerInteger("Tick Delay", 5, 0, 10);
         // Max blocks per tick
@@ -61,8 +69,14 @@ public class AntiCrystal extends Module {
         rotate = registerBoolean("rotate", false);
         // Enemy
         onlyIfEnemy = registerBoolean("onlyIfEnemy", true);
+        // nonAbusive
+        nonAbusive = registerBoolean("nonAbusive", true);
         // Damage
         checkDamage = registerBoolean("damageCheck", true);
+        // Damage
+        switchBack = registerBoolean("switchBack", true);
+        // Damage
+        notOurCrystals = registerBoolean("notOurCrystals", true);
         // ChatMsg
         chatMsg = registerBoolean("Chat Msgs", true);
     }
@@ -118,7 +132,7 @@ public class AntiCrystal extends Module {
             else return;
         }
 
-        blocksPlaced = 0;
+        int blocksPlaced = 0;
         // If we arleady change our item
         boolean pressureSwitch = true;
         int slotPressure = -1;
@@ -140,9 +154,20 @@ public class AntiCrystal extends Module {
                     pressureSwitch = false;
 
                 }
-                // Check the damage
-                if (checkDamage.getValue() && OffHand.calculateDamage(t.posX, t.posY, t.posZ, mc.player) < damageMin.getValue())
+                // Check if it's a crystal placed by us
+                if (notOurCrystals.getValue() && usCrystal(t))
                     return;
+
+                float damage;
+                // Check for the damage
+                if (checkDamage.getValue()) {
+                    // Get it
+                    damage = (float) (OffHand.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue()) ;
+                    // If it's lower then damageMin and is lower the our health, exit
+                    if (damage < damageMin.getValue() && damage < mc.player.getHealth())
+                        return;
+                }
+
                 // Check if it's air
                 if (get_block(t.posX, t.posY, t.posZ) instanceof BlockAir) {
                     // Place the pressure plate
@@ -160,6 +185,13 @@ public class AntiCrystal extends Module {
 
     }
 
+    // This function check if a determinated crystal was placed by us
+    public boolean usCrystal(Entity crystal) {
+        // Check if the autoCrystal has placed that block
+        return AutoCrystalGS.PlacedCrystals.contains(new BlockPos((int) crystal.posX, crystal.posY - 1, (int) crystal.posZ));
+    }
+
+    // This function check if the offHand has "Plates" as value
     public static boolean isOffHandPressure() {
         return OffHand.nonDefaultItem.getValue().equals("Plates") || OffHand.defaultItem.getValue().equals("Plates");
     }
@@ -169,7 +201,10 @@ public class AntiCrystal extends Module {
         return mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
     }
 
+    // Place block
     private void placeBlock(BlockPos pos, int slotPressure) {
+
+        int oldSlot = -1;
 
         EnumFacing side = EnumFacing.DOWN;
 
@@ -180,7 +215,13 @@ public class AntiCrystal extends Module {
         Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
         if (slotPressure != 9 && mc.player.inventory.currentItem != slotPressure) {
-            mc.player.inventory.currentItem = slotPressure;
+            if (!nonAbusive.getValue()) {
+                if (switchBack.getValue())
+                    oldSlot = mc.player.inventory.currentItem;
+                mc.player.inventory.currentItem = slotPressure;
+            }
+            else
+                return;
         }
 
         if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
@@ -214,6 +255,10 @@ public class AntiCrystal extends Module {
         mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, swingHand);
         mc.player.swingArm(swingHand);
 
+        if (switchBack.getValue() && oldSlot != -1) {
+            mc.player.inventory.currentItem = oldSlot;
+        }
+
         if (stoppedAC) {
             AutoCrystalGS.stopAC = false;
             stoppedAC = false;
@@ -221,6 +266,7 @@ public class AntiCrystal extends Module {
 
     }
 
+    // Check if a ItemStack is a Pressure Plate
     private boolean isPressure(ItemStack stack) {
         // If it's not what we want
         if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
@@ -230,6 +276,7 @@ public class AntiCrystal extends Module {
         return ((ItemBlock) stack.getItem()).getBlock() instanceof BlockPressurePlate;
     }
 
+    // Get the index of the Pressure Plate on the hotBar
     private int getHotBarPressure() {
         // Iterate for the entire inventory
         for(int i = 0; i < 9; i++) {

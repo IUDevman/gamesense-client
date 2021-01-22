@@ -147,7 +147,7 @@ public class AutoCrystalGS extends Module {
     private int newSlot;
     private Entity renderEnt;
     private BlockPos render;
-    private final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
+    public static final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
     private EnumFacing enumFacing;
     Timer timer = new Timer();
 

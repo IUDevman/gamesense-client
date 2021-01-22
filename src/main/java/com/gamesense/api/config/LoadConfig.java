@@ -135,7 +135,9 @@ public class LoadConfig {
 
             if (dataObject != null && dataObject.isJsonPrimitive()) {
                 if (dataObject.getAsBoolean() == true) {
-                    module.enable();
+                    try {
+                        module.enable();
+                    }catch (NullPointerException e) {}
                 }
             }
         }
