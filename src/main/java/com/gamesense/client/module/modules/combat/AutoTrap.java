@@ -41,14 +41,15 @@ public class AutoTrap extends Module {
         super("AutoTrap", Category.Combat);
     }
 
-    Setting.Mode trapType;
-    Setting.Mode target;
-    Setting.Boolean chatMsg;
-    Setting.Boolean rotate;
-    Setting.Boolean disableNone;
-    Setting.Integer enemyRange;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
+    Setting.Mode    trapType,
+                    target;
+    Setting.Boolean chatMsg,
+                    rotate,
+                    offHandObby,
+                    disableNone;
+    Setting.Integer enemyRange,
+                    tickDelay,
+                    blocksPerTick;
 
     public void setup() {
         ArrayList<String> trapTypes = new ArrayList<>();
@@ -63,6 +64,7 @@ public class AutoTrap extends Module {
         target = registerMode("Target", targetChoose, "Nearest");
         disableNone = registerBoolean("Disable No Obby", true);
         rotate = registerBoolean("Rotate", true);
+        offHandObby = registerBoolean("Off Hand Obby", false);
         tickDelay = registerInteger("Tick Delay", 5, 0, 10);
         blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
         enemyRange = registerInteger("Range",4, 0, 6);
@@ -72,15 +74,16 @@ public class AutoTrap extends Module {
     private boolean noObby = false;
     private boolean isSneaking = false;
     private boolean firstRun = false;
+    private boolean activedOff;
     private int oldSlot = -1;
 
-    private int blocksPlaced;
     private int delayTimeTicks = 0;
     private int offsetSteps = 0;
 
     private EntityPlayer aimTarget;
 
     public void onEnable() {
+        activedOff = false;
         if (mc.player == null) {
             disable();
             return;
@@ -122,6 +125,10 @@ public class AutoTrap extends Module {
         noObby = false;
         firstRun = true;
         AutoCrystalGS.stopAC = false;
+        if (offHandObby.getValue() && OffHand.isActive()) {
+            OffHand.removeObsidian();
+            activedOff = false;
+        }
     }
 
     public void onUpdate() {
@@ -163,7 +170,7 @@ public class AutoTrap extends Module {
             return;
         }
 
-        blocksPlaced = 0;
+        int blocksPlaced = 0;
         if (!noObby)
         while (blocksPlaced <= blocksPerTick.getValue()) {
 
@@ -220,6 +227,14 @@ public class AutoTrap extends Module {
     private int findObsidianSlot() {
         int slot = -1;
 
+        if (offHandObby.getValue() && OffHand.isActive()) {
+            if (!activedOff) {
+                activedOff = true;
+                OffHand.requestObsidian();
+            }
+            return 9;
+        }
+
         for (int i = 0; i < 9; i++) {
             ItemStack stack = mc.player.inventory.getStackInSlot(i);
 
@@ -265,8 +280,16 @@ public class AutoTrap extends Module {
             return false;
         }
 
-        int obsidianSlot = findObsidianSlot();
+        EnumHand handSwing = EnumHand.MAIN_HAND;
 
+        int obsidianSlot = findObsidianSlot();
+        if (obsidianSlot == 9) {
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            }
+        }
+        else
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
@@ -292,8 +315,8 @@ public class AutoTrap extends Module {
             BlockUtil.faceVectorPacketInstant(hitVec);
         }
 
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
+        mc.player.swingArm(handSwing);
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
@@ -303,7 +326,6 @@ public class AutoTrap extends Module {
 
         return true;
     }
-
 
     private static class Offsets {
         private static final Vec3d[] TRAP = {

@@ -64,8 +64,20 @@ public class OffHand extends Module {
         totems;
     boolean returnBack,
             stepChanging;
+    private static boolean activeT;
+    private static int forceObby;
 
+    public static boolean isActive() {
+        return activeT;
+    }
 
+    public static void requestObsidian() {
+        forceObby++;
+    }
+
+    public static void removeObsidian() {
+        forceObby--;
+    }
 
     // Create maps of allowed items
     Map<String, Item> allowedItemsItem = new HashMap<String, Item>() {{
@@ -89,6 +101,9 @@ public class OffHand extends Module {
 
     @Override
     public void setup() {
+        // At start, offHand is not active
+        activeT = false;
+        // Default items
         String[] allowedItems = {"Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot"};
         String[] allowedPotions = {"first", "strength", "swiftness"};
         /// Initialize values
@@ -98,7 +113,7 @@ public class OffHand extends Module {
         ArrayList<String> defaultPotions = new ArrayList<>(Arrays.asList(allowedPotions));
         /// Add to settings
         // Default
-        defaultItem = registerMode("default", defaultItems, "Totem");
+        defaultItem = registerMode("Default", defaultItems, "Totem");
         // Non-Default
         nonDefaultItem = registerMode("Non Default", defaultItems, "Crystal");
         // Potions
@@ -112,13 +127,13 @@ public class OffHand extends Module {
         // Bias Damage
         biasDamage = registerDouble("Bias Damage", 1, 0, 3);
         // obby
-        crystalObby = registerBoolean("shiftCrystObby", true);
+        crystalObby = registerBoolean("Shift Cryst Obby", true);
         // Gapple
-        leftGap = registerBoolean("leftClickGap", true);
+        leftGap = registerBoolean("Left Click Gap", true);
         // Potion
-        shiftPot = registerBoolean("ShiftPot", true);
+        shiftPot = registerBoolean("Shift Pot", true);
         // Sword check
-        swordCheck = registerBoolean("onlySword", true);
+        swordCheck = registerBoolean("Only Sword", true);
         // Fall Distance
         fallDistanceBol = registerBoolean("Fall Distance", true);
         // Crystal Check
@@ -126,13 +141,17 @@ public class OffHand extends Module {
         // Anti Weakness
         antiWeakness = registerBoolean("AntiWeakness", true);
         // NoHotbar
-        noHotBar = registerBoolean("noHotBar", false);
+        noHotBar = registerBoolean("No HotBar", false);
         // Chat
         chatMsg = registerBoolean("Chat Msg", true);
     }
 
     @Override
     public void onEnable() {
+        // Enable it
+        activeT = true;
+        // If they are gonna force us obby
+        forceObby = 0;
 
         returnBack = false;
 
@@ -144,6 +163,8 @@ public class OffHand extends Module {
 
     @Override
     public void onDisable() {
+        activeT = false;
+        forceObby = 0;
 
         if (chatMsg.getValue()) {
             PistonCrystal.printChat("OffHand disabled", true);
@@ -215,8 +236,9 @@ public class OffHand extends Module {
         }
 
         // If obby
-        if(normalOffHand && crystalObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
-                && mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL) {
+        if((normalOffHand && crystalObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
+                && mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL)
+            || forceObby > 0) {
             itemCheck = "Obby";
             normalOffHand = false;
         }

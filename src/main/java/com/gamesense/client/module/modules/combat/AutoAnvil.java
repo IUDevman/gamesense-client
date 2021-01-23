@@ -36,20 +36,22 @@ public class AutoAnvil extends Module {
     public AutoAnvil() {
         super("AutoAnvil", Category.Combat);
     }
+    
+    Setting.Mode    anvilMode,
+                    target;
+    Setting.Double  enemyRange,
+                    decrease;
+    Setting.Boolean rotate,
+                    antiCrystal,
+                    fastAnvil,
+                    offHandObby,
+                    chatMsg;
+    Setting.Integer tickDelay,
+                    blocksPerTick,
+                    hDistance,
+                    minH,
+                    failStop;
 
-    Setting.Mode anvilMode;
-    Setting.Mode target;
-    Setting.Double enemyRange;
-    Setting.Double decrease;
-    Setting.Boolean rotate;
-    Setting.Boolean antiCrystal;
-    Setting.Boolean fastAnvil;
-    Setting.Boolean chatMsg;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
-    Setting.Integer hDistance;
-    Setting.Integer minH;
-    Setting.Integer failStop;
 
     public void setup() {
         ArrayList<String> anvilTypesList = new ArrayList<>();
@@ -64,6 +66,7 @@ public class AutoAnvil extends Module {
         target = registerMode("Target", targetChoose, "Nearest");
         antiCrystal = registerBoolean("Anti Crystal", false);
         fastAnvil = registerBoolean("Fast Anvil", true);
+        offHandObby = registerBoolean("Off Hand Obby", false);
         rotate = registerBoolean("Rotate", true);
         enemyRange = registerDouble("Range",5.9, 0, 6);
         decrease = registerDouble("Decrease",2, 0, 6);
@@ -119,7 +122,7 @@ public class AutoAnvil extends Module {
         }
 
         if (chatMsg.getValue()) {
-            printChat("AutoAnvil turned ON!", false);
+            PistonCrystal.printChat("AutoAnvil turned ON!", false);
         }
 
         oldSlot = mc.player.inventory.currentItem;
@@ -132,22 +135,22 @@ public class AutoAnvil extends Module {
 
         if (chatMsg.getValue()) {
             if (noMaterials) {
-                printChat("No Materials Detected... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("No Materials Detected... AutoAnvil turned OFF!", true);
             }
             else if (!isHole) {
-                printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
             }
             else if(!enoughSpace) {
-                printChat("Not enough space... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Not enough space... AutoAnvil turned OFF!", true);
             }
             else if(hasMoved) {
-                printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
             }
             else if(blockUp) {
-                printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
             }
             else {
-                printChat("AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("AutoAnvil turned OFF!", true);
             }
         }
 
@@ -164,6 +167,10 @@ public class AutoAnvil extends Module {
         noMaterials = false;
         firstRun = true;
         AutoCrystalGS.stopAC = false;
+        // If offHand was enabled
+        if (slot_mat[0] == -2) {
+            OffHand.removeObsidian();
+        }
     }
 
     public void onUpdate() {
@@ -314,17 +321,34 @@ public class AutoAnvil extends Module {
 
         /*
 			// I use this as a remind to which index refers to what
+			-2 => obsidian in offHand
 			0 => obsidian
 			1 => anvil
 			2 => pressure plate / button
 			3 => pick
 		 */
+        int utilSlot;
+
+        EnumHand handSwing = EnumHand.MAIN_HAND;
+
         // Get what slot we are going to select
-        int utilSlot =
+        utilSlot =
                 (step == 0 && (anvilMode.getValue().equalsIgnoreCase("feet")))
                         ? 2 :
                         (step == to_place.size() - 1) ? 1 : 0;
-        // If it's not empty
+
+        // If it's step of the obsidian and we have offHandMode
+        if (offHandObby.getValue() && OffHand.isActive() && slot_mat[utilSlot] == -2) {
+            // Check if we have the obby in our offhand
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            }
+            // Else we cannot
+            else
+                return false;
+        }else
+        // else check the normal If it's not empty
         if (mc.player.inventory.getStackInSlot(slot_mat[utilSlot]) != ItemStack.EMPTY) {
             // Is it is correct
             if (mc.player.inventory.currentItem != slot_mat[utilSlot]) {
@@ -372,8 +396,8 @@ public class AutoAnvil extends Module {
         }
 
         // Place the block
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
+        mc.player.swingArm(handSwing);
 
         // Disable fastplace
         if (fastAnvil.getValue() && step == to_place.size() - 1) {
@@ -419,13 +443,10 @@ public class AutoAnvil extends Module {
 
     private static ArrayList<Vec3d> to_place = new ArrayList<Vec3d>();
 
-    private void printChat(String text, Boolean error) {
-        MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
-    }
-
     private boolean getMaterialsSlot() {
 		/*
 			// I use this as a remind to which index refers to what
+			-2 => obsidian in offHand
 			0 => obsidian
 			1 => anvil
 			2 => pressure plate
@@ -473,6 +494,11 @@ public class AutoAnvil extends Module {
                             slot_mat[2] = i;
                         }
             }
+        }
+        // offHand obsidian
+        if (offHandObby.getValue() && OffHand.isActive()) {
+            slot_mat[0] = -2;
+            OffHand.requestObsidian();
         }
         // Count what we found
         int count = 0;

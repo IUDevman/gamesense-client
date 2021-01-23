@@ -489,6 +489,29 @@ public class PistonCrystal extends Module {
         }else {
             // If it got stuck
             if (++stuck >= stuckDetector.getValue()) {
+                // Check if the piston was not placed
+                if (!checkPistonPlace()) {
+                    BlockPos crystPos = getTargetPos(toPlace.supportBlock + 1);printChat(String.format("aim: %d %d", crystPos.getX(), crystPos.getZ()), false);
+                    Entity crystalF = null;
+                    for(Entity t : mc.world.loadedEntityList) {
+                        // If it's a crystal
+                        if (t instanceof EntityEnderCrystal) {
+                            if (((int) ( t.posX - .5)) == crystPos.getX() && ((int) ( t.posZ - .5)) == crystPos.getZ())
+                                crystalF = t;
+                        }
+                    }
+                    if (confirmBreak.getValue() && brokenCrystalBug && crystalF == null)
+                        stage = stuck = 0;
+                    if (crystalF != null) {
+                        breakCrystalPiston(crystalF);
+                        if (confirmBreak.getValue())
+                            brokenCrystalBug = true;
+                        else
+                            stage = stuck = 0;
+                    }
+                    printChat("Stuck detected: piston not placed", true);
+                    return;
+                }
                 /// Try to find the error
                 // First error: crystal not found
                 boolean found = false;
@@ -656,7 +679,8 @@ public class PistonCrystal extends Module {
         BlockPos targetPosPist = compactBlockPos(1);
         if (!(get_block(targetPosPist.getX(), targetPosPist.getY(), targetPosPist.getZ()) instanceof BlockPistonBase)) {
             // Go back placing the piston
-            stage--;
+            if (stage != 4)
+                stage--;
             return false;
         }else return true;
     }
