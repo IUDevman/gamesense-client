@@ -8,6 +8,7 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;

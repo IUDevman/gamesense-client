@@ -6,7 +6,6 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
@@ -26,7 +25,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
@@ -41,9 +39,7 @@ import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -277,8 +273,7 @@ public class AutoCrystalGS extends Module {
 
         List<BlockPos> blocks = CrystalUtil.findCrystalBlocks((float) enemyRange.getValue(), endCrystalMode.getValue());
 
-        List<Entity> entities = new ArrayList<>();
-        entities.addAll(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).sorted(Comparator.comparing(e -> mc.player.getDistance(e))).collect(Collectors.toList()));
+        List<Entity> entities = mc.world.playerEntities.stream().filter(entityPlayer -> !EntityUtil.basicChecksEntity(entityPlayer)).sorted(Comparator.comparing(e -> mc.player.getDistance(e))).collect(Collectors.toList());
 
         BlockPos q = null;
         double damage = 0.5D;
@@ -470,31 +465,13 @@ public class AutoCrystalGS extends Module {
         return false;
     }
 
-    private boolean validTarget(Entity entity) {
-        if (entity == null)
-            return false;
-
-        if (!(entity instanceof EntityLivingBase))
-            return false;
-
-        if (Friends.isFriend(entity.getName()))
-            return false;
-
-        if (entity.isDead || ((EntityLivingBase) entity).getHealth() <= 0.0F)
-            return false;
-
-        if (entity instanceof EntityPlayer) {
-            return entity != mc.player;
-        }
-
-        return false;
-    }
-
+    // 0b00101010: replaced getDistance with getDistanceSq as speeds up calculation
     private EntityLivingBase GetNearTarget(Entity distanceTarget) {
         return mc.world.loadedEntityList.stream()
-                .filter(entity -> validTarget(entity))
+                .filter(entity -> entity instanceof EntityLivingBase)
+                .filter(entity -> !EntityUtil.basicChecksEntity(entity))
                 .map(entity -> (EntityLivingBase) entity)
-                .min(Comparator.comparing(entity -> distanceTarget.getDistance(entity)))
+                .min(Comparator.comparing(distanceTarget::getDistanceSq))
                 .orElse(null);
     }
 

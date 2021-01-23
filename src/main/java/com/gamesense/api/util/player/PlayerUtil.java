@@ -15,7 +15,7 @@ public class PlayerUtil {
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static BlockPos getPlayerPos() {
-        return new BlockPos(Math.floor(mc.player.posX), Math.floor(mc.player.posY), Math.floor(mc.player.posY));
+        return new BlockPos(Math.floor(mc.player.posX), Math.floor(mc.player.posY), Math.floor(mc.player.posZ));
     }
 
     // Find closest target
@@ -49,15 +49,9 @@ public class PlayerUtil {
         EntityPlayer closestTarget = null;
 
         for (EntityPlayer entityPlayer : playerList) {
-            if (entityPlayer == mc.player) {
+            if (EntityUtil.basicChecksEntity(entityPlayer))
                 continue;
-            }
-            if (Friends.isFriend(entityPlayer.getName())) {
-                continue;
-            }
-            if (entityPlayer.isDead) {
-                continue;
-            }
+
             if (closestTarget == null) {
                 closestTarget = entityPlayer;
                 continue;

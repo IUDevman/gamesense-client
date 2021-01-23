@@ -6,7 +6,6 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -138,7 +137,8 @@ public class EntityUtil {
 	}
 
 	// Basic checks for an entity
+	// needed for crystal aura to not target freecam;
 	public static boolean basicChecksEntity(Entity pl) {
-		return pl == mc.player || Friends.isFriend(pl.getName()) || pl.isDead;
+		return pl.getName().equals(mc.player.getName()) || Friends.isFriend(pl.getName()) || pl.isDead;
 	}
 }

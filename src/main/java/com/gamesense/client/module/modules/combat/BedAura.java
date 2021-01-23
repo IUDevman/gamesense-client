@@ -3,8 +3,6 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.player.PlayerUtil;
-import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.Timer;
@@ -294,9 +292,7 @@ public class BedAura extends Module {
         NonNullList<EntityPlayer> targetEntities = NonNullList.create();
 
         mc.world.playerEntities.stream()
-                .filter(entityPlayer1 -> entityPlayer1 != mc.player)
-                .filter(entityPlayer1 -> !entityPlayer1.isDead)
-                .filter(entityPlayer1 -> !Friends.isFriend(entityPlayer1.getName()))
+                .filter(entityPlayer1 -> !EntityUtil.basicChecksEntity(entityPlayer1))
                 .filter(entityPlayer1 -> entityPlayer1.getDistance(entityPlayer) <= targetRange.getValue())
                 .sorted(Comparator.comparing(entityPlayer1 -> entityPlayer1.getDistance(entityPlayer)))
                 .forEach(targetEntities::add);
