@@ -1,16 +1,16 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.Timer;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -19,19 +19,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
-import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityBed;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Explosion;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -220,7 +218,7 @@ public class BedAura extends Module {
                     continue;
                 }
 
-                if (calculateDamage(targetPos1.getX(), targetPos1.getY(), targetPos1.getZ(), entityPlayer) < minDamage.getValue()) {
+                if (DamageUtil.calculateDamage(targetPos1.getX(), targetPos1.getY(), targetPos1.getZ(), entityPlayer) < minDamage.getValue()) {
                     continue;
                 }
 
@@ -309,77 +307,14 @@ public class BedAura extends Module {
     private NonNullList<BlockPos> findTargetPlacePos(EntityPlayer entityPlayer) {
         NonNullList<BlockPos> targetPlacePos = NonNullList.create();
 
-        targetPlacePos.addAll(getSphere(mc.player.getPosition(), (float) attackRange.getValue(), (int) attackRange.getValue(), false, true, 0)
+        targetPlacePos.addAll(EntityUtil.getSphere(mc.player.getPosition(), (float) attackRange.getValue(), (int) attackRange.getValue(), false, true, 0)
                 .stream()
                 .filter(this::canPlaceBed)
-                .sorted(Comparator.comparing(blockPos -> 1 - (calculateDamage(blockPos.up().getX(), blockPos.up().getY(), blockPos.up().getZ(), entityPlayer))))
+                .sorted(Comparator.comparing(blockPos -> 1 - (DamageUtil.calculateDamage(blockPos.up().getX(), blockPos.up().getY(), blockPos.up().getZ(), entityPlayer))))
                 .collect(Collectors.toList()));
 
         return targetPlacePos;
     }
-
-    /** start port from AutoCrystal */
-
-    public List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plusY) {
-        List<BlockPos> circleblocks = new ArrayList<>();
-        int cx = loc.getX();
-        int cy = loc.getY();
-        int cz = loc.getZ();
-        for (int x = cx - (int) r; x <= cx + r; x++) {
-            for (int z = cz - (int) r; z <= cz + r; z++) {
-                for (int y = (sphere ? cy - (int) r : cy); y < (sphere ? cy + r : cy + h); y++) {
-                    double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
-                    if (dist < r * r && !(hollow && dist < (r - 1) * (r - 1))) {
-                        BlockPos l = new BlockPos(x, y + plusY, z);
-                        circleblocks.add(l);
-                    }
-                }
-            }
-        }
-        return circleblocks;
-    }
-
-    public static float calculateDamage(double posX, double posY, double posZ, Entity entity) {
-        float doubleExplosionSize = 12.0F;
-        double distancedsize = entity.getDistance(posX, posY, posZ) / (double) doubleExplosionSize;
-        Vec3d vec3d = new Vec3d(posX, posY, posZ);
-        double blockDensity = entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
-        double v = (1.0D - distancedsize) * blockDensity;
-        float damage = (float) ((int) ((v * v + v) / 2.0D * 7.0D * (double) doubleExplosionSize + 1.0D));
-        double finald = 1.0D;
-
-        if (entity instanceof EntityLivingBase) {
-            finald = getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage), new Explosion(mc.world, null, posX, posY, posZ, 6F, false, true));
-        }
-        return (float) finald;
-    }
-
-    private static float getDamageMultiplied(float damage) {
-        int diff = mc.world.getDifficulty().getId();
-        return damage * (diff == 0 ? 0 : (diff == 2 ? 1 : (diff == 1 ? 0.5f : 1.5f)));
-    }
-
-    public static float getBlastReduction(EntityLivingBase entity, float damage, Explosion explosion) {
-        if (entity instanceof EntityPlayer) {
-            EntityPlayer ep = (EntityPlayer) entity;
-            DamageSource ds = DamageSource.causeExplosionDamage(explosion);
-            damage = CombatRules.getDamageAfterAbsorb(damage, (float) ep.getTotalArmorValue(), (float) ep.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
-
-            int k = EnchantmentHelper.getEnchantmentModifierDamage(ep.getArmorInventoryList(), ds);
-            float f = MathHelper.clamp(k, 0.0F, 20.0F);
-            damage *= 1.0F - f / 25.0F;
-
-            if (entity.isPotionActive(Potion.getPotionById(11))) {
-                damage = damage - (damage / 4);
-            }
-            damage = Math.max(damage, 0.0F);
-            return damage;
-        }
-        damage = CombatRules.getDamageAfterAbsorb(damage, (float) entity.getTotalArmorValue(), (float) entity.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
-        return damage;
-    }
-
-    /** end port from AutoCrystal */
 
     private boolean canPlaceBed(BlockPos blockPos) {
         if (mc.world.getBlockState(blockPos.up()).getBlock() != Blocks.AIR) {

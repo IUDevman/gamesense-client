@@ -1,14 +1,19 @@
 package com.gamesense.api.util.world;
 
+import com.gamesense.api.util.player.friends.Friends;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author 086
@@ -89,5 +94,51 @@ public class EntityUtil {
 			val = max;
 		}
 		return val;
+	}
+
+	public static List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
+		List<BlockPos> circleblocks = new ArrayList<>();
+		int cx = loc.getX();
+		int cy = loc.getY();
+		int cz = loc.getZ();
+		for (int x = cx - (int) r; x <= cx + r; x++) {
+			for (int z = cz - (int) r; z <= cz + r; z++) {
+				for (int y = (sphere ? cy - (int) r : cy); y < (sphere ? cy + r : cy + h); y++) {
+					double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
+					if (dist < r * r && !(hollow && dist < (r - 1) * (r - 1))) {
+						BlockPos l = new BlockPos(x, y + plus_y, z);
+						circleblocks.add(l);
+					}
+				}
+			}
+		}
+		return circleblocks;
+	}
+
+	public static double[] calculateLookAt(double px, double py, double pz, Entity me) {
+		double dirx = me.posX - px;
+		double diry = me.posY - py;
+		double dirz = me.posZ - pz;
+
+		double len = Math.sqrt(dirx*dirx + diry*diry + dirz*dirz);
+
+		dirx /= len;
+		diry /= len;
+		dirz /= len;
+
+		double pitch = Math.asin(diry);
+		double yaw = Math.atan2(dirz, dirx);
+
+		pitch = pitch * 180.0d / Math.PI;
+		yaw = yaw * 180.0d / Math.PI;
+
+		yaw += 90f;
+
+		return new double[]{yaw,pitch};
+	}
+
+	// Basic checks for an entity
+	public static boolean basicChecksEntity(Entity pl) {
+		return pl == mc.player || Friends.isFriend(pl.getName()) || pl.isDead;
 	}
 }

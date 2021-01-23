@@ -53,6 +53,10 @@ public class BlockUtil {
 		return getState(pos).getBlock();
 	}
 
+	public static Block getBlock(double x, double y, double z) {
+		return mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
+	}
+
 	public static boolean canBeClicked(BlockPos pos) {
 		return getBlock(pos).canCollideCheck(getState(pos), false);
 	}
@@ -123,5 +127,14 @@ public class BlockUtil {
 		}
 
 		return null;
+	}
+
+	public static Vec3d getCenterOfBlock(double playerX, double playerY, double playerZ) {
+
+		double newX = Math.floor(playerX) + 0.5;
+		double newY = Math.floor(playerY);
+		double newZ = Math.floor(playerZ) + 0.5;
+
+		return new Vec3d(newX, newY, newZ);
 	}
 }

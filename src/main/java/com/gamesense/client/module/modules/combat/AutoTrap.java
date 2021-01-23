@@ -1,19 +1,18 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -91,8 +90,8 @@ public class AutoTrap extends Module {
         }
 
         //mc.player.inventory.currentItem = oldSlot;
-        if (findObsidianSlot() != -1) {
-            mc.player.inventory.currentItem = findObsidianSlot();
+        if (InventoryUtil.findObsidianSlot() != -1) {
+            mc.player.inventory.currentItem = InventoryUtil.findObsidianSlot();
         }
     }
 
@@ -131,9 +130,9 @@ public class AutoTrap extends Module {
         }
 
         if (target.getValue().equals("Nearest"))
-            aimTarget = PistonCrystal.findClosestTarget(enemyRange.getValue(), aimTarget);
+            aimTarget = PlayerUtil.findClosestTarget(enemyRange.getValue(), aimTarget);
         else if(target.getValue().equals("Looking"))
-            aimTarget = PistonCrystal.findLookingPlayer(enemyRange.getValue());
+            aimTarget = PlayerUtil.findLookingPlayer(enemyRange.getValue());
 
         if (aimTarget == null) {
             return;
@@ -141,7 +140,7 @@ public class AutoTrap extends Module {
 
         if (firstRun || noObby) {
             firstRun = false;
-            if (findObsidianSlot() == -1) {
+            if (InventoryUtil.findObsidianSlot() == -1) {
                 noObby = true;
                 return;
             }else
@@ -217,27 +216,6 @@ public class AutoTrap extends Module {
         }
     }
 
-    private int findObsidianSlot() {
-        int slot = -1;
-
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = mc.player.inventory.getStackInSlot(i);
-
-            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
-                continue;
-            }
-
-            Block block = ((ItemBlock) stack.getItem()).getBlock();
-            if (block instanceof BlockObsidian) {
-                slot = i;
-                break;
-            }
-        }
-        if (slot == -1)
-            noObby = true;
-        return slot;
-    }
-
     private boolean placeBlock(BlockPos pos, int range) {
         Block block = mc.world.getBlockState(pos).getBlock();
 
@@ -265,7 +243,7 @@ public class AutoTrap extends Module {
             return false;
         }
 
-        int obsidianSlot = findObsidianSlot();
+        int obsidianSlot = InventoryUtil.findObsidianSlot();
 
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
             mc.player.inventory.currentItem = obsidianSlot;

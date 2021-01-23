@@ -3,13 +3,14 @@ package com.gamesense.client.module.modules.render;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.Pair;
+import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
+import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -89,31 +90,6 @@ public class HoleESP extends Module {
 
     private ConcurrentHashMap<AxisAlignedBB, GSColor> holes;
 
-    // defines the area for the client to search
-    public List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
-        List<BlockPos> circleblocks = new ArrayList<>();
-        int cx = loc.getX();
-        int cy = loc.getY();
-        int cz = loc.getZ();
-        for (int x = cx - (int) r; x <= cx + r; x++) {
-            for (int z = cz - (int) r; z <= cz + r; z++) {
-                for (int y = (sphere ? cy - (int) r : cy); y < (sphere ? cy + r : cy + h); y++) {
-                    double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
-                    if (dist < r * r && !(hollow && dist < (r - 1) * (r - 1))) {
-                        BlockPos l = new BlockPos(x, y + plus_y, z);
-                        circleblocks.add(l);
-                    }
-                }
-            }
-        }
-        return circleblocks;
-    }
-
-    // gets the entities location
-    public static BlockPos getEntityPos(Entity entity) {
-        return new BlockPos(Math.floor(entity.posX), Math.floor(entity.posY), Math.floor(entity.posZ));
-    }
-
     public void onUpdate() {
         if (mc.player == null || mc.world == null) {
             return;
@@ -131,7 +107,7 @@ public class HoleESP extends Module {
         // hashSets are easier to navigate
         HashSet<BlockPos> possibleFullHoles = Sets.newHashSet();
         HashMap<BlockPos, Pair<BlockOffset, GSColor>> possibleWideHoles = new HashMap<>();
-        List<BlockPos> blockPosList = getSphere(getEntityPos(mc.player), range, range, false, true, 0);
+        List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), range, range, false, true, 0);
 
         // find all holes
         for (BlockPos pos : blockPosList) {

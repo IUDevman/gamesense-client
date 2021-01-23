@@ -2,6 +2,7 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -176,9 +177,9 @@ public class AutoAnvil extends Module {
 
             // All the setup
             if (target.getValue().equals("Nearest"))
-                aimTarget = PistonCrystal.findClosestTarget(enemyRange.getValue(), aimTarget);
+                aimTarget = PlayerUtil.findClosestTarget(enemyRange.getValue(), aimTarget);
             else if(target.getValue().equals("Looking"))
-                aimTarget = PistonCrystal.findLookingPlayer(enemyRange.getValue());
+                aimTarget = PlayerUtil.findLookingPlayer(enemyRange.getValue());
 
             if (aimTarget == null) {
                 return;
@@ -215,8 +216,8 @@ public class AutoAnvil extends Module {
                     hasMoved = true;
 
                 // Check a block on the enemy's head
-                if (!(get_block(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAir)
-                        || !(get_block(enemyCoords[0], enemyCoords[1] + 3, enemyCoords[2]) instanceof BlockAir)) {
+                if (!(BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAir)
+                        || !(BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + 3, enemyCoords[2]) instanceof BlockAir)) {
                     blockUp = true;
                 }
 
@@ -500,10 +501,10 @@ public class AutoAnvil extends Module {
                 aimTarget.posZ
         };
         // Check if the guy is in a hole
-        return !(get_block(sur_block[0][0], sur_block[0][1], sur_block[0][2]) instanceof BlockAir) &&
-                !(get_block(sur_block[1][0], sur_block[1][1], sur_block[1][2]) instanceof BlockAir) &&
-                !(get_block(sur_block[2][0], sur_block[2][1], sur_block[2][2]) instanceof BlockAir) &&
-                !(get_block(sur_block[3][0], sur_block[3][1], sur_block[3][2]) instanceof BlockAir);
+        return !(BlockUtil.getBlock(sur_block[0][0], sur_block[0][1], sur_block[0][2]) instanceof BlockAir) &&
+                !(BlockUtil.getBlock(sur_block[1][0], sur_block[1][1], sur_block[1][2]) instanceof BlockAir) &&
+                !(BlockUtil.getBlock(sur_block[2][0], sur_block[2][1], sur_block[2][2]) instanceof BlockAir) &&
+                !(BlockUtil.getBlock(sur_block[3][0], sur_block[3][1], sur_block[3][2]) instanceof BlockAir);
     }
 
     private boolean createStructure() {
@@ -558,7 +559,7 @@ public class AutoAnvil extends Module {
         // Continue by creating the tower
         do {
             // Search the avaible space
-            if ( get_block(enemyCoords[0], enemyCoords[1] + incr, enemyCoords[2]) instanceof BlockAir && incr < hDistanceMod) {
+            if ( BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + incr, enemyCoords[2]) instanceof BlockAir && incr < hDistanceMod) {
                 // Lets check for the block near
                 if (!antiCrystal.getValue())
                     to_place.add(new Vec3d(model[cor][0], model[cor][1] + incr, model[cor][2]));
@@ -570,7 +571,7 @@ public class AutoAnvil extends Module {
                 incr++;
             }else {
                 // If there is a block where we want to place the anvil
-                if (!(get_block(enemyCoords[0], enemyCoords[1] + incr, enemyCoords[2]) instanceof BlockAir)) {
+                if (!(BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + incr, enemyCoords[2]) instanceof BlockAir)) {
                     // Go down of 1
                     incr--;
                 }
@@ -584,9 +585,5 @@ public class AutoAnvil extends Module {
         // Add the anvil
         to_place.add(new Vec3d(0, model[cor][1] + incr - 1, 0));
         return possible;
-    }
-
-    private Block get_block(double x, double y, double z) {
-        return mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
     }
 }
