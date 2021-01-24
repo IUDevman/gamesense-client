@@ -1,6 +1,6 @@
 package com.gamesense.api.util.world;
 
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.player.friend.Friends;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;

@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 
 public class DamageUtil {
+
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static float calculateDamage(double posX, double posY, double posZ, Entity entity) {

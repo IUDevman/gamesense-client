@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;

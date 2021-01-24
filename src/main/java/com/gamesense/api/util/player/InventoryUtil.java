@@ -7,6 +7,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public class InventoryUtil {
+
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static int findObsidianSlot() {

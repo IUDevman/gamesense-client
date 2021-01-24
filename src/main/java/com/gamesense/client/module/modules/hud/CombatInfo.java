@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.ModuleManager;

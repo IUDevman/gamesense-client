@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.gamesense.api.util.player.PlayerUtil;
-import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;

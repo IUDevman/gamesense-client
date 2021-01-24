@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CrystalUtil {
+
     private static final Minecraft mc = Minecraft.getMinecraft();
+
     public static boolean canPlaceCrystal(BlockPos blockPos, boolean mode) {
         BlockPos boost = blockPos.add(0, 1, 0);
         BlockPos boost2 = blockPos.add(0, 2, 0);
@@ -42,5 +44,4 @@ public class CrystalUtil {
         mc.playerController.attackEntity(mc.player, crystal);
         mc.player.swingArm(EnumHand.MAIN_HAND);
     }
-
 }

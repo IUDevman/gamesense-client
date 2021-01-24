@@ -1,6 +1,5 @@
 package com.gamesense.api.util.player;
 
-import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.util.world.EntityUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerUtil {
+
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static BlockPos getPlayerPos() {
@@ -20,7 +20,7 @@ public class PlayerUtil {
 
     // Find closest target
     // 0b00101010: replaced getDistance with getDistanceSq as speeds up calculation
-    public static EntityPlayer findClosestTarget(double rangeMax, EntityPlayer aimTarget){
+    public static EntityPlayer findClosestTarget(double rangeMax, EntityPlayer aimTarget) {
         rangeMax *= rangeMax;
         List<EntityPlayer> playerList = mc.world.playerEntities;
 
