@@ -83,7 +83,7 @@ public class Surround extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.printChat("Surround turned On!", false);
+            PistonCrystal.printChat("Surround turned On!", false);
         }
 
         if (centerPlayer.getValue() && mc.player.onGround) {

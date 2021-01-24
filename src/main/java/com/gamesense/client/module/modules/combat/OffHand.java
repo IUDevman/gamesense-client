@@ -146,7 +146,7 @@ public class OffHand extends Module {
         returnBack = false;
 
         if (chatMsg.getValue()) {
-            MessageBus.printChat("OffHand enabled", false);
+            PistonCrystal.printChat("OffHand enabled", false);
         }
 
     }
@@ -195,7 +195,7 @@ public class OffHand extends Module {
                 if (prevSlot != -1)
                     mc.playerController.windowClick(0, prevSlot < 9 ? prevSlot + 36 : prevSlot, 0, ClickType.PICKUP, mc.player);
                 else
-                    MessageBus.printChat("Your inventory is full. the item that was on your offhand is going to be dropped. Open your inventory and choose where to put it", true);
+                    PistonCrystal.printChat("Your inventory is full. the item that was on your offhand is going to be dropped. Open your inventory and choose where to put it", true);
                 // Set to false
                 returnBack = false;
                 tickWaited = 0;

@@ -56,8 +56,4 @@ public class MessageBus {
         mc.player.connection.sendPacket(new CPacketChatMessage(message));
     }
 
-    // PrintChat
-    public static void printChat(String text, Boolean error) {
-        sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
-    }
 }

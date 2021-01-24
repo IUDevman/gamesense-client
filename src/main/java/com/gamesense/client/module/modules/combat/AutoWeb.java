@@ -68,7 +68,7 @@ public class AutoWeb extends Module {
 		}
 
 		if (chatMsg.getValue()) {
-			MessageBus.printChat("AutoWeb turned ON!", false);
+			MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoWeb turned ON!");
 		}
 
 		oldSlot = mc.player.inventory.currentItem;
