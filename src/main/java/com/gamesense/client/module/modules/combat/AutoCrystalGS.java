@@ -270,7 +270,7 @@ public class AutoCrystalGS extends Module {
             return;
         }
 
-        List<BlockPos> blocks = CrystalUtil.findCrystalBlocks((float) enemyRange.getValue(), endCrystalMode.getValue());
+        List<BlockPos> blocks = CrystalUtil.findCrystalBlocks((float) placeRange.getValue(), endCrystalMode.getValue());
 
         List<Entity> entities = mc.world.playerEntities.stream().filter(entityPlayer -> !EntityUtil.basicChecksEntity(entityPlayer)).sorted(Comparator.comparing(e -> mc.player.getDistance(e))).collect(Collectors.toList());
 

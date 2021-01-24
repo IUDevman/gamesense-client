@@ -61,9 +61,6 @@ public class Freecam extends Module {
 			mc.player.capabilities.isFlying = true;
 			mc.player.capabilities.setFlySpeed((float) (speed.getValue() / 100f));
 			mc.player.noClip = true;
-
-			GameSense.LOGGER.info(clonedPlayer.getName());
-			GameSense.LOGGER.info(mc.player.getName());
 		}
 	}
 
