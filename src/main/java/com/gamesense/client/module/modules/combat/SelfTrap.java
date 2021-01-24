@@ -10,8 +10,10 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.EnumFacing;
@@ -40,6 +42,7 @@ public class SelfTrap extends Module {
     Setting.Boolean chatMsg;
     Setting.Boolean rotate;
     Setting.Boolean disableNone;
+    Setting.Boolean offHandObby;
     Setting.Boolean centerPlayer;
     Setting.Integer tickDelay;
     Setting.Integer blocksPerTick;
@@ -54,6 +57,7 @@ public class SelfTrap extends Module {
         shiftOnly = registerBoolean("Shift Only", false);
         disableNone = registerBoolean("Disable No Obby", true);
         rotate = registerBoolean("Rotate", true);
+        offHandObby = registerBoolean("Off Hand Obby", false);
         centerPlayer = registerBoolean("Center Player", false);
         tickDelay = registerInteger("Tick Delay", 5, 0, 10);
         blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
@@ -63,8 +67,8 @@ public class SelfTrap extends Module {
     private boolean noObby = false;
     private boolean isSneaking = false;
     private boolean firstRun = false;
+    private boolean activedOff;
 
-    private int blocksPlaced;
     private int delayTimeTicks = 0;
     private final int playerYLevel = 0;
     private int offsetSteps = 0;
@@ -91,9 +95,6 @@ public class SelfTrap extends Module {
 
         oldSlot = mc.player.inventory.currentItem;
 
-        if (InventoryUtil.findObsidianSlot() != -1) {
-            mc.player.inventory.currentItem = InventoryUtil.findObsidianSlot();
-        }
     }
 
     public void onDisable() {
@@ -115,7 +116,7 @@ public class SelfTrap extends Module {
             isSneaking = false;
         }
 
-        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1 && oldSlot != 9) {
             mc.player.inventory.currentItem = oldSlot;
             oldSlot = -1;
         }
@@ -125,6 +126,10 @@ public class SelfTrap extends Module {
         noObby = false;
         firstRun = true;
         AutoCrystalGS.stopAC = false;
+        if (offHandObby.getValue() && OffHand.isActive() && activedOff) {
+            OffHand.removeObsidian();
+            activedOff = false;
+        }
     }
 
     public void onUpdate() {
@@ -142,11 +147,14 @@ public class SelfTrap extends Module {
             return;
         }
 
-        if (firstRun) {
+        if (firstRun || noObby) {
             firstRun = false;
-            if (InventoryUtil.findObsidianSlot() == -1) {
+            if (InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff) == -1) {
                 noObby = true;
-                disable();
+                return;
+            }else {
+                noObby = false;
+                activedOff = true;
             }
         }
         else {
@@ -199,7 +207,7 @@ public class SelfTrap extends Module {
             }
         }
 
-        blocksPlaced = 0;
+        int blocksPlaced = 0;
 
         while (blocksPlaced <= blocksPerTick.getValue()) {
 
@@ -253,6 +261,7 @@ public class SelfTrap extends Module {
         }
     }
 
+
     private boolean placeBlock(BlockPos pos) {
         Block block = mc.world.getBlockState(pos).getBlock();
 
@@ -275,8 +284,15 @@ public class SelfTrap extends Module {
 
         Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
-
-        int obsidianSlot = InventoryUtil.findObsidianSlot();
+        EnumHand handSwing = EnumHand.MAIN_HAND;
+        int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
+        if (obsidianSlot == 9) {
+            activedOff = true;
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            }else return false;
+        }else
 
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
             mc.player.inventory.currentItem = obsidianSlot;
@@ -303,8 +319,8 @@ public class SelfTrap extends Module {
             faceVectorPacketInstant(hitVec);
         }
 
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
+        mc.player.swingArm(handSwing);
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {

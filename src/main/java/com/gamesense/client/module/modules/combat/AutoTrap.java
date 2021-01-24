@@ -11,8 +11,10 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -40,14 +42,15 @@ public class AutoTrap extends Module {
         super("AutoTrap", Category.Combat);
     }
 
-    Setting.Mode trapType;
-    Setting.Mode target;
-    Setting.Boolean chatMsg;
-    Setting.Boolean rotate;
-    Setting.Boolean disableNone;
-    Setting.Integer enemyRange;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
+    Setting.Mode    trapType,
+                    target;
+    Setting.Boolean chatMsg,
+                    rotate,
+                    offHandObby,
+                    disableNone;
+    Setting.Integer enemyRange,
+                    tickDelay,
+                    blocksPerTick;
 
     public void setup() {
         ArrayList<String> trapTypes = new ArrayList<>();
@@ -62,6 +65,7 @@ public class AutoTrap extends Module {
         target = registerMode("Target", targetChoose, "Nearest");
         disableNone = registerBoolean("Disable No Obby", true);
         rotate = registerBoolean("Rotate", true);
+        offHandObby = registerBoolean("Off Hand Obby", false);
         tickDelay = registerInteger("Tick Delay", 5, 0, 10);
         blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
         enemyRange = registerInteger("Range",4, 0, 6);
@@ -71,15 +75,16 @@ public class AutoTrap extends Module {
     private boolean noObby = false;
     private boolean isSneaking = false;
     private boolean firstRun = false;
+    private boolean activedOff;
     private int oldSlot = -1;
 
-    private int blocksPlaced;
     private int delayTimeTicks = 0;
     private int offsetSteps = 0;
 
     private EntityPlayer aimTarget;
 
     public void onEnable() {
+        activedOff = false;
         if (mc.player == null) {
             disable();
             return;
@@ -89,10 +94,6 @@ public class AutoTrap extends Module {
             MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
         }
 
-        //mc.player.inventory.currentItem = oldSlot;
-        if (InventoryUtil.findObsidianSlot() != -1) {
-            mc.player.inventory.currentItem = InventoryUtil.findObsidianSlot();
-        }
     }
 
     public void onDisable() {
@@ -121,6 +122,10 @@ public class AutoTrap extends Module {
         noObby = false;
         firstRun = true;
         AutoCrystalGS.stopAC = false;
+        if (offHandObby.getValue() && OffHand.isActive()) {
+            OffHand.removeObsidian();
+            activedOff = false;
+        }
     }
 
     public void onUpdate() {
@@ -140,11 +145,13 @@ public class AutoTrap extends Module {
 
         if (firstRun || noObby) {
             firstRun = false;
-            if (InventoryUtil.findObsidianSlot() == -1) {
+            if (InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff) == -1) {
                 noObby = true;
                 return;
-            }else
+            }else {
                 noObby = false;
+                activedOff = true;
+            }
         }
         else {
 
@@ -162,7 +169,7 @@ public class AutoTrap extends Module {
             return;
         }
 
-        blocksPlaced = 0;
+        int blocksPlaced = 0;
         if (!noObby)
         while (blocksPlaced <= blocksPerTick.getValue()) {
 
@@ -216,6 +223,7 @@ public class AutoTrap extends Module {
         }
     }
 
+
     private boolean placeBlock(BlockPos pos, int range) {
         Block block = mc.world.getBlockState(pos).getBlock();
 
@@ -243,9 +251,18 @@ public class AutoTrap extends Module {
             return false;
         }
 
-        int obsidianSlot = InventoryUtil.findObsidianSlot();
+        EnumHand handSwing = EnumHand.MAIN_HAND;
 
-        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
+        int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
+        if (obsidianSlot == 9) {
+            activedOff = true;
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            }else return false;
+        }
+
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1 && obsidianSlot != 9) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
@@ -270,8 +287,8 @@ public class AutoTrap extends Module {
             BlockUtil.faceVectorPacketInstant(hitVec);
         }
 
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
+        mc.player.swingArm(handSwing);
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {

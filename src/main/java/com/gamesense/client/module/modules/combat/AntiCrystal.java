@@ -53,11 +53,11 @@ public class AntiCrystal extends Module {
     @Override
     public void setup() {
         // Range of place
-        rangePlace = registerDouble("RangePlace",5.9, 0, 6);
+        rangePlace = registerDouble("Range Place",5.9, 0, 6);
         // Range of place
-        enemyRange = registerDouble("EnemyRange",12, 0, 20);
+        enemyRange = registerDouble("Enemy Range",12, 0, 20);
         // Damage
-        damageMin = registerDouble("DamageMin", 4, 0, 15);
+        damageMin = registerDouble("Damage Min", 4, 0, 15);
         // Bias Damage
         biasDamage = registerDouble("Bias Damage", 1, 0, 3);
         // Tick delay every wait
@@ -65,19 +65,19 @@ public class AntiCrystal extends Module {
         // Max blocks per tick
         blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
         // OffHandMode
-        offHandMode = registerBoolean("offHandMode", true);
+        offHandMode = registerBoolean("OffHand Mode", true);
         // Rotate
-        rotate = registerBoolean("rotate", false);
+        rotate = registerBoolean("Rotate", false);
         // Enemy
-        onlyIfEnemy = registerBoolean("onlyIfEnemy", true);
+        onlyIfEnemy = registerBoolean("Only If Enemy", true);
         // nonAbusive
-        nonAbusive = registerBoolean("nonAbusive", true);
+        nonAbusive = registerBoolean("Non Abusive", true);
         // Damage
-        checkDamage = registerBoolean("damageCheck", true);
+        checkDamage = registerBoolean("Damage Check", true);
         // Damage
-        switchBack = registerBoolean("switchBack", true);
+        switchBack = registerBoolean("Switch Back", true);
         // Damage
-        notOurCrystals = registerBoolean("notOurCrystals", true);
+        notOurCrystals = registerBoolean("Ignore AutoCrystal", true);
         // ChatMsg
         chatMsg = registerBoolean("Chat Msgs", true);
     }
@@ -156,7 +156,7 @@ public class AntiCrystal extends Module {
 
                 }
                 // Check if it's a crystal placed by us
-                if (notOurCrystals.getValue() && usCrystal(t))
+                if (!notOurCrystals.getValue() && usCrystal(t))
                     return;
 
                 float damage;
