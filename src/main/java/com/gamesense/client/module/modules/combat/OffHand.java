@@ -11,6 +11,7 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
@@ -145,7 +146,7 @@ public class OffHand extends Module {
         returnBack = false;
 
         if (chatMsg.getValue()) {
-            PistonCrystal.printChat("OffHand enabled", false);
+            MessageBus.printChat("OffHand enabled", false);
         }
 
     }
@@ -156,7 +157,7 @@ public class OffHand extends Module {
         forceObby = 0;
 
         if (chatMsg.getValue()) {
-            PistonCrystal.printChat("OffHand disabled", true);
+            MessageBus.printChat("OffHand disabled", true);
         }
 
     }
@@ -194,7 +195,7 @@ public class OffHand extends Module {
                 if (prevSlot != -1)
                     mc.playerController.windowClick(0, prevSlot < 9 ? prevSlot + 36 : prevSlot, 0, ClickType.PICKUP, mc.player);
                 else
-                    PistonCrystal.printChat("Your inventory is full. the item that was on your offhand is going to be dropped. Open your inventory and choose where to put it", true);
+                    MessageBus.printChat("Your inventory is full. the item that was on your offhand is going to be dropped. Open your inventory and choose where to put it", true);
                 // Set to false
                 returnBack = false;
                 tickWaited = 0;

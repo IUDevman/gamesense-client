@@ -2,6 +2,7 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -88,7 +89,7 @@ public class AntiCrystal extends Module {
         delayTimeTicks = 0;
 
         if (chatMsg.getValue()) {
-            PistonCrystal.printChat("AntiCrystal turned ON!", false);
+            MessageBus.printChat("AntiCrystal turned ON!", false);
         }
 
     }
@@ -97,7 +98,7 @@ public class AntiCrystal extends Module {
     public void onDisable() {
 
         if (chatMsg.getValue()) {
-            PistonCrystal.printChat("AntiCrystal turned Off!", true);
+            MessageBus.printChat("AntiCrystal turned Off!", true);
         }
 
         if (isSneaking) {

@@ -99,7 +99,7 @@ public class BedAura extends Module {
         }
 
         if (chatMsgs.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "BedAura turned ON!");
+            MessageBus.printChat("BedAura turned ON!", false);
         }
     }
 

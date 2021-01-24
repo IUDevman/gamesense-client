@@ -65,7 +65,7 @@ public class HoleFill extends Module {
 
 	public void onEnable() {
 		if (chatMsgs.getValue() && mc.player != null) {
-			MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "HoleFill turned ON!");
+			MessageBus.printChat("HoleFill turned ON!", false);
 		}
 		if (autoSwitch.getValue() && mc.player != null) {
 			oldHandEnable = mc.player.inventory.currentItem;
@@ -74,7 +74,7 @@ public class HoleFill extends Module {
 
 	public void onDisable() {
 		if (chatMsgs.getValue() && mc.player != null) {
-			MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "HoleFill turned OFF!");
+			MessageBus.printChat("HoleFill turned OFF!", true);
 		}
 		if (autoSwitch.getValue() && mc.player != null) {
 			mc.player.inventory.currentItem = oldHandEnable;

@@ -1,6 +1,7 @@
 package com.gamesense.api.util.misc;
 
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.hud.Notifications;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -53,5 +54,10 @@ public class MessageBus {
     /** Sends a server-sided message **/
     public static void sendServerMessage(String message) {
         mc.player.connection.sendPacket(new CPacketChatMessage(message));
+    }
+
+    // PrintChat
+    public static void printChat(String text, Boolean error) {
+        sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
     }
 }

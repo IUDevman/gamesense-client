@@ -246,7 +246,7 @@ public class PistonCrystal extends Module {
         }
 
         if (chatMsg.getValue()){
-            printChat("PistonCrystal turned ON!", false);
+            MessageBus.printChat("PistonCrystal turned ON!", false);
         }
 
         oldSlot = mc.player.inventory.currentItem;
@@ -260,7 +260,7 @@ public class PistonCrystal extends Module {
         }
         // Debug mode
         if (debugMode.getValue() || speedMeter.getValue()) {
-            printChat("Started pistonCrystal n^" + (++round), false);
+            MessageBus.printChat("Started pistonCrystal n^" + (++round), false);
             startTime = System.currentTimeMillis();
             nCrystal = 0;
         }
@@ -299,7 +299,7 @@ public class PistonCrystal extends Module {
                 output = "You cannot move from your hole if you have rotation on. ";
             }
             // Output in chat
-            printChat(output + "PistonCrystal turned OFF!", true);
+            MessageBus.printChat(output + "PistonCrystal turned OFF!", true);
 
             // Re-Active ca
             if (stoppedCa){
@@ -322,7 +322,7 @@ public class PistonCrystal extends Module {
         AutoCrystalGS.stopAC = false;
         // Debug mode
         if (debugMode.getValue() || speedMeter.getValue())
-            printChat("Ended pistonCrystal n^" + round, false);
+            MessageBus.printChat("Ended pistonCrystal n^" + round, false);
     }
 
     // Every updates
@@ -394,7 +394,7 @@ public class PistonCrystal extends Module {
                 case 1:
                     // Debug mode
                     if (debugMode.getValue())
-                        printChat("step 1", false);
+                        MessageBus.printChat("step 1", false);
                     // Check if there is a redstone torch to break
                     if (fastModeActive || breakRedstone()) {
                         if (!fastModeActive || checkCrystalPlace())
@@ -408,7 +408,7 @@ public class PistonCrystal extends Module {
                 case 2:
                     // Debug mode
                     if (debugMode.getValue())
-                        printChat("step 2", false);
+                        MessageBus.printChat("step 2", false);
                     // Check pistonPlace if confirmPlace
                     if (fastModeActive || !confirmPlace.getValue() || checkPistonPlace())
                         placeBlockThings(stage);
@@ -418,7 +418,7 @@ public class PistonCrystal extends Module {
                 case 3:
                     // Debug mode
                     if (debugMode.getValue())
-                        printChat("step 3", false);
+                        MessageBus.printChat("step 3", false);
                     // Check crystal if confirmPlace
                     if (fastModeActive || !confirmPlace.getValue() || checkCrystalPlace()) {
                         placeBlockThings(stage);
@@ -432,7 +432,7 @@ public class PistonCrystal extends Module {
                 case 4:
                     // Debug mode
                     if (debugMode.getValue())
-                        printChat("step 4", false);
+                        MessageBus.printChat("step 4", false);
                     // Start destroy crystal
                     destroyCrystalAlgo();
                     break;
@@ -492,7 +492,7 @@ public class PistonCrystal extends Module {
             if (++stuck >= stuckDetector.getValue()) {
                 // Check if the piston was not placed
                 if (!checkPistonPlace()) {
-                    BlockPos crystPos = getTargetPos(toPlace.supportBlock + 1);printChat(String.format("aim: %d %d", crystPos.getX(), crystPos.getZ()), false);
+                    BlockPos crystPos = getTargetPos(toPlace.supportBlock + 1);MessageBus.printChat(String.format("aim: %d %d", crystPos.getX(), crystPos.getZ()), false);
                     Entity crystalF = null;
                     for(Entity t : mc.world.loadedEntityList) {
                         // If it's a crystal
@@ -510,7 +510,7 @@ public class PistonCrystal extends Module {
                         else
                             stage = stuck = 0;
                     }
-                    printChat("Stuck detected: piston not placed", true);
+                    MessageBus.printChat("Stuck detected: piston not placed", true);
                     return;
                 }
                 /// Try to find the error
@@ -556,7 +556,7 @@ public class PistonCrystal extends Module {
                                         printTimeCrystals();
                             }
                             // print
-                            printChat("Stuck detected: crystal not placed", true);
+                            MessageBus.printChat("Stuck detected: crystal not placed", true);
                         }
                     }
 
@@ -588,7 +588,7 @@ public class PistonCrystal extends Module {
                         else
                             stage = stuck = 0;
                         // Print
-                        printChat("Stuck detected: crystal is stuck in the moving piston", true);
+                        MessageBus.printChat("Stuck detected: crystal is stuck in the moving piston", true);
                     }
                 }
             }
@@ -598,7 +598,7 @@ public class PistonCrystal extends Module {
     // Get time for 3 crystals
     private void printTimeCrystals() {
         endTime = System.currentTimeMillis();
-        printChat("3 crystal, time took: " + (endTime - startTime), false);
+        MessageBus.printChat("3 crystal, time took: " + (endTime - startTime), false);
         nCrystal = 0;
         startTime = System.currentTimeMillis();
     }
@@ -783,7 +783,7 @@ public class PistonCrystal extends Module {
                 return false;
             }
         }catch (Exception e) {
-            printChat("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
+            MessageBus.printChat("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
             final Logger LOGGER = LogManager.getLogger("GameSense");
             LOGGER.error("[PistonCrystal] error during the creation of the structure.");
             if (e.getMessage() != null)
@@ -799,7 +799,7 @@ public class PistonCrystal extends Module {
                 }
                 LOGGER.error("[PistonCrystal] StackTrace End");
             }
-            printChat(Integer.toString(step), true);
+            MessageBus.printChat(Integer.toString(step), true);
             disable();
         }
 
@@ -1220,7 +1220,7 @@ public class PistonCrystal extends Module {
 
         }
         catch (Exception e) {
-            printChat("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
+            MessageBus.printChat("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
             final Logger LOGGER = LogManager.getLogger("GameSense");
             LOGGER.error("[PistonCrystal] error during the creation of the structure.");
             if (e.getMessage() != null)
@@ -1252,9 +1252,9 @@ public class PistonCrystal extends Module {
         }
 
         if (debugMode.getValue() && addedStructure.to_place != null) {
-            printChat("Skeleton structure:", false);
+            MessageBus.printChat("Skeleton structure:", false);
             for(Vec3d parte : addedStructure.to_place) {
-                printChat(String.format("%f %f %f", parte.x, parte.y, parte.z), false);
+                MessageBus.printChat(String.format("%f %f %f", parte.x, parte.y, parte.z), false);
             }
         }
 
@@ -1349,7 +1349,7 @@ public class PistonCrystal extends Module {
         }
 
         if (debugMode.getValue())
-            printChat(String.format("%d %d %d %d %d %d", slot_mat[0], slot_mat[1], slot_mat[2], slot_mat[3], slot_mat[4], slot_mat[5]), false);
+            MessageBus.printChat(String.format("%d %d %d %d %d %d", slot_mat[0], slot_mat[1], slot_mat[2], slot_mat[3], slot_mat[4], slot_mat[5]), false);
 
         // If we have everything we need, return true
         return count >= 4 + (antiWeakness.getValue() ? 1 : 0) + (redstoneBlockMode ? 1 : 0);
@@ -1371,11 +1371,6 @@ public class PistonCrystal extends Module {
                 !(BlockUtil.getBlock(sur_block[1][0], sur_block[1][1], sur_block[1][2]) instanceof BlockAir) &&
                 !(BlockUtil.getBlock(sur_block[2][0], sur_block[2][1], sur_block[2][2]) instanceof BlockAir) &&
                 !(BlockUtil.getBlock(sur_block[3][0], sur_block[3][1], sur_block[3][2]) instanceof BlockAir);
-    }
-
-    // PrintChat
-    public static void printChat(String text, Boolean error) {
-        MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
     }
 
     /// AutoCrystal break things ///

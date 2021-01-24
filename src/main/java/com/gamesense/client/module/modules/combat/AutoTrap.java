@@ -91,7 +91,7 @@ public class AutoTrap extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
+            MessageBus.printChat("AutoTrap turned ON!", false);
         }
 
     }
@@ -103,11 +103,10 @@ public class AutoTrap extends Module {
 
         if (chatMsg.getValue()) {
             if (noObby) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
-            }
-            else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoTrap turned OFF!");
-            }
+                MessageBus.printChat("No obsidian detected... AutoTrap turned OFF!", true);
+            }else
+                MessageBus.printChat("AutoTrap turned OFF!", true);
+
         }
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {

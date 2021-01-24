@@ -88,11 +88,11 @@ public class Blocker extends Module {
         }
         if (chatMsg.getValue()) {
             if (noActive) {
-                printChat("Nothing is active... Blocker turned OFF!", true);
+                MessageBus.printChat("Nothing is active... Blocker turned OFF!", true);
             }else if(noObby)
-                printChat("Obsidian not found... Blocker turned OFF!", true);
+                MessageBus.printChat("Obsidian not found... Blocker turned OFF!", true);
             else
-                printChat("Blocker turned OFF!", true);
+                MessageBus.printChat("Blocker turned OFF!", true);
         }
 
     }
@@ -140,7 +140,7 @@ public class Blocker extends Module {
                     && BlockUtil.getBlock(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
                     // Place the block
                     placeBlock(new BlockPos(mc.player.posX, mc.player.posY + 2, mc.player.posZ));
-                    printChat("AutoAnvil detected... Anvil Blocked!", false);
+                    MessageBus.printChat("AutoAnvil detected... Anvil Blocked!", false);
                     found = true;
                 }
             }
@@ -168,7 +168,7 @@ public class Blocker extends Module {
                             if (BlockUtil.getBlock(t.posX + i, t.posY, t.posZ + j) instanceof BlockPistonBase) {
                                 // Break
                                 breakCrystalPiston(t);
-                                printChat("PistonCrystal detected... Destroyed crystal!", false);
+                                MessageBus.printChat("PistonCrystal detected... Destroyed crystal!", false);
                             }
                         }
                     }
@@ -240,10 +240,6 @@ public class Blocker extends Module {
             stoppedAC = false;
         }
 
-    }
-
-    private void printChat(String text, Boolean error) {
-        MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
     }
 
     private void breakCrystalPiston (Entity crystal) {

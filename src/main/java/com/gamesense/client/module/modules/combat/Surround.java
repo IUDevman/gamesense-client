@@ -83,7 +83,7 @@ public class Surround extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "Surround turned ON!");
+            MessageBus.printChat("Surround turned On!", false);
         }
 
         if (centerPlayer.getValue() && mc.player.onGround) {
@@ -103,10 +103,10 @@ public class Surround extends Module {
 
         if (chatMsg.getValue()) {
             if (noObby) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... Surround turned OFF!");
+                MessageBus.printChat("No obsidian detected... Surround turned OFF!", true);
             }
             else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Surround turned OFF!");
+                MessageBus.printChat("Surround turned OFF!", false);
             }
         }
 
