@@ -71,7 +71,7 @@ public class SelfWeb extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.printChat("No obsidian detected... SelfWeb turned OFF!", false);
+            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "SelfWeb turned ON!");
         }
 
         oldSlot = mc.player.inventory.currentItem;
@@ -88,10 +88,10 @@ public class SelfWeb extends Module {
 
         if (chatMsg.getValue()) {
             if (noWeb) {
-                MessageBus.printChat("No webs detected... SelfWeb turned OFF!", true);
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... SelfWeb turned OFF!");
             }
             else {
-                MessageBus.printChat("SelfWeb turned OFF!", true);
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfWeb turned OFF!");
             }
         }
 

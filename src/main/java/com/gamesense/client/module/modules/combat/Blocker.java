@@ -88,11 +88,11 @@ public class Blocker extends Module {
         }
         if (chatMsg.getValue()) {
             if (noActive) {
-                MessageBus.printChat("Nothing is active... Blocker turned OFF!", true);
+                PistonCrystal.printChat("Nothing is active... Blocker turned OFF!", true);
             }else if(noObby)
-                MessageBus.printChat("Obsidian not found... Blocker turned OFF!", true);
+                PistonCrystal.printChat("Obsidian not found... Blocker turned OFF!", true);
             else
-                MessageBus.printChat("Blocker turned OFF!", true);
+                PistonCrystal.printChat("Blocker turned OFF!", true);
         }
 
     }
@@ -140,7 +140,7 @@ public class Blocker extends Module {
                     && BlockUtil.getBlock(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
                     // Place the block
                     placeBlock(new BlockPos(mc.player.posX, mc.player.posY + 2, mc.player.posZ));
-                    MessageBus.printChat("AutoAnvil detected... Anvil Blocked!", false);
+                    PistonCrystal.printChat("AutoAnvil detected... Anvil Blocked!", false);
                     found = true;
                 }
             }
@@ -168,7 +168,7 @@ public class Blocker extends Module {
                             if (BlockUtil.getBlock(t.posX + i, t.posY, t.posZ + j) instanceof BlockPistonBase) {
                                 // Break
                                 breakCrystalPiston(t);
-                                MessageBus.printChat("PistonCrystal detected... Destroyed crystal!", false);
+                                PistonCrystal.printChat("PistonCrystal detected... Destroyed crystal!", false);
                             }
                         }
                     }

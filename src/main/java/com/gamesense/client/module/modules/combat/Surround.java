@@ -103,10 +103,10 @@ public class Surround extends Module {
 
         if (chatMsg.getValue()) {
             if (noObby) {
-                MessageBus.printChat("No obsidian detected... Surround turned OFF!", true);
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... Surround turned OFF!");
             }
             else {
-                MessageBus.printChat("Surround turned OFF!", false);
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Surround turned OFF!");
             }
         }
 

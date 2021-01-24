@@ -10,7 +10,7 @@ public class AutoGearCommand extends Command {
 
     private HashMap<String, String> errorMessage = new HashMap<String, String>() {
         {
-            put("NoName", "I didnt found any name");
+            put("NoPar", "Not enough parameters");
         }
     };
 
@@ -35,15 +35,19 @@ public class AutoGearCommand extends Command {
             case "set":
                 break;
             case "save":
-                InventoryPlayer prova = mc.player.inventory;
+                if (message.length == 2) {
+                    InventoryPlayer prova = mc.player.inventory;
+                }else errorMessage("NoPar");
+
+
                 break;
             case "debug":
                 break;
         }
     }
 
-    public static void errorMessage() {
-
+    private void errorMessage(String e) {
+        MessageBus.printChat("Error: " + errorMessage.get(e), true);
     }
 
 }

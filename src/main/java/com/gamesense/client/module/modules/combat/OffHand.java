@@ -157,7 +157,7 @@ public class OffHand extends Module {
         forceObby = 0;
 
         if (chatMsg.getValue()) {
-            MessageBus.printChat("OffHand disabled", true);
+            PistonCrystal.printChat("OffHand disabled", true);
         }
 
     }

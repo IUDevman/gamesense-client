@@ -123,7 +123,7 @@ public class AutoAnvil extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.printChat("AutoAnvil turned ON!", false);
+            PistonCrystal.printChat("AutoAnvil turned ON!", false);
         }
 
         oldSlot = mc.player.inventory.currentItem;
@@ -136,22 +136,22 @@ public class AutoAnvil extends Module {
 
         if (chatMsg.getValue()) {
             if (noMaterials) {
-                MessageBus.printChat("No Materials Detected... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("No Materials Detected... AutoAnvil turned OFF!", true);
             }
             else if (!isHole) {
-                MessageBus.printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
             }
             else if(!enoughSpace) {
-                MessageBus.printChat("Not enough space... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Not enough space... AutoAnvil turned OFF!", true);
             }
             else if(hasMoved) {
-                MessageBus.printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
             }
             else if(blockUp) {
-                MessageBus.printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
             }
             else {
-                MessageBus.printChat("AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("AutoAnvil turned OFF!", true);
             }
         }
 

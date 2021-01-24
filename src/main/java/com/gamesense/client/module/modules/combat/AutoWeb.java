@@ -86,10 +86,9 @@ public class AutoWeb extends Module {
 		if (chatMsg.getValue()) {
 			if (noWeb) {
 				MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... AutoWeb turned OFF!");
-				MessageBus.printChat("No web detected... AutoWeb turned OFF!", true);
 			}
 			else {
-				MessageBus.printChat("AutoWeb turned OFF!", true);
+				MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoWeb turned OFF!");
 			}
 		}
 

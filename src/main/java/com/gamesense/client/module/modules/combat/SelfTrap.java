@@ -83,7 +83,7 @@ public class SelfTrap extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.printChat("SelfTrap turned ON!", false);
+            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "SelfTrap turned ON!");
         }
 
         if (centerPlayer.getValue() && mc.player.onGround) {
@@ -104,10 +104,10 @@ public class SelfTrap extends Module {
 
         if (chatMsg.getValue()) {
             if (noObby) {
-                MessageBus.printChat("No obsidian detected... SelfTrap turned OFF!", true);
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... SelfTrap turned OFF!");
             }
             else {
-                MessageBus.printChat("SelfTrap turned OFF!", true);
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfTrap turned OFF!");
             }
         }
 
