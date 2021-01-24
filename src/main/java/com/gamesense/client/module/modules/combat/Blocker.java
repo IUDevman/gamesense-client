@@ -15,6 +15,7 @@ import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.EnumFacing;
@@ -38,11 +39,13 @@ public class Blocker extends Module {
     Setting.Boolean rotate;
     Setting.Boolean anvilBlocker;
     Setting.Boolean pistonBlocker;
+    Setting.Boolean offHandObby;
     Setting.Integer tickDelay;
 
     public void setup() {
         rotate = registerBoolean("Rotate", true);
         anvilBlocker = registerBoolean("Anvil", true);
+        offHandObby = registerBoolean("Off Hand Obby", true);
         pistonBlocker = registerBoolean("Piston", true);
         tickDelay = registerInteger("Tick Delay", 5, 0, 10);
         chatMsg = registerBoolean("Chat Msgs", true);
@@ -51,6 +54,7 @@ public class Blocker extends Module {
     private int delayTimeTicks = 0;
     private boolean noObby;
     private boolean noActive;
+    private boolean activedBefore;
 
     public void onEnable() {
         if (mc.player == null) {
@@ -123,6 +127,7 @@ public class Blocker extends Module {
     }
 
     private void blockAnvil() {
+        boolean found = false;
         // Iterate for everything
         for (Entity t : mc.world.loadedEntityList) {
             // If it's a falling block
@@ -136,7 +141,14 @@ public class Blocker extends Module {
                     // Place the block
                     placeBlock(new BlockPos(mc.player.posX, mc.player.posY + 2, mc.player.posZ));
                     printChat("AutoAnvil detected... Anvil Blocked!", false);
+                    found = true;
                 }
+            }
+        }
+        if (!found) {
+            if (activedBefore) {
+                activedBefore = false;
+                OffHand.removeObsidian();
             }
         }
     }
@@ -165,38 +177,47 @@ public class Blocker extends Module {
         }
     }
 
-    private boolean placeBlock(BlockPos pos) {
+    private void placeBlock(BlockPos pos) {
         Block block = mc.world.getBlockState(pos).getBlock();
 
         if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
-            return false;
+            return;
         }
 
         EnumFacing side = BlockUtil.getPlaceableSide(pos);
 
         if (side == null) {
-            return false;
+            return;
         }
 
         BlockPos neighbour = pos.offset(side);
         EnumFacing opposite = side.getOpposite();
 
         if (!BlockUtil.canBeClicked(neighbour)) {
-            return false;
+            return;
         }
 
         Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
-        int obsidianSlot = InventoryUtil.findObsidianSlot();
+        EnumHand handSwing = EnumHand.MAIN_HAND;
+        int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedBefore);
+        if (obsidianSlot == 9) {
+            activedBefore = true;
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            }else return;
+        }else
 
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
+
         if (obsidianSlot == -1) {
             noObby = true;
-            return false;
+            return;
         }
 
         boolean stoppedAC = false;
@@ -210,8 +231,8 @@ public class Blocker extends Module {
             BlockUtil.faceVectorPacketInstant(hitVec);
         }
 
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
+        mc.player.swingArm(handSwing);
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
@@ -219,7 +240,6 @@ public class Blocker extends Module {
             stoppedAC = false;
         }
 
-        return true;
     }
 
     private void printChat(String text, Boolean error) {

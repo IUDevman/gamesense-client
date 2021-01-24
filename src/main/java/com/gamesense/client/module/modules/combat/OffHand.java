@@ -66,9 +66,7 @@ public class OffHand extends Module {
         forceObby++;
     }
 
-    public static void removeObsidian() {
-        forceObby--;
-    }
+    public static void removeObsidian() { if (forceObby != 0 ) forceObby--; }
 
     // Create maps of allowed items
     Map<String, Item> allowedItemsItem = new HashMap<String, Item>() {{

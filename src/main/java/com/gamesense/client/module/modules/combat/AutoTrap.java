@@ -11,8 +11,10 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -92,10 +94,6 @@ public class AutoTrap extends Module {
             MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
         }
 
-        //mc.player.inventory.currentItem = oldSlot;
-        if (findObsidianSlot() != -1) {
-            mc.player.inventory.currentItem = findObsidianSlot();
-        }
     }
 
     public void onDisable() {
@@ -147,11 +145,13 @@ public class AutoTrap extends Module {
 
         if (firstRun || noObby) {
             firstRun = false;
-            if (findObsidianSlot() == -1) {
+            if (InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff) == -1) {
                 noObby = true;
                 return;
-            }else
+            }else {
                 noObby = false;
+                activedOff = true;
+            }
         }
         else {
 
@@ -223,34 +223,6 @@ public class AutoTrap extends Module {
         }
     }
 
-    private int findObsidianSlot() {
-        int slot = -1;
-
-        if (offHandObby.getValue() && OffHand.isActive()) {
-            if (!activedOff) {
-                activedOff = true;
-                OffHand.requestObsidian();
-            }
-            return 9;
-        }
-
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = mc.player.inventory.getStackInSlot(i);
-
-            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
-                continue;
-            }
-
-            Block block = ((ItemBlock) stack.getItem()).getBlock();
-            if (block instanceof BlockObsidian) {
-                slot = i;
-                break;
-            }
-        }
-        if (slot == -1)
-            noObby = true;
-        return slot;
-    }
 
     private boolean placeBlock(BlockPos pos, int range) {
         Block block = mc.world.getBlockState(pos).getBlock();
@@ -281,17 +253,16 @@ public class AutoTrap extends Module {
 
         EnumHand handSwing = EnumHand.MAIN_HAND;
 
-        int obsidianSlot = findObsidianSlot();
+        int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
         if (obsidianSlot == 9) {
+            activedOff = true;
             if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
                 // We can continue
                 handSwing = EnumHand.OFF_HAND;
-            }
+            }else return false;
         }
-        else
-        int obsidianSlot = InventoryUtil.findObsidianSlot();
 
-        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1 && obsidianSlot != 9) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
