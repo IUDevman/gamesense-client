@@ -1,25 +1,19 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
-import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketEntityAction;
-import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumFacing;
@@ -31,6 +25,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 
 /**
  * @Author TechAle on (17/01/21)
@@ -161,6 +157,7 @@ public class PistonCrystal extends Module {
 
     // Everytime you enable
     public void onEnable() {
+        ROTATION_UTIL.onEnable();
         // Init values
         initValues();
         // Get Target
@@ -268,6 +265,7 @@ public class PistonCrystal extends Module {
 
     // On disable of the module
     public void onDisable() {
+        ROTATION_UTIL.onDisable();
         if (mc.player == null){
             return;
         }
@@ -342,6 +340,8 @@ public class PistonCrystal extends Module {
         else {
             delayTimeTicks = 0;
         }
+
+        ROTATION_UTIL.shouldSpoofAngles(true);
 
         // Check if something is not ok
         if (enemyCoordsDouble == null || aimTarget == null) {
@@ -592,7 +592,7 @@ public class PistonCrystal extends Module {
             mc.player.inventory.currentItem = slot_mat[4];
         // If rotate
         if (rotate.getValue()) {
-            lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+            ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
         }
         /// Break type
         // Swing
@@ -609,7 +609,7 @@ public class PistonCrystal extends Module {
         }
         // Rotate
         if (rotate.getValue())
-            resetRotation();
+            ROTATION_UTIL.resetRotation();
     }
 
     // Break redstone torch
@@ -1353,39 +1353,4 @@ public class PistonCrystal extends Module {
     public static void printChat(String text, Boolean error) {
         MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
     }
-
-    /// AutoCrystal break things ///
-    public static void lookAtPacket(double px, double py, double pz, EntityPlayer me) {
-        double[] v = EntityUtil.calculateLookAt(px, py, pz, me);
-        setYawAndPitch((float) v[0], (float) v[1]);
-    }
-
-    private static boolean isSpoofingAngles;
-    private static double yaw;
-    private static double pitch;
-
-    public static void setYawAndPitch(float yaw1, float pitch1) {
-        yaw = yaw1;
-        pitch = pitch1;
-        isSpoofingAngles = true;
-    }
-
-    public static void resetRotation() {
-        if (isSpoofingAngles) {
-            yaw = mc.player.rotationYaw;
-            pitch = mc.player.rotationPitch;
-            isSpoofingAngles = false;
-        }
-    }
-
-    @EventHandler
-    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
-        Packet packet = event.getPacket();
-        if (packet instanceof CPacketPlayer) {
-            if (isSpoofingAngles) {
-                ((CPacketPlayer) packet).yaw = (float) yaw;
-                ((CPacketPlayer) packet).pitch = (float) pitch;
-            }
-        }
-    });
 }
