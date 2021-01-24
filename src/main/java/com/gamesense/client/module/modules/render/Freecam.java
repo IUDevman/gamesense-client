@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.render;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerMoveEvent;
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
@@ -61,6 +62,9 @@ public class Freecam extends Module {
 			mc.player.capabilities.isFlying = true;
 			mc.player.capabilities.setFlySpeed((float) (speed.getValue() / 100f));
 			mc.player.noClip = true;
+
+			GameSense.LOGGER.info(clonedPlayer.getName());
+			GameSense.LOGGER.info(mc.player.getName());
 		}
 	}
 

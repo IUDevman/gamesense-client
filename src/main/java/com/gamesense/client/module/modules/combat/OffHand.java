@@ -8,32 +8,23 @@ package com.gamesense.client.module.modules.combat;
 /*
  Fix: SwordCheck was inverted
 */
+
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemAppleGold;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.CombatRules;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Explosion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -256,67 +247,12 @@ public class OffHand extends Module {
         for(Entity t : mc.world.loadedEntityList) {
             // If it's a crystal
             if (t instanceof EntityEnderCrystal && mc.player.getDistance(t) <= 12) {
-                if ((ris2 = calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue()) >= mc.player.getHealth()) {
+                if ((ris2 = DamageUtil.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue()) >= mc.player.getHealth()) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    public static float calculateDamage (double posX, double posY, double posZ, Entity entity) {
-        float doubleExplosionSize = 12.0F;
-
-        double l_Distance = entity.getDistance(posX, posY, posZ);
-
-
-        double distancedsize = l_Distance / (double) doubleExplosionSize;
-        Vec3d vec3d = new Vec3d(posX, posY, posZ);
-        double blockDensity = (double) entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
-        double v = (1.0D - distancedsize) * blockDensity;
-        float damage = (int)((v * v + v) / 2.0D * 7.0D * doubleExplosionSize + 1.0D);
-        double finald = 1.0D;
-
-        if (entity instanceof EntityLivingBase)
-        {
-            try {
-                finald = getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage),
-                        new Explosion(mc.world, null, posX, posY, posZ, 6F, false, true));
-            }catch(NullPointerException e) {
-                finald = 1.0D;
-            }
-        }
-        return (float) finald;
-    }
-
-    public static float getBlastReduction(EntityLivingBase entity, float damage, Explosion explosion) {
-        if (entity instanceof EntityPlayer)
-        {
-            EntityPlayer ep = (EntityPlayer) entity;
-            DamageSource ds = DamageSource.causeExplosionDamage(explosion);
-            damage = CombatRules.getDamageAfterAbsorb(damage, (float) ep.getTotalArmorValue(),
-                    (float) ep.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
-
-            int k = EnchantmentHelper.getEnchantmentModifierDamage(ep.getArmorInventoryList(), ds);
-            float f = MathHelper.clamp(k, 0.0F, 20.0F);
-            damage *= 1.0F - f / 25.0F;
-
-            if (entity.isPotionActive(Potion.getPotionById(11)))
-            {
-                damage -= damage / 4;
-            }
-            // damage = Math.max(damage - ep.getAbsorptionAmount(), 0.0F);
-            return damage;
-        }
-
-        damage = CombatRules.getDamageAfterAbsorb(damage, (float) entity.getTotalArmorValue(),
-                (float) entity.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
-        return damage;
-    }
-
-    private static float getDamageMultiplied(float damage) {
-        int diff = mc.world.getDifficulty().getId();
-        return damage * (diff == 0 ? 0 : (diff == 2 ? 1 : (diff == 1 ? 0.5f : 1.5f)));
     }
 
     private int findEmptySlot() {

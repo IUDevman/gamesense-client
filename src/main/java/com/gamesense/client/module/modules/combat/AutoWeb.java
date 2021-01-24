@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.BlockUtil;
@@ -118,7 +119,7 @@ public class AutoWeb extends Module {
 			return;
 		}
 
-		findClosestTarget();
+		closestTarget = PlayerUtil.findClosestTarget();
 
 		if (closestTarget == null) {
 			return;
@@ -266,31 +267,6 @@ public class AutoWeb extends Module {
 		}
 
 		return true;
-	}
-
-	private void findClosestTarget() {
-		List<EntityPlayer> playerList = mc.world.playerEntities;
-
-		closestTarget = null;
-
-		for (EntityPlayer entityPlayer : playerList) {
-			if (entityPlayer == mc.player) {
-				continue;
-			}
-			if (Friends.isFriend(entityPlayer.getName())) {
-				continue;
-			}
-			if (entityPlayer.isDead) {
-				continue;
-			}
-			if (closestTarget == null) {
-				closestTarget = entityPlayer;
-				continue;
-			}
-			if (mc.player.getDistance(entityPlayer) < mc.player.getDistance(closestTarget)) {
-				closestTarget = entityPlayer;
-			}
-		}
 	}
 
 	private static class Offsets {

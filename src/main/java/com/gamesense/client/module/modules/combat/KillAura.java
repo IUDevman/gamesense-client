@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -51,9 +52,8 @@ public class KillAura extends Module {
 	public void onUpdate() {
 		if (mc.player == null || mc.player.isDead) return;
 		List<Entity> targets = mc.world.loadedEntityList.stream()
-				.filter(entity -> entity != mc.player)
+				.filter(entity -> !EntityUtil.basicChecksEntity(entity))
 				.filter(entity -> mc.player.getDistance(entity) <= range.getValue())
-				.filter(entity -> !entity.isDead)
 				.filter(entity -> attackCheck(entity))
 				.sorted(Comparator.comparing(e -> mc.player.getDistance(e)))
 				.collect(Collectors.toList());
@@ -97,7 +97,6 @@ public class KillAura extends Module {
 	}
 
 	private boolean attackCheck(Entity entity) {
-
 		if (players.getValue() && entity instanceof EntityPlayer && !Friends.isFriend(entity.getName())) {
 			if (((EntityPlayer) entity).getHealth() > 0) {
 				return true;
