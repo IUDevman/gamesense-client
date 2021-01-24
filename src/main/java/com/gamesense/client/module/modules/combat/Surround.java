@@ -10,8 +10,10 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.EnumFacing;
@@ -32,23 +34,27 @@ public class Surround extends Module {
         super("Surround", Category.Combat);
     }
 
-    Setting.Boolean chatMsg;
-    Setting.Boolean triggerSurround;
-    Setting.Boolean shiftOnly;
-    Setting.Boolean rotate;
-    Setting.Boolean disableNone;
-    Setting.Boolean disableOnJump;
-    Setting.Boolean centerPlayer;
-    Setting.Integer tickDelay;
-    Setting.Integer timeOutTicks;
-    Setting.Integer blocksPerTick;
+    Setting.Boolean chatMsg,
+                    triggerSurround,
+                    shiftOnly,
+                    rotate,
+                    disableNone,
+                    disableOnJump,
+                    offHandObby,
+                    cityBlocker,
+                    centerPlayer;
+    Setting.Integer tickDelay,
+                    timeOutTicks,
+                    blocksPerTick;
 
     public void setup() {
         triggerSurround = registerBoolean("Triggerable", false);
         shiftOnly = registerBoolean("Shift Only", false);
+        cityBlocker = registerBoolean("City Blocker", false);
         disableNone = registerBoolean("Disable No Obby", true);
         disableOnJump = registerBoolean("Disable On Jump", false);
         rotate = registerBoolean("Rotate", true);
+        offHandObby = registerBoolean("Off Hand Obby", false);
         centerPlayer = registerBoolean("Center Player", false);
         tickDelay = registerInteger("Tick Delay", 5, 0, 10);
         timeOutTicks = registerInteger("Timeout Ticks", 40, 1, 100);
@@ -59,10 +65,10 @@ public class Surround extends Module {
     private boolean noObby = false;
     private boolean isSneaking = false;
     private boolean firstRun = false;
+    private boolean activedOff;
 
     private int oldSlot = -1;
 
-    private int blocksPlaced;
     private int runTimeTicks = 0;
     private int delayTimeTicks = 0;
     private final int playerYLevel = 0;
@@ -88,10 +94,6 @@ public class Surround extends Module {
         centeredBlock = BlockUtil.getCenterOfBlock(mc.player.posX, mc.player.posY, mc.player.posY);
 
         oldSlot = mc.player.inventory.currentItem;
-
-        if (InventoryUtil.findObsidianSlot() != -1) {
-            mc.player.inventory.currentItem = InventoryUtil.findObsidianSlot();
-        }
     }
 
     public void onDisable() {
@@ -113,7 +115,7 @@ public class Surround extends Module {
             isSneaking = false;
         }
 
-        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1 && oldSlot != 9) {
             mc.player.inventory.currentItem = oldSlot;
             oldSlot = -1;
         }
@@ -123,6 +125,11 @@ public class Surround extends Module {
         noObby = false;
         firstRun = true;
         AutoCrystalGS.stopAC = false;
+
+        if (offHandObby.getValue() && OffHand.isActive()) {
+            OffHand.removeObsidian();
+            activedOff = false;
+        }
     }
 
     public void onUpdate() {
@@ -142,10 +149,10 @@ public class Surround extends Module {
 
         if (firstRun) {
             firstRun = false;
-            if (InventoryUtil.findObsidianSlot() == -1) {
+            if (InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff) == -1) {
                 noObby = true;
                 disable();
-            }
+            }else activedOff = true;
         }
         else {
             if (delayTimeTicks < tickDelay.getValue()) {
@@ -207,12 +214,18 @@ public class Surround extends Module {
             return;
         }
 
-        blocksPlaced = 0;
+        int blocksPlaced = 0;
 
         while (blocksPlaced <= blocksPerTick.getValue()) {
+            int maxSteps;
             Vec3d[] offsetPattern;
-            offsetPattern = Surround.Offsets.SURROUND;
-            int maxSteps = Surround.Offsets.SURROUND.length;
+            if (cityBlocker.getValue()) {
+                offsetPattern = Offsets.CITY;
+                maxSteps = Offsets.CITY.length;
+            }else {
+                offsetPattern = Surround.Offsets.SURROUND;
+                maxSteps = Surround.Offsets.SURROUND.length;
+            }
 
             if (offsetSteps >= maxSteps) {
                 offsetSteps = 0;
@@ -272,10 +285,19 @@ public class Surround extends Module {
         Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
-        int obsidianSlot = InventoryUtil.findObsidianSlot();
+        EnumHand handSwing = EnumHand.MAIN_HAND;
+
+        int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
+        if (obsidianSlot == 9) {
+            activedOff = true;
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            }else return false;
+        }
+        else
 
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
-
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
@@ -300,8 +322,8 @@ public class Surround extends Module {
             faceVectorPacketInstant(hitVec);
         }
 
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
+        mc.player.swingArm(handSwing);
         mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
@@ -314,6 +336,20 @@ public class Surround extends Module {
 
     private static class Offsets {
         private static final Vec3d[] SURROUND = {
+                new Vec3d(1, 0, 0),
+                new Vec3d(0, 0, 1),
+                new Vec3d(-1, 0, 0),
+                new Vec3d(0, 0, -1),
+                new Vec3d(1, -1, 0),
+                new Vec3d(0, -1, 1),
+                new Vec3d(-1, -1, 0),
+                new Vec3d(0, -1, -1)
+        };
+        private static final Vec3d[] CITY = {
+                new Vec3d(2, 0, 0),
+                new Vec3d(-2, 0, 0),
+                new Vec3d(0, 0, 2),
+                new Vec3d(0, 0, -2),
                 new Vec3d(1, 0, 0),
                 new Vec3d(0, 0, 1),
                 new Vec3d(-1, 0, 0),
