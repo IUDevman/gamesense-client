@@ -8,7 +8,7 @@ import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.misc.VersionChecker;
 import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.CapeUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;

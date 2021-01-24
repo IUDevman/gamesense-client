@@ -2,8 +2,10 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -13,8 +15,6 @@ import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.EnumFacing;
@@ -132,17 +132,13 @@ public class Blocker extends Module {
                 if (ex instanceof BlockAnvil
                     // If coords are the same as us
                     && (int) t.posX == (int) mc.player.posX && (int) t.posZ == (int) mc.player.posZ
-                    && get_block(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
+                    && BlockUtil.getBlock(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
                     // Place the block
                     placeBlock(new BlockPos(mc.player.posX, mc.player.posY + 2, mc.player.posZ));
                     printChat("AutoAnvil detected... Anvil Blocked!", false);
                 }
             }
         }
-    }
-
-    private Block get_block(double x, double y, double z) {
-        return mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
     }
 
     private void blockPiston() {
@@ -157,7 +153,7 @@ public class Blocker extends Module {
                     for(int j = -2; j < 3; j++) {
                         if (i == 0 || j == 0) {
                             // If it's a piston
-                            if (get_block(t.posX + i, t.posY, t.posZ + j) instanceof BlockPistonBase) {
+                            if (BlockUtil.getBlock(t.posX + i, t.posY, t.posZ + j) instanceof BlockPistonBase) {
                                 // Break
                                 breakCrystalPiston(t);
                                 printChat("PistonCrystal detected... Destroyed crystal!", false);
@@ -167,25 +163,6 @@ public class Blocker extends Module {
                 }
             }
         }
-    }
-
-    private int findObsidianSlot() {
-        int slot = -1;
-
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = mc.player.inventory.getStackInSlot(i);
-
-            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
-                continue;
-            }
-
-            Block block = ((ItemBlock) stack.getItem()).getBlock();
-            if (block instanceof BlockObsidian) {
-                slot = i;
-                break;
-            }
-        }
-        return slot;
     }
 
     private boolean placeBlock(BlockPos pos) {
@@ -211,7 +188,7 @@ public class Blocker extends Module {
         Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
         Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
-        int obsidianSlot = findObsidianSlot();
+        int obsidianSlot = InventoryUtil.findObsidianSlot();
 
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
             mc.player.inventory.currentItem = obsidianSlot;
@@ -254,7 +231,7 @@ public class Blocker extends Module {
         if (rotate.getValue()) {
             PistonCrystal.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
         }
-        PistonCrystal.breakCrystal(crystal);
+        CrystalUtil.breakCrystal(crystal);
         // Rotate
         if (rotate.getValue())
             PistonCrystal.resetRotation();

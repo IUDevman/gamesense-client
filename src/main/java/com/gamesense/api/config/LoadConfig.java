@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GuiConfig;
 import com.gamesense.client.command.Command;
@@ -18,6 +18,7 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
+import com.gamesense.client.module.modules.misc.AutoRespawn;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,6 +57,7 @@ public class LoadConfig {
         loadClickGUIPositions();
         loadAutoGG();
         loadAutoReply();
+        loadAutoRespawn();
     }
 
     //big shoutout to lukflug for helping/fixing this
@@ -346,6 +348,28 @@ public class LoadConfig {
         if (dataObject != null && dataObject.isJsonPrimitive()) {
             AutoReply.setReply(dataObject.getAsString());
         }
+        inputStream.close();
+    }
+
+    public void loadAutoRespawn() throws IOException {
+        String fileLocation = fileName + miscName;
+
+        if (!Files.exists(Paths.get(fileLocation + "AutoRespawn" + ".json"))) {
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(fileLocation + "AutoRespawn" + ".json"));
+        JsonObject mainObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (mainObject.get("Message") == null) {
+            return;
+        }
+
+        JsonElement dataObject = mainObject.get("Message");
+        if (dataObject != null && dataObject.isJsonPrimitive()) {
+            AutoRespawn.setAutoRespawnMessage(dataObject.getAsString());
+        }
+
         inputStream.close();
     }
 }

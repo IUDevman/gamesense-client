@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -162,14 +163,14 @@ public class AntiCrystal extends Module {
                 // Check for the damage
                 if (checkDamage.getValue()) {
                     // Get it
-                    damage = (float) (OffHand.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue()) ;
+                    damage = (float) (DamageUtil.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue()) ;
                     // If it's lower then damageMin and is lower the our health, exit
                     if (damage < damageMin.getValue() && damage < mc.player.getHealth())
                         return;
                 }
 
                 // Check if it's air
-                if (get_block(t.posX, t.posY, t.posZ) instanceof BlockAir) {
+                if (BlockUtil.getBlock(t.posX, t.posY, t.posZ) instanceof BlockAir) {
                     // Place the pressure plate
                     placeBlock(new BlockPos(t.posX, t.posY, t.posZ), slotPressure);
                     if (++blocksPlaced == blocksPerTick.getValue())
@@ -194,11 +195,6 @@ public class AntiCrystal extends Module {
     // This function check if the offHand has "Plates" as value
     public static boolean isOffHandPressure() {
         return OffHand.nonDefaultItem.getValue().equals("Plates") || OffHand.defaultItem.getValue().equals("Plates");
-    }
-
-    // Get block from coordinates
-    private Block get_block(double x, double y, double z) {
-        return mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
     }
 
     // Place block

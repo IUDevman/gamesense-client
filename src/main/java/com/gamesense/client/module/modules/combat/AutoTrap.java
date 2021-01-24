@@ -1,19 +1,18 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -138,9 +137,9 @@ public class AutoTrap extends Module {
         }
 
         if (target.getValue().equals("Nearest"))
-            aimTarget = PistonCrystal.findClosestTarget(enemyRange.getValue(), aimTarget);
+            aimTarget = PlayerUtil.findClosestTarget(enemyRange.getValue(), aimTarget);
         else if(target.getValue().equals("Looking"))
-            aimTarget = PistonCrystal.findLookingPlayer(enemyRange.getValue());
+            aimTarget = PlayerUtil.findLookingPlayer(enemyRange.getValue());
 
         if (aimTarget == null) {
             return;
@@ -290,6 +289,8 @@ public class AutoTrap extends Module {
             }
         }
         else
+        int obsidianSlot = InventoryUtil.findObsidianSlot();
+
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
@@ -326,6 +327,7 @@ public class AutoTrap extends Module {
 
         return true;
     }
+
 
     private static class Offsets {
         private static final Vec3d[] TRAP = {

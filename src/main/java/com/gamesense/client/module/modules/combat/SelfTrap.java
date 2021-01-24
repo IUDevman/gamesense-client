@@ -1,19 +1,17 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.EnumFacing;
@@ -91,12 +89,12 @@ public class SelfTrap extends Module {
             mc.player.motionZ = 0;
         }
 
-        centeredBlock = getCenterOfBlock(mc.player.posX, mc.player.posY, mc.player.posY);
+        centeredBlock = BlockUtil.getCenterOfBlock(mc.player.posX, mc.player.posY, mc.player.posY);
 
         oldSlot = mc.player.inventory.currentItem;
 
-        if (findObsidianSlot() != -1) {
-            mc.player.inventory.currentItem = findObsidianSlot();
+        if (InventoryUtil.findObsidianSlot() != -1) {
+            mc.player.inventory.currentItem = InventoryUtil.findObsidianSlot();
         }
     }
 
@@ -152,7 +150,7 @@ public class SelfTrap extends Module {
 
         if (firstRun || noObby) {
             firstRun = false;
-            if (findObsidianSlot() == -1) {
+            if (InventoryUtil.findObsidianSlot() == -1) {
                 noObby = true;
                 return;
             }else
@@ -320,6 +318,9 @@ public class SelfTrap extends Module {
             }
         }
         else
+
+        int obsidianSlot = InventoryUtil.findObsidianSlot();
+
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
@@ -355,15 +356,6 @@ public class SelfTrap extends Module {
         }
 
         return true;
-    }
-
-    private Vec3d getCenterOfBlock(double playerX, double playerY, double playerZ) {
-
-        double newX = Math.floor(playerX) + 0.5;
-        double newY = Math.floor(playerY);
-        double newZ = Math.floor(playerZ) + 0.5;
-
-        return new Vec3d(newX, newY, newZ);
     }
 
     private static class Offsets {

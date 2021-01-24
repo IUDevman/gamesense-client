@@ -1,4 +1,4 @@
-package com.gamesense.api.util.player.friends;
+package com.gamesense.api.util.player.friend;
 
 import java.util.ArrayList;
 import java.util.List;
