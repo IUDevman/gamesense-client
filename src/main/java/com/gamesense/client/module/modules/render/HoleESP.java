@@ -8,10 +8,9 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.client.GameSense;
+import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.google.common.collect.Sets;
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -107,7 +106,7 @@ public class HoleESP extends Module {
 
         // hashSets are easier to navigate
         HashSet<BlockPos> possibleFullHoles = Sets.newHashSet();
-        HashMap<BlockPos, Pair<BlockOffset, GSColor>> possibleWideHoles = new HashMap<>();
+        HashMap<BlockPos, Pair<HoleUtil.BlockOffset, GSColor>> possibleWideHoles = new HashMap<>();
         List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), range, range, false, true, 0);
 
         // find all holes
@@ -133,17 +132,17 @@ public class HoleESP extends Module {
         possibleFullHoles.forEach(pos -> {
             GSColor color = new GSColor(bedrockColor.getValue(), 255);
 
-            HashMap<BlockOffset, BlockSafety> unsafeSides = getUnsafeSides(pos);
+            HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> unsafeSides = HoleUtil.getUnsafeSides(pos);
 
-            if (unsafeSides.containsKey(BlockOffset.DOWN)) {
-                if (unsafeSides.remove(BlockOffset.DOWN, BlockSafety.BREAKABLE)) {
+            if (unsafeSides.containsKey(HoleUtil.BlockOffset.DOWN)) {
+                if (unsafeSides.remove(HoleUtil.BlockOffset.DOWN, HoleUtil.BlockSafety.BREAKABLE)) {
                     return;
                 }
             }
 
             int size = unsafeSides.size();
 
-            unsafeSides.entrySet().removeIf(entry -> entry.getValue() == BlockSafety.RESISTANT);
+            unsafeSides.entrySet().removeIf(entry -> entry.getValue() == HoleUtil.BlockSafety.RESISTANT);
 
             // size has changed so must have weak side
             if (unsafeSides.size() != size)
@@ -173,20 +172,20 @@ public class HoleESP extends Module {
 
                 // Custom allows hole in floor for second side
                 boolean allowCustom = customHoleMode.equalsIgnoreCase("Custom");
-                HashMap<BlockOffset, BlockSafety> unsafeSides = getUnsafeSides(unsafePos);
+                HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> unsafeSides = HoleUtil.getUnsafeSides(unsafePos);
 
                 int size = unsafeSides.size();
 
-                unsafeSides.entrySet().removeIf(entry -> entry.getValue() == BlockSafety.RESISTANT);
+                unsafeSides.entrySet().removeIf(entry -> entry.getValue() == HoleUtil.BlockSafety.RESISTANT);
 
                 // size has changed so must have weak side
                 if (unsafeSides.size() != size)
                     color = new GSColor(obsidianColor.getValue(), 255);
 
                 if (allowCustom) {
-                    if (unsafeSides.containsKey(BlockOffset.DOWN))
+                    if (unsafeSides.containsKey(HoleUtil.BlockOffset.DOWN))
                         color = new GSColor(customColor.getValue(), 255);
-                    unsafeSides.remove(BlockOffset.DOWN);
+                    unsafeSides.remove(HoleUtil.BlockOffset.DOWN);
                 }
 
                 // is it a safe hole
@@ -203,43 +202,6 @@ public class HoleESP extends Module {
             });
 
         }
-    }
-
-    private BlockSafety isBlockSafe(Block block) {
-        if (block == Blocks.BEDROCK) {
-            return BlockSafety.UNBREAKABLE;
-        }
-        if (block == Blocks.OBSIDIAN || block == Blocks.ENDER_CHEST || block == Blocks.ANVIL) {
-            return BlockSafety.RESISTANT;
-        }
-        return BlockSafety.BREAKABLE;
-    }
-
-    private HashMap<BlockOffset, BlockSafety> getUnsafeSides(BlockPos pos) {
-        HashMap<BlockOffset, BlockSafety> output = new HashMap<>();
-        BlockSafety temp;
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.DOWN.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.DOWN, temp);
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.NORTH.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.NORTH, temp);
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.SOUTH.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.SOUTH, temp);
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.EAST.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.EAST, temp);
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.WEST.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.WEST, temp);
-
-        return output;
     }
 
     public void onWorldRender(RenderEvent event) {
@@ -354,35 +316,6 @@ public class HoleESP extends Module {
                 }
                 break;
             }
-        }
-    }
-
-    private enum BlockSafety {
-        UNBREAKABLE,
-        RESISTANT,
-        BREAKABLE
-    }
-
-    private enum BlockOffset {
-        DOWN(0, -1, 0),
-        UP(0, 1, 0),
-        NORTH(0, 0, -1),
-        SOUTH(0, 0, 1),
-        WEST(-1, 0, 0),
-        EAST(1, 0, 0);
-
-        private final int x;
-        private final int y;
-        private final int z;
-
-        BlockOffset(int x, int y, int z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        public BlockPos offset(BlockPos pos) {
-            return pos.add(x, y, z);
         }
     }
 }
