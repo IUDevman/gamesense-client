@@ -193,12 +193,12 @@ public class HoleESP extends Module {
                     return;
 
                 // it is
-                double minX = Math.min(pos.x, unsafePos.x);
-                double maxX = Math.max(pos.x, unsafePos.x) + 1;
-                double minZ = Math.min(pos.z, unsafePos.z);
-                double maxZ = Math.max(pos.z, unsafePos.z) + 1;
+                double minX = Math.min(pos.getX(), unsafePos.getX());
+                double maxX = Math.max(pos.getZ(), unsafePos.getX()) + 1;
+                double minZ = Math.min(pos.getZ(), unsafePos.getZ());
+                double maxZ = Math.max(pos.getZ(), unsafePos.getZ()) + 1;
 
-                holes.put(new AxisAlignedBB(minX, pos.y, minZ, maxX, pos.y + 1, maxZ), color);
+                holes.put(new AxisAlignedBB(minX, pos.getY(), minZ, maxX, pos.getY() + 1, maxZ), color);
             });
 
         }
