@@ -3,12 +3,14 @@ package com.gamesense.client.module.modules.movement;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.HashMap;
 
@@ -80,10 +82,28 @@ public class HoleTP extends Module {
 	}
 
 	private boolean isOnLiquid() {
-		return mc.player.isOffsetPositionInLiquid(0.0d, -0.03d, 0.0d);
+		final double y = mc.player.posY - 0.03;
+		for (int x = MathHelper.floor(mc.player.posX); x < MathHelper.ceil(mc.player.posX); x++) {
+			for (int z = MathHelper.floor(mc.player.posZ); z < MathHelper.ceil(mc.player.posZ); z++) {
+				final BlockPos pos = new BlockPos(x, MathHelper.floor(y), z);
+				if (mc.world.getBlockState(pos).getBlock() instanceof BlockLiquid) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private boolean isInLiquid() {
-		return mc.player.isOffsetPositionInLiquid(0.0d, 0.01d, 0.0d);
+		final double y = mc.player.posY + 0.01;
+		for (int x = MathHelper.floor(mc.player.posX); x < MathHelper.ceil(mc.player.posX); x++) {
+			for (int z = MathHelper.floor(mc.player.posZ); z < MathHelper.ceil(mc.player.posZ); z++) {
+				final BlockPos pos = new BlockPos(x, (int)y, z);
+				if (mc.world.getBlockState(pos).getBlock() instanceof BlockLiquid) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
