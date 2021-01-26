@@ -1,6 +1,5 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
@@ -9,8 +8,6 @@ import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -22,6 +19,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+
+import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 
 /**
  * @Author TechAle on (date)
@@ -57,6 +56,7 @@ public class Blocker extends Module {
     private boolean activedBefore;
 
     public void onEnable() {
+        ROTATION_UTIL.onEnable();
         if (mc.player == null) {
             disable();
             return;
@@ -83,6 +83,7 @@ public class Blocker extends Module {
     }
 
     public void onDisable() {
+        ROTATION_UTIL.onDisable();
         if (mc.player == null) {
             return;
         }
@@ -113,6 +114,7 @@ public class Blocker extends Module {
             return;
         }
         else {
+            ROTATION_UTIL.shouldSpoofAngles(true);
             delayTimeTicks = 0;
 
             if (anvilBlocker.getValue()) {
@@ -249,26 +251,11 @@ public class Blocker extends Module {
     private void breakCrystalPiston (Entity crystal) {
         // If rotate
         if (rotate.getValue()) {
-            PistonCrystal.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+            ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
         }
         CrystalUtil.breakCrystal(crystal);
         // Rotate
         if (rotate.getValue())
-            PistonCrystal.resetRotation();
+            ROTATION_UTIL.resetRotation();
     }
-
-    /// AutoCrystal break things ///
-    private static boolean isSpoofingAngles;
-    private static double yaw;
-    private static double pitch;
-    @EventHandler
-    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
-        Packet packet = event.getPacket();
-        if (packet instanceof CPacketPlayer) {
-            if (isSpoofingAngles) {
-                ((CPacketPlayer) packet).yaw = (float) yaw;
-                ((CPacketPlayer) packet).pitch = (float) pitch;
-            }
-        }
-    });
 }

@@ -30,9 +30,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
-import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketSoundEffect;
@@ -48,6 +46,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 
 /**
  * @Author CyberTF2 and Hoosiers
@@ -166,6 +166,7 @@ public class AutoCrystalGS extends Module {
             return;
         }
 
+        ROTATION_UTIL.shouldSpoofAngles(spoofRotations.getValue());
         isActive = false;
 
         EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
@@ -217,7 +218,7 @@ public class AutoCrystalGS extends Module {
                 isActive = true;
 
                 if (rotate.getValue()) {
-                    lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+                    ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
                 }
 
                 if (breakType.getValue().equalsIgnoreCase("Swing")) {
@@ -242,7 +243,7 @@ public class AutoCrystalGS extends Module {
             }
         }
         else {
-            resetRotation();
+            ROTATION_UTIL.resetRotation();
             if (oldSlot != -1) {
                 mc.player.inventory.currentItem = oldSlot;
                 oldSlot = -1;
@@ -286,7 +287,7 @@ public class AutoCrystalGS extends Module {
                     if (damage == 0.5D) {
                         this.render = null;
                         this.renderEnt = null;
-                        resetRotation();
+                        ROTATION_UTIL.resetRotation();
                         return;
                     }
 
@@ -297,7 +298,7 @@ public class AutoCrystalGS extends Module {
                             if (this.autoSwitch.getValue()) {
                                 if ((noGapSwitch.getValue() && !(mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE)) || !noGapSwitch.getValue()) {
                                     mc.player.inventory.currentItem = crystalSlot;
-                                    resetRotation();
+                                    ROTATION_UTIL.resetRotation();
                                     this.switchCooldown = true;
                                 }
                             }
@@ -305,7 +306,7 @@ public class AutoCrystalGS extends Module {
                         }
 
                         if (rotate.getValue()) {
-                            this.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D, mc.player);
+                            ROTATION_UTIL.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D, mc.player);
                         }
 
                         RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D));
@@ -314,7 +315,7 @@ public class AutoCrystalGS extends Module {
                                 q = null;
                                 enumFacing = null;
                                 render = null;
-                                resetRotation();
+                                ROTATION_UTIL.resetRotation();
                                 isActive = false;
                                 return;
                             }
@@ -347,7 +348,7 @@ public class AutoCrystalGS extends Module {
                                 AutoGG.INSTANCE.addTargetedPlayer(renderEnt.getName());
                         }
 
-                        if (isSpoofingAngles) {
+                        if (ROTATION_UTIL.isSpoofingAngles()) {
                             EntityPlayerSP var10000;
                             if (togglePitch) {
                                 var10000 = mc.player;
@@ -428,11 +429,6 @@ public class AutoCrystalGS extends Module {
         }
     }
 
-    private void lookAtPacket(double px, double py, double pz, EntityPlayer me) {
-        double[] v = EntityUtil.calculateLookAt(px, py, pz, me);
-        setYawAndPitch((float) v[0], (float) v[1]);
-    }
-
     private boolean crystalCheck(Entity crystal) {
 
         if (!(crystal instanceof EntityEnderCrystal)) {
@@ -474,24 +470,6 @@ public class AutoCrystalGS extends Module {
                 .orElse(null);
     }
 
-    private static boolean isSpoofingAngles;
-    private static double yaw;
-    private static double pitch;
-
-    private static void setYawAndPitch(float yaw1, float pitch1) {
-        yaw = yaw1;
-        pitch = pitch1;
-        isSpoofingAngles = true;
-    }
-
-    private static void resetRotation() {
-        if (isSpoofingAngles) {
-            yaw = mc.player.rotationYaw;
-            pitch = mc.player.rotationPitch;
-            isSpoofingAngles = false;
-        }
-    }
-
     private void breakCrystal(EntityEnderCrystal crystal) {
         mc.playerController.attackEntity(mc.player, crystal);
 
@@ -512,17 +490,6 @@ public class AutoCrystalGS extends Module {
     }
 
     @EventHandler
-    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
-        Packet packet = event.getPacket();
-        if (packet instanceof CPacketPlayer && spoofRotations.getValue()) {
-            if (isSpoofingAngles) {
-                ((CPacketPlayer) packet).yaw = (float) yaw;
-                ((CPacketPlayer) packet).pitch = (float) pitch;
-            }
-        }
-    });
-
-    @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
         if (event.getPacket() instanceof SPacketSoundEffect) {
             final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
@@ -539,6 +506,7 @@ public class AutoCrystalGS extends Module {
     });
 
     public void onEnable() {
+        ROTATION_UTIL.onEnable();
         GameSense.EVENT_BUS.subscribe(this);
         PlacedCrystals.clear();
         isActive = false;
@@ -548,10 +516,11 @@ public class AutoCrystalGS extends Module {
     }
 
     public void onDisable() {
+        ROTATION_UTIL.onDisable();
         GameSense.EVENT_BUS.unsubscribe(this);
         render = null;
         renderEnt = null;
-        resetRotation();
+        ROTATION_UTIL.resetRotation();
         PlacedCrystals.clear();
         isActive = false;
         if(chat.getValue()) {
