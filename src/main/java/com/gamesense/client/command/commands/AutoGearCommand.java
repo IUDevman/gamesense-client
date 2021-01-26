@@ -5,21 +5,16 @@ import com.gamesense.client.command.Command;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.util.HashMap;
 
 public class AutoGearCommand extends Command {
 
-    final private String pathSave = "GameSense/Misc/AutoGear.json";
+    final static private String pathSave = "GameSense/Misc/AutoGear.json";
 
-    private HashMap<String, String> errorMessage = new HashMap<String, String>() {
+    private static final HashMap<String, String> errorMessage = new HashMap<String, String>() {
         {
             put("NoPar", "Not enough parameters");
             put("Exist", "This kit arleady exist");
@@ -31,7 +26,7 @@ public class AutoGearCommand extends Command {
     public AutoGearCommand() {
         super("AutoGear");
 
-        setCommandSyntax(Command.getCommandPrefix() + "gear set/save [name]");
+        setCommandSyntax(Command.getCommandPrefix() + "gear set/save/del/list [name]");
 
         setCommandAlias(new String[]{
                 "gear", "gr", "kit"
@@ -42,9 +37,10 @@ public class AutoGearCommand extends Command {
     public void onCommand(String command, String[] message) throws Exception {
 
         switch (message[0].toLowerCase()) {
-            case "":
-            case "help":
-                MessageBus.sendCommandMessage("AutoGear message is: gear set/save/del [name]", true);
+            case "list":
+                if (message.length == 1) {
+                    listMessage();
+                }else errorMessage("NoPar");
                 break;
             case "set":
                 if (message.length == 2) {
@@ -52,6 +48,7 @@ public class AutoGearCommand extends Command {
                 }else errorMessage("NoPar");
                 break;
             case "save":
+            case "add":
                 if (message.length == 2) {
                     save(message[1]);
                 }else errorMessage("NoPar");
@@ -61,6 +58,29 @@ public class AutoGearCommand extends Command {
                     delete(message[1]);
                 }else errorMessage("NoPar");
                 break;
+            case "":
+            case "help":
+            default:
+                MessageBus.sendCommandMessage("AutoGear message is: gear set/save/del/list [name]", true);
+                break;
+        }
+    }
+
+    private void listMessage() {
+        JsonObject completeJson = new JsonObject();
+        try {
+            // Read json
+            completeJson = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject();
+            int lenghtJson = completeJson.entrySet().size();
+            for(int i = 0; i < lenghtJson; i++) {
+                String item = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject().entrySet().toArray()[i].toString().split("=")[0];
+                if (!item.equals("pointer"))
+                    PistonCrystal.printChat("Kit avaible: " + item, false);
+            }
+
+        } catch (IOException e) {
+            // Case not found, reset
+            errorMessage("NoEx");
         }
     }
 
@@ -72,6 +92,9 @@ public class AutoGearCommand extends Command {
             if (completeJson.get(name) != null && !name.equals("pointer")) {
                 // Delete
                 completeJson.remove(name);
+                // Check if it's setter
+                if (completeJson.get("pointer").getAsString().equals(name))
+                    completeJson.addProperty("pointer", "none");
                 // Save
                 saveFile(completeJson, name, "deleted");
             }else errorMessage("NoEx");
@@ -105,7 +128,7 @@ public class AutoGearCommand extends Command {
         try {
             // Read json
             completeJson = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject();
-            if (completeJson.get(name) != null) {
+            if (completeJson.get(name) != null && !name.equals("pointer")) {
                 errorMessage("Exist");
                 return;
             }
@@ -144,8 +167,40 @@ public class AutoGearCommand extends Command {
         }
     }
 
-    private void errorMessage(String e) {
+    private static void errorMessage(String e) {
         PistonCrystal.printChat("Error: " + errorMessage.get(e), true);
+    }
+
+    public static String getCurrentSet() {
+
+        JsonObject completeJson = new JsonObject();
+        try {
+            // Read json
+            completeJson = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject();
+            if (!completeJson.get("pointer").getAsString().equals("none"))
+                return completeJson.get("pointer").getAsString();
+
+
+        } catch (IOException e) {
+            // Case not found, reset
+        }
+        errorMessage("NoEx");
+        return "";
+    }
+
+    public static String getInventoryKit(String kit) {
+        JsonObject completeJson = new JsonObject();
+        try {
+            // Read json
+            completeJson = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject();
+            return completeJson.get(kit).getAsString();
+
+
+        } catch (IOException e) {
+            // Case not found, reset
+        }
+        errorMessage("NoEx");
+        return "";
     }
 
 }

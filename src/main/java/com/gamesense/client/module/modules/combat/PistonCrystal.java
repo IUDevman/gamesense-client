@@ -38,6 +38,11 @@ import java.util.List;
  * Break crystal from AutoCrystal
  */
 
+/*
+    TODO: add check item
+    TODO: add check which item is missing
+ */
+
 public class PistonCrystal extends Module {
 
     public PistonCrystal() {
