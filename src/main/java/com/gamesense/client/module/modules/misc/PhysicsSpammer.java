@@ -20,8 +20,8 @@ public class PhysicsSpammer extends Module {
 	
 	public PhysicsSpammer() {
 		super("PhysicsSpammer",Category.Misc);
-		minDelay=registerInteger("MinDelay",5,1,100);
-		maxDelay=registerInteger("MaxDelay",5,1,100);
+		minDelay=registerInteger("Min Delay",5,1,100);
+		maxDelay=registerInteger("Max Delay",5,1,100);
 		updateTimes();
 	}
 	
