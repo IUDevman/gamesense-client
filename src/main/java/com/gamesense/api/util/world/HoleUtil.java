@@ -3,6 +3,7 @@ package com.gamesense.api.util.world;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
@@ -19,6 +20,82 @@ public class HoleUtil {
             return BlockSafety.RESISTANT;
         }
         return BlockSafety.BREAKABLE;
+    }
+
+    public static HoleInfo isHole(BlockPos centreBlock, boolean onlyOneWide) {
+        HoleInfo output = new HoleInfo();
+        HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> unsafeSides = HoleUtil.getUnsafeSides(centreBlock);
+
+        if (unsafeSides.containsKey(HoleUtil.BlockOffset.DOWN)) {
+            if (unsafeSides.remove(HoleUtil.BlockOffset.DOWN, HoleUtil.BlockSafety.BREAKABLE)) {
+                output.setSafety(BlockSafety.BREAKABLE);
+                return output;
+            }
+        }
+
+        int size = unsafeSides.size();
+
+        unsafeSides.entrySet().removeIf(entry -> entry.getValue() == HoleUtil.BlockSafety.RESISTANT);
+
+        // size has changed so must have weak side
+        if (unsafeSides.size() != size) {
+            output.setSafety(BlockSafety.RESISTANT);
+        }
+
+        size = unsafeSides.size();
+
+        // is it a perfect hole
+        if (size == 0) {
+            output.setType(HoleType.SINGLE);
+            output.setCentre(new AxisAlignedBB(centreBlock));
+            return output;
+        }
+        // have one open side
+         else if (size == 1 && !onlyOneWide) {
+            return isDoubleHole(output, centreBlock, unsafeSides.keySet().stream().findFirst().get());
+        } else {
+            output.setSafety(BlockSafety.BREAKABLE);
+            return output;
+        }
+    }
+
+    public static HoleInfo isDoubleHole(HoleInfo info, BlockPos centreBlock, BlockOffset weakSide) {
+        BlockPos unsafePos = weakSide.offset(centreBlock);
+
+        HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> unsafeSides = HoleUtil.getUnsafeSides(unsafePos);
+
+        int size = unsafeSides.size();
+
+        unsafeSides.entrySet().removeIf(entry -> entry.getValue() == HoleUtil.BlockSafety.RESISTANT);
+
+        // size has changed so must have weak side
+        if (unsafeSides.size() != size) {
+            info.setSafety(BlockSafety.RESISTANT);
+        }
+
+        if (unsafeSides.containsKey(HoleUtil.BlockOffset.DOWN)) {
+            info.setType(HoleType.CUSTOM);
+            unsafeSides.remove(HoleUtil.BlockOffset.DOWN);
+        }
+
+        // is it a safe hole
+        if (unsafeSides.size() > 1) {
+            info.setType(HoleType.NONE);
+            return info;
+        }
+
+        // it is
+        double minX = Math.min(centreBlock.getX(), unsafePos.getX());
+        double maxX = Math.max(centreBlock.getX(), unsafePos.getX()) + 1;
+        double minZ = Math.min(centreBlock.getZ(), unsafePos.getZ());
+        double maxZ = Math.max(centreBlock.getZ(), unsafePos.getZ()) + 1;
+
+        info.setCentre(new AxisAlignedBB(minX, centreBlock.getY(), minZ, maxX, centreBlock.getY() + 1, maxZ));
+
+        if (info.getType() != HoleType.CUSTOM) {
+            info.setType(HoleType.DOUBLE);
+        }
+        return info;
     }
 
     public static HashMap<BlockOffset, BlockSafety> getUnsafeSides(BlockPos pos) {
@@ -52,6 +129,52 @@ public class HoleUtil {
         UNBREAKABLE,
         RESISTANT,
         BREAKABLE
+    }
+
+    public enum HoleType {
+        SINGLE,
+        DOUBLE,
+        CUSTOM,
+        NONE
+    }
+
+    public static class HoleInfo {
+        private HoleType type;
+        private BlockSafety safety;
+
+        private AxisAlignedBB centre;
+
+        public HoleInfo() {
+            this(BlockSafety.UNBREAKABLE, HoleType.NONE);
+        }
+
+        public HoleInfo(BlockSafety safety, HoleType type) {
+            this.type = type;
+            this.safety = safety;
+        }
+
+        public void setType(HoleType type) {
+            this.type = type;
+        }
+
+        public void setSafety(BlockSafety safety) {
+            this.safety = safety;
+        }
+
+        public void setCentre(AxisAlignedBB centre) {
+            this.centre = centre;
+        }
+
+        public HoleType getType() {
+            return type;
+        }
+
+        public BlockSafety getSafety() {
+            return safety;
+        }
+        public AxisAlignedBB getCentre() {
+            return centre;
+        }
     }
 
     public enum BlockOffset {

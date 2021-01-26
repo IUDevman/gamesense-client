@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
@@ -16,7 +15,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -105,8 +103,7 @@ public class HoleESP extends Module {
         int range = (int) Math.ceil(rangeS.getValue());
 
         // hashSets are easier to navigate
-        HashSet<BlockPos> possibleFullHoles = Sets.newHashSet();
-        HashMap<BlockPos, Pair<HoleUtil.BlockOffset, GSColor>> possibleWideHoles = new HashMap<>();
+        HashSet<BlockPos> possibleHoles = Sets.newHashSet();
         List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), range, range, false, true, 0);
 
         // find all holes
@@ -125,83 +122,42 @@ public class HoleESP extends Module {
             }
 
             if (mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals(Blocks.AIR)) {
-                possibleFullHoles.add(pos);
+                possibleHoles.add(pos);
             }
         }
 
-        possibleFullHoles.forEach(pos -> {
-            GSColor color = new GSColor(bedrockColor.getValue(), 255);
+        possibleHoles.forEach(pos -> {
+            HoleUtil.HoleInfo holeInfo = HoleUtil.isHole(pos, false);
+            HoleUtil.HoleType holeType = holeInfo.getType();
+            if (holeType != HoleUtil.HoleType.NONE) {
+                // We have a hole!
+                HoleUtil.BlockSafety holeSafety = holeInfo.getSafety();
+                AxisAlignedBB centreBlocks = holeInfo.getCentre();
 
-            HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> unsafeSides = HoleUtil.getUnsafeSides(pos);
-
-            if (unsafeSides.containsKey(HoleUtil.BlockOffset.DOWN)) {
-                if (unsafeSides.remove(HoleUtil.BlockOffset.DOWN, HoleUtil.BlockSafety.BREAKABLE)) {
+                if (centreBlocks == null)
                     return;
+
+                GSColor colour;
+                // get Colour
+                if (holeSafety == HoleUtil.BlockSafety.UNBREAKABLE) {
+                    colour = new GSColor(bedrockColor.getValue(), 255);
+                } else {
+                    colour = new GSColor(obsidianColor.getValue(), 255);
                 }
-            }
+                if (holeType == HoleUtil.HoleType.CUSTOM) {
+                    colour = new GSColor(customColor.getValue(), 255);
+                }
 
-            int size = unsafeSides.size();
-
-            unsafeSides.entrySet().removeIf(entry -> entry.getValue() == HoleUtil.BlockSafety.RESISTANT);
-
-            // size has changed so must have weak side
-            if (unsafeSides.size() != size)
-                color = new GSColor(obsidianColor.getValue(), 255);
-
-            size = unsafeSides.size();
-
-            // is it a perfect hole
-            if (size == 0) {
-                holes.put(new AxisAlignedBB(pos), color);
-
-            }
-            // have one open side
-            if (size == 1) {
-                possibleWideHoles.put(pos, new Pair<>(unsafeSides.keySet().stream().findFirst().get(), color));
+                String mode = customHoles.getValue();
+                if (mode.equalsIgnoreCase("Custom") && (holeType == HoleUtil.HoleType.CUSTOM || holeType == HoleUtil.HoleType.DOUBLE)) {
+                    holes.put(centreBlocks, colour);
+                } else if (mode.equalsIgnoreCase("Double") && holeType == HoleUtil.HoleType.DOUBLE) {
+                    holes.put(centreBlocks, colour);
+                } else if (holeType == HoleUtil.HoleType.SINGLE) {
+                    holes.put(centreBlocks, colour);
+                }
             }
         });
-
-        // two wide and/or custom holes is enabled
-        // we can guarantee all holes in possibleWideHoles
-        // have only one open side
-        String customHoleMode = customHoles.getValue();
-        if (!customHoleMode.equalsIgnoreCase("Single")) {
-            possibleWideHoles.forEach((pos, pair) -> {
-                GSColor color = pair.getValue();
-                BlockPos unsafePos = pair.getKey().offset(pos);
-
-                // Custom allows hole in floor for second side
-                boolean allowCustom = customHoleMode.equalsIgnoreCase("Custom");
-                HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> unsafeSides = HoleUtil.getUnsafeSides(unsafePos);
-
-                int size = unsafeSides.size();
-
-                unsafeSides.entrySet().removeIf(entry -> entry.getValue() == HoleUtil.BlockSafety.RESISTANT);
-
-                // size has changed so must have weak side
-                if (unsafeSides.size() != size)
-                    color = new GSColor(obsidianColor.getValue(), 255);
-
-                if (allowCustom) {
-                    if (unsafeSides.containsKey(HoleUtil.BlockOffset.DOWN))
-                        color = new GSColor(customColor.getValue(), 255);
-                    unsafeSides.remove(HoleUtil.BlockOffset.DOWN);
-                }
-
-                // is it a safe hole
-                if (unsafeSides.size() >  1)
-                    return;
-
-                // it is
-                double minX = Math.min(pos.getX(), unsafePos.getX());
-                double maxX = Math.max(pos.getZ(), unsafePos.getX()) + 1;
-                double minZ = Math.min(pos.getZ(), unsafePos.getZ());
-                double maxZ = Math.max(pos.getZ(), unsafePos.getZ()) + 1;
-
-                holes.put(new AxisAlignedBB(minX, pos.getY(), minZ, maxX, pos.getY() + 1, maxZ), color);
-            });
-
-        }
     }
 
     public void onWorldRender(RenderEvent event) {
