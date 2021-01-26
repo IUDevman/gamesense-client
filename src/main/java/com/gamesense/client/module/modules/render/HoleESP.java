@@ -194,7 +194,7 @@ public class HoleESP extends Module {
 
                 // it is
                 double minX = Math.min(pos.getX(), unsafePos.getX());
-                double maxX = Math.max(pos.getZ(), unsafePos.getX()) + 1;
+                double maxX = Math.max(pos.getX(), unsafePos.getX()) + 1;
                 double minZ = Math.min(pos.getZ(), unsafePos.getZ());
                 double maxZ = Math.max(pos.getZ(), unsafePos.getZ()) + 1;
 
