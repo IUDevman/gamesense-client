@@ -1,19 +1,21 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -23,12 +25,16 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * @Author Hoosiers on 10/31/2020
+ * @author Hoosiers
+ * @since 10/31/2020
+ * @author 0b00101010
+ * @since 26/01/2021
  */
-
 public class HoleFill extends Module {
 
 	public HoleFill() {
@@ -38,9 +44,11 @@ public class HoleFill extends Module {
 	Setting.Boolean chatMsgs;
 	Setting.Boolean autoSwitch;
 	Setting.Boolean rotate;
+	Setting.Boolean disable;
 	Setting.Integer placeDelay;
-	Setting.Double horizontalRange;
-	Setting.Double verticalRange;
+	Setting.Integer retryDelay;
+	Setting.Integer bpc;
+	Setting.Double range;
 	Setting.Mode mode;
 
 	public void setup() {
@@ -51,9 +59,11 @@ public class HoleFill extends Module {
 		modes.add("Web");
 
 		mode = registerMode("Type", modes, "Obby");
+		disable = registerBoolean("Disable on Finish", false);
 		placeDelay = registerInteger("Delay", 3, 0, 10);
-		horizontalRange = registerDouble("H Range", 4, 0, 10);
-		verticalRange = registerDouble("V Range", 2, 0, 5);
+		retryDelay = registerInteger("Retry Delay", 10, 0, 50);
+		bpc = registerInteger("Block pre Cycle", 1, 1, 5);
+		range = registerDouble("Range", 4, 0, 10);
 		rotate = registerBoolean("Rotate", true);
 		autoSwitch = registerBoolean("Switch", true);
 		chatMsgs = registerBoolean("Chat Msgs", true);
@@ -62,6 +72,12 @@ public class HoleFill extends Module {
 	private boolean isSneaking = false;
 	private int delayTicks = 0;
 	private int oldHandEnable = -1;
+
+	/*
+	 * Stops us from spam placing same closest position while
+	 * we wait for the block to be placed by the game
+	 */
+	private final HashMap<BlockPos, Integer> recentPlacements = new HashMap<>();
 
 	public void onEnable() {
 		if (chatMsgs.getValue() && mc.player != null) {
@@ -83,6 +99,7 @@ public class HoleFill extends Module {
 			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
 			isSneaking = false;
 		}
+		recentPlacements.clear();
 	}
 
 	public void onUpdate() {
@@ -91,39 +108,49 @@ public class HoleFill extends Module {
 			return;
 		}
 
-		List<BlockPos> holePos = new ArrayList<>();
-		holePos.addAll(findHoles());
+		recentPlacements.replaceAll(((blockPos, integer) -> integer+1));
+		// https://github.com/IUDevman/gamesense-client/issues/127
+		recentPlacements.values().removeIf(integer -> integer > retryDelay.getValue() * 2);
 
-		if (holePos != null) {
+		// https://github.com/IUDevman/gamesense-client/issues/127
+		if (delayTicks <= placeDelay.getValue() * 2) {
+			delayTicks++;
+			return;
+		}
 
-			if (autoSwitch.getValue()) {
-				int oldHand = mc.player.inventory.currentItem;
-				int newHand = findRightBlock(oldHand);
+		if (autoSwitch.getValue()) {
+			int oldHand = mc.player.inventory.currentItem;
+			int newHand = findRightBlock(oldHand);
 
-				if (newHand != -1) {
-					mc.player.inventory.currentItem = findRightBlock(oldHand);
-				}
-				else {
-					return;
-				}
+			if (newHand != -1) {
+				mc.player.inventory.currentItem = findRightBlock(oldHand);
 			}
+			else {
+				return;
+			}
+		}
 
-			BlockPos placePos = holePos.stream().sorted(Comparator.comparing(blockPos -> blockPos.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ))).findFirst().orElse(null);
+		List<BlockPos> holePos = new ArrayList<>(findHoles());
+		holePos.removeAll(recentPlacements.keySet());
 
-			if (placePos == null) {
+		int placements = 0;
+		holePos = holePos.stream().sorted(Comparator.comparing(blockPos -> blockPos.distanceSq((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ))).collect(Collectors.toList());
+		for (BlockPos placePos: holePos) {
+			if (placements >= bpc.getValue()) {
 				return;
 			}
 
-			for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(placePos))) {
-				if (entity instanceof EntityPlayer) {
-					return;
-				}
+			if (mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(placePos)).stream().anyMatch(entity -> entity instanceof EntityPlayer)) {
+				continue;
 			}
 
-			if (delayTicks >= placeDelay.getValue() && isHoldingRightBlock(mc.player.inventory.currentItem, mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem()) && placeBlock(placePos)) {
-				delayTicks = 0;
+			if (isHoldingRightBlock(mc.player.inventory.currentItem, mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem())) {
+				if (placeBlock(placePos)) {
+					placements++;
+					delayTicks = 0;
+				}
+				recentPlacements.put(placePos, 0);
 			}
-			delayTicks++;
 		}
 	}
 
@@ -131,30 +158,15 @@ public class HoleFill extends Module {
 		NonNullList<BlockPos> holes = NonNullList.create();
 
 		//from old HoleFill module, really good way to do this
-		Iterable<BlockPos> worldPosBlockPos = BlockPos.getAllInBox(mc.player.getPosition().add(-horizontalRange.getValue(), -verticalRange.getValue(), -horizontalRange.getValue()), mc.player.getPosition().add(horizontalRange.getValue(), verticalRange.getValue(), horizontalRange.getValue()));
+		List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), 5, 5, false, true, 0);
 
-		for (BlockPos blockPos : worldPosBlockPos) {
-			if (isSurrounded(blockPos)) {
+		for (BlockPos blockPos : blockPosList) {
+			if (HoleUtil.isHole(blockPos, true).getType() == HoleUtil.HoleType.SINGLE) {
 				holes.add(blockPos);
 			}
 		}
 
 		return holes;
-	}
-
-	private boolean isSurrounded(BlockPos blockPos) {
-		if (mc.world.getBlockState(blockPos).getBlock() == Blocks.AIR
-				&& mc.world.getBlockState(blockPos.east()).getBlock() != Blocks.AIR
-				&& mc.world.getBlockState(blockPos.west()).getBlock() != Blocks.AIR
-				&& mc.world.getBlockState(blockPos.north()).getBlock() != Blocks.AIR
-				&& mc.world.getBlockState(blockPos.south()).getBlock() != Blocks.AIR
-				&& mc.world.getBlockState(blockPos.down()).getBlock() != Blocks.AIR
-				&& mc.world.getBlockState(blockPos.up()).getBlock() == Blocks.AIR
-				&& mc.world.getBlockState(blockPos.up(2)).getBlock() == Blocks.AIR) {
-			return true;
-		}
-
-		return false;
 	}
 
 	private int findRightBlock(int oldHand) {
@@ -206,9 +218,7 @@ public class HoleFill extends Module {
 			else if (mode.getValue().equalsIgnoreCase("Both") && (block instanceof BlockObsidian || block instanceof BlockEnderChest)) {
 				return true;
 			}
-			else if (mode.getValue().equalsIgnoreCase("Web") && block instanceof BlockWeb) {
-				return true;
-			}
+			else return mode.getValue().equalsIgnoreCase("Web") && block instanceof BlockWeb;
 		}
 
 		return false;
@@ -216,10 +226,6 @@ public class HoleFill extends Module {
 
 	/** Mostly ported from Surround, best way to do it */
 	private Boolean placeBlock(BlockPos blockPos) {
-		if (blockPos == null) {
-			return false;
-		}
-
 		Block block = mc.world.getBlockState(blockPos).getBlock();
 
 		if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
@@ -258,15 +264,17 @@ public class HoleFill extends Module {
 			BlockUtil.faceVectorPacketInstant(hitVec);
 		}
 
-		mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-		mc.player.swingArm(EnumHand.MAIN_HAND);
-		mc.rightClickDelayTimer = 4;
+		EnumActionResult action = mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
+		if (action == EnumActionResult.SUCCESS) {
+			mc.player.swingArm(EnumHand.MAIN_HAND);
+			mc.rightClickDelayTimer = 4;
+		}
 
 		if (stoppedAC) {
 			AutoCrystalGS.stopAC = false;
 			stoppedAC = false;
 		}
 
-		return true;
+		return action == EnumActionResult.SUCCESS;
 	}
 }

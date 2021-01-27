@@ -141,4 +141,22 @@ public class EntityUtil {
 	public static boolean basicChecksEntity(Entity pl) {
 		return pl.getName().equals(mc.player.getName()) || Friends.isFriend(pl.getName()) || pl.isDead;
 	}
+
+
+	public static BlockPos getPosition(Entity pl) {
+		return new BlockPos(Math.floor(pl.posX), Math.floor(pl.posY), Math.floor(pl.posZ));
+	}
+
+	public static List<BlockPos> getBlocksIn(Entity pl) {
+		List<BlockPos> blocks = new ArrayList<>();
+		AxisAlignedBB bb = pl.getEntityBoundingBox();
+		for (double x = bb.minX; x < bb.maxX; x++) {
+			for (double y = bb.minY; x < bb.maxY; y++) {
+				for (double z = bb.minZ; x < bb.maxZ; z++) {
+					blocks.add(new BlockPos(x, y, z));
+				}
+			}
+		}
+		return blocks;
+	}
 }
