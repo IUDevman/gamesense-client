@@ -73,6 +73,10 @@ public class HoleFill extends Module {
 	private int delayTicks = 0;
 	private int oldHandEnable = -1;
 
+	/*
+	 * Stops us from spam placing same closest position while
+	 * we wait for the block to be placed by the game
+	 */
 	private final HashMap<BlockPos, Integer> recentPlacements = new HashMap<>();
 
 	public void onEnable() {
@@ -105,8 +109,10 @@ public class HoleFill extends Module {
 		}
 
 		recentPlacements.replaceAll(((blockPos, integer) -> integer+1));
+		// https://github.com/IUDevman/gamesense-client/issues/127
 		recentPlacements.values().removeIf(integer -> integer > retryDelay.getValue() * 2);
 
+		// https://github.com/IUDevman/gamesense-client/issues/127
 		if (delayTicks <= placeDelay.getValue() * 2) {
 			delayTicks++;
 			return;
@@ -125,6 +131,7 @@ public class HoleFill extends Module {
 		}
 
 		List<BlockPos> holePos = new ArrayList<>(findHoles());
+		holePos.removeAll(recentPlacements.keySet());
 
 		int placements = 0;
 		holePos = holePos.stream().sorted(Comparator.comparing(blockPos -> blockPos.distanceSq((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ))).collect(Collectors.toList());
@@ -134,9 +141,6 @@ public class HoleFill extends Module {
 			}
 
 			if (mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(placePos)).stream().anyMatch(entity -> entity instanceof EntityPlayer)) {
-				continue;
-			}
-			if (recentPlacements.containsKey(placePos)) {
 				continue;
 			}
 
