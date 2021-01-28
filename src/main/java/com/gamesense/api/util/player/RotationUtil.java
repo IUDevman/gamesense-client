@@ -22,6 +22,10 @@ public class RotationUtil {
     private double yaw;
     private double pitch;
 
+    // Forces only ever one
+    private RotationUtil() {
+    }
+
     public void onEnable() {
         rotationConnections++;
         if (rotationConnections == 1)
