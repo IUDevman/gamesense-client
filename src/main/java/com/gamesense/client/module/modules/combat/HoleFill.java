@@ -155,8 +155,6 @@ public class HoleFill extends Module {
 			return output;
 		});
 
-		GameSense.LOGGER.info(holePos.size());
-
 		if (disableOnFinish.getValue() && holePos.size() == 0) {
 			disable();
 		}
