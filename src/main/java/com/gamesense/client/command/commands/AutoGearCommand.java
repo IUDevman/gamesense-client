@@ -143,7 +143,7 @@ public class AutoGearCommand extends Command {
         StringBuilder jsonInventory = new StringBuilder();
         for(ItemStack item : mc.player.inventory.mainInventory) {
             // Add everything
-            jsonInventory.append(item.getItem().getRegistryName()).append(" ");
+            jsonInventory.append(item.getItem().getRegistryName().toString() + item.getMetadata()).append(" ");
         }
         // Add to the json
         completeJson.addProperty(name, jsonInventory.toString());
