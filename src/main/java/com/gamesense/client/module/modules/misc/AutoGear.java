@@ -227,7 +227,8 @@ public class AutoGear extends Module {
                             int aimKey = momentAim.get().getKey();
                             planMove.add(aimKey);
                             // Ignore the end key
-                            ignoreValues.add(aimKey);
+                            if (pickedItem == null || !pickedItem.equals(itemCheck))
+                                ignoreValues.add(aimKey);
                             /// We also have to update the list of item we need
                             // Update the value in nItemsCopy
                             nItemsCopy.put(itemCheck, nItemsCopy.get(itemCheck) - 1);

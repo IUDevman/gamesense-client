@@ -49,6 +49,7 @@ public class AutoGearCommand extends Command {
                 break;
             case "save":
             case "add":
+            case "create":
                 if (message.length == 2) {
                     save(message[1]);
                 }else errorMessage("NoPar");
