@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.Timer;
@@ -13,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBed;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
@@ -75,9 +75,9 @@ public class BedAura extends Module {
 
     private boolean hasNone = false;
     private int oldSlot = -1;
-    private ArrayList<BlockPos> placedPos = new ArrayList<>();
-    private Timer breakTimer = new Timer();
-    private Timer placeTimer = new Timer();
+    private final ArrayList<BlockPos> placedPos = new ArrayList<>();
+    private final Timer breakTimer = new Timer();
+    private final Timer placeTimer = new Timer();
 
     public void onEnable() {
         hasNone = false;
@@ -88,7 +88,7 @@ public class BedAura extends Module {
             return;
         }
 
-        int bedSlot = findBedSlot();
+        int bedSlot = InventoryUtil.findFirstItemSlot(ItemBed.class, 0, 8);
 
         if (mc.player.inventory.currentItem != bedSlot && bedSlot != -1 && autoSwitch.getValue()) {
             oldSlot = mc.player.inventory.currentItem;
@@ -133,7 +133,7 @@ public class BedAura extends Module {
             return;
         }
 
-        int bedSlot = findBedSlot();
+        int bedSlot = InventoryUtil.findFirstItemSlot(ItemBed.class, 0, 8);
 
         if (mc.player.inventory.currentItem != bedSlot && bedSlot != -1 && autoSwitch.getValue()) {
             oldSlot = mc.player.inventory.currentItem;
@@ -240,25 +240,6 @@ public class BedAura extends Module {
         }
     }
 
-    private int findBedSlot() {
-        int slot = -1;
-
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = mc.player.inventory.getStackInSlot(i);
-
-            if (stack == ItemStack.EMPTY) {
-                continue;
-            }
-
-            if (stack.getItem() instanceof ItemBed) {
-                slot = i;
-                break;
-            }
-        }
-
-        return slot;
-    }
-
     private NonNullList<TileEntity> findBedEntities(EntityPlayer entityPlayer) {
         NonNullList<TileEntity> bedEntities = NonNullList.create();
 
@@ -268,8 +249,7 @@ public class BedAura extends Module {
                 .filter(this::isOwn)
                 .forEach(bedEntities::add);
 
-        bedEntities.stream().min(Comparator.comparing(tileEntity -> tileEntity.getDistanceSq(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ)));
-
+        bedEntities.sort(Comparator.comparing(tileEntity -> tileEntity.getDistanceSq(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ)));
         return bedEntities;
     }
 
@@ -321,11 +301,7 @@ public class BedAura extends Module {
             return false;
         }
 
-        if (!mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(blockPos)).isEmpty()) {
-            return false;
-        }
-
-        return true;
+        return mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(blockPos)).isEmpty();
     }
 
     //bon55's bedAura really helped me understand how this all works
