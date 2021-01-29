@@ -9,25 +9,37 @@ package com.gamesense.client.module.modules.misc;
     TODO: Sort inventory
  */
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.command.commands.AutoGearCommand;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
-import net.minecraft.block.BlockAir;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.player.inventory.ContainerLocalMenu;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerShulkerBox;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import scala.Int;
-
 import java.util.*;
-import java.util.stream.Collectors;
+
+/**
+ * @Author TechAle
+ */
+/*
+    INVENTORY SORTING ALGORITHM
+    Lets start from the beginning, the inventory on the json.
+    This is composed in crescent values, so the first item is the first item in our inventory
+    And all the names are this: [name item][meta data]
+    I need to specify also the meta data because i want to also sort different types of wool.
+    The first step we make is to delete every values that are the same between our inventory and the inventory we want.
+    If after all the loop we have 0 item left, that means our inventory is fine and we have to do nothing.
+    If not,
+    We start iterate for every item in the list of items that are not the same and are not air.
+    For every item, we search if that determinated item is one we need.
+    If yes, lets search in which slot it has to go.
+    If that slot is empty, just switch, if it's not empty, save the item and switch and do not continue with the loop.
+    If that determinated item is one we need, search where it has to go, else, just put it where the last item was.
+    This should be a recursive problem but, for now i decided to not making it recursive. I'll make it recursive after i've done everything
+    for now this is enough, this algo is good enough, with a recursive algo it would be only 10% faster.
+    I added double check because, so the end is going to be perfect in anyway
+ */
 
 public class AutoGear extends Module {
 
@@ -41,12 +53,8 @@ public class AutoGear extends Module {
     Setting.Boolean confirmSort;
     Setting.Integer tickDelay;
 
-    // Config variables
-    private String curConfigName;
-    private String inventoryConfig;
     // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();
-    private ArrayList<Integer> emptySlots = new ArrayList<>();
     private HashMap<String, Integer> nItems = new HashMap<>();
     // Sort item
     private ArrayList<Integer> sortItems = new ArrayList<>();
@@ -61,11 +69,11 @@ public class AutoGear extends Module {
 
     @Override
     public void setup() {
-        chatMsg = registerBoolean("Chat Msg", true);
+        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
         debugMode = registerBoolean("Debug Mode", true);
         activeSort = registerBoolean("Active Sort", false);
         confirmSort = registerBoolean("Confirm Sort", true);
-        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+        chatMsg = registerBoolean("Chat Msg", true);
     }
 
     @Override
@@ -74,15 +82,19 @@ public class AutoGear extends Module {
         if (chatMsg.getValue())
             PistonCrystal.printChat("AutoGear Turned On!", false);
         // Get name of the config
-        curConfigName = AutoGearCommand.getCurrentSet();
+        // Config variables
+        String curConfigName = AutoGearCommand.getCurrentSet();
+        // If none, exit
         if (curConfigName.equals("")) {
             disable();
             return;
         }
+        // Print the config
         if (chatMsg.getValue())
             PistonCrystal.printChat("Config " + curConfigName + " actived", false);
-        // Get everything
-        inventoryConfig = AutoGearCommand.getInventoryKit(curConfigName);
+        // Get the inventory
+        String inventoryConfig = AutoGearCommand.getInventoryKit(curConfigName);
+        // If none, exit
         if (inventoryConfig.equals("")) {
             disable();
             return;
@@ -92,8 +104,7 @@ public class AutoGear extends Module {
         // Reset variables
         planInventory = new HashMap<>();
         nItems = new HashMap<>();
-        emptySlots = new ArrayList<>();
-        // Iterate
+        // Iterate for creating planInventory and nItems
         for(int i = 0; i < inventoryDivided.length; i++) {
             // Add to planInventory if it's not air
             if (!inventoryDivided[i].contains("air")) {
@@ -107,9 +118,6 @@ public class AutoGear extends Module {
                     // If it doesnt exist, add it with value 1
                     nItems.put(inventoryDivided[i], 1);
             }
-            else
-                // It's air, add it
-                emptySlots.add(i);
         }
         // Reset tickdelay
         delayTimeTicks = 0;
@@ -125,6 +133,7 @@ public class AutoGear extends Module {
 
     @Override
     public void onUpdate() {
+        // Wait
         if (delayTimeTicks < tickDelay.getValue()) {
             delayTimeTicks++;
             return;
@@ -132,13 +141,16 @@ public class AutoGear extends Module {
         else {
             delayTimeTicks = 0;
         }
+
+        // Since this is in the misc category, it did not turn off. This can cause some problems, so i have to turn it off manually with this
         if (planInventory.size() == 0)
             disable();
         // Check if your inventory is open
         if ( mc.currentScreen instanceof GuiInventory) {
+            // In that case, sort the inventory
             sortInventory();
         }else
-        // Check if a shulker / check is open
+        // Check if a shulker / check is open TODO WIP
         if (mc.player.openContainer instanceof ContainerChest || mc.player.openContainer instanceof ContainerShulkerBox) {
             if (!openedBefore) {
                 int maxValue =  mc.player.openContainer instanceof ContainerChest ? ((ContainerChest) mc.player.openContainer).getLowerChestInventory().getSizeInventory()
@@ -153,14 +165,19 @@ public class AutoGear extends Module {
 
     }
 
+    // This function sort the entire inventory
     private void sortInventory() {
-        // Get what's missing in your inventory and which slots are not usefull
+        // If we have just started
         if (!openedBefore) {
+            // Print
             if (chatMsg.getValue() && !doneBefore)
                 PistonCrystal.printChat("Start sorting inventory...", false);
+            // Get the plan to create
             sortItems = getInventorySort();
+            // Check some errors / doubleCheck
             if (sortItems.size() == 0 && !doneBefore) {
                 finishSort = false;
+                // Print
                 if (chatMsg.getValue())
                     PistonCrystal.printChat("Inventory arleady sorted...", true);
             }else {
@@ -168,27 +185,34 @@ public class AutoGear extends Module {
                 stepNow = 0;
             }
             openedBefore = true;
+        // if we have to start sorting
         } else if (finishSort) {
             int slotChange;
+            // This is the sort area
             if (sortItems.size() != 0) {
+                // Get where we are now
                 slotChange = sortItems.get(stepNow++);
                 // Sort the inventory
                 if (activeSort.getValue())
                     mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
             }
+            // If we have at the limit
             if (stepNow == sortItems.size()) {
-
+                // If confirm sort but we have not done yet
                 if (confirmSort.getValue()) {
                     if (!doneBefore) {
+                        // Reset
                         openedBefore = false;
                         finishSort = false;
                         doneBefore = true;
+                        // The last item sometimes fuck up. This reduce the possibilites
                         checkLastItem();
                         return;
                     }
                 }
 
                 finishSort = false;
+                // Print
                 if (chatMsg.getValue()) {
                     PistonCrystal.printChat("Inventory sorted", false);
                 }
@@ -199,25 +223,31 @@ public class AutoGear extends Module {
         }
     }
 
+    // This is for checking the last item
     private void checkLastItem() {
         if (sortItems.size() != 0) {
+            // Get last
             int slotChange = sortItems.get(sortItems.size() - 1);
+            // Check if it's empty
             if (mc.player.inventory.getStackInSlot(slotChange).isEmpty()) {
-                // Place it again
+                // If yes, change
                 mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
             }
         }
     }
 
+    // This give the inventory to sort
     private ArrayList<Integer> getInventorySort() {
+        // Plan to move
         ArrayList<Integer> planMove = new ArrayList<>();
+        // The copy of the inventory
         ArrayList<String> copyInventory = getInventoryCopy();
 
         // Lets copy planInventory
         HashMap<Integer, String> planInventoryCopy = (HashMap<Integer, String>) planInventory.clone();
         // Lets copy nItems
         HashMap<String, Integer> nItemsCopy = (HashMap<String, Integer>) nItems.clone();
-        // Ignore values for after
+        // Ignore values
         ArrayList<Integer> ignoreValues = new ArrayList<>();
         int value;
         // Iterate and check if we are ok for certain items
@@ -240,70 +270,62 @@ public class AutoGear extends Module {
 
         // Try to sort
         for (int i = 0; i < copyInventory.size(); i++) {
-            try {
-                // Check if the i is in the ignoreList
-                if (!ignoreValues.contains(i)) {
+            // Check if the i is in the ignoreList
+            if (!ignoreValues.contains(i)) {
+                // Lets check if it's one of the items we have
+                String itemCheck = copyInventory.get(i);
+                // Get the first possibilities
+                Optional<Map.Entry<Integer, String>> momentAim = planInventoryCopy.entrySet().stream().filter(x -> x.getValue().equals(itemCheck)).findFirst();
+                // Check if we found something (this should be always true, but because i fear NullPointerExceptor, i add this
+                if (momentAim.isPresent()) {
+                    /// add values
+                    // Lets start with the beginning. If pickedItem is null, that means our hand is empty
+                    if (pickedItem == null)
+                        planMove.add(i);
+                    // Get end key
+                    int aimKey = momentAim.get().getKey();
+                    planMove.add(aimKey);
+                    // Ignore the end key
+                    if (pickedItem == null || !pickedItem.equals(itemCheck))
+                        ignoreValues.add(aimKey);
+                    /// We also have to update the list of item we need
+                    // Update the value in nItemsCopy
+                    nItemsCopy.put(itemCheck, nItemsCopy.get(itemCheck) - 1);
+                    // If it's == 0, just remove it
+                    if (nItemsCopy.get(itemCheck) == 0)
+                        nItemsCopy.remove(itemCheck);
 
-                    // Lets check if it's one of the items we have
-                    String itemCheck = copyInventory.get(i);
-                    // Get the first possibilities
-                    Optional<Map.Entry<Integer, String>> momentAim = planInventoryCopy.entrySet().stream().filter(x -> x.getValue().equals(itemCheck)).findFirst();
-                    // Check if we found something (this should be always true, but because i fear NullPointerExceptor, i add this
-                    if (momentAim.isPresent()) {
-                        /// add values
-                        // Lets start with the beginning. If pickedItem is null, that means our hand is empty
-                        if (pickedItem == null)
-                            planMove.add(i);
-                        // Get end key
-                        int aimKey = momentAim.get().getKey();
-                        planMove.add(aimKey);
-                        // Ignore the end key
-                        if (pickedItem == null || !pickedItem.equals(itemCheck))
-                            ignoreValues.add(aimKey);
-                        /// We also have to update the list of item we need
-                        // Update the value in nItemsCopy
-                        nItemsCopy.put(itemCheck, nItemsCopy.get(itemCheck) - 1);
-                        // If it's == 0, just remove it
-                        if (nItemsCopy.get(itemCheck) == 0)
-                            nItemsCopy.remove(itemCheck);
+                    copyInventory.set(i, copyInventory.get(aimKey));
+                    copyInventory.set(aimKey, itemCheck);
 
-                        copyInventory.set(i, copyInventory.get(aimKey));
-                        copyInventory.set(aimKey, itemCheck);
-
-                        // Check if that determinated item is empty or not
-                        if (!copyInventory.get(aimKey).equals("minecraft:air0")) {
-                            // If it's not air, in this case we'll have an item in our pick hand.
-                            // We have to do not incr i
-                            // And then, lets add this value to pickedItem
-                            pickedItem = copyInventory.get(i + 1);
-                            i--;
-                        } else {
-                            // Else, it means we are placing on air. Lets remove pickedItem
-                            pickedItem = null;
-                        }
-                        // Lets remove it on planInventory
-                        planInventoryCopy.remove(aimKey);
+                    // Check if that determinated item is empty or not
+                    if (!copyInventory.get(aimKey).equals("minecraft:air0")) {
+                        // If it's not air, in this case we'll have an item in our pick hand.
+                        // We have to do not incr i
+                        // And then, lets add this value to pickedItem
+                        pickedItem = copyInventory.get(i + 1);
+                        i--;
                     } else {
-                        // If we found nothing, lets check if we have something in the pick
-                        if (pickedItem != null) {
-                            // In this case, lets place this item in i
-                            planMove.add(i);
-                            copyInventory.set(i, pickedItem);
-                            // Reset pickedItem
-                            pickedItem = null;
-                        }
+                        // Else, it means we are placing on air. Lets remove pickedItem
+                        pickedItem = null;
+                    }
+                    // Lets remove it on planInventory
+                    planInventoryCopy.remove(aimKey);
+                } else {
+                    // If we found nothing, lets check if we have something in the pick
+                    if (pickedItem != null) {
+                        // In this case, lets place this item in i
+                        planMove.add(i);
+                        copyInventory.set(i, pickedItem);
+                        // Reset pickedItem
+                        pickedItem = null;
                     }
                 }
-            } catch (NullPointerException e) {
-                PistonCrystal.printChat("a", false);
-            } catch (IndexOutOfBoundsException e) {
-                PistonCrystal.printChat("b", false);
             }
 
         }
 
-
-
+        // Print all path
         if (debugMode.getValue()) {
             // Print every values
             for(int valuePath : planMove) {
@@ -314,6 +336,7 @@ public class AutoGear extends Module {
         return planMove;
     }
 
+    // This give a copy of our inventory
     private ArrayList<String> getInventoryCopy() {
         ArrayList<String> output = new ArrayList<>();
         for(ItemStack i : mc.player.inventory.mainInventory) {

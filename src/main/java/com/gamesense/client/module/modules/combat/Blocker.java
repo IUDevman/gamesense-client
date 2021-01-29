@@ -191,7 +191,7 @@ public class Blocker extends Module {
             } else return;
         }
 
-        if (mc.player.inventory.currentItem != obsidianSlot) {
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
