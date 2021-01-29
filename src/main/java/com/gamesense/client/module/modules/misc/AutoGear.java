@@ -303,7 +303,7 @@ public class AutoGear extends Module {
                         // If it's not air, in this case we'll have an item in our pick hand.
                         // We have to do not incr i
                         // And then, lets add this value to pickedItem
-                        pickedItem = copyInventory.get(i + 1);
+                        pickedItem = copyInventory.get(i);
                         i--;
                     } else {
                         // Else, it means we are placing on air. Lets remove pickedItem
