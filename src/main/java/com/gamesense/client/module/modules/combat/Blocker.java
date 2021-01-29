@@ -85,11 +85,11 @@ public class Blocker extends Module {
         }
         if (chatMsg.getValue()) {
             if (noActive) {
-                printChat("Nothing is active... Blocker turned OFF!", true);
+                PistonCrystal.printChat("Nothing is active... Blocker turned OFF!", true);
             }else if(noObby)
-                printChat("Obsidian not found... Blocker turned OFF!", true);
+                PistonCrystal.printChat("Obsidian not found... Blocker turned OFF!", true);
             else
-                printChat("Blocker turned OFF!", true);
+                PistonCrystal.printChat("Blocker turned OFF!", true);
         }
 
     }
@@ -136,7 +136,7 @@ public class Blocker extends Module {
                     && BlockUtil.getBlock(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
                     // Place the block
                     placeBlock(new BlockPos(mc.player.posX, mc.player.posY + 2, mc.player.posZ));
-                    printChat("AutoAnvil detected... Anvil Blocked!", false);
+                    PistonCrystal.printChat("AutoAnvil detected... Anvil Blocked!", false);
                     found = true;
                 }
             }
@@ -164,7 +164,7 @@ public class Blocker extends Module {
                             if (BlockUtil.getBlock(t.posX + i, t.posY, t.posZ + j) instanceof BlockPistonBase) {
                                 // Break
                                 breakCrystalPiston(t);
-                                printChat("PistonCrystal detected... Destroyed crystal!", false);
+                                PistonCrystal.printChat("PistonCrystal detected... Destroyed crystal!", false);
                             }
                         }
                     }
@@ -191,15 +191,11 @@ public class Blocker extends Module {
             } else return;
         }
 
-        if (mc.player.inventory.currentItem != obsidianSlot) {
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
         PlacementUtil.place(pos, handSwing, rotate.getValue());
-    }
-
-    private void printChat(String text, Boolean error) {
-        MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
     }
 
     private void breakCrystalPiston (Entity crystal) {

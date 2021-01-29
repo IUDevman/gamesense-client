@@ -240,7 +240,7 @@ public class AutoTrap extends Module {
             } else return false;
         }
 
-        if (mc.player.inventory.currentItem != obsidianSlot) {
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
