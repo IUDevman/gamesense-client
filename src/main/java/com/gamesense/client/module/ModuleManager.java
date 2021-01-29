@@ -79,6 +79,7 @@ public class ModuleManager {
 		addMod(new MultiTask());
 		addMod(new NoEntityTrace());
 		addMod(new NoKick());
+		addMod(new PhysicsSpammer());
 		addMod(new PvPInfo());
 		//Render
 		addMod(new BlockHighlight());

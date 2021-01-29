@@ -1,27 +1,22 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.CPacketPlayer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+
+import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 
 /**
  * @Author TechAle on (date)
@@ -57,6 +52,7 @@ public class Blocker extends Module {
     private boolean activedBefore;
 
     public void onEnable() {
+        ROTATION_UTIL.onEnable();
         if (mc.player == null) {
             disable();
             return;
@@ -83,6 +79,7 @@ public class Blocker extends Module {
     }
 
     public void onDisable() {
+        ROTATION_UTIL.onDisable();
         if (mc.player == null) {
             return;
         }
@@ -110,9 +107,8 @@ public class Blocker extends Module {
 
         if (delayTimeTicks < tickDelay.getValue()) {
             delayTimeTicks++;
-            return;
-        }
-        else {
+        } else {
+            ROTATION_UTIL.shouldSpoofAngles(true);
             delayTimeTicks = 0;
 
             if (anvilBlocker.getValue()) {
@@ -178,93 +174,38 @@ public class Blocker extends Module {
     }
 
     private void placeBlock(BlockPos pos) {
-        Block block = mc.world.getBlockState(pos).getBlock();
-
-        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
-            return;
-        }
-
-        EnumFacing side = BlockUtil.getPlaceableSide(pos);
-
-        if (side == null) {
-            return;
-        }
-
-        BlockPos neighbour = pos.offset(side);
-        EnumFacing opposite = side.getOpposite();
-
-        if (!BlockUtil.canBeClicked(neighbour)) {
-            return;
-        }
-
-        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-        Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
-
         EnumHand handSwing = EnumHand.MAIN_HAND;
+
         int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedBefore);
-        if (obsidianSlot == 9) {
-            activedBefore = true;
-            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
-                // We can continue
-                handSwing = EnumHand.OFF_HAND;
-            }else return;
-        }else
-
-        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
-            mc.player.inventory.currentItem = obsidianSlot;
-        }
-
 
         if (obsidianSlot == -1) {
             noObby = true;
             return;
         }
-
-        boolean stoppedAC = false;
-
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystalGS.stopAC = true;
-            stoppedAC = true;
+        
+        if (obsidianSlot == 9) {
+            activedBefore = true;
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            } else return;
         }
 
-        if (rotate.getValue()) {
-            BlockUtil.faceVectorPacketInstant(hitVec);
+        if (mc.player.inventory.currentItem != obsidianSlot) {
+            mc.player.inventory.currentItem = obsidianSlot;
         }
 
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
-        mc.player.swingArm(handSwing);
-        mc.rightClickDelayTimer = 4;
-
-        if (stoppedAC) {
-            AutoCrystalGS.stopAC = false;
-            stoppedAC = false;
-        }
-
+        PlacementUtil.place(pos, handSwing, rotate.getValue());
     }
 
     private void breakCrystalPiston (Entity crystal) {
         // If rotate
         if (rotate.getValue()) {
-            PistonCrystal.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+            ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
         }
         CrystalUtil.breakCrystal(crystal);
         // Rotate
         if (rotate.getValue())
-            PistonCrystal.resetRotation();
+            ROTATION_UTIL.resetRotation();
     }
-
-    /// AutoCrystal break things ///
-    private static boolean isSpoofingAngles;
-    private static double yaw;
-    private static double pitch;
-    @EventHandler
-    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
-        Packet packet = event.getPacket();
-        if (packet instanceof CPacketPlayer) {
-            if (isSpoofingAngles) {
-                ((CPacketPlayer) packet).yaw = (float) yaw;
-                ((CPacketPlayer) packet).pitch = (float) pitch;
-            }
-        }
-    });
 }

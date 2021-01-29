@@ -3,31 +3,24 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import static com.gamesense.api.util.world.BlockUtil.faceVectorPacketInstant;
-
 /**
  * @Author Hoosiers on 09/18/20
  */
-
 public class Surround extends Module {
 
     public Surround() {
@@ -71,7 +64,6 @@ public class Surround extends Module {
 
     private int runTimeTicks = 0;
     private int delayTimeTicks = 0;
-    private final int playerYLevel = 0;
     private int offsetSteps = 0;
 
     private Vec3d centeredBlock = Vec3d.ZERO;
@@ -263,75 +255,28 @@ public class Surround extends Module {
     }
 
     private boolean placeBlock(BlockPos pos) {
-        Block block = mc.world.getBlockState(pos).getBlock();
-
-        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
-            return false;
-        }
-
-        EnumFacing side = BlockUtil.getPlaceableSide(pos);
-
-        if (side == null) {
-            return false;
-        }
-
-        BlockPos neighbour = pos.offset(side);
-        EnumFacing opposite = side.getOpposite();
-
-        if (!BlockUtil.canBeClicked(neighbour)) {
-            return false;
-        }
-
-        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-        Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
-
         EnumHand handSwing = EnumHand.MAIN_HAND;
 
         int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
-        if (obsidianSlot == 9) {
-            activedOff = true;
-            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
-                // We can continue
-                handSwing = EnumHand.OFF_HAND;
-            }else return false;
-        }
-        else
-
-        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
-            mc.player.inventory.currentItem = obsidianSlot;
-        }
-
-        if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
-            isSneaking = true;
-        }
 
         if (obsidianSlot == -1) {
             noObby = true;
             return false;
         }
 
-        boolean stoppedAC = false;
-
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystalGS.stopAC = true;
-            stoppedAC = true;
+        if (obsidianSlot == 9) {
+            activedOff = true;
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            } else return false;
         }
 
-        if (rotate.getValue()) {
-            faceVectorPacketInstant(hitVec);
+        if (mc.player.inventory.currentItem != obsidianSlot) {
+            mc.player.inventory.currentItem = obsidianSlot;
         }
 
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
-        mc.player.swingArm(handSwing);
-        mc.rightClickDelayTimer = 4;
-
-        if (stoppedAC) {
-            AutoCrystalGS.stopAC = false;
-            stoppedAC = false;
-        }
-
-        return true;
+        return PlacementUtil.place(pos, handSwing, rotate.getValue());
     }
 
     private static class Offsets {
