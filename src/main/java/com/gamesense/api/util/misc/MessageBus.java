@@ -55,5 +55,4 @@ public class MessageBus {
     public static void sendServerMessage(String message) {
         mc.player.connection.sendPacket(new CPacketChatMessage(message));
     }
-
 }
