@@ -13,6 +13,7 @@ import com.gamesense.client.GameSense;
 import com.gamesense.client.command.commands.AutoGearCommand;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
+import net.minecraft.block.BlockAir;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.player.inventory.ContainerLocalMenu;
@@ -37,6 +38,7 @@ public class AutoGear extends Module {
     Setting.Boolean chatMsg;
     Setting.Boolean debugMode;
     Setting.Boolean activeSort;
+    Setting.Boolean confirmSort;
     Setting.Integer tickDelay;
 
     // Config variables
@@ -54,13 +56,15 @@ public class AutoGear extends Module {
                 stepNow;
     // If we had opened before a chest/inventory
     private boolean openedBefore,
-                    finishSort;
+                    finishSort,
+                    doneBefore;
 
     @Override
     public void setup() {
         chatMsg = registerBoolean("Chat Msg", true);
         debugMode = registerBoolean("Debug Mode", true);
         activeSort = registerBoolean("Active Sort", false);
+        confirmSort = registerBoolean("Confirm Sort", true);
         tickDelay = registerInteger("Tick Delay", 0, 0, 20);
     }
 
@@ -110,7 +114,7 @@ public class AutoGear extends Module {
         // Reset tickdelay
         delayTimeTicks = 0;
         // Reset opened
-        openedBefore = false;
+        openedBefore = doneBefore = false;
     }
 
     @Override
@@ -132,33 +136,7 @@ public class AutoGear extends Module {
             disable();
         // Check if your inventory is open
         if ( mc.currentScreen instanceof GuiInventory) {
-            // Get what's missing in your inventory and which slots are not usefull
-            if (!openedBefore) {
-                if (chatMsg.getValue())
-                    PistonCrystal.printChat("Start sorting inventory...", false);
-                sortItems = getInventorySort();
-                if (sortItems.size() == 0) {
-                    finishSort = false;
-                    if (chatMsg.getValue())
-                        PistonCrystal.printChat("Inventory arleady sorted...", true);
-                }else {
-                    finishSort = true;
-                    stepNow = 0;
-                }
-                openedBefore = true;
-            } else if (finishSort) {
-
-                int slotChange = sortItems.get(stepNow++);
-                // Sort the inventory
-                if (activeSort.getValue())
-                    mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
-                if (stepNow == sortItems.size()) {
-                    finishSort = false;
-                    if (chatMsg.getValue()) {
-                        PistonCrystal.printChat("Inventory sorted", false);
-                    }
-                }
-            }
+            sortInventory();
         }else
         // Check if a shulker / check is open
         if (mc.player.openContainer instanceof ContainerChest || mc.player.openContainer instanceof ContainerShulkerBox) {
@@ -173,6 +151,62 @@ public class AutoGear extends Module {
             }
         }else openedBefore = false;
 
+    }
+
+    private void sortInventory() {
+        // Get what's missing in your inventory and which slots are not usefull
+        if (!openedBefore) {
+            if (chatMsg.getValue() && !doneBefore)
+                PistonCrystal.printChat("Start sorting inventory...", false);
+            sortItems = getInventorySort();
+            if (sortItems.size() == 0 && !doneBefore) {
+                finishSort = false;
+                if (chatMsg.getValue())
+                    PistonCrystal.printChat("Inventory arleady sorted...", true);
+            }else {
+                finishSort = true;
+                stepNow = 0;
+            }
+            openedBefore = true;
+        } else if (finishSort) {
+            int slotChange;
+            if (sortItems.size() != 0) {
+                slotChange = sortItems.get(stepNow++);
+                // Sort the inventory
+                if (activeSort.getValue())
+                    mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
+            }
+            if (stepNow == sortItems.size()) {
+
+                if (confirmSort.getValue()) {
+                    if (!doneBefore) {
+                        openedBefore = false;
+                        finishSort = false;
+                        doneBefore = true;
+                        checkLastItem();
+                        return;
+                    }
+                }
+
+                finishSort = false;
+                if (chatMsg.getValue()) {
+                    PistonCrystal.printChat("Inventory sorted", false);
+                }
+                // Check if the last slot has been placed
+                checkLastItem();
+                doneBefore = false;
+            }
+        }
+    }
+
+    private void checkLastItem() {
+        if (sortItems.size() != 0) {
+            int slotChange = sortItems.get(sortItems.size() - 1);
+            if (mc.player.inventory.getStackInSlot(slotChange).isEmpty()) {
+                // Place it again
+                mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
+            }
+        }
     }
 
     private ArrayList<Integer> getInventorySort() {
