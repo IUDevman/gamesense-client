@@ -1,7 +1,6 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.BossbarEvent;
-import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;

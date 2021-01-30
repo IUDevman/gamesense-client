@@ -47,7 +47,7 @@ public class CityESP extends Module {
         ArrayList<String> targetModes = new ArrayList<>();
         targetModes.add("Single");
         targetModes.add("All");
-
+      
         ArrayList<String> selectModes = new ArrayList<>();
         selectModes.add("Closest");
         selectModes.add("All");
@@ -123,6 +123,14 @@ public class CityESP extends Module {
             if (sides.size() > 0) {
                 cityable.put(player, sides);
             }
+                        if (isTrapped(entityPlayer)) {
+                            List<BlockPos> renderBlocks = new ArrayList<>(getBlocksToRender(entityPlayer));
+
+                            if (renderBlocks != null) {
+                                renderBox(renderBlocks);
+                            }
+                        }
+                    });
         }
     }
 

@@ -201,7 +201,7 @@ public class Nametags extends Module {
 		while (i >= 0) {
 			final ItemStack itemStack;
 			if (!(itemStack = entityPlayer.inventory.armorInventory.get(n12)).isEmpty()) {
-				final Boolean j = this.durability.getValue();
+				final boolean j = this.durability.getValue();
 				n10 -= 8;
 				if (j) {
 					b = true;

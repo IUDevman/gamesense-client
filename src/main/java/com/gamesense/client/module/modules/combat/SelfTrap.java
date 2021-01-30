@@ -274,7 +274,7 @@ public class SelfTrap extends Module {
             }else return false;
         }
 
-        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 

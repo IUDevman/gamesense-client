@@ -1,14 +1,5 @@
 package com.gamesense.client.module.modules.combat;
 
-/**
- * @Author TechAle and Hossier
- * Ported and modified from the ex module AutoTotem
- * Crystal Damage calculation autoCrystal
- */
-/*
- Fix: SwordCheck was inverted
-*/
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.client.module.Module;
@@ -30,6 +21,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * @Author TechAle and Hossier
+ * Ported and modified from the ex module AutoTotem
+ * Crystal Damage calculation autoCrystal
+ */
+/*
+ Fix: SwordCheck was inverted
+*/
 
 public class OffHand extends Module {
 

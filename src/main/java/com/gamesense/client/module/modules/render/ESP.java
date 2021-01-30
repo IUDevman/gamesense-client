@@ -90,7 +90,7 @@ public class ESP extends Module {
                     {
                         switch (playerESPMode.getValue()) {
                             case "Direction":
-                                RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYaw, width.getValue(), 0);
+                                RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, entity.rotationYaw, width.getValue(), 0);
                                 break;
                             case "Box":
                                 RenderUtil.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);

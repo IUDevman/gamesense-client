@@ -49,7 +49,16 @@ public class BlockHighlight extends Module {
 
     public void onWorldRender(RenderEvent event) {
         RayTraceResult rayTraceResult = mc.objectMouseOver;
+
+        if (rayTraceResult == null) {
+            return;
+        }
+
         EnumFacing enumFacing = mc.objectMouseOver.sideHit;
+
+        if (enumFacing == null) {
+            return;
+        }
 
         AxisAlignedBB axisAlignedBB;
         BlockPos blockPos;

@@ -63,6 +63,7 @@ public class ModuleManager {
 		addMod(new Step());
 		//Misc
 		addMod(new Announcer());
+		addMod(new AutoGear());
 		addMod(new AutoGG());
 		addMod(new AutoReply());
 		addMod(new AutoRespawn());
@@ -78,6 +79,7 @@ public class ModuleManager {
 		addMod(new MultiTask());
 		addMod(new NoEntityTrace());
 		addMod(new NoKick());
+		addMod(new PhysicsSpammer());
 		addMod(new PvPInfo());
 		//Render
 		addMod(new BlockHighlight());
@@ -161,7 +163,7 @@ public class ModuleManager {
 	}
 
 	public static void onBind(int key) {
-		if (key == 0 || key == Keyboard.KEY_NONE) return;
+		if (key == Keyboard.KEY_NONE) return;
 		modules.forEach(module -> {
 			if(module.getBind() == key) {
 				module.toggle();

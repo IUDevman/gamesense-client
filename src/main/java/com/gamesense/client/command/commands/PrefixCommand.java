@@ -28,7 +28,7 @@ public class PrefixCommand extends Command {
             Command.setCommandPrefix(main);
             MessageBus.sendCommandMessage("Prefix set: \"" + main + "\"!", true);
         }
-        else if (size > 1 || size < 1) {
+        else if (size != 1) {
             MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
         }
     }

@@ -7,7 +7,6 @@ import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
@@ -45,6 +44,7 @@ public class HoleFill extends Module {
 	Setting.Boolean autoSwitch;
 	Setting.Boolean rotate;
 	Setting.Boolean disableOnFinish;
+	Setting.Boolean offHandObby;
 	Setting.Integer placeDelay;
 	Setting.Integer retryDelay;
 	Setting.Integer bpc;
@@ -65,12 +65,15 @@ public class HoleFill extends Module {
 		range = registerDouble("Range", 4, 0, 10);
 		rotate = registerBoolean("Rotate", true);
 		autoSwitch = registerBoolean("Switch", true);
+		offHandObby = registerBoolean("Off Hand Obby", false);
 		chatMsgs = registerBoolean("Chat Msgs", true);
 		disableOnFinish = registerBoolean("Disable on Finish", true);
 	}
 
 	private int delayTicks = 0;
 	private int oldHandEnable = -1;
+	private boolean activedOff;
+	private int obbySlot;
 
 	/*
 	 * Stops us from spam placing same closest position while
@@ -79,12 +82,17 @@ public class HoleFill extends Module {
 	private final HashMap<BlockPos, Integer> recentPlacements = new HashMap<>();
 
 	public void onEnable() {
+		activedOff = false;
 		PlacementUtil.onEnable();
 		if (chatMsgs.getValue() && mc.player != null) {
 			MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "HoleFill turned ON!");
 		}
 		if (autoSwitch.getValue() && mc.player != null) {
 			oldHandEnable = mc.player.inventory.currentItem;
+		}
+		obbySlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
+		if (obbySlot == 9) {
+			activedOff = true;
 		}
 	}
 
@@ -97,6 +105,11 @@ public class HoleFill extends Module {
 			mc.player.inventory.currentItem = oldHandEnable;
 		}
 		recentPlacements.clear();
+
+		if (offHandObby.getValue() && OffHand.isActive()) {
+			OffHand.removeObsidian();
+			activedOff = false;
+		}
 	}
 
 	public void onUpdate() {
@@ -113,6 +126,12 @@ public class HoleFill extends Module {
 		if (delayTicks <= placeDelay.getValue() * 2) {
 			delayTicks++;
 			return;
+		}
+
+		if (obbySlot == 9) {
+			if (!(mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian)) {
+				return;
+			}
 		}
 
 		if (autoSwitch.getValue()) {
@@ -143,8 +162,8 @@ public class HoleFill extends Module {
 
 			boolean output = false;
 
-			if (isHoldingRightBlock(mc.player.inventory.currentItem, mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem())) {
-				if (PlacementUtil.place(placePos, EnumHand.MAIN_HAND, rotate.getValue())) {
+			if (isHoldingRightBlock(mc.player.inventory.currentItem, mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem()) || offHandObby.getValue()) {
+				if (placeBlock(placePos)) {
 					placements.getAndIncrement();
 					output = true;
 					delayTicks = 0;
@@ -158,6 +177,30 @@ public class HoleFill extends Module {
 		if (disableOnFinish.getValue() && holePos.size() == 0) {
 			disable();
 		}
+	}
+
+	private boolean placeBlock(BlockPos pos) {
+		EnumHand handSwing = EnumHand.MAIN_HAND;
+
+		int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
+
+		if (obsidianSlot == -1) {
+			return false;
+		}
+
+		if (obsidianSlot == 9) {
+			activedOff = true;
+			if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+				// We can continue
+				handSwing = EnumHand.OFF_HAND;
+			} else return false;
+		}
+
+		if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
+			mc.player.inventory.currentItem = obsidianSlot;
+		}
+
+		return PlacementUtil.place(pos, handSwing, rotate.getValue());
 	}
 
 	private List<BlockPos> findHoles() {

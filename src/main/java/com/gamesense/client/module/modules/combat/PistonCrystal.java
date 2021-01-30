@@ -36,6 +36,11 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
  * Break crystal from AutoCrystal
  */
 
+/*
+    TODO: add check item
+    TODO: add check which item is missing
+ */
+
 public class PistonCrystal extends Module {
 
     public PistonCrystal() {

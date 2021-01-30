@@ -6,7 +6,6 @@ import net.minecraft.block.BlockEnderChest;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemEndCrystal;
 import net.minecraft.item.ItemPickaxe;
 
 /**
