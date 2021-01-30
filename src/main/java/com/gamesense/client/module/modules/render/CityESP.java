@@ -123,14 +123,6 @@ public class CityESP extends Module {
             if (sides.size() > 0) {
                 cityable.put(player, sides);
             }
-                        if (isTrapped(entityPlayer)) {
-                            List<BlockPos> renderBlocks = new ArrayList<>(getBlocksToRender(entityPlayer));
-
-                            if (renderBlocks != null) {
-                                renderBox(renderBlocks);
-                            }
-                        }
-                    });
         }
     }
 
