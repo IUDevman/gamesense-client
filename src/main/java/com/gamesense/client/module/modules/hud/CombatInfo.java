@@ -130,8 +130,8 @@ public class CombatInfo extends HUDModule {
 		@Override
 		public String getItem(int index) {
 			if (infoType.getValue().equals("Hoosiers")) {
-				if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return hoosiersNames[index]+": ENBL";
-				else return hoosiersNames[index]+": DSBL";
+				if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return hoosiersNames[index]+": ON";
+				else return hoosiersNames[index]+": OFF";
 			}
 			else if (infoType.getValue().equals("Cyber")) {
 				if (index==0) return "gamesense.cc";
