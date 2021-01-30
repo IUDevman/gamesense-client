@@ -66,7 +66,6 @@ public class Anchor extends Module {
                 if (sides.size() == 0) {
                     mc.player.motionX = 0f;
                     mc.player.motionZ = 0f;
-                    GameSense.LOGGER.info(i);
                 }
             }
         }

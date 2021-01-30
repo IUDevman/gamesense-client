@@ -5,6 +5,8 @@ import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -194,7 +196,7 @@ public class PistonCrystal extends Module {
         // Get all the materials
         if (getMaterialsSlot()) {
             // check if the enemy is in a hole
-            if (is_in_hole()) {
+            if (HoleUtil.isHole(EntityUtil.getPosition(aimTarget), true, true).getType() != HoleUtil.HoleType.NONE) {
                 // Get enemy coordinates
                 enemyCoordsDouble = new double[] {aimTarget.posX, aimTarget.posY, aimTarget.posZ};
                 enemyCoordsInt = new int[] {(int) enemyCoordsDouble[0], (int) enemyCoordsDouble[1], (int) enemyCoordsDouble[2]};
@@ -1354,23 +1356,6 @@ public class PistonCrystal extends Module {
         // If we have everything we need, return true
         return count >= 4 + (antiWeakness.getValue() ? 1 : 0) + (redstoneBlockMode ? 1 : 0);
 
-    }
-
-    // Check if it's in a hole
-    private boolean is_in_hole() {
-        sur_block = new Double[][] {
-                {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
-        };
-
-        
-        // Check if the guy is in a hole
-        return !(BlockUtil.getBlock(sur_block[0][0], sur_block[0][1], sur_block[0][2]) instanceof BlockAir) &&
-                !(BlockUtil.getBlock(sur_block[1][0], sur_block[1][1], sur_block[1][2]) instanceof BlockAir) &&
-                !(BlockUtil.getBlock(sur_block[2][0], sur_block[2][1], sur_block[2][2]) instanceof BlockAir) &&
-                !(BlockUtil.getBlock(sur_block[3][0], sur_block[3][1], sur_block[3][2]) instanceof BlockAir);
     }
 
     // PrintChat

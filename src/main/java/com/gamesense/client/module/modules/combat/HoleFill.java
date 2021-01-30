@@ -167,7 +167,7 @@ public class HoleFill extends Module {
 		List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), 5, 5, false, true, 0);
 
 		for (BlockPos blockPos : blockPosList) {
-			if (HoleUtil.isHole(blockPos, true).getType() == HoleUtil.HoleType.SINGLE) {
+			if (HoleUtil.isHole(blockPos, true, true).getType() == HoleUtil.HoleType.SINGLE) {
 				holes.add(blockPos);
 			}
 		}

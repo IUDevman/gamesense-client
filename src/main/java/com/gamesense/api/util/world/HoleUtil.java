@@ -22,14 +22,16 @@ public class HoleUtil {
         return BlockSafety.BREAKABLE;
     }
 
-    public static HoleInfo isHole(BlockPos centreBlock, boolean onlyOneWide) {
+    public static HoleInfo isHole(BlockPos centreBlock, boolean onlyOneWide, boolean ignoreDown) {
         HoleInfo output = new HoleInfo();
         HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> unsafeSides = HoleUtil.getUnsafeSides(centreBlock);
 
         if (unsafeSides.containsKey(HoleUtil.BlockOffset.DOWN)) {
             if (unsafeSides.remove(HoleUtil.BlockOffset.DOWN, HoleUtil.BlockSafety.BREAKABLE)) {
-                output.setSafety(BlockSafety.BREAKABLE);
-                return output;
+                if (!ignoreDown) {
+                    output.setSafety(BlockSafety.BREAKABLE);
+                    return output;
+                }
             }
         }
 
@@ -59,7 +61,7 @@ public class HoleUtil {
         }
     }
 
-    public static HoleInfo isDoubleHole(HoleInfo info, BlockPos centreBlock, BlockOffset weakSide) {
+    private static HoleInfo isDoubleHole(HoleInfo info, BlockPos centreBlock, BlockOffset weakSide) {
         BlockPos unsafePos = weakSide.offset(centreBlock);
 
         HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> unsafeSides = HoleUtil.getUnsafeSides(unsafePos);
@@ -181,9 +183,9 @@ public class HoleUtil {
         DOWN(0, -1, 0),
         UP(0, 1, 0),
         NORTH(0, 0, -1),
+        EAST(1, 0, 0),
         SOUTH(0, 0, 1),
-        WEST(-1, 0, 0),
-        EAST(1, 0, 0);
+        WEST(-1, 0, 0);
 
         private final int x;
         private final int y;
@@ -197,6 +199,24 @@ public class HoleUtil {
 
         public BlockPos offset(BlockPos pos) {
             return pos.add(x, y, z);
+        }
+
+        public BlockPos forward(BlockPos pos, int scale) {
+            return pos.add(x * scale, 0, z * scale);
+        }
+
+        public BlockPos backward(BlockPos pos, int scale) {
+            return pos.add(-x * scale, 0, -z * scale);
+        }
+
+        // Don't ask me why they work but they do
+
+        public BlockPos left(BlockPos pos, int scale) {
+            return pos.add(z * scale, 0, -x * scale);
+        }
+
+        public BlockPos right(BlockPos pos, int scale) {
+            return pos.add(-z * scale, 0, x * scale);
         }
     }
 }
