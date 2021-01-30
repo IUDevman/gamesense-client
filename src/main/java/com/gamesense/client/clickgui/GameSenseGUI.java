@@ -87,12 +87,12 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			
 			@Override
 			public int getFontWidth(String s) {
-				return (int)Math.round(FontUtil.getStringWidth(ColorMain.customFont.getValue(),s))+4;
+				return Math.round(FontUtil.getStringWidth(ColorMain.customFont.getValue(),s))+4;
 			}
 
 			@Override
 			public int getFontHeight() {
-				return (int)Math.round(FontUtil.getFontHeight(ColorMain.customFont.getValue()))+2;
+				return Math.round(FontUtil.getFontHeight(ColorMain.customFont.getValue()))+2;
 			}
 			
 			@Override

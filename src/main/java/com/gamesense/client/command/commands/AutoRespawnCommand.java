@@ -1,7 +1,6 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.modules.misc.AutoRespawn;
 

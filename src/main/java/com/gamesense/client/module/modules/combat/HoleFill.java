@@ -7,7 +7,6 @@ import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;

@@ -26,7 +26,6 @@ public class CityESP extends Module {
         super("CityESP", Category.Render);
     }
 
-    Setting.Mode targetMode;
     Setting.Mode selectMode;
     Setting.Mode renderMode;
     Setting.Integer range;
@@ -34,10 +33,6 @@ public class CityESP extends Module {
     Setting.ColorSetting color;
 
     public void setup() {
-        ArrayList<String> targetModes = new ArrayList<>();
-        targetModes.add("Single");
-        targetModes.add("All");
-
         ArrayList<String> selectModes = new ArrayList<>();
         selectModes.add("Closest");
         selectModes.add("All");
@@ -48,7 +43,6 @@ public class CityESP extends Module {
         renderModes.add("Both");
 
         range = registerInteger("Range", 20, 1, 30);
-        targetMode = registerMode("Target", targetModes, "Single");
         selectMode = registerMode("Select", selectModes, "Closest");
         renderMode = registerMode("Render", renderModes, "Both");
         width = registerInteger("Width", 1, 1, 10);
@@ -68,15 +62,10 @@ public class CityESP extends Module {
                         }
 
                         if (isTrapped(entityPlayer)) {
-                            List<BlockPos> renderBlocks = new ArrayList<>();
-                            renderBlocks.addAll(getBlocksToRender(entityPlayer));
+                            List<BlockPos> renderBlocks = new ArrayList<>(getBlocksToRender(entityPlayer));
 
                             if (renderBlocks != null) {
                                 renderBox(renderBlocks);
-                            }
-
-                            if (targetMode.getValue().equalsIgnoreCase("All")) {
-                                return;
                             }
                         }
                     });

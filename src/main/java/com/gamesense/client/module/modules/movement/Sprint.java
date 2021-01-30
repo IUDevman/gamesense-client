@@ -26,7 +26,6 @@ public class Sprint extends Module {
 
 		if (mc.gameSettings.keyBindSneak.isKeyDown()) {
 			mc.player.setSprinting(false);
-			return;
 		}
 		else if (mc.player.getFoodStats().getFoodLevel() > 6 && reverseSprint.getValue()? (mc.player.moveForward != 0 || mc.player.moveStrafing != 0):mc.player.moveForward > 0) {
 			mc.player.setSprinting(true);
