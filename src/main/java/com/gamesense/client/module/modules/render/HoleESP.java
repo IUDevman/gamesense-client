@@ -127,7 +127,7 @@ public class HoleESP extends Module {
         }
 
         possibleHoles.forEach(pos -> {
-            HoleUtil.HoleInfo holeInfo = HoleUtil.isHole(pos, false);
+            HoleUtil.HoleInfo holeInfo = HoleUtil.isHole(pos, false, false);
             HoleUtil.HoleType holeType = holeInfo.getType();
             if (holeType != HoleUtil.HoleType.NONE) {
                 // We have a hole!
