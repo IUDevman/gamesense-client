@@ -114,6 +114,24 @@ public class EntityUtil {
 		return circleblocks;
 	}
 
+	public static List<BlockPos> getSquare(BlockPos pos1, BlockPos pos2) {
+		List<BlockPos> squareBlocks = new ArrayList<>();
+		int x1 = pos1.getX();
+		int y1 = pos1.getY();
+		int z1 = pos1.getZ();
+		int x2 = pos2.getX();
+		int y2 = pos2.getY();
+		int z2 = pos2.getZ();
+		for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x += 1) {
+			for (int z = Math.min(z1, z2); z <= Math.max(z1, z2); z += 1) {
+				for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y += 1) {
+					squareBlocks.add(new BlockPos(x, y, z));
+				}
+			}
+		}
+		return squareBlocks;
+	}
+
 	public static double[] calculateLookAt(double px, double py, double pz, Entity me) {
 		double dirx = me.posX - px;
 		double diry = me.posY - py;
@@ -137,11 +155,10 @@ public class EntityUtil {
 	}
 
 	// Basic checks for an entity
-	// needed for crystal aura to not target freecam;
+	// needed for crystal aura to not target freecam
 	public static boolean basicChecksEntity(Entity pl) {
 		return pl.getName().equals(mc.player.getName()) || Friends.isFriend(pl.getName()) || pl.isDead;
 	}
-
 
 	public static BlockPos getPosition(Entity pl) {
 		return new BlockPos(Math.floor(pl.posX), Math.floor(pl.posY), Math.floor(pl.posZ));
@@ -150,9 +167,9 @@ public class EntityUtil {
 	public static List<BlockPos> getBlocksIn(Entity pl) {
 		List<BlockPos> blocks = new ArrayList<>();
 		AxisAlignedBB bb = pl.getEntityBoundingBox();
-		for (double x = bb.minX; x < bb.maxX; x++) {
-			for (double y = bb.minY; x < bb.maxY; y++) {
-				for (double z = bb.minZ; x < bb.maxZ; z++) {
+		for (double x = Math.floor(bb.minX); x < Math.ceil(bb.maxX); x++) {
+			for (double y = Math.floor(bb.minY); y < Math.ceil(bb.maxY); y++) {
+				for (double z = Math.floor(bb.minZ); z < Math.ceil(bb.maxZ); z++) {
 					blocks.add(new BlockPos(x, y, z));
 				}
 			}

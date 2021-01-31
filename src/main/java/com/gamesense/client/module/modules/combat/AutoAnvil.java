@@ -3,6 +3,8 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import net.minecraft.block.*;
@@ -512,23 +514,13 @@ public class AutoAnvil extends Module {
     }
 
     private boolean is_in_hole() {
-        sur_block = new Double[][] {
-                {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
-        };
-
         enemyCoords = new double[] {
                 aimTarget.posX,
                 aimTarget.posY,
                 aimTarget.posZ
         };
         // Check if the guy is in a hole
-        return !(BlockUtil.getBlock(sur_block[0][0], sur_block[0][1], sur_block[0][2]) instanceof BlockAir) &&
-                !(BlockUtil.getBlock(sur_block[1][0], sur_block[1][1], sur_block[1][2]) instanceof BlockAir) &&
-                !(BlockUtil.getBlock(sur_block[2][0], sur_block[2][1], sur_block[2][2]) instanceof BlockAir) &&
-                !(BlockUtil.getBlock(sur_block[3][0], sur_block[3][1], sur_block[3][2]) instanceof BlockAir);
+        return HoleUtil.isHole(EntityUtil.getPosition(aimTarget), true, true).getType() != HoleUtil.HoleType.NONE;
     }
 
     private boolean createStructure() {

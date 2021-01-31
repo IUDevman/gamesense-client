@@ -12,10 +12,8 @@ import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.HashMap;
-
 /**
- * @author unkown
+ * @author unknown
  * @author 0b00101010
  * @since 25/01/21
  */
@@ -76,9 +74,7 @@ public class HoleTP extends Module {
 	}
 
 	private boolean isSafeHole(BlockPos blockPos) {
-		HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> sides = HoleUtil.getUnsafeSides(blockPos);
-		sides.entrySet().removeIf(entry -> entry.getValue() == HoleUtil.BlockSafety.RESISTANT);
-		return sides.size() == 0;
+		return HoleUtil.isHole(blockPos, true, false).getType() != HoleUtil.HoleType.NONE;
 	}
 
 	private boolean isOnLiquid() {
