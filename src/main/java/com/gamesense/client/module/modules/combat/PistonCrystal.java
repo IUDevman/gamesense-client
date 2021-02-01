@@ -201,7 +201,7 @@ public class PistonCrystal extends Module {
         // Get all the materials
         if (getMaterialsSlot()) {
             // check if the enemy is in a hole
-            if (HoleUtil.isHole(EntityUtil.getPosition(aimTarget), true, true).getType() != HoleUtil.HoleType.NONE) {
+            if (is_in_hole()) {
                 // Get enemy coordinates
                 enemyCoordsDouble = new double[] {aimTarget.posX, aimTarget.posY, aimTarget.posZ};
                 enemyCoordsInt = new int[] {(int) enemyCoordsDouble[0], (int) enemyCoordsDouble[1], (int) enemyCoordsDouble[2]};
@@ -1361,6 +1361,18 @@ public class PistonCrystal extends Module {
         // If we have everything we need, return true
         return count >= 4 + (antiWeakness.getValue() ? 1 : 0) + (redstoneBlockMode ? 1 : 0);
 
+    }
+
+    private boolean is_in_hole() {
+        sur_block = new Double[][] {
+                {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
+                {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
+                {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
+                {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
+        };
+
+        // Check if the guy is in a hole
+        return HoleUtil.isHole(EntityUtil.getPosition(aimTarget), true, true).getType() != HoleUtil.HoleType.NONE;
     }
 
     // PrintChat

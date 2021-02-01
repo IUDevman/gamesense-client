@@ -514,6 +514,13 @@ public class AutoAnvil extends Module {
     }
 
     private boolean is_in_hole() {
+        sur_block = new Double[][] {
+                {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
+                {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
+                {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
+                {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
+        };
+
         enemyCoords = new double[] {
                 aimTarget.posX,
                 aimTarget.posY,
