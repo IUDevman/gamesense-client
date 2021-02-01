@@ -234,7 +234,7 @@ public class AntiCrystal extends Module {
         }
 
         if (rotate.getValue()) {
-            BlockUtil.faceVectorPacketInstant(hitVec);
+            BlockUtil.faceVectorPacketInstant(hitVec, true);
         }
         EnumHand swingHand = EnumHand.MAIN_HAND;
         // Check if we are offhand + if we have the item

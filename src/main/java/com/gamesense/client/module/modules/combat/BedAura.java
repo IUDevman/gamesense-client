@@ -179,7 +179,7 @@ public class BedAura extends Module {
             }
 
             if (rotate.getValue()) {
-                BlockUtil.faceVectorPacketInstant(new Vec3d(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ()));
+                BlockUtil.faceVectorPacketInstant(new Vec3d(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ()), true);
             }
 
             mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(tileEntity.getPos(), EnumFacing.UP, EnumHand.OFF_HAND, 0, 0, 0));
@@ -318,7 +318,7 @@ public class BedAura extends Module {
         Vec3d vec3d = new Vec3d(neighbourPos).add(0.5, 0.5, 0.5).add(new Vec3d(oppositeFacing.getDirectionVec()).scale(0.5));
 
         if (rotate.getValue()) {
-            BlockUtil.faceVectorPacketInstant(vec3d);
+            BlockUtil.faceVectorPacketInstant(vec3d, true);
         }
 
         mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));

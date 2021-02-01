@@ -375,7 +375,7 @@ public class AutoAnvil extends Module {
 
         // For the rotation
         if (rotate.getValue()) {
-            BlockUtil.faceVectorPacketInstant(hitVec);
+            BlockUtil.faceVectorPacketInstant(hitVec, true);
         }
 
         // FastAnvil

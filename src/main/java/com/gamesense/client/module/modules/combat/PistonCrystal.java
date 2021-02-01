@@ -667,7 +667,7 @@ public class PistonCrystal extends Module {
                 BlockPos neighbour = pos.offset(side);
                 EnumFacing opposite = side.getOpposite();
                 Vec3d hitVec = new Vec3d(neighbour).add(0.5, 1, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-                BlockUtil.faceVectorPacketInstant(hitVec);
+                BlockUtil.faceVectorPacketInstant(hitVec, true);
 
             }
             // Destroy it
@@ -825,7 +825,7 @@ public class PistonCrystal extends Module {
                 positionHit = new Vec3d(mc.player.posX + offsetX, mc.player.posY + (offsetY == -1 ? offsetY : 0), mc.player.posZ + offsetZ);
             }
             // Look
-            BlockUtil.faceVectorPacketInstant(positionHit);
+            BlockUtil.faceVectorPacketInstant(positionHit, true);
         }
         // If we are placing with the main hand
         EnumHand handSwing = EnumHand.MAIN_HAND;

@@ -218,7 +218,7 @@ public class AutoCrystalGS extends Module {
                 isActive = true;
 
                 if (rotate.getValue()) {
-                    ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+                    ROTATION_UTIL.lookAtPacket(crystal.posX + 0.5, crystal.posY + 0.5, crystal.posZ + 0.5, mc.player);
                 }
 
                 if (breakType.getValue().equalsIgnoreCase("Swing")) {
@@ -306,7 +306,7 @@ public class AutoCrystalGS extends Module {
                         }
 
                         if (rotate.getValue()) {
-                            ROTATION_UTIL.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D, mc.player);
+                            ROTATION_UTIL.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() + 0.5D, (double) q.getZ() + 0.5D, mc.player);
                         }
 
                         RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D));
