@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.lwjgl.Sys;
 
 /**
  * @author Hoosiers
@@ -111,6 +112,7 @@ public class LoadConfig {
                     }
                 }
             }catch(java.lang.NumberFormatException e) {
+                System.out.println(setting.getConfigName() + " " + module.getName());
                 System.out.println(dataObject);
             }
         }
