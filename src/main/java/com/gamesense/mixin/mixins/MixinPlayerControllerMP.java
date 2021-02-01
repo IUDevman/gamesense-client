@@ -4,10 +4,12 @@ import com.gamesense.api.event.events.DamageBlockEvent;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.exploits.PacketUse;
 import com.gamesense.client.module.modules.exploits.Reach;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
@@ -53,8 +55,10 @@ public abstract class MixinPlayerControllerMP {
 
 	@Inject(method = "onStoppedUsingItem", at = @At("HEAD"), cancellable = true)
 	public void onStoppedUsingItem(EntityPlayer playerIn, CallbackInfo ci) {
-		if (playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood) {
-			if (ModuleManager.isModuleEnabled("PacketEat")) {
+		if (ModuleManager.isModuleEnabled("PacketUse")) {
+			if ((PacketUse.food.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood)
+				|| (PacketUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
+				|| PacketUse.all.getValue()) {
 				this.syncCurrentPlayItem();
 				playerIn.stopActiveHand();
 				ci.cancel();
