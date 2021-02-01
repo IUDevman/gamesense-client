@@ -303,6 +303,10 @@ public class AutoGear extends Module {
                         // If it's not air, in this case we'll have an item in our pick hand.
                         // We have to do not incr i
                         // And then, lets add this value to pickedItem
+                        if (i >= copyInventory.size())
+                            // Somehow, sometimes i go over the size of our inventory. I dunno how since the for cicle should
+                            // Stop it, but ok
+                            continue;
                         pickedItem = copyInventory.get(i);
                         i--;
                     } else {
