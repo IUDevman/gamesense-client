@@ -79,6 +79,7 @@ public class AutoTrap extends Module {
     private EntityPlayer aimTarget;
 
     public void onEnable() {
+        PlacementUtil.onEnable();
         activedOff = false;
         if (mc.player == null) {
             disable();
@@ -92,6 +93,7 @@ public class AutoTrap extends Module {
     }
 
     public void onDisable() {
+        PlacementUtil.onDisable();
         if (mc.player == null) {
             return;
         }

@@ -71,6 +71,7 @@ public class SelfTrap extends Module {
     private Vec3d centeredBlock = Vec3d.ZERO;
 
     public void onEnable() {
+        PlacementUtil.onEnable();
         if (mc.player == null) {
             disable();
             return;
@@ -92,6 +93,7 @@ public class SelfTrap extends Module {
     }
 
     public void onDisable() {
+        PlacementUtil.onDisable();
         if (mc.player == null) {
             return;
         }

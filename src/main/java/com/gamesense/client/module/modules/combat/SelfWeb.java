@@ -59,6 +59,7 @@ public class SelfWeb extends Module {
     private int oldSlot = -1;
 
     public void onEnable() {
+        PlacementUtil.onEnable();
         if (mc.player == null) {
             disable();
             return;
@@ -77,6 +78,7 @@ public class SelfWeb extends Module {
     }
 
     public void onDisable() {
+        PlacementUtil.onDisable();
         if (mc.player == null) {
             return;
         }
