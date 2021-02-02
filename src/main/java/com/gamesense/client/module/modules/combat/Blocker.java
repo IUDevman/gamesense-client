@@ -53,6 +53,7 @@ public class Blocker extends Module {
 
     public void onEnable() {
         ROTATION_UTIL.onEnable();
+        PlacementUtil.onEnable();
         if (mc.player == null) {
             disable();
             return;
@@ -80,6 +81,7 @@ public class Blocker extends Module {
 
     public void onDisable() {
         ROTATION_UTIL.onDisable();
+        PlacementUtil.onDisable();
         if (mc.player == null) {
             return;
         }
