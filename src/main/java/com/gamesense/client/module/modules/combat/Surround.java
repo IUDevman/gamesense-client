@@ -230,7 +230,7 @@ public class Surround extends Module {
             boolean tryPlacing = true;
 
             // Lets check if we are on a enderchest
-            if ((int)((mc.player.posY - (int) mc.player.posY) * 100) == 87 ) {
+            if ((int)((mc.player.posY - (int) mc.player.posY) * 100) > 0 ) {
                 BlockPos t = targetPos;
                 targetPos = new BlockPos(t.getX(), t.getY() + 1, t.getZ());
             }
