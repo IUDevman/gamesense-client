@@ -70,10 +70,10 @@ public class AutoGear extends Module {
     @Override
     public void setup() {
         tickDelay = registerInteger("Tick Delay", 0, 0, 20);
-        debugMode = registerBoolean("Debug Mode", true);
         activeSort = registerBoolean("Active Sort", false);
         confirmSort = registerBoolean("Confirm Sort", true);
         chatMsg = registerBoolean("Chat Msg", true);
+        debugMode = registerBoolean("Debug Mode", true);
     }
 
     @Override

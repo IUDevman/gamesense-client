@@ -231,6 +231,11 @@ public class Surround extends Module {
 
             boolean tryPlacing = true;
 
+            // Lets check if we are on a enderchest
+            if ( mc.player.posY % 1 > .2 ) {
+                targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
+            }
+
             if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
                 tryPlacing = false;
             }
@@ -283,16 +288,20 @@ public class Surround extends Module {
 
     private static class Offsets {
         private static final Vec3d[] SURROUND = {
-                new Vec3d(1, 0, 0),
-                new Vec3d(0, 0, 1),
-                new Vec3d(-1, 0, 0),
-                new Vec3d(0, 0, -1),
                 new Vec3d(1, -1, 0),
                 new Vec3d(0, -1, 1),
                 new Vec3d(-1, -1, 0),
-                new Vec3d(0, -1, -1)
+                new Vec3d(0, -1, -1),
+                new Vec3d(1, 0, 0),
+                new Vec3d(0, 0, 1),
+                new Vec3d(-1, 0, 0),
+                new Vec3d(0, 0, -1)
         };
         private static final Vec3d[] CITY = {
+                new Vec3d(1, -1, 0),
+                new Vec3d(0, -1, 1),
+                new Vec3d(-1, -1, 0),
+                new Vec3d(0, -1, -1),
                 new Vec3d(2, 0, 0),
                 new Vec3d(-2, 0, 0),
                 new Vec3d(0, 0, 2),
@@ -300,11 +309,7 @@ public class Surround extends Module {
                 new Vec3d(1, 0, 0),
                 new Vec3d(0, 0, 1),
                 new Vec3d(-1, 0, 0),
-                new Vec3d(0, 0, -1),
-                new Vec3d(1, -1, 0),
-                new Vec3d(0, -1, 1),
-                new Vec3d(-1, -1, 0),
-                new Vec3d(0, -1, -1)
+                new Vec3d(0, 0, -1)
         };
     }
 }
