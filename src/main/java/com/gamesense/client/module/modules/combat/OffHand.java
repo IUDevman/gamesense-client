@@ -11,7 +11,6 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
@@ -41,7 +40,7 @@ public class OffHand extends Module {
     Setting.Integer tickDelay;
     Setting.Integer fallDistance;
     Setting.Double biasDamage;
-    Setting.Boolean crystalObby;
+    Setting.Boolean pickObby;
     Setting.Boolean leftGap;
     Setting.Boolean shiftPot;
     Setting.Boolean swordCheck;
@@ -50,6 +49,8 @@ public class OffHand extends Module {
     Setting.Boolean antiWeakness;
     Setting.Boolean chatMsg;
     Setting.Boolean noHotBar;
+    Setting.Boolean crystObby;
+    Setting.Boolean pickObbyShift;
 
     int prevSlot,
         tickWaited,
@@ -117,7 +118,11 @@ public class OffHand extends Module {
         // Bias Damage
         biasDamage = registerDouble("Bias Damage", 1, 0, 3);
         // obby
-        crystalObby = registerBoolean("Shift Cryst Obby", true);
+        pickObby = registerBoolean("Pick Obby", true);
+        // Enable pickObby only in shift
+        pickObbyShift = registerBoolean("Pick Obby On Shift", true);
+        // If you want crystal to offHand
+        crystObby = registerBoolean("Cryst Shift Obby", false);
         // Gapple
         leftGap = registerBoolean("Left Click Gap", true);
         // Potion
@@ -225,22 +230,27 @@ public class OffHand extends Module {
             itemCheck = "Crystal";
         }
 
-        // If obby
-        if((normalOffHand && crystalObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
-                && mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL)
-            || forceObby > 0) {
+        Item mainHandItem = mc.player.getHeldItemMainhand().getItem();
+
+        // If crystal obby
+        if( forceObby > 0
+            || (normalOffHand && (
+            (crystObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
+            && mainHandItem == Items.END_CRYSTAL)
+            || (pickObby.getValue() && mainHandItem == Items.DIAMOND_PICKAXE && (!pickObbyShift.getValue() || mc.gameSettings.keyBindSneak.isKeyDown()))))) {
             itemCheck = "Obby";
             normalOffHand = false;
         }
 
-        if (normalOffHand && mc.gameSettings.keyBindUseItem.isKeyDown() && (!swordCheck.getValue() || mc.player.getHeldItemMainhand().getItem() == Items.DIAMOND_SWORD)) {
+        // Gap + Pot
+        if (normalOffHand && mc.gameSettings.keyBindUseItem.isKeyDown() && (!swordCheck.getValue() || mainHandItem == Items.DIAMOND_SWORD)) {
             if(mc.gameSettings.keyBindSneak.isKeyDown()) {
                 if(shiftPot.getValue()) {
                     itemCheck = "Pot";
                     normalOffHand = false;
                 }
             }else
-            if (leftGap.getValue() && mc.player.getHeldItemMainhand().getItem() != Items.GOLDEN_APPLE) {
+            if (leftGap.getValue() && mainHandItem != Items.GOLDEN_APPLE && mainHandItem != Items.EXPERIENCE_BOTTLE) {
                 itemCheck = "Gapple";
                 normalOffHand = false;
             }
