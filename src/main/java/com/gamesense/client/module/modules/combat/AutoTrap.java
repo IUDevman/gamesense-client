@@ -194,6 +194,10 @@ public class AutoTrap extends Module {
             BlockPos offsetPos = new BlockPos(placeTargets.get(offsetSteps));
             BlockPos targetPos = new BlockPos(aimTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
+            if (aimTarget.posY % 1 > .2) {
+                targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
+            }
+
             boolean tryPlacing = true;
 
             if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
