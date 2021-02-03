@@ -231,6 +231,10 @@ public class SelfTrap extends Module {
             BlockPos offsetPos = new BlockPos(offsetPattern[offsetSteps]);
             BlockPos targetPos = new BlockPos(mc.player.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
+            if (mc.player.posY % 1 > .2) {
+                targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
+            }
+
             boolean tryPlacing = true;
 
             if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
