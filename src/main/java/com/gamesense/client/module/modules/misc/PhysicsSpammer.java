@@ -14,7 +14,7 @@ import com.gamesense.client.module.Module;
 
 public class PhysicsSpammer extends Module {
 	private List<String> cache=new LinkedList<String>();
-	private long nextTime;
+	private long lastTime,delay;
 	private Setting.Integer minDelay,maxDelay;
 	private Random random=new Random(System.currentTimeMillis());
 	
@@ -27,7 +27,9 @@ public class PhysicsSpammer extends Module {
 	
 	@Override
 	public void onUpdate() {
-		if (System.currentTimeMillis()>=nextTime) {
+		if (delay>Math.max(minDelay.getValue(),maxDelay.getValue())) delay=Math.max(minDelay.getValue(),maxDelay.getValue());
+		else if (delay<Math.min(minDelay.getValue(),maxDelay.getValue())) delay=Math.min(minDelay.getValue(),maxDelay.getValue());
+		if (System.currentTimeMillis()>=lastTime+1000*delay) {
 			if (cache.size()==0) {
 				try {
 					Scanner scanner=new Scanner(new URL("http://snarxiv.org/").openStream());
@@ -61,7 +63,8 @@ public class PhysicsSpammer extends Module {
 	}
 	
 	private void updateTimes() {
+		lastTime=System.currentTimeMillis();
 		int bound=Math.abs(maxDelay.getValue()-minDelay.getValue());
-		nextTime=System.currentTimeMillis()+1000*((bound==0?0:random.nextInt(bound))+Math.min(maxDelay.getValue(),minDelay.getValue()));
+		delay=(bound==0?0:random.nextInt(bound))+Math.min(maxDelay.getValue(),minDelay.getValue());
 	}
 }
