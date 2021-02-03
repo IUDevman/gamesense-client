@@ -230,9 +230,8 @@ public class Surround extends Module {
             boolean tryPlacing = true;
 
             // Lets check if we are on a enderchest
-            if ((int)((mc.player.posY - (int) mc.player.posY) * 100) > 0 ) {
-                BlockPos t = targetPos;
-                targetPos = new BlockPos(t.getX(), t.getY() + 1, t.getZ());
+            if ( mc.player.posY % 1 > .2 ) {
+                targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
             }
 
             if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
