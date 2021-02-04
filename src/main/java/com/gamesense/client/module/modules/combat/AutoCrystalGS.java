@@ -46,11 +46,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 
 /**
- * @Author CyberTF2 and Hoosiers
+ * @author CyberTF2 and Hoosiers
  */
 
 public class AutoCrystalGS extends Module {
@@ -68,7 +69,6 @@ public class AutoCrystalGS extends Module {
     Setting.Boolean spoofRotations;
     Setting.Boolean chat;
     Setting.Boolean showDamage;
-    Setting.Boolean multiPlace;
     Setting.Boolean antiSuicide;
     public static Setting.Boolean endCrystalMode;
     Setting.Boolean cancelCrystal;
@@ -76,6 +76,7 @@ public class AutoCrystalGS extends Module {
     Setting.Integer facePlaceValue;
     Setting.Integer attackSpeed;
     Setting.Integer antiSuicideValue;
+    Setting.Integer attackValue;
     Setting.Double maxSelfDmg;
     Setting.Double wallsRange;
     Setting.Double minDmg;
@@ -114,6 +115,7 @@ public class AutoCrystalGS extends Module {
         breakCrystal = registerBoolean("Break", true);
         placeCrystal = registerBoolean("Place", true);
         attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
+        attackValue = registerInteger("Hit Amount", 1, 1, 10);
         breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
         placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
         wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
@@ -123,7 +125,6 @@ public class AutoCrystalGS extends Module {
         antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
         autoSwitch = registerBoolean("Switch", true);
         noGapSwitch = registerBoolean("No Gap Switch", false);
-        multiPlace = registerBoolean("Multi Place", false);
         endCrystalMode = registerBoolean("1.13 Place", false);
         cancelCrystal = registerBoolean("Cancel Crystal", false);
         minDmg = registerDouble("Min Damage", 5, 0, 36);
@@ -145,10 +146,9 @@ public class AutoCrystalGS extends Module {
     public static boolean stopAC = false;
     private static boolean togglePitch = false;
     private int oldSlot = -1;
-    private int newSlot;
     private Entity renderEnt;
     private BlockPos render;
-    public static final ArrayList<BlockPos> PlacedCrystals = new ArrayList<BlockPos>();
+    public static final ArrayList<BlockPos> PlacedCrystals = new ArrayList<>();
     private EnumFacing enumFacing;
     Timer timer = new Timer();
 
@@ -172,7 +172,7 @@ public class AutoCrystalGS extends Module {
         EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityEnderCrystal)
                 .filter(e -> mc.player.getDistance(e) <= breakRange.getValue())
-                .filter(e -> crystalCheck(e))
+                .filter(this::crystalCheck)
                 .map(entity -> (EntityEnderCrystal) entity)
                 .min(Comparator.comparing(c -> mc.player.getDistance(c)))
                 .orElse(null);
@@ -190,7 +190,7 @@ public class AutoCrystalGS extends Module {
                     isAttacking = true;
                 }
                 // search for sword and tools in hotbar
-                newSlot = -1;
+                int newSlot = -1;
                 for (int i = 0; i < 9; i++) {
                     ItemStack stack = mc.player.inventory.getStackInSlot(i);
                     if (stack == ItemStack.EMPTY) {
@@ -221,13 +221,14 @@ public class AutoCrystalGS extends Module {
                     ROTATION_UTIL.lookAtPacket(crystal.posX + 0.5, crystal.posY + 0.5, crystal.posZ + 0.5, mc.player);
                 }
 
-                if (breakType.getValue().equalsIgnoreCase("Swing")) {
-                    breakCrystal(crystal);
-                }
-                else if (breakType.getValue().equalsIgnoreCase("Packet")) {
-                    mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-                    swingArm();
-                }
+                IntStream.range(0, attackValue.getValue()).forEach(i -> {
+                    if (breakType.getValue().equalsIgnoreCase("Swing")) {
+                        breakCrystal(crystal);
+                    } else if (breakType.getValue().equalsIgnoreCase("Packet")) {
+                        mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+                        swingArm();
+                    }
+                });
 
                 if (cancelCrystal.getValue()) {
                     crystal.setDead();
@@ -236,9 +237,6 @@ public class AutoCrystalGS extends Module {
                 }
 
                 isActive = false;
-            }
-
-            if (!multiPlace.getValue()) {
                 return;
             }
         }
@@ -312,7 +310,6 @@ public class AutoCrystalGS extends Module {
                         RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D));
                         if (raytrace.getValue()) {
                             if (result == null || result.sideHit == null) {
-                                q = null;
                                 enumFacing = null;
                                 render = null;
                                 ROTATION_UTIL.resetRotation();
@@ -329,7 +326,7 @@ public class AutoCrystalGS extends Module {
                             return;
                         }
 
-                        if (q != null && mc.player != null) {
+                        if (mc.player != null) {
                             isActive = true;
                             if (raytrace.getValue() && enumFacing != null) {
                                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, enumFacing, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
@@ -381,13 +378,12 @@ public class AutoCrystalGS extends Module {
                 double x;
                 double y;
                 double z;
-                do { do { do { do { double b; do {
+                do { do { do { do { do {
                     if (!var11.hasNext()) {
                         continue label164;
                     }
 
                     blockPos = (BlockPos) var11.next();
-                    b = entity.getDistanceSq(blockPos);
                     // Better method for doing EnemyRange
                     // @author Cyber
                     x = blockPos.getX() + 0.0;
@@ -477,11 +473,11 @@ public class AutoCrystalGS extends Module {
     }
 
     private void swingArm() {
-        if (handBreak.getValue().equalsIgnoreCase("Both") && mc.player.getHeldItemOffhand() != null) {
+        if (handBreak.getValue().equalsIgnoreCase("Both")) {
             mc.player.swingArm(EnumHand.MAIN_HAND);
             mc.player.swingArm(EnumHand.OFF_HAND);
         }
-        else if (handBreak.getValue().equalsIgnoreCase("Offhand") && mc.player.getHeldItemOffhand() != null) {
+        else if (handBreak.getValue().equalsIgnoreCase("Offhand")) {
             mc.player.swingArm(EnumHand.OFF_HAND);
         }
         else {
