@@ -270,7 +270,7 @@ public class AutoAnvil extends Module {
 
             // Get position
             BlockPos offsetPos = new BlockPos(to_place.get(offsetSteps));
-            BlockPos targetPos = new BlockPos(aimTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+            BlockPos targetPos = new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
             boolean tryPlacing = true;
 
