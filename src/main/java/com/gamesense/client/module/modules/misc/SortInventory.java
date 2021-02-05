@@ -14,8 +14,6 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.ContainerShulkerBox;
 import net.minecraft.item.ItemStack;
 import java.util.*;
 
@@ -41,16 +39,16 @@ import java.util.*;
     I added double check because, so the end is going to be perfect in anyway
  */
 
-public class AutoGear extends Module {
+public class SortInventory extends Module {
 
-    public AutoGear() {
-        super("AutoGear", Category.Misc);
+    public SortInventory() {
+        super("SortInventory", Category.Misc);
     }
 
-    Setting.Boolean chatMsg;
-    Setting.Boolean debugMode;
-    Setting.Boolean activeSort;
-    Setting.Boolean confirmSort;
+    Setting.Boolean chatMsg,
+                    debugMode,
+                    confirmSort,
+                    instaSort;
     Setting.Integer tickDelay;
 
     // Our inventory variables
@@ -70,17 +68,17 @@ public class AutoGear extends Module {
     @Override
     public void setup() {
         tickDelay = registerInteger("Tick Delay", 0, 0, 20);
-        activeSort = registerBoolean("Active Sort", false);
         confirmSort = registerBoolean("Confirm Sort", true);
         chatMsg = registerBoolean("Chat Msg", true);
-        debugMode = registerBoolean("Debug Mode", true);
+        instaSort = registerBoolean("Insta Sort", false);
+        debugMode = registerBoolean("Debug Mode", false);
     }
 
     @Override
     public void onEnable() {
         // Msg
         if (chatMsg.getValue())
-            PistonCrystal.printChat("AutoGear Turned On!", false);
+            PistonCrystal.printChat("AutoSort Turned On!", false);
         // Get name of the config
         // Config variables
         String curConfigName = AutoGearCommand.getCurrentSet();
@@ -123,13 +121,17 @@ public class AutoGear extends Module {
         delayTimeTicks = 0;
         // Reset opened
         openedBefore = doneBefore = false;
+        // If we have instaSort, open inventory so it start sorting
+        if (instaSort.getValue())
+            mc.displayGuiScreen(new GuiInventory(mc.player));
     }
 
     @Override
     public void onDisable() {
         if (chatMsg.getValue() && planInventory.size() > 0)
-            PistonCrystal.printChat("AutoGear Turned Off!", true);
+            PistonCrystal.printChat("AutoSort Turned Off!", true);
     }
+
 
     @Override
     public void onUpdate() {
@@ -148,25 +150,16 @@ public class AutoGear extends Module {
         // Check if your inventory is open
         if ( mc.currentScreen instanceof GuiInventory) {
             // In that case, sort the inventory
-            sortInventory();
-        }else
-        // Check if a shulker / check is open TODO WIP
-        if (mc.player.openContainer instanceof ContainerChest || mc.player.openContainer instanceof ContainerShulkerBox) {
-            if (!openedBefore) {
-                int maxValue =  mc.player.openContainer instanceof ContainerChest ? ((ContainerChest) mc.player.openContainer).getLowerChestInventory().getSizeInventory()
-                                : 27;
-                // Iterate for every value
-                for(int i = 0; i < maxValue; i++) {
-                    // TODO: make the shulker thing. first make the sort inventory
-                }
-                openedBefore = true;
-            }
-        }else openedBefore = false;
+            sortInventoryAlgo();
+        }
+        else openedBefore = false;
+        /*mc.player.closeScreen();
+        mc.displayGuiScreen(new GuiInventory(mc.player));*/
 
     }
 
     // This function sort the entire inventory
-    private void sortInventory() {
+    private void sortInventoryAlgo() {
         // If we have just started
         if (!openedBefore) {
             // Print
@@ -180,6 +173,11 @@ public class AutoGear extends Module {
                 // Print
                 if (chatMsg.getValue())
                     PistonCrystal.printChat("Inventory arleady sorted...", true);
+                // If we are using instaSort, close
+                if (instaSort.getValue()) {
+                    mc.player.closeScreen();
+                    disable();
+                }
             }else {
                 finishSort = true;
                 stepNow = 0;
@@ -193,8 +191,7 @@ public class AutoGear extends Module {
                 // Get where we are now
                 slotChange = sortItems.get(stepNow++);
                 // Sort the inventory
-                if (activeSort.getValue())
-                    mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
+                mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
             }
             // If we have at the limit
             if (stepNow == sortItems.size()) {
@@ -219,6 +216,11 @@ public class AutoGear extends Module {
                 // Check if the last slot has been placed
                 checkLastItem();
                 doneBefore = false;
+                // If we are using instaSort, close
+                if (instaSort.getValue()) {
+                    mc.player.closeScreen();
+                    disable();
+                }
             }
         }
     }

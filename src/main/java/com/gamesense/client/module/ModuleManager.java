@@ -63,7 +63,6 @@ public class ModuleManager {
 		addMod(new Step());
 		//Misc
 		addMod(new Announcer());
-		addMod(new AutoGear());
 		addMod(new AutoGG());
 		addMod(new AutoReply());
 		addMod(new AutoRespawn());
@@ -81,6 +80,7 @@ public class ModuleManager {
 		addMod(new NoKick());
 		addMod(new PhysicsSpammer());
 		addMod(new PvPInfo());
+		addMod(new SortInventory());
 		//Render
 		addMod(new BlockHighlight());
 		addMod(new BreakESP());

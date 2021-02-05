@@ -129,6 +129,28 @@ public class BlockUtil {
 		return null;
 	}
 
+	public static EnumFacing getPlaceableSideExlude(BlockPos pos, EnumFacing excluding) {
+
+		for (EnumFacing side : EnumFacing.values()) {
+
+			if (side != excluding) {
+
+				BlockPos neighbour = pos.offset(side);
+
+				if (!mc.world.getBlockState(neighbour).getBlock().canCollideCheck(mc.world.getBlockState(neighbour), false)) {
+					continue;
+				}
+
+				IBlockState blockState = mc.world.getBlockState(neighbour);
+				if (!blockState.getMaterial().isReplaceable()) {
+					return side;
+				}
+			}
+		}
+
+		return null;
+	}
+
 	public static Vec3d getCenterOfBlock(double playerX, double playerY, double playerZ) {
 
 		double newX = Math.floor(playerX) + 0.5;

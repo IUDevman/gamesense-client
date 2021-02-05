@@ -9,6 +9,7 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemPickaxe;
@@ -39,7 +40,8 @@ public class AutoAnvil extends Module {
     }
     
     Setting.Mode    anvilMode,
-                    target;
+                    target,
+                    anvilPlace;
     Setting.Double  enemyRange,
                     decrease;
     Setting.Boolean rotate,
@@ -62,9 +64,14 @@ public class AutoAnvil extends Module {
         ArrayList<String> targetChoose = new ArrayList<>();
         targetChoose.add("Nearest");
         targetChoose.add("Looking");
+        ArrayList<String> anvilPlaceTypes = new ArrayList<>();
+        anvilPlaceTypes.add("single");
+        anvilPlaceTypes.add("double");
+        anvilPlaceTypes.add("full");
 
         anvilMode = registerMode("Mode", anvilTypesList, "Pick");
         target = registerMode("Target", targetChoose, "Nearest");
+        anvilPlace = registerMode("Anvil Place", anvilPlaceTypes, "single");
         antiCrystal = registerBoolean("Anti Crystal", false);
         fastAnvil = registerBoolean("Fast Anvil", true);
         offHandObby = registerBoolean("Off Hand Obby", false);
@@ -79,18 +86,20 @@ public class AutoAnvil extends Module {
         chatMsg = registerBoolean("Chat Msgs", true);
     }
 
-    private boolean isSneaking = false;
-    private boolean firstRun = false;
-    private boolean noMaterials = false;
-    private boolean hasMoved = false;
-    private boolean isHole = true;
-    private boolean enoughSpace = true;
-    private boolean blockUp = false;
-    private int oldSlot = -1;
+    private boolean isSneaking = false,
+                    firstRun = false,
+                    noMaterials = false,
+                    hasMoved = false,
+                    isHole = true,
+                    enoughSpace = true,
+                    blockUp = false;
+    private int oldSlot = -1,
+                noKick,
+                anvilBlock;
+    private ArrayList<Integer> anvilsPositions = new ArrayList<>();
     private int[] slot_mat = {-1, -1, -1, -1};
     private double[] enemyCoords;
     Double[][] sur_block;
-    private int noKick;
     int[][] model = new int[][] {
             {1,1,0},
             {-1,1,0},
@@ -223,8 +232,7 @@ public class AutoAnvil extends Module {
                     hasMoved = true;
 
                 // Check a block on the enemy's head
-                if (!(BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAir)
-                        || !(BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + 3, enemyCoords[2]) instanceof BlockAir)) {
+                if (!(BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAir || BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAnvil)) {
                     blockUp = true;
                 }
 
@@ -238,6 +246,15 @@ public class AutoAnvil extends Module {
         if (noMaterials || !isHole || !enoughSpace || hasMoved || blockUp) {
             disable();
             return;
+        }
+
+        anvilsPositions = new ArrayList<>();
+        // Lets get every anvils
+        for (Entity everyEntity : mc.world.loadedEntityList) {
+            if (everyEntity instanceof EntityFallingBlock) {
+                anvilsPositions.add((int) everyEntity.posY);
+                anvilsPositions.add((int) everyEntity.posY + 1);
+            }
         }
 
         noKick = 0;
@@ -255,7 +272,7 @@ public class AutoAnvil extends Module {
 
             // Get position
             BlockPos offsetPos = new BlockPos(to_place.get(offsetSteps));
-            BlockPos targetPos = new BlockPos(aimTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+            BlockPos targetPos = new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
             boolean tryPlacing = true;
 
@@ -336,7 +353,10 @@ public class AutoAnvil extends Module {
         utilSlot =
                 (step == 0 && (anvilMode.getValue().equalsIgnoreCase("feet")))
                         ? 2 :
-                        (step == to_place.size() - 1) ? 1 : 0;
+                        (step >= to_place.size() - anvilBlock) ? 1 : 0;
+
+        if (step == 1 && anvilsPositions.contains(pos.y))
+            return false;
 
         // If it's step of the obsidian and we have offHandMode
         if (offHandObby.getValue() && OffHand.isActive() && slot_mat[utilSlot] == -2) {
@@ -605,8 +625,22 @@ public class AutoAnvil extends Module {
         if (incr >=  minH.getValue())
             possible = true;
 
-        // Add the anvil
-        to_place.add(new Vec3d(0, model[cor][1] + incr - 1, 0));
+
+        double yRef = to_place.get(to_place.size() - 1).y;
+        anvilBlock = 0;
+        switch (anvilPlace.getValue()) {
+            case "full":
+                to_place.add(new Vec3d(0, 3, 0));
+                anvilBlock++;
+            case "double":
+                to_place.add(new Vec3d(0, 2, 0));
+                anvilBlock++;
+            case "single":
+                to_place.add(new Vec3d(0, yRef, 0));
+                anvilBlock++;
+                break;
+        }
+
         return possible;
     }
 }
