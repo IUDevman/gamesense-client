@@ -2,7 +2,9 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
+import com.gamesense.client.module.modules.misc.SortInventory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.item.ItemStack;
@@ -38,6 +40,7 @@ public class AutoGearCommand extends Command {
 
         switch (message[0].toLowerCase()) {
             case "list":
+
                 if (message.length == 1) {
                     listMessage();
                 }else errorMessage("NoPar");

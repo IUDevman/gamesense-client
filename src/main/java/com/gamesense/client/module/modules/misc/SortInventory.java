@@ -45,9 +45,10 @@ public class SortInventory extends Module {
         super("SortInventory", Category.Misc);
     }
 
-    Setting.Boolean chatMsg;
-    Setting.Boolean debugMode;
-    Setting.Boolean confirmSort;
+    Setting.Boolean chatMsg,
+                    debugMode,
+                    confirmSort,
+                    instaSort;
     Setting.Integer tickDelay;
 
     // Our inventory variables
@@ -69,6 +70,7 @@ public class SortInventory extends Module {
         tickDelay = registerInteger("Tick Delay", 0, 0, 20);
         confirmSort = registerBoolean("Confirm Sort", true);
         chatMsg = registerBoolean("Chat Msg", true);
+        instaSort = registerBoolean("Insta Sort", false);
         debugMode = registerBoolean("Debug Mode", false);
     }
 
@@ -119,6 +121,9 @@ public class SortInventory extends Module {
         delayTimeTicks = 0;
         // Reset opened
         openedBefore = doneBefore = false;
+        // If we have instaSort, open inventory so it start sorting
+        if (instaSort.getValue())
+            mc.displayGuiScreen(new GuiInventory(mc.player));
     }
 
     @Override
@@ -168,6 +173,11 @@ public class SortInventory extends Module {
                 // Print
                 if (chatMsg.getValue())
                     PistonCrystal.printChat("Inventory arleady sorted...", true);
+                // If we are using instaSort, close
+                if (instaSort.getValue()) {
+                    mc.player.closeScreen();
+                    disable();
+                }
             }else {
                 finishSort = true;
                 stepNow = 0;
@@ -206,6 +216,11 @@ public class SortInventory extends Module {
                 // Check if the last slot has been placed
                 checkLastItem();
                 doneBefore = false;
+                // If we are using instaSort, close
+                if (instaSort.getValue()) {
+                    mc.player.closeScreen();
+                    disable();
+                }
             }
         }
     }
