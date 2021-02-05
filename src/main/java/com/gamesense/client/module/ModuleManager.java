@@ -63,7 +63,7 @@ public class ModuleManager {
 		addMod(new Step());
 		//Misc
 		addMod(new Announcer());
-		addMod(new AutoGear());
+		addMod(new SortInventory());
 		addMod(new AutoGG());
 		addMod(new AutoReply());
 		addMod(new AutoRespawn());

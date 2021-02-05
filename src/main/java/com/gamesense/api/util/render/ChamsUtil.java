@@ -31,7 +31,8 @@ import net.minecraft.client.renderer.OpenGlHelper;
  */
 public class ChamsUtil {
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	
+	private final static float units = 5300000.0f;
+	private final static float factor = 1.0f;
 	public static void createChamsPre() {
 		mc.getRenderManager().setRenderShadow(false);
 		mc.getRenderManager().setRenderOutlines(false);
@@ -39,7 +40,7 @@ public class ChamsUtil {
 		GlStateManager.depthMask(true);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, -1100000.0f);
+		glPolygonOffset(factor, -units);
 		GlStateManager.popMatrix();
 	}
 
@@ -49,7 +50,7 @@ public class ChamsUtil {
 		GlStateManager.pushMatrix();
 		GlStateManager.depthMask(false);
 		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, 1100000.0f);
+		glPolygonOffset(factor, units);
 		GlStateManager.popMatrix();
 	}
 
@@ -59,7 +60,7 @@ public class ChamsUtil {
 		GlStateManager.pushMatrix();
 		GlStateManager.depthMask(true);
 		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, -1100000.0f);
+		glPolygonOffset(factor, -units);
 		glDisable(GL11.GL_TEXTURE_2D);
 		if (!isPlayer) {
 			GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
@@ -77,7 +78,7 @@ public class ChamsUtil {
 			GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
 		}
 		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, 1100000.0f);
+		glPolygonOffset(factor, units);
 		glEnable(GL11.GL_TEXTURE_2D);
 		GlStateManager.popMatrix();
 	}
@@ -89,7 +90,7 @@ public class ChamsUtil {
 		GlStateManager.depthMask(true);
 		glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		glEnable(GL11.GL_POLYGON_OFFSET_LINE);
-		glPolygonOffset(1.0f, -1100000.0f);
+		glPolygonOffset(factor, -units);
 		glDisable(GL11.GL_TEXTURE_2D);
 		glDisable(GL11.GL_LIGHTING);
 		glEnable(GL_LINE_SMOOTH);
@@ -112,7 +113,7 @@ public class ChamsUtil {
 		}
 		glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 		glDisable(GL11.GL_POLYGON_OFFSET_LINE);
-		glPolygonOffset(1.0f, 1100000.0f);
+		glPolygonOffset(factor, units);
 		glEnable(GL11.GL_TEXTURE_2D);
 		glEnable(GL11.GL_LIGHTING);
 		glDisable(GL_LINE_SMOOTH);
