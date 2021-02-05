@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
@@ -11,8 +10,11 @@ import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
@@ -37,6 +39,7 @@ public class CityESP extends Module {
     Setting.Integer depth;
     Setting.Double minDamage;
     Setting.Double maxDamage;
+    Setting.Boolean ignoreCrystals;
     Setting.Mode targetMode;
     Setting.Mode selectMode;
     Setting.Mode renderMode;
@@ -63,6 +66,7 @@ public class CityESP extends Module {
         depth = registerInteger("Depth", 3, 0, 10);
         minDamage = registerDouble("Min Damage", 5, 0, 10);
         maxDamage = registerDouble("Max Self Damage", 7, 0, 20);
+        ignoreCrystals = registerBoolean("Ignore Crystals", true);
         targetMode = registerMode("Target", targetModes, "Single");
         selectMode = registerMode("Select", selectModes, "Closest");
         renderMode = registerMode("Render", renderModes, "Both");
@@ -99,6 +103,9 @@ public class CityESP extends Module {
                 if (y < minY) {
                     minY = y;
                 }
+            }
+            if (player.posY % 1 > .2) {
+                minY++;
             }
 
             int finalMinY = minY;
@@ -164,7 +171,7 @@ public class CityESP extends Module {
 
 
             for (BlockPos pos : square) {
-                if (CrystalUtil.canPlaceCrystal(pos.down(), false)) {
+                if (this.canPlaceCrystal(pos.down(), ignoreCrystals.getValue())) {
                     // believe i have the right location for the crystal
                     // pos is the block one above the bedrock/obsidian
                     if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ()+ 0.5d, player) >= minDamage.getValue()) {
@@ -181,6 +188,34 @@ public class CityESP extends Module {
         }));
 
         return cityableSides;
+    }
+
+    private boolean canPlaceCrystal(BlockPos blockPos, boolean ignoreCrystal) {
+        BlockPos boost = blockPos.add(0, 1, 0);
+        BlockPos boost2 = blockPos.add(0, 2, 0);
+        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(boost, boost2);
+
+        if (!(mc.world.getBlockState(blockPos).getBlock() == Blocks.BEDROCK
+                || mc.world.getBlockState(blockPos).getBlock() == Blocks.OBSIDIAN)) {
+            return false;
+        }
+
+        if (!(mc.world.getBlockState(boost).getBlock() == Blocks.AIR)) {
+            return false;
+        }
+
+        if (!(mc.world.getBlockState(boost2).getBlock() == Blocks.AIR)) {
+            return false;
+        }
+
+        if (!ignoreCrystal)
+            return mc.world.getEntitiesWithinAABB(Entity.class, axisAlignedBB).isEmpty();
+        else {
+            List<Entity> entityList = mc.world.getEntitiesWithinAABB(Entity.class, axisAlignedBB);
+            entityList.removeIf(entity -> entity instanceof EntityEnderCrystal);
+            return entityList.isEmpty();
+        }
+
     }
 
     private void renderBoxes(List<BlockPos> blockPosList) {
