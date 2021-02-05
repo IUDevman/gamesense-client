@@ -3,7 +3,7 @@ buildscript {
 		jcenter()
 		maven {
 			name = 'forge'
-			url = 'http://files.minecraftforge.net/maven'
+			url = 'https://files.minecraftforge.net/maven'
 		}
 		maven {
 			name = 'SpongePowered'
@@ -47,7 +47,7 @@ repositories {
 	}
 	maven {
 		name = 'swt-repo'
-		url = "http://maven-eclipse.github.io/maven"
+		url = "https://maven-eclipse.github.io/maven"
 	}
 	maven {
 		name = 'jitpack.io'
