@@ -507,7 +507,7 @@ public class AutoCrystalGS extends Module {
         PlacedCrystals.clear();
         isActive = false;
         if(chat.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoCrystal turned ON!");
+            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoCrystalGS turned ON!");
         }
     }
 
@@ -520,7 +520,7 @@ public class AutoCrystalGS extends Module {
         PlacedCrystals.clear();
         isActive = false;
         if(chat.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoCrystal turned OFF!");
+            MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoCrystalGS turned OFF!");
         }
     }
 
