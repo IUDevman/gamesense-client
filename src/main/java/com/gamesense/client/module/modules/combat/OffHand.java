@@ -11,6 +11,7 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
+import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
@@ -54,7 +55,8 @@ public class OffHand extends Module {
                     crystObby,
                     pickObbyShift,
                     onlyHotBar,
-                    crystalCheck;
+                    crystalCheck,
+                    hotBarTotem;
 
     int prevSlot,
         tickWaited,
@@ -147,6 +149,8 @@ public class OffHand extends Module {
         onlyHotBar = registerBoolean("Only HotBar", false);
         // Anti Weakness
         antiWeakness = registerBoolean("AntiWeakness", false);
+        // HotBar totem
+        hotBarTotem = registerBoolean("HotBar Totem", false);
         // Chat
         chatMsg = registerBoolean("Chat Msg", true);
     }
@@ -277,11 +281,23 @@ public class OffHand extends Module {
 
         // If our offhand is okay
         if (offHandSame(itemCheck)) {
-            int t = getInventorySlot(itemCheck);
-            // If nothing found
-            if (t == -1) return;
-            // Change
-            toOffHand(t);
+            boolean done = false;
+            if (hotBarTotem.getValue() && itemCheck.equals("Totem")) {
+                int slot = InventoryUtil.findTotemSlot(0, 8);
+                if (slot != -1) {
+                    if (mc.player.inventory.currentItem != slot)
+                        mc.player.inventory.currentItem = slot;
+                    done = true;
+                }
+            }
+            if (!done) {
+                int t = getInventorySlot(itemCheck);
+                // If nothing found
+                if (t == -1) return;
+                // Change
+                toOffHand(t);
+            }
+
         }
 
 
