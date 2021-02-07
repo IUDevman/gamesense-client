@@ -27,6 +27,7 @@ import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumHand;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -47,9 +48,7 @@ public class KillAura extends Module {
 	Setting.Boolean players;
 	Setting.Boolean hostileMobs;
 	Setting.Boolean passiveMobs;
-	Setting.Boolean sword;
-	Setting.Boolean axe;
-	Setting.Boolean all;
+	Setting.Mode itemUsed;
 	Setting.Boolean autoSwitch;
 	Setting.Boolean swordPriority;
 	Setting.Boolean caCheck;
@@ -58,13 +57,17 @@ public class KillAura extends Module {
 	Setting.Double switchHealth;
 
 	public void setup() {
+		List<String> weapons = new ArrayList<>();
+		weapons.add("Sword");
+		weapons.add("Axe");
+		weapons.add("Both");
+		weapons.add("All");
+
 		players = registerBoolean("Players", true);
 		passiveMobs = registerBoolean("Animals", false);
 		hostileMobs = registerBoolean("Monsters", false);
 		range = registerDouble("Range", 5,0,10);
-		sword = registerBoolean("Sword",true);
-		axe = registerBoolean("Axe", false);
-		all = registerBoolean("All", false);
+		itemUsed = registerMode("Item used", weapons, "Sword");
 		autoSwitch = registerBoolean("Switch", false);
 		switchHealth = registerDouble("Min Switch Health", 0f, 0f, 20f);
 		swordPriority = registerBoolean("Prioritise Sword", true);
@@ -79,38 +82,46 @@ public class KillAura extends Module {
 
 		final double rangeSq = range.getValue() * range.getValue();
 		List<Entity> targets = mc.world.loadedEntityList.stream()
-				.filter(entity -> !(entity instanceof EntityLivingBase))
+				.filter(entity -> entity instanceof EntityLivingBase)
 				.filter(entity -> !EntityUtil.basicChecksEntity(entity))
 				.filter(entity -> mc.player.getDistanceSq(entity) <= rangeSq)
 				.filter(this::attackCheck)
 				.sorted(Comparator.comparing(e -> mc.player.getDistanceSq(e)))
 				.collect(Collectors.toList());
 
-		if (shouldAttack()) {
-			// only attack one entity per cycle
-			Optional<Entity> first = targets.stream().findFirst();
-			if (first.isPresent()) {
-				if (autoSwitch.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount() >= switchHealth.getValue())) {
-					Pair<Float, Integer> newSlot = new Pair<>(0f, -1);
-
-					// find the best weapon in out hotbar
-					if (sword.getValue() || all.getValue()) {
-						newSlot = findSwordSlot();
-					}
-					if ((axe.getValue() || all.getValue()) && !(swordPriority.getValue() && newSlot.getValue() != -1)) {
-						Pair<Float, Integer> possibleSlot = findAxeSlot();
-						if (possibleSlot.getKey() > newSlot.getKey()) {
-							newSlot = possibleSlot;
-						}
-					}
-
-					// we have found a slot
-					if (newSlot.getValue() != -1) {
-						mc.player.inventory.currentItem = newSlot.getValue();
+		boolean sword = itemUsed.getValue().equalsIgnoreCase("Sword");
+		boolean axe = itemUsed.getValue().equalsIgnoreCase("Axe");
+		boolean both = itemUsed.getValue().equalsIgnoreCase("Both");
+		boolean all = itemUsed.getValue().equalsIgnoreCase("All");
+		// only attack one entity per cycle
+		Optional<Entity> first = targets.stream().findFirst();
+		if (first.isPresent()) {
+			Pair<Float, Integer> newSlot = new Pair<>(0f, -1);
+			if (autoSwitch.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount() >= switchHealth.getValue())) {
+				// find the best weapon in out hotbar
+				if (sword || both || all) {
+					newSlot = findSwordSlot();
+				}
+				if ((axe || both || all) && !(swordPriority.getValue() && newSlot.getValue() != -1)) {
+					Pair<Float, Integer> possibleSlot = findAxeSlot();
+					if (possibleSlot.getKey() > newSlot.getKey()) {
+						newSlot = possibleSlot;
 					}
 				}
+			}
 
+			// we have found a slot
+			int temp = mc.player.inventory.currentItem;
+			if ((newSlot.getValue() != -1)) {
+				mc.player.inventory.currentItem = newSlot.getValue();
+			}
+
+			// we have to switch slots for this check to work
+			if (shouldAttack(sword, axe, both, all)) {
 				attack(first.get());
+			} else {
+				// if check is false switch back
+				mc.player.inventory.currentItem = temp;
 			}
 		}
 	}
@@ -181,11 +192,11 @@ public class KillAura extends Module {
 		return new Pair<>(bestModifier, correspondingSlot);
 	}
 
-	private boolean shouldAttack() {
+	private boolean shouldAttack(boolean sword, boolean axe, boolean both, boolean all) {
 		Item item = mc.player.getHeldItemMainhand().getItem();
-		if ((sword.getValue() && item instanceof ItemSword) ||
-				(axe.getValue() && item instanceof ItemAxe)
-				|| all.getValue()) {
+		if (((sword || both) && item instanceof ItemSword) ||
+				((axe || both) && item instanceof ItemAxe)
+				|| all) {
 			return !caCheck.getValue() || !((AutoCrystalGS) ModuleManager.getModuleByName("AutoCrystalGS")).isActive;
 		}
 
