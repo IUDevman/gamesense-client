@@ -153,8 +153,6 @@ public class SortInventory extends Module {
             sortInventoryAlgo();
         }
         else openedBefore = false;
-        /*mc.player.closeScreen();
-        mc.displayGuiScreen(new GuiInventory(mc.player));*/
 
     }
 
