@@ -239,7 +239,7 @@ public class OffHand extends Module {
         }
 
         // If no player
-        if (nearPlayer()) {
+        if (!nearPlayer()) {
             normalOffHand = false;
             itemCheck = noPlayerItem.getValue();
         }
