@@ -267,9 +267,9 @@ public class SortInventory extends Module {
             }
         }
         String pickedItem = null;
-
+        int i;
         // Try to sort
-        for (int i = 0; i < copyInventory.size(); i++) {
+        for (i = 0; i < copyInventory.size(); i++) {
             // Check if the i is in the ignoreList
             if (!ignoreValues.contains(i)) {
                 // Lets check if it's one of the items we have
@@ -328,6 +328,11 @@ public class SortInventory extends Module {
             }
 
         }
+
+        if (planMove.size() != 0 && planMove.get(planMove.size() - 1).equals(planMove.get(planMove.size() - 2))) {
+            planMove.remove(planMove.size() - 1);
+        }
+
 
         // Print all path
         if (debugMode.getValue()) {
