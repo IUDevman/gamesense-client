@@ -7,11 +7,10 @@ import com.gamesense.client.module.modules.combat.PistonCrystal;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerShulkerBox;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.ArrayUtils;
 import scala.Int;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 public class AutoGear extends Module {
 
@@ -131,10 +130,129 @@ public class AutoGear extends Module {
                 //  mc.playerController.windowClick(0, 0, 0, ClickType.PICKUP, mc.player);
                 HashMap<Integer, String> inventoryCopy = getInventoryCopy(maxValue);
                 HashMap<Integer, String> aimInventory = getInventoryCopy(maxValue, planInventory);
+                sortItems = getInventorySort(inventoryCopy, aimInventory, maxValue);
                 PistonCrystal.printChat("ciao", false);
             }
         }else openedBefore = false;
 
+    }
+
+    // This give the inventory to sort
+    private ArrayList<Integer> getInventorySort(HashMap<Integer, String> copyInventory, HashMap<Integer, String> planInventoryCopy, int startValues) {
+        // Plan to move
+        ArrayList<Integer> planMove = new ArrayList<>();
+        // The copy of the inventory
+        // Lets get nItems
+        HashMap<String, Integer> nItemsCopy = new HashMap<>();
+        // Lets add everything to nItems
+        for(String value : planInventoryCopy.values()) {
+            if (nItemsCopy.containsKey(value)) {
+                nItemsCopy.put(value, nItemsCopy.get(value) + 1);
+            }else {
+                nItemsCopy.put(value, 1);
+            }
+        }
+        // Ignore values
+        ArrayList<Integer> ignoreValues = new ArrayList<>();
+
+        // Iterate and check if we are ok for certain items
+        int[] listValue = new int[planInventoryCopy.size()];
+        // Lets add everything
+        int id = 0;
+        for(int idx : planInventoryCopy.keySet()) {
+            listValue[id++] = idx;
+        }
+
+
+        for(int item : listValue) {
+            if (copyInventory.get(item).equals(planInventoryCopy.get(item))) {
+                // Add a value to ignore later
+                ignoreValues.add(item);
+                // Update the value in nItemsCopy
+                nItemsCopy.put(planInventoryCopy.get(item), nItemsCopy.get(planInventoryCopy.get(item)) - 1);
+                // If it's == 0, just remove it
+                if (nItemsCopy.get(planInventoryCopy.get(item)) == 0)
+                    nItemsCopy.remove(planInventoryCopy.get(item));
+                // Lets remove it on planInventory
+                planInventoryCopy.remove(item);
+            }
+        }
+
+        String pickedItem = null;
+
+
+        // Try to sort
+        int i;
+        for (i = startValues; i < startValues + copyInventory.size(); i++) {
+            // Check if the i is in the ignoreList
+            if (!ignoreValues.contains(i)) {
+                // Lets check if it's one of the items we have
+                String itemCheck = copyInventory.get(i);
+                // Get the first possibilities
+                Optional<Map.Entry<Integer, String>> momentAim = planInventoryCopy.entrySet().stream().filter(x -> x.getValue().equals(itemCheck)).findFirst();
+                // Check if we found something (this should be always true, but because i fear NullPointerExceptor, i add this
+                if (momentAim.isPresent()) {
+                    /// add values
+                    // Lets start with the beginning. If pickedItem is null, that means our hand is empty
+                    if (pickedItem == null)
+                        planMove.add(i);
+                    // Get end key
+                    int aimKey = momentAim.get().getKey();
+                    planMove.add(aimKey);
+                    // Ignore the end key
+                    if (pickedItem == null || !pickedItem.equals(itemCheck))
+                        ignoreValues.add(aimKey);
+                    /// We also have to update the list of item we need
+                    // Update the value in nItemsCopy
+                    nItemsCopy.put(itemCheck, nItemsCopy.get(itemCheck) - 1);
+                    // If it's == 0, just remove it
+                    if (nItemsCopy.get(itemCheck) == 0)
+                        nItemsCopy.remove(itemCheck);
+
+                    copyInventory.put(i, copyInventory.get(aimKey));
+                    copyInventory.put(aimKey, itemCheck);
+
+                    // Check if that determinated item is empty or not
+                    if (!copyInventory.get(aimKey).equals("minecraft:air0")) {
+                        // If it's not air, in this case we'll have an item in our pick hand.
+                        // We have to do not incr i
+                        // And then, lets add this value to pickedItem
+                        if (i >=  startValues + copyInventory.size())
+                            // Somehow, sometimes i go over the size of our inventory. I dunno how since the for cicle should
+                            // Stop it, but ok
+                            continue;
+                        pickedItem = copyInventory.get(i);
+                        i--;
+                    } else {
+                        // Else, it means we are placing on air. Lets remove pickedItem
+                        pickedItem = null;
+                    }
+                    // Lets remove it on planInventory
+                    planInventoryCopy.remove(aimKey);
+                } else {
+                    // If we found nothing, lets check if we have something in the pick
+                    if (pickedItem != null) {
+                        // In this case, lets place this item in i
+                        planMove.add(i);
+                        copyInventory.put(i, pickedItem);
+                        // Reset pickedItem
+                        pickedItem = null;
+                    }
+                }
+            }
+
+        }
+
+
+        // Print all path
+        if (debugMode.getValue()) {
+            // Print every values
+            for(int valuePath : planMove) {
+                PistonCrystal.printChat(Integer.toString(valuePath),  false);
+            }
+        }
+
+        return planMove;
     }
 
     // This give a copy of our inventory
