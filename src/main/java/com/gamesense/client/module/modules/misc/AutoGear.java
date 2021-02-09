@@ -25,7 +25,8 @@ public class AutoGear extends Module {
                     debugMode,
                     enderChest,
                     confirmSort,
-                    invasive;
+                    invasive,
+                    closeAfter;
     Setting.Integer tickDelay;
 
     // Our inventory variables
@@ -50,6 +51,7 @@ public class AutoGear extends Module {
         enderChest = registerBoolean("EnderChest", false);
         confirmSort = registerBoolean("Confirm Sort", true);
         invasive = registerBoolean("Invasive", false);
+        closeAfter = registerBoolean("Close After", false);
         debugMode = registerBoolean("Debug Mode", false);
 
     }
@@ -123,9 +125,11 @@ public class AutoGear extends Module {
         if (planInventory.size() == 0)
             disable();
 
+        // When you open an inventory
         if (((mc.player.openContainer instanceof ContainerChest && (enderChest.getValue() || !((ContainerChest) mc.player.openContainer).getLowerChestInventory().getDisplayName().getUnformattedText().equals("Ender Chest")))
             || mc.player.openContainer instanceof ContainerShulkerBox)
             ) {
+            // Start sorting
             sortInventoryAlgo();
         }else openedBefore = false;
 
@@ -145,16 +149,23 @@ public class AutoGear extends Module {
                 containerInv.put(i, Objects.requireNonNull(item.getItem().getRegistryName()).toString() + item.getMetadata());
             }
             openedBefore = true;
-
+            // Copy of the inventory
             HashMap<Integer, String> inventoryCopy = getInventoryCopy(maxValue);
+            // Copy of what we want
             HashMap<Integer, String> aimInventory = getInventoryCopy(maxValue, planInventory);
+            // Start sorting items
             sortItems = getInventorySort(inventoryCopy, aimInventory, maxValue);
+            // This is for doubleCheck
             if (sortItems.size() == 0 && !doneBefore) {
+                // If we 0 items to sort + we have done it before
                 finishSort = false;
                 // Print
                 if (chatMsg.getValue())
                     PistonCrystal.printChat("Inventory arleady sorted...", true);
+                if (closeAfter.getValue())
+                    mc.player.closeScreen();
             }else {
+                // Else, start sorting
                 finishSort = true;
                 stepNow = 0;
             }
@@ -191,7 +202,9 @@ public class AutoGear extends Module {
                 // Check if the last slot has been placed
                 checkLastItem();
                 doneBefore = false;
-                // If we are using instaSort, close
+                // If he want to close the inventory
+                if (closeAfter.getValue())
+                    mc.player.closeScreen();
             }
         }
     }
@@ -317,30 +330,28 @@ public class AutoGear extends Module {
 
         }
 
+        // For how the code above is done, for some reasons, the last item, sometimes, appears two times. This prevent this
         if (planMove.size() != 0 && planMove.get(planMove.size() - 1).equals(planMove.get(planMove.size() - 2))) {
             planMove.remove(planMove.size() - 1);
         }
 
-        // Print all path
-        if (debugMode.getValue()) {
-            // Print every values
-            for(int valuePath : planMove) {
-                PistonCrystal.printChat(Integer.toString(valuePath),  false);
-            }
-        }
-
         Object[] keyList = containerInv.keySet().toArray();
 
+        // Lets take items from chest
         for(int values = 0; values < keyList.length; values++) {
+            // Which index we are referring
             int itemC = (int) keyList[values];
+            // If nItems contains what we are looking
             if (nItemsCopy.containsKey(containerInv.get(itemC))) {
-                // Start switch
+                // If yes, get the item
                 int start = planInventoryCopy.entrySet().stream().filter(x -> x.getValue().equals(containerInv.get(itemC))).findFirst().get().getKey();
+                // If we are using invasive, change it everytimes. Else, only if it's empty
                 if (invasive.getValue() || mc.player.openContainer.getInventory().get(start).isEmpty()) {
-                    int finish = itemC;
+                    // Make the switch
                     planMove.add(start);
-                    planMove.add(finish);
+                    planMove.add(itemC);
                     planMove.add(start);
+                    // Lets remove the item from nItems and planInventory
                     nItemsCopy.put(planInventoryCopy.get(start), nItemsCopy.get(planInventoryCopy.get(start)) - 1);
                     if (nItemsCopy.get(planInventoryCopy.get(start)) == 0) {
                         nItemsCopy.remove(planInventoryCopy.get(start));
@@ -351,17 +362,31 @@ public class AutoGear extends Module {
             }
         }
 
+        // Print all path
+        if (debugMode.getValue()) {
+            // Print every values
+            for(int valuePath : planMove) {
+                PistonCrystal.printChat(Integer.toString(valuePath),  false);
+            }
+        }
+
         return planMove;
     }
 
     // This give a copy of our inventory
     private HashMap<Integer, String> getInventoryCopy(int startPoint) {
+        // The output. Is formed by: idx + name
         HashMap<Integer, String> output = new HashMap<>();
+        // Size of the mainInventory
         int sizeInventory = mc.player.inventory.mainInventory.size();
         int value;
+        // Iterate
         for(int i = 0; i < sizeInventory; i++) {
+            // Get the starting value
             value = i + startPoint + (i < 9 ? sizeInventory - 9 : -9);
+            // Get the item in that specific slot
             ItemStack item = mc.player.openContainer.getInventory().get(value);
+            // Lets add it
             output.put(value, Objects.requireNonNull(item.getItem().getRegistryName()).toString() + item.getMetadata());
         }
 
@@ -370,10 +395,12 @@ public class AutoGear extends Module {
 
     // This give a copy of our inventory
     private HashMap<Integer, String> getInventoryCopy(int startPoint, HashMap<Integer, String> inventory) {
+        // Our output
         HashMap<Integer, String> output = new HashMap<>();
+        // Size of mainInventory
         int sizeInventory = mc.player.inventory.mainInventory.size();
-        String outputString = "";
         for(int val : inventory.keySet()) {
+            // Add it
             output.put(val + startPoint + (val < 9 ? sizeInventory - 9 : -9), inventory.get(val));
         }
 
