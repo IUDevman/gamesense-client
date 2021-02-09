@@ -73,6 +73,7 @@ public class AutoCrystalGS extends Module {
     public static Setting.Boolean endCrystalMode;
     Setting.Boolean cancelCrystal;
     Setting.Boolean noGapSwitch;
+    Setting.Boolean refresh;
     Setting.Integer facePlaceValue;
     Setting.Integer attackSpeed;
     Setting.Integer antiSuicideValue;
@@ -120,6 +121,7 @@ public class AutoCrystalGS extends Module {
         placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
         wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
         enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
+        refresh = registerBoolean("Refresh", true);
         antiWeakness = registerBoolean("Anti Weakness", true);
         antiSuicide = registerBoolean("Anti Suicide", true);
         antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
@@ -151,6 +153,7 @@ public class AutoCrystalGS extends Module {
     public static final ArrayList<BlockPos> PlacedCrystals = new ArrayList<>();
     private EnumFacing enumFacing;
     Timer timer = new Timer();
+    Timer stuckTimer = new Timer();
 
     public void onUpdate() {
         if (mc.player == null || mc.world == null || mc.player.isDead) {
@@ -160,6 +163,11 @@ public class AutoCrystalGS extends Module {
 
         if (stopAC) {
             return;
+        }
+
+        if (refresh.getValue() && stuckTimer.getTimePassed() / 1000L >= 1) {
+            stuckTimer.reset();
+            PlacedCrystals.clear();
         }
 
         if (antiSuicide.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount()) <= antiSuicideValue.getValue()) {
