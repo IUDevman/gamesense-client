@@ -48,7 +48,8 @@ public class SortInventory extends Module {
     Setting.Boolean chatMsg,
                     debugMode,
                     confirmSort,
-                    instaSort;
+                    instaSort,
+                    closeAfter;
     Setting.Integer tickDelay;
 
     // Our inventory variables
@@ -71,6 +72,7 @@ public class SortInventory extends Module {
         confirmSort = registerBoolean("Confirm Sort", true);
         chatMsg = registerBoolean("Chat Msg", true);
         instaSort = registerBoolean("Insta Sort", false);
+        closeAfter = registerBoolean("Close After", false);
         debugMode = registerBoolean("Debug Mode", false);
     }
 
@@ -172,10 +174,12 @@ public class SortInventory extends Module {
                 if (chatMsg.getValue())
                     PistonCrystal.printChat("Inventory arleady sorted...", true);
                 // If we are using instaSort, close
-                if (instaSort.getValue()) {
+                if (instaSort.getValue() || closeAfter.getValue()) {
                     mc.player.closeScreen();
-                    disable();
+                    if (instaSort.getValue())
+                        disable();
                 }
+
             }else {
                 finishSort = true;
                 stepNow = 0;
@@ -214,11 +218,13 @@ public class SortInventory extends Module {
                 // Check if the last slot has been placed
                 checkLastItem();
                 doneBefore = false;
-                // If we are using instaSort, close
-                if (instaSort.getValue()) {
+                // If we are using instaSort or closeAfter, close
+                if (instaSort.getValue() || closeAfter.getValue()) {
                     mc.player.closeScreen();
-                    disable();
+                    if (instaSort.getValue())
+                        disable();
                 }
+
             }
         }
     }

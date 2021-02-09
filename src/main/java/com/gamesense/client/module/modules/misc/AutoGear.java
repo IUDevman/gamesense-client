@@ -4,11 +4,14 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.client.command.commands.AutoGearCommand;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerShulkerBox;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.ArrayUtils;
-import scala.Int;
+
+/*
+    The algo is the same as AutoSort, just with few difference because of how inventory works
+ */
 
 import java.util.*;
 
@@ -20,18 +23,21 @@ public class AutoGear extends Module {
 
     Setting.Boolean chatMsg,
                     debugMode,
-                    enderChest;
+                    enderChest,
+                    confirmSort,
+                    invasive,
+                    closeAfter;
     Setting.Integer tickDelay;
 
     // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();
-    private HashMap<String, Integer> nItems = new HashMap<>();
+    private HashMap<Integer, String> containerInv = new HashMap<>();
     // Sort item
     private ArrayList<Integer> sortItems = new ArrayList<>();
 
     // Tickets
-    private int delayTimeTicks,
-            stepNow;
+    private int delayTimeTicks;
+    private int stepNow;
     // If we had opened before a chest/inventory
     private boolean openedBefore,
             finishSort,
@@ -43,6 +49,9 @@ public class AutoGear extends Module {
         tickDelay = registerInteger("Tick Delay", 0, 0, 20);
         chatMsg = registerBoolean("Chat Msg", true);
         enderChest = registerBoolean("EnderChest", false);
+        confirmSort = registerBoolean("Confirm Sort", true);
+        invasive = registerBoolean("Invasive", false);
+        closeAfter = registerBoolean("Close After", false);
         debugMode = registerBoolean("Debug Mode", false);
 
     }
@@ -74,7 +83,7 @@ public class AutoGear extends Module {
         String[] inventoryDivided = inventoryConfig.split(" ");
         // Reset variables
         planInventory = new HashMap<>();
-        nItems = new HashMap<>();
+        HashMap<String, Integer> nItems = new HashMap<>();
         // Iterate for creating planInventory and nItems
         for(int i = 0; i < inventoryDivided.length; i++) {
             // Add to planInventory if it's not air
@@ -116,29 +125,107 @@ public class AutoGear extends Module {
         if (planInventory.size() == 0)
             disable();
 
+        // When you open an inventory
         if (((mc.player.openContainer instanceof ContainerChest && (enderChest.getValue() || !((ContainerChest) mc.player.openContainer).getLowerChestInventory().getDisplayName().getUnformattedText().equals("Ender Chest")))
             || mc.player.openContainer instanceof ContainerShulkerBox)
             ) {
-            if (!openedBefore) {
-                int maxValue = mc.player.openContainer instanceof ContainerChest ? ((ContainerChest) mc.player.openContainer).getLowerChestInventory().getSizeInventory()
-                        : 27;
-                // Iterate for every value
-                for (int i = 0; i < maxValue; i++) {
-                    // TODO: make the shulker thing. first make the sort inventory
-                }
-                openedBefore = true;
-                //  mc.playerController.windowClick(0, 0, 0, ClickType.PICKUP, mc.player);
-                HashMap<Integer, String> inventoryCopy = getInventoryCopy(maxValue);
-                HashMap<Integer, String> aimInventory = getInventoryCopy(maxValue, planInventory);
-                sortItems = getInventorySort(inventoryCopy, aimInventory, maxValue);
-                PistonCrystal.printChat("ciao", false);
-            }
+            // Start sorting
+            sortInventoryAlgo();
         }else openedBefore = false;
 
     }
 
+    private void sortInventoryAlgo() {
+        if (!openedBefore) {
+            // Print
+            if (chatMsg.getValue() && !doneBefore)
+                PistonCrystal.printChat("Start sorting inventory...", false);
+
+            int maxValue = mc.player.openContainer instanceof ContainerChest ? ((ContainerChest) mc.player.openContainer).getLowerChestInventory().getSizeInventory()
+                    : 27;
+            // Iterate for every value
+            for (int i = 0; i < maxValue; i++) {
+                ItemStack item = mc.player.openContainer.getInventory().get(i);
+                containerInv.put(i, Objects.requireNonNull(item.getItem().getRegistryName()).toString() + item.getMetadata());
+            }
+            openedBefore = true;
+            // Copy of the inventory
+            HashMap<Integer, String> inventoryCopy = getInventoryCopy(maxValue);
+            // Copy of what we want
+            HashMap<Integer, String> aimInventory = getInventoryCopy(maxValue, planInventory);
+            // Start sorting items
+            sortItems = getInventorySort(inventoryCopy, aimInventory, maxValue);
+            // This is for doubleCheck
+            if (sortItems.size() == 0 && !doneBefore) {
+                // If we 0 items to sort + we have done it before
+                finishSort = false;
+                // Print
+                if (chatMsg.getValue())
+                    PistonCrystal.printChat("Inventory arleady sorted...", true);
+                if (closeAfter.getValue())
+                    mc.player.closeScreen();
+            }else {
+                // Else, start sorting
+                finishSort = true;
+                stepNow = 0;
+            }
+            openedBefore = true;
+        } else if (finishSort) {
+            int slotChange;
+            // This is the sort area
+            if (sortItems.size() != 0) {
+                // Get where we are now
+                slotChange = sortItems.get(stepNow++);
+                // Sort the inventory
+                mc.playerController.windowClick(mc.player.openContainer.windowId, slotChange, 0, ClickType.PICKUP, mc.player);
+            }
+            // If we have at the limit
+            if (stepNow == sortItems.size()) {
+                // If confirm sort but we have not done yet
+                if (confirmSort.getValue()) {
+                    if (!doneBefore) {
+                        // Reset
+                        openedBefore = false;
+                        finishSort = false;
+                        doneBefore = true;
+                        // The last item sometimes fuck up. This reduce the possibilites
+                        checkLastItem();
+                        return;
+                    }
+                }
+
+                finishSort = false;
+                // Print
+                if (chatMsg.getValue()) {
+                    PistonCrystal.printChat("Inventory sorted", false);
+                }
+                // Check if the last slot has been placed
+                checkLastItem();
+                doneBefore = false;
+                // If he want to close the inventory
+                if (closeAfter.getValue())
+                    mc.player.closeScreen();
+            }
+        }
+    }
+
+    // This is for checking the last item
+    private void checkLastItem() {
+        if (sortItems.size() != 0) {
+            // Get last
+            int slotChange = sortItems.get(sortItems.size() - 1);
+            // Check if it's empty
+            if (mc.player.openContainer.getInventory().get(slotChange).isEmpty()) {
+                // If yes, change
+                mc.playerController.windowClick(0, slotChange, 0, ClickType.PICKUP, mc.player);
+            }
+        }
+    }
+
     // This give the inventory to sort
-    private ArrayList<Integer> getInventorySort(HashMap<Integer, String> copyInventory, HashMap<Integer, String> planInventoryCopy, int startValues) {
+    private ArrayList<Integer> getInventorySort(HashMap<Integer, String> copyInventory,
+                                                HashMap<Integer, String> planInventoryCopy,
+                                                int startValues) {
         // Plan to move
         ArrayList<Integer> planMove = new ArrayList<>();
         // The copy of the inventory
@@ -243,6 +330,37 @@ public class AutoGear extends Module {
 
         }
 
+        // For how the code above is done, for some reasons, the last item, sometimes, appears two times. This prevent this
+        if (planMove.size() != 0 && planMove.get(planMove.size() - 1).equals(planMove.get(planMove.size() - 2))) {
+            planMove.remove(planMove.size() - 1);
+        }
+
+        Object[] keyList = containerInv.keySet().toArray();
+
+        // Lets take items from chest
+        for(int values = 0; values < keyList.length; values++) {
+            // Which index we are referring
+            int itemC = (int) keyList[values];
+            // If nItems contains what we are looking
+            if (nItemsCopy.containsKey(containerInv.get(itemC))) {
+                // If yes, get the item
+                int start = planInventoryCopy.entrySet().stream().filter(x -> x.getValue().equals(containerInv.get(itemC))).findFirst().get().getKey();
+                // If we are using invasive, change it everytimes. Else, only if it's empty
+                if (invasive.getValue() || mc.player.openContainer.getInventory().get(start).isEmpty()) {
+                    // Make the switch
+                    planMove.add(start);
+                    planMove.add(itemC);
+                    planMove.add(start);
+                    // Lets remove the item from nItems and planInventory
+                    nItemsCopy.put(planInventoryCopy.get(start), nItemsCopy.get(planInventoryCopy.get(start)) - 1);
+                    if (nItemsCopy.get(planInventoryCopy.get(start)) == 0) {
+                        nItemsCopy.remove(planInventoryCopy.get(start));
+                    }
+                    planInventoryCopy.remove(start);
+                }
+
+            }
+        }
 
         // Print all path
         if (debugMode.getValue()) {
@@ -257,12 +375,19 @@ public class AutoGear extends Module {
 
     // This give a copy of our inventory
     private HashMap<Integer, String> getInventoryCopy(int startPoint) {
+        // The output. Is formed by: idx + name
         HashMap<Integer, String> output = new HashMap<>();
+        // Size of the mainInventory
         int sizeInventory = mc.player.inventory.mainInventory.size();
-
+        int value;
+        // Iterate
         for(int i = 0; i < sizeInventory; i++) {
-            ItemStack item = mc.player.inventory.getStackInSlot(i);
-            output.put(i + startPoint + (i < 9 ? sizeInventory - 9 : -9), Objects.requireNonNull(item.getItem().getRegistryName()).toString() + item.getMetadata());
+            // Get the starting value
+            value = i + startPoint + (i < 9 ? sizeInventory - 9 : -9);
+            // Get the item in that specific slot
+            ItemStack item = mc.player.openContainer.getInventory().get(value);
+            // Lets add it
+            output.put(value, Objects.requireNonNull(item.getItem().getRegistryName()).toString() + item.getMetadata());
         }
 
         return output;
@@ -270,10 +395,12 @@ public class AutoGear extends Module {
 
     // This give a copy of our inventory
     private HashMap<Integer, String> getInventoryCopy(int startPoint, HashMap<Integer, String> inventory) {
+        // Our output
         HashMap<Integer, String> output = new HashMap<>();
+        // Size of mainInventory
         int sizeInventory = mc.player.inventory.mainInventory.size();
-        String outputString = "";
         for(int val : inventory.keySet()) {
+            // Add it
             output.put(val + startPoint + (val < 9 ? sizeInventory - 9 : -9), inventory.get(val));
         }
 
