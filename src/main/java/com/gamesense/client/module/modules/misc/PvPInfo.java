@@ -274,8 +274,8 @@ public class PvPInfo extends Module {
 	}
 
 	public void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
 		popCounterHashMap = new HashMap<>();
+		GameSense.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable() {
