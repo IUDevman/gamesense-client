@@ -67,6 +67,7 @@ public class AutoCrystalRewrite extends Module {
     public static Setting.Boolean endCrystalMode;
     Setting.Boolean cancelCrystal;
     Setting.Boolean noGapSwitch;
+    Setting.Integer placeDelay;
     Setting.Integer facePlaceValue;
     Setting.Integer attackSpeed;
     Setting.Integer antiSuicideValue;
@@ -114,6 +115,7 @@ public class AutoCrystalRewrite extends Module {
         breakType = registerMode("Type", breakTypes, "Swing");
         breakCrystal = registerBoolean("Break", true);
         placeCrystal = registerBoolean("Place", true);
+        placeDelay = registerInteger("Place Delay", 1, 0, 10);
         attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
         breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
         placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
@@ -147,14 +149,24 @@ public class AutoCrystalRewrite extends Module {
     private int oldSlot = -1;
     private Entity renderEnt;
     private BlockPos render;
-    private EnumFacing enumFacing;
     Timer timer = new Timer();
 
     private final ConcurrentHashMap<Integer, Boolean> crystalIDs = new ConcurrentHashMap<>();
     private final List<EntityEnderCrystal> crystals = new ArrayList<>();
     private boolean everyOtherCycle = true;
+    private int ticksSincePlace = 0;
 
     public void onUpdate() {
+        // onUpdate gets called twice per tick
+        // stops us from sending too many packets to the server
+        everyOtherCycle = !everyOtherCycle;
+        if (everyOtherCycle) {
+            return;
+        }
+        if (placeCrystal.getValue()) {
+            ticksSincePlace++;
+        }
+
         if (mc.player == null || mc.world == null || mc.player.isDead) {
             disable();
             return;
@@ -165,13 +177,6 @@ public class AutoCrystalRewrite extends Module {
         }
 
         if (antiSuicide.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount()) <= antiSuicideValue.getValue()) {
-            return;
-        }
-
-        // onUpdate gets called twice per tick
-        // stops us from sending too many packets to the server
-        everyOtherCycle = !everyOtherCycle;
-        if (everyOtherCycle) {
             return;
         }
 
@@ -235,7 +240,8 @@ public class AutoCrystalRewrite extends Module {
                 }
 
                 if (breakType.getValue().equalsIgnoreCase("Swing")) {
-                    breakCrystal(crystal);
+                    mc.playerController.attackEntity(mc.player, crystal);
+                    swingArm();
                 }
                 else if (breakType.getValue().equalsIgnoreCase("Packet")) {
                     mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
@@ -272,16 +278,18 @@ public class AutoCrystalRewrite extends Module {
             return;
         }
 
-        BlockPos target = getPositionToPlace(targets);
-        if (target == null) {
-            this.render = null;
-            this.renderEnt = null;
-            ROTATION_UTIL.resetRotation();
-            return;
-        }
+        if (this.placeCrystal.getValue() && ticksSincePlace >= placeDelay.getValue()) {
+            BlockPos target = getPositionToPlace(targets);
+            if (target == null) {
+                this.render = null;
+                this.renderEnt = null;
+                ROTATION_UTIL.resetRotation();
+                return;
+            }
 
-        this.render = target;
-        if (this.placeCrystal.getValue()) {
+            this.ticksSincePlace = 0;
+            this.render = target;
+
             if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
                 if (this.autoSwitch.getValue()) {
                     if (!noGapSwitch.getValue() || !(mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE)) {
@@ -297,10 +305,10 @@ public class AutoCrystalRewrite extends Module {
                 ROTATION_UTIL.lookAtPacket((double) target.getX() + 0.5D, (double) target.getY() - 0.5D, (double) target.getZ() + 0.5D, mc.player);
             }
 
+            EnumFacing enumFacing = null;
             if (raytrace.getValue()) {
                 RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) target.getX() + 0.5D, (double) target.getY() - 0.5D, (double) target.getZ() + 0.5D));
                 if (result == null || result.sideHit == null) {
-                    enumFacing = null;
                     render = null;
                     ROTATION_UTIL.resetRotation();
                     return;
@@ -327,8 +335,9 @@ public class AutoCrystalRewrite extends Module {
                     mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(target, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
                 }
                 mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
-                if (ModuleManager.isModuleEnabled("AutoGG"))
+                if (ModuleManager.isModuleEnabled("AutoGG")) {
                     AutoGG.INSTANCE.addTargetedPlayer(renderEnt.getName());
+                }
             }
 
             if (ROTATION_UTIL.isSpoofingAngles()) {
@@ -354,10 +363,9 @@ public class AutoCrystalRewrite extends Module {
 
         if(showDamage.getValue()) {
             if (this.render != null && this.renderEnt != null) {
-                double d = DamageUtil.calculateDamage(render.getX() + 0.5f, render.getY() + 1, render.getZ() + 0.5f, renderEnt);
-                String[] damageText=new String[1];
-                damageText[0]=(Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + "";
-                RenderUtil.drawNametag(render.getX()+0.5,render.getY()+0.5,render.getZ()+0.5,damageText,new GSColor(255,255,255),1);
+                double d = DamageUtil.calculateDamage(render.getX() + 0.5f, render.getY() + 1f, render.getZ() + 0.5f, renderEnt);
+                String[] damageText = {(Math.floor(d) == d ? (int) d : String.format("%.1f", d)) + ""};
+                RenderUtil.drawNametag(render.getX() + 0.5f,render.getY() + 0.5f,render.getZ() + 0.5f, damageText, new GSColor(255,255,255),1);
             }
         }
     }
@@ -400,8 +408,7 @@ public class AutoCrystalRewrite extends Module {
                         bestDamage = currentDamage;
                         best = crystal;
                     }
-                }
-                if (currentDamage > bestDamage) {
+                } else if (currentDamage > bestDamage) {
                     bestDamage = currentDamage;
                     best = crystal;
                 }
@@ -453,11 +460,11 @@ public class AutoCrystalRewrite extends Module {
         List<BlockPos> blockList = CrystalUtil.findCrystalBlocks((float) placeRange.getValue(), endCrystalMode.getValue());
         // remove all placements that deal more than max self damage
         // no point in checking these
-        blockList.removeIf(crystal -> DamageUtil.calculateDamage(crystal.getX() + 0.5f, crystal.getY() + 1f, crystal.getZ() + 0.5f, mc.player) > maxSelfDmg.getValue());
+        blockList.removeIf(crystal -> DamageUtil.calculateDamage((float)crystal.getX() + 0.5f, (float)crystal.getY() + 1f, (float)crystal.getZ() + 0.5f, mc.player) > maxSelfDmg.getValue());
         if (antiSuicide.getValue()) {
             // remove all crystal placements that will cause suicide
             final float playerHealth = mc.player.getHealth() + mc.player.getAbsorptionAmount();
-            blockList.removeIf(crystal -> DamageUtil.calculateDamage(crystal.getX() + 0.5f, crystal.getY() + 1f, crystal.getZ() + 0.5f, mc.player) > playerHealth);
+            blockList.removeIf(crystal -> DamageUtil.calculateDamage((float)crystal.getX() + 0.5f, (float)crystal.getY() + 1f, (float)crystal.getZ() + 0.5f, mc.player) > playerHealth);
         }
         if (blockList.size() == 0) {
             return null;
@@ -471,7 +478,7 @@ public class AutoCrystalRewrite extends Module {
             BlockPos best = null;
             float bestDamage = 0f;
             for (BlockPos crystal : blockList) {
-                float currentDamage = DamageUtil.calculateDamage(crystal.getX() + 0.5f, crystal.getY() + 1f, crystal.getZ() + 0.5f, target);
+                float currentDamage = DamageUtil.calculateDamage((float)crystal.getX() + 0.5f, (float)crystal.getY() + 1f, (float)crystal.getZ() + 0.5f, target);
                 if (currentDamage == bestDamage) {
                     // this new crystal is closer
                     // higher chance of being able to break it
@@ -479,8 +486,7 @@ public class AutoCrystalRewrite extends Module {
                         bestDamage = currentDamage;
                         best = crystal;
                     }
-                }
-                if (currentDamage > bestDamage) {
+                } else if (currentDamage > bestDamage) {
                     bestDamage = currentDamage;
                     best = crystal;
                 }
@@ -530,11 +536,6 @@ public class AutoCrystalRewrite extends Module {
             renderEnt = entry.getValue().getValue();
             return entry.getValue().getKey();
         }
-    }
-
-    private void breakCrystal(EntityEnderCrystal crystal) {
-        mc.playerController.attackEntity(mc.player, crystal);
-        swingArm();
     }
 
     private void swingArm() {
