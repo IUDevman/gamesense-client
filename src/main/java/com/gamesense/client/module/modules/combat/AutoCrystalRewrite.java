@@ -27,7 +27,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemEndCrystal;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.network.Packet;
@@ -169,6 +168,8 @@ public class AutoCrystalRewrite extends Module {
             return;
         }
 
+        // onUpdate gets called twice per tick
+        // stops us from sending too many packets to the server
         everyOtherCycle = !everyOtherCycle;
         if (everyOtherCycle) {
             return;
@@ -215,20 +216,9 @@ public class AutoCrystalRewrite extends Module {
                     isAttacking = true;
                 }
                 // search for sword and tools in hotbar
-                int newSlot = -1;
-                for (int i = 0; i < 9; i++) {
-                    ItemStack stack = mc.player.inventory.getStackInSlot(i);
-                    if (stack == ItemStack.EMPTY) {
-                        continue;
-                    }
-                    if ((stack.getItem() instanceof ItemSword)) {
-                        newSlot = i;
-                        break;
-                    }
-                    if ((stack.getItem() instanceof ItemTool)) {
-                        newSlot = i;
-                        break;
-                    }
+                int newSlot = InventoryUtil.findFirstItemSlot(ItemSword.class, 0, 8);
+                if (newSlot == -1) {
+                    InventoryUtil.findFirstItemSlot(ItemTool.class, 0, 8);
                 }
                 // check if any swords or tools were found
                 if (newSlot != -1) {
@@ -278,8 +268,7 @@ public class AutoCrystalRewrite extends Module {
         boolean offhand = false;
         if (mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL) {
             offhand = true;
-        }
-        else if (crystalSlot == -1) {
+        } else if (crystalSlot == -1) {
             return;
         }
 
@@ -293,7 +282,6 @@ public class AutoCrystalRewrite extends Module {
 
         this.render = target;
         if (this.placeCrystal.getValue()) {
-
             if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
                 if (this.autoSwitch.getValue()) {
                     if (!noGapSwitch.getValue() || !(mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE)) {
@@ -309,8 +297,8 @@ public class AutoCrystalRewrite extends Module {
                 ROTATION_UTIL.lookAtPacket((double) target.getX() + 0.5D, (double) target.getY() - 0.5D, (double) target.getZ() + 0.5D, mc.player);
             }
 
-            RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) target.getX() + 0.5D, (double) target.getY() - 0.5D, (double) target.getZ() + 0.5D));
             if (raytrace.getValue()) {
+                RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) target.getX() + 0.5D, (double) target.getY() - 0.5D, (double) target.getZ() + 0.5D));
                 if (result == null || result.sideHit == null) {
                     enumFacing = null;
                     render = null;
@@ -379,9 +367,9 @@ public class AutoCrystalRewrite extends Module {
             return null;
         }
 
-        final double placeRangeSq = placeRange.getValue() * placeRange.getValue();
+        final double breakRangeSq = breakRange.getValue() * breakRange.getValue();
         List<EntityEnderCrystal> crystalList = crystals.stream()
-                .filter(entity -> mc.player.getDistanceSq(entity) <= placeRangeSq)
+                .filter(entity -> mc.player.getDistanceSq(entity) <= breakRangeSq)
                 .sorted(Comparator.comparing(c -> mc.player.getDistanceSq(c)))
                 .collect(Collectors.toList());
         // remove all crystals that deal more than max self damage
