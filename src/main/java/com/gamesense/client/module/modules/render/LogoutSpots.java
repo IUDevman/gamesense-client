@@ -7,7 +7,7 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.world.Timer;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;

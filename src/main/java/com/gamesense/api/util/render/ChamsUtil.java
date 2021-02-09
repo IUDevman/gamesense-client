@@ -16,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 
-
 /**
 	Thank to seppuku for the code that i can understand,
 	is this a skid? It depends by how you are looking this.
@@ -30,9 +29,11 @@ import net.minecraft.client.renderer.OpenGlHelper;
 	we have the same license, so it's safe to port in
  */
 public class ChamsUtil {
+
 	private static final Minecraft mc = Minecraft.getMinecraft();
 	private final static float units = 5300000.0f;
 	private final static float factor = 1.0f;
+
 	public static void createChamsPre() {
 		mc.getRenderManager().setRenderShadow(false);
 		mc.getRenderManager().setRenderOutlines(false);

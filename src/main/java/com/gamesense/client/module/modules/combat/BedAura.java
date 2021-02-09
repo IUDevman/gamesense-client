@@ -6,7 +6,7 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.api.util.world.Timer;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.entity.Entity;

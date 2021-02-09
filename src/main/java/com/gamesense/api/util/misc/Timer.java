@@ -1,31 +1,32 @@
-package com.gamesense.api.util.world;
+package com.gamesense.api.util.misc;
 
-public class Timer{
+public class Timer {
+
 	private long current;
 
-	public Timer(){
+	public Timer() {
 		this.current = System.currentTimeMillis();
 	}
 
-	public boolean hasReached(final long delay){
+	public boolean hasReached(final long delay) {
 		return System.currentTimeMillis() - this.current >= delay;
 	}
 
-	public boolean hasReached(final long delay, boolean reset){
+	public boolean hasReached(final long delay, boolean reset) {
 		if (reset)
 			reset();
 		return System.currentTimeMillis() - this.current >= delay;
 	}
 
-	public void reset(){
+	public void reset() {
 		this.current = System.currentTimeMillis();
 	}
 
-	public long getTimePassed(){
+	public long getTimePassed() {
 		return System.currentTimeMillis() - this.current;
 	}
 
-	public boolean sleep(final long time){
+	public boolean sleep(final long time) {
 		if (time() >= time){
 			reset();
 			return true;
