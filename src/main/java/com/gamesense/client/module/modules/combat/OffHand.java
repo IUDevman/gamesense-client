@@ -306,7 +306,7 @@ public class OffHand extends Module {
 
     private boolean nearPlayer() {
         if ((int) playerDistance.getValue() == 0)
-            return false;
+            return true;
         for(EntityPlayer pl : mc.world.playerEntities) {
             if (pl != mc.player && mc.player.getDistance(pl) < playerDistance.getValue())
                 return true;
