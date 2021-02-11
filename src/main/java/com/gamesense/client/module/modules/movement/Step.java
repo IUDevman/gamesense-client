@@ -34,8 +34,11 @@ public class Step extends Module {
 	}
 
 	public void onUpdate() {
-		if (mc.world == null || mc.player == null || mc.player.isInWater() || mc.player.isInLava() || mc.player.isOnLadder()
-				|| mc.gameSettings.keyBindJump.isKeyDown()) {
+		if (mc.world == null || mc.player == null) {
+			return;
+		}
+
+		if (mc.player.isInWater() || mc.player.isInLava() || mc.player.isOnLadder() || mc.gameSettings.keyBindJump.isKeyDown()) {
 			return;
 		}
 
