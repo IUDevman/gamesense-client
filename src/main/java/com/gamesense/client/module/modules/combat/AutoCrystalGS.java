@@ -70,6 +70,7 @@ public class AutoCrystalGS extends Module {
     Setting.Boolean chat;
     Setting.Boolean showDamage;
     Setting.Boolean antiSuicide;
+    Setting.Boolean multiPlace;
     public static Setting.Boolean endCrystalMode;
     Setting.Boolean cancelCrystal;
     Setting.Boolean noGapSwitch;
@@ -127,6 +128,7 @@ public class AutoCrystalGS extends Module {
         antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
         autoSwitch = registerBoolean("Switch", true);
         noGapSwitch = registerBoolean("No Gap Switch", false);
+        multiPlace = registerBoolean("Multi Place", false);
         endCrystalMode = registerBoolean("1.13 Place", false);
         cancelCrystal = registerBoolean("Cancel Crystal", false);
         minDmg = registerDouble("Min Damage", 5, 0, 36);
@@ -245,6 +247,9 @@ public class AutoCrystalGS extends Module {
                 }
 
                 isActive = false;
+            }
+
+            if (!multiPlace.getValue()) {
                 return;
             }
         }
