@@ -167,7 +167,7 @@ public class AutoCrystalGS extends Module {
             return;
         }
 
-        if (refresh.getValue() && stuckTimer.getTimePassed() / 1000L >= 1) {
+        if (refresh.getValue() && stuckTimer.getTimePassed() / 1000L >= 2) {
             stuckTimer.reset();
             PlacedCrystals.clear();
         }
