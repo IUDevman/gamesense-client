@@ -7,7 +7,6 @@ import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +40,8 @@ public class OffHand extends Module {
     Setting.Mode    potionChoose;
     Setting.Integer healthSwitch,
                     tickDelay,
-                    fallDistance;
+                    fallDistance,
+                    maxSwitchPerSecond;
     Setting.Double  biasDamage,
                     playerDistance;
     Setting.Boolean pickObby,
@@ -65,6 +65,7 @@ public class OffHand extends Module {
             stepChanging;
     private static boolean activeT;
     private static int forceObby;
+    private ArrayList<Long> switchDone = new ArrayList<>();
 
     public static boolean isActive() {
         return activeT;
@@ -82,6 +83,7 @@ public class OffHand extends Module {
         put("Crystal", Items.END_CRYSTAL);
         put("Gapple", Items.GOLDEN_APPLE);
         put("Pot", Items.POTIONITEM);
+        put("Exp", Items.EXPERIENCE_BOTTLE);
     }};
     // Create maps of allowed blocks
     Map<String, net.minecraft.block.Block> allowedItemsBlock = new HashMap<String, net.minecraft.block.Block>() {
@@ -101,7 +103,7 @@ public class OffHand extends Module {
         // At start, offHand is not active
         activeT = false;
         // Default items
-        String[] allowedItems = {"Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot"};
+        String[] allowedItems = {"Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"};
         String[] allowedPotions = {"first", "strength", "swiftness"};
         /// Initialize values
         // Default items
@@ -123,6 +125,8 @@ public class OffHand extends Module {
         tickDelay = registerInteger("Tick Delay", 0, 0, 20);
         // Fall distance
         fallDistance = registerInteger("Fall Distance", 12, 0, 30);
+        // Max switch per second
+        maxSwitchPerSecond = registerInteger("Max Switch", 6, 2, 10);
         // Bias Damage
         biasDamage = registerDouble("Bias Damage", 1, 0, 3);
         // Distance player
@@ -183,6 +187,7 @@ public class OffHand extends Module {
 
     @Override
     public void onUpdate() {
+        if (mc.currentScreen instanceof GuiContainer) return;
         // If we are changing
         if (stepChanging)
             // Check if we have to wait
@@ -191,36 +196,80 @@ public class OffHand extends Module {
                 tickWaited = 0;
                 stepChanging = false;
                 // Change
-                mc.playerController.windowClick(0, 45, 0, ClickType.PICKUP, mc.player);
+                mc.playerController.windowClick(0,45, 0, ClickType.PICKUP, mc.player);
+                switchDone.add(System.currentTimeMillis());
             // If yes, return
             }else return;
 
         // Get number of totems
         totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum();
 
-        // If he has a guy opened that is not the inventory, return
-        if (mc.currentScreen instanceof GuiContainer && !(net.minecraft.client.Minecraft.getMinecraft().currentScreen instanceof GuiInventory))
-            return;
-
         // If e had an item before that we have to return back
         if (returnBack) {
             // If we have to wait
             if(tickWaited++ >= tickDelay.getValue()) {
-                /// Change
-                // Check if the slot is not air
-                if (!mc.player.inventory.getStackInSlot(prevSlot).isEmpty())
-                    prevSlot = findEmptySlot();
-                // If it's air
-                if (prevSlot != -1)
-                    mc.playerController.windowClick(0, prevSlot < 9 ? prevSlot + 36 : prevSlot, 0, ClickType.PICKUP, mc.player);
-                else
-                    PistonCrystal.printChat("Your inventory is full. the item that was on your offhand is going to be dropped. Open your inventory and choose where to put it", true);
-                // Set to false
-                returnBack = false;
-                tickWaited = 0;
+                changeBack();
             }else return;
         }
 
+        String itemCheck = getItem();
+
+        // If our offhand is okay
+        if (offHandSame(itemCheck)) {
+
+            // If the inventory is opened, close it
+            boolean done = false;
+            if (hotBarTotem.getValue() && itemCheck.equals("Totem")) {
+                done = switchItemTotemHot();
+            }
+            if (!done) {
+                switchItemNormal(itemCheck);
+            }
+
+        }
+
+    }
+
+    private void changeBack() {
+        /// Change
+        // Check if the slot is not air
+        if (!mc.player.inventory.getStackInSlot(prevSlot).isEmpty())
+            prevSlot = findEmptySlot();
+        // If it's air
+        if (prevSlot != -1) {
+            mc.playerController.windowClick(0, prevSlot < 9 ? prevSlot + 36 : prevSlot, 0, ClickType.PICKUP, mc.player);
+        }
+        else
+            PistonCrystal.printChat("Your inventory is full. the item that was on your offhand is going to be dropped. Open your inventory and choose where to put it", true);
+        // Set to false
+        returnBack = false;
+        tickWaited = 0;
+    }
+
+    private boolean switchItemTotemHot() {
+        // Get totem
+        int slot = InventoryUtil.findTotemSlot(0, 8);
+        // If we have found one
+        if (slot != -1) {
+            // Switch
+            if (mc.player.inventory.currentItem != slot)
+                mc.player.inventory.currentItem = slot;
+            return true;
+        } return false;
+    }
+
+    private void switchItemNormal(String itemCheck) {
+        // Get slot
+        int t = getInventorySlot(itemCheck);
+        // If nothing found
+        if (t == -1) return;
+        // Change
+        if (!itemCheck.equals("Totem") && canSwitch())
+            return;
+        toOffHand(t);
+    }
+
+    private String getItem() {
         // This is going to contain the item
         String itemCheck = "";
         // If we have to check
@@ -233,31 +282,18 @@ public class OffHand extends Module {
             or crystalCheck
          */
         if ( (fallDistanceBol.getValue() && mc.player.fallDistance >= fallDistance.getValue() && mc.player.prevPosY != mc.player.posY && !mc.player.isElytraFlying())
-            || (crystalCheck.getValue() && crystalDamage())) {
+                || (crystalCheck.getValue() && crystalDamage())) {
             normalOffHand = false;
             itemCheck = "Totem";
         }
 
-        // If no player
-        if (!nearPlayer()) {
-            normalOffHand = false;
-            itemCheck = noPlayerItem.getValue();
-        }
-
-        // If weakness
-        if (normalOffHand && antiWeakness.getValue() && mc.player.isPotionActive(MobEffects.WEAKNESS)) {
-            normalOffHand = false;
-            itemCheck = "Crystal";
-        }
-
-        Item mainHandItem = mc.player.getHeldItemMainhand().getItem();
-
         // If crystal obby
+        Item mainHandItem = mc.player.getHeldItemMainhand().getItem();
         if( forceObby > 0
-            || (normalOffHand && (
-            (crystObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
-            && mainHandItem == Items.END_CRYSTAL)
-            || (pickObby.getValue() && mainHandItem == Items.DIAMOND_PICKAXE && (!pickObbyShift.getValue() || mc.gameSettings.keyBindSneak.isKeyDown()))))) {
+                || (normalOffHand && (
+                (crystObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
+                        && mainHandItem == Items.END_CRYSTAL)
+                        || (pickObby.getValue() && mainHandItem == Items.DIAMOND_PICKAXE && (!pickObbyShift.getValue() || mc.gameSettings.keyBindSneak.isKeyDown()))))) {
             itemCheck = "Obby";
             normalOffHand = false;
         }
@@ -276,32 +312,43 @@ public class OffHand extends Module {
             }
         }
 
-        // Get item to check based from the health
-        itemCheck = getItemToCheck(itemCheck);
+        // If weakness
+        if (normalOffHand && antiWeakness.getValue() && mc.player.isPotionActive(MobEffects.WEAKNESS)) {
+            normalOffHand = false;
+            itemCheck = "Crystal";
+        }
 
-        // If our offhand is okay
-        if (offHandSame(itemCheck)) {
-            boolean done = false;
-            if (hotBarTotem.getValue() && itemCheck.equals("Totem")) {
-                int slot = InventoryUtil.findTotemSlot(0, 8);
-                if (slot != -1) {
-                    if (mc.player.inventory.currentItem != slot)
-                        mc.player.inventory.currentItem = slot;
-                    done = true;
-                }
-            }
-            if (!done) {
-                int t = getInventorySlot(itemCheck);
-                // If nothing found
-                if (t == -1) return;
-                // Change
-                toOffHand(t);
-            }
-
+        // If no player
+        if (normalOffHand && !nearPlayer()) {
+            normalOffHand = false;
+            itemCheck = noPlayerItem.getValue();
         }
 
 
 
+        // Get item to check based from the health
+        itemCheck = getItemToCheck(itemCheck);
+        return itemCheck;
+    }
+
+    private boolean canSwitch() {
+        boolean result = false;
+        long now = System.currentTimeMillis();
+
+        // Lets remove every old one
+        for(int i = 0; i < switchDone.size(); i++) {
+            if (now - switchDone.get(i) > 1000)
+                switchDone.remove(i);
+            else
+                break;
+
+        }
+
+        if (switchDone.size() / 2 >= maxSwitchPerSecond.getValue()) {
+            return true;
+        }
+        switchDone.add(now);
+        return false;
     }
 
     private boolean nearPlayer() {
