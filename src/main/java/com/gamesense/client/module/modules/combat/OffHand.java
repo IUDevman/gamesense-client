@@ -66,6 +66,14 @@ public class OffHand extends Module {
     private static boolean activeT;
     private static int forceObby;
     private ArrayList<Long> switchDone = new ArrayList<>();
+    private final ArrayList<Item> ignoreNoSword = new ArrayList<Item>() {
+        {
+            add(Items.GOLDEN_APPLE);
+            add(Items.EXPERIENCE_BOTTLE);
+            add(Items.BOW);
+            add(Items.POTIONITEM);
+        }
+    };
 
     public static boolean isActive() {
         return activeT;
@@ -233,7 +241,7 @@ public class OffHand extends Module {
     private void changeBack() {
         /// Change
         // Check if the slot is not air
-        if (!mc.player.inventory.getStackInSlot(prevSlot).isEmpty())
+        if (!mc.player.inventory.getStackInSlot(prevSlot).isEmpty() || prevSlot == -1)
             prevSlot = findEmptySlot();
         // If it's air
         if (prevSlot != -1) {
@@ -306,7 +314,7 @@ public class OffHand extends Module {
                     normalOffHand = false;
                 }
             }else
-            if (leftGap.getValue() && mainHandItem != Items.GOLDEN_APPLE && mainHandItem != Items.EXPERIENCE_BOTTLE) {
+            if (leftGap.getValue() && !ignoreNoSword.contains(mainHandItem) ) {
                 itemCheck = "Gapple";
                 normalOffHand = false;
             }
@@ -403,10 +411,14 @@ public class OffHand extends Module {
     }
 
     private String getItemToCheck(String str) {
-        return !str.equals("") ? str
-                : mc.player.getHealth() + mc.player.getAbsorptionAmount() > healthSwitch.getValue()
+
+
+        return (mc.player.getHealth() + mc.player.getAbsorptionAmount() > healthSwitch.getValue())
+                ?   (str.equals("")
                     ? nonDefaultItem.getValue()
-                    : defaultItem.getValue();
+                    : str
+                    )
+                : defaultItem.getValue();
 
     }
 
@@ -459,7 +471,7 @@ public class OffHand extends Module {
             // After we have to return this
             prevSlot = t;
             returnBack = true;
-        }
+        }else prevSlot = -1;
 
         // Move the item
         mc.playerController.windowClick(0, t < 9 ? t + 36 : t, 0, ClickType.PICKUP, mc.player);
