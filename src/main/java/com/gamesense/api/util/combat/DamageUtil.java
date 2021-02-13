@@ -22,18 +22,16 @@ public class DamageUtil {
 
         try {
             float doubleExplosionSize = 12.0F;
-            double distancedsize = entity.getDistance(posX, posY, posZ) / (double) doubleExplosionSize;
-            Vec3d vec3d = new Vec3d(posX, posY, posZ);
-            double blockDensity = entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
-            double v = (1.0D - distancedsize) * blockDensity;
+            double distancedSize = entity.getDistance(posX, posY, posZ) / (double) doubleExplosionSize;
+            double blockDensity = entity.world.getBlockDensity(new Vec3d(posX, posY, posZ), entity.getEntityBoundingBox());
+            double v = (1.0D - distancedSize) * blockDensity;
             float damage = (float) ((int) ((v * v + v) / 2.0D * 7.0D * (double) doubleExplosionSize + 1.0D));
 
 
             if (entity instanceof EntityLivingBase) {
                 finald = getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage), new Explosion(mc.world, null, posX, posY, posZ, 6F, false, true));
             }
-        }catch (NullPointerException e){
-
+        } catch (NullPointerException ignored){
         }
         return (float) finald;
     }

@@ -40,6 +40,7 @@ public class ModuleManager {
 		addMod(new KillAura());
 		addMod(new OffHand());
 		addMod(new PistonCrystal());
+		addMod(new Prediction());
 		addMod(new SelfTrap());
 		addMod(new SelfWeb());
 		addMod(new Surround());
