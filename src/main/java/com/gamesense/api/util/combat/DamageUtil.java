@@ -18,22 +18,25 @@ public class DamageUtil {
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static float calculateDamage(double posX, double posY, double posZ, Entity entity) {
-        double finald = 1.0D;
-
+        float finalDamage = 1.0f;
         try {
             float doubleExplosionSize = 12.0F;
             double distancedSize = entity.getDistance(posX, posY, posZ) / (double) doubleExplosionSize;
-            double blockDensity = entity.world.getBlockDensity(new Vec3d(posX, posY, posZ), entity.getEntityBoundingBox());
+            double blockDensity;
+            // bit hacky but seems to work
+            synchronized (entity.world) {
+                blockDensity = entity.world.getBlockDensity(new Vec3d(posX, posY, posZ), entity.getEntityBoundingBox());
+            }
             double v = (1.0D - distancedSize) * blockDensity;
             float damage = (float) ((int) ((v * v + v) / 2.0D * 7.0D * (double) doubleExplosionSize + 1.0D));
 
-
             if (entity instanceof EntityLivingBase) {
-                finald = getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage), new Explosion(mc.world, null, posX, posY, posZ, 6F, false, true));
+                finalDamage = getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage), new Explosion(mc.world, null, posX, posY, posZ, 6F, false, true));
             }
         } catch (NullPointerException ignored){
         }
-        return (float) finald;
+
+        return finalDamage;
     }
 
     public static float getBlastReduction(EntityLivingBase entity, float damage, Explosion explosion) {
