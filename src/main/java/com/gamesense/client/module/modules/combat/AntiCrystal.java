@@ -228,7 +228,7 @@ public class AntiCrystal extends Module {
 
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
+        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
             AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
