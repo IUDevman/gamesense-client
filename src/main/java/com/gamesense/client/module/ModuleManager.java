@@ -17,14 +17,19 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 
 public class ModuleManager {
 
-    private static ArrayList<Module> modules;
+    private static LinkedHashMap<Class<? extends Module>, Module> modulesClassMap;
+    private static LinkedHashMap<String, Module> modulesNameMap;
 
     public static void init() {
+        modulesClassMap = new LinkedHashMap<>();
+        modulesNameMap = new LinkedHashMap<>();
 
-        modules = new ArrayList<>();
         //Combat
 		addMod(new AntiCrystal());
         addMod(new AutoAnvil());
@@ -123,27 +128,28 @@ public class ModuleManager {
     }
 
     public static void addMod(Module module) {
-        modules.add(module);
+        modulesClassMap.put(module.getClass(), module);
+        modulesNameMap.put(module.getName().toLowerCase(Locale.ROOT), module);
     }
 
     public static void onBind(int key) {
         if (key == Keyboard.KEY_NONE) return;
 
-        for (Module module : modules) {
+        for (Module module : getModules()) {
             if (module.getBind() != key) continue;
             module.toggle();
         }
     }
 
     public static void onUpdate() {
-        for (Module module : modules) {
+        for (Module module : getModules()) {
             if (!module.isEnabled()) continue;
             module.onUpdate();
         }
     }
 
     public static void onRender() {
-        for (Module module : modules) {
+        for (Module module : getModules()) {
             if (!module.isEnabled()) continue;
             module.onRender();
         }
@@ -157,7 +163,7 @@ public class ModuleManager {
         RenderEvent e = new RenderEvent(event.getPartialTicks());
         Minecraft.getMinecraft().profiler.endSection();
 
-        for (Module module : modules) {
+        for (Module module : getModules()) {
             if (!module.isEnabled()) continue;
             Minecraft.getMinecraft().profiler.startSection(module.getName());
             module.onWorldRender(e);
@@ -170,14 +176,14 @@ public class ModuleManager {
         Minecraft.getMinecraft().profiler.endSection();
     }
 
-    public static ArrayList<Module> getModules() {
-        return modules;
+    public static Collection<Module> getModules() {
+        return modulesClassMap.values();
     }
 
     public static ArrayList<Module> getModulesInCategory(Module.Category category) {
         ArrayList<Module> list = new ArrayList<>();
 
-        for (Module module : modules) {
+        for (Module module : modulesClassMap.values()) {
             if (!module.getCategory().equals(category)) continue;
             list.add(module);
         }
@@ -185,25 +191,17 @@ public class ModuleManager {
         return list;
     }
 
-    public static Module getModuleByName(String name) {
-        for (Module module : modules) {
-            if (!module.getName().equalsIgnoreCase(name)) continue;
-            return module;
-        }
+    @SuppressWarnings("unchecked")
+    public static <T extends Module> T getModuleByClass(Class<T> clazz) {
+        return (T) modulesClassMap.get(clazz);
+    }
 
-        return null;
+    public static Module getModuleByName(String name) {
+        return modulesNameMap.get(name.toLowerCase(Locale.ROOT));
     }
 
     public static boolean isModuleEnabled(String name) {
-        for (Module module : modules) {
-            if (!module.getName().equalsIgnoreCase(name)) continue;
-            return module.isEnabled();
-        }
-
-        return false;
-    }
-
-    public static boolean isModuleEnabled(Module module) {
-        return module.isEnabled();
+        Module module = getModuleByName(name);
+        return module != null && module.isEnabled();
     }
 }
