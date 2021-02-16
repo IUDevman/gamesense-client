@@ -20,9 +20,10 @@ import java.util.ArrayList;
 
 public class ModuleManager {
 
-    public static ArrayList<Module> modules;
+    private static ArrayList<Module> modules;
 
-    public ModuleManager() {
+    public static void init() {
+
         modules = new ArrayList<>();
         //Combat
 		addMod(new AntiCrystal());
