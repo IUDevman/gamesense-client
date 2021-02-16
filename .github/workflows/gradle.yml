@@ -16,6 +16,16 @@ jobs:
       with:
         java-version: 1.8
     
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
@@ -36,3 +46,8 @@ jobs:
       with:
         name: Package
         path: build/libs/*-release.jar
+
+    - name: Cleanup Gradle Cache  
+      run: |
+        rm -rf ~/.gradle/caches/modules-2/modules-2.lock
+        rm -rf ~/.gradle/caches/modules-2/gc.properties
