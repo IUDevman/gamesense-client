@@ -192,16 +192,22 @@ public class ModuleManager {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Module> T getModuleByClass(Class<T> clazz) {
+    public static <T extends Module> T getModule(Class<T> clazz) {
         return (T) modulesClassMap.get(clazz);
     }
 
-    public static Module getModuleByName(String name) {
+    public static Module getModule(String name) {
+        if (name == null) return null;
         return modulesNameMap.get(name.toLowerCase(Locale.ROOT));
     }
 
+    public static boolean isModuleEnabled(Class<? extends Module> clazz) {
+        Module module = getModule(clazz);
+        return module != null && module.isEnabled();
+    }
+
     public static boolean isModuleEnabled(String name) {
-        Module module = getModuleByName(name);
+        Module module = getModule(name);
         return module != null && module.isEnabled();
     }
 }

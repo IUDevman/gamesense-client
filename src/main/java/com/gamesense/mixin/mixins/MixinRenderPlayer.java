@@ -3,6 +3,7 @@ package com.gamesense.mixin.mixins;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.TargetHUD;
 import com.gamesense.client.module.modules.hud.TargetInfo;
+import com.gamesense.client.module.modules.render.Nametags;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,15 +16,15 @@ public abstract class MixinRenderPlayer {
 
 	@Inject(method = "renderEntityName", at = @At("HEAD"), cancellable = true)
 	private void renderLivingLabel(AbstractClientPlayer entity, double x, double y, double z, String name, double distanceSq, CallbackInfo callbackInfo) {
-		if (ModuleManager.isModuleEnabled("Nametags")) {
+		if (ModuleManager.isModuleEnabled(Nametags.class)) {
 			callbackInfo.cancel();
 		}
 
-		if (ModuleManager.isModuleEnabled("TargetHUD") && TargetHUD.isRenderingEntity(entity)) {
+		if (ModuleManager.isModuleEnabled(TargetHUD.class) && TargetHUD.isRenderingEntity(entity)) {
 			callbackInfo.cancel();
 		}
 
-		if (ModuleManager.isModuleEnabled("TargetInfo") && TargetInfo.isRenderingEntity(entity)) {
+		if (ModuleManager.isModuleEnabled(TargetInfo.class) && TargetInfo.isRenderingEntity(entity)) {
 			callbackInfo.cancel();
 		}
 	}

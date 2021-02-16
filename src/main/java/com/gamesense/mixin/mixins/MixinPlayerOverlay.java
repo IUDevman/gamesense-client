@@ -14,14 +14,18 @@ public class MixinPlayerOverlay {
 
 	@Inject(method = "renderPumpkinOverlay", at = @At("HEAD"), cancellable = true)
 	protected void renderPumpkinOverlayHook(ScaledResolution scaledRes, CallbackInfo callbackInfo) {
-		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noOverlay.getValue()) {
+		NoRender noRender = ModuleManager.getModule(NoRender.class);
+
+		if (noRender.isEnabled() && noRender.noOverlay.getValue()) {
 			callbackInfo.cancel();
 		}
 	}
 
 	@Inject(method = "renderPotionEffects", at = @At("HEAD"), cancellable = true)
 	protected void renderPotionEffectsHook(ScaledResolution scaledRes, CallbackInfo callbackInfo) {
-		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noOverlay.getValue()){
+		NoRender noRender = ModuleManager.getModule(NoRender.class);
+
+		if (noRender.isEnabled() && noRender.noOverlay.getValue()){
 			callbackInfo.cancel();
 		}
 	}

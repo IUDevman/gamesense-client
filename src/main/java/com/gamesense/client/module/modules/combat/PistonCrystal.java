@@ -259,7 +259,7 @@ public class PistonCrystal extends Module {
         // Stop CA
         stoppedCa = false;
 
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")){
+        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)){
             AutoCrystalGS.stopAC = true;
             stoppedCa = true;
         }

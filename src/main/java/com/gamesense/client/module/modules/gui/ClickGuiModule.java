@@ -1,16 +1,15 @@
 package com.gamesense.client.module.modules.gui;
 
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.Announcer;
+import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
-
-import org.lwjgl.input.Keyboard;
 
 public class ClickGuiModule extends Module {
 
@@ -59,12 +58,12 @@ public class ClickGuiModule extends Module {
 
 	public void onEnable() {
 		GameSense.getInstance().gameSenseGUI.enterGUI();
+		Announcer announcer = ModuleManager.getModule(Announcer.class);
 
-		if(((Announcer) ModuleManager.getModuleByName("Announcer")).clickGui.getValue() && ModuleManager.isModuleEnabled("Announcer") && mc.player != null) {
-			if (((Announcer) ModuleManager.getModuleByName("Announcer")).clientSide.getValue()) {
+		if (announcer.clickGui.getValue() && announcer.isEnabled() && mc.player != null) {
+			if (announcer.clientSide.getValue()) {
 				MessageBus.sendClientPrefixMessage(Announcer.guiMessage);
-			}
-			else {
+			} else {
 				MessageBus.sendServerMessage(Announcer.guiMessage);
 			}
 		}

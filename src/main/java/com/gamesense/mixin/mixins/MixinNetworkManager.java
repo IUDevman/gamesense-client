@@ -59,7 +59,9 @@ public class MixinNetworkManager {
 
 	@Inject(method = "exceptionCaught", at = @At("HEAD"), cancellable = true)
 	private void exceptionCaught(ChannelHandlerContext p_exceptionCaught_1_, Throwable p_exceptionCaught_2_, CallbackInfo callbackInfo) {
-		if (p_exceptionCaught_2_ instanceof IOException && ModuleManager.isModuleEnabled("NoKick") && ((NoKick)ModuleManager.getModuleByName("NoKick")).noPacketKick.getValue()) {
+		NoKick noKick = ModuleManager.getModule(NoKick.class);
+
+		if (p_exceptionCaught_2_ instanceof IOException && noKick.isEnabled() && noKick.noPacketKick.getValue()) {
 			callbackInfo.cancel();
 		}
 	}

@@ -30,7 +30,10 @@ public class MixinItemRenderer {
 	public void transformEatFirstPerson(float p_187454_1_, EnumHandSide hand, ItemStack stack, CallbackInfo callbackInfo) {
 		TransformSideFirstPersonEvent event = new TransformSideFirstPersonEvent(hand);
 		GameSense.EVENT_BUS.post(event);
-		if (ModuleManager.isModuleEnabled("ViewModel") && ((ViewModel)ModuleManager.getModuleByName("ViewModel")).cancelEating.getValue()) {
+
+		ViewModel viewModel = ModuleManager.getModule(ViewModel.class);
+
+		if (viewModel.isEnabled() && viewModel.cancelEating.getValue()) {
 			callbackInfo.cancel();
 		}
 	}
@@ -43,7 +46,9 @@ public class MixinItemRenderer {
 
 	@Inject(method = "renderOverlays", at = @At("HEAD"), cancellable = true)
 	public void renderOverlays(float partialTicks, CallbackInfo callbackInfo) {
-		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noOverlay.getValue()) {
+		NoRender noRender = ModuleManager.getModule(NoRender.class);
+
+		if (noRender.isEnabled() && noRender.noOverlay.getValue()) {
 			callbackInfo.cancel();
 		}
 	}

@@ -388,7 +388,7 @@ public class AutoAnvil extends Module {
         // Stop CA
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
+        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
             AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }

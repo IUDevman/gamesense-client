@@ -25,7 +25,7 @@ public class MessageBus {
         TextComponentString string2 = new TextComponentString(messageFormatting + message);
 
         Notifications.addMessage(string2);
-        if (ModuleManager.isModuleEnabled("Notifications") && Notifications.disableChat.getValue()) {
+        if (ModuleManager.isModuleEnabled(Notifications.class) && Notifications.disableChat.getValue()) {
             return;
         }
         mc.player.sendMessage(string1);
@@ -44,7 +44,7 @@ public class MessageBus {
         TextComponentString string = new TextComponentString(messageFormatting + message);
 
         Notifications.addMessage(string);
-        if (ModuleManager.isModuleEnabled("Notifications") && Notifications.disableChat.getValue()) {
+        if (ModuleManager.isModuleEnabled(Notifications.class) && Notifications.disableChat.getValue()) {
             return;
         }
         mc.player.sendMessage(string);

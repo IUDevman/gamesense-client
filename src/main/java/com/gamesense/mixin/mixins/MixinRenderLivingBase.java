@@ -39,7 +39,9 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends 
             return;
         }
 
-        if (NoRender.noCluster.getValue() && ModuleManager.getModuleByName("NoRender").isEnabled() && mc.player.getDistance(entitylivingbaseIn) < 1 && entitylivingbaseIn != mc.player) {
+        NoRender noRender = ModuleManager.getModule(NoRender.class);
+
+        if (noRender.isEnabled() && NoRender.noCluster.getValue() && mc.player.getDistance(entitylivingbaseIn) < 1 && entitylivingbaseIn != mc.player) {
             GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
             isClustered = true;
             if (!NoRender.incrementNoClusterRender()) {
