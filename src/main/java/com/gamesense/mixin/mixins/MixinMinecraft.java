@@ -1,6 +1,7 @@
 package com.gamesense.mixin.mixins;
 
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.MultiTask;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
@@ -19,7 +20,7 @@ public class MixinMinecraft {
 	//author cookiedragon234
 	@Redirect(method = "sendClickBlockToController", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;isHandActive()Z"))
 	private boolean isHandActive(EntityPlayerSP player) {
-		if (ModuleManager.isModuleEnabled("MultiTask")) {
+		if (ModuleManager.isModuleEnabled(MultiTask.class)) {
 			return false;
 		}
 		return this.player.isHandActive();
@@ -27,7 +28,7 @@ public class MixinMinecraft {
 
 	@Redirect(method = "rightClickMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;getIsHittingBlock()Z"))
 	private boolean isHittingBlock(PlayerControllerMP playerControllerMP) {
-		if (ModuleManager.isModuleEnabled("MultiTask")) {
+		if (ModuleManager.isModuleEnabled(MultiTask.class)) {
 			return false;
 		}
 		return this.playerController.getIsHittingBlock();

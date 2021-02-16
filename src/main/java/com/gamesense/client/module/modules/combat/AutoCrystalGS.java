@@ -354,7 +354,7 @@ public class AutoCrystalGS extends Module {
                             mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
                             //Cache the crystals we've placed
                             PlacedCrystals.add(q);
-                            if (ModuleManager.isModuleEnabled("AutoGG"))
+                            if (ModuleManager.isModuleEnabled(AutoGG.class))
                                 AutoGG.INSTANCE.addTargetedPlayer(renderEnt.getName());
                         }
 

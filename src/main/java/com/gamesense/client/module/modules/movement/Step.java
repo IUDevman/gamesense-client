@@ -42,7 +42,7 @@ public class Step extends Module {
 			return;
 		}
 
-		if (ModuleManager.isModuleEnabled("Speed"))
+		if (ModuleManager.isModuleEnabled(Speed.class))
 			return;
 
 		if (mode.getValue().equalsIgnoreCase("Normal")) {

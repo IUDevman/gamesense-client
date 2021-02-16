@@ -197,7 +197,7 @@ public class KillAura extends Module {
 		if (((sword || both) && item instanceof ItemSword) ||
 				((axe || both) && item instanceof ItemAxe)
 				|| all) {
-			return !caCheck.getValue() || !((AutoCrystalGS) ModuleManager.getModuleByName("AutoCrystalGS")).isActive;
+			return !caCheck.getValue() || !ModuleManager.getModule(AutoCrystalGS.class).isActive;
 		}
 
 		return false;

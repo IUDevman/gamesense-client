@@ -1,12 +1,5 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.player.friend.Friends;
@@ -14,16 +7,22 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.combat.AutoCrystalGS;
+import com.gamesense.client.module.modules.combat.OffHand;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
-
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CombatInfo extends HUDModule {
 
@@ -168,7 +167,7 @@ public class CombatInfo extends HUDModule {
 					}
 				}
 				else if (index==3) {
-					on=totems>0 && ModuleManager.isModuleEnabled("AutoTotem");
+					on=totems>0 && ModuleManager.isModuleEnabled(OffHand.class);
 				}
 				else if (index==4) {
 					on=getPing()<=100;

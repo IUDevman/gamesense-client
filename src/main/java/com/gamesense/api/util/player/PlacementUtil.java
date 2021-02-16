@@ -96,7 +96,7 @@ public class PlacementUtil {
 
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
+        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
             AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
