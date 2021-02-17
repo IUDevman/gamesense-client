@@ -15,7 +15,9 @@ public class MixinWorld {
 
 	@Inject(method = "checkLightFor", at = @At("HEAD"), cancellable = true)
 	private void updateLightmapHook(EnumSkyBlock lightType, BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		if (ModuleManager.isModuleEnabled("NoRender") && ((NoRender)ModuleManager.getModuleByName("NoRender")).noSkylight.getValue()) {
+		NoRender noRender = ModuleManager.getModule(NoRender.class);
+
+		if (noRender.isEnabled() && noRender.noSkylight.getValue()) {
 			if (lightType == EnumSkyBlock.SKY) {
 				callbackInfoReturnable.setReturnValue(true);
 				callbackInfoReturnable.cancel();

@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
@@ -90,7 +90,7 @@ public class ESP extends Module {
                     {
                         switch (playerESPMode.getValue()) {
                             case "Direction":
-                                RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, ((EntityPlayer) entity).rotationYaw, width.getValue(), 0);
+                                RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, entity.rotationYaw, width.getValue(), 0);
                                 break;
                             case "Box":
                                 RenderUtil.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), playerColor);

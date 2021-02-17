@@ -23,9 +23,9 @@ public abstract class MixinAbstractClientPlayer {
 	@Inject(method = "getLocationCape", at = @At("HEAD"), cancellable = true)
 	public void getLocationCape(CallbackInfoReturnable<ResourceLocation> callbackInfoReturnable) {
 		UUID uuid = getPlayerInfo().getGameProfile().getId();
-		CapesModule capesModule = ((CapesModule) ModuleManager.getModuleByName("Capes"));
+		CapesModule capesModule = ModuleManager.getModule(CapesModule.class);
 
-		if (ModuleManager.isModuleEnabled("Capes") && GameSense.getInstance().capeUtil.hasCape(uuid)) {
+		if (capesModule.isEnabled() && GameSense.getInstance().capeUtil.hasCape(uuid)) {
 			if (capesModule.capeMode.getValue().equalsIgnoreCase("Black")) {
 				callbackInfoReturnable.setReturnValue(new ResourceLocation("gamesense:capeblack.png"));
 			}

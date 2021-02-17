@@ -2,20 +2,19 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.misc.Pair;
+import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
+import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.google.common.collect.Sets;
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,6 +41,7 @@ public class HoleESP extends Module {
     Setting.ColorSetting bedrockColor;
     Setting.ColorSetting obsidianColor;
     Setting.ColorSetting customColor;
+    Setting.Integer ufoAlpha;
 
     public void setup() {
         ArrayList<String> holes = new ArrayList<>();
@@ -83,34 +83,10 @@ public class HoleESP extends Module {
         bedrockColor = registerColor("Bedrock Color", new GSColor(0,255,0));
         obsidianColor = registerColor("Obsidian Color", new GSColor(255,0,0));
         customColor = registerColor("Custom Color", new GSColor(0,0,255));
+        ufoAlpha = registerInteger("UFOAlpha",255,0,255);
     }
 
     private ConcurrentHashMap<AxisAlignedBB, GSColor> holes;
-
-    // defines the area for the client to search
-    public List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
-        List<BlockPos> circleblocks = new ArrayList<>();
-        int cx = loc.getX();
-        int cy = loc.getY();
-        int cz = loc.getZ();
-        for (int x = cx - (int) r; x <= cx + r; x++) {
-            for (int z = cz - (int) r; z <= cz + r; z++) {
-                for (int y = (sphere ? cy - (int) r : cy); y < (sphere ? cy + r : cy + h); y++) {
-                    double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
-                    if (dist < r * r && !(hollow && dist < (r - 1) * (r - 1))) {
-                        BlockPos l = new BlockPos(x, y + plus_y, z);
-                        circleblocks.add(l);
-                    }
-                }
-            }
-        }
-        return circleblocks;
-    }
-
-    // gets the entities location
-    public static BlockPos getEntityPos(Entity entity) {
-        return new BlockPos(Math.floor(entity.posX), Math.floor(entity.posY), Math.floor(entity.posZ));
-    }
 
     public void onUpdate() {
         if (mc.player == null || mc.world == null) {
@@ -127,9 +103,8 @@ public class HoleESP extends Module {
         int range = (int) Math.ceil(rangeS.getValue());
 
         // hashSets are easier to navigate
-        HashSet<BlockPos> possibleFullHoles = Sets.newHashSet();
-        HashMap<BlockPos, Pair<BlockOffset, GSColor>> possibleWideHoles = new HashMap<>();
-        List<BlockPos> blockPosList = getSphere(getEntityPos(mc.player), range, range, false, true, 0);
+        HashSet<BlockPos> possibleHoles = Sets.newHashSet();
+        List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), range, range, false, true, 0);
 
         // find all holes
         for (BlockPos pos : blockPosList) {
@@ -147,120 +122,42 @@ public class HoleESP extends Module {
             }
 
             if (mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals(Blocks.AIR)) {
-                possibleFullHoles.add(pos);
+                possibleHoles.add(pos);
             }
         }
 
-        possibleFullHoles.forEach(pos -> {
-            GSColor color = new GSColor(bedrockColor.getValue(), 255);
+        possibleHoles.forEach(pos -> {
+            HoleUtil.HoleInfo holeInfo = HoleUtil.isHole(pos, false, false);
+            HoleUtil.HoleType holeType = holeInfo.getType();
+            if (holeType != HoleUtil.HoleType.NONE) {
+                // We have a hole!
+                HoleUtil.BlockSafety holeSafety = holeInfo.getSafety();
+                AxisAlignedBB centreBlocks = holeInfo.getCentre();
 
-            HashMap<BlockOffset, BlockSafety> unsafeSides = getUnsafeSides(pos);
-
-            if (unsafeSides.containsKey(BlockOffset.DOWN)) {
-                if (unsafeSides.remove(BlockOffset.DOWN, BlockSafety.BREAKABLE)) {
+                if (centreBlocks == null)
                     return;
+
+                GSColor colour;
+                // get Colour
+                if (holeSafety == HoleUtil.BlockSafety.UNBREAKABLE) {
+                    colour = new GSColor(bedrockColor.getValue(), 255);
+                } else {
+                    colour = new GSColor(obsidianColor.getValue(), 255);
                 }
-            }
+                if (holeType == HoleUtil.HoleType.CUSTOM) {
+                    colour = new GSColor(customColor.getValue(), 255);
+                }
 
-            int size = unsafeSides.size();
-
-            unsafeSides.entrySet().removeIf(entry -> entry.getValue() == BlockSafety.RESISTANT);
-
-            // size has changed so must have weak side
-            if (unsafeSides.size() != size)
-                color = new GSColor(obsidianColor.getValue(), 255);
-
-            size = unsafeSides.size();
-
-            // is it a perfect hole
-            if (size == 0) {
-                holes.put(new AxisAlignedBB(pos), color);
-
-            }
-            // have one open side
-            if (size == 1) {
-                possibleWideHoles.put(pos, new Pair<>(unsafeSides.keySet().stream().findFirst().get(), color));
+                String mode = customHoles.getValue();
+                if (mode.equalsIgnoreCase("Custom") && (holeType == HoleUtil.HoleType.CUSTOM || holeType == HoleUtil.HoleType.DOUBLE)) {
+                    holes.put(centreBlocks, colour);
+                } else if (mode.equalsIgnoreCase("Double") && holeType == HoleUtil.HoleType.DOUBLE) {
+                    holes.put(centreBlocks, colour);
+                } else if (holeType == HoleUtil.HoleType.SINGLE) {
+                    holes.put(centreBlocks, colour);
+                }
             }
         });
-
-        // two wide and/or custom holes is enabled
-        // we can guarantee all holes in possibleWideHoles
-        // have only one open side
-        String customHoleMode = customHoles.getValue();
-        if (!customHoleMode.equalsIgnoreCase("Single")) {
-            possibleWideHoles.forEach((pos, pair) -> {
-                GSColor color = pair.getValue();
-                BlockPos unsafePos = pair.getKey().offset(pos);
-
-                // Custom allows hole in floor for second side
-                boolean allowCustom = customHoleMode.equalsIgnoreCase("Custom");
-                HashMap<BlockOffset, BlockSafety> unsafeSides = getUnsafeSides(unsafePos);
-
-                int size = unsafeSides.size();
-
-                unsafeSides.entrySet().removeIf(entry -> entry.getValue() == BlockSafety.RESISTANT);
-
-                // size has changed so must have weak side
-                if (unsafeSides.size() != size)
-                    color = new GSColor(obsidianColor.getValue(), 255);
-
-                if (allowCustom) {
-                    if (unsafeSides.containsKey(BlockOffset.DOWN))
-                        color = new GSColor(customColor.getValue(), 255);
-                    unsafeSides.remove(BlockOffset.DOWN);
-                }
-
-                // is it a safe hole
-                if (unsafeSides.size() >  1)
-                    return;
-
-                // it is
-                double minX = Math.min(pos.x, unsafePos.x);
-                double maxX = Math.max(pos.x, unsafePos.x) + 1;
-                double minZ = Math.min(pos.z, unsafePos.z);
-                double maxZ = Math.max(pos.z, unsafePos.z) + 1;
-
-                holes.put(new AxisAlignedBB(minX, pos.y, minZ, maxX, pos.y + 1, maxZ), color);
-            });
-
-        }
-    }
-
-    private BlockSafety isBlockSafe(Block block) {
-        if (block == Blocks.BEDROCK) {
-            return BlockSafety.UNBREAKABLE;
-        }
-        if (block == Blocks.OBSIDIAN || block == Blocks.ENDER_CHEST || block == Blocks.ANVIL) {
-            return BlockSafety.RESISTANT;
-        }
-        return BlockSafety.BREAKABLE;
-    }
-
-    private HashMap<BlockOffset, BlockSafety> getUnsafeSides(BlockPos pos) {
-        HashMap<BlockOffset, BlockSafety> output = new HashMap<>();
-        BlockSafety temp;
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.DOWN.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.DOWN, temp);
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.NORTH.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.NORTH, temp);
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.SOUTH.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.SOUTH, temp);
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.EAST.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.EAST, temp);
-
-        temp = isBlockSafe(mc.world.getBlockState(BlockOffset.WEST.offset(pos)).getBlock());
-        if (temp != BlockSafety.UNBREAKABLE)
-            output.put(BlockOffset.WEST, temp);
-
-        return output;
     }
 
     public void onWorldRender(RenderEvent event) {
@@ -291,42 +188,43 @@ public class HoleESP extends Module {
 
     private void renderFill(AxisAlignedBB hole, GSColor color) {
         GSColor fillColor = new GSColor(color, 50);
+        int ufoAlpha=(this.ufoAlpha.getValue()*50)/255;
 
         if (hideOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) return;
 
         switch (mode.getValue()) {
             case "Air": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, ufoAlpha, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.ALL);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, ufoAlpha, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
             case "Ground": {
-                RenderUtil.drawBox(hole.offset(0, -1, 0), true, 1, fillColor, GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(hole.offset(0, -1, 0), true, 1, new GSColor(fillColor,ufoAlpha), fillColor.getAlpha(), GeometryMasks.Quad.ALL);
                 break;
             }
             case "Flat": {
-                RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                RenderUtil.drawBox(hole, true, 1, fillColor, ufoAlpha, GeometryMasks.Quad.DOWN);
                 break;
             }
             case "Slab": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, ufoAlpha, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    RenderUtil.drawBox(hole, false, slabHeight.getValue(), fillColor, GeometryMasks.Quad.ALL);
+                    RenderUtil.drawBox(hole, false, slabHeight.getValue(), fillColor, ufoAlpha, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
             case "Double": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    RenderUtil.drawBox(hole, true, 1, fillColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBox(hole, true, 1, fillColor, ufoAlpha, GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    RenderUtil.drawBox(hole.setMaxY(hole.maxY + 1), true, 2, fillColor, GeometryMasks.Quad.ALL);
+                    RenderUtil.drawBox(hole.setMaxY(hole.maxY + 1), true, 2, fillColor, ufoAlpha, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
@@ -341,68 +239,39 @@ public class HoleESP extends Module {
         switch (mode.getValue()) {
             case "Air": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, ufoAlpha.getValue(), GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    RenderUtil.drawBoundingBox(hole, width.getValue(), outlineColor);
+                    RenderUtil.drawBoundingBox(hole, width.getValue(), outlineColor, ufoAlpha.getValue());
                 }
                 break;
             }
             case "Ground": {
-                RenderUtil.drawBoundingBox(hole.offset(0, -1, 0), width.getValue(), outlineColor);
+                RenderUtil.drawBoundingBox(hole.offset(0, -1, 0), width.getValue(), new GSColor(outlineColor,ufoAlpha.getValue()), outlineColor.getAlpha());
                 break;
             }
             case "Flat": {
-                RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, ufoAlpha.getValue(), GeometryMasks.Quad.DOWN);
                 break;
             }
             case "Slab": {
                 if (this.flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, ufoAlpha.getValue(), GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    RenderUtil.drawBoundingBox(hole.setMaxY(hole.minY + slabHeight.getValue()), width.getValue(), outlineColor);
+                    RenderUtil.drawBoundingBox(hole.setMaxY(hole.minY + slabHeight.getValue()), width.getValue(), outlineColor, ufoAlpha.getValue());
                 }
                 break;
             }
             case "Double": {
                 if (this.flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
-                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, GeometryMasks.Quad.DOWN);
+                    RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, ufoAlpha.getValue(), GeometryMasks.Quad.DOWN);
                 }
                 else {
-                    RenderUtil.drawBoundingBox(hole.setMaxY(hole.maxY + 1), width.getValue(), outlineColor);
+                    RenderUtil.drawBoundingBox(hole.setMaxY(hole.maxY + 1), width.getValue(), outlineColor, ufoAlpha.getValue());
                 }
                 break;
             }
-        }
-    }
-
-    private enum BlockSafety {
-        UNBREAKABLE,
-        RESISTANT,
-        BREAKABLE
-    }
-
-    private enum BlockOffset {
-        DOWN(0, -1, 0),
-        UP(0, 1, 0),
-        NORTH(0, 0, -1),
-        SOUTH(0, 0, 1),
-        WEST(-1, 0, 0),
-        EAST(1, 0, 0);
-
-        private final int x;
-        private final int y;
-        private final int z;
-
-        BlockOffset(int x, int y, int z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        public BlockPos offset(BlockPos pos) {
-            return pos.add(x, y, z);
         }
     }
 }

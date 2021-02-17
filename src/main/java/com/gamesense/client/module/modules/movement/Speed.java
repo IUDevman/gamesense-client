@@ -4,7 +4,7 @@ import com.gamesense.api.event.events.PlayerMoveEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.MotionUtil;
-import com.gamesense.api.util.world.Timer;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;

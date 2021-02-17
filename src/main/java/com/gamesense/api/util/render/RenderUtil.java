@@ -1,7 +1,8 @@
 package com.gamesense.api.util.render;
 
-import com.gamesense.client.module.modules.gui.ColorMain;
-import net.minecraft.client.renderer.OpenGlHelper;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glHint;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
@@ -10,6 +11,7 @@ import org.lwjgl.util.glu.Sphere;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.render.Nametags;
 
 import net.minecraft.client.Minecraft;
@@ -22,8 +24,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /**
  * @author 086
  * @author Hoosiers
@@ -34,201 +34,148 @@ import static org.lwjgl.opengl.GL11.*;
 public class RenderUtil {
 	private static final Minecraft mc = Minecraft.getMinecraft();
 
-	public static void drawBox(BlockPos blockPos, double height, GSColor color, int sides) {
-		drawBox(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, height, 1, color, sides);
+	// Line
+	public static void drawLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color) {
+		drawLine(posx,posy,posz,posx2,posy2,posz2,color,1);
 	}
-
-	public static void drawBox(AxisAlignedBB bb, boolean check, double height, GSColor color, int sides) {
-		if (check) {
-			drawBox(bb.minX,bb.minY,bb.minZ,bb.maxX-bb.minX, bb.maxY-bb.minY,bb.maxZ-bb.minZ,color,sides);
-		}
-		else {
-			drawBox(bb.minX,bb.minY,bb.minZ,bb.maxX-bb.minX, height,bb.maxZ-bb.minZ,color,sides);
-		}
-	}
-
-	public static void drawBox(double x, double y, double z, double w, double h, double d, GSColor color, int sides) {
+	
+	public static void drawLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color, float width) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		GlStateManager.glLineWidth(width);
 		color.glColor();
-		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-		if ((sides & GeometryMasks.Quad.DOWN) != 0) {
-			vertex(x+w,y,z,  bufferbuilder);
-			vertex(x+w,y,z+d,bufferbuilder);
-			vertex(x,  y,z+d,bufferbuilder);
-			vertex(x,  y,z,  bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.UP) != 0) {
-			vertex(x+w,y+h,z,  bufferbuilder);
-			vertex(x,  y+h,z,  bufferbuilder);
-			vertex(x,  y+h,z+d,bufferbuilder);
-			vertex(x+w,y+h,z+d,bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.NORTH) != 0) {
-			vertex(x+w,y,  z,bufferbuilder);
-			vertex(x,  y,  z,bufferbuilder);
-			vertex(x,  y+h,z,bufferbuilder);
-			vertex(x+w,y+h,z,bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.SOUTH) != 0) {
-			vertex(x,  y,  z+d,bufferbuilder);
-			vertex(x+w,y,  z+d,bufferbuilder);
-			vertex(x+w,y+h,z+d,bufferbuilder);
-			vertex(x,  y+h,z+d,bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.WEST) != 0) {
-			vertex(x,y,  z,  bufferbuilder);
-			vertex(x,y,  z+d,bufferbuilder);
-			vertex(x,y+h,z+d,bufferbuilder);
-			vertex(x,y+h,z,  bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.EAST) != 0) {
-			vertex(x+w,y,  z+d,bufferbuilder);
-			vertex(x+w,y,  z,  bufferbuilder);
-			vertex(x+w,y+h,z,  bufferbuilder);
-			vertex(x+w,y+h,z+d,bufferbuilder);
-		}
+		bufferbuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
+		vertex(posx,posy,posz,bufferbuilder);
+		vertex(posx2,posy2,posz2,bufferbuilder);
 		tessellator.draw();
 	}
 
-	public static void drawBoundingBox (BlockPos bp, double height, float width, GSColor color) {
-		drawBoundingBox(getBoundingBox(bp,1, height,1),width,color);
+	// Rectangle
+	public static void draw2DRect(int posX, int posY, int width, int height, int zHeight, GSColor color) {
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		color.glColor();
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+		bufferbuilder.pos(posX, posY + height, zHeight).endVertex();
+		bufferbuilder.pos(posX + width, posY + height, zHeight).endVertex();
+		bufferbuilder.pos(posX + width, posY, zHeight).endVertex();
+		bufferbuilder.pos(posX, posY, zHeight).endVertex();
+		tessellator.draw();
+		GlStateManager.enableTexture2D();
+		GlStateManager.disableBlend();
 	}
 
+	// Rectangle with border
+	private static void drawBorderedRect(double x, double y, double x1, double y1, float lineWidth, GSColor inside, GSColor border) {
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		inside.glColor();
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+		bufferbuilder.pos(x,y1,0).endVertex();
+		bufferbuilder.pos(x1,y1,0).endVertex();
+		bufferbuilder.pos(x1,y,0).endVertex();
+		bufferbuilder.pos(x,y,0).endVertex();
+		tessellator.draw();
+		border.glColor();
+		GlStateManager.glLineWidth(lineWidth);
+		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+		bufferbuilder.pos(x,y,0).endVertex();
+		bufferbuilder.pos(x,y1,0).endVertex();
+		bufferbuilder.pos(x1,y1,0).endVertex();
+		bufferbuilder.pos(x1,y,0).endVertex();
+		bufferbuilder.pos(x,y,0).endVertex();
+		tessellator.draw();
+	}
+
+	// Filled box
+	public static void drawBox(BlockPos blockPos, double height, GSColor color, int sides) {
+		drawBox(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, height, 1, color, color.getAlpha(), sides);
+	}
+	public static void drawBox(AxisAlignedBB bb, boolean check, double height, GSColor color, int sides) {
+		drawBox(bb,check,height,color,color.getAlpha(),sides);
+	}
+
+	public static void drawBox(AxisAlignedBB bb, boolean check, double height, GSColor color, int alpha, int sides) {
+		if (check) {
+			drawBox(bb.minX,bb.minY,bb.minZ,bb.maxX-bb.minX, bb.maxY-bb.minY,bb.maxZ-bb.minZ,color,alpha,sides);
+		}
+		else {
+			drawBox(bb.minX,bb.minY,bb.minZ,bb.maxX-bb.minX, height,bb.maxZ-bb.minZ,color,alpha,sides);
+		}
+	}
+
+	public static void drawBox(double x, double y, double z, double w, double h, double d, GSColor color, int alpha, int sides) {
+		GlStateManager.disableAlpha();
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		color.glColor();
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		doVerticies(new AxisAlignedBB(x,y,z,x+w,y+h,z+d),color,alpha,bufferbuilder,sides,false);
+		tessellator.draw();
+		GlStateManager.enableAlpha();
+	}
+
+	// Bounding box
+	public static void drawBoundingBox (BlockPos bp, double height, float width, GSColor color) {
+		drawBoundingBox(getBoundingBox(bp,1, height,1),width,color,color.getAlpha());
+	}
+	
 	public static void drawBoundingBox (AxisAlignedBB bb, double width, GSColor color) {
+		drawBoundingBox(bb,width,color,color.getAlpha());
+	}
+
+	public static void drawBoundingBox (AxisAlignedBB bb, double width, GSColor color, int alpha) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		GlStateManager.glLineWidth((float) width);
 		color.glColor();
-		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
-		vertex(bb.minX,bb.minY,bb.minZ,bufferbuilder);
-		vertex(bb.minX,bb.minY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.minY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.minY,bb.minZ,bufferbuilder);
-		vertex(bb.minX,bb.minY,bb.minZ,bufferbuilder);
-		vertex(bb.minX,bb.maxY,bb.minZ,bufferbuilder);
-		vertex(bb.minX,bb.maxY,bb.maxZ,bufferbuilder);
-		vertex(bb.minX,bb.minY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.minY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.maxY,bb.maxZ,bufferbuilder);
-		vertex(bb.minX,bb.maxY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.maxY,bb.maxZ,bufferbuilder);
-		vertex(bb.maxX,bb.maxY,bb.minZ,bufferbuilder);
-		vertex(bb.maxX,bb.minY,bb.minZ,bufferbuilder);
-		vertex(bb.maxX,bb.maxY,bb.minZ,bufferbuilder);
-		vertex(bb.minX,bb.maxY,bb.minZ,bufferbuilder);
+		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+		colorVertex(bb.minX,bb.minY,bb.minZ,color,color.getAlpha(),bufferbuilder);
+		colorVertex(bb.minX,bb.minY,bb.maxZ,color,color.getAlpha(),bufferbuilder);
+		colorVertex(bb.maxX,bb.minY,bb.maxZ,color,color.getAlpha(),bufferbuilder);
+		colorVertex(bb.maxX,bb.minY,bb.minZ,color,color.getAlpha(),bufferbuilder);
+		colorVertex(bb.minX,bb.minY,bb.minZ,color,color.getAlpha(),bufferbuilder);
+		colorVertex(bb.minX,bb.maxY,bb.minZ,color,alpha,bufferbuilder);
+		colorVertex(bb.minX,bb.maxY,bb.maxZ,color,alpha,bufferbuilder);
+		colorVertex(bb.minX,bb.minY,bb.maxZ,color,color.getAlpha(),bufferbuilder);
+		colorVertex(bb.maxX,bb.minY,bb.maxZ,color,color.getAlpha(),bufferbuilder);
+		colorVertex(bb.maxX,bb.maxY,bb.maxZ,color,alpha,bufferbuilder);
+		colorVertex(bb.minX,bb.maxY,bb.maxZ,color,alpha,bufferbuilder);
+		colorVertex(bb.maxX,bb.maxY,bb.maxZ,color,alpha,bufferbuilder);
+		colorVertex(bb.maxX,bb.maxY,bb.minZ,color,alpha,bufferbuilder);
+		colorVertex(bb.maxX,bb.minY,bb.minZ,color,color.getAlpha(),bufferbuilder);
+		colorVertex(bb.maxX,bb.maxY,bb.minZ,color,alpha,bufferbuilder);
+		colorVertex(bb.minX,bb.maxY,bb.minZ,color,alpha,bufferbuilder);
 		tessellator.draw();
 	}
 
+	// Bounding box with sides
 	public static void drawBoundingBoxWithSides(BlockPos blockPos, int width, GSColor color, int sides) {
-		drawBoundingBoxWithSides(getBoundingBox(blockPos, 1, 1, 1), width, color, sides);
+		drawBoundingBoxWithSides(getBoundingBox(blockPos, 1, 1, 1), width, color, color.getAlpha(), sides);
+	}
+	
+	public static void drawBoundingBoxWithSides(BlockPos blockPos, int width, GSColor color, int alpha, int sides) {
+		drawBoundingBoxWithSides(getBoundingBox(blockPos, 1, 1, 1), width, color, alpha, sides);
 	}
 
-
-
-	/* Chams start */
-	/*
-		Thank to seppuku for the code that i can understand,
-		is this a skid? It depends by how you are looking this.
-		I didnt only "copy" and "pasted", i also tried to understand what is happening
-		(you can see this by reading every lines i commented)
-		https://github.com/seppukudevelopment/seppuku/blob/master/src/main/java/me/rigamortis/seppuku/impl/module/render/ChamsModule.java
-		Thank to lukflug for helping me to understand
-		and for finding a bug
-
-		Hoosiers here- Techale was right above, but I ended up porting in and modifying a few functions from the above link so credit to Seppuku...
-		we have the same license, so it's safe to port in
-	 */
-
-	public static void createChamsPre() {
-		mc.getRenderManager().setRenderShadow(false);
-		mc.getRenderManager().setRenderOutlines(false);
-		GlStateManager.pushMatrix();
-		GlStateManager.depthMask(true);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, -1100000.0f);
-		GlStateManager.popMatrix();
+	public static void drawBoundingBoxWithSides(AxisAlignedBB axisAlignedBB, int width, GSColor color, int sides) {
+		drawBoundingBoxWithSides(axisAlignedBB,width,color,color.getAlpha(),sides);
 	}
-
-	public static void createChamsPost() {
-		boolean shadow = mc.getRenderManager().isRenderShadow();
-		mc.getRenderManager().setRenderShadow(shadow);
-		GlStateManager.pushMatrix();
-		GlStateManager.depthMask(false);
-		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, 1100000.0f);
-		GlStateManager.popMatrix();
-	}
-
-	public static void createColorPre(GSColor color, boolean isPlayer) {
-		mc.getRenderManager().setRenderShadow(false);
-		mc.getRenderManager().setRenderOutlines(false);
-		GlStateManager.pushMatrix();
-		GlStateManager.depthMask(true);
-		glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, -1100000.0f);
-		glDisable(GL11.GL_TEXTURE_2D);
-		if (!isPlayer) {
-			GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
-		}
-		color.glColor();
-		GlStateManager.popMatrix();
-	}
-
-	public static void createColorPost(boolean isPlayer) {
-		boolean shadow = mc.getRenderManager().isRenderShadow();
-		mc.getRenderManager().setRenderShadow(shadow);
-		GlStateManager.pushMatrix();
-		GlStateManager.depthMask(false);
-		if (!isPlayer) {
-			GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
-		}
-		glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0f, 1100000.0f);
-		glEnable(GL11.GL_TEXTURE_2D);
-		GlStateManager.popMatrix();
-	}
-
-	public static void createWirePre(GSColor color, int lineWidth, boolean isPlayer) {
-		mc.getRenderManager().setRenderShadow(false);
-		mc.getRenderManager().setRenderOutlines(false);
-		GlStateManager.pushMatrix();
-		GlStateManager.depthMask(true);
-		glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-		glEnable(GL11.GL_POLYGON_OFFSET_LINE);
-		glPolygonOffset(1.0f, -1100000.0f);
-		glDisable(GL11.GL_TEXTURE_2D);
-		glDisable(GL11.GL_LIGHTING);
-		glEnable(GL_LINE_SMOOTH);
-		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-		if (!isPlayer) {
-			GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
-		}
-		glLineWidth(lineWidth);
-		color.glColor();
-		GlStateManager.popMatrix();
-	}
-
-	public static void createWirePost(boolean isPlayer) {
-		boolean shadow = mc.getRenderManager().isRenderShadow();
-		mc.getRenderManager().setRenderShadow(shadow);
-		GlStateManager.pushMatrix();
-		GlStateManager.depthMask(false);
-		if (!isPlayer) {
-			GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
-		}
-		glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-		glDisable(GL11.GL_POLYGON_OFFSET_LINE);
-		glPolygonOffset(1.0f, 1100000.0f);
-		glEnable(GL11.GL_TEXTURE_2D);
-		glEnable(GL11.GL_LIGHTING);
-		glDisable(GL_LINE_SMOOTH);
-		GlStateManager.popMatrix();
+	
+	public static void drawBoundingBoxWithSides(AxisAlignedBB axisAlignedBB, int width, GSColor color, int alpha, int sides) {
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		GlStateManager.glLineWidth(width);
+		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+		doVerticies(axisAlignedBB,color,alpha,bufferbuilder,sides,true);
+		tessellator.draw();
 	}
 
 	/* Base for direction start */
-	public static class Points {
+	private static class Points {
 		// Coordinates
 		double[][] point = new double[10][2];
 		// For counting when adding to point
@@ -276,7 +223,7 @@ public class RenderUtil {
 		(maybe in the future if i want to add something)
 	 */
 
-	public static void drawBoxWithDirection(AxisAlignedBB bb, GSColor color, float rotation, double width, int mode) {
+	public static void drawBoxWithDirection(AxisAlignedBB bb, GSColor color, float rotation, float width, int mode) {
 		// Get the center of the 2d square (we are going to rotate based from the cetner)
 		double xCenter = bb.minX + (bb.maxX - bb.minX) / 2;
 		double zCenter = bb.minZ + (bb.maxZ - bb.minZ) / 2;
@@ -300,110 +247,33 @@ public class RenderUtil {
 	/* Base for direction end */
 
 	/* drawBoxWithDirection start */
-	public static void drawDirection(Points square, GSColor color, double width) {
+	public static void drawDirection(Points square, GSColor color, float width) {
 		/// Lets dreaw all the lines
 		// Down
 		for(int i = 0; i < 4; i++) {
-			drawLineWidth(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
+			drawLine(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
 					square.getPoint((i + 1) % 4)[0], square.yMin, square.getPoint((i + 1) % 4)[1],
 					color, width
 			);
 		}
 		// Up
 		for(int i = 0; i < 4; i++) {
-			drawLineWidth(square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
+			drawLine(square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
 					square.getPoint((i + 1) % 4)[0], square.yMax, square.getPoint((i + 1) % 4)[1],
 					color, width
 			);
 		}
 		// Vertically
 		for(int i = 0; i < 4; i++) {
-			drawLineWidth(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
+			drawLine(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
 					square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
 					color, width
 			);
 		}
 	}
-
-	public static void drawLineWidth(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color, double width) {
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		GlStateManager.glLineWidth((float) width);
-		color.glColor();
-		bufferbuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
-		vertex(posx,posy,posz,bufferbuilder);
-		vertex(posx2,posy2,posz2,bufferbuilder);
-		tessellator.draw();
-	}
 	/* drawBoxWithDirection end */
 
-	//hoosiers put this together with blood, sweat, and tears D:
-	public static void drawBoundingBoxWithSides(AxisAlignedBB axisAlignedBB, int width, GSColor color, int sides) {
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		GlStateManager.glLineWidth(width);
-		color.glColor();
-		double w = axisAlignedBB.maxX-axisAlignedBB.minX;
-		double h = axisAlignedBB.maxY-axisAlignedBB.minY;
-		double d = axisAlignedBB.maxZ-axisAlignedBB.minZ;
-
-		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
-		if ((sides & GeometryMasks.Quad.EAST) != 0) {
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY,  axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY,  axisAlignedBB.minZ,  bufferbuilder);
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY+h,axisAlignedBB.minZ,  bufferbuilder);
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY+h,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX +w, axisAlignedBB.minY, axisAlignedBB.minZ +d, bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.WEST) != 0) {
-			vertex(axisAlignedBB.minX,axisAlignedBB.minY, axisAlignedBB.minZ,  bufferbuilder);
-			vertex(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX,axisAlignedBB.minY+h,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX,axisAlignedBB.minY+h,axisAlignedBB.minZ,  bufferbuilder);
-			vertex(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ, bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.NORTH) != 0) {
-			vertex(axisAlignedBB.minX + w,axisAlignedBB.minY, axisAlignedBB.minZ, bufferbuilder);
-			vertex(axisAlignedBB.minX,  axisAlignedBB.minY, axisAlignedBB.minZ,bufferbuilder);
-			vertex(axisAlignedBB.minX,  axisAlignedBB.minY+h,axisAlignedBB.minZ,bufferbuilder);
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY+h,axisAlignedBB.minZ,bufferbuilder);
-			vertex(axisAlignedBB.minX +w, axisAlignedBB.minY, axisAlignedBB.minZ, bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.SOUTH) != 0) {
-			vertex(axisAlignedBB.minX,  axisAlignedBB.minY,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY+h,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX,  axisAlignedBB.minY+h,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ +d, bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.UP) != 0) {
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY+h,axisAlignedBB.minZ,  bufferbuilder);
-			vertex(axisAlignedBB.minX,  axisAlignedBB.minY+h,axisAlignedBB.minZ,  bufferbuilder);
-			vertex(axisAlignedBB.minX,  axisAlignedBB.minY+h,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY+h,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX +w, axisAlignedBB.minY +h, axisAlignedBB.minZ, bufferbuilder);
-		}
-		if ((sides & GeometryMasks.Quad.DOWN) != 0) {
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY,axisAlignedBB.minZ,  bufferbuilder);
-			vertex(axisAlignedBB.minX+w,axisAlignedBB.minY,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX,  axisAlignedBB.minY,axisAlignedBB.minZ+d,bufferbuilder);
-			vertex(axisAlignedBB.minX,  axisAlignedBB.minY,axisAlignedBB.minZ,  bufferbuilder);
-			vertex(axisAlignedBB.minX +w, axisAlignedBB.minY, axisAlignedBB.minZ, bufferbuilder);
-		}
-		tessellator.draw();
-	}
-
-	public static void drawLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color) {
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		GlStateManager.glLineWidth(1.0f);
-		color.glColor();
-		bufferbuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
-		vertex(posx,posy,posz,bufferbuilder);
-		vertex(posx2,posy2,posz2,bufferbuilder);
-		tessellator.draw();
-	}
-
+	// Sphere
 	public static void drawSphere(double x, double y, double z, float size, int slices, int stacks) {
 		final Sphere s = new Sphere();
 		GlStateManager.glLineWidth(1.2f);
@@ -414,6 +284,7 @@ public class RenderUtil {
 		GlStateManager.popMatrix();
 	}
 
+	// Nametags
 	public static void drawNametag (Entity entity, String[] text, GSColor color, int type) {
 		Vec3d pos = EntityUtil.getInterpolatedPos(entity,mc.getRenderPartialTicks());
 		drawNametag(pos.x,pos.y+entity.height,pos.z,text,color,type);
@@ -471,29 +342,13 @@ public class RenderUtil {
 		}
 	}
 
-	private static void drawBorderedRect(double x, double y, double x1, double y1, float lineWidth, GSColor inside, GSColor border) {
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		inside.glColor();
-		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-		bufferbuilder.pos(x,y1,0).endVertex();
-		bufferbuilder.pos(x1,y1,0).endVertex();
-		bufferbuilder.pos(x1,y,0).endVertex();
-		bufferbuilder.pos(x,y,0).endVertex();
-		tessellator.draw();
-		border.glColor();
-		GlStateManager.glLineWidth(lineWidth);
-		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
-		bufferbuilder.pos(x,y,0).endVertex();
-		bufferbuilder.pos(x,y1,0).endVertex();
-		bufferbuilder.pos(x1,y1,0).endVertex();
-		bufferbuilder.pos(x1,y,0).endVertex();
-		bufferbuilder.pos(x,y,0).endVertex();
-		tessellator.draw();
-	}
-
+	// Private misc util functions
 	private static void vertex (double x, double y, double z, BufferBuilder bufferbuilder) {
 		bufferbuilder.pos(x-mc.getRenderManager().viewerPosX,y-mc.getRenderManager().viewerPosY,z-mc.getRenderManager().viewerPosZ).endVertex();
+	}
+	
+	private static void colorVertex (double x, double y, double z, GSColor color, int alpha, BufferBuilder bufferbuilder) {
+		bufferbuilder.pos(x-mc.getRenderManager().viewerPosX,y-mc.getRenderManager().viewerPosY,z-mc.getRenderManager().viewerPosZ).color(color.getRed(),color.getGreen(),color.getBlue(),alpha).endVertex();
 	}
 
 	private static AxisAlignedBB getBoundingBox (BlockPos bp, double width, double height, double depth) {
@@ -502,24 +357,54 @@ public class RenderUtil {
 		double z=bp.getZ();
 		return new AxisAlignedBB(x,y,z,x+width,y+height,z+depth);
 	}
-
-	public static void draw2DRect(int posX, int posY, int width, int height, int zHeight, GSColor color) {
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		GlStateManager.enableBlend();
-		GlStateManager.disableTexture2D();
-		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		color.glColor();
-		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-		bufferbuilder.pos(posX, posY + height, zHeight).endVertex();
-		bufferbuilder.pos(posX + width, posY + height, zHeight).endVertex();
-		bufferbuilder.pos(posX + width, posY, zHeight).endVertex();
-		bufferbuilder.pos(posX, posY, zHeight).endVertex();
-		tessellator.draw();
-		GlStateManager.enableTexture2D();
-		GlStateManager.disableBlend();
+	
+	//hoosiers put this together with blood, sweat, and tears D:
+	private static void doVerticies(AxisAlignedBB axisAlignedBB, GSColor color, int alpha, BufferBuilder bufferbuilder, int sides, boolean five) {
+		if ((sides & GeometryMasks.Quad.EAST) != 0) {
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.minY,axisAlignedBB.maxZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.minY,axisAlignedBB.minZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.maxY,axisAlignedBB.minZ,color,alpha,bufferbuilder);
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.maxY,axisAlignedBB.maxZ,color,alpha,bufferbuilder);
+			if (five) colorVertex(axisAlignedBB.maxX,axisAlignedBB.minY,axisAlignedBB.maxZ,color,color.getAlpha(),bufferbuilder);
+		}
+		if ((sides & GeometryMasks.Quad.WEST) != 0) {
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.minZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.maxZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.maxY,axisAlignedBB.maxZ,color,alpha,bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.maxY,axisAlignedBB.minZ,color,alpha,bufferbuilder);
+			if (five) colorVertex(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.minZ,color,color.getAlpha(),bufferbuilder);
+		}
+		if ((sides & GeometryMasks.Quad.NORTH) != 0) {
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.minY,axisAlignedBB.minZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.minZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.maxY,axisAlignedBB.minZ,color,alpha,bufferbuilder);
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.maxY,axisAlignedBB.minZ,color,alpha,bufferbuilder);
+			if (five) colorVertex(axisAlignedBB.maxX,axisAlignedBB.minY,axisAlignedBB.minZ,color,color.getAlpha(),bufferbuilder);
+		}
+		if ((sides & GeometryMasks.Quad.SOUTH) != 0) {
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.maxZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.minY,axisAlignedBB.maxZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.maxY,axisAlignedBB.maxZ,color,alpha,bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.maxY,axisAlignedBB.maxZ,color,alpha,bufferbuilder);
+			if (five) colorVertex(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.maxZ,color,color.getAlpha(),bufferbuilder);
+		}
+		if ((sides & GeometryMasks.Quad.UP) != 0) {
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.maxY,axisAlignedBB.minZ,color,alpha,bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.maxY,axisAlignedBB.minZ,color,alpha,bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.maxY,axisAlignedBB.maxZ,color,alpha,bufferbuilder);
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.maxY,axisAlignedBB.maxZ,color,alpha,bufferbuilder);
+			if (five) colorVertex(axisAlignedBB.maxX,axisAlignedBB.maxY,axisAlignedBB.minZ,color,alpha,bufferbuilder);
+		}
+		if ((sides & GeometryMasks.Quad.DOWN) != 0) {
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.minY,axisAlignedBB.minZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.maxX,axisAlignedBB.minY,axisAlignedBB.maxZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.maxZ,color,color.getAlpha(),bufferbuilder);
+			colorVertex(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.minZ,color,color.getAlpha(),bufferbuilder);
+			if (five) colorVertex(axisAlignedBB.maxX,axisAlignedBB.minY,axisAlignedBB.minZ,color,color.getAlpha(),bufferbuilder);
+		}
 	}
 
+	// State prep and restore functions
 	public static void prepare() {
 		glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 		GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ZERO, GL11.GL_ONE);
@@ -540,7 +425,6 @@ public class RenderUtil {
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		GlStateManager.enableAlpha();
 		GlStateManager.enableCull();
-		GlStateManager.enableLighting();
 		GlStateManager.enableTexture2D();
 		GlStateManager.enableDepth();
 		GlStateManager.disableBlend();

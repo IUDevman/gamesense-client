@@ -3,7 +3,7 @@ buildscript {
 		jcenter()
 		maven {
 			name = 'forge'
-			url = 'http://files.minecraftforge.net/maven'
+			url = 'https://files.minecraftforge.net/maven'
 		}
 		maven {
 			name = 'SpongePowered'
@@ -32,7 +32,7 @@ minecraft {
 	version = project.forgeVersion
 	runDir = 'run'
 	mappings = project.mcpVersion
-	coreMod = 'com.gamesense.client.GameSense'
+	coreMod = 'com.gamesense.mixin.GameSenseMixinLoader'
 	makeObfSourceJar = false
 }
 
@@ -47,10 +47,10 @@ repositories {
 	}
 	maven {
 		name = 'swt-repo'
-		url = "http://maven-eclipse.github.io/maven"
+		url = "https://maven-eclipse.github.io/maven"
 	}
 	maven {
-		name = "jitpack.io"
+		name = 'jitpack.io'
 		url = "https://jitpack.io"
 	}
 	maven {
@@ -61,18 +61,18 @@ repositories {
 }
 
 dependencies {
-	compile("org.spongepowered:mixin:0.7.4-SNAPSHOT") {
+	compile('org.spongepowered:mixin:0.7.4-SNAPSHOT') {
 		exclude module: 'launchwrapper'
 		exclude module: 'guava'
 		exclude module: 'gson'
 		exclude module: 'commons-io'
 	}
-	compile "com.github.ZeroMemes:Alpine:1.5"
+	compile 'com.github.ZeroMemes:Alpine:1.5'
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
-	compile group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
-	compile('com.lukflug:panelstudio:0.1.7')
-	compile('com.lukflug:panelstudio-mc12:0.1.7')
+	compile('com.lukflug:panelstudio:0.1.8')
+	compile('com.lukflug:panelstudio-mc12:0.1.8')
 }
 
 processResources {

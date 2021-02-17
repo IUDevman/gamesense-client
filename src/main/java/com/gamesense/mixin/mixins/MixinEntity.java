@@ -12,7 +12,7 @@ public class MixinEntity {
 
 	@Redirect(method = "applyEntityCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
 	public void velocity(Entity entity, double x, double y, double z) {
-		if (!ModuleManager.isModuleEnabled("PlayerTweaks") || ModuleManager.isModuleEnabled("PlayerTweaks") && !PlayerTweaks.noPush.getValue()) {
+		if (!ModuleManager.isModuleEnabled(PlayerTweaks.class) || ModuleManager.isModuleEnabled(PlayerTweaks.class) && !PlayerTweaks.noPush.getValue()) {
 			entity.motionX += x;
 			entity.motionY += y;
 			entity.motionZ += z;

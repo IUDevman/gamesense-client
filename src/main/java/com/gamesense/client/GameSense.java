@@ -8,7 +8,7 @@ import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.misc.VersionChecker;
 import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.CapeUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
@@ -29,7 +29,7 @@ public class GameSense {
 
 	public static final String MODNAME = "GameSense";
 	public static final String MODID = "gamesense";
-	public static final String MODVER = "v2.2.6";
+	public static final String MODVER = "v2.2.7";
 	/** Official release starts with a "v", dev versions start with a "d" to bypass version check */
 
 	public static final Logger LOGGER = LogManager.getLogger(MODNAME);
@@ -61,7 +61,6 @@ public class GameSense {
 	public SettingsManager settingsManager;
 	public Friends friends;
 	public Enemies enemies;
-	public ModuleManager moduleManager;
 	public GameSenseGUI gameSenseGUI;
 	public SaveConfig saveConfig;
 	public LoadConfig loadConfig;
@@ -85,7 +84,7 @@ public class GameSense {
 		enemies = new Enemies();
 		LOGGER.info("Friends and enemies initialized!");
 
-		moduleManager = new ModuleManager();
+		ModuleManager.init();
 		LOGGER.info("Modules initialized!");
 
 		gameSenseGUI = new GameSenseGUI();

@@ -14,6 +14,7 @@ import com.lukflug.panelstudio.theme.Theme;
 import net.minecraft.util.text.TextFormatting;
 
 public class SyncableColorComponent extends ColorComponent {
+
 	public SyncableColorComponent (Theme theme, Setting.ColorSetting setting, Toggleable colorToggle, Animation animation) {
 		super(TextFormatting.BOLD+setting.getName(),null,theme.getContainerRenderer(),animation,theme.getComponentRenderer(),setting,false,true,colorToggle);
 		if (setting!=ClickGuiModule.enabledColor) addComponent(new SyncButton(theme.getComponentRenderer()));

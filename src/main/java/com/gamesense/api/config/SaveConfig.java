@@ -11,8 +11,8 @@ import java.nio.file.Paths;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.enemy.Enemy;
-import com.gamesense.api.util.player.friends.Friend;
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.player.friend.Friend;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GuiConfig;
 import com.gamesense.client.command.Command;
@@ -20,6 +20,7 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
+import com.gamesense.client.module.modules.misc.AutoRespawn;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -282,6 +283,20 @@ public class SaveConfig {
 
         messageObject.add("Message", new JsonPrimitive(AutoReply.getReply()));
         mainObject.add("AutoReply", messageObject);
+        String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
+        fileOutputStreamWriter.write(jsonString);
+        fileOutputStreamWriter.close();
+    }
+
+    public void saveAutoRespawn() throws IOException {
+
+        registerFiles(miscName, "AutoRespawn");
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "AutoRespawn" + ".json"), StandardCharsets.UTF_8);
+        JsonObject mainObject = new JsonObject();
+
+        mainObject.add("Message", new JsonPrimitive(AutoRespawn.getAutoRespawnMessages()));
         String jsonString = gson.toJson(new JsonParser().parse(mainObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();

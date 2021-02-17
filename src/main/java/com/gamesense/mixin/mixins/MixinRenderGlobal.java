@@ -1,6 +1,7 @@
 package com.gamesense.mixin.mixins;
 
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.render.BlockHighlight;
 import com.gamesense.client.module.modules.render.BreakESP;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -23,14 +24,14 @@ public class MixinRenderGlobal {
 
     @Inject(method = "drawSelectionBox", at = @At("HEAD"), cancellable = true)
     public void drawSelectionBox(EntityPlayer player, RayTraceResult movingObjectPositionIn, int execute, float partialTicks, CallbackInfo callbackInfo) {
-        if (ModuleManager.isModuleEnabled("BlockHighlight")) {
+        if (ModuleManager.isModuleEnabled(BlockHighlight.class)) {
             callbackInfo.cancel();
         }
     }
 
     @Inject(method = "drawBlockDamageTexture", at = @At("HEAD"), cancellable = true)
     public void drawBlockDamageTexture(Tessellator tessellatorIn, BufferBuilder bufferBuilderIn, Entity entityIn, float partialTicks, CallbackInfo callbackInfo) {
-        if (ModuleManager.isModuleEnabled("BreakESP") && BreakESP.cancelAnimation.getValue()) {
+        if (ModuleManager.isModuleEnabled(BreakESP.class) && BreakESP.cancelAnimation.getValue()) {
             callbackInfo.cancel();
         }
     }

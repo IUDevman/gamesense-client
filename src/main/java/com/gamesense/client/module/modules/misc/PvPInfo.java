@@ -160,7 +160,7 @@ public class PvPInfo extends Module {
 	}
 
 	private boolean isBurrowed(Entity entity) {
-		BlockPos entityPos = new BlockPos(roundValueToCenter(entity.posX), entity.posY, roundValueToCenter(entity.posZ));
+		BlockPos entityPos = new BlockPos(roundValueToCenter(entity.posX), entity.posY + .2, roundValueToCenter(entity.posZ));
 
 		if (mc.world.getBlockState(entityPos).getBlock() == Blocks.OBSIDIAN || mc.world.getBlockState(entityPos).getBlock() == Blocks.ENDER_CHEST) {
 			return true;
@@ -274,8 +274,8 @@ public class PvPInfo extends Module {
 	}
 
 	public void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
 		popCounterHashMap = new HashMap<>();
+		GameSense.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable() {

@@ -34,7 +34,7 @@ public class VersionChecker {
         }
 
         try {
-            URL url = new URL("https://pastebin.com/raw/QxR9CS76");
+            URL url = new URL("https://raw.githubusercontent.com/IUDevman/gamesense-assets/main/files/versioncontrol.txt");
             Scanner scanner = new Scanner(url.openStream());
 
             String grabbedVersion = scanner.next();
@@ -59,10 +59,7 @@ public class VersionChecker {
         JLabel label = new JLabel();
         Font font = label.getFont();
 
-        StringBuffer style = new StringBuffer("font-family:" + font.getFamily() + ";");
-        style.append("font-weight:" + (font.isBold() ? "bold" : "normal") + ";");
-        style.append("font-size:" + font.getSize() + "pt;");
-
+        String style = "font-family:" + font.getFamily() + ";" + "font-weight:" + (font.isBold() ? "bold" : "normal") + ";" + "font-size:" + font.getSize() + "pt;";
         JEditorPane editorPane = new JEditorPane("text/html", "<html><body style=\"" + style + "\">" + "Version outdated! Download the latest (" + newVersion + ") " + "<a href=\"https://github.com/IUDevman/gamesense-client/releases\">HERE</a>" + "!" + "</body></html>");
 
         editorPane.addHyperlinkListener(new HyperlinkListener() {
