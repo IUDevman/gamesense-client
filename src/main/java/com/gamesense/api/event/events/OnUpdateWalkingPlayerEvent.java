@@ -4,6 +4,7 @@ import com.gamesense.api.event.GameSenseEvent;
 import com.gamesense.api.event.MultiPhase;
 import com.gamesense.api.event.Phase;
 import com.gamesense.api.util.misc.EnumUtils;
+import com.gamesense.api.util.player.PlayerPacket;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
@@ -27,6 +28,19 @@ public class OnUpdateWalkingPlayerEvent extends GameSenseEvent implements MultiP
     @Override
     public OnUpdateWalkingPlayerEvent nextPhase() {
         return new OnUpdateWalkingPlayerEvent(position, rotation, EnumUtils.next(phase));
+    }
+
+    public void apply(PlayerPacket packet) {
+        Vec3d position = packet.getPosition();
+        Vec2f rotation = packet.getRotation();
+
+        if (position != null) {
+            this.position = position;
+        }
+
+        if (rotation != null) {
+            this.rotation = rotation;
+        }
     }
 
     public Vec3d getPosition() {
