@@ -29,7 +29,6 @@ public class MixinMinecraft {
 		if (ModuleManager.isModuleEnabled(MultiTask.class)) {
 			isHittingBlock = playerController.getIsHittingBlock();
 			playerController.isHittingBlock = false;
-			System.out.println("rightClickMouse");
 		}
 	}
 
@@ -45,7 +44,6 @@ public class MixinMinecraft {
 		if (ModuleManager.isModuleEnabled(MultiTask.class)) {
 			handActive = player.isHandActive();
 			((AccessorEntityPlayerSP) player).gsSetHandActive(false);
-			System.out.println("sendClickBlockToController");
 		}
 	}
 
