@@ -1,26 +1,22 @@
 package com.gamesense.client.module.modules.combat;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.gamesense.api.util.player.friends.Friends;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.player.PlacementUtil;
+import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Module;
-
-import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import net.minecraft.block.*;
+import net.minecraft.block.BlockWeb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class AutoWeb extends Module {
 
@@ -54,14 +50,12 @@ public class AutoWeb extends Module {
 	private boolean isSneaking = false;
 	private boolean firstRun = false;
 
-	private int blocksPlaced;
 	private int delayTimeTicks = 0;
 	private int offsetSteps = 0;
 	private int oldSlot = -1;
 
-	private EntityPlayer closestTarget;
-
 	public void onEnable() {
+		PlacementUtil.onEnable();
 		if (mc.player == null) {
 			disable();
 			return;
@@ -73,12 +67,14 @@ public class AutoWeb extends Module {
 
 		oldSlot = mc.player.inventory.currentItem;
 
-		if (findWebSlot() != -1) {
-			mc.player.inventory.currentItem = findWebSlot();
+		int newSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
+		if (newSlot != -1) {
+			mc.player.inventory.currentItem = newSlot;
 		}
 	}
 
 	public void onDisable() {
+		PlacementUtil.onDisable();
 		if (mc.player == null) {
 			return;
 		}
@@ -118,7 +114,7 @@ public class AutoWeb extends Module {
 			return;
 		}
 
-		findClosestTarget();
+		EntityPlayer closestTarget = PlayerUtil.findClosestTarget();
 
 		if (closestTarget == null) {
 			return;
@@ -126,7 +122,7 @@ public class AutoWeb extends Module {
 
 		if (firstRun) {
 			firstRun = false;
-			if (findWebSlot() == -1) {
+			if (InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8) == -1) {
 				noWeb = true;
 			}
 		}
@@ -140,7 +136,7 @@ public class AutoWeb extends Module {
 			}
 		}
 
-		blocksPlaced = 0;
+		int blocksPlaced = 0;
 
 		while (blocksPlaced <= blocksPerTick.getValue()) {
 
@@ -172,6 +168,11 @@ public class AutoWeb extends Module {
 
 			if (tryPlacing && placeBlock(targetPos, enemyRange.getValue())) {
 				blocksPlaced++;
+			} else {
+				if (InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8) == -1) {
+					noWeb = true;
+					disable();
+				}
 			}
 
 			offsetSteps++;
@@ -183,114 +184,12 @@ public class AutoWeb extends Module {
 		}
 	}
 
-	private int findWebSlot() {
-		int slot = -1;
-
-		for (int i = 0; i < 9; i++) {
-			ItemStack stack = mc.player.inventory.getStackInSlot(i);
-
-			if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
-				continue;
-			}
-
-			Block block = ((ItemBlock) stack.getItem()).getBlock();
-			if (block instanceof BlockWeb) {
-				slot = i;
-				break;
-			}
-		}
-		return slot;
-	}
-
 	private boolean placeBlock(BlockPos pos, int range) {
-		Block block = mc.world.getBlockState(pos).getBlock();
-
-		if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
+		if (mc.player.getDistanceSq(pos) > range * range) {
 			return false;
 		}
 
-		EnumFacing side = BlockUtil.getPlaceableSide(pos);
-
-		if (side == null) {
-			return false;
-		}
-
-		BlockPos neighbour = pos.offset(side);
-		EnumFacing opposite = side.getOpposite();
-
-		if (!BlockUtil.canBeClicked(neighbour)) {
-			return false;
-		}
-
-		Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-		Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
-
-		if (mc.player.getPositionVector().distanceTo(hitVec) > range) {
-			return false;
-		}
-
-		int webbSlot = findWebSlot();
-
-		if (mc.player.inventory.currentItem != webbSlot && webbSlot != -1) {
-			mc.player.inventory.currentItem = webbSlot;
-		}
-
-		if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
-			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
-			isSneaking = true;
-		}
-
-		if (webbSlot == -1) {
-			noWeb = true;
-			return false;
-		}
-
-		boolean stoppedAC = false;
-
-		if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-			AutoCrystalGS.stopAC = true;
-			stoppedAC = true;
-		}
-
-		if (rotate.getValue()) {
-			BlockUtil.faceVectorPacketInstant(hitVec);
-		}
-
-		mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-		mc.player.swingArm(EnumHand.MAIN_HAND);
-		mc.rightClickDelayTimer = 4;
-
-		if (stoppedAC) {
-			AutoCrystalGS.stopAC = false;
-			stoppedAC = false;
-		}
-
-		return true;
-	}
-
-	private void findClosestTarget() {
-		List<EntityPlayer> playerList = mc.world.playerEntities;
-
-		closestTarget = null;
-
-		for (EntityPlayer entityPlayer : playerList) {
-			if (entityPlayer == mc.player) {
-				continue;
-			}
-			if (Friends.isFriend(entityPlayer.getName())) {
-				continue;
-			}
-			if (entityPlayer.isDead) {
-				continue;
-			}
-			if (closestTarget == null) {
-				closestTarget = entityPlayer;
-				continue;
-			}
-			if (mc.player.getDistance(entityPlayer) < mc.player.getDistance(closestTarget)) {
-				closestTarget = entityPlayer;
-			}
-		}
+		return PlacementUtil.placeBlock(pos, EnumHand.MAIN_HAND, rotate.getValue(), BlockWeb.class);
 	}
 
 	private static class Offsets {

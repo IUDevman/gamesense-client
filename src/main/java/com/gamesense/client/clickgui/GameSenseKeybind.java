@@ -8,6 +8,7 @@ import com.lukflug.panelstudio.settings.KeybindSetting;
 import com.lukflug.panelstudio.theme.Renderer;
 
 public class GameSenseKeybind extends KeybindComponent {
+
 	public GameSenseKeybind (Renderer renderer, KeybindSetting keybind) {
 		super(renderer, keybind);
 	}

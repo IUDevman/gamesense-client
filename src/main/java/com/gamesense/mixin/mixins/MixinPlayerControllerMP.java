@@ -4,10 +4,13 @@ import com.gamesense.api.event.events.DamageBlockEvent;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.exploits.PacketUse;
 import com.gamesense.client.module.modules.exploits.Reach;
+import com.gamesense.client.module.modules.misc.MultiTask;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,7 +41,7 @@ public abstract class MixinPlayerControllerMP {
 
 	@Inject(method = "getBlockReachDistance", at = @At("RETURN"), cancellable = true)
 	private void getReachDistanceHook(final CallbackInfoReturnable<Float> distance) {
-		if (ModuleManager.getModuleByName("Reach").isEnabled()) {
+		if (ModuleManager.isModuleEnabled(Reach.class)) {
 			distance.setReturnValue((float) Reach.distance.getValue());
 		}
 	}
@@ -46,15 +49,17 @@ public abstract class MixinPlayerControllerMP {
 	//author cookiedragon234
 	@Inject(method = "resetBlockRemoving", at = @At("HEAD"), cancellable = true)
 	private void resetBlock(CallbackInfo callbackInfo) {
-		if (ModuleManager.isModuleEnabled("MultiTask")) {
+		if (ModuleManager.isModuleEnabled(MultiTask.class)) {
 			callbackInfo.cancel();
 		}
 	}
 
 	@Inject(method = "onStoppedUsingItem", at = @At("HEAD"), cancellable = true)
 	public void onStoppedUsingItem(EntityPlayer playerIn, CallbackInfo ci) {
-		if (playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood) {
-			if (ModuleManager.isModuleEnabled("PacketEat")) {
+		if (ModuleManager.isModuleEnabled(PacketUse.class)) {
+			if ((PacketUse.food.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood)
+				|| (PacketUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
+				|| PacketUse.all.getValue()) {
 				this.syncCurrentPlayItem();
 				playerIn.stopActiveHand();
 				ci.cancel();

@@ -171,6 +171,11 @@ public class EventProcessor {
 		GameSense.EVENT_BUS.post(event);
 	}
 
+	@SubscribeEvent
+	public void onGuiOpen(GuiOpenEvent event) {
+		GameSense.EVENT_BUS.post(event);
+	}
+
 	@EventHandler
 	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
 		if (event.getPacket() instanceof SPacketPlayerListItem) {

@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.hud.HUDList;

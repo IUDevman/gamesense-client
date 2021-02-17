@@ -1,12 +1,19 @@
 package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.world.HoleUtil;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.HashMap;
+
 /**
- * @Author Hoosiers on 09/28/20
+ * @author Hoosiers
+ * @since 09/28/20
+ * @author 0b00101010
+ * @since 25/01/21
  */
 
 public class Anchor extends Module {
@@ -15,10 +22,12 @@ public class Anchor extends Module {
         super("Anchor", Category.Movement);
     }
 
-    Setting.Integer activateYLevel;
+    Setting.Boolean guarantee;
+    Setting.Integer activateHeight;
 
     public void setup() {
-        activateYLevel = registerInteger("Activate Y", 20, 0, 256);
+        guarantee = registerBoolean("Guarantee Hole", true);
+        activateHeight = registerInteger("Activate Height", 2, 1, 5);
     }
 
     BlockPos playerPos;
@@ -32,61 +41,33 @@ public class Anchor extends Module {
             return;
         }
 
-        if (mc.player.posY > activateYLevel.getValue()) {
+        double blockX = Math.floor(mc.player.posX);
+        double blockZ = Math.floor(mc.player.posZ);
+
+        double offsetX = Math.abs(mc.player.posX - blockX);
+        double offsetZ = Math.abs(mc.player.posZ - blockZ);
+
+        if (guarantee.getValue() && (offsetX < 0.3f || offsetX > 0.7f || offsetZ < 0.3f || offsetZ > 0.7f)) {
             return;
         }
 
-        double newX;
-        double newZ;
-
-        //specifies the x and z coordinates to be centered- should prevent people from getting stuck up on side blocks
-        if (mc.player.posX > Math.round(mc.player.posX)) {
-            newX = Math.round(mc.player.posX) + 0.5;
-        }
-        else if (mc.player.posX < Math.round(mc.player.posX)) {
-            newX = Math.round(mc.player.posX) - 0.5;
-        }
-        else {
-            newX = mc.player.posX;
-        }
-
-        if (mc.player.posZ > Math.round(mc.player.posZ)) {
-            newZ = Math.round(mc.player.posZ) + 0.5;
-        }
-        else if (mc.player.posZ < Math.round(mc.player.posZ)) {
-            newZ = Math.round(mc.player.posZ) - 0.5;
-        }
-        else {
-            newZ = mc.player.posZ;
-        }
-
-        playerPos = new BlockPos(newX, mc.player.posY, newZ);
+        playerPos = new BlockPos(blockX, mc.player.posY, blockZ);
 
         if (mc.world.getBlockState(playerPos).getBlock() != Blocks.AIR) {
             return;
         }
 
-        //looks to see if the block below the player is "surrounded"
-        if (mc.world.getBlockState(playerPos.down()).getBlock() == Blocks.AIR //1 block
-                && mc.world.getBlockState(playerPos.down().east()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down().west()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down().north()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down().south()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down(2)).getBlock() != Blocks.AIR) {
-
-            mc.player.motionX = 0;
-            mc.player.motionZ = 0;
-        }
-        else if (mc.world.getBlockState(playerPos.down()).getBlock() == Blocks.AIR //2 block
-                && mc.world.getBlockState(playerPos.down(2)).getBlock() == Blocks.AIR
-                && mc.world.getBlockState(playerPos.down(2).east()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down(2).west()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down(2).north()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down(2).south()).getBlock() != Blocks.AIR
-                && mc.world.getBlockState(playerPos.down(3)).getBlock() != Blocks.AIR) {
-
-            mc.player.motionX = 0;
-            mc.player.motionZ = 0;
+        BlockPos currentBlock = playerPos.down();
+        for (int i = 0; i < activateHeight.getValue(); i++) {
+            currentBlock = currentBlock.down();
+            if (mc.world.getBlockState(currentBlock).getBlock() != Blocks.AIR) {
+                HashMap<HoleUtil.BlockOffset, HoleUtil.BlockSafety> sides = HoleUtil.getUnsafeSides(currentBlock.up());
+                sides.entrySet().removeIf(entry -> entry.getValue() == HoleUtil.BlockSafety.RESISTANT);
+                if (sides.size() == 0) {
+                    mc.player.motionX = 0f;
+                    mc.player.motionZ = 0f;
+                }
+            }
         }
     }
 }

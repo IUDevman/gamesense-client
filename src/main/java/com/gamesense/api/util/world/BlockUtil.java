@@ -53,14 +53,18 @@ public class BlockUtil {
 		return getState(pos).getBlock();
 	}
 
+	public static Block getBlock(double x, double y, double z) {
+		return mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
+	}
+
 	public static boolean canBeClicked(BlockPos pos) {
 		return getBlock(pos).canCollideCheck(getState(pos), false);
 	}
 
-	public static void faceVectorPacketInstant(Vec3d vec) {
+	public static void faceVectorPacketInstant(Vec3d vec, Boolean roundAngles) {
 		float[] rotations = getNeededRotations2(vec);
 
-		mc.player.connection.sendPacket(new CPacketPlayer.Rotation(rotations[0], rotations[1], mc.player.onGround));
+		mc.player.connection.sendPacket(new CPacketPlayer.Rotation(rotations[0], roundAngles ? MathHelper.normalizeAngle((int) rotations[1], 360) : rotations[1], mc.player.onGround));
 	}
 
 	private static float[] getNeededRotations2(Vec3d vec) {
@@ -123,5 +127,36 @@ public class BlockUtil {
 		}
 
 		return null;
+	}
+
+	public static EnumFacing getPlaceableSideExlude(BlockPos pos, EnumFacing excluding) {
+
+		for (EnumFacing side : EnumFacing.values()) {
+
+			if (side != excluding) {
+
+				BlockPos neighbour = pos.offset(side);
+
+				if (!mc.world.getBlockState(neighbour).getBlock().canCollideCheck(mc.world.getBlockState(neighbour), false)) {
+					continue;
+				}
+
+				IBlockState blockState = mc.world.getBlockState(neighbour);
+				if (!blockState.getMaterial().isReplaceable()) {
+					return side;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public static Vec3d getCenterOfBlock(double playerX, double playerY, double playerZ) {
+
+		double newX = Math.floor(playerX) + 0.5;
+		double newY = Math.floor(playerY);
+		double newZ = Math.floor(playerZ) + 0.5;
+
+		return new Vec3d(newX, newY, newZ);
 	}
 }

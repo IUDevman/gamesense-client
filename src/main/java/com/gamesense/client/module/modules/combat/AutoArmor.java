@@ -1,19 +1,36 @@
 package com.gamesense.client.module.modules.combat;
 
+import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Module;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class AutoArmor extends Module {
+
+	Setting.Boolean noThorns;
+	Setting.Boolean lastResortThorns;
 
 	public AutoArmor() {
 		super("AutoArmor", Category.Combat);
 	}
 
+	@Override
+	public void setup() {
+		noThorns = registerBoolean("No Thorns", false);
+		lastResortThorns = registerBoolean("No other Thorns", false);
+	}
+
+	@Override
 	public void onUpdate() {
 		if (mc.player.ticksExisted % 2 == 0) return;
 		// check screen
@@ -21,67 +38,92 @@ public class AutoArmor extends Module {
 				&& !(mc.currentScreen instanceof InventoryEffectRenderer))
 			return;
 
+		List<ItemStack> armorInventory = mc.player.inventory.armorInventory;
+		List<ItemStack> inventory = mc.player.inventory.mainInventory;
+
 		// store slots and values of best armor pieces
-		int[] bestArmorSlots = new int[4];
-		int[] bestArmorValues = new int[4];
+		int[] bestArmorSlots = {-1, -1, -1, -1};
+		int[] bestArmorValues = {-1, -1, -1, -1};
 
-		// initialize with currently equipped armor
-		for (int armorType = 0; armorType < 4; armorType++) {
-			ItemStack oldArmor = mc.player.inventory.armorItemInSlot(armorType);
-
-			if (oldArmor != null && oldArmor.getItem() instanceof ItemArmor)
-				bestArmorValues[armorType] =
-						((ItemArmor)oldArmor.getItem()).damageReduceAmount;
-
-			bestArmorSlots[armorType] = -1;
+		// initialize with currently equipped armour
+		for (int i = 0; i < 4; i++) {
+			ItemStack oldArmour = armorInventory.get(i);
+			if (oldArmour.getItem() instanceof ItemArmor) {
+				bestArmorValues[i] = ((ItemArmor) oldArmour.getItem()).damageReduceAmount;
+			}
 		}
 
-		// search inventory for better armor
-		for (int slot = 0; slot < 36; slot++) {
-			ItemStack stack = mc.player.inventory.getStackInSlot(slot);
+		List<Integer> slots = InventoryUtil.findAllItemSlots(ItemArmor.class);
+		HashMap<Integer, ItemStack> armour = new HashMap<>();
+		HashMap<Integer, ItemStack> thorns = new HashMap<>();
 
-			if (stack.getCount() > 1)
-				continue;
+		for (Integer slot : slots) {
+			ItemStack item = inventory.get(slot);
+			// 7 is the id for thorns
+			if (noThorns.getValue() && EnchantmentHelper.getEnchantments(item).containsKey(Enchantment.getEnchantmentByID(7))) {
+				thorns.put(slot, item);
+			} else {
+				armour.put(slot, item);
+			}
+		}
 
-			if (stack == null || !(stack.getItem() instanceof ItemArmor))
-				continue;
+		armour.forEach(((integer, itemStack) -> {
+			ItemArmor itemArmor = (ItemArmor) itemStack.getItem();
+			int armorType = itemArmor.armorType.ordinal() - 2;
 
-			ItemArmor armor = (ItemArmor)stack.getItem();
-			int armorType = armor.armorType.ordinal() - 2;
+			if (armorType == 2 && mc.player.inventory.armorItemInSlot(armorType).getItem().equals(Items.ELYTRA)) {
+				return;
+			}
 
-			if (armorType == 2 && mc.player.inventory.armorItemInSlot(armorType).getItem().equals(Items.ELYTRA)) continue;
-
-			int armorValue = armor.damageReduceAmount;
+			int armorValue = itemArmor.damageReduceAmount;
 
 			if (armorValue > bestArmorValues[armorType]) {
-				bestArmorSlots[armorType] = slot;
+				bestArmorSlots[armorType] = integer;
 				bestArmorValues[armorType] = armorValue;
 			}
+		}));
+
+		if (noThorns.getValue() && lastResortThorns.getValue()) {
+			thorns.forEach(((integer, itemStack) -> {
+				ItemArmor itemArmor = (ItemArmor) itemStack.getItem();
+				int armorType = itemArmor.armorType.ordinal() - 2;
+
+				// Thorns is only put in when all other is lost
+				if (!(armorInventory.get(armorType) == ItemStack.EMPTY && bestArmorSlots[armorType] == -1)) {
+					return;
+				}
+
+				if (armorType == 2 && mc.player.inventory.armorItemInSlot(armorType).getItem().equals(Items.ELYTRA)) {
+					return;
+				}
+
+				int armorValue = itemArmor.damageReduceAmount;
+
+				if (armorValue > bestArmorValues[armorType]) {
+					bestArmorSlots[armorType] = integer;
+					bestArmorValues[armorType] = armorValue;
+				}
+			}));
 		}
 
 		// equip better armor
-		for (int armorType = 0; armorType < 4; armorType++) {
+		for (int i = 0; i < 4; i++) {
 			// check if better armor was found
-			int slot = bestArmorSlots[armorType];
-			if (slot == -1)
+			int slot = bestArmorSlots[i];
+			if (slot == -1) {
 				continue;
-
-			// check if armor can be swapped
-			// needs 1 free slot where it can put the old armor
-			ItemStack oldArmor = mc.player.inventory.armorItemInSlot(armorType);
-			if (oldArmor == null || oldArmor != ItemStack.EMPTY
-					|| mc.player.inventory.getFirstEmptyStack() != -1) {
-				// hotbar fix
-				if (slot < 9)
-					slot += 36;
-
-				// swap armor
-				mc.playerController.windowClick(0, 8 - armorType, 0,
-						ClickType.QUICK_MOVE, mc.player);
-				mc.playerController.windowClick(0, slot, 0,
-						ClickType.QUICK_MOVE, mc.player);
-				break;
 			}
+			// hotbar fix
+			if (slot < 9) {
+				slot += 36;
+			}
+
+			// pick up inventory slot
+			mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, mc.player);
+			// click on armour slot
+			mc.playerController.windowClick(0, 8 - i, 0, ClickType.PICKUP, mc.player);
+			// put back inventory slot
+			mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, mc.player);
 		}
 	}
 }

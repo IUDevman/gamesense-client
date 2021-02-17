@@ -13,15 +13,15 @@ public class CapeUtil {
 
 	public CapeUtil() {
 		try {
-			URL pastebin = new URL("https://pastebin.com/raw/6D5JSYdC");
-			BufferedReader in = new BufferedReader(new InputStreamReader(pastebin.openStream()));
+			URL capesList = new URL("https://raw.githubusercontent.com/IUDevman/gamesense-assets/main/files/capeslist.txt");
+			BufferedReader in = new BufferedReader(new InputStreamReader(capesList.openStream()));
 			String inputLine;
 			while ((inputLine = in.readLine()) != null) {
 				uuids.add(UUID.fromString(inputLine));
 			}
 		}
 		catch(Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 

@@ -20,6 +20,7 @@ import com.lukflug.panelstudio.ConfigList;
 import com.lukflug.panelstudio.PanelConfig;
 
 public class GuiConfig implements ConfigList {
+
 	private final String fileLocation;
 	private JsonObject panelObject=null;
 	

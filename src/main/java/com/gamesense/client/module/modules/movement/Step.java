@@ -34,12 +34,15 @@ public class Step extends Module {
 	}
 
 	public void onUpdate() {
-		if (mc.world == null || mc.player == null || mc.player.isInWater() || mc.player.isInLava() || mc.player.isOnLadder()
-				|| mc.gameSettings.keyBindJump.isKeyDown()) {
+		if (mc.world == null || mc.player == null) {
 			return;
 		}
 
-		if (ModuleManager.isModuleEnabled("Speed"))
+		if (mc.player.isInWater() || mc.player.isInLava() || mc.player.isOnLadder() || mc.gameSettings.keyBindJump.isKeyDown()) {
+			return;
+		}
+
+		if (ModuleManager.isModuleEnabled(Speed.class))
 			return;
 
 		if (mode.getValue().equalsIgnoreCase("Normal")) {

@@ -1,28 +1,28 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.player.friends.Friends;
+import com.gamesense.api.util.combat.CrystalUtil;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.combat.AutoCrystalGS;
+import com.gamesense.client.module.modules.combat.OffHand;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
-
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CombatInfo extends HUDModule {
 
@@ -63,26 +63,25 @@ public class CombatInfo extends HUDModule {
                 .orElse(null);
     	list.renderLby=false;
     	List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
-    	AutoCrystalGS a = (AutoCrystalGS) ModuleManager.getModuleByName("AutocrystalGS");
     	for (EntityPlayer e: entities) {
             int i = 0;
             for (BlockPos add: surroundOffset) {
                 ++i;
                 BlockPos o = new BlockPos(e.getPositionVector().x, e.getPositionVector().y, e.getPositionVector().z).add(add.getX(), add.getY(), add.getZ());
                 if (mc.world.getBlockState(o).getBlock() == Blocks.OBSIDIAN) {
-                    if (i == 1 && a.canPlaceCrystal(o.north(1).down())) {
+                    if (i == 1 && CrystalUtil.canPlaceCrystal(o.north(1).down(), AutoCrystalGS.endCrystalMode.getValue())) {
                         list.lby=true;
                         list.renderLby=true;
                     }
-                    else if (i == 2 && a.canPlaceCrystal(o.east(1).down())) {
+                    else if (i == 2 && CrystalUtil.canPlaceCrystal(o.east(1).down(), AutoCrystalGS.endCrystalMode.getValue())) {
                     	list.lby=true;
                         list.renderLby=true;
                     }
-                    else if (i == 3 && a.canPlaceCrystal(o.south(1).down())) {
+                    else if (i == 3 && CrystalUtil.canPlaceCrystal(o.south(1).down(), AutoCrystalGS.endCrystalMode.getValue())) {
                     	list.lby=true;
                         list.renderLby=true;
                     }
-                    else if (i == 4 && a.canPlaceCrystal(o.west(1).down())) {
+                    else if (i == 4 && CrystalUtil.canPlaceCrystal(o.west(1).down(), AutoCrystalGS.endCrystalMode.getValue())) {
                     	list.lby=true;
                         list.renderLby=true;
                     }
@@ -130,8 +129,8 @@ public class CombatInfo extends HUDModule {
 		@Override
 		public String getItem(int index) {
 			if (infoType.getValue().equals("Hoosiers")) {
-				if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return hoosiersNames[index]+": ENBL";
-				else return hoosiersNames[index]+": DSBL";
+				if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return hoosiersNames[index]+": ON";
+				else return hoosiersNames[index]+": OFF";
 			}
 			else if (infoType.getValue().equals("Cyber")) {
 				if (index==0) return "gamesense.cc";
@@ -168,7 +167,7 @@ public class CombatInfo extends HUDModule {
 					}
 				}
 				else if (index==3) {
-					on=totems>0 && ModuleManager.isModuleEnabled("AutoTotem");
+					on=totems>0 && ModuleManager.isModuleEnabled(OffHand.class);
 				}
 				else if (index==4) {
 					on=getPing()<=100;

@@ -1,26 +1,22 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.player.PlacementUtil;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.CPacketPlayer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+
+import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 
 /**
  * @Author TechAle on (date)
@@ -38,11 +34,13 @@ public class Blocker extends Module {
     Setting.Boolean rotate;
     Setting.Boolean anvilBlocker;
     Setting.Boolean pistonBlocker;
+    Setting.Boolean offHandObby;
     Setting.Integer tickDelay;
 
     public void setup() {
         rotate = registerBoolean("Rotate", true);
         anvilBlocker = registerBoolean("Anvil", true);
+        offHandObby = registerBoolean("Off Hand Obby", true);
         pistonBlocker = registerBoolean("Piston", true);
         tickDelay = registerInteger("Tick Delay", 5, 0, 10);
         chatMsg = registerBoolean("Chat Msgs", true);
@@ -51,8 +49,11 @@ public class Blocker extends Module {
     private int delayTimeTicks = 0;
     private boolean noObby;
     private boolean noActive;
+    private boolean activedBefore;
 
     public void onEnable() {
+        ROTATION_UTIL.onEnable();
+        PlacementUtil.onEnable();
         if (mc.player == null) {
             disable();
             return;
@@ -79,16 +80,18 @@ public class Blocker extends Module {
     }
 
     public void onDisable() {
+        ROTATION_UTIL.onDisable();
+        PlacementUtil.onDisable();
         if (mc.player == null) {
             return;
         }
         if (chatMsg.getValue()) {
             if (noActive) {
-                printChat("Nothing is active... Blocker turned OFF!", true);
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Nothing is active... Blocker turned OFF!");
             }else if(noObby)
-                printChat("Obsidian not found... Blocker turned OFF!", true);
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Obsidian not found... Blocker turned OFF!");
             else
-                printChat("Blocker turned OFF!", true);
+                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Blocker turned OFF!");
         }
 
     }
@@ -106,9 +109,8 @@ public class Blocker extends Module {
 
         if (delayTimeTicks < tickDelay.getValue()) {
             delayTimeTicks++;
-            return;
-        }
-        else {
+        } else {
+            ROTATION_UTIL.shouldSpoofAngles(true);
             delayTimeTicks = 0;
 
             if (anvilBlocker.getValue()) {
@@ -123,6 +125,7 @@ public class Blocker extends Module {
     }
 
     private void blockAnvil() {
+        boolean found = false;
         // Iterate for everything
         for (Entity t : mc.world.loadedEntityList) {
             // If it's a falling block
@@ -132,17 +135,20 @@ public class Blocker extends Module {
                 if (ex instanceof BlockAnvil
                     // If coords are the same as us
                     && (int) t.posX == (int) mc.player.posX && (int) t.posZ == (int) mc.player.posZ
-                    && get_block(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
+                    && BlockUtil.getBlock(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
                     // Place the block
                     placeBlock(new BlockPos(mc.player.posX, mc.player.posY + 2, mc.player.posZ));
-                    printChat("AutoAnvil detected... Anvil Blocked!", false);
+                    MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoAnvil detected... Anvil Blocked!");
+                    found = true;
                 }
             }
         }
-    }
-
-    private Block get_block(double x, double y, double z) {
-        return mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
+        if (!found) {
+            if (activedBefore) {
+                activedBefore = false;
+                OffHand.removeObsidian();
+            }
+        }
     }
 
     private void blockPiston() {
@@ -157,10 +163,10 @@ public class Blocker extends Module {
                     for(int j = -2; j < 3; j++) {
                         if (i == 0 || j == 0) {
                             // If it's a piston
-                            if (get_block(t.posX + i, t.posY, t.posZ + j) instanceof BlockPistonBase) {
+                            if (BlockUtil.getBlock(t.posX + i, t.posY, t.posZ + j) instanceof BlockPistonBase) {
                                 // Break
                                 breakCrystalPiston(t);
-                                printChat("PistonCrystal detected... Destroyed crystal!", false);
+                                MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "PistonCrystal detected... Destroyed crystal!");
                             }
                         }
                     }
@@ -169,109 +175,39 @@ public class Blocker extends Module {
         }
     }
 
-    private int findObsidianSlot() {
-        int slot = -1;
+    private void placeBlock(BlockPos pos) {
+        EnumHand handSwing = EnumHand.MAIN_HAND;
 
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = mc.player.inventory.getStackInSlot(i);
-
-            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
-                continue;
-            }
-
-            Block block = ((ItemBlock) stack.getItem()).getBlock();
-            if (block instanceof BlockObsidian) {
-                slot = i;
-                break;
-            }
-        }
-        return slot;
-    }
-
-    private boolean placeBlock(BlockPos pos) {
-        Block block = mc.world.getBlockState(pos).getBlock();
-
-        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
-            return false;
-        }
-
-        EnumFacing side = BlockUtil.getPlaceableSide(pos);
-
-        if (side == null) {
-            return false;
-        }
-
-        BlockPos neighbour = pos.offset(side);
-        EnumFacing opposite = side.getOpposite();
-
-        if (!BlockUtil.canBeClicked(neighbour)) {
-            return false;
-        }
-
-        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-        Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
-
-        int obsidianSlot = findObsidianSlot();
-
-        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != -1) {
-            mc.player.inventory.currentItem = obsidianSlot;
-        }
+        int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedBefore);
 
         if (obsidianSlot == -1) {
             noObby = true;
-            return false;
+            return;
         }
 
-        boolean stoppedAC = false;
-
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
-            AutoCrystalGS.stopAC = true;
-            stoppedAC = true;
+        if (obsidianSlot == 9) {
+            activedBefore = true;
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            } else return;
         }
 
-        if (rotate.getValue()) {
-            BlockUtil.faceVectorPacketInstant(hitVec);
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
+            mc.player.inventory.currentItem = obsidianSlot;
         }
 
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
-        mc.rightClickDelayTimer = 4;
-
-        if (stoppedAC) {
-            AutoCrystalGS.stopAC = false;
-            stoppedAC = false;
-        }
-
-        return true;
-    }
-
-    private void printChat(String text, Boolean error) {
-        MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
+        PlacementUtil.place(pos, handSwing, rotate.getValue());
     }
 
     private void breakCrystalPiston (Entity crystal) {
         // If rotate
         if (rotate.getValue()) {
-            PistonCrystal.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
+            ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
         }
-        PistonCrystal.breakCrystal(crystal);
+        CrystalUtil.breakCrystal(crystal);
         // Rotate
         if (rotate.getValue())
-            PistonCrystal.resetRotation();
+            ROTATION_UTIL.resetRotation();
     }
-
-    /// AutoCrystal break things ///
-    private static boolean isSpoofingAngles;
-    private static double yaw;
-    private static double pitch;
-    @EventHandler
-    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
-        Packet packet = event.getPacket();
-        if (packet instanceof CPacketPlayer) {
-            if (isSpoofingAngles) {
-                ((CPacketPlayer) packet).yaw = (float) yaw;
-                ((CPacketPlayer) packet).pitch = (float) pitch;
-            }
-        }
-    });
 }

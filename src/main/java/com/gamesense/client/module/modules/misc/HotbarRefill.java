@@ -1,17 +1,20 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.client.module.Module;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.Pair;
+import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.client.module.Module;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class HotbarRefill extends Module {
 
@@ -28,26 +31,6 @@ public class HotbarRefill extends Module {
     }
 
     private int delayStep = 0;
-
-    private static Map<Integer, ItemStack> getInventory() {
-        return getInventorySlots(9, 35);
-    }
-
-    private static Map<Integer, ItemStack> getHotbar() {
-        return getInventorySlots(36, 44);
-    }
-
-    private static Map<Integer, ItemStack> getInventorySlots(int current, int last) {
-
-        Map<Integer, ItemStack> fullInventorySlots = new HashMap<>();
-
-        while (current <= last) {
-            fullInventorySlots.put(current, mc.player.inventoryContainer.getInventory().get(current));
-            current++;
-        }
-
-        return fullInventorySlots;
-    }
 
     @Override
     public void onUpdate() {
@@ -81,33 +64,28 @@ public class HotbarRefill extends Module {
         mc.playerController.windowClick(0, inventorySlot, 0, ClickType.PICKUP, mc.player);
 
         // click on hotbar slot
-        mc.playerController.windowClick(0, hotbarSlot, 0, ClickType.PICKUP, mc.player);
+        // 36 is the offset for start of hotbar in inventoryContainer
+        mc.playerController.windowClick(0, hotbarSlot + 36, 0, ClickType.PICKUP, mc.player);
 
         // put back inventory slot
         mc.playerController.windowClick(0, inventorySlot, 0, ClickType.PICKUP, mc.player);
     }
 
     private Pair<Integer, Integer> findReplenishableHotbarSlot() {
+        List<ItemStack> inventory = mc.player.inventory.mainInventory;
 
-        Pair<Integer, Integer> returnPair = null;
-
-        for (Map.Entry<Integer, ItemStack> hotbarSlot : getHotbar().entrySet()) {
-
-            ItemStack stack = hotbarSlot.getValue();
-
-            if (stack.isEmpty || stack.getItem() == Items.AIR) {
-                continue;
-            }
+        for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++) {
+            ItemStack stack = inventory.get(hotbarSlot);
 
             if (!stack.isStackable()) {
                 continue;
             }
 
-            if (stack.stackSize >= stack.getMaxStackSize()) {
+            if (stack.isEmpty || stack.getItem() == Items.AIR) {
                 continue;
             }
 
-            if (stack.stackSize > threshold.getValue()) {
+            if (stack.stackSize >= stack.getMaxStackSize() || stack.stackSize > threshold.getValue()) {
                 continue;
             }
 
@@ -116,42 +94,35 @@ public class HotbarRefill extends Module {
             if (inventorySlot == -1) {
                 continue;
             }
-
-            returnPair = new Pair<>(inventorySlot, hotbarSlot.getKey());
+            return new Pair<>(inventorySlot, hotbarSlot);
         }
-        return returnPair;
+        return null;
     }
 
     private int findCompatibleInventorySlot(ItemStack hotbarStack) {
+        List<Integer> potentialSlots;
 
-        int inventorySlot = -1;
-        int smallestStackSize = 999;
-
-        for (Map.Entry<Integer, ItemStack> entry : getInventory().entrySet()) {
-
-            ItemStack inventoryStack = entry.getValue();
-
-            if (inventoryStack.isEmpty || inventoryStack.getItem() == Items.AIR) {
-                continue;
-            }
-
-            if (!isCompatibleStacks(hotbarStack, inventoryStack)) {
-                continue;
-            }
-
-            int currentStackSize = mc.player.inventoryContainer.getInventory().get(entry.getKey()).stackSize;
-
-            if (smallestStackSize > currentStackSize) {
-                smallestStackSize = currentStackSize;
-                inventorySlot = entry.getKey();
-            }
-
+        Item item= hotbarStack.getItem();
+        if (item instanceof ItemBlock) {
+            potentialSlots = InventoryUtil.findAllBlockSlots(((ItemBlock)item).getBlock().getClass());
+        } else {
+            potentialSlots = InventoryUtil.findAllItemSlots(item.getClass());
         }
-        return inventorySlot;
+
+        potentialSlots = potentialSlots.stream()
+                .filter(integer -> integer > 8 && integer < 36)
+                .sorted(Comparator.comparingInt(interger -> -interger))
+                .collect(Collectors.toList());
+
+        for (int slot: potentialSlots) {
+            if (isCompatibleStacks(hotbarStack, mc.player.inventory.getStackInSlot(slot))) {
+                return slot;
+            }
+        }
+        return -1;
     }
 
     private boolean isCompatibleStacks(ItemStack stack1, ItemStack stack2) {
-
         // check if not same item
         if (!stack1.getItem().equals(stack2.getItem())) {
             return false;

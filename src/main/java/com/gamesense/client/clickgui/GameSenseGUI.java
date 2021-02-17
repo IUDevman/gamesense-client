@@ -9,11 +9,11 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
+import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import com.gamesense.client.module.HUDModule;
 import com.lukflug.panelstudio.CollapsibleContainer;
 import com.lukflug.panelstudio.DraggableContainer;
 import com.lukflug.panelstudio.FixedComponent;
@@ -27,9 +27,12 @@ import com.lukflug.panelstudio.settings.EnumComponent;
 import com.lukflug.panelstudio.settings.NumberComponent;
 import com.lukflug.panelstudio.settings.SimpleToggleable;
 import com.lukflug.panelstudio.settings.Toggleable;
+import com.lukflug.panelstudio.theme.ClearTheme;
+import com.lukflug.panelstudio.theme.ColorScheme;
 import com.lukflug.panelstudio.theme.GameSenseTheme;
 import com.lukflug.panelstudio.theme.SettingsColorScheme;
 import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.theme.ThemeMultiplexer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -39,15 +42,25 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
 public class GameSenseGUI extends MinecraftHUDGUI {
-
 	public static final int WIDTH=100,HEIGHT=12,DISTANCE=10,HUD_BORDER=2;
 	private final Toggleable colorToggle;
 	public final GUIInterface guiInterface;
 	public final HUDClickGUI gui;
-	private final Theme theme;
+	private final Theme theme,gamesenseTheme,clearTheme,cleargradientTheme;
 	
 	public GameSenseGUI() {
-		theme=new GameSenseTheme(new SettingsColorScheme(ClickGuiModule.enabledColor,ClickGuiModule.backgroundColor,ClickGuiModule.settingBackgroundColor,ClickGuiModule.outlineColor,ClickGuiModule.fontColor,ClickGuiModule.opacity),HEIGHT,2,5);
+		ColorScheme scheme=new SettingsColorScheme(ClickGuiModule.enabledColor,ClickGuiModule.backgroundColor,ClickGuiModule.settingBackgroundColor,ClickGuiModule.outlineColor,ClickGuiModule.fontColor,ClickGuiModule.opacity);
+		gamesenseTheme=new GameSenseTheme(scheme,HEIGHT,2,5);
+		clearTheme=new ClearTheme(scheme,false,HEIGHT,1);
+		cleargradientTheme=new ClearTheme(scheme,true,HEIGHT,1);
+		theme=new ThemeMultiplexer() {
+			@Override
+			protected Theme getTheme() {
+				if (ClickGuiModule.theme.getValue().equals("2.0")) return clearTheme;
+				else if (ClickGuiModule.theme.getValue().equals("2.1.2")) return cleargradientTheme;
+				else return gamesenseTheme;
+			}
+		};
 		colorToggle=new Toggleable() {
 			@Override
 			public void toggle() {
@@ -74,12 +87,12 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			
 			@Override
 			public int getFontWidth(String s) {
-				return (int)Math.round(FontUtil.getStringWidth(ColorMain.customFont.getValue(),s))+4;
+				return Math.round(FontUtil.getStringWidth(ColorMain.customFont.getValue(),s))+4;
 			}
 
 			@Override
 			public int getFontHeight() {
-				return (int)Math.round(FontUtil.getFontHeight(ColorMain.customFont.getValue()))+2;
+				return Math.round(FontUtil.getFontHeight(ColorMain.customFont.getValue()))+2;
 			}
 			
 			@Override

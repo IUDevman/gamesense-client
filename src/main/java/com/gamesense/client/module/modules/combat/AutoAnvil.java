@@ -1,13 +1,16 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.PlacementUtil;
+import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemPickaxe;
@@ -36,20 +39,23 @@ public class AutoAnvil extends Module {
     public AutoAnvil() {
         super("AutoAnvil", Category.Combat);
     }
+    
+    Setting.Mode    anvilMode,
+                    target,
+                    anvilPlace;
+    Setting.Double  enemyRange,
+                    decrease;
+    Setting.Boolean rotate,
+                    antiCrystal,
+                    fastAnvil,
+                    offHandObby,
+                    chatMsg;
+    Setting.Integer tickDelay,
+                    blocksPerTick,
+                    hDistance,
+                    minH,
+                    failStop;
 
-    Setting.Mode anvilMode;
-    Setting.Mode target;
-    Setting.Double enemyRange;
-    Setting.Double decrease;
-    Setting.Boolean rotate;
-    Setting.Boolean antiCrystal;
-    Setting.Boolean fastAnvil;
-    Setting.Boolean chatMsg;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
-    Setting.Integer hDistance;
-    Setting.Integer minH;
-    Setting.Integer failStop;
 
     public void setup() {
         ArrayList<String> anvilTypesList = new ArrayList<>();
@@ -59,11 +65,17 @@ public class AutoAnvil extends Module {
         ArrayList<String> targetChoose = new ArrayList<>();
         targetChoose.add("Nearest");
         targetChoose.add("Looking");
+        ArrayList<String> anvilPlaceTypes = new ArrayList<>();
+        anvilPlaceTypes.add("single");
+        anvilPlaceTypes.add("double");
+        anvilPlaceTypes.add("full");
 
         anvilMode = registerMode("Mode", anvilTypesList, "Pick");
         target = registerMode("Target", targetChoose, "Nearest");
+        anvilPlace = registerMode("Anvil Place", anvilPlaceTypes, "single");
         antiCrystal = registerBoolean("Anti Crystal", false);
         fastAnvil = registerBoolean("Fast Anvil", true);
+        offHandObby = registerBoolean("Off Hand Obby", false);
         rotate = registerBoolean("Rotate", true);
         enemyRange = registerDouble("Range",5.9, 0, 6);
         decrease = registerDouble("Decrease",2, 0, 6);
@@ -75,18 +87,20 @@ public class AutoAnvil extends Module {
         chatMsg = registerBoolean("Chat Msgs", true);
     }
 
-    private boolean isSneaking = false;
-    private boolean firstRun = false;
-    private boolean noMaterials = false;
-    private boolean hasMoved = false;
-    private boolean isHole = true;
-    private boolean enoughSpace = true;
-    private boolean blockUp = false;
-    private int oldSlot = -1;
+    private boolean isSneaking = false,
+                    firstRun = false,
+                    noMaterials = false,
+                    hasMoved = false,
+                    isHole = true,
+                    enoughSpace = true,
+                    blockUp = false;
+    private int oldSlot = -1,
+                noKick,
+                anvilBlock;
+    private ArrayList<Integer> anvilsPositions = new ArrayList<>();
     private int[] slot_mat = {-1, -1, -1, -1};
     private double[] enemyCoords;
     Double[][] sur_block;
-    private int noKick;
     int[][] model = new int[][] {
             {1,1,0},
             {-1,1,0},
@@ -119,7 +133,7 @@ public class AutoAnvil extends Module {
         }
 
         if (chatMsg.getValue()) {
-            printChat("AutoAnvil turned ON!", false);
+            PistonCrystal.printChat("AutoAnvil turned ON!", false);
         }
 
         oldSlot = mc.player.inventory.currentItem;
@@ -132,22 +146,22 @@ public class AutoAnvil extends Module {
 
         if (chatMsg.getValue()) {
             if (noMaterials) {
-                printChat("No Materials Detected... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("No Materials Detected... AutoAnvil turned OFF!", true);
             }
             else if (!isHole) {
-                printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
             }
             else if(!enoughSpace) {
-                printChat("Not enough space... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Not enough space... AutoAnvil turned OFF!", true);
             }
             else if(hasMoved) {
-                printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
             }
             else if(blockUp) {
-                printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
             }
             else {
-                printChat("AutoAnvil turned OFF!", true);
+                PistonCrystal.printChat("AutoAnvil turned OFF!", true);
             }
         }
 
@@ -164,6 +178,10 @@ public class AutoAnvil extends Module {
         noMaterials = false;
         firstRun = true;
         AutoCrystalGS.stopAC = false;
+        // If offHand was enabled
+        if (slot_mat[0] == -2) {
+            OffHand.removeObsidian();
+        }
     }
 
     public void onUpdate() {
@@ -176,9 +194,9 @@ public class AutoAnvil extends Module {
 
             // All the setup
             if (target.getValue().equals("Nearest"))
-                aimTarget = PistonCrystal.findClosestTarget(enemyRange.getValue(), aimTarget);
+                aimTarget = PlayerUtil.findClosestTarget(enemyRange.getValue(), aimTarget);
             else if(target.getValue().equals("Looking"))
-                aimTarget = PistonCrystal.findLookingPlayer(enemyRange.getValue());
+                aimTarget = PlayerUtil.findLookingPlayer(enemyRange.getValue());
 
             if (aimTarget == null) {
                 return;
@@ -215,8 +233,7 @@ public class AutoAnvil extends Module {
                     hasMoved = true;
 
                 // Check a block on the enemy's head
-                if (!(get_block(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAir)
-                        || !(get_block(enemyCoords[0], enemyCoords[1] + 3, enemyCoords[2]) instanceof BlockAir)) {
+                if (!(BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAir || BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + 2, enemyCoords[2]) instanceof BlockAnvil)) {
                     blockUp = true;
                 }
 
@@ -230,6 +247,15 @@ public class AutoAnvil extends Module {
         if (noMaterials || !isHole || !enoughSpace || hasMoved || blockUp) {
             disable();
             return;
+        }
+
+        anvilsPositions = new ArrayList<>();
+        // Lets get every anvils
+        for (Entity everyEntity : mc.world.loadedEntityList) {
+            if (everyEntity instanceof EntityFallingBlock) {
+                anvilsPositions.add((int) everyEntity.posY);
+                anvilsPositions.add((int) everyEntity.posY + 1);
+            }
         }
 
         noKick = 0;
@@ -247,7 +273,7 @@ public class AutoAnvil extends Module {
 
             // Get position
             BlockPos offsetPos = new BlockPos(to_place.get(offsetSteps));
-            BlockPos targetPos = new BlockPos(aimTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+            BlockPos targetPos = new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
             boolean tryPlacing = true;
 
@@ -314,17 +340,37 @@ public class AutoAnvil extends Module {
 
         /*
 			// I use this as a remind to which index refers to what
+			-2 => obsidian in offHand
 			0 => obsidian
 			1 => anvil
 			2 => pressure plate / button
 			3 => pick
 		 */
+        int utilSlot;
+
+        EnumHand handSwing = EnumHand.MAIN_HAND;
+
         // Get what slot we are going to select
-        int utilSlot =
+        utilSlot =
                 (step == 0 && (anvilMode.getValue().equalsIgnoreCase("feet")))
                         ? 2 :
-                        (step == to_place.size() - 1) ? 1 : 0;
-        // If it's not empty
+                        (step >= to_place.size() - anvilBlock) ? 1 : 0;
+
+        if (step == 1 && anvilsPositions.contains(pos.y))
+            return false;
+
+        // If it's step of the obsidian and we have offHandMode
+        if (offHandObby.getValue() && OffHand.isActive() && slot_mat[utilSlot] == -2) {
+            // Check if we have the obby in our offhand
+            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                // We can continue
+                handSwing = EnumHand.OFF_HAND;
+            }
+            // Else we cannot
+            else
+                return false;
+        }else
+        // else check the normal If it's not empty
         if (mc.player.inventory.getStackInSlot(slot_mat[utilSlot]) != ItemStack.EMPTY) {
             // Is it is correct
             if (mc.player.inventory.currentItem != slot_mat[utilSlot]) {
@@ -343,14 +389,14 @@ public class AutoAnvil extends Module {
         // Stop CA
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
+        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
             AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
 
         // For the rotation
         if (rotate.getValue()) {
-            BlockUtil.faceVectorPacketInstant(hitVec);
+            BlockUtil.faceVectorPacketInstant(hitVec, true);
         }
 
         // FastAnvil
@@ -372,9 +418,7 @@ public class AutoAnvil extends Module {
         }
 
         // Place the block
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, EnumHand.MAIN_HAND);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
-
+        PlacementUtil.doPlace(neighbour, opposite, handSwing);
         // Disable fastplace
         if (fastAnvil.getValue() && step == to_place.size() - 1) {
             mc.rightClickDelayTimer = bef;
@@ -419,13 +463,10 @@ public class AutoAnvil extends Module {
 
     private static ArrayList<Vec3d> to_place = new ArrayList<Vec3d>();
 
-    private void printChat(String text, Boolean error) {
-        MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
-    }
-
     private boolean getMaterialsSlot() {
 		/*
 			// I use this as a remind to which index refers to what
+			-2 => obsidian in offHand
 			0 => obsidian
 			1 => anvil
 			2 => pressure plate
@@ -474,6 +515,11 @@ public class AutoAnvil extends Module {
                         }
             }
         }
+        // offHand obsidian
+        if (offHandObby.getValue() && OffHand.isActive()) {
+            slot_mat[0] = -2;
+            OffHand.requestObsidian();
+        }
         // Count what we found
         int count = 0;
         for(int val : slot_mat) {
@@ -500,10 +546,7 @@ public class AutoAnvil extends Module {
                 aimTarget.posZ
         };
         // Check if the guy is in a hole
-        return !(get_block(sur_block[0][0], sur_block[0][1], sur_block[0][2]) instanceof BlockAir) &&
-                !(get_block(sur_block[1][0], sur_block[1][1], sur_block[1][2]) instanceof BlockAir) &&
-                !(get_block(sur_block[2][0], sur_block[2][1], sur_block[2][2]) instanceof BlockAir) &&
-                !(get_block(sur_block[3][0], sur_block[3][1], sur_block[3][2]) instanceof BlockAir);
+        return HoleUtil.isHole(EntityUtil.getPosition(aimTarget), true, true).getType() != HoleUtil.HoleType.NONE;
     }
 
     private boolean createStructure() {
@@ -558,7 +601,7 @@ public class AutoAnvil extends Module {
         // Continue by creating the tower
         do {
             // Search the avaible space
-            if ( get_block(enemyCoords[0], enemyCoords[1] + incr, enemyCoords[2]) instanceof BlockAir && incr < hDistanceMod) {
+            if ( BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + incr, enemyCoords[2]) instanceof BlockAir && incr < hDistanceMod) {
                 // Lets check for the block near
                 if (!antiCrystal.getValue())
                     to_place.add(new Vec3d(model[cor][0], model[cor][1] + incr, model[cor][2]));
@@ -570,7 +613,7 @@ public class AutoAnvil extends Module {
                 incr++;
             }else {
                 // If there is a block where we want to place the anvil
-                if (!(get_block(enemyCoords[0], enemyCoords[1] + incr, enemyCoords[2]) instanceof BlockAir)) {
+                if (!(BlockUtil.getBlock(enemyCoords[0], enemyCoords[1] + incr, enemyCoords[2]) instanceof BlockAir)) {
                     // Go down of 1
                     incr--;
                 }
@@ -581,12 +624,22 @@ public class AutoAnvil extends Module {
         if (incr >=  minH.getValue())
             possible = true;
 
-        // Add the anvil
-        to_place.add(new Vec3d(0, model[cor][1] + incr - 1, 0));
-        return possible;
-    }
 
-    private Block get_block(double x, double y, double z) {
-        return mc.world.getBlockState(new BlockPos(x, y, z)).getBlock();
+        double yRef = to_place.get(to_place.size() - 1).y;
+        anvilBlock = 0;
+        switch (anvilPlace.getValue()) {
+            case "full":
+                to_place.add(new Vec3d(0, 3, 0));
+                anvilBlock++;
+            case "double":
+                to_place.add(new Vec3d(0, 2, 0));
+                anvilBlock++;
+            case "single":
+                to_place.add(new Vec3d(0, yRef, 0));
+                anvilBlock++;
+                break;
+        }
+
+        return possible;
     }
 }

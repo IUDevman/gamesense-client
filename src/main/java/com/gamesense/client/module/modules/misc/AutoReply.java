@@ -18,10 +18,11 @@ public class AutoReply extends Module {
 	@EventHandler
 	private final Listener<ClientChatReceivedEvent> listener = new Listener<>(event -> {
 		if (event.getMessage().getUnformattedText().contains("whispers: ") && !event.getMessage().getUnformattedText().startsWith(mc.player.getName())) {
+			if (event.getMessage().getUnformattedText().contains("I don't speak to newfags!")) {
+				return;
+			}
+
 			MessageBus.sendServerMessage("/r " + reply);
-		}
-		else if (event.getMessage().getUnformattedText().contains("whispers: I don't speak to newfags!") && !event.getMessage().getUnformattedText().startsWith(mc.player.getName())) {
-			return; //should prevent most instances of users spam replying back to each other in a loop, this is for you Mini :P
 		}
 	});
 
