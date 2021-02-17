@@ -61,7 +61,6 @@ public class GameSense {
 	public SettingsManager settingsManager;
 	public Friends friends;
 	public Enemies enemies;
-	public ModuleManager moduleManager;
 	public GameSenseGUI gameSenseGUI;
 	public SaveConfig saveConfig;
 	public LoadConfig loadConfig;
@@ -85,7 +84,7 @@ public class GameSense {
 		enemies = new Enemies();
 		LOGGER.info("Friends and enemies initialized!");
 
-		moduleManager = new ModuleManager();
+		ModuleManager.init();
 		LOGGER.info("Modules initialized!");
 
 		gameSenseGUI = new GameSenseGUI();

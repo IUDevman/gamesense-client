@@ -28,7 +28,7 @@ public class HoleTP extends Module {
 	private final double[] oneblockPositions = new double[]{ 0.42, 0.75};
 
 	public void onUpdate() {
-		if (mc.world == null || mc.player == null || ModuleManager.isModuleEnabled("Speed")) {
+		if (mc.world == null || mc.player == null || ModuleManager.isModuleEnabled(Speed.class)) {
 			return;
 		}
 		if (!mc.player.onGround) {

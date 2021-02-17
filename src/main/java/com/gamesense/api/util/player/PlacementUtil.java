@@ -6,14 +6,21 @@ import com.gamesense.client.module.modules.combat.AutoCrystalGS;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 public class PlacementUtil {
 
@@ -86,7 +93,7 @@ public class PlacementUtil {
             return false;
         }
 
-        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Vec3d hitVec = getHitVec(blockPos, opposite);
         Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
 
         if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
@@ -96,7 +103,7 @@ public class PlacementUtil {
 
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled("AutoCrystalGS")) {
+        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
             AutoCrystalGS.stopAC = true;
             stoppedAC = true;
         }
@@ -105,16 +112,53 @@ public class PlacementUtil {
             BlockUtil.faceVectorPacketInstant(hitVec, true);
         }
 
-        EnumActionResult action = mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, hand);
-        if (action == EnumActionResult.SUCCESS) {
-            mc.player.swingArm(hand);
-            mc.rightClickDelayTimer = 4;
-        }
+        doPlace(neighbour, opposite, hand);
+        mc.rightClickDelayTimer = 4;
 
         if (stoppedAC) {
             AutoCrystalGS.stopAC = false;
         }
 
-        return action == EnumActionResult.SUCCESS;
+        return true;
+    }
+
+    public static void doPlace(BlockPos pos, EnumFacing side, EnumHand hand) {
+        NetHandlerPlayClient connection = mc.getConnection();
+        if (connection == null) return;
+
+        Vec3d hitVecOffset = getHitVecOffset(side);
+        connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(pos, side, hand, (float) hitVecOffset.x, (float) hitVecOffset.y, (float) hitVecOffset.z));
+        playSound(pos, side, hand, hitVecOffset);
+        mc.player.swingArm(hand);
+    }
+
+    private static Vec3d getHitVec(BlockPos pos, EnumFacing side) {
+        Vec3i directionVec = side.getDirectionVec();
+        return new Vec3d(
+            pos.getX() + 0.5 + directionVec.getX() * 0.5,
+            pos.getX() + 0.5 + directionVec.getY() * 0.5,
+            pos.getX() + 0.5 + directionVec.getZ() * 0.5
+        );
+    }
+
+    private static Vec3d getHitVecOffset(EnumFacing side) {
+        Vec3i directionVec = side.getDirectionVec();
+        return new Vec3d(
+            0.5 + directionVec.getX() * 0.5,
+            0.5 + directionVec.getY() * 0.5,
+            0.5 + directionVec.getZ() * 0.5
+        );
+    }
+
+    private static void playSound(BlockPos pos, EnumFacing side, EnumHand hand, Vec3d hitVecOffset) {
+        ItemStack itemStack = mc.player.getHeldItem(hand);
+        Block block = Block.getBlockFromItem(itemStack.getItem());
+        if (block == Blocks.AIR) return;
+
+        int metaDate = itemStack.getMetadata();
+        IBlockState blockState = block.getStateForPlacement(mc.world, pos, side, (float) hitVecOffset.x, (float) hitVecOffset.y, (float) hitVecOffset.z, metaDate, mc.player, hand);
+        SoundType soundType = block.getSoundType(blockState, mc.world, pos, mc.player);
+
+        mc.world.playSound(mc.player, pos, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0f) / 2.0f, soundType.getPitch() * 0.8f);
     }
 }

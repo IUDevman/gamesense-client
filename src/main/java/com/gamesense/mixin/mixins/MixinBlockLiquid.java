@@ -1,6 +1,7 @@
 package com.gamesense.mixin.mixins;
 
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.exploits.LiquidInteract;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -14,6 +15,6 @@ public class MixinBlockLiquid {
 
 	@Inject(method = "canCollideCheck", at = @At("HEAD"), cancellable = true)
 	public void canCollideCheck(final IBlockState blockState, final boolean b, final CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		callbackInfoReturnable.setReturnValue(ModuleManager.isModuleEnabled("LiquidInteract") || (b && (int) blockState.getValue((IProperty) BlockLiquid.LEVEL) == 0));
+		callbackInfoReturnable.setReturnValue(ModuleManager.isModuleEnabled(LiquidInteract.class) || (b && blockState.getValue(BlockLiquid.LEVEL) == 0));
 	}
 }

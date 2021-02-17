@@ -184,7 +184,7 @@ public class Blocker extends Module {
             noObby = true;
             return;
         }
-        
+
         if (obsidianSlot == 9) {
             activedBefore = true;
             if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {

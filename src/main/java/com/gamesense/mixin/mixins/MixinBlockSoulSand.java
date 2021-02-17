@@ -17,7 +17,9 @@ public class MixinBlockSoulSand {
 
 	@Inject(method = "onEntityCollision", at = @At("HEAD"), cancellable = true)
 	public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn, CallbackInfo callbackInfo) {
-		if (ModuleManager.isModuleEnabled("PlayerTweaks") && ((PlayerTweaks)ModuleManager.getModuleByName("PlayerTweaks")).noSlow.getValue()) {
+		PlayerTweaks playerTweaks = ModuleManager.getModule(PlayerTweaks.class);
+
+		if (playerTweaks.isEnabled() && playerTweaks.noSlow.getValue()) {
 			callbackInfo.cancel();
 		}
 	}

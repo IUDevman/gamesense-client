@@ -70,6 +70,7 @@ public class AutoCrystalGS extends Module {
     Setting.Boolean chat;
     Setting.Boolean showDamage;
     Setting.Boolean antiSuicide;
+    Setting.Boolean multiPlace;
     public static Setting.Boolean endCrystalMode;
     Setting.Boolean cancelCrystal;
     Setting.Boolean noGapSwitch;
@@ -127,6 +128,7 @@ public class AutoCrystalGS extends Module {
         antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
         autoSwitch = registerBoolean("Switch", true);
         noGapSwitch = registerBoolean("No Gap Switch", false);
+        multiPlace = registerBoolean("Multi Place", false);
         endCrystalMode = registerBoolean("1.13 Place", false);
         cancelCrystal = registerBoolean("Cancel Crystal", false);
         minDmg = registerDouble("Min Damage", 5, 0, 36);
@@ -165,7 +167,7 @@ public class AutoCrystalGS extends Module {
             return;
         }
 
-        if (refresh.getValue() && stuckTimer.getTimePassed() / 1000L >= 1) {
+        if (refresh.getValue() && stuckTimer.getTimePassed() / 1000L >= 2) {
             stuckTimer.reset();
             PlacedCrystals.clear();
         }
@@ -245,6 +247,9 @@ public class AutoCrystalGS extends Module {
                 }
 
                 isActive = false;
+            }
+
+            if (!multiPlace.getValue()) {
                 return;
             }
         }
@@ -349,7 +354,7 @@ public class AutoCrystalGS extends Module {
                             mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
                             //Cache the crystals we've placed
                             PlacedCrystals.add(q);
-                            if (ModuleManager.isModuleEnabled("AutoGG"))
+                            if (ModuleManager.isModuleEnabled(AutoGG.class))
                                 AutoGG.INSTANCE.addTargetedPlayer(renderEnt.getName());
                         }
 
