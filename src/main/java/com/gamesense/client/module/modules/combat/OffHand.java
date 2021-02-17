@@ -414,7 +414,7 @@ public class OffHand extends Module {
 
 
         return (mc.player.getHealth() + mc.player.getAbsorptionAmount() > healthSwitch.getValue())
-                ?   (str.equals("")
+                ?   (str.equals("") 
                     ? nonDefaultItem.getValue()
                     : str
                     )
