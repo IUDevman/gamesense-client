@@ -23,12 +23,19 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	boolean enabled;
 	boolean drawn;
 
+	int priority;
+
 	public Module(String name, Category category) {
+		this(name, category, 0);
+	}
+
+	public Module(String name, Category category, int priority) {
 		this.name = name;
 		this.category = category;
 		this.bind = Keyboard.KEY_NONE;
 		this.enabled = false;
 		this.drawn = true;
+		this.priority = priority;
 		setup();
 	}
 
@@ -166,7 +173,11 @@ public abstract class Module implements Toggleable,KeybindSetting {
 		HUD,
 		GUI
 	}
-	
+
+	public int getPriority() {
+		return priority;
+	}
+
 	@Override
 	public boolean isOn() {
 		return this.enabled;
