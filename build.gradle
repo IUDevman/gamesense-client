@@ -32,7 +32,7 @@ minecraft {
 	version = project.forgeVersion
 	runDir = 'run'
 	mappings = project.mcpVersion
-	coreMod = 'com.gamesense.client.GameSense'
+	coreMod = 'com.gamesense.mixin.GameSenseMixinLoader'
 	makeObfSourceJar = false
 }
 
