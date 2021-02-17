@@ -7,6 +7,7 @@ import com.gamesense.api.event.events.RenderEntityEvent;
 import com.gamesense.api.util.misc.CollectionUtils;
 import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.client.manager.Manager;
+import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import me.zero.alpine.type.EventPriority;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -14,7 +15,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
@@ -22,35 +22,54 @@ import java.util.List;
 
 // Sponsored by KAMI Blue
 // https://github.com/kami-blue/client/blob/master/src/main/kotlin/org/kamiblue/client/manager/managers/PlayerPacketManager.kt
-public enum PlayerPacketManager implements Manager {
-    INSTANCE;
+public class PlayerPacketManager implements Manager {
+
+    public static PlayerPacketManager INSTANCE = new PlayerPacketManager();
 
     private final List<PlayerPacket> packets = new ArrayList<>();
 
     private Vec3d prevServerSidePosition = Vec3d.ZERO;
-    private Vec3d serverSizePosition = Vec3d.ZERO;
+    private Vec3d serverSidePosition = Vec3d.ZERO;
 
     private Vec2f prevServerSideRotation = Vec2f.ZERO;
     private Vec2f serverSideRotation = Vec2f.ZERO;
 
     private Vec2f clientSidePitch = Vec2f.ZERO;
 
+    private PlayerPacketManager() {
+
+    }
+
     @SuppressWarnings("unused")
+    @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
-        if (event.getPhase() != Phase.BY) return;
+        switch (event.getPhase()) {
+            case BY:
+                if (!packets.isEmpty()) {
+                    PlayerPacket packet = CollectionUtils.maxOrNull(packets, PlayerPacket::getPriority);
 
-        if (!packets.isEmpty()) {
-            PlayerPacket packet = CollectionUtils.maxOrNull(packets, PlayerPacket::getPriority);
+                    if (packet != null) {
+                        event.cancel();
+                        event.apply(packet);
+                    }
 
-            if (packet != null) {
-                event.apply(packet);
-            }
+                    packets.clear();
+                }
+                break;
+            case POST:
+                EntityPlayerSP player = getPlayer();
+                if (player == null) return;
 
-            packets.clear();
+                player.prevRotationYawHead = prevServerSideRotation.x;
+                player.rotationYawHead = serverSideRotation.x;
+                break;
+            default:
+                break;
         }
     });
 
     @SuppressWarnings("unused")
+    @EventHandler
     private final Listener<PacketEvent.PostSend> postSendListener = new Listener<>(event -> {
         if (event.isCancelled()) return;
 
@@ -60,33 +79,30 @@ public enum PlayerPacketManager implements Manager {
             CPacketPlayer packet = (CPacketPlayer) rawPacket;
 
             if (packet.moving) {
-                serverSizePosition = new Vec3d(packet.x, packet.y, packet.z);
+                serverSidePosition = new Vec3d(packet.x, packet.y, packet.z);
             }
 
             if (packet.rotating) {
                 serverSideRotation = new Vec2f(packet.yaw, packet.pitch);
-
-                EntityPlayerSP player = getPlayer();
-                if (player != null) {
-                    player.rotationYawHead = packet.yaw;
-                }
             }
         }
     }, EventPriority.LOWEST);
 
     @SuppressWarnings("unused")
+    @EventHandler
     private final Listener<TickEvent.ClientTickEvent> tickEventListener = new Listener<>(event -> {
         if (event.phase != TickEvent.Phase.START) return;
 
-        prevServerSidePosition = serverSizePosition;
+        prevServerSidePosition = serverSidePosition;
         prevServerSideRotation = serverSideRotation;
     });
 
     @SuppressWarnings("unused")
+    @EventHandler
     private final Listener<RenderEntityEvent.Head> renderEntityEventHeadListener = new Listener<>(event -> {
         EntityPlayerSP player = getPlayer();
 
-        if (player == null || player.isRiding() || event.getEntity() != player) return;
+        if (player == null || player.isRiding() || event.getType() != RenderEntityEvent.Type.TEXTURE || event.getEntity() != player) return;
 
         clientSidePitch = new Vec2f(player.prevRotationPitch, player.rotationPitch);
         player.prevRotationPitch = prevServerSideRotation.y;
@@ -94,10 +110,11 @@ public enum PlayerPacketManager implements Manager {
     });
 
     @SuppressWarnings("unused")
+    @EventHandler
     private final Listener<RenderEntityEvent.Return> renderEntityEventReturnListener = new Listener<>(event -> {
         EntityPlayerSP player = getPlayer();
 
-        if (player == null || player.isRiding() || event.getEntity() != player) return;
+        if (player == null || player.isRiding() || event.getType() != RenderEntityEvent.Type.TEXTURE || event.getEntity() != player) return;
 
         player.prevRotationPitch = clientSidePitch.x;
         player.rotationPitch = clientSidePitch.y;
@@ -111,8 +128,8 @@ public enum PlayerPacketManager implements Manager {
         return prevServerSidePosition;
     }
 
-    public Vec3d getServerSizePosition() {
-        return serverSizePosition;
+    public Vec3d getServerSidePosition() {
+        return serverSidePosition;
     }
 
     public Vec2f getPrevServerSideRotation() {
