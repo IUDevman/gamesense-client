@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
  * @since 10/31/2020
  * @author 0b00101010
  * @since 26/01/2021
+ * @author TechAle
+ * @since add this later
  */
 public class HoleFill extends Module {
 
@@ -45,9 +47,11 @@ public class HoleFill extends Module {
 	Setting.Boolean rotate;
 	Setting.Boolean disableOnFinish;
 	Setting.Boolean offHandObby;
+	Setting.Boolean onlyPlayer;
 	Setting.Integer placeDelay;
 	Setting.Integer retryDelay;
 	Setting.Integer bpc;
+	Setting.Double playerRange;
 	Setting.Double range;
 	Setting.Mode mode;
 
@@ -63,6 +67,8 @@ public class HoleFill extends Module {
 		retryDelay = registerInteger("Retry Delay", 10, 0, 50);
 		bpc = registerInteger("Block pre Cycle", 2, 1, 5);
 		range = registerDouble("Range", 4, 0, 10);
+		playerRange = registerDouble("Player Range", 3, 1, 6);
+		onlyPlayer = registerBoolean("Only Player", false);
 		rotate = registerBoolean("Rotate", true);
 		autoSwitch = registerBoolean("Switch", true);
 		offHandObby = registerBoolean("Off Hand Obby", false);
@@ -151,6 +157,11 @@ public class HoleFill extends Module {
 
 		AtomicInteger placements = new AtomicInteger();
 		holePos = holePos.stream().sorted(Comparator.comparing(blockPos -> blockPos.distanceSq((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ))).collect(Collectors.toList());
+		// Get every players
+		List<EntityPlayer> listPlayer = mc.world.playerEntities;
+		listPlayer.removeIf(player -> {
+			return EntityUtil.basicChecksEntity(player) || (!onlyPlayer.getValue() || mc.player.getDistance(player) > 6 + playerRange.getValue());
+		});
 		holePos.removeIf(placePos -> {
 			if (placements.get() >= bpc.getValue()) {
 				return false;
@@ -163,10 +174,23 @@ public class HoleFill extends Module {
 			boolean output = false;
 
 			if (isHoldingRightBlock(mc.player.inventory.currentItem, mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem()) || offHandObby.getValue()) {
+				// Player range
+				boolean found = false;
+				if (onlyPlayer.getValue()) {
+					for(EntityPlayer player : listPlayer) {
+						if (player.getDistanceSqToCenter(placePos) < playerRange.getValue()*2) {
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						return false;
+				}
 				if (placeBlock(placePos)) {
 					placements.getAndIncrement();
 					output = true;
 					delayTicks = 0;
+
 				}
 				recentPlacements.put(placePos, 0);
 			}
