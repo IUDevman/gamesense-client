@@ -425,7 +425,6 @@ public class RenderUtil {
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		GlStateManager.enableAlpha();
 		GlStateManager.enableCull();
-		GlStateManager.enableLighting();
 		GlStateManager.enableTexture2D();
 		GlStateManager.enableDepth();
 		GlStateManager.disableBlend();
