@@ -53,6 +53,7 @@ Most notable features:
 * TechAle (AutoAnvil, PistonCrystal, Blocker)
 * 0b00101010 (HoleESP rewrite, misc render)
 * A2H (Bug fixes, compatability)
+* Xiaro (Code improvement, compatability)
 
 #### Credits
 ***Check specific class files for full credits.***
