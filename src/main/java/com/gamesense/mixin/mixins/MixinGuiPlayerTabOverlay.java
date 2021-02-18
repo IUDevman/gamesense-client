@@ -14,22 +14,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GuiPlayerTabOverlay.class)
 public class MixinGuiPlayerTabOverlay {
 
-	@Inject(method = "getPlayerName", at = @At("HEAD"), cancellable = true)
-	public void getPlayerName(NetworkPlayerInfo networkPlayerInfoIn, CallbackInfoReturnable callbackInfoReturnable) {
-			callbackInfoReturnable.cancel();
-			callbackInfoReturnable.setReturnValue(getPlayerName(networkPlayerInfoIn));
-	}
+    @Inject(method = "getPlayerName", at = @At("HEAD"), cancellable = true)
+    public void getPlayerNameHead(NetworkPlayerInfo networkPlayerInfoIn, CallbackInfoReturnable<String> callbackInfoReturnable) {
+        callbackInfoReturnable.setReturnValue(getPlayerNameGS(networkPlayerInfoIn));
+    }
 
-	public String getPlayerName(NetworkPlayerInfo networkPlayerInfoIn) {
-		String displayName = networkPlayerInfoIn.getDisplayName() != null ? networkPlayerInfoIn.getDisplayName().getFormattedText() : ScorePlayerTeam.formatPlayerName(networkPlayerInfoIn.getPlayerTeam(), networkPlayerInfoIn.getGameProfile().getName());
-		if (Friends.isFriend(displayName)) {
-			return ColorMain.getFriendColor() + displayName;
-		}
-		else if (Enemies.isEnemy(displayName)) {
-			return ColorMain.getEnemyColor() + displayName;
-		}
-		else {
-			return displayName;
-		}
-	}
+    private String getPlayerNameGS(NetworkPlayerInfo networkPlayerInfoIn) {
+        String displayName = networkPlayerInfoIn.getDisplayName() != null ?
+            networkPlayerInfoIn.getDisplayName().getFormattedText() :
+            ScorePlayerTeam.formatPlayerName(networkPlayerInfoIn.getPlayerTeam(), networkPlayerInfoIn.getGameProfile().getName());
+
+        if (Friends.isFriend(displayName)) {
+            return ColorMain.getFriendColor() + displayName;
+        } else if (Enemies.isEnemy(displayName)) {
+            return ColorMain.getEnemyColor() + displayName;
+        } else {
+            return displayName;
+        }
+    }
 }
