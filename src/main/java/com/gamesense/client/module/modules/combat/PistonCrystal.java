@@ -3,7 +3,6 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
@@ -872,7 +871,8 @@ public class PistonCrystal extends Module {
             handSwing = EnumHand.OFF_HAND;
 
         // Place the block
-        PlacementUtil.doPlace(neighbour, opposite, handSwing);
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
+        mc.player.swingArm(handSwing);
 
         return true;
     }
