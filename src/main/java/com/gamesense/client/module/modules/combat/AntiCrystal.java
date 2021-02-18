@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
-import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -248,7 +247,9 @@ public class AntiCrystal extends Module {
                 return;
         }
 
-        PlacementUtil.doPlace(neighbour, opposite, swingHand);
+
+        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, swingHand);
+        mc.player.swingArm(swingHand);
 
         if (switchBack.getValue() && oldSlot != -1) {
             mc.player.inventory.currentItem = oldSlot;
