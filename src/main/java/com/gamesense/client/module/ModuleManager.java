@@ -31,7 +31,7 @@ public class ModuleManager {
         modulesNameMap = new LinkedHashMap<>();
 
         //Combat
-	addMod(new AntiCrystal());
+        addMod(new AntiCrystal());
         addMod(new AutoAnvil());
         addMod(new AutoArmor());
         addMod(new AutoCrystalGS());
@@ -42,7 +42,7 @@ public class ModuleManager {
         addMod(new FastBow());
         addMod(new HoleFill());
         addMod(new KillAura());
-	addMod(new OffHand());
+        addMod(new OffHand());
         addMod(new PistonCrystal());
         addMod(new SelfTrap());
         addMod(new SelfWeb());
@@ -54,7 +54,7 @@ public class ModuleManager {
         addMod(new NoInteract());
         addMod(new NoSwing());
         addMod(new Reach());
-	addMod(new PacketUse());
+        addMod(new PacketUse());
         addMod(new PacketXP());
         addMod(new PortalGodmode());
         //Movement
@@ -68,10 +68,10 @@ public class ModuleManager {
         addMod(new Step());
         //Misc
         addMod(new Announcer());
-	addMod(new AutoGear());
+        addMod(new AutoGear());
         addMod(new AutoGG());
         addMod(new AutoReply());
-	addMod(new AutoRespawn());
+        addMod(new AutoRespawn());
         addMod(new AutoTool());
         addMod(new ChatModifier());
         addMod(new ChatSuffix());
@@ -84,9 +84,9 @@ public class ModuleManager {
         addMod(new MultiTask());
         addMod(new NoEntityTrace());
         addMod(new NoKick());
-	addMod(new PhysicsSpammer());
+        addMod(new PhysicsSpammer());
         addMod(new PvPInfo());
-	addMod(new SortInventory());
+        addMod(new SortInventory());
         //Render
         addMod(new BlockHighlight());
         addMod(new BreakESP());
