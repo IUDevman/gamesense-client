@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author 086
- * @Author Crystallinqq/Auto
+ * @author 086
+ * @author Crystallinqq/Auto
  */
 
 public class EntityUtil {

@@ -65,16 +65,13 @@ public class SaveConfig {
     }
 
     public void registerFiles(String location, String name) throws IOException {
-        if (!Files.exists(Paths.get(fileName + location + name + ".json"))) {
-            Files.createFile(Paths.get(fileName + location + name + ".json"));
-        }
-        else {
+        if (Files.exists(Paths.get(fileName + location + name + ".json"))) {
             File file = new File(fileName + location + name + ".json");
 
             file.delete();
 
-            Files.createFile(Paths.get(fileName + location +name + ".json"));
         }
+        Files.createFile(Paths.get(fileName + location + name + ".json"));
     }
 
     public void saveModules() {

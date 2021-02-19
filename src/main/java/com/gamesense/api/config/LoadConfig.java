@@ -23,7 +23,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.lwjgl.Sys;
 
 /**
  * @author Hoosiers
@@ -138,10 +137,12 @@ public class LoadConfig {
             JsonElement dataObject = settingObject.get(module.getName());
 
             if (dataObject != null && dataObject.isJsonPrimitive()) {
-                if (dataObject.getAsBoolean() == true) {
+                if (dataObject.getAsBoolean()) {
                     try {
                         module.enable();
-                    }catch (NullPointerException e) {}
+                    }catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -277,9 +278,7 @@ public class LoadConfig {
 
         JsonArray friendObject = mainObject.get("Friends").getAsJsonArray();
 
-        friendObject.forEach(object -> {
-            Friends.addFriend(object.getAsString());
-        });
+        friendObject.forEach(object -> Friends.addFriend(object.getAsString()));
         inputStream.close();
     }
 
@@ -299,13 +298,11 @@ public class LoadConfig {
 
         JsonArray enemyObject = mainObject.get("Enemies").getAsJsonArray();
 
-        enemyObject.forEach(object -> {
-            Enemies.addEnemy(object.getAsString());
-        });
+        enemyObject.forEach(object -> Enemies.addEnemy(object.getAsString()));
         inputStream.close();
     }
 
-    public void loadClickGUIPositions() throws IOException {
+    public void loadClickGUIPositions() {
 		GameSense.getInstance().gameSenseGUI.gui.loadConfig(new GuiConfig(fileName+mainName));
     }
 
@@ -325,9 +322,7 @@ public class LoadConfig {
 
         JsonArray messageObject = mainObject.get("Messages").getAsJsonArray();
 
-        messageObject.forEach(object -> {
-            AutoGG.addAutoGgMessage(object.getAsString());
-        });
+        messageObject.forEach(object -> AutoGG.addAutoGgMessage(object.getAsString()));
         inputStream.close();
     }
 

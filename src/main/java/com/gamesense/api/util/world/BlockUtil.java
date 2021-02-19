@@ -90,7 +90,7 @@ public class BlockUtil {
 	}
 
 	public static List<BlockPos> getCircle(final BlockPos loc, final int y, final float r, final boolean hollow) {
-		final List<BlockPos> circleblocks = new ArrayList<BlockPos>();
+		final List<BlockPos> circleblocks = new ArrayList<>();
 		final int cx = loc.getX();
 		final int cz = loc.getZ();
 		for (int x = cx - (int)r; x <= cx + r; x++) {
