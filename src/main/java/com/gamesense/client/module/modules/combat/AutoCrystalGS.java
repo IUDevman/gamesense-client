@@ -316,10 +316,6 @@ public class AutoCrystalGS extends Module {
                             return;
                         }
 
-                        if (rotate.getValue()) {
-                            ROTATION_UTIL.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() + 0.5D, (double) q.getZ() + 0.5D, mc.player);
-                        }
-
                         RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) q.getX() + 0.5D, (double) q.getY() - 0.5D, (double) q.getZ() + 0.5D));
                         if (raytrace.getValue()) {
                             if (result == null || result.sideHit == null) {
@@ -341,6 +337,11 @@ public class AutoCrystalGS extends Module {
 
                         if (mc.player != null) {
                             isActive = true;
+
+                            if (rotate.getValue()) {
+                                ROTATION_UTIL.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() + 0.5D, (double) q.getZ() + 0.5D, mc.player);
+                            }
+
                             if (raytrace.getValue() && enumFacing != null) {
                                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, enumFacing, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
                             }
