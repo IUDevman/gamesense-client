@@ -96,6 +96,7 @@ public class CevBreaker extends Module {
         ArrayList<String> breakCrystalList = new ArrayList<>();
         breakCrystalList.add("Vanilla");
         breakCrystalList.add("Packet");
+        breakCrystalList.add("None");
         ArrayList<String> breakBlockList = new ArrayList<>();
         breakBlockList.add("Normal");
         breakBlockList.add("Packet");
@@ -366,12 +367,12 @@ public class CevBreaker extends Module {
                         mc.player.inventory.currentItem = slot_mat[2];
                     BlockPos obbyBreak = new BlockPos(enemyCoordsDouble[0], enemyCoordsInt[1] + 2, enemyCoordsDouble[2]);
                     if (BlockUtil.getBlock(obbyBreak) instanceof BlockObsidian) {
+                        EnumFacing sideBreak = BlockUtil.getPlaceableSide(obbyBreak);
+                        if (sideBreak != null) {
+                            switch (breakBlock.getValue()) {
+                                case "Packet":
+                                    if (!prevBreak) {
 
-                        switch (breakBlock.getValue()) {
-                            case "Packet":
-                                if (prevBreak == false) {
-                                    EnumFacing sideBreak = BlockUtil.getPlaceableSide(obbyBreak);
-                                    if (sideBreak != null) {
                                         mc.player.swingArm(EnumHand.MAIN_HAND);
                                         mc.player.connection.sendPacket(new CPacketPlayerDigging(
                                                 CPacketPlayerDigging.Action.START_DESTROY_BLOCK, obbyBreak, sideBreak
@@ -379,10 +380,15 @@ public class CevBreaker extends Module {
                                         mc.player.connection.sendPacket(new CPacketPlayerDigging(
                                                 CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, obbyBreak, sideBreak
                                         ));
+
+                                        prevBreak = true;
                                     }
-                                    prevBreak = true;
-                                }
-                                break;
+                                    break;
+                                case "Normal":
+                                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                                    mc.playerController.onPlayerDamageBlock(obbyBreak, sideBreak);
+                                    break;
+                            }
                         }
                     } else {
                         // Destroy
@@ -443,7 +449,7 @@ public class CevBreaker extends Module {
             hitTryTick = 0;
         // If weaknes
         if (antiWeakness.getValue())
-            mc.player.inventory.currentItem = slot_mat[4];
+            mc.player.inventory.currentItem = slot_mat[3];
         // If rotate
         if (rotate.getValue()) {
             ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
@@ -460,6 +466,8 @@ public class CevBreaker extends Module {
             }catch(NullPointerException e) {
 
             }
+        }else if(breakCrystal.getValue().equals("None")) {
+
         }
         // Rotate
         if (rotate.getValue())
@@ -611,9 +619,6 @@ public class CevBreaker extends Module {
         public int supportBlock;
         public ArrayList<Vec3d> to_place;
         public int direction;
-        public float offsetX;
-        public float offsetY;
-        public float offsetZ;
 
         public structureTemp(double distance, int supportBlock, ArrayList<Vec3d> to_place) {
             this.distance = distance;
