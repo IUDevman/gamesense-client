@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
@@ -26,11 +25,11 @@ public class CrystalUtil {
             Block block = mc.world.getBlockState(blockPos).getBlock();
 
             if (block == Blocks.OBSIDIAN || block == Blocks.BEDROCK) {
-                if (mc.world.isAirBlock(up) || block.isReplaceable(mc.world, up)) {
+                if ((mc.world.isAirBlock(up) || block.isReplaceable(mc.world, up)) && (mc.world.isAirBlock(up2) || block.isReplaceable(mc.world, up2))) {
                     double x = up.getX();
                     double y = up.getY();
                     double z = up.getZ();
-                    List<Entity> list = mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(x, y, z, x + 1.0D, y + 2.0D, z + 1.0D));
+                    List<Entity> list = mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(x, y, z, x + 1.0D, y + 2.0D, z + 1.0D));
 
                     return list.isEmpty();
                 }
@@ -44,9 +43,7 @@ public class CrystalUtil {
     }
 
     public static List<BlockPos> findCrystalBlocks(float placeRange, boolean mode) {
-        NonNullList<BlockPos> positions = NonNullList.create();
-        positions.addAll(EntityUtil.getSphere(PlayerUtil.getPlayerPos(), placeRange, (int) placeRange, false, true, 0).stream().filter(pos -> CrystalUtil.canPlaceCrystal(pos, mode)).collect(Collectors.toList()));
-        return positions;
+         return EntityUtil.getSphere(PlayerUtil.getPlayerPos(), placeRange, (int) placeRange, false, true, 0).stream().filter(pos -> CrystalUtil.canPlaceCrystal(pos, mode)).collect(Collectors.toList());
     }
 
     public static void breakCrystal(Entity crystal) {

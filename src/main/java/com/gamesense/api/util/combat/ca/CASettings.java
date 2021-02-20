@@ -2,8 +2,6 @@ package com.gamesense.api.util.combat.ca;
 
 import net.minecraft.util.math.Vec3d;
 
-import java.security.PublicKey;
-
 public class CASettings {
     public final double enemyRangeSq;
 

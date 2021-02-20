@@ -37,7 +37,7 @@ public class BreakThread implements Callable<List<CrystalInfo.BreakInfo>> {
             EntityEnderCrystal best = null;
             float bestDamage = 0f;
             for (EntityEnderCrystal crystal : crystals) {
-                float currentDamage = DamageUtil.calculateDamage(crystal.posX, crystal.posY, crystal.posZ, target);
+                float currentDamage = DamageUtil.calculateDamageThreaded(crystal.posX, crystal.posY, crystal.posZ, target);
                 if (currentDamage == bestDamage) {
                     // this new crystal is closer
                     // higher chance of being able to break it

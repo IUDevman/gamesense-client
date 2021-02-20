@@ -34,7 +34,7 @@ public class PlaceThread implements Callable<CrystalInfo.PlaceInfo> {
         for (BlockPos crystal : possibleLocations) {
             // if player is out of range of this crystal, do nothing
             if (target.getDistanceSq((double) crystal.getX() + 0.5d, (double) crystal.getY() + 1.0d, (double) crystal.getZ() + 0.5d) <= settings.enemyRangeSq) {
-                float currentDamage = DamageUtil.calculateDamage((double) crystal.getX() + 0.5d, (double) crystal.getY() + 1.0d, (double) crystal.getZ() + 0.5d, target);
+                float currentDamage = DamageUtil.calculateDamageThreaded((double) crystal.getX() + 0.5d, (double) crystal.getY() + 1.0d, (double) crystal.getZ() + 0.5d, target);
                 if (currentDamage == bestDamage) {
                     // this new crystal is closer
                     // higher chance of being able to break it
