@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 
 public class ModuleManager {
-
     private static LinkedHashMap<Class<? extends Module>, Module> modulesClassMap;
     private static LinkedHashMap<String, Module> modulesNameMap;
 
@@ -211,3 +210,4 @@ public class ModuleManager {
         return module != null && module.isEnabled();
     }
 }
+

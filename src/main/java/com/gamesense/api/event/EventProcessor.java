@@ -1,13 +1,27 @@
 package com.gamesense.api.event;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
-
+import com.gamesense.api.event.events.PacketEvent;
+import com.gamesense.api.event.events.PlayerJoinEvent;
+import com.gamesense.api.event.events.PlayerLeaveEvent;
+import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.command.CommandManager;
-import com.gamesense.api.util.misc.MessageBus;
-import net.minecraftforge.client.event.*;
+import com.gamesense.client.module.ModuleManager;
+import com.google.common.collect.Maps;
+import com.mojang.realmsclient.gui.ChatFormatting;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.play.server.SPacketPlayerListItem;
+import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,23 +30,9 @@ import org.json.simple.parser.ParseException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.event.events.PlayerJoinEvent;
-import com.gamesense.api.event.events.PlayerLeaveEvent;
-import com.gamesense.client.GameSense;
-import com.gamesense.client.module.ModuleManager;
-import com.google.common.collect.Maps;
-import com.mojang.realmsclient.gui.ChatFormatting;
-
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.play.server.SPacketPlayerListItem;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
 
 public class EventProcessor {
 
