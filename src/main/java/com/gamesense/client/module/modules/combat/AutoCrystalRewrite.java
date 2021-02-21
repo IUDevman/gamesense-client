@@ -22,7 +22,6 @@ import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import io.netty.util.internal.ConcurrentSet;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
@@ -48,11 +47,11 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
@@ -167,15 +166,13 @@ public class AutoCrystalRewrite extends Module {
     Timer timer = new Timer();
 
     // stores all know crystals
-    private final ConcurrentSet<EntityEnderCrystal> allCrystals = new ConcurrentSet<>();
+    private final Set<EntityEnderCrystal> allCrystals = Collections.synchronizedSet(new HashSet<>());
     // stores all the locations we have attempted to place crystals
     // and the corresponding crystal for that location (if there is any)
-    private final ConcurrentHashMap<BlockPos, EntityEnderCrystal> placedCrystals = new ConcurrentHashMap<>();
+    private final Map<BlockPos, EntityEnderCrystal> placedCrystals = Collections.synchronizedMap(new HashMap<>());
 
     // Threading Stuff
-    private ThreadPoolExecutor breakExecutor;
-    private ThreadPoolExecutor placeExecutor;
-    private int breakThreadsActual;
+    private static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
     private long globalTimeoutTime;
 
@@ -219,8 +216,10 @@ public class AutoCrystalRewrite extends Module {
         final boolean own = breakMode.getValue().equalsIgnoreCase("Own");
         if (own) {
             // remove own crystals that have been destroyed
-            placedCrystals.entrySet().removeIf(entry -> {
-                EntityEnderCrystal crystal = entry.getValue();
+            placedCrystals.values().removeIf(crystal -> {
+                if (crystal == null) {
+                    return false;
+                }
                 return crystal.isDead;
             });
         }
@@ -237,17 +236,10 @@ public class AutoCrystalRewrite extends Module {
             if (allCrystals.size() == 0) {
                 placedCrystals.clear();
             } else {
-                if (breakExecutor == null) {
-                    breakExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(breakThreads.getValue());
-                    breakThreadsActual = breakThreads.getValue();
-                }
                 breakFutures = startBreakThreads(targetsInfo, settings);
             }
         }
         if (placeCrystal.getValue()) {
-            if (placeExecutor == null) {
-                placeExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
-            }
             placeFutures = startPlaceThreads(targetsInfo, settings);
         }
         globalTimeoutTime = System.currentTimeMillis() + timeout.getValue();
@@ -370,7 +362,7 @@ public class AutoCrystalRewrite extends Module {
             if (own) {
                 BlockPos up = target.up();
                 if (!placedCrystals.containsKey(up)) {
-                    placedCrystals.put(up, new EntityEnderCrystal(mc.world));
+                    placedCrystals.put(up, null);
                 }
             }
 
@@ -427,7 +419,8 @@ public class AutoCrystalRewrite extends Module {
                 .collect(Collectors.toList());
         if (breakMode.getValue().equalsIgnoreCase("Own")) {
             // no point in checking crystals that arent ours
-            crystalList.retainAll(placedCrystals.values());
+            crystalList.removeIf(crystal -> !placedCrystals.containsKey(EntityUtil.getPosition(crystal)));
+            GameSense.LOGGER.info(crystalList.size());
         }
         // remove all crystals that deal more than max self damage
         // no point in checking these
@@ -446,8 +439,8 @@ public class AutoCrystalRewrite extends Module {
 
         List<Future<List<CrystalInfo.BreakInfo>>> output = new ArrayList<>();
         // split targets equally between threads
-        int targetsPerThread = (int) Math.ceil((double) targets.size()/ (double) breakThreadsActual);
-        int threadsPerTarget = (int) Math.floor((double) breakThreadsActual/ (double) targets.size());
+        int targetsPerThread = (int) Math.ceil((double) targets.size()/ (double) breakThreads.getValue());
+        int threadsPerTarget = (int) Math.floor((double) breakThreads.getValue()/ (double) targets.size());
 
         List<List<EntityEnderCrystal>> splits = new ArrayList<>();
         int smallListSize = (int) Math.ceil((double) crystalList.size()/ (double) threadsPerTarget);
@@ -463,13 +456,13 @@ public class AutoCrystalRewrite extends Module {
         for (int i = targetsPerThread; i < targets.size(); i += targetsPerThread) {
             List<PlayerInfo> sublist = targets.subList(j, i + 1);
             for (List<EntityEnderCrystal> split : splits) {
-                output.add(breakExecutor.submit(new BreakThread(settings, split, sublist)));
+                output.add(executor.submit(new BreakThread(settings, split, sublist)));
             }
             j += targetsPerThread;
         }
         List<PlayerInfo> sublist = targets.subList(j, targets.size());
         for (List<EntityEnderCrystal> split : splits) {
-            output.add(breakExecutor.submit(new BreakThread(settings, split, sublist)));
+            output.add(executor.submit(new BreakThread(settings, split, sublist)));
         }
 
         return output;
@@ -529,7 +522,7 @@ public class AutoCrystalRewrite extends Module {
         List<Future<CrystalInfo.PlaceInfo>> output = new ArrayList<>();
 
         for (PlayerInfo target : targets) {
-            output.add(placeExecutor.submit(new PlaceThread(settings, blocks, target)));
+            output.add(executor.submit(new PlaceThread(settings, blocks, target)));
         }
 
         return output;
@@ -605,10 +598,10 @@ public class AutoCrystalRewrite extends Module {
         if (packet instanceof SPacketSoundEffect) {
             final SPacketSoundEffect packetSoundEffect = (SPacketSoundEffect) packet;
             if (packetSoundEffect.getCategory() == SoundCategory.BLOCKS && packetSoundEffect.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
-                for (Entity e : Minecraft.getMinecraft().world.loadedEntityList) {
-                    if (e instanceof EntityEnderCrystal) {
-                        if (e.getDistanceSq(packetSoundEffect.getX(), packetSoundEffect.getY(), packetSoundEffect.getZ()) <= 36.0f) {
-                            e.setDead();
+                for (Entity entity : Minecraft.getMinecraft().world.loadedEntityList) {
+                    if (entity instanceof EntityEnderCrystal) {
+                        if (entity.getDistanceSq(packetSoundEffect.getX(), packetSoundEffect.getY(), packetSoundEffect.getZ()) <= 36.0f) {
+                            entity.setDead();
                         }
                     }
                 }
@@ -655,15 +648,6 @@ public class AutoCrystalRewrite extends Module {
 
         allCrystals.clear();
         placedCrystals.clear();
-
-        if (breakExecutor != null) {
-            breakExecutor.shutdownNow();
-            breakExecutor = null;
-        }
-        if (placeExecutor != null) {
-            placeExecutor.shutdownNow();
-            placeExecutor = null;
-        }
 
         if(chat.getValue()) {
             MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoCrystal turned OFF!");
