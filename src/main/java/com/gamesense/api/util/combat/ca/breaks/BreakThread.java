@@ -3,8 +3,8 @@ package com.gamesense.api.util.combat.ca.breaks;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.combat.ca.CASettings;
 import com.gamesense.api.util.combat.ca.CrystalInfo;
+import com.gamesense.api.util.combat.ca.PlayerInfo;
 import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +14,9 @@ public class BreakThread implements Callable<List<CrystalInfo.BreakInfo>> {
     private final CASettings settings;
 
     private final List<EntityEnderCrystal> crystals;
-    private final List<EntityPlayer> targets;
+    private final List<PlayerInfo> targets;
 
-    public BreakThread(CASettings setting, List<EntityEnderCrystal> crystals, List<EntityPlayer> targets) {
+    public BreakThread(CASettings setting, List<EntityEnderCrystal> crystals, List<PlayerInfo> targets) {
         this.settings = setting;
 
         this.crystals = crystals;
@@ -33,7 +33,7 @@ public class BreakThread implements Callable<List<CrystalInfo.BreakInfo>> {
         List<CrystalInfo.BreakInfo> worthyCrystals = new ArrayList<>();
         // get the best crystal for each player
         // store in worthyCrystals
-        for (EntityPlayer target : targets) {
+        for (PlayerInfo target : targets) {
             EntityEnderCrystal best = null;
             float bestDamage = 0f;
             for (EntityEnderCrystal crystal : crystals) {
@@ -54,7 +54,7 @@ public class BreakThread implements Callable<List<CrystalInfo.BreakInfo>> {
             if (best != null) {
                 boolean shouldAdd = false;
                 if (smart) {
-                    if ((double) bestDamage >= settings.minBreakDamage || ((target.getHealth() + target.getAbsorptionAmount()) <= settings.facePlaceHealth && bestDamage > settings.minFacePlaceDamage)) {
+                    if ((double) bestDamage >= settings.minBreakDamage || ((target.entity.getHealth() + target.entity.getAbsorptionAmount()) <= settings.facePlaceHealth && bestDamage > settings.minFacePlaceDamage)) {
                         shouldAdd = true;
                     }
                 } else {
@@ -62,7 +62,7 @@ public class BreakThread implements Callable<List<CrystalInfo.BreakInfo>> {
                 }
 
                 if (shouldAdd) {
-                    worthyCrystals.add(new CrystalInfo.BreakInfo(bestDamage, target, best));
+                    worthyCrystals.add(new CrystalInfo.BreakInfo(bestDamage, target.entity, best));
                 }
             }
         }

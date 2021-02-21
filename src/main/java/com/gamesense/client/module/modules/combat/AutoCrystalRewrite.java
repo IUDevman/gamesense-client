@@ -7,6 +7,7 @@ import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.combat.ca.CASettings;
 import com.gamesense.api.util.combat.ca.CrystalInfo;
+import com.gamesense.api.util.combat.ca.PlayerInfo;
 import com.gamesense.api.util.combat.ca.breaks.BreakThread;
 import com.gamesense.api.util.combat.ca.place.PlaceThread;
 import com.gamesense.api.util.misc.MessageBus;
@@ -225,6 +226,10 @@ public class AutoCrystalRewrite extends Module {
         }
 
         CASettings settings = new CASettings(enemyRange.getValue(), minDmg.getValue(), minBreakDmg.getValue(), minFacePlaceDmg.getValue(), facePlaceValue.getValue(), breakMode.getValue(), mc.player.getPositionVector());
+        List<PlayerInfo> targetsInfo = new ArrayList<>();
+        for (EntityPlayer target : targets) {
+            targetsInfo.add(new PlayerInfo(target));
+        }
 
         List<Future<CrystalInfo.PlaceInfo>> placeFutures = null;
         List<Future<List<CrystalInfo.BreakInfo>>> breakFutures = null;
@@ -236,14 +241,14 @@ public class AutoCrystalRewrite extends Module {
                     breakExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(breakThreads.getValue());
                     breakThreadsActual = breakThreads.getValue();
                 }
-                breakFutures = startBreakThreads(targets, settings);
+                breakFutures = startBreakThreads(targetsInfo, settings);
             }
         }
         if (placeCrystal.getValue()) {
             if (placeExecutor == null) {
                 placeExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
             }
-            placeFutures = startPlaceThreads(targets, settings);
+            placeFutures = startPlaceThreads(targetsInfo, settings);
         }
         globalTimeoutTime = System.currentTimeMillis() + timeout.getValue();
 
@@ -415,7 +420,7 @@ public class AutoCrystalRewrite extends Module {
         }
     }
 
-    private List<Future<List<CrystalInfo.BreakInfo>>> startBreakThreads(List<EntityPlayer> targets, CASettings settings) {
+    private List<Future<List<CrystalInfo.BreakInfo>>> startBreakThreads(List<PlayerInfo> targets, CASettings settings) {
         final double breakRangeSq = breakRange.getValue() * breakRange.getValue();
         List<EntityEnderCrystal> crystalList = allCrystals.stream()
                 .filter(entity -> mc.player.getDistanceSq(entity) <= breakRangeSq)
@@ -456,13 +461,13 @@ public class AutoCrystalRewrite extends Module {
 
         j = 0;
         for (int i = targetsPerThread; i < targets.size(); i += targetsPerThread) {
-            List<EntityPlayer> sublist = targets.subList(j, i + 1);
+            List<PlayerInfo> sublist = targets.subList(j, i + 1);
             for (List<EntityEnderCrystal> split : splits) {
                 output.add(breakExecutor.submit(new BreakThread(settings, split, sublist)));
             }
             j += targetsPerThread;
         }
-        List<EntityPlayer> sublist = targets.subList(j, targets.size());
+        List<PlayerInfo> sublist = targets.subList(j, targets.size());
         for (List<EntityEnderCrystal> split : splits) {
             output.add(breakExecutor.submit(new BreakThread(settings, split, sublist)));
         }
@@ -504,7 +509,7 @@ public class AutoCrystalRewrite extends Module {
         }
     }
 
-    private List<Future<CrystalInfo.PlaceInfo>> startPlaceThreads(List<EntityPlayer> targets, CASettings settings) {
+    private List<Future<CrystalInfo.PlaceInfo>> startPlaceThreads(List<PlayerInfo> targets, CASettings settings) {
         List<BlockPos> blocks = CrystalUtil.findCrystalBlocks((float) placeRange.getValue(), endCrystalMode.getValue());
         // remove all placements that deal more than max self damage
         // no point in checking these
@@ -523,9 +528,7 @@ public class AutoCrystalRewrite extends Module {
 
         List<Future<CrystalInfo.PlaceInfo>> output = new ArrayList<>();
 
-        for (EntityPlayer target : targets) {
-            output.add(placeExecutor.submit(new PlaceThread(settings, blocks, target)));
-            output.add(placeExecutor.submit(new PlaceThread(settings, blocks, target)));
+        for (PlayerInfo target : targets) {
             output.add(placeExecutor.submit(new PlaceThread(settings, blocks, target)));
         }
 
