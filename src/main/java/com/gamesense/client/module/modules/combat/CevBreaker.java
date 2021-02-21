@@ -67,11 +67,8 @@ public class CevBreaker extends Module {
     private int oldSlot = -1,
             stage,
             delayTimeTicks,
-            stuck = 0,
-            hitTryTick,
-            round,
-            nCrystal;
-    private int[][] model = new int[][] {
+            hitTryTick;
+    private final int[][] model = new int[][] {
             {1,1,0},
             {-1,1,0},
             {0,1,1},
@@ -118,8 +115,6 @@ public class CevBreaker extends Module {
         confirmPlace = registerBoolean("No Glitch Place", true);
         antiWeakness = registerBoolean("Anti Weakness", false);
         chatMsg = registerBoolean("Chat Msgs", true);
-        // Reset round
-        round = 0;
     }
 
     // Everytime you enable
@@ -191,7 +186,7 @@ public class CevBreaker extends Module {
         isHole = true;
         hasMoved = rotationPlayerMoved = deadPl = broken = false;
         slot_mat = new int[]{-1, -1, -1, -1};
-        stage = delayTimeTicks = stuck = 0;
+        stage = delayTimeTicks = 0;
 
         if (mc.player == null){
             disable();
@@ -267,6 +262,7 @@ public class CevBreaker extends Module {
 
         noMaterials = false;
         AutoCrystalGS.stopAC = false;
+        target = null;
     }
 
     private String getMissingMaterials() {
@@ -356,6 +352,13 @@ public class CevBreaker extends Module {
 
                 // Place crystal
                 case 2:
+                    // Confirm Place
+                    if (confirmPlace.getValue())
+                        if (!(BlockUtil.getBlock(compactBlockPos(0)) instanceof BlockObsidian)) {
+                            stage--;
+                            return;
+                        }
+
                     // Check pistonPlace if confirmPlace
                     placeBlockThings(stage);
                     prevBreak = false;
@@ -363,13 +366,27 @@ public class CevBreaker extends Module {
 
                 // Break
                 case 3:
+                    // Confirm Place
+                    if (confirmPlace.getValue())
+                        if (getCrystal() == null) {
+                            stage--;
+                            return;
+                        }
+
+                    // Switch to pick
                     if (mc.player.inventory.currentItem != slot_mat[2])
                         mc.player.inventory.currentItem = slot_mat[2];
+                    // Get block
                     BlockPos obbyBreak = new BlockPos(enemyCoordsDouble[0], enemyCoordsInt[1] + 2, enemyCoordsDouble[2]);
+                    // If we have not break it yet
                     if (BlockUtil.getBlock(obbyBreak) instanceof BlockObsidian) {
+                        // Get side
                         EnumFacing sideBreak = BlockUtil.getPlaceableSide(obbyBreak);
+                        // If it's != null
                         if (sideBreak != null) {
+                            // Switch break values
                             switch (breakBlock.getValue()) {
+                                // Normal Packet
                                 case "Packet":
                                     if (!prevBreak) {
 
@@ -384,6 +401,7 @@ public class CevBreaker extends Module {
                                         prevBreak = true;
                                     }
                                     break;
+                                // Vanilla
                                 case "Normal":
                                     mc.player.swingArm(EnumHand.MAIN_HAND);
                                     mc.playerController.onPlayerDamageBlock(obbyBreak, sideBreak);
@@ -391,7 +409,7 @@ public class CevBreaker extends Module {
                             }
                         }
                     } else {
-                        // Destroy
+                        // Destroy crystal
                         destroyCrystalAlgo();
                     }
 
@@ -401,10 +419,7 @@ public class CevBreaker extends Module {
 
     }
 
-    // Algo for destroying the crystal
-    public void destroyCrystalAlgo() {
-        // Get the crystal
-        Entity crystal = null;
+    private Entity getCrystal() {
         // Check if the crystal exist
         for(Entity t : mc.world.loadedEntityList) {
             // If it's a crystal
@@ -415,14 +430,21 @@ public class CevBreaker extends Module {
                 // It go to the hole, for a better speed (we find the frame perfect for every servers)
                 if (  (int) t.posX == enemyCoordsInt[0] && (int) t.posZ == enemyCoordsInt[2] && t.posY - enemyCoordsInt[1] == 3  )
                     // If found, yoink
-                    crystal = t;
+                    return t;
             }
         }
+        return null;
+    }
+
+    // Algo for destroying the crystal
+    public void destroyCrystalAlgo() {
+        // Get the crystal
+        Entity crystal = getCrystal();
         // If we have confirmBreak, we have found 0 crystal and we broke a crystal before
         if (confirmBreak.getValue() && broken && crystal == null) {
             /// That means the crystal was broken 100%
             // Reset
-            stage = stuck = 0;
+            stage = 0;
             broken = false;
 
         }
@@ -435,7 +457,7 @@ public class CevBreaker extends Module {
                 broken = true;
                 // If not, left
             else {
-                stage = stuck = 0;
+                stage = 0;
             }
         }else stage = 0;
     }
@@ -456,18 +478,22 @@ public class CevBreaker extends Module {
         }
         /// Break type
         // Swing
-        if (breakCrystal.getValue().equals("Swing")) {
-            CrystalUtil.breakCrystal(crystal);
-            // Packet
-        }else if(breakCrystal.getValue().equals("Packet")) {
-            try {
-                mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-                mc.player.swingArm(EnumHand.MAIN_HAND);
-            }catch(NullPointerException e) {
+        switch (breakCrystal.getValue()) {
+            case "Vanilla":
+                CrystalUtil.breakCrystal(crystal);
+                // Packet
+                break;
+            case "Packet":
+                try {
+                    mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                } catch (NullPointerException e) {
 
-            }
-        }else if(breakCrystal.getValue().equals("None")) {
+                }
+                break;
+            case "None":
 
+                break;
         }
         // Rotate
         if (rotate.getValue())
