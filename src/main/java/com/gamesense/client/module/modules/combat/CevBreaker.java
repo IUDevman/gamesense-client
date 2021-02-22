@@ -1,5 +1,6 @@
 package com.gamesense.client.module.modules.combat;
 
+import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
@@ -7,9 +8,12 @@ import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -22,6 +26,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -53,7 +58,9 @@ public class CevBreaker extends Module {
             confirmPlace,
             antiWeakness,
             chatMsg,
-            switchSword;
+            switchSword,
+            fastPlace,
+            predictBreak;
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -91,6 +98,14 @@ public class CevBreaker extends Module {
 
     private EntityPlayer aimTarget;
 
+    @EventHandler
+    private final Listener<DestroyBlockEvent> listener2 = new Listener<>(event -> {
+
+        if (enemyCoordsInt != null && event.getBlockPos().x + (event.getBlockPos().x < 0 ? 1 : 0) == enemyCoordsInt[0] && event.getBlockPos().z + (event.getBlockPos().z < 0 ? 1 : 0) == enemyCoordsInt[2]) {
+            destroyCrystalAlgo();
+        }
+    });
+
     // Setup the options of the gui
     public void setup(){
         ArrayList<String> breakCrystalList = new ArrayList<>();
@@ -119,11 +134,16 @@ public class CevBreaker extends Module {
         confirmPlace = registerBoolean("No Glitch Place", true);
         antiWeakness = registerBoolean("Anti Weakness", false);
         switchSword = registerBoolean("Switch Sword", false);
+        predictBreak = registerBoolean("Predict Break", false);
+        fastPlace = registerBoolean("Fast Place", false);
         chatMsg = registerBoolean("Chat Msgs", true);
     }
 
     // Everytime you enable
     public void onEnable() {
+        if (predictBreak.getValue())
+            GameSense.EVENT_BUS.subscribe(this);
+
         ROTATION_UTIL.onEnable();
         // Init values
         initValues();
@@ -212,10 +232,12 @@ public class CevBreaker extends Module {
             AutoCrystalGS.stopAC = true;
             stoppedCa = true;
         }
+
     }
 
     // On disable of the module
     public void onDisable() {
+        GameSense.EVENT_BUS.unsubscribe(this);
         ROTATION_UTIL.onDisable();
         if (mc.player == null){
             return;
@@ -300,6 +322,8 @@ public class CevBreaker extends Module {
             return;
         }
 
+
+
         // Wait
         if (delayTimeTicks < delayTable[stage]){
             delayTimeTicks++;
@@ -353,6 +377,12 @@ public class CevBreaker extends Module {
                 // Place obsidian
                 case 1:
                     placeBlockThings(stage);
+                    if (fastPlace.getValue()) {
+                        // Check pistonPlace if confirmPlace
+                        placeBlockThings(stage);
+                        prevBreak = false;
+                        tickPick = 0;
+                    }
                     break;
 
                 // Place crystal
