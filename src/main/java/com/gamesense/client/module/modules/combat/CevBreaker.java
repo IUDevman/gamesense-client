@@ -46,12 +46,14 @@ public class CevBreaker extends Module {
             hitDelay,
             midHitDelay,
             supDelay,
+            pickSwitchTick,
             endDelay;
     Setting.Boolean rotate,
             confirmBreak,
             confirmPlace,
             antiWeakness,
-            chatMsg;
+            chatMsg,
+            switchSword;
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -67,7 +69,8 @@ public class CevBreaker extends Module {
     private int oldSlot = -1,
             stage,
             delayTimeTicks,
-            hitTryTick;
+            hitTryTick,
+            tickPick;
     private final int[][] model = new int[][] {
             {1,1,0},
             {-1,1,0},
@@ -110,10 +113,12 @@ public class CevBreaker extends Module {
         hitDelay = registerInteger("Hit Delay", 2, 0, 20);
         midHitDelay = registerInteger("Mid Hit Delay", 1, 0, 5);
         endDelay = registerInteger("End Delay", 1, 0, 4);
+        pickSwitchTick = registerInteger("Pick Switch Tick", 100, 0, 500);
         rotate = registerBoolean("Rotate", false);
         confirmBreak = registerBoolean("No Glitch Break", true);
         confirmPlace = registerBoolean("No Glitch Place", true);
         antiWeakness = registerBoolean("Anti Weakness", false);
+        switchSword = registerBoolean("Switch Sword", false);
         chatMsg = registerBoolean("Chat Msgs", true);
     }
 
@@ -133,6 +138,7 @@ public class CevBreaker extends Module {
     private boolean getAimTarget() {
         /// Get aimTarget
         // If nearest, get it
+
         if (target.getValue().equals("Nearest"))
             aimTarget = PlayerUtil.findClosestTarget(enemyRange.getValue(), aimTarget);
             // if looking
@@ -262,7 +268,6 @@ public class CevBreaker extends Module {
 
         noMaterials = false;
         AutoCrystalGS.stopAC = false;
-        target = null;
     }
 
     private String getMissingMaterials() {
@@ -279,7 +284,7 @@ public class CevBreaker extends Module {
             output.append(" Obsidian");
         if (slot_mat[1] == -1)
             output.append(" Crystal");
-        if (antiWeakness.getValue() && slot_mat[3] == -1)
+        if ((antiWeakness.getValue() || switchSword.getValue()) && slot_mat[3] == -1)
             output.append(" Sword");
         if (slot_mat[2] == -1)
             output.append(" Pick");
@@ -362,6 +367,7 @@ public class CevBreaker extends Module {
                     // Check pistonPlace if confirmPlace
                     placeBlockThings(stage);
                     prevBreak = false;
+                    tickPick = 0;
                     break;
 
                 // Break
@@ -373,9 +379,15 @@ public class CevBreaker extends Module {
                             return;
                         }
 
-                    // Switch to pick
-                    if (mc.player.inventory.currentItem != slot_mat[2])
-                        mc.player.inventory.currentItem = slot_mat[2];
+                    // Switch to pick / sword
+                    int switchValue = 3;
+                    if (!switchSword.getValue() || (tickPick == pickSwitchTick.getValue() || tickPick++ == 0))
+                        switchValue = 2;
+
+                if (mc.player.inventory.currentItem != slot_mat[switchValue]) {
+                    mc.player.inventory.currentItem = slot_mat[switchValue];
+                }
+
                     // Get block
                     BlockPos obbyBreak = new BlockPos(enemyCoordsDouble[0], enemyCoordsInt[1] + 2, enemyCoordsDouble[2]);
                     // If we have not break it yet
@@ -714,7 +726,7 @@ public class CevBreaker extends Module {
             if (slot_mat[1] == -1 && stack.getItem() instanceof ItemEndCrystal) {
                 slot_mat[1] = i;
                 // If sword
-            }else if (antiWeakness.getValue() && stack.getItem() instanceof ItemSword) {
+            }else if ((antiWeakness.getValue() || switchSword.getValue()) && stack.getItem() instanceof ItemSword) {
                 slot_mat[3] = i;
             }else
                 // If Pick
@@ -740,7 +752,7 @@ public class CevBreaker extends Module {
         }
 
         // If we have everything we need, return true
-        return count >= 3 + (antiWeakness.getValue() ? 1 : 0) ;
+        return count >= 3 + ((antiWeakness.getValue() || switchSword.getValue()) ? 1 : 0) ;
 
     }
 
