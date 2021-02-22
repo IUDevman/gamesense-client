@@ -60,7 +60,8 @@ public class CevBreaker extends Module {
             chatMsg,
             switchSword,
             fastPlace,
-            predictBreak;
+            predictBreak,
+            placeCrystal;
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -136,6 +137,7 @@ public class CevBreaker extends Module {
         switchSword = registerBoolean("Switch Sword", false);
         predictBreak = registerBoolean("Predict Break", false);
         fastPlace = registerBoolean("Fast Place", false);
+        placeCrystal = registerBoolean("Place Crystal", true);
         chatMsg = registerBoolean("Chat Msgs", true);
     }
 
@@ -378,10 +380,7 @@ public class CevBreaker extends Module {
                 case 1:
                     placeBlockThings(stage);
                     if (fastPlace.getValue()) {
-                        // Check pistonPlace if confirmPlace
-                        placeBlockThings(stage);
-                        prevBreak = false;
-                        tickPick = 0;
+                        placeCrystal();
                     }
                     break;
 
@@ -394,10 +393,7 @@ public class CevBreaker extends Module {
                             return;
                         }
 
-                    // Check pistonPlace if confirmPlace
-                    placeBlockThings(stage);
-                    prevBreak = false;
-                    tickPick = 0;
+                    placeCrystal();
                     break;
 
                 // Break
@@ -459,6 +455,13 @@ public class CevBreaker extends Module {
             }
         }
 
+    }
+
+    private void placeCrystal() {
+        // Check pistonPlace if confirmPlace
+        placeBlockThings(stage);
+        prevBreak = false;
+        tickPick = 0;
     }
 
     private Entity getCrystal() {
@@ -647,11 +650,13 @@ public class CevBreaker extends Module {
 
     // Given a step, place the block
     public void placeBlockThings(int step) {
-        step--;
-        // Get absolute position
-        BlockPos targetPos = compactBlockPos(step);
-        // Place 93 4 -29
-        placeBlock(targetPos, step);
+        if (step != 1 || placeCrystal.getValue() ) {
+            step--;
+            // Get absolute position
+            BlockPos targetPos = compactBlockPos(step);
+            // Place 93 4 -29
+            placeBlock(targetPos, step);
+        }
         // Next step
         stage++;
     }
