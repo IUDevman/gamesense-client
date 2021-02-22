@@ -517,7 +517,6 @@ public class AutoCrystalGS extends Module {
 
     public void onEnable() {
         ROTATION_UTIL.onEnable();
-        GameSense.EVENT_BUS.subscribe(this);
         PlacedCrystals.clear();
         isActive = false;
         if(chat.getValue() && mc.player != null) {
@@ -527,7 +526,6 @@ public class AutoCrystalGS extends Module {
 
     public void onDisable() {
         ROTATION_UTIL.onDisable();
-        GameSense.EVENT_BUS.unsubscribe(this);
         render = null;
         renderEnt = null;
         ROTATION_UTIL.resetRotation();

@@ -157,12 +157,4 @@ public class Chams extends Module {
             }
         }
     }
-
-    public void onEnable() {
-        GameSense.EVENT_BUS.subscribe(this);
-    }
-
-    public void onDisable() {
-        GameSense.EVENT_BUS.unsubscribe(this);
-    }
 }

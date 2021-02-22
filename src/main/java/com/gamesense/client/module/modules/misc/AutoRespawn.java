@@ -61,16 +61,6 @@ public class AutoRespawn extends Module {
         }
     }
 
-    @Override
-    protected void onEnable() {
-        GameSense.EVENT_BUS.subscribe(this);
-    }
-
-    @Override
-    protected void onDisable() {
-        GameSense.EVENT_BUS.unsubscribe(this);
-    }
-
     public static void setAutoRespawnMessage(String string) {
         AutoRespawnMessage = string;
     }
