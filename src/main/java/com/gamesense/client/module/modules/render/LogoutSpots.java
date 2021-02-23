@@ -73,12 +73,10 @@ public class LogoutSpots extends Module {
     public void onEnable() {
         loggedPlayers.clear();
         worldPlayers = ConcurrentHashMap.newKeySet();
-        GameSense.EVENT_BUS.subscribe(this);
     }
 
     public void onDisable() {
         worldPlayers.clear();
-        GameSense.EVENT_BUS.unsubscribe(this);
     }
 
     private void startFunction(Entity entity, String string) {

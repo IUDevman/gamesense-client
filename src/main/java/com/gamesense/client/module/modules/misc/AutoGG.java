@@ -73,12 +73,10 @@ public class AutoGG extends Module {
 
 	public void onEnable() {
 		this.targetedPlayers = new ConcurrentHashMap();
-		GameSense.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable() {
 		this.targetedPlayers = null;
-		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 
 	public void onUpdate() {
