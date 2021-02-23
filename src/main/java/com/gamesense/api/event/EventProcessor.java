@@ -139,7 +139,7 @@ public class EventProcessor {
             ModuleManager.onUpdate();
         }
 
-		GameSense.EVENT_BUS.post(event);
+		  GameSense.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent
