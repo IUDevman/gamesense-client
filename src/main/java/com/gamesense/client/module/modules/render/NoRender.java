@@ -99,14 +99,6 @@ public class NoRender extends Module {
 		}
 	});
 
-	public void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
-	}
-
-	public void onDisable() {
-		GameSense.EVENT_BUS.unsubscribe(this);
-	}
-
 	// return whether to render or not
 	public static boolean incrementNoClusterRender() {
 		++currentClusterAmount;
