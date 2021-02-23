@@ -406,7 +406,4 @@ public class AutoGear extends Module {
 
         return output;
     }
-
-
-
 }

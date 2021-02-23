@@ -86,11 +86,13 @@ public abstract class Module implements Toggleable,KeybindSetting {
 
 	public void enable() {
 		setEnabled(true);
+		GameSense.EVENT_BUS.subscribe(this);
 		onEnable();
 	}
 
 	public void disable() {
 		setEnabled(false);
+		GameSense.EVENT_BUS.unsubscribe(this);
 		onDisable();
 	}
 

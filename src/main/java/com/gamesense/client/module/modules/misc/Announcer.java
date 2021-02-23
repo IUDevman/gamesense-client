@@ -221,7 +221,6 @@ public class Announcer extends Module {
 	});
 
 	public void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
 		blocksPlaced = 0;
 		blocksBroken = 0;
 		eaten = 0;
@@ -231,9 +230,5 @@ public class Announcer extends Module {
 		jumpDelay = 0;
 		attackDelay = 0;
 		eattingDelay = 0;
-	}
-
-	public void onDisable() {
-		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 }
