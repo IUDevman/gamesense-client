@@ -385,6 +385,8 @@ public class CevBreaker extends Module {
                     if (fastPlace.getValue()) {
                         placeCrystal();
                     }
+                    prevBreak = false;
+                    tickPick = 0;
                     break;
 
                 // Place crystal
@@ -463,8 +465,6 @@ public class CevBreaker extends Module {
     private void placeCrystal() {
         // Check pistonPlace if confirmPlace
         placeBlockThings(stage);
-        prevBreak = false;
-        tickPick = 0;
     }
 
     private Entity getCrystal() {
