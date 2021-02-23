@@ -61,7 +61,9 @@ public class CevBreaker extends Module {
             switchSword,
             fastPlace,
             predictBreak,
-            placeCrystal;
+            placeCrystal,
+            trapPlayer,
+            antiStep;
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -138,6 +140,8 @@ public class CevBreaker extends Module {
         predictBreak = registerBoolean("Predict Break", false);
         fastPlace = registerBoolean("Fast Place", false);
         placeCrystal = registerBoolean("Place Crystal", true);
+        trapPlayer = registerBoolean("Trap Player", false);
+        antiStep = registerBoolean("Anti Step", false);
         chatMsg = registerBoolean("Chat Msgs", true);
     }
 
@@ -319,7 +323,7 @@ public class CevBreaker extends Module {
     // Every updates
     public void onUpdate() {
         // If no mc.player
-        if (mc.player == null){
+        if (mc.player == null || mc.player.isDead){
             disable();
             return;
         }
@@ -730,6 +734,22 @@ public class CevBreaker extends Module {
         toPlace.to_place.add(new Vec3d(model[cor][0], 1, model[cor][2]));
         toPlace.to_place.add(new Vec3d(model[cor][0], 2, model[cor][2]));
         toPlace.supportBlock = 2;
+
+        // Create antitrap + antiStep
+        if (trapPlayer.getValue() || antiStep.getValue()) {
+            for(int high = 1; high < 3; high++ ) {
+                if (high != 2 || antiStep.getValue())
+                    for (int[] modelBas : model) {
+                        Vec3d toAdd = new Vec3d(modelBas[0], high, modelBas[2]);
+                        if (!toPlace.to_place.contains(toAdd)) {
+                            toPlace.to_place.add(toAdd);
+                            toPlace.supportBlock++;
+                        }
+                    }
+            }
+        }
+
+
         // Create structure
         toPlace.to_place.add(new Vec3d(0, 2, 0));
         toPlace.to_place.add(new Vec3d(0, 3, 0));
