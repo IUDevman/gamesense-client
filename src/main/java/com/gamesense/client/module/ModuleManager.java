@@ -110,6 +110,7 @@ public class ModuleManager {
         addMod(new ArmorHUD());
         addMod(new ArrayListModule());
         addMod(new CombatInfo());
+        addMod(new CoordinateHud());
         addMod(new InventoryViewer());
         addMod(new Notifications());
         addMod(new PotionEffects());

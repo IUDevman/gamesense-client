@@ -140,6 +140,8 @@ public class EventProcessor {
         if (mc.player != null) {
             ModuleManager.onUpdate();
         }
+
+        GameSense.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent
