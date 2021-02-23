@@ -38,7 +38,6 @@ public class Freecam extends Module {
 
 	@Override
 	protected void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
 		if (mc.player != null) {
 			isRidingEntity = mc.player.getRidingEntity() != null;
 
@@ -66,7 +65,6 @@ public class Freecam extends Module {
 
 	@Override
 	protected void onDisable() {
-		GameSense.EVENT_BUS.unsubscribe(this);
 		EntityPlayer localPlayer = mc.player;
 		if (localPlayer != null) {
 			mc.player.setPositionAndRotation(posX, posY, posZ, yaw, pitch);

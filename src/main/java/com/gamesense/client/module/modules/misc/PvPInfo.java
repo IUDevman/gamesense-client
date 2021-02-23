@@ -275,11 +275,9 @@ public class PvPInfo extends Module {
 
 	public void onEnable() {
 		popCounterHashMap = new HashMap<>();
-		GameSense.EVENT_BUS.subscribe(this);
 	}
 
 	public void onDisable() {
 		knownPlayers.clear();
-		GameSense.EVENT_BUS.unsubscribe(this);
 	}
 }

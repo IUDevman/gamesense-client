@@ -30,8 +30,6 @@ public class Blink extends Module {
     private final Queue<Packet> packets = new ConcurrentLinkedQueue();
 
     public void onEnable() {
-        GameSense.EVENT_BUS.subscribe(this);
-
         if (ghostPlayer.getValue() && mc.player != null) {
             entity = new EntityOtherPlayerMP(mc.world, mc.getSession().getProfile());
             entity.copyLocationAndAnglesFrom(mc.player);
@@ -49,8 +47,6 @@ public class Blink extends Module {
     }
 
     public void onDisable() {
-        GameSense.EVENT_BUS.unsubscribe(this);
-
         if (entity != null) {
             mc.world.removeEntity(entity);
         }

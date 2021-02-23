@@ -1,43 +1,38 @@
 package com.gamesense.client.module.modules.movement;
 
-import com.gamesense.api.event.events.JumpEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.world.MotionUtil;
 import com.gamesense.client.module.Module;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
+import net.minecraft.client.entity.EntityPlayerSP;
 
 public class Sprint extends Module {
 
-	public Sprint() {
-		super("Sprint", Category.Movement);
-	}
+    public Sprint() {
+        super("Sprint", Category.Movement);
+    }
 
-	Setting.Boolean reverseSprint;
+	private Setting.Boolean multiDirection;
 
-	public void setup() {
-		reverseSprint = registerBoolean("Reverse", false);
-	}
+    public void setup() {
+        multiDirection = registerBoolean("Multi Direction", true);
+    }
 
-	public void onUpdate() {
-		if (mc.player == null) {
-			return;
-		}
+    public void onUpdate() {
+        EntityPlayerSP player = mc.player;
 
-		if (mc.gameSettings.keyBindSneak.isKeyDown()) {
-			mc.player.setSprinting(false);
-		}
-		else if (mc.player.getFoodStats().getFoodLevel() > 6 && reverseSprint.getValue()? (mc.player.moveForward != 0 || mc.player.moveStrafing != 0):mc.player.moveForward > 0) {
-			mc.player.setSprinting(true);
-		}
-	}
+        if (player != null) {
+            player.setSprinting(shouldSprint(player));
+        }
+    }
 
-	@EventHandler
-	private final Listener<JumpEvent> jumpEventListener = new Listener<>(event -> {
-		if (reverseSprint.getValue()) {
-			double[] direction = MotionUtil.forward(0.017453292F);
-			event.getLocation().setX(direction[0] * 0.2F);
-			event.getLocation().setZ(direction[1] * 0.2F);
-		}
-	});
+    public boolean shouldSprint(EntityPlayerSP player) {
+        return !mc.gameSettings.keyBindSneak.isKeyDown()
+            && player.getFoodStats().getFoodLevel() > 6
+            && !player.isElytraFlying()
+            && !mc.player.capabilities.isFlying
+            && checkMovementInput(player);
+    }
+
+    private boolean checkMovementInput(EntityPlayerSP player) {
+        return multiDirection.getValue() ? (player.moveForward != 0.0f || player.moveStrafing != 0.0f) : player.moveForward > 0.0f;
+    }
 }

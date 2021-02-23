@@ -17,9 +17,7 @@ public class Enemies {
 
 	public static List<String> getEnemiesByName() {
 		ArrayList<String> enemiesName = new ArrayList<>();
-		enemies.forEach(enemy -> {
-			enemiesName.add(enemy.getName());
-		});
+		enemies.forEach(enemy -> enemiesName.add(enemy.getName()));
 
 		return enemiesName;
 	}
@@ -27,7 +25,10 @@ public class Enemies {
 	public static boolean isEnemy(String name) {
 		boolean b = false;
 		for (Enemy e : getEnemies()) {
-			if (e.getName().equalsIgnoreCase(name)) b = true;
+			if (e.getName().equalsIgnoreCase(name)) {
+				b = true;
+				break;
+			}
 		}
 
 		return b;

@@ -11,7 +11,7 @@ public class SettingsManager {
 	private final List<Setting> settings;
 
 	public SettingsManager() {
-		this.settings = new ArrayList<Setting>();
+		this.settings = new ArrayList<>();
 	}
 
 	public List<Setting> getSettings() {
@@ -26,8 +26,8 @@ public class SettingsManager {
 		return this.settings.stream().filter(s -> s.getParent().equals(parent)).filter(s -> s.getConfigName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
-	public Setting getSettingByNameAndModConfig(final String configname, final Module parent) {
-		return this.settings.stream().filter(s -> s.getParent().equals(parent)).filter(s -> s.getConfigName().equalsIgnoreCase(configname)).findFirst().orElse(null);
+	public Setting getSettingByNameAndModConfig(final String configName, final Module parent) {
+		return this.settings.stream().filter(s -> s.getParent().equals(parent)).filter(s -> s.getConfigName().equalsIgnoreCase(configName)).findFirst().orElse(null);
 	}
 
 	public List<Setting> getSettingsForMod(final Module parent) {

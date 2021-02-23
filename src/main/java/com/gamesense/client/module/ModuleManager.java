@@ -115,6 +115,7 @@ public class ModuleManager {
         addMod(new Notifications());
         addMod(new PotionEffects());
         addMod(new Radar());
+        addMod(new SpeedHud());
         addMod(new TabGUIModule());
         addMod(new TargetHUD());
         addMod(new TargetInfo());

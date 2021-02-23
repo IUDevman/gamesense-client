@@ -136,14 +136,6 @@ public class KillAura extends Module {
 		}
 	});
 
-	public void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
-	}
-
-	public void onDisable() {
-		GameSense.EVENT_BUS.unsubscribe(this);
-	}
-
 	private Pair<Float, Integer> findSwordSlot() {
 		List<Integer> items = InventoryUtil.findAllItemSlots(ItemSword.class);
 		List<ItemStack> inventory = mc.player.inventory.mainInventory;

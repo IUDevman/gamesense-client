@@ -29,15 +29,9 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class EventProcessor {
@@ -55,6 +49,8 @@ public class EventProcessor {
 		if (mc.player != null) {
 			ModuleManager.onUpdate();
 		}
+
+		GameSense.EVENT_BUS.post(event);
 	}
 
 	@SubscribeEvent
@@ -76,7 +72,7 @@ public class EventProcessor {
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (Keyboard.getEventKeyState()) {
-			if(Keyboard.getEventKey() == 0 || Keyboard.getEventKey() == Keyboard.KEY_NONE) {
+			if(Keyboard.getEventKey() == 0) {
 				return;
 			}
 			ModuleManager.onBind(Keyboard.getEventKey());
@@ -105,75 +101,6 @@ public class EventProcessor {
 				MessageBus.sendCommandMessage(ChatFormatting.DARK_RED + "Error: " + e.getMessage(), true);
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public void onRenderScreen(RenderGameOverlayEvent.Text event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onChatReceived(ClientChatReceivedEvent event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onAttackEntity(AttackEntityEvent event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onDrawBlockHighlight(DrawBlockHighlightEvent event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onRenderBlockOverlay(RenderBlockOverlayEvent event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onLivingDamage(LivingDamageEvent event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-	@SubscribeEvent
-	public void onLivingEntityUseItemFinish(LivingEntityUseItemEvent.Finish event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onInputUpdate(InputUpdateEvent event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onLivingDeath(LivingDeathEvent event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onPlayerPush(PlayerSPPushOutOfBlocksEvent event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onWorldUnload(WorldEvent.Unload event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onWorldLoad(WorldEvent.Load event) {
-		GameSense.EVENT_BUS.post(event);
-	}
-
-	@SubscribeEvent
-	public void onGuiOpen(GuiOpenEvent event) {
-		GameSense.EVENT_BUS.post(event);
 	}
 
 	@EventHandler
