@@ -22,9 +22,8 @@ import java.util.List;
 
 // Sponsored by KAMI Blue
 // https://github.com/kami-blue/client/blob/master/src/main/kotlin/org/kamiblue/client/manager/managers/PlayerPacketManager.kt
-public class PlayerPacketManager implements Manager {
-
-    public static PlayerPacketManager INSTANCE = new PlayerPacketManager();
+public enum PlayerPacketManager implements Manager {
+    INSTANCE;
 
     private final List<PlayerPacket> packets = new ArrayList<>();
 
@@ -36,36 +35,19 @@ public class PlayerPacketManager implements Manager {
 
     private Vec2f clientSidePitch = Vec2f.ZERO;
 
-    private PlayerPacketManager() {
-
-    }
-
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
-        switch (event.getPhase()) {
-            case BY:
-                if (!packets.isEmpty()) {
-                    PlayerPacket packet = CollectionUtils.maxOrNull(packets, PlayerPacket::getPriority);
+        if (event.getPhase() != Phase.BY || packets.isEmpty()) return;
 
-                    if (packet != null) {
-                        event.cancel();
-                        event.apply(packet);
-                    }
+        PlayerPacket packet = CollectionUtils.maxOrNull(packets, PlayerPacket::getPriority);
 
-                    packets.clear();
-                }
-                break;
-            case POST:
-                EntityPlayerSP player = getPlayer();
-                if (player == null) return;
-
-                player.prevRotationYawHead = prevServerSideRotation.x;
-                player.rotationYawHead = serverSideRotation.x;
-                break;
-            default:
-                break;
+        if (packet != null) {
+            event.cancel();
+            event.apply(packet);
         }
+
+        packets.clear();
     });
 
     @SuppressWarnings("unused")
@@ -74,8 +56,9 @@ public class PlayerPacketManager implements Manager {
         if (event.isCancelled()) return;
 
         Packet<?> rawPacket = event.getPacket();
+        EntityPlayerSP player = getPlayer();
 
-        if (rawPacket instanceof CPacketPlayer) {
+        if (player != null && rawPacket instanceof CPacketPlayer) {
             CPacketPlayer packet = (CPacketPlayer) rawPacket;
 
             if (packet.moving) {
@@ -84,6 +67,7 @@ public class PlayerPacketManager implements Manager {
 
             if (packet.rotating) {
                 serverSideRotation = new Vec2f(packet.yaw, packet.pitch);
+                player.rotationYawHead = packet.yaw;
             }
         }
     }, EventPriority.LOWEST);

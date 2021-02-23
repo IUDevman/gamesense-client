@@ -95,6 +95,9 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
         if (event.isCancelled()) {
             callbackInfo.cancel();
 
+            boolean moving = event.isMoving() || isMoving(position);
+            boolean rotating = event.isRotating() || isRotating(rotation);
+
             // Copy flags from event
             position = event.getPosition();
             rotation = event.getRotation();
@@ -102,7 +105,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
             ++this.positionUpdateTicks;
             sendSprintPacket();
             sendSneakPacket();
-            sendPlayerPacket(position, rotation);
+            sendPlayerPacket(moving, rotating, position, rotation);
         }
 
         event = event.nextPhase();
@@ -135,11 +138,8 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
         }
     }
 
-    private void sendPlayerPacket(Vec3d position, Vec2f rotation) {
+    private void sendPlayerPacket(boolean moving, boolean rotating, Vec3d position, Vec2f rotation) {
         if (!this.isCurrentViewEntity()) return;
-
-        boolean moving = isMoving(position);
-        boolean rotating = isRotating(rotation);
 
         if (this.isRiding()) {
             this.connection.sendPacket(new CPacketPlayer.PositionRotation(this.motionX, -999.0D, this.motionZ, rotation.x, rotation.y, onGround));

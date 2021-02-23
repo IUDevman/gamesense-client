@@ -12,6 +12,8 @@ public class OnUpdateWalkingPlayerEvent extends GameSenseEvent implements MultiP
 
     private final Phase phase;
 
+    private boolean moving = false;
+    private boolean rotating = false;
     private Vec3d position;
     private Vec2f rotation;
 
@@ -35,12 +37,22 @@ public class OnUpdateWalkingPlayerEvent extends GameSenseEvent implements MultiP
         Vec2f rotation = packet.getRotation();
 
         if (position != null) {
+            this.moving = true;
             this.position = position;
         }
 
         if (rotation != null) {
+            this.rotating = true;
             this.rotation = rotation;
         }
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public boolean isRotating() {
+        return rotating;
     }
 
     public Vec3d getPosition() {
