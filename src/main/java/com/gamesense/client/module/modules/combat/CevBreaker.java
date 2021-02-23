@@ -226,12 +226,11 @@ public class CevBreaker extends Module {
         }
 
         if (chatMsg.getValue()){
-            printChat("CevBreaker turned ON!", false);
+            PistonCrystal.printChat("CevBreaker turned ON!", false);
         }
 
         oldSlot = mc.player.inventory.currentItem;
-        // Disable ca
-        // Stop CA
+
         stoppedCa = false;
 
         if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)){
@@ -273,9 +272,9 @@ public class CevBreaker extends Module {
                     output = "Enemy is dead, gg! ";
                 }
             // Output in chat
-            printChat(output + "CevBreaker turned OFF!", true);
+            PistonCrystal.printChat(output + "CevBreaker turned OFF!", true);
             if (!materialsNeeded.equals(""))
-                printChat("Materials missing:" + materialsNeeded, true);
+                PistonCrystal.printChat("Materials missing:" + materialsNeeded, true);
 
             // Re-Active ca
             if (stoppedCa){
@@ -709,11 +708,9 @@ public class CevBreaker extends Module {
     // Create the skeleton of the structure
     private boolean createStructure() {
 
-        if ((Objects.requireNonNull(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 2, enemyCoordsDouble[2]).getRegistryName()).toString().toLowerCase().contains("bedrock")) )
-            return false;
-        if (!(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 3, enemyCoordsDouble[2]) instanceof BlockAir) )
-            return false;
-        if (!(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 4, enemyCoordsDouble[2]) instanceof BlockAir) )
+        if ((Objects.requireNonNull(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 2, enemyCoordsDouble[2]).getRegistryName()).toString().toLowerCase().contains("bedrock"))
+            || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 3, enemyCoordsDouble[2]) instanceof BlockAir)
+            || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 4, enemyCoordsDouble[2]) instanceof BlockAir))
             return false;
 
         // Iterate for every blocks around, find the closest
@@ -729,10 +726,11 @@ public class CevBreaker extends Module {
             i++;
         }
 
+        int bias = enemyCoordsInt[0] == (int) mc.player.posX || enemyCoordsInt[2] == (int) mc.player.posZ ? 1 : -1;
 
         // Create support blocks
-        toPlace.to_place.add(new Vec3d(model[cor][0], 1, model[cor][2]));
-        toPlace.to_place.add(new Vec3d(model[cor][0], 2, model[cor][2]));
+        toPlace.to_place.add(new Vec3d(model[cor][0] * bias, 1, model[cor][2] * bias));
+        toPlace.to_place.add(new Vec3d(model[cor][0] * bias, 2, model[cor][2] * bias));
         toPlace.supportBlock = 2;
 
         // Create antitrap + antiStep
@@ -823,8 +821,4 @@ public class CevBreaker extends Module {
         return HoleUtil.isHole(EntityUtil.getPosition(aimTarget), true, true).getType() != HoleUtil.HoleType.NONE;
     }
 
-    // PrintChat
-    public static void printChat(String text, Boolean error) {
-        MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
-    }
 }
