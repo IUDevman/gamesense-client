@@ -51,12 +51,10 @@ public class Speed extends Module {
 	private Timer timer = new Timer();
 
 	public void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
 		playerSpeed = MotionUtil.getBaseMoveSpeed();
 	}
 
 	public void onDisable() {
-		GameSense.EVENT_BUS.unsubscribe(this);
 		timer.reset();
 		EntityUtil.resetTimer();
 	}
