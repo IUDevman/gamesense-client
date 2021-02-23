@@ -139,9 +139,9 @@ public class CevBreaker extends Module {
         switchSword = registerBoolean("Switch Sword", false);
         predictBreak = registerBoolean("Predict Break", false);
         fastPlace = registerBoolean("Fast Place", false);
-        placeCrystal = registerBoolean("Place Crystal", true);
         trapPlayer = registerBoolean("Trap Player", false);
         antiStep = registerBoolean("Anti Step", false);
+        placeCrystal = registerBoolean("Place Crystal", true);
         chatMsg = registerBoolean("Chat Msgs", true);
     }
 
@@ -726,7 +726,7 @@ public class CevBreaker extends Module {
             i++;
         }
 
-        int bias = enemyCoordsInt[0] == (int) mc.player.posX || enemyCoordsInt[2] == (int) mc.player.posZ ? 1 : -1;
+        int bias = enemyCoordsInt[0] == (int) mc.player.posX || enemyCoordsInt[2] == (int) mc.player.posZ ? -1 : 1;
 
         // Create support blocks
         toPlace.to_place.add(new Vec3d(model[cor][0] * bias, 1, model[cor][2] * bias));
