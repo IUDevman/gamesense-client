@@ -2,11 +2,13 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.math.RotationUtils;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.client.GameSense;
+import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import me.zero.alpine.listener.EventHandler;
@@ -26,12 +28,12 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.Vec2f;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author GameSense client for original code (actual author unknown)
@@ -49,54 +51,51 @@ public class KillAura extends Module {
 	Setting.Boolean hostileMobs;
 	Setting.Boolean passiveMobs;
 	Setting.Mode itemUsed;
-	Setting.Boolean autoSwitch;
 	Setting.Boolean swordPriority;
 	Setting.Boolean caCheck;
 	Setting.Boolean criticals;
-	Setting.Double range;
+	Setting.Boolean rotation;
+	Setting.Boolean autoSwitch;
 	Setting.Double switchHealth;
+	Setting.Double range;
 
 	public void setup() {
-		List<String> weapons = new ArrayList<>();
-		weapons.add("Sword");
-		weapons.add("Axe");
-		weapons.add("Both");
-		weapons.add("All");
+		List<String> weapons = Arrays.asList("Sword", "Axe", "Both", "All");
 
 		players = registerBoolean("Players", true);
-		passiveMobs = registerBoolean("Animals", false);
 		hostileMobs = registerBoolean("Monsters", false);
-		range = registerDouble("Range", 5,0,10);
+		passiveMobs = registerBoolean("Animals", false);
 		itemUsed = registerMode("Item used", weapons, "Sword");
+		swordPriority = registerBoolean("Prioritise Sword", true);
+		caCheck = registerBoolean("AC Check",false);
+		criticals = registerBoolean("Criticals",true);
+		rotation = registerBoolean("Rotation",true);
 		autoSwitch = registerBoolean("Switch", false);
 		switchHealth = registerDouble("Min Switch Health", 0f, 0f, 20f);
-		swordPriority = registerBoolean("Prioritise Sword", true);
-		criticals = registerBoolean("Criticals",true);
-		caCheck = registerBoolean("AC Check",false);
+		range = registerDouble("Range", 5,0,10);
 	}
 
 	private boolean isAttacking = false;
 
 	public void onUpdate() {
-		if (mc.player == null || mc.player.isDead) return;
+		if (mc.player == null || !mc.player.isEntityAlive()) return;
 
 		final double rangeSq = range.getValue() * range.getValue();
-		List<Entity> targets = mc.world.loadedEntityList.stream()
-				.filter(entity -> entity instanceof EntityLivingBase)
-				.filter(entity -> !EntityUtil.basicChecksEntity(entity))
-				.filter(entity -> mc.player.getDistanceSq(entity) <= rangeSq)
-				.filter(this::attackCheck)
-				.sorted(Comparator.comparing(e -> mc.player.getDistanceSq(e)))
-				.collect(Collectors.toList());
+		Optional<Entity> optionalTarget = mc.world.loadedEntityList.stream()
+			.filter(entity -> entity instanceof EntityLivingBase)
+			.filter(entity -> !EntityUtil.basicChecksEntity(entity))
+			.filter(entity -> mc.player.getDistanceSq(entity) <= rangeSq)
+			.filter(this::attackCheck)
+			.min(Comparator.comparing(e -> mc.player.getDistanceSq(e)));
 
 		boolean sword = itemUsed.getValue().equalsIgnoreCase("Sword");
 		boolean axe = itemUsed.getValue().equalsIgnoreCase("Axe");
 		boolean both = itemUsed.getValue().equalsIgnoreCase("Both");
 		boolean all = itemUsed.getValue().equalsIgnoreCase("All");
-		// only attack one entity per cycle
-		Optional<Entity> first = targets.stream().findFirst();
-		if (first.isPresent()) {
-			Pair<Float, Integer> newSlot = new Pair<>(0f, -1);
+
+		if (optionalTarget.isPresent()) {
+			Pair<Float, Integer> newSlot = new Pair<>(0.0f, -1);
+
 			if (autoSwitch.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount() >= switchHealth.getValue())) {
 				// find the best weapon in out hotbar
 				if (sword || both || all) {
@@ -118,7 +117,15 @@ public class KillAura extends Module {
 
 			// we have to switch slots for this check to work
 			if (shouldAttack(sword, axe, both, all)) {
-				attack(first.get());
+				Entity target = optionalTarget.get();
+
+				if (rotation.getValue()) {
+					Vec2f rotation = RotationUtils.getRotationTo(target.getEntityBoundingBox());
+					PlayerPacket packet = new PlayerPacket(this, rotation);
+					PlayerPacketManager.INSTANCE.addPacket(packet);
+				}
+
+				attack(target);
 			} else {
 				// if check is false switch back
 				mc.player.inventory.currentItem = temp;
@@ -186,17 +193,14 @@ public class KillAura extends Module {
 
 	private boolean shouldAttack(boolean sword, boolean axe, boolean both, boolean all) {
 		Item item = mc.player.getHeldItemMainhand().getItem();
-		if (((sword || both) && item instanceof ItemSword) ||
-				((axe || both) && item instanceof ItemAxe)
-				|| all) {
-			return !caCheck.getValue() || !ModuleManager.getModule(AutoCrystalGS.class).isActive;
-		}
-
-		return false;
+			return (all
+				|| (sword || both) && item instanceof ItemSword
+				|| (axe || both) && item instanceof ItemAxe)
+				&& (!caCheck.getValue() || !ModuleManager.getModule(AutoCrystalGS.class).isActive);
 	}
 
 	private void attack(Entity e) {
-		if (mc.player.getCooledAttackStrength(0) >= 1) {
+		if (mc.player.getCooledAttackStrength(0.0f) >= 1.0f) {
 			isAttacking = true;
 			mc.playerController.attackEntity(mc.player, e);
 			mc.player.swingArm(EnumHand.MAIN_HAND);

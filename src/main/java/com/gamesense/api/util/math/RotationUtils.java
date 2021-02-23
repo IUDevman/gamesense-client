@@ -2,6 +2,8 @@ package com.gamesense.api.util.math;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
@@ -12,13 +14,37 @@ public class RotationUtils {
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     /**
+     * Get rotation from player position to the closest hit vector in a `AxisAlignedBB`
+     *
+     * @param box Calculate rotation to this AABB
+     */
+    public static Vec2f getRotationTo(AxisAlignedBB box) {
+        EntityPlayerSP player = mc.player;
+        if (player == null) {
+            return Vec2f.ZERO;
+        }
+
+        Vec3d eyePos = player.getPositionEyes(1.0f);
+
+        if (player.getEntityBoundingBox().intersects(box)) {
+            return getRotationTo(eyePos, box.getCenter());
+        }
+
+        double x = MathHelper.clamp(eyePos.x, box.minX, box.maxX);
+        double y = MathHelper.clamp(eyePos.y, box.minY, box.maxY);
+        double z = MathHelper.clamp(eyePos.z, box.minZ, box.maxZ);
+
+        return getRotationTo(eyePos, new Vec3d(x, y, z));
+    }
+
+    /**
      * Get rotation from player position to another position vector
      *
      * @param posTo Calculate rotation to this position vector
      */
     public static Vec2f getRotationTo(Vec3d posTo) {
         EntityPlayerSP player = mc.player;
-        return player != null ? getRotationTo(player.getPositionEyes(1f), posTo) : Vec2f.ZERO;
+        return player != null ? getRotationTo(player.getPositionEyes(1.0f), posTo) : Vec2f.ZERO;
     }
 
     /**
