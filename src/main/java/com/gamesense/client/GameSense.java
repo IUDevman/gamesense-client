@@ -12,6 +12,7 @@ import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.CapeUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
+import com.gamesense.client.manager.ManagerLoader;
 import com.gamesense.client.module.ModuleManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -86,6 +87,9 @@ public class GameSense {
 
 		ModuleManager.init();
 		LOGGER.info("Modules initialized!");
+
+		ManagerLoader.init();
+		LOGGER.info("Managers initialized!");
 
 		gameSenseGUI = new GameSenseGUI();
 		LOGGER.info("GameSenseGUI initialized!");

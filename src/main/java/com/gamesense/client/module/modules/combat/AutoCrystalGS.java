@@ -1,16 +1,21 @@
 package com.gamesense.client.module.modules.combat;
 
+import com.gamesense.api.event.Phase;
+import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.combat.DamageUtil;
+import com.gamesense.api.util.math.RotationUtils;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.misc.Timer;
+import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.api.util.misc.Timer;
 import com.gamesense.client.GameSense;
+import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -19,7 +24,6 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -39,6 +43,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -48,8 +53,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
-
 /**
  * @author CyberTF2 and Hoosiers
  */
@@ -57,7 +60,7 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 public class AutoCrystalGS extends Module {
 
     public AutoCrystalGS() {
-        super("AutoCrystalGS", Category.Combat);
+        super("AutoCrystalGS", Category.Combat, 100);
     }
 
     Setting.Boolean breakCrystal;
@@ -66,7 +69,6 @@ public class AutoCrystalGS extends Module {
     Setting.Boolean autoSwitch;
     Setting.Boolean raytrace;
     Setting.Boolean rotate;
-    Setting.Boolean spoofRotations;
     Setting.Boolean chat;
     Setting.Boolean showDamage;
     Setting.Boolean antiSuicide;
@@ -136,7 +138,6 @@ public class AutoCrystalGS extends Module {
         maxSelfDmg = registerDouble("Max Self Dmg", 10, 1.0, 36.0);
         facePlaceValue = registerInteger("FacePlace HP", 8, 0, 36);
         rotate = registerBoolean("Rotate", true);
-        spoofRotations = registerBoolean("Spoof Angles", true);
         raytrace = registerBoolean("Raytrace", false);
         showDamage = registerBoolean("Render Dmg", true);
         chat = registerBoolean("Chat Msgs", true);
@@ -148,7 +149,6 @@ public class AutoCrystalGS extends Module {
     private boolean isAttacking = false;
     public boolean isActive = false;
     public static boolean stopAC = false;
-    private static boolean togglePitch = false;
     private int oldSlot = -1;
     private Entity renderEnt;
     private BlockPos render;
@@ -156,6 +156,19 @@ public class AutoCrystalGS extends Module {
     private EnumFacing enumFacing;
     Timer timer = new Timer();
     Timer stuckTimer = new Timer();
+
+    private Vec3d lastHitVec = Vec3d.ZERO;
+    private boolean rotating = false;
+
+    @SuppressWarnings("unused")
+    @EventHandler
+    private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
+        if (event.getPhase() != Phase.PRE || !rotating) return;
+
+        Vec2f rotation = RotationUtils.getRotationTo(lastHitVec);
+        PlayerPacket packet = new PlayerPacket(this, rotation);
+        PlayerPacketManager.INSTANCE.addPacket(packet);
+    });
 
     public void onUpdate() {
         if (mc.player == null || mc.world == null || mc.player.isDead) {
@@ -176,7 +189,6 @@ public class AutoCrystalGS extends Module {
             return;
         }
 
-        ROTATION_UTIL.shouldSpoofAngles(spoofRotations.getValue());
         isActive = false;
 
         EntityEnderCrystal crystal = mc.world.loadedEntityList.stream()
@@ -227,9 +239,8 @@ public class AutoCrystalGS extends Module {
 
                 isActive = true;
 
-                if (rotate.getValue()) {
-                    ROTATION_UTIL.lookAtPacket(crystal.posX + 0.5, crystal.posY + 0.5, crystal.posZ + 0.5, mc.player);
-                }
+                rotating = rotate.getValue();
+                lastHitVec = crystal.getPositionVector();
 
                 IntStream.range(0, attackValue.getValue()).forEach(i -> {
                     if (breakType.getValue().equalsIgnoreCase("Swing")) {
@@ -254,7 +265,7 @@ public class AutoCrystalGS extends Module {
             }
         }
         else {
-            ROTATION_UTIL.resetRotation();
+            rotating = false;
             if (oldSlot != -1) {
                 mc.player.inventory.currentItem = oldSlot;
                 oldSlot = -1;
@@ -288,7 +299,7 @@ public class AutoCrystalGS extends Module {
 
         BlockPos q = null;
         double damage = 0.5D;
-        Iterator var9 = entities.iterator();
+        Iterator<Entity> var9 = entities.iterator();
 
         label164:
         while (true) {
@@ -298,7 +309,7 @@ public class AutoCrystalGS extends Module {
                     if (damage == 0.5D) {
                         this.render = null;
                         this.renderEnt = null;
-                        ROTATION_UTIL.resetRotation();
+                        rotating = false;
                         return;
                     }
 
@@ -307,9 +318,9 @@ public class AutoCrystalGS extends Module {
 
                         if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
                             if (this.autoSwitch.getValue()) {
-                                if ((noGapSwitch.getValue() && !(mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE)) || !noGapSwitch.getValue()) {
+                                if (!noGapSwitch.getValue() || !(mc.player.getHeldItemMainhand().getItem() == Items.GOLDEN_APPLE)) {
                                     mc.player.inventory.currentItem = crystalSlot;
-                                    ROTATION_UTIL.resetRotation();
+                                    rotating = false;
                                     this.switchCooldown = true;
                                 }
                             }
@@ -321,7 +332,7 @@ public class AutoCrystalGS extends Module {
                             if (result == null || result.sideHit == null) {
                                 enumFacing = null;
                                 render = null;
-                                ROTATION_UTIL.resetRotation();
+                                rotating = false;
                                 isActive = false;
                                 return;
                             }
@@ -336,11 +347,10 @@ public class AutoCrystalGS extends Module {
                         }
 
                         if (mc.player != null) {
-                            isActive = true;
+                            rotating = rotate.getValue();
+                            lastHitVec = new Vec3d(q).add(0.5, 0.5, 0.5);
 
-                            if (rotate.getValue()) {
-                                ROTATION_UTIL.lookAtPacket((double) q.getX() + 0.5D, (double) q.getY() + 0.5D, (double) q.getZ() + 0.5D, mc.player);
-                            }
+                            isActive = true;
 
                             if (raytrace.getValue() && enumFacing != null) {
                                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(q, enumFacing, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
@@ -357,20 +367,6 @@ public class AutoCrystalGS extends Module {
                             PlacedCrystals.add(q);
                             if (ModuleManager.isModuleEnabled(AutoGG.class))
                                 AutoGG.INSTANCE.addTargetedPlayer(renderEnt.getName());
-                        }
-
-                        if (ROTATION_UTIL.isSpoofingAngles()) {
-                            EntityPlayerSP var10000;
-                            if (togglePitch) {
-                                var10000 = mc.player;
-                                var10000.rotationPitch = (float) ((double) var10000.rotationPitch + 4.0E-4D);
-                                togglePitch = false;
-                            }
-                            else {
-                                var10000 = mc.player;
-                                var10000.rotationPitch = (float) ((double) var10000.rotationPitch - 4.0E-4D);
-                                togglePitch = true;
-                            }
                         }
 
                         return;
@@ -516,7 +512,6 @@ public class AutoCrystalGS extends Module {
     });
 
     public void onEnable() {
-        ROTATION_UTIL.onEnable();
         PlacedCrystals.clear();
         isActive = false;
         if(chat.getValue() && mc.player != null) {
@@ -525,10 +520,9 @@ public class AutoCrystalGS extends Module {
     }
 
     public void onDisable() {
-        ROTATION_UTIL.onDisable();
         render = null;
         renderEnt = null;
-        ROTATION_UTIL.resetRotation();
+        rotating = false;
         PlacedCrystals.clear();
         isActive = false;
         if(chat.getValue()) {
