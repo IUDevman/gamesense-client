@@ -60,7 +60,9 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	}
 
 	public void setBind(int bind){
-		this.bind = bind;
+		if (bind >= 0 && bind <= 255) {
+			this.bind = bind;
+		}
 	}
 
 	protected void onEnable() {
@@ -185,16 +187,20 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	
 	@Override
 	public int getKey() {
-		return this.bind;
+		return this.getBind();
 	}
 	
 	@Override
 	public void setKey(int key) {
-		this.bind = key;
+		setBind(key);
 	}
     
 	@Override
 	public String getKeyName() {
-		return Keyboard.getKeyName(this.bind);
+		if (this.bind <= 0 || this.bind > 255) {
+			return "NONE";
+		} else {
+			return Keyboard.getKeyName(this.bind);
+		}
 	}
 }
