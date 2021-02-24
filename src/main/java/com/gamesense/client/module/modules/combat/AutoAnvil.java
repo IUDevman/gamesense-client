@@ -118,7 +118,7 @@ public class AutoAnvil extends Module {
         // Setup
         if (anvilMode.getValue().equalsIgnoreCase("Pick")) {
             pick_d = true;
-        }
+        }else pick_d = false;
         blocksPlaced = 0;
         isHole = true;
         hasMoved = blockUp = false;
