@@ -1,5 +1,7 @@
 package com.gamesense.client.module.modules.misc;
 
+//very useful module 
+
 import com.gamesense.client.module.Module;
 import net.minecraft.entity.player.EntityPlayer;
 import java.util.Random;
