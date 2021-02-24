@@ -75,6 +75,7 @@ public class ModuleManager {
         addMod(new AutoTool());
         addMod(new ChatModifier());
         addMod(new ChatSuffix());
+        addMod(new CoordsLeak());
         addMod(new DiscordRPCModule());
         addMod(new FastPlace());
         addMod(new FakePlayer());
