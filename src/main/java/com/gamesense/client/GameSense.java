@@ -1,5 +1,11 @@
 package com.gamesense.client;
 
+import java.awt.Font;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.Display;
+
 import com.gamesense.api.config.ConfigStopper;
 import com.gamesense.api.config.LoadConfig;
 import com.gamesense.api.config.SaveConfig;
@@ -14,16 +20,11 @@ import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.manager.ManagerLoader;
 import com.gamesense.client.module.ModuleManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.Display;
 
 import me.zero.alpine.EventBus;
 import me.zero.alpine.EventManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-
-import java.awt.Font;
 
 @Mod(modid = GameSense.MODID, name = GameSense.MODNAME, version = GameSense.MODVER)
 public class GameSense {
@@ -68,6 +69,9 @@ public class GameSense {
 	public CapeUtil capeUtil;
 
 	private void startClient() {
+		// TODO add hash or time to filename and transfer to module
+		//ZipUtils.zip(new File("GameSense/"),new File("gamesense-cofig-backup-"+MODVER+".zip"));
+		
 		versionChecker = new VersionChecker();
 		LOGGER.info("Version checked!");
 
