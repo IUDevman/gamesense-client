@@ -69,9 +69,6 @@ public class GameSense {
 	public CapeUtil capeUtil;
 
 	private void startClient() {
-		// TODO add hash or time to filename and transfer to module
-		//ZipUtils.zip(new File("GameSense/"),new File("gamesense-cofig-backup-"+MODVER+".zip"));
-		
 		versionChecker = new VersionChecker();
 		LOGGER.info("Version checked!");
 
