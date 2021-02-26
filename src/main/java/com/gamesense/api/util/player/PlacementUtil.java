@@ -7,6 +7,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.item.Item;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumActionResult;
@@ -67,9 +70,13 @@ public class PlacementUtil {
     }
 
     public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate) {
-        Block block = mc.world.getBlockState(blockPos).getBlock();
+        EntityPlayerSP player = mc.player;
+        WorldClient world = mc.world;
+        PlayerControllerMP playerController = mc.playerController;
 
-        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
+        if (player == null || world == null || playerController == null) return false;
+
+        if (!world.getBlockState(blockPos).getMaterial().isReplaceable()) {
             return false;
         }
 
@@ -87,10 +94,10 @@ public class PlacementUtil {
         }
 
         Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-        Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
+        Block neighbourBlock = world.getBlockState(neighbour).getBlock();
 
         if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
+            player.connection.sendPacket(new CPacketEntityAction(player, CPacketEntityAction.Action.START_SNEAKING));
             isSneaking = true;
         }
 
@@ -105,9 +112,9 @@ public class PlacementUtil {
             BlockUtil.faceVectorPacketInstant(hitVec, true);
         }
 
-        EnumActionResult action = mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, hand);
+        EnumActionResult action = playerController.processRightClickBlock(player, world, neighbour, opposite, hitVec, hand);
         if (action == EnumActionResult.SUCCESS) {
-            mc.player.swingArm(hand);
+            player.swingArm(hand);
             mc.rightClickDelayTimer = 4;
         }
 
