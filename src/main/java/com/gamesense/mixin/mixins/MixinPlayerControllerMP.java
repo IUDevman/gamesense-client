@@ -6,7 +6,6 @@ import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.exploits.PacketUse;
 import com.gamesense.client.module.modules.exploits.Reach;
-import com.gamesense.client.module.modules.misc.MultiTask;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
@@ -43,14 +42,6 @@ public abstract class MixinPlayerControllerMP {
 	private void getReachDistanceHook(final CallbackInfoReturnable<Float> distance) {
 		if (ModuleManager.isModuleEnabled(Reach.class)) {
 			distance.setReturnValue((float) Reach.distance.getValue());
-		}
-	}
-
-	//author cookiedragon234
-	@Inject(method = "resetBlockRemoving", at = @At("HEAD"), cancellable = true)
-	private void resetBlock(CallbackInfo callbackInfo) {
-		if (ModuleManager.isModuleEnabled(MultiTask.class)) {
-			callbackInfo.cancel();
 		}
 	}
 

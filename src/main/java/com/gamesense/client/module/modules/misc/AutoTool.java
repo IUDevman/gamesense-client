@@ -78,13 +78,4 @@ public class AutoTool extends Module {
 		mc.player.inventory.currentItem = slot;
 		mc.playerController.syncCurrentPlayItem();
 	}
-
-
-	public void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
-	}
-
-	public void onDisable() {
-		GameSense.EVENT_BUS.unsubscribe(this);
-	}
 }
