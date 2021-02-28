@@ -89,5 +89,6 @@ If you have any questions about this, feel free to ask in the discord or by mess
 ## Support
 Feature requests and major bug reports can be given by creating an issue. 
 Please try to explain in detail the feature/problem and also provide the names of the other mods you are using with GameSense (bug reporting).
+If you have any questions regarding the usage of the client, check the wiki documentation and the pinned messages on the discord.
 
-For small bug reports/faster help, join the discord and ask your questions there.
+For small bug reports, join the discord and ask your questions there.
