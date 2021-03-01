@@ -73,7 +73,6 @@ public class ModuleManager {
         addMod(new AutoReply());
         addMod(new AutoRespawn());
         addMod(new AutoTool());
-        addMod(new BackupConfig());
         addMod(new ChatModifier());
         addMod(new ChatSuffix());
         addMod(new DiscordRPCModule());
