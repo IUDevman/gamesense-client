@@ -94,8 +94,7 @@ public class BedAura extends Module {
         if (mc.player.inventory.currentItem != bedSlot && bedSlot != -1 && autoSwitch.getValue()) {
             oldSlot = mc.player.inventory.currentItem;
             mc.player.inventory.currentItem = bedSlot;
-        }
-        else if (bedSlot == -1) {
+        } else if (bedSlot == -1) {
             hasNone = true;
         }
 
@@ -118,8 +117,7 @@ public class BedAura extends Module {
         if (chatMsgs.getValue()) {
             if (hasNone && disableNone.getValue()) {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No beds detected... BedAura turned OFF!");
-            }
-            else {
+            } else {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "BedAura turned OFF!");
             }
         }
@@ -139,8 +137,7 @@ public class BedAura extends Module {
         if (mc.player.inventory.currentItem != bedSlot && bedSlot != -1 && autoSwitch.getValue()) {
             oldSlot = mc.player.inventory.currentItem;
             mc.player.inventory.currentItem = bedSlot;
-        }
-        else if (bedSlot == -1) {
+        } else if (bedSlot == -1) {
             hasNone = true;
         }
 
@@ -224,16 +221,13 @@ public class BedAura extends Module {
                 if (mc.world.getBlockState(targetPos1.east()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1, 90, EnumFacing.DOWN);
                     return;
-                }
-                else if (mc.world.getBlockState(targetPos1.west()).getBlock() == Blocks.AIR) {
+                } else if (mc.world.getBlockState(targetPos1.west()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1, -90, EnumFacing.DOWN);
                     return;
-                }
-                else if (mc.world.getBlockState(targetPos1.north()).getBlock() == Blocks.AIR) {
+                } else if (mc.world.getBlockState(targetPos1.north()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1, 0, EnumFacing.DOWN);
                     return;
-                }
-                else if (mc.world.getBlockState(targetPos1.south()).getBlock() == Blocks.AIR) {
+                } else if (mc.world.getBlockState(targetPos1.south()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1, 180, EnumFacing.SOUTH);
                     return;
                 }
@@ -257,8 +251,7 @@ public class BedAura extends Module {
     private boolean isOwn(TileEntity tileEntity) {
         if (attackMode.getValue().equalsIgnoreCase("Normal")) {
             return true;
-        }
-        else if (attackMode.getValue().equalsIgnoreCase("Own")) {
+        } else if (attackMode.getValue().equalsIgnoreCase("Own")) {
             for (BlockPos blockPos : placedPos) {
                 if (blockPos.getDistance(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ()) <= 3) {
                     return true;

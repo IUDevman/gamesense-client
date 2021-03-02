@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockLiquid.class)
 public class MixinBlockLiquid {
 
-	@Inject(method = "canCollideCheck", at = @At("HEAD"), cancellable = true)
-	public void canCollideCheck(final IBlockState blockState, final boolean b, final CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		callbackInfoReturnable.setReturnValue(ModuleManager.isModuleEnabled(LiquidInteract.class) || (b && blockState.getValue(BlockLiquid.LEVEL) == 0));
-	}
+    @Inject(method = "canCollideCheck", at = @At("HEAD"), cancellable = true)
+    public void canCollideCheck(final IBlockState blockState, final boolean b, final CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        callbackInfoReturnable.setReturnValue(ModuleManager.isModuleEnabled(LiquidInteract.class) || (b && blockState.getValue(BlockLiquid.LEVEL) == 0));
+    }
 }

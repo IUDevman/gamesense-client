@@ -44,8 +44,7 @@ public class HotbarRefill extends Module {
         if (delayStep < tickDelay.getValue()) {
             delayStep++;
             return;
-        }
-        else {
+        } else {
             delayStep = 0;
         }
 
@@ -100,9 +99,9 @@ public class HotbarRefill extends Module {
     private int findCompatibleInventorySlot(ItemStack hotbarStack) {
         List<Integer> potentialSlots;
 
-        Item item= hotbarStack.getItem();
+        Item item = hotbarStack.getItem();
         if (item instanceof ItemBlock) {
-            potentialSlots = InventoryUtil.findAllBlockSlots(((ItemBlock)item).getBlock().getClass());
+            potentialSlots = InventoryUtil.findAllBlockSlots(((ItemBlock) item).getBlock().getClass());
         } else {
             potentialSlots = InventoryUtil.findAllItemSlots(item.getClass());
         }
@@ -112,7 +111,7 @@ public class HotbarRefill extends Module {
                 .sorted(Comparator.comparingInt(interger -> -interger))
                 .collect(Collectors.toList());
 
-        for (int slot: potentialSlots) {
+        for (int slot : potentialSlots) {
             if (isCompatibleStacks(hotbarStack, mc.player.inventory.getStackInSlot(slot))) {
                 return slot;
             }

@@ -9,7 +9,7 @@ import com.gamesense.client.module.ModuleManager;
  * @Author Hoosiers on 11/05/2020
  */
 
-@Command.Declaration(name = "Toggle", syntax = "toggle [module]", alias = {  "toggle", "t", "enable", "disable" })
+@Command.Declaration(name = "Toggle", syntax = "toggle [module]", alias = {"toggle", "t", "enable", "disable"})
 public class ToggleCommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {

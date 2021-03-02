@@ -16,43 +16,43 @@ import java.awt.*;
 @HUDModule.Declaration(posX = 0, posZ = 0)
 public class Watermark extends HUDModule {
 
-	private ColorSetting color;
+    private ColorSetting color;
 
-	public void setup() {
-		color=registerColor("Color", new GSColor(255, 0, 0, 255));
-	}
-	
-	@Override
-	public void populate (Theme theme) {
-		component = new ListComponent(getName(), theme.getPanelRenderer(), position, new WatermarkList());
-	}
-	
-	
-	private class WatermarkList implements HUDList {
+    public void setup() {
+        color = registerColor("Color", new GSColor(255, 0, 0, 255));
+    }
 
-		@Override
-		public int getSize() {
-			return 1;
-		}
+    @Override
+    public void populate(Theme theme) {
+        component = new ListComponent(getName(), theme.getPanelRenderer(), position, new WatermarkList());
+    }
 
-		@Override
-		public String getItem(int index) {
-			return "GameSense "+ GameSense.MODVER;
-		}
 
-		@Override
-		public Color getItemColor(int index) {
-			return color.getValue();
-		}
+    private class WatermarkList implements HUDList {
 
-		@Override
-		public boolean sortUp() {
-			return false;
-		}
+        @Override
+        public int getSize() {
+            return 1;
+        }
 
-		@Override
-		public boolean sortRight() {
-			return false;
-		}
-	}
+        @Override
+        public String getItem(int index) {
+            return "GameSense " + GameSense.MODVER;
+        }
+
+        @Override
+        public Color getItemColor(int index) {
+            return color.getValue();
+        }
+
+        @Override
+        public boolean sortUp() {
+            return false;
+        }
+
+        @Override
+        public boolean sortRight() {
+            return false;
+        }
+    }
 }

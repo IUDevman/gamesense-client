@@ -11,7 +11,7 @@ import java.awt.*;
  * @Author Hoosiers on 11/05/2020
  */
 
-@Command.Declaration(name = "Font", syntax = "font [name] size (use _ for spaces)", alias = { "font", "setfont", "customfont", "fonts", "chatfont" })
+@Command.Declaration(name = "Font", syntax = "font [name] size (use _ for spaces)", alias = {"font", "setfont", "customfont", "fonts", "chatfont"})
 public class FontCommand extends Command {
 
     public void onCommand(String command, String[] message) {

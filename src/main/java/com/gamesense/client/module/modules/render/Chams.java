@@ -63,8 +63,7 @@ public class Chams extends Module {
     private final Listener<RenderEntityEvent.Head> renderEntityHeadEventListener = new Listener<>(event -> {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
             return;
-        }
-        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
+        } else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
             return;
         }
 
@@ -95,8 +94,7 @@ public class Chams extends Module {
     private final Listener<RenderEntityEvent.Return> renderEntityReturnEventListener = new Listener<>(event -> {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
             return;
-        }
-        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
+        } else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
             return;
         }
 
@@ -126,11 +124,11 @@ public class Chams extends Module {
     private void renderChamsPre(GSColor color, boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Texture": {
-            	ChamsUtil.createChamsPre();
+                ChamsUtil.createChamsPre();
                 break;
             }
             case "Color": {
-            	ChamsUtil.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
+                ChamsUtil.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
                 break;
             }
             case "WireFrame": {
@@ -143,15 +141,15 @@ public class Chams extends Module {
     private void renderChamsPost(boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Texture": {
-            	ChamsUtil.createChamsPost();
+                ChamsUtil.createChamsPost();
                 break;
             }
             case "Color": {
-            	ChamsUtil.createColorPost(isPlayer);
+                ChamsUtil.createColorPost(isPlayer);
                 break;
             }
             case "WireFrame": {
-            	ChamsUtil.createWirePost(isPlayer);
+                ChamsUtil.createWirePost(isPlayer);
                 break;
             }
         }

@@ -36,8 +36,7 @@ public class LoadConfig {
     public LoadConfig() {
         try {
             loadConfig();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -48,7 +47,7 @@ public class LoadConfig {
     String miscName = "Misc/";
 
     public void loadConfig() throws IOException {
-    	loadModules();
+        loadModules();
         loadEnabledModules();
         loadModuleKeybinds();
         loadDrawnModules();
@@ -69,8 +68,7 @@ public class LoadConfig {
         for (Module module : ModuleManager.getModules()) {
             try {
                 loadModuleDirect(moduleLocation, module);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println(module.getName());
                 e.printStackTrace();
             }
@@ -96,21 +94,17 @@ public class LoadConfig {
                 if (dataObject != null && dataObject.isJsonPrimitive()) {
                     if (setting instanceof BooleanSetting) {
                         setting.setValue(dataObject.getAsBoolean());
-                    }
-                    else if (setting instanceof IntegerSetting) {
+                    } else if (setting instanceof IntegerSetting) {
                         setting.setValue(dataObject.getAsInt());
-                    }
-                    else if (setting instanceof DoubleSetting) {
+                    } else if (setting instanceof DoubleSetting) {
                         setting.setValue(dataObject.getAsDouble());
-                    }
-                    else if (setting instanceof ColorSetting) {
+                    } else if (setting instanceof ColorSetting) {
                         ((ColorSetting) setting).fromInteger(dataObject.getAsInt());
-                    }
-                    else if (setting instanceof ModeSetting) {
+                    } else if (setting instanceof ModeSetting) {
                         setting.setValue(dataObject.getAsString());
                     }
                 }
-            }catch(java.lang.NumberFormatException e) {
+            } catch (java.lang.NumberFormatException e) {
                 System.out.println(setting.getConfigName() + " " + module.getName());
                 System.out.println(dataObject);
             }
@@ -140,7 +134,7 @@ public class LoadConfig {
                 if (dataObject.getAsBoolean()) {
                     try {
                         module.enable();
-                    }catch (NullPointerException e) {
+                    } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
                 }
@@ -303,7 +297,7 @@ public class LoadConfig {
     }
 
     public void loadClickGUIPositions() {
-		GameSense.getInstance().gameSenseGUI.gui.loadConfig(new GuiConfig(fileName+mainName));
+        GameSense.getInstance().gameSenseGUI.gui.loadConfig(new GuiConfig(fileName + mainName));
     }
 
     public void loadAutoGG() throws IOException {

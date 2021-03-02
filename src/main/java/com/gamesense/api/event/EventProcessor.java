@@ -41,11 +41,11 @@ public class EventProcessor {
 
     public static EventProcessor INSTANCE;
     Minecraft mc = Minecraft.getMinecraft();
-	CommandManager commandManager = new CommandManager();
+    CommandManager commandManager = new CommandManager();
 
-	public EventProcessor() {
-		INSTANCE = this;
-	}
+    public EventProcessor() {
+        INSTANCE = this;
+    }
 
     @SubscribeEvent
     public void onRenderScreen(RenderGameOverlayEvent.Text event) {
@@ -138,7 +138,7 @@ public class EventProcessor {
             ModuleManager.onUpdate();
         }
 
-		  GameSense.EVENT_BUS.post(event);
+        GameSense.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent
@@ -195,7 +195,7 @@ public class EventProcessor {
         }
     }
 
-	private final Map<String, String> uuidNameCache = Maps.newConcurrentMap();
+    private final Map<String, String> uuidNameCache = Maps.newConcurrentMap();
 
     public String resolveName(String uuid) {
         uuid = uuid.replace("-", "");

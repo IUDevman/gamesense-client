@@ -86,8 +86,7 @@ public class SelfWeb extends Module {
         if (chatMsg.getValue()) {
             if (noWeb) {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... SelfWeb turned OFF!");
-            }
-            else {
+            } else {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfWeb turned OFF!");
             }
         }
@@ -134,13 +133,11 @@ public class SelfWeb extends Module {
                 noWeb = true;
                 disable();
             }
-        }
-        else {
+        } else {
             if (delayTimeTicks < tickDelay.getValue()) {
                 delayTimeTicks++;
                 return;
-            }
-            else {
+            } else {
                 delayTimeTicks = 0;
             }
         }
@@ -158,8 +155,7 @@ public class SelfWeb extends Module {
             if (placeType.getValue().equalsIgnoreCase("Double")) {
                 offsetPattern = Offsets.DOUBLE;
                 maxSteps = Offsets.DOUBLE.length;
-            }
-            else {
+            } else {
                 offsetPattern = Offsets.SINGLE;
                 maxSteps = Offsets.SINGLE.length;
             }

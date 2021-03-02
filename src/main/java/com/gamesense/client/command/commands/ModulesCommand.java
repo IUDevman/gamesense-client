@@ -16,7 +16,7 @@ import java.util.Collection;
  * @author Hoosiers on 11/05/2020
  */
 
-@Command.Declaration(name = "Modules", syntax = "modules (click to toggle)", alias = { "modules", "module", "modulelist", "mod", "mods" })
+@Command.Declaration(name = "Modules", syntax = "modules (click to toggle)", alias = {"modules", "module", "modulelist", "mod", "mods"})
 public class ModulesCommand extends Command {
 
     /**
@@ -31,9 +31,9 @@ public class ModulesCommand extends Command {
 
         for (Module module : modules) {
             msg.appendSibling(new TextComponentString((module.isEnabled() ? ChatFormatting.GREEN : ChatFormatting.RED) + module.getName() + "\2477" + ((index == size - 1) ? "" : ", "))
-                .setStyle(new Style()
-                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(module.getCategory().name())))
-                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, CommandManager.getCommandPrefix() + "toggle" + " " + module.getName()))));
+                    .setStyle(new Style()
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(module.getCategory().name())))
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, CommandManager.getCommandPrefix() + "toggle" + " " + module.getName()))));
 
             index++;
         }

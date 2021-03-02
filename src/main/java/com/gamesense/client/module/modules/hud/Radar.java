@@ -46,20 +46,18 @@ public class Radar extends HUDModule {
         outlineColor = registerColor("Outline Color", new GSColor(255, 0, 0, 255));
         fillColor = registerColor("Fill Color", new GSColor(0, 0, 0, 255));
     }
-    
+
     @Override
-    public void populate (Theme theme) {
-    	component = new RadarComponent(theme);
+    public void populate(Theme theme) {
+        component = new RadarComponent(theme);
     }
 
     private Color getPlayerColor(EntityPlayer entityPlayer) {
         if (Friends.isFriend(entityPlayer.getName())) {
             return new GSColor(ColorMain.getFriendGSColor(), 255);
-        }
-        else if (Enemies.isEnemy(entityPlayer.getName())) {
+        } else if (Enemies.isEnemy(entityPlayer.getName())) {
             return new GSColor(ColorMain.getEnemyGSColor(), 255);
-        }
-        else {
+        } else {
             return new GSColor(playerColor.getValue(), 255);
         }
     }
@@ -67,18 +65,16 @@ public class Radar extends HUDModule {
     private Color getEntityColor(Entity entity) {
         if (entity instanceof EntityMob || entity instanceof EntitySlime) {
             return new GSColor(255, 0, 0, 255);
-        }
-        else if (entity instanceof EntityAnimal || entity instanceof EntitySquid) {
+        } else if (entity instanceof EntityAnimal || entity instanceof EntitySquid) {
             return new GSColor(0, 255, 0, 255);
-        }
-        else {
+        } else {
             return new GSColor(255, 165, 0, 255);
         }
     }
 
     private class RadarComponent extends HUDComponent {
 
-        public RadarComponent (Theme theme) {
+        public RadarComponent(Theme theme) {
             super(getName(), theme.getPanelRenderer(), Radar.this.position);
         }
 
@@ -118,10 +114,10 @@ public class Radar extends HUDModule {
 
                 //outline, credit to lukflug for this
                 Color outline = new GSColor(outlineColor.getValue(), 255);
-                context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(context.getSize().width,1)),outline,outline,outline,outline);
-                context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(1,context.getSize().height)),outline,outline,outline,outline);
-                context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x+context.getSize().width-1,context.getPos().y),new Dimension(1,context.getSize().height)),outline,outline,outline,outline);
-                context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x,context.getPos().y+context.getSize().height-1),new Dimension(context.getSize().width,1)),outline,outline,outline,outline);
+                context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(context.getSize().width, 1)), outline, outline, outline, outline);
+                context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(1, context.getSize().height)), outline, outline, outline, outline);
+                context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x + context.getSize().width - 1, context.getPos().y), new Dimension(1, context.getSize().height)), outline, outline, outline, outline);
+                context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x, context.getPos().y + context.getSize().height - 1), new Dimension(context.getSize().width, 1)), outline, outline, outline, outline);
 
                 //self
                 boolean isNorth = isFacing(EnumFacing.NORTH);
@@ -134,7 +130,7 @@ public class Radar extends HUDModule {
                 context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + 3, context.getPos().y + distanceToCenter), new Point(context.getPos().x + distanceToCenter + (isEast ? 1 : 0), context.getPos().y + distanceToCenter), isEast ? outline : selfColor, isEast ? outline : selfColor);
                 context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter + 3), new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter + (isSouth ? 1 : 0)), isSouth ? outline : selfColor, isSouth ? outline : selfColor);
                 context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter - (isWest ? 1 : 0), context.getPos().y + distanceToCenter), new Point(context.getPos().x + distanceToCenter - 3, context.getPos().y + distanceToCenter), isWest ? outline : selfColor, isWest ? outline : selfColor);
-                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter - (isNorth ? 1 : 0)), new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter -3), isNorth ? outline : selfColor, isNorth ? outline : selfColor);
+                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter - (isNorth ? 1 : 0)), new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter - 3), isNorth ? outline : selfColor, isNorth ? outline : selfColor);
 
             }
         }

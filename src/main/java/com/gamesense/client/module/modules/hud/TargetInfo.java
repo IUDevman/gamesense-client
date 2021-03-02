@@ -38,19 +38,17 @@ public class TargetInfo extends HUDModule {
         backgroundColor = registerColor("Background", new GSColor(0, 0, 0, 255));
         outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
     }
-    
-    public void populate (Theme theme) {
-    	component = new TargetInfoComponent(theme);
+
+    public void populate(Theme theme) {
+        component = new TargetInfoComponent(theme);
     }
 
     private Color getNameColor(EntityPlayer entityPlayer) {
         if (Friends.isFriend(entityPlayer.getName())) {
             return new GSColor(ColorMain.getFriendGSColor(), 255);
-        }
-        else if (Enemies.isEnemy(entityPlayer.getName())) {
+        } else if (Enemies.isEnemy(entityPlayer.getName())) {
             return new GSColor(ColorMain.getEnemyGSColor(), 255);
-        }
-        else {
+        } else {
             return new GSColor(255, 255, 255, 255);
         }
     }
@@ -92,7 +90,7 @@ public class TargetInfo extends HUDModule {
 
     private class TargetInfoComponent extends HUDComponent {
 
-        public TargetInfoComponent (Theme theme) {
+        public TargetInfoComponent(Theme theme) {
             super(getName(), theme.getPanelRenderer(), TargetInfo.this.position);
         }
 
@@ -117,10 +115,10 @@ public class TargetInfo extends HUDModule {
 
                     //outline, credit to lukflug for this
                     Color outline = new GSColor(outlineColor.getValue(), 255);
-                    context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(context.getSize().width,1)),outline,outline,outline,outline);
-                    context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(1,context.getSize().height)),outline,outline,outline,outline);
-                    context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x+context.getSize().width-1,context.getPos().y),new Dimension(1,context.getSize().height)),outline,outline,outline,outline);
-                    context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x,context.getPos().y+context.getSize().height-1),new Dimension(context.getSize().width,1)),outline,outline,outline,outline);
+                    context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(context.getSize().width, 1)), outline, outline, outline, outline);
+                    context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(1, context.getSize().height)), outline, outline, outline, outline);
+                    context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x + context.getSize().width - 1, context.getPos().y), new Dimension(1, context.getSize().height)), outline, outline, outline, outline);
+                    context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x, context.getPos().y + context.getSize().height - 1), new Dimension(context.getSize().width, 1)), outline, outline, outline, outline);
 
                     //name
                     String name = entityPlayer.getName();
@@ -159,12 +157,12 @@ public class TargetInfo extends HUDModule {
         }
 
         @Override
-        public int getWidth (Interface inter) {
+        public int getWidth(Interface inter) {
             return 102;
         }
 
         @Override
-        public void getHeight (Context context) {
+        public void getHeight(Context context) {
             context.setHeight(43);
         }
     }

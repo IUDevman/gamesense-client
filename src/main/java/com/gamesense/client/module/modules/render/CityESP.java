@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 
 /**
  * @author Hoosiers
- * @since 10/20/2020
  * @author 0b00101010
+ * @since 10/20/2020
  * @since 30/01/2021
  */
 
@@ -49,7 +49,7 @@ public class CityESP extends Module {
         ArrayList<String> targetModes = new ArrayList<>();
         targetModes.add("Single");
         targetModes.add("All");
-      
+
         ArrayList<String> selectModes = new ArrayList<>();
         selectModes.add("Closest");
         selectModes.add("All");
@@ -70,7 +70,7 @@ public class CityESP extends Module {
         selectMode = registerMode("Select", selectModes, "Closest");
         renderMode = registerMode("Render", renderModes, "Both");
         width = registerInteger("Width", 1, 1, 10);
-        color = registerColor("Color", new GSColor(102,51,153));
+        color = registerColor("Color", new GSColor(102, 51, 153));
     }
 
     private final HashMap<EntityPlayer, List<BlockPos>> cityable = new HashMap<>();
@@ -85,7 +85,7 @@ public class CityESP extends Module {
                 .filter(entityPlayer -> entityPlayer.getDistanceSq(mc.player) <= range.getValue() * range.getValue())
                 .filter(entityPlayer -> !EntityUtil.basicChecksEntity(entityPlayer)).collect(Collectors.toList());
 
-        for (EntityPlayer player: players) {
+        for (EntityPlayer player : players) {
             if (player == mc.player) {
                 continue;
             }
@@ -173,8 +173,8 @@ public class CityESP extends Module {
                 if (this.canPlaceCrystal(pos.down(), ignoreCrystals.getValue())) {
                     // believe i have the right location for the crystal
                     // pos is the block one above the bedrock/obsidian
-                    if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ()+ 0.5d, player) >= minDamage.getValue()) {
-                        if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ()+ 0.5d, mc.player) <= maxDamage.getValue()) {
+                    if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ() + 0.5d, player) >= minDamage.getValue()) {
+                        if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ() + 0.5d, mc.player) <= maxDamage.getValue()) {
                             cityableSides.add(blockPos);
                         }
                         break;

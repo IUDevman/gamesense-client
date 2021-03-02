@@ -25,56 +25,56 @@ public class ArrayListModule extends HUDModule {
     private BooleanSetting sortUp;
     private BooleanSetting sortRight;
     private ColorSetting color;
-	private ModuleList list = new ModuleList();
+    private ModuleList list = new ModuleList();
 
     public void setup() {
         sortUp = registerBoolean("Sort Up", true);
         sortRight = registerBoolean("Sort Right", false);
         color = registerColor("Color", new GSColor(255, 0, 0, 255));
     }
-    
+
     @Override
-    public void populate (Theme theme) {
-    	component = new ListComponent(getName(),theme.getPanelRenderer(),position,list);
+    public void populate(Theme theme) {
+        component = new ListComponent(getName(), theme.getPanelRenderer(), position, list);
     }
 
     public void onRender() {
-    	list.activeModules.clear();
-    	for (Module module: ModuleManager.getModules()) {
-    		if (module.isEnabled() && module.isDrawn()) list.activeModules.add(module);
-    	}
-    	list.activeModules.sort(Comparator.comparing(module -> -GameSense.getInstance().gameSenseGUI.guiInterface.getFontWidth(module.getName()+ChatFormatting.GRAY+" "+module.getHudInfo())));
+        list.activeModules.clear();
+        for (Module module : ModuleManager.getModules()) {
+            if (module.isEnabled() && module.isDrawn()) list.activeModules.add(module);
+        }
+        list.activeModules.sort(Comparator.comparing(module -> -GameSense.getInstance().gameSenseGUI.guiInterface.getFontWidth(module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo())));
     }
 
     private class ModuleList implements HUDList {
 
-		public List<Module> activeModules=new ArrayList<Module>();
-		
-		@Override
-		public int getSize() {
-			return activeModules.size();
-		}
-	
-		@Override
-		public String getItem(int index) {
-			Module module = activeModules.get(index);
-			return module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo();
-		}
-	
-		@Override
-		public Color getItemColor(int index) {
-			GSColor c = color.getValue();
-			return Color.getHSBColor(c.getHue() + (color.getRainbow() ? .02f * index : 0), c.getSaturation(), c.getBrightness());
-		}
+        public List<Module> activeModules = new ArrayList<Module>();
 
-		@Override
-		public boolean sortUp() {
-			return sortUp.isOn();
-		}
+        @Override
+        public int getSize() {
+            return activeModules.size();
+        }
 
-		@Override
-		public boolean sortRight() {
-			return sortRight.isOn();
-		}
-	}
+        @Override
+        public String getItem(int index) {
+            Module module = activeModules.get(index);
+            return module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo();
+        }
+
+        @Override
+        public Color getItemColor(int index) {
+            GSColor c = color.getValue();
+            return Color.getHSBColor(c.getHue() + (color.getRainbow() ? .02f * index : 0), c.getSaturation(), c.getBrightness());
+        }
+
+        @Override
+        public boolean sortUp() {
+            return sortUp.isOn();
+        }
+
+        @Override
+        public boolean sortRight() {
+            return sortRight.isOn();
+        }
+    }
 }

@@ -96,12 +96,12 @@ public class LogoutSpots extends Module {
         nameTagMessage[1] = "(" + posX + "," + posY + "," + posZ + ")";
 
         GlStateManager.pushMatrix();
-        RenderUtil.drawNametag(entity, nameTagMessage, color.getValue(),0);
+        RenderUtil.drawNametag(entity, nameTagMessage, color.getValue(), 0);
 
         switch (renderMode.getValue()) {
             case "Both": {
                 RenderUtil.drawBoundingBox(entity.getRenderBoundingBox(), lineWidth.getValue(), color.getValue());
-                RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4, new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
                 break;
             }
             case "Outline": {
@@ -109,14 +109,16 @@ public class LogoutSpots extends Module {
                 break;
             }
             case "Fill": {
-                RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4, new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
                 break;
             }
         }
         GlStateManager.popMatrix();
     }
 
-    /** event handlers below: **/
+    /**
+     * event handlers below:
+     **/
 
     @EventHandler
     private final Listener<PlayerJoinEvent> playerJoinEventListener = new Listener<>(event -> {

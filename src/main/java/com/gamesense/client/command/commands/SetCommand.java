@@ -12,11 +12,10 @@ import com.gamesense.client.module.ModuleManager;
 
 /**
  * @Author Hoosiers on 8/4/2020
- *
  * @Ported and modified on 11/05/2020
  */
 
-@Command.Declaration(name = "Set", syntax = "set [module] [setting] value (no color support)", alias = { "set", "setmodule", "changesetting", "setting" })
+@Command.Declaration(name = "Set", syntax = "set [module] [setting] value (no color support)", alias = {"set", "setmodule", "changesetting", "setting"})
 public class SetCommand extends Command {
 
     //I should probably add an option for color settings in the future
@@ -35,12 +34,10 @@ public class SetCommand extends Command {
                 if (message[2].equalsIgnoreCase("true") || message[2].equalsIgnoreCase("false")) {
                     setting.setValue(Boolean.parseBoolean(message[2]));
                     MessageBus.sendCommandMessage(module.getName() + " " + setting.getConfigName() + " set to: " + setting.getValue() + "!", true);
-                }
-                else {
+                } else {
                     MessageBus.sendCommandMessage(this.getSyntax(), true);
                 }
-            }
-            else if (setting instanceof IntegerSetting) {
+            } else if (setting instanceof IntegerSetting) {
                 if (Integer.parseInt(message[2]) > ((IntegerSetting) setting).getMax()) {
                     setting.setValue(((IntegerSetting) setting).getMax());
                 }
@@ -51,8 +48,7 @@ public class SetCommand extends Command {
                     setting.setValue(Integer.parseInt(message[2]));
                 }
                 MessageBus.sendCommandMessage(module.getName() + " " + setting.getConfigName() + " set to: " + setting.getValue() + "!", true);
-            }
-            else if (setting instanceof DoubleSetting) {
+            } else if (setting instanceof DoubleSetting) {
                 if (Double.parseDouble(message[2]) > ((DoubleSetting) setting).getMax()) {
                     setting.setValue(((DoubleSetting) setting).getMax());
                 }
@@ -63,17 +59,14 @@ public class SetCommand extends Command {
                     setting.setValue(Double.parseDouble(message[2]));
                 }
                 MessageBus.sendCommandMessage(module.getName() + " " + setting.getConfigName() + " set to: " + setting.getValue() + "!", true);
-            }
-            else if (setting instanceof ModeSetting) {
+            } else if (setting instanceof ModeSetting) {
                 if (!((ModeSetting) setting).getModes().contains(message[2])) {
                     MessageBus.sendCommandMessage(this.getSyntax(), true);
-                }
-                else {
+                } else {
                     setting.setValue(message[2]);
                     MessageBus.sendCommandMessage(module.getName() + " " + setting.getConfigName() + " set to: " + setting.getValue() + "!", true);
                 }
-            }
-            else {
+            } else {
                 MessageBus.sendCommandMessage(this.getSyntax(), true);
             }
         });

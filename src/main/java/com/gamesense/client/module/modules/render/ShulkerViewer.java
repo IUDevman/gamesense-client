@@ -18,40 +18,40 @@ import java.awt.*;
 @Module.Declaration(name = "ShulkerViewer", category = Category.Render)
 public class ShulkerViewer extends Module {
 
-	public static ColorSetting outlineColor;
-	public static ColorSetting fillColor;
+    public static ColorSetting outlineColor;
+    public static ColorSetting fillColor;
 
-	public void setup() {
-		outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
-		fillColor = registerColor("Fill", new GSColor(0, 0, 0, 255));
-	}
+    public void setup() {
+        outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
+        fillColor = registerColor("Fill", new GSColor(0, 0, 0, 255));
+    }
 
-	public static void renderShulkerPreview(ItemStack itemStack, int posX, int posY, int width, int height) {
-		GSColor outline = new GSColor(outlineColor.getValue(), 255);
-		GSColor fill = new GSColor(fillColor.getValue(), 200);
+    public static void renderShulkerPreview(ItemStack itemStack, int posX, int posY, int width, int height) {
+        GSColor outline = new GSColor(outlineColor.getValue(), 255);
+        GSColor fill = new GSColor(fillColor.getValue(), 200);
 
-		//fill
-		RenderUtil.draw2DRect(posX + 1, posY + 1, width - 2, height - 2, 1000, fill);
+        //fill
+        RenderUtil.draw2DRect(posX + 1, posY + 1, width - 2, height - 2, 1000, fill);
 
-		//outline
-		RenderUtil.draw2DRect(posX, posY, width, 1, 1000, outline);
-		RenderUtil.draw2DRect(posX, posY + height - 1, width, 1, 1000, outline);
-		RenderUtil.draw2DRect(posX, posY, 1, height, 1000, outline);
-		RenderUtil.draw2DRect(posX + width - 1, posY, 1, height, 1000, outline);
+        //outline
+        RenderUtil.draw2DRect(posX, posY, width, 1, 1000, outline);
+        RenderUtil.draw2DRect(posX, posY + height - 1, width, 1, 1000, outline);
+        RenderUtil.draw2DRect(posX, posY, 1, height, 1000, outline);
+        RenderUtil.draw2DRect(posX + width - 1, posY, 1, height, 1000, outline);
 
-		//name
-		GlStateManager.disableDepth();
-		FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), posX + 3, posY + 3, new GSColor(255, 255, 255, 255));
-		GlStateManager.enableDepth();
+        //name
+        GlStateManager.disableDepth();
+        FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), posX + 3, posY + 3, new GSColor(255, 255, 255, 255));
+        GlStateManager.enableDepth();
 
-		//items
-		NonNullList<ItemStack> contentItems = NonNullList.withSize(27, ItemStack.EMPTY);
-		ItemStackHelper.loadAllItems(itemStack.getTagCompound().getCompoundTag("BlockEntityTag"), contentItems);
+        //items
+        NonNullList<ItemStack> contentItems = NonNullList.withSize(27, ItemStack.EMPTY);
+        ItemStackHelper.loadAllItems(itemStack.getTagCompound().getCompoundTag("BlockEntityTag"), contentItems);
 
-		for (int i = 0; i < contentItems.size(); i++) {
-			int finalX = posX + 1 + i % 9 * 18;
-			int finalY = posY + 31 + (i / 9 - 1) * 18;
-			GameSenseGUI.renderItem(contentItems.get(i), new Point(finalX, finalY));
-		}
-	}
+        for (int i = 0; i < contentItems.size(); i++) {
+            int finalX = posX + 1 + i % 9 * 18;
+            int finalY = posY + 31 + (i / 9 - 1) * 18;
+            GameSenseGUI.renderItem(contentItems.get(i), new Point(finalX, finalY));
+        }
+    }
 }

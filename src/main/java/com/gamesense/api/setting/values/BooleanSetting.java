@@ -17,6 +17,6 @@ public class BooleanSetting extends Setting<Boolean> implements Toggleable {
 
     @Override
     public boolean isOn() {
-       return getValue();
+        return getValue();
     }
 }

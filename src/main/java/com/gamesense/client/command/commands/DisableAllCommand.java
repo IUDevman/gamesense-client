@@ -10,7 +10,7 @@ import com.gamesense.client.module.ModuleManager;
  */
 
 
-@Command.Declaration(name = "DisableAll", syntax = "disableall", alias = { "disableall", "stop" })
+@Command.Declaration(name = "DisableAll", syntax = "disableall", alias = {"disableall", "stop"})
 public class DisableAllCommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {

@@ -19,7 +19,9 @@ public abstract class Command {
     @Target(ElementType.TYPE)
     public @interface Declaration {
         String name();
+
         String syntax();
+
         String[] alias();
     }
 

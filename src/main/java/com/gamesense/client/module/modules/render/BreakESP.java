@@ -82,15 +82,15 @@ public class BreakESP extends Module {
         AxisAlignedBB axisAlignedBB1 = new AxisAlignedBB(centerX - progressValX, centerY - progressValY, centerZ - progressValZ, centerX + progressValX, centerY + progressValY, centerZ + progressValZ);
 
         switch (renderType.getValue()) {
-            case "Fill" : {
+            case "Fill": {
                 RenderUtil.drawBox(axisAlignedBB1, true, 0, fillColor, GeometryMasks.Quad.ALL);
                 break;
             }
-            case "Outline" : {
+            case "Outline": {
                 RenderUtil.drawBoundingBox(axisAlignedBB1, lineWidth.getValue(), outlineColor);
                 break;
             }
-            case "Both" : {
+            case "Both": {
                 RenderUtil.drawBox(axisAlignedBB1, true, 0, fillColor, GeometryMasks.Quad.ALL);
                 RenderUtil.drawBoundingBox(axisAlignedBB1, lineWidth.getValue(), outlineColor);
                 break;

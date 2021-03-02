@@ -47,10 +47,10 @@ import java.util.*;
 public class SortInventory extends Module {
 
     BooleanSetting chatMsg,
-                    debugMode,
-                    confirmSort,
-                    instaSort,
-                    closeAfter;
+            debugMode,
+            confirmSort,
+            instaSort,
+            closeAfter;
     IntegerSetting tickDelay;
 
     // Our inventory variables
@@ -61,11 +61,11 @@ public class SortInventory extends Module {
 
     // Tickets
     private int delayTimeTicks,
-                stepNow;
+            stepNow;
     // If we had opened before a chest/inventory
     private boolean openedBefore,
-                    finishSort,
-                    doneBefore;
+            finishSort,
+            doneBefore;
 
     @Override
     public void setup() {
@@ -106,7 +106,7 @@ public class SortInventory extends Module {
         planInventory = new HashMap<>();
         nItems = new HashMap<>();
         // Iterate for creating planInventory and nItems
-        for(int i = 0; i < inventoryDivided.length; i++) {
+        for (int i = 0; i < inventoryDivided.length; i++) {
             // Add to planInventory if it's not air
             if (!inventoryDivided[i].contains("air")) {
                 // Add it
@@ -142,8 +142,7 @@ public class SortInventory extends Module {
         if (delayTimeTicks < tickDelay.getValue()) {
             delayTimeTicks++;
             return;
-        }
-        else {
+        } else {
             delayTimeTicks = 0;
         }
 
@@ -151,11 +150,10 @@ public class SortInventory extends Module {
         if (planInventory.size() == 0)
             disable();
         // Check if your inventory is open
-        if ( mc.currentScreen instanceof GuiInventory) {
+        if (mc.currentScreen instanceof GuiInventory) {
             // In that case, sort the inventory
             sortInventoryAlgo();
-        }
-        else openedBefore = false;
+        } else openedBefore = false;
 
     }
 
@@ -181,12 +179,12 @@ public class SortInventory extends Module {
                         disable();
                 }
 
-            }else {
+            } else {
                 finishSort = true;
                 stepNow = 0;
             }
             openedBefore = true;
-        // if we have to start sorting
+            // if we have to start sorting
         } else if (finishSort) {
             int slotChange;
             // This is the sort area
@@ -344,8 +342,8 @@ public class SortInventory extends Module {
         // Print all path
         if (debugMode.getValue()) {
             // Print every values
-            for(int valuePath : planMove) {
-                PistonCrystal.printChat(Integer.toString(valuePath),  false);
+            for (int valuePath : planMove) {
+                PistonCrystal.printChat(Integer.toString(valuePath), false);
             }
         }
 
@@ -355,7 +353,7 @@ public class SortInventory extends Module {
     // This give a copy of our inventory
     private ArrayList<String> getInventoryCopy() {
         ArrayList<String> output = new ArrayList<>();
-        for(ItemStack i : mc.player.inventory.mainInventory) {
+        for (ItemStack i : mc.player.inventory.mainInventory) {
             output.add(Objects.requireNonNull(i.getItem().getRegistryName()).toString() + i.getMetadata());
         }
         return output;

@@ -101,8 +101,7 @@ public class SelfTrap extends Module {
         if (chatMsg.getValue()) {
             if (noObby) {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... SelfTrap turned OFF!");
-            }
-            else {
+            } else {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfTrap turned OFF!");
             }
         }
@@ -148,22 +147,20 @@ public class SelfTrap extends Module {
             if (InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff) == -1) {
                 noObby = true;
                 return;
-            }else {
+            } else {
                 noObby = false;
                 activedOff = true;
             }
-        }
-        else {
+        } else {
             if (delayTimeTicks < tickDelay.getValue()) {
                 delayTimeTicks++;
                 return;
-            }
-            else {
+            } else {
                 delayTimeTicks = 0;
             }
         }
 
-        if (shiftOnly.getValue() && !mc.player.isSneaking()){
+        if (shiftOnly.getValue() && !mc.player.isSneaking()) {
             return;
         }
 
@@ -174,27 +171,22 @@ public class SelfTrap extends Module {
 
             if (xDeviation <= 0.1 && zDeviation <= 0.1) {
                 centeredBlock = Vec3d.ZERO;
-            }
-            else {
+            } else {
                 double newX;
                 double newZ;
                 if (mc.player.posX > Math.round(mc.player.posX)) {
                     newX = Math.round(mc.player.posX) + 0.5;
-                }
-                else if (mc.player.posX < Math.round(mc.player.posX)) {
+                } else if (mc.player.posX < Math.round(mc.player.posX)) {
                     newX = Math.round(mc.player.posX) - 0.5;
-                }
-                else {
+                } else {
                     newX = mc.player.posX;
                 }
 
                 if (mc.player.posZ > Math.round(mc.player.posZ)) {
                     newZ = Math.round(mc.player.posZ) + 0.5;
-                }
-                else if (mc.player.posZ < Math.round(mc.player.posZ)) {
+                } else if (mc.player.posZ < Math.round(mc.player.posZ)) {
                     newZ = Math.round(mc.player.posZ) - 0.5;
-                }
-                else {
+                } else {
                     newZ = mc.player.posZ;
                 }
 
@@ -213,12 +205,10 @@ public class SelfTrap extends Module {
             if (trapType.getValue().equalsIgnoreCase("Normal")) {
                 offsetPattern = Offsets.TRAP;
                 maxSteps = Offsets.TRAP.length;
-            }
-            else if (trapType.getValue().equalsIgnoreCase("No Step")) {
+            } else if (trapType.getValue().equalsIgnoreCase("No Step")) {
                 offsetPattern = Offsets.TRAPFULLROOF;
                 maxSteps = Offsets.TRAPFULLROOF.length;
-            }
-            else {
+            } else {
                 offsetPattern = Offsets.TRAPSIMPLE;
                 maxSteps = Offsets.TRAPSIMPLE.length;
             }
@@ -277,7 +267,7 @@ public class SelfTrap extends Module {
             if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
                 // We can continue
                 handSwing = EnumHand.OFF_HAND;
-            }else return false;
+            } else return false;
         }
 
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
@@ -293,7 +283,7 @@ public class SelfTrap extends Module {
                 new Vec3d(1, -1, 0),
                 new Vec3d(0, -1, 1),
                 new Vec3d(-1, -1, 0),
-                new Vec3d(0, 0,-1),
+                new Vec3d(0, 0, -1),
                 new Vec3d(1, 0, 0),
                 new Vec3d(0, 0, 1),
                 new Vec3d(-1, 0, 0),
@@ -325,12 +315,12 @@ public class SelfTrap extends Module {
 
         private static final Vec3d[] TRAPSIMPLE = {
                 new Vec3d(-1, -1, 0),
-                new Vec3d(1, -1,0),
-                new Vec3d(0,-1,-1),
-                new Vec3d(0,-1,1),
-                new Vec3d(1, 0,0),
-                new Vec3d(0,0,-1),
-                new Vec3d(0,0,1),
+                new Vec3d(1, -1, 0),
+                new Vec3d(0, -1, -1),
+                new Vec3d(0, -1, 1),
+                new Vec3d(1, 0, 0),
+                new Vec3d(0, 0, -1),
+                new Vec3d(0, 0, 1),
                 new Vec3d(-1, 0, 0),
                 new Vec3d(-1, 1, 0),
                 new Vec3d(-1, 2, 0),

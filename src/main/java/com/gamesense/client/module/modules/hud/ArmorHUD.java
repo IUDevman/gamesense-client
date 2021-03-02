@@ -39,22 +39,21 @@ public class ArmorHUD extends Module {
             GlStateManager.disableDepth();
 
             String s = is.getCount() > 1 ? is.getCount() + "" : "";
-            mc.fontRenderer.drawStringWithShadow(s, x + 19 - 2 - mc.fontRenderer.getStringWidth(s), y + 9, new GSColor(255,255,255).getRGB());
+            mc.fontRenderer.drawStringWithShadow(s, x + 19 - 2 - mc.fontRenderer.getStringWidth(s), y + 9, new GSColor(255, 255, 255).getRGB());
             float green = ((float) is.getMaxDamage() - (float) is.getItemDamage()) / (float) is.getMaxDamage();
             float red = 1 - green;
             int dmg = 100 - (int) (red * 100);
 
-            if (green > 1){
+            if (green > 1) {
                 green = 1;
-            }
-            else if (green < 0){
+            } else if (green < 0) {
                 green = 0;
             }
 
-            if (red > 1){
+            if (red > 1) {
                 red = 1;
             }
-            if (dmg < 0){
+            if (dmg < 0) {
                 dmg = 0;
             }
 

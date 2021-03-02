@@ -9,7 +9,7 @@ import com.gamesense.client.command.Command;
  * @since 1/1/2020
  */
 
-@Command.Declaration(name = "SaveConfig", syntax = "saveconfig", alias = { "saveconfig", "reloadconfig", "config", "saveconfiguration" })
+@Command.Declaration(name = "SaveConfig", syntax = "saveconfig", alias = {"saveconfig", "reloadconfig", "config", "saveconfiguration"})
 public class SaveConfigCommand extends Command {
 
     public void onCommand(String command, String[] message) {

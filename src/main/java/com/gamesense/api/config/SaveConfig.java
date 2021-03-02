@@ -35,8 +35,7 @@ public class SaveConfig {
     public SaveConfig() {
         try {
             saveConfig();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -75,8 +74,7 @@ public class SaveConfig {
         for (Module module : ModuleManager.getModules()) {
             try {
                 saveModuleDirect(module);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -93,18 +91,14 @@ public class SaveConfig {
 
         for (Setting setting : SettingsManager.getSettingsForModule(module)) {
             if (setting instanceof BooleanSetting) {
-               settingObject.add(setting.getConfigName(), new JsonPrimitive(((BooleanSetting) setting).getValue()));
-            }
-            else if (setting instanceof IntegerSetting) {
+                settingObject.add(setting.getConfigName(), new JsonPrimitive(((BooleanSetting) setting).getValue()));
+            } else if (setting instanceof IntegerSetting) {
                 settingObject.add(setting.getConfigName(), new JsonPrimitive(((IntegerSetting) setting).getValue()));
-            }
-            else if (setting instanceof DoubleSetting) {
+            } else if (setting instanceof DoubleSetting) {
                 settingObject.add(setting.getConfigName(), new JsonPrimitive(((DoubleSetting) setting).getValue()));
-            }
-            else if (setting instanceof ColorSetting) {
+            } else if (setting instanceof ColorSetting) {
                 settingObject.add(setting.getConfigName(), new JsonPrimitive(((ColorSetting) setting).toInteger()));
-            }
-            else if (setting instanceof ModeSetting) {
+            } else if (setting instanceof ModeSetting) {
                 settingObject.add(setting.getConfigName(), new JsonPrimitive(((ModeSetting) setting).getValue()));
             }
         }
@@ -238,7 +232,7 @@ public class SaveConfig {
 
     public void saveClickGUIPositions() throws IOException {
         registerFiles(mainName, "ClickGUI");
-		GameSense.getInstance().gameSenseGUI.gui.saveConfig(new GuiConfig(fileName+mainName));
+        GameSense.getInstance().gameSenseGUI.gui.saveConfig(new GuiConfig(fileName + mainName));
     }
 
     public void saveAutoGG() throws IOException {

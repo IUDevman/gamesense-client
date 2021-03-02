@@ -8,7 +8,7 @@ import com.gamesense.client.command.Command;
  * @Author Hoosiers on 11/05/2020
  */
 
-@Command.Declaration(name = "Enemy", syntax = "enemy list/add/del [player]", alias = { "enemy", "enemies", "e" })
+@Command.Declaration(name = "Enemy", syntax = "enemy list/add/del [player]", alias = {"enemy", "enemies", "e"})
 public class EnemyCommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {
@@ -24,8 +24,7 @@ public class EnemyCommand extends Command {
         if (main.equalsIgnoreCase("add") && !Enemies.isEnemy(value)) {
             Enemies.addEnemy(value);
             MessageBus.sendCommandMessage("Added enemy: " + value.toUpperCase() + "!", true);
-        }
-        else if (main.equalsIgnoreCase("del") && Enemies.isEnemy(value)) {
+        } else if (main.equalsIgnoreCase("del") && Enemies.isEnemy(value)) {
             Enemies.delEnemy(value);
             MessageBus.sendCommandMessage("Deleted enemy: " + value.toUpperCase() + "!", true);
         }

@@ -19,176 +19,180 @@ import java.util.List;
 
 public abstract class Module implements Toggleable, KeybindSetting {
 
-	protected static final Minecraft mc = Minecraft.getMinecraft();
+    protected static final Minecraft mc = Minecraft.getMinecraft();
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.TYPE)
-	public @interface Declaration {
-		String name();
-		Category category();
-		int priority() default 0;
-		int bind() default Keyboard.KEY_NONE;
-		boolean enabled() default false;
-		boolean drawn() default true;
-	}
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface Declaration {
+        String name();
 
-	private final String name = getDeclaration().name();
-	private final Category category = getDeclaration().category();
-	private final int priority = getDeclaration().priority();
-	private int bind = getDeclaration().bind();
-	private boolean enabled = getDeclaration().enabled();
-	private boolean drawn = getDeclaration().drawn();
+        Category category();
 
-	public Module() {
-		setup();
-	}
+        int priority() default 0;
 
-	private Declaration getDeclaration() {
-		return getClass().getAnnotation(Declaration.class);
-	}
+        int bind() default Keyboard.KEY_NONE;
 
-	public void setup() {
+        boolean enabled() default false;
 
-	}
+        boolean drawn() default true;
+    }
 
-	protected void onEnable() {
+    private final String name = getDeclaration().name();
+    private final Category category = getDeclaration().category();
+    private final int priority = getDeclaration().priority();
+    private int bind = getDeclaration().bind();
+    private boolean enabled = getDeclaration().enabled();
+    private boolean drawn = getDeclaration().drawn();
 
-	}
+    public Module() {
+        setup();
+    }
 
-	protected void onDisable() {
+    private Declaration getDeclaration() {
+        return getClass().getAnnotation(Declaration.class);
+    }
 
-	}
+    public void setup() {
 
-	public void onUpdate() {
+    }
 
-	}
+    protected void onEnable() {
 
-	public void onRender() {
+    }
 
-	}
+    protected void onDisable() {
 
-	public void onWorldRender(RenderEvent event) {
+    }
 
-	}
+    public void onUpdate() {
 
-	public boolean isEnabled() {
-		return this.enabled;
-	}
+    }
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+    public void onRender() {
 
-	public void enable() {
-		setEnabled(true);
-		GameSense.EVENT_BUS.subscribe(this);
-		onEnable();
-	}
+    }
 
-	public void disable() {
-		setEnabled(false);
-		GameSense.EVENT_BUS.unsubscribe(this);
-		onDisable();
-	}
+    public void onWorldRender(RenderEvent event) {
 
-	public void toggle() {
-		if(isEnabled()) {
-			disable();
-		}
-		else if(!isEnabled()) {
-			enable();
-		}
-	}
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public boolean isEnabled() {
+        return this.enabled;
+    }
 
-	public Category getCategory() {
-		return this.category;
-	}
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
-	public int getPriority() {
-		return priority;
-	}
+    public void enable() {
+        setEnabled(true);
+        GameSense.EVENT_BUS.subscribe(this);
+        onEnable();
+    }
 
-	public int getBind() {
-		return this.bind;
-	}
+    public void disable() {
+        setEnabled(false);
+        GameSense.EVENT_BUS.unsubscribe(this);
+        onDisable();
+    }
 
-	public void setBind(int bind){
-		if (bind >= 0 && bind <= 255) {
-			this.bind = bind;
-		}
-	}
+    public void toggle() {
+        if (isEnabled()) {
+            disable();
+        } else if (!isEnabled()) {
+            enable();
+        }
+    }
 
-	public String getHudInfo() {
-		return "";
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public boolean isDrawn() {
-		return this.drawn;
-	}
+    public Category getCategory() {
+        return this.category;
+    }
 
-	public void setDrawn(boolean drawn) {
-		this.drawn = drawn;
-	}
+    public int getPriority() {
+        return priority;
+    }
 
-	protected IntegerSetting registerInteger(String name, int value, int min, int max) {
-		IntegerSetting integerSetting = new IntegerSetting(name, this, value, min, max);
-		SettingsManager.addSetting(integerSetting);
-		return integerSetting;
-	}
+    public int getBind() {
+        return this.bind;
+    }
 
-	protected DoubleSetting registerDouble(String name, double value, double min, double max) {
-		DoubleSetting doubleSetting = new DoubleSetting(name, this, value, min, max);
-		SettingsManager.addSetting(doubleSetting);
-		return doubleSetting;
-	}
+    public void setBind(int bind) {
+        if (bind >= 0 && bind <= 255) {
+            this.bind = bind;
+        }
+    }
 
-	protected BooleanSetting registerBoolean(String name, boolean value) {
-		BooleanSetting booleanSetting = new BooleanSetting(name, this, value);
-		SettingsManager.addSetting(booleanSetting);
-		return booleanSetting;
-	}
+    public String getHudInfo() {
+        return "";
+    }
 
-	protected ModeSetting registerMode(String name, List<String> modes, String value) {
-		ModeSetting modeSetting = new ModeSetting(name, this, value, modes);
-		SettingsManager.addSetting(modeSetting);
-		return modeSetting;
-	}
-	
-	protected ColorSetting registerColor(String name, GSColor color) {
-		ColorSetting colorSetting = new ColorSetting(name, this, false, color);
-		SettingsManager.addSetting(colorSetting);
-		return colorSetting;
-	}
-	
-	protected ColorSetting registerColor(String name) {
-		return registerColor(name, new GSColor(90,145,240));
-	}
+    public boolean isDrawn() {
+        return this.drawn;
+    }
 
-	@Override
-	public boolean isOn() {
-		return this.enabled;
-	}
-	
-	@Override
-	public int getKey() {
-		return this.getBind();
-	}
-	
-	@Override
-	public void setKey(int key) {
-		setBind(key);
-	}
-    
-	@Override
-	public String getKeyName() {
-		if (this.bind <= 0 || this.bind > 255) {
-			return "NONE";
-		} else {
-			return Keyboard.getKeyName(this.bind);
-		}
-	}
+    public void setDrawn(boolean drawn) {
+        this.drawn = drawn;
+    }
+
+    protected IntegerSetting registerInteger(String name, int value, int min, int max) {
+        IntegerSetting integerSetting = new IntegerSetting(name, this, value, min, max);
+        SettingsManager.addSetting(integerSetting);
+        return integerSetting;
+    }
+
+    protected DoubleSetting registerDouble(String name, double value, double min, double max) {
+        DoubleSetting doubleSetting = new DoubleSetting(name, this, value, min, max);
+        SettingsManager.addSetting(doubleSetting);
+        return doubleSetting;
+    }
+
+    protected BooleanSetting registerBoolean(String name, boolean value) {
+        BooleanSetting booleanSetting = new BooleanSetting(name, this, value);
+        SettingsManager.addSetting(booleanSetting);
+        return booleanSetting;
+    }
+
+    protected ModeSetting registerMode(String name, List<String> modes, String value) {
+        ModeSetting modeSetting = new ModeSetting(name, this, value, modes);
+        SettingsManager.addSetting(modeSetting);
+        return modeSetting;
+    }
+
+    protected ColorSetting registerColor(String name, GSColor color) {
+        ColorSetting colorSetting = new ColorSetting(name, this, false, color);
+        SettingsManager.addSetting(colorSetting);
+        return colorSetting;
+    }
+
+    protected ColorSetting registerColor(String name) {
+        return registerColor(name, new GSColor(90, 145, 240));
+    }
+
+    @Override
+    public boolean isOn() {
+        return this.enabled;
+    }
+
+    @Override
+    public int getKey() {
+        return this.getBind();
+    }
+
+    @Override
+    public void setKey(int key) {
+        setBind(key);
+    }
+
+    @Override
+    public String getKeyName() {
+        if (this.bind <= 0 || this.bind > 255) {
+            return "NONE";
+        } else {
+            return Keyboard.getKeyName(this.bind);
+        }
+    }
 }

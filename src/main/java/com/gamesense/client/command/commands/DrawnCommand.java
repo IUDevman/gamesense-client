@@ -10,7 +10,7 @@ import com.gamesense.client.module.ModuleManager;
  */
 
 
-@Command.Declaration(name = "Drawn", syntax = "drawn [module]", alias = { "drawn", "shown" })
+@Command.Declaration(name = "Drawn", syntax = "drawn [module]", alias = {"drawn", "shown"})
 public class DrawnCommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {

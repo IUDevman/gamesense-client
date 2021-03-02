@@ -55,11 +55,11 @@ public class CoordinateHud extends HUDModule {
         switch (dimension) {
             case -1: // Nether
                 coordinateString[1] = "Overworld "
-                    + getFormattedCoords(viewEntity.posX * 8.0, viewEntity.posY, viewEntity.posZ * 8.0);
+                        + getFormattedCoords(viewEntity.posX * 8.0, viewEntity.posY, viewEntity.posZ * 8.0);
                 break;
             case 0: // Overworld
                 coordinateString[1] = "Nether "
-                    + getFormattedCoords(viewEntity.posX / 8.0, viewEntity.posY, viewEntity.posZ / 8.0);
+                        + getFormattedCoords(viewEntity.posX / 8.0, viewEntity.posY, viewEntity.posZ / 8.0);
                 break;
             default:
                 break;
@@ -67,7 +67,7 @@ public class CoordinateHud extends HUDModule {
     });
 
     private String getFormattedCoords(double x, double y, double z) {
-        return roundOrInt(x) + ", " + roundOrInt(y) + ", " +roundOrInt(z);
+        return roundOrInt(x) + ", " + roundOrInt(y) + ", " + roundOrInt(z);
     }
 
     private String roundOrInt(double input) {

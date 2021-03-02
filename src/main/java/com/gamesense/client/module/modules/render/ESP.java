@@ -84,11 +84,10 @@ public class ESP extends Module {
                     // If glowing
                     if (playerESPMode.getValue().equals("Glowing")) {
                         entity.setGlowing(true);
-                    // Else, remove glowing effect
+                        // Else, remove glowing effect
                     } else if (entity.isGlowing())
                         entity.setGlowing(false);
-                    else
-                    {
+                    else {
                         switch (playerESPMode.getValue()) {
                             case "Direction":
                                 RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, entity.rotationYaw, width.getValue(), 0);
@@ -107,11 +106,11 @@ public class ESP extends Module {
 
                     if (mobESPMode.getValue().equals("Glowing")) {
                         entity.setGlowing(true);
-                    // Else, remove glowing effect
+                        // Else, remove glowing effect
                     } else if (entity.isGlowing())
                         entity.setGlowing(false);
 
-                    // If the guy want to see the direction
+                        // If the guy want to see the direction
                     else if (mobESPMode.getValue().equals("Direction"))
                         RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), mobColor, entity.rotationYaw, width.getValue(), 0);
                     else
@@ -124,7 +123,7 @@ public class ESP extends Module {
                 RenderUtil.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
             }
             if (entityRender.getValue()) {
-                if (entity instanceof EntityEnderPearl || entity instanceof EntityXPOrb || entity instanceof EntityExpBottle || entity instanceof EntityEnderCrystal){
+                if (entity instanceof EntityEnderPearl || entity instanceof EntityXPOrb || entity instanceof EntityExpBottle || entity instanceof EntityEnderCrystal) {
                     RenderUtil.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mainIntColor);
                 }
             }
@@ -152,7 +151,7 @@ public class ESP extends Module {
                     containerColor = new GSColor(255, 0, 0, opacityGradient);
                     RenderUtil.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
-                if(tileEntity instanceof TileEntityDispenser || tileEntity instanceof TileEntityFurnace || tileEntity instanceof TileEntityHopper || tileEntity instanceof TileEntityDropper) {
+                if (tileEntity instanceof TileEntityDispenser || tileEntity instanceof TileEntityFurnace || tileEntity instanceof TileEntityHopper || tileEntity instanceof TileEntityDropper) {
                     containerColor = new GSColor(150, 150, 150, opacityGradient);
                     RenderUtil.drawBoundingBox(mc.world.getBlockState(tileEntity.getPos()).getSelectedBoundingBox(mc.world, tileEntity.getPos()), width.getValue(), containerColor);
                 }
@@ -173,22 +172,18 @@ public class ESP extends Module {
         if (entity instanceof EntityPlayer) {
             if (Friends.isFriend(entity.getName())) {
                 playerColor = ColorMain.getFriendGSColor();
-            }
-            else if (Enemies.isEnemy(entity.getName())) {
+            } else if (Enemies.isEnemy(entity.getName())) {
                 playerColor = ColorMain.getEnemyGSColor();
-            }
-            else {
+            } else {
                 playerColor = new GSColor(mainColor.getValue(), opacityGradient);
             }
         }
 
         if (entity instanceof EntityMob) {
             mobColor = new GSColor(255, 0, 0, opacityGradient);
-        }
-        else if (entity instanceof EntityAnimal || entity instanceof EntitySquid) {
+        } else if (entity instanceof EntityAnimal || entity instanceof EntitySquid) {
             mobColor = new GSColor(0, 255, 0, opacityGradient);
-        }
-        else {
+        } else {
             mobColor = new GSColor(255, 165, 0, opacityGradient);
         }
 
@@ -210,17 +205,13 @@ public class ESP extends Module {
 
         if (entity.getDistance(mc.player) >= 180) {
             opacityGradient = 50;
-        }
-        else if (entity.getDistance(mc.player) >= 130 && entity.getDistance(mc.player) < 180) {
+        } else if (entity.getDistance(mc.player) >= 130 && entity.getDistance(mc.player) < 180) {
             opacityGradient = 100;
-        }
-        else if (entity.getDistance(mc.player) >= 80 && entity.getDistance(mc.player) < 130) {
+        } else if (entity.getDistance(mc.player) >= 80 && entity.getDistance(mc.player) < 130) {
             opacityGradient = 150;
-        }
-        else if (entity.getDistance(mc.player) >= 30 && entity.getDistance(mc.player) < 80) {
+        } else if (entity.getDistance(mc.player) >= 30 && entity.getDistance(mc.player) < 80) {
             opacityGradient = 200;
-        }
-        else {
+        } else {
             opacityGradient = 255;
         }
 
@@ -235,17 +226,13 @@ public class ESP extends Module {
 
         if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 32400) {
             opacityGradient = 50;
-        }
-        else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 16900 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 32400) {
+        } else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 16900 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 32400) {
             opacityGradient = 100;
-        }
-        else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 6400 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 16900) {
+        } else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 6400 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 16900) {
             opacityGradient = 150;
-        }
-        else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 900 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 6400) {
+        } else if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) >= 900 && tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) < 6400) {
             opacityGradient = 200;
-        }
-        else {
+        } else {
             opacityGradient = 255;
         }
 

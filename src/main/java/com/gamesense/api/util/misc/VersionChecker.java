@@ -40,8 +40,7 @@ public class VersionChecker {
                 isLatest = false;
                 newVersion = grabbedVersion;
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             isLatest = true;
         }
@@ -68,11 +67,9 @@ public class VersionChecker {
 
                     try {
                         Desktop.getDesktop().browse(event.getURL().toURI());
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
-                    }
-                    catch (URISyntaxException e) {
+                    } catch (URISyntaxException e) {
                         e.printStackTrace();
                     }
                 }

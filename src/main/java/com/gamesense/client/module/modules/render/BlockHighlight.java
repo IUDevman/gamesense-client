@@ -66,12 +66,12 @@ public class BlockHighlight extends Module {
         GSColor colorWithOpacity = new GSColor(renderColor.getValue(), 50);
 
         switch (renderLook.getValue()) {
-            case "Block" : {
+            case "Block": {
                 lookInt = 0;
                 break;
             }
 
-            case "Side" : {
+            case "Side": {
                 lookInt = 1;
                 break;
             }
@@ -106,8 +106,7 @@ public class BlockHighlight extends Module {
 
         if (lookInt == 0) {
             RenderUtil.drawBoundingBox(axisAlignedBB, width, color);
-        }
-        else if (lookInt == 1) {
+        } else if (lookInt == 1) {
             RenderUtil.drawBoundingBoxWithSides(axisAlignedBB, width, color, findRenderingSide(enumFacing));
         }
     }
@@ -117,8 +116,7 @@ public class BlockHighlight extends Module {
 
         if (lookInt == 0) {
             facing = GeometryMasks.Quad.ALL;
-        }
-        else if (lookInt == 1) {
+        } else if (lookInt == 1) {
             facing = findRenderingSide(enumFacing);
         }
 
@@ -130,20 +128,15 @@ public class BlockHighlight extends Module {
 
         if (enumFacing == EnumFacing.EAST) {
             facing = GeometryMasks.Quad.EAST;
-        }
-        else if (enumFacing == EnumFacing.WEST) {
+        } else if (enumFacing == EnumFacing.WEST) {
             facing = GeometryMasks.Quad.WEST;
-        }
-        else if (enumFacing == EnumFacing.NORTH) {
+        } else if (enumFacing == EnumFacing.NORTH) {
             facing = GeometryMasks.Quad.NORTH;
-        }
-        else if (enumFacing == EnumFacing.SOUTH) {
+        } else if (enumFacing == EnumFacing.SOUTH) {
             facing = GeometryMasks.Quad.SOUTH;
-        }
-        else if (enumFacing == EnumFacing.UP) {
+        } else if (enumFacing == EnumFacing.UP) {
             facing = GeometryMasks.Quad.UP;
-        }
-        else if (enumFacing == EnumFacing.DOWN) {
+        } else if (enumFacing == EnumFacing.DOWN) {
             facing = GeometryMasks.Quad.DOWN;
         }
 

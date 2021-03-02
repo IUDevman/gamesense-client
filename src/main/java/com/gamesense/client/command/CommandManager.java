@@ -64,7 +64,9 @@ public class CommandManager {
 
     boolean isValidCommand = false;
 
-    /** @Author 086 for KAMI, regex is a bitch **/
+    /**
+     * @Author 086 for KAMI, regex is a bitch
+     **/
     public void callCommand(String input) {
         String[] split = input.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
         String command1 = split[0];
@@ -78,8 +80,7 @@ public class CommandManager {
                     isValidCommand = true;
                     try {
                         command.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         MessageBus.sendCommandMessage(command.getSyntax(), true);
                     }
                 }

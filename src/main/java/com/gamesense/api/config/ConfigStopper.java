@@ -27,8 +27,7 @@ public class ConfigStopper extends Thread {
             GameSense.getInstance().saveConfig.saveAutoReply();
             GameSense.getInstance().saveConfig.saveAutoRespawn();
             GameSense.LOGGER.info("Saved Config!");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

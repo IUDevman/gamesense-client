@@ -16,27 +16,28 @@ import java.lang.annotation.Target;
 
 public abstract class HUDModule extends Module {
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.TYPE)
-	public @interface Declaration {
-		int posX();
-		int posZ();
-	}
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface Declaration {
+        int posX();
 
-	private Declaration getDeclaration() {
-		return getClass().getAnnotation(Declaration.class);
-	}
+        int posZ();
+    }
 
-	protected FixedComponent component;
-	protected Point position = new Point(getDeclaration().posX(), getDeclaration().posZ());
+    private Declaration getDeclaration() {
+        return getClass().getAnnotation(Declaration.class);
+    }
 
-	public abstract void populate (Theme theme);
+    protected FixedComponent component;
+    protected Point position = new Point(getDeclaration().posX(), getDeclaration().posZ());
 
-	public FixedComponent getComponent() {
-		return component;
-	}
-	
-	public void resetPosition() {
-		component.setPosition(GameSense.getInstance().gameSenseGUI.guiInterface,position);
-	}
+    public abstract void populate(Theme theme);
+
+    public FixedComponent getComponent() {
+        return component;
+    }
+
+    public void resetPosition() {
+        component.setPosition(GameSense.getInstance().gameSenseGUI.guiInterface, position);
+    }
 }

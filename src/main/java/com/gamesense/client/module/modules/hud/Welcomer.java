@@ -15,43 +15,43 @@ import java.awt.*;
 @HUDModule.Declaration(posX = 450, posZ = 0)
 public class Welcomer extends HUDModule {
 
-	private ColorSetting color;
-	
-	public void setup() {
-		color=registerColor("Color", new GSColor(255, 0, 0, 255));
-	}
+    private ColorSetting color;
 
-	@Override
-	public void populate (Theme theme) {
-		component = new ListComponent(getName(),theme.getPanelRenderer(),position,new WelcomerList());
-	}
-	
-	
-	private class WelcomerList implements HUDList {
+    public void setup() {
+        color = registerColor("Color", new GSColor(255, 0, 0, 255));
+    }
 
-		@Override
-		public int getSize() {
-			return 1;
-		}
+    @Override
+    public void populate(Theme theme) {
+        component = new ListComponent(getName(), theme.getPanelRenderer(), position, new WelcomerList());
+    }
 
-		@Override
-		public String getItem(int index) {
-			return "Hello " + mc.player.getName() + " :^)";
-		}
 
-		@Override
-		public Color getItemColor(int index) {
-			return color.getValue();
-		}
+    private class WelcomerList implements HUDList {
 
-		@Override
-		public boolean sortUp() {
-			return false;
-		}
+        @Override
+        public int getSize() {
+            return 1;
+        }
 
-		@Override
-		public boolean sortRight() {
-			return false;
-		}
-	}
+        @Override
+        public String getItem(int index) {
+            return "Hello " + mc.player.getName() + " :^)";
+        }
+
+        @Override
+        public Color getItemColor(int index) {
+            return color.getValue();
+        }
+
+        @Override
+        public boolean sortUp() {
+            return false;
+        }
+
+        @Override
+        public boolean sortRight() {
+            return false;
+        }
+    }
 }

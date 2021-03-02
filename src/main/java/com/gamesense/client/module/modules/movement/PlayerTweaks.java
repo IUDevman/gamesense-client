@@ -16,74 +16,74 @@ import org.lwjgl.input.Keyboard;
 @Module.Declaration(name = "PlayerTweaks", category = Category.Movement)
 public class PlayerTweaks extends Module {
 
-	public BooleanSetting guiMove;
-	public static BooleanSetting noPush;
-	public BooleanSetting noSlow;
-	BooleanSetting antiKnockBack;
+    public BooleanSetting guiMove;
+    public static BooleanSetting noPush;
+    public BooleanSetting noSlow;
+    BooleanSetting antiKnockBack;
 
-	public void setup() {
-		guiMove = registerBoolean("Gui Move", false);
-		noPush = registerBoolean("No Push", false);
-		noSlow = registerBoolean("No Slow", false);
-		antiKnockBack = registerBoolean("Velocity", false);
-	}
+    public void setup() {
+        guiMove = registerBoolean("Gui Move", false);
+        noPush = registerBoolean("No Push", false);
+        noSlow = registerBoolean("No Slow", false);
+        antiKnockBack = registerBoolean("Velocity", false);
+    }
 
-	//No Slow
-	@EventHandler
-	private final Listener<InputUpdateEvent> eventListener = new Listener<>(event -> {
-		if (noSlow.getValue()) {
-			if (mc.player.isHandActive() && !mc.player.isRiding()) {
-				event.getMovementInput().moveStrafe *= 5;
-				event.getMovementInput().moveForward *= 5;
-			}
-		}
-	});
+    //No Slow
+    @EventHandler
+    private final Listener<InputUpdateEvent> eventListener = new Listener<>(event -> {
+        if (noSlow.getValue()) {
+            if (mc.player.isHandActive() && !mc.player.isRiding()) {
+                event.getMovementInput().moveStrafe *= 5;
+                event.getMovementInput().moveForward *= 5;
+            }
+        }
+    });
 
-	//Gui Move, this breaks with future for some reason... IDK if there is another way to do this
-	public void onUpdate() {
-		if (guiMove.getValue() && mc.currentScreen != null) {
-			if (!(mc.currentScreen instanceof GuiChat)){
-				if (Keyboard.isKeyDown(200)) {
-					mc.player.rotationPitch -= 5;
-				}
-				if (Keyboard.isKeyDown(208)) {
-					mc.player.rotationPitch += 5;
-				}
-				if (Keyboard.isKeyDown(205)) {
-					mc.player.rotationYaw += 5;
-				}
-				if (Keyboard.isKeyDown(203)) {
-					mc.player.rotationYaw -= 5;
-				}
-				if (mc.player.rotationPitch > 90) {
-					mc.player.rotationPitch = 90;
-				}
-				if (mc.player.rotationPitch < -90) {
-					mc.player.rotationPitch = -90;
-				}
-			}
-		}
-	}
+    //Gui Move, this breaks with future for some reason... IDK if there is another way to do this
+    public void onUpdate() {
+        if (guiMove.getValue() && mc.currentScreen != null) {
+            if (!(mc.currentScreen instanceof GuiChat)) {
+                if (Keyboard.isKeyDown(200)) {
+                    mc.player.rotationPitch -= 5;
+                }
+                if (Keyboard.isKeyDown(208)) {
+                    mc.player.rotationPitch += 5;
+                }
+                if (Keyboard.isKeyDown(205)) {
+                    mc.player.rotationYaw += 5;
+                }
+                if (Keyboard.isKeyDown(203)) {
+                    mc.player.rotationYaw -= 5;
+                }
+                if (mc.player.rotationPitch > 90) {
+                    mc.player.rotationPitch = 90;
+                }
+                if (mc.player.rotationPitch < -90) {
+                    mc.player.rotationPitch = -90;
+                }
+            }
+        }
+    }
 
-	//Velocity
-	@EventHandler
-	private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
-		if (antiKnockBack.getValue()) {
-			if (event.getPacket() instanceof SPacketEntityVelocity) {
-				if (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId()) {
-					event.cancel();
-				}
-			}
-			if (event.getPacket() instanceof SPacketExplosion) {
-				event.cancel();
-			}
-		}
-	});
+    //Velocity
+    @EventHandler
+    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
+        if (antiKnockBack.getValue()) {
+            if (event.getPacket() instanceof SPacketEntityVelocity) {
+                if (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId()) {
+                    event.cancel();
+                }
+            }
+            if (event.getPacket() instanceof SPacketExplosion) {
+                event.cancel();
+            }
+        }
+    });
 
-	@EventHandler
-	private final Listener<WaterPushEvent> waterPushEventListener = new Listener<>(event -> {
-		if (noPush.getValue()) {
-			event.cancel();
-		}
-	});
+    @EventHandler
+    private final Listener<WaterPushEvent> waterPushEventListener = new Listener<>(event -> {
+        if (noPush.getValue()) {
+            event.cancel();
+        }
+    });
 }

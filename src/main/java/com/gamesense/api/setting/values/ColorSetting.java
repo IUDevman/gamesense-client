@@ -18,7 +18,7 @@ public class ColorSetting extends Setting<GSColor> implements com.lukflug.panels
 
     @Override
     public GSColor getValue() {
-        if (rainbow) return GSColor.fromHSB((System.currentTimeMillis()%(360*32))/(360f * 32),1,1);
+        if (rainbow) return GSColor.fromHSB((System.currentTimeMillis() % (360 * 32)) / (360f * 32), 1, 1);
         else return super.getValue();
     }
 
@@ -26,15 +26,15 @@ public class ColorSetting extends Setting<GSColor> implements com.lukflug.panels
         return getValue().getRGB() & 0xFFFFFF + (this.rainbow ? 1 : 0) * 0x1000000;
     }
 
-    public void fromInteger (int number) {
+    public void fromInteger(int number) {
         this.rainbow = ((number & 0x1000000) != 0);
 
-        super.setValue(this.rainbow ? GSColor.fromHSB((System.currentTimeMillis()%(360*32))/(360f * 32),1,1) :new GSColor(number & 0xFFFFFF));
+        super.setValue(this.rainbow ? GSColor.fromHSB((System.currentTimeMillis() % (360 * 32)) / (360f * 32), 1, 1) : new GSColor(number & 0xFFFFFF));
     }
 
     @Override
     public void setValue(Color value) {
-        super.setValue(this.rainbow ? GSColor.fromHSB((System.currentTimeMillis()%(360*32))/(360f * 32),1,1) : new GSColor(value));
+        super.setValue(this.rainbow ? GSColor.fromHSB((System.currentTimeMillis() % (360 * 32)) / (360f * 32), 1, 1) : new GSColor(value));
     }
 
     @Override

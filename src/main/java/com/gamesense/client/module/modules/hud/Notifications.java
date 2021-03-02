@@ -17,75 +17,73 @@ import java.util.List;
 @HUDModule.Declaration(posX = 0, posZ = 50)
 public class Notifications extends HUDModule {
 
-	private static BooleanSetting sortUp;
-	private static BooleanSetting sortRight;
-	public static BooleanSetting disableChat;
-	private static NotificationsList list=new NotificationsList();
+    private static BooleanSetting sortUp;
+    private static BooleanSetting sortRight;
+    public static BooleanSetting disableChat;
+    private static NotificationsList list = new NotificationsList();
 
-	public void setup() {
-		sortUp = registerBoolean("Sort Up", false);
-		sortRight = registerBoolean("Sort Right", false);
-		disableChat = registerBoolean("No Chat Msg", true);
-	}
-	
-	@Override
-	public void populate (Theme theme) {
-		component = new ListComponent(getName(), theme.getPanelRenderer(), position, list);
-	}
+    public void setup() {
+        sortUp = registerBoolean("Sort Up", false);
+        sortRight = registerBoolean("Sort Right", false);
+        disableChat = registerBoolean("No Chat Msg", true);
+    }
 
-	private static int waitCounter;
+    @Override
+    public void populate(Theme theme) {
+        component = new ListComponent(getName(), theme.getPanelRenderer(), position, list);
+    }
 
-	public void onUpdate() {
-		if (waitCounter < 500) {
-			waitCounter++;
-			return;
-		}
-		else {
-			waitCounter = 0;
-		}
-		if (list.list.size() > 0)
-			list.list.remove(0);
-	}
+    private static int waitCounter;
 
-	public static void addMessage(TextComponentString m) {
-		if(list.list.size() < 3) {
-			list.list.remove(m);
-			list.list.add(m);
-		}
-		else {
-			list.list.remove(0);
-			list.list.remove(m);
-			list.list.add(m);
-		}
-	}
+    public void onUpdate() {
+        if (waitCounter < 500) {
+            waitCounter++;
+            return;
+        } else {
+            waitCounter = 0;
+        }
+        if (list.list.size() > 0)
+            list.list.remove(0);
+    }
 
-	private static class NotificationsList implements HUDList {
+    public static void addMessage(TextComponentString m) {
+        if (list.list.size() < 3) {
+            list.list.remove(m);
+            list.list.add(m);
+        } else {
+            list.list.remove(0);
+            list.list.remove(m);
+            list.list.add(m);
+        }
+    }
 
-		public List<TextComponentString> list = new ArrayList<>();
-		
-		@Override
-		public int getSize() {
-			return list.size();
-		}
-	
-		@Override
-		public String getItem(int index) {
-			return list.get(index).getText();
-		}
-	
-		@Override
-		public Color getItemColor(int index) {
-			return new Color(255,255,255);
-		}
+    private static class NotificationsList implements HUDList {
 
-		@Override
-		public boolean sortUp() {
-			return sortUp.isOn();
-		}
+        public List<TextComponentString> list = new ArrayList<>();
 
-		@Override
-		public boolean sortRight() {
-			return sortRight.isOn();
-		}
-	}
+        @Override
+        public int getSize() {
+            return list.size();
+        }
+
+        @Override
+        public String getItem(int index) {
+            return list.get(index).getText();
+        }
+
+        @Override
+        public Color getItemColor(int index) {
+            return new Color(255, 255, 255);
+        }
+
+        @Override
+        public boolean sortUp() {
+            return sortUp.isOn();
+        }
+
+        @Override
+        public boolean sortRight() {
+            return sortRight.isOn();
+        }
+    }
 }
