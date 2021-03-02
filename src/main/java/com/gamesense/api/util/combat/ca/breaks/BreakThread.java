@@ -54,7 +54,7 @@ public class BreakThread implements Callable<List<CrystalInfo.BreakInfo>> {
             if (best != null) {
                 boolean shouldAdd = false;
                 if (smart) {
-                    if ((double) bestDamage >= settings.minBreakDamage || ((target.entity.getHealth() + target.entity.getAbsorptionAmount()) <= settings.facePlaceHealth && bestDamage > settings.minFacePlaceDamage)) {
+                    if ((double) bestDamage >= settings.minBreakDamage || ((target.health <= settings.facePlaceHealth || target.lowArmour) && bestDamage > settings.minFacePlaceDamage)) {
                         shouldAdd = true;
                     }
                 } else {

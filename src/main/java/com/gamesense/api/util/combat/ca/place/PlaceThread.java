@@ -50,7 +50,7 @@ public class PlaceThread implements Callable<CrystalInfo.PlaceInfo> {
         }
 
         if (best != null) {
-            if (bestDamage >= settings.minDamage || ((target.entity.getHealth() + target.entity.getAbsorptionAmount()) <= settings.facePlaceHealth && bestDamage >= settings.minFacePlaceDamage)) {
+            if (bestDamage >= settings.minDamage || ((target.health <= settings.facePlaceHealth || target.lowArmour) && bestDamage >= settings.minFacePlaceDamage)) {
                 return new CrystalInfo.PlaceInfo(bestDamage, target.entity, best);
             }
         }
