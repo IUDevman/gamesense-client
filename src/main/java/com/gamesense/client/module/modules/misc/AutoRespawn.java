@@ -14,20 +14,19 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 @Module.Declaration(name = "AutoRespawn", category = Category.Misc)
 public class AutoRespawn extends Module {
 
-    private static String AutoRespawnMessage = "/kit";
-
     BooleanSetting respawnMessage;
     IntegerSetting respawnMessageDelay;
 
-    private boolean isDead;
-    private boolean sentRespawnMessage = true;
-    long timeSinceRespawn;
-
-    @Override
     public void setup() {
         respawnMessage = registerBoolean("Respawn Message", false);
         respawnMessageDelay = registerInteger("Msg Delay(ms)", 0, 0, 5000);
     }
+
+    private static String AutoRespawnMessage = "/kit";
+
+    private boolean isDead;
+    private boolean sentRespawnMessage = true;
+    long timeSinceRespawn;
 
     @EventHandler
     private final Listener<GuiOpenEvent> livingDeathEventListener = new Listener<>(event -> {
@@ -39,7 +38,6 @@ public class AutoRespawn extends Module {
         }
     });
 
-    @Override
     public void onUpdate() {
         if (mc.player == null)
             return;

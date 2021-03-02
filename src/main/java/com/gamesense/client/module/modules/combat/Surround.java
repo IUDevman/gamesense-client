@@ -28,18 +28,18 @@ import net.minecraft.util.math.Vec3d;
 @Module.Declaration(name = "Surround", category = Category.Combat)
 public class Surround extends Module {
 
-    BooleanSetting chatMsg,
-            triggerSurround,
-            shiftOnly,
-            rotate,
-            disableNone,
-            disableOnJump,
-            offHandObby,
-            cityBlocker,
-            centerPlayer;
-    IntegerSetting tickDelay,
-            timeOutTicks,
-            blocksPerTick;
+    BooleanSetting chatMsg;
+    BooleanSetting triggerSurround;
+    BooleanSetting shiftOnly;
+    BooleanSetting rotate;
+    BooleanSetting disableNone;
+    BooleanSetting disableOnJump;
+    BooleanSetting offHandObby;
+    BooleanSetting cityBlocker;
+    BooleanSetting centerPlayer;
+    IntegerSetting tickDelay;
+    IntegerSetting timeOutTicks;
+    IntegerSetting blocksPerTick;
 
     public void setup() {
         triggerSurround = registerBoolean("Triggerable", false);

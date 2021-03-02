@@ -34,11 +34,6 @@ public class CombatInfo extends HUDModule {
     private ModeSetting infoType;
     private ColorSetting color1;
     private ColorSetting color2;
-    private InfoList list = new InfoList();
-    private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};
-    ;
-    private static final String[] hoosiersModules = {"AutoCrystalGS", "KillAura", "Surround", "AutoTrap", "SelfTrap"};
-    private static final String[] hoosiersNames = {"AC", "KA", "SU", "AT", "ST"};
 
     public void setup() {
         ArrayList<String> infoTypes = new ArrayList<>();
@@ -48,6 +43,11 @@ public class CombatInfo extends HUDModule {
         color1 = registerColor("On", new GSColor(0, 255, 0, 255));
         color2 = registerColor("Off", new GSColor(255, 0, 0, 255));
     }
+
+    private InfoList list = new InfoList();
+    private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};
+    private static final String[] hoosiersModules = {"AutoCrystalGS", "KillAura", "Surround", "AutoTrap", "SelfTrap"};
+    private static final String[] hoosiersNames = {"AC", "KA", "SU", "AT", "ST"};
 
     @Override
     public void populate(Theme theme) {

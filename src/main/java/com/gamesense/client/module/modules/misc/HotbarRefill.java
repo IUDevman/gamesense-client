@@ -30,7 +30,6 @@ public class HotbarRefill extends Module {
 
     private int delayStep = 0;
 
-    @Override
     public void onUpdate() {
 
         if (mc.player == null) {

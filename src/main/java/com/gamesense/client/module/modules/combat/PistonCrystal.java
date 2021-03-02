@@ -77,6 +77,48 @@ public class PistonCrystal extends Module {
             speedMeter,
             chatMsg;
 
+    // Setup the options of the gui
+    public void setup() {
+        ArrayList<String> breakTypes = new ArrayList<>();
+        breakTypes.add("Swing");
+        breakTypes.add("Packet");
+        ArrayList<String> placeModes = new ArrayList<>();
+        placeModes.add("Torch");
+        placeModes.add("Block");
+        placeModes.add("Both");
+        ArrayList<String> targetChoose = new ArrayList<>();
+        targetChoose.add("Nearest");
+        targetChoose.add("Looking");
+        breakType = registerMode("Type", breakTypes, "Swing");
+        placeMode = registerMode("Place", placeModes, "Torch");
+        target = registerMode("Target", targetChoose, "Nearest");
+        enemyRange = registerDouble("Range", 4.9, 0, 6);
+        torchRange = registerDouble("Torch Range", 5.5, 0, 6);
+        crystalDeltaBreak = registerDouble("Center Break", 0.1, 0, 0.5);
+        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 20);
+        supBlocksDelay = registerInteger("Surround Delay", 4, 0, 20);
+        startDelay = registerInteger("Start Delay", 4, 0, 20);
+        pistonDelay = registerInteger("Piston Delay", 2, 0, 20);
+        crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
+        midHitDelay = registerInteger("Mid Hit Delay", 5, 0, 20);
+        hitDelay = registerInteger("Hit Delay", 2, 0, 20);
+        stuckDetector = registerInteger("Stuck Check", 35, 0, 200);
+        maxYincr = registerInteger("Max Y", 3, 0, 5);
+        blockPlayer = registerBoolean("Trap Player", true);
+        rotate = registerBoolean("Rotate", false);
+        confirmBreak = registerBoolean("No Glitch Break", true);
+        confirmPlace = registerBoolean("No Glitch Place", true);
+        allowCheapMode = registerBoolean("Cheap Mode", false);
+        betterPlacement = registerBoolean("Better Place", true);
+        bypassObsidian = registerBoolean("Bypass Obsidian", false);
+        antiWeakness = registerBoolean("Anti Weakness", false);
+        debugMode = registerBoolean("Debug Mode", false);
+        speedMeter = registerBoolean("Speed Meter", false);
+        chatMsg = registerBoolean("Chat Msgs", true);
+        // Reset round
+        round = 0;
+    }
+
     private boolean noMaterials = false,
             hasMoved = false,
             isSneaking = false,
@@ -120,48 +162,6 @@ public class PistonCrystal extends Module {
     Double[][] sur_block = new Double[4][3];
 
     private EntityPlayer aimTarget;
-
-    // Setup the options of the gui
-    public void setup() {
-        ArrayList<String> breakTypes = new ArrayList<>();
-        breakTypes.add("Swing");
-        breakTypes.add("Packet");
-        ArrayList<String> placeModes = new ArrayList<>();
-        placeModes.add("Torch");
-        placeModes.add("Block");
-        placeModes.add("Both");
-        ArrayList<String> targetChoose = new ArrayList<>();
-        targetChoose.add("Nearest");
-        targetChoose.add("Looking");
-        breakType = registerMode("Type", breakTypes, "Swing");
-        placeMode = registerMode("Place", placeModes, "Torch");
-        target = registerMode("Target", targetChoose, "Nearest");
-        enemyRange = registerDouble("Range", 4.9, 0, 6);
-        torchRange = registerDouble("Torch Range", 5.5, 0, 6);
-        crystalDeltaBreak = registerDouble("Center Break", 0.1, 0, 0.5);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 20);
-        supBlocksDelay = registerInteger("Surround Delay", 4, 0, 20);
-        startDelay = registerInteger("Start Delay", 4, 0, 20);
-        pistonDelay = registerInteger("Piston Delay", 2, 0, 20);
-        crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
-        midHitDelay = registerInteger("Mid Hit Delay", 5, 0, 20);
-        hitDelay = registerInteger("Hit Delay", 2, 0, 20);
-        stuckDetector = registerInteger("Stuck Check", 35, 0, 200);
-        maxYincr = registerInteger("Max Y", 3, 0, 5);
-        blockPlayer = registerBoolean("Trap Player", true);
-        rotate = registerBoolean("Rotate", false);
-        confirmBreak = registerBoolean("No Glitch Break", true);
-        confirmPlace = registerBoolean("No Glitch Place", true);
-        allowCheapMode = registerBoolean("Cheap Mode", false);
-        betterPlacement = registerBoolean("Better Place", true);
-        bypassObsidian = registerBoolean("Bypass Obsidian", false);
-        antiWeakness = registerBoolean("Anti Weakness", false);
-        debugMode = registerBoolean("Debug Mode", false);
-        speedMeter = registerBoolean("Speed Meter", false);
-        chatMsg = registerBoolean("Chat Msgs", true);
-        // Reset round
-        round = 0;
-    }
 
     // Everytime you enable
     public void onEnable() {

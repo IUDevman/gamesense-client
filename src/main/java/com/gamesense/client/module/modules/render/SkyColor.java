@@ -15,7 +15,6 @@ public class SkyColor extends Module {
     public static ColorSetting color;
     public static BooleanSetting fog;
 
-    @Override
     public void setup() {
         fog = registerBoolean("Fog", true);
         color = registerColor("Color", new GSColor(0, 255, 0, 255));

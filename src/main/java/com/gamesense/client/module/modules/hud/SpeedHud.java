@@ -31,17 +31,15 @@ public class SpeedHud extends HUDModule {
     private BooleanSetting averageSpeed;
     private IntegerSetting averageSpeedTicks;
 
-    private final ArrayDeque<Double> speedDeque = new ArrayDeque<>();
-    private String speedString = "";
-
-    @Override
     public void setup() {
         speedUnit = registerMode("Speed Unit", Arrays.asList(MPS, KMH, MPH), KMH);
         averageSpeed = registerBoolean("Average Speed", true);
         averageSpeedTicks = registerInteger("Average Time", 20, 5, 100);
     }
 
-    @Override
+    private final ArrayDeque<Double> speedDeque = new ArrayDeque<>();
+    private String speedString = "";
+
     protected void onDisable() {
         speedDeque.clear();
         speedString = "";

@@ -16,13 +16,24 @@ import java.util.*;
 @Module.Declaration(name = "AutoGear", category = Category.Misc)
 public class AutoGear extends Module {
 
-    BooleanSetting chatMsg,
-            debugMode,
-            enderChest,
-            confirmSort,
-            invasive,
-            closeAfter;
+    BooleanSetting chatMsg;
+    BooleanSetting debugMode;
+    BooleanSetting enderChest;
+    BooleanSetting confirmSort;
+    BooleanSetting invasive;
+    BooleanSetting closeAfter;
     IntegerSetting tickDelay;
+
+    public void setup() {
+        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+        chatMsg = registerBoolean("Chat Msg", true);
+        enderChest = registerBoolean("EnderChest", false);
+        confirmSort = registerBoolean("Confirm Sort", true);
+        invasive = registerBoolean("Invasive", false);
+        closeAfter = registerBoolean("Close After", false);
+        debugMode = registerBoolean("Debug Mode", false);
+
+    }
 
     // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();
@@ -38,20 +49,6 @@ public class AutoGear extends Module {
             finishSort,
             doneBefore;
 
-    @Override
-    public void setup() {
-
-        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
-        chatMsg = registerBoolean("Chat Msg", true);
-        enderChest = registerBoolean("EnderChest", false);
-        confirmSort = registerBoolean("Confirm Sort", true);
-        invasive = registerBoolean("Invasive", false);
-        closeAfter = registerBoolean("Close After", false);
-        debugMode = registerBoolean("Debug Mode", false);
-
-    }
-
-    @Override
     public void onEnable() {
         // Msg
         if (chatMsg.getValue())
@@ -100,13 +97,12 @@ public class AutoGear extends Module {
         openedBefore = doneBefore = false;
     }
 
-    @Override
     public void onDisable() {
         if (chatMsg.getValue() && planInventory.size() > 0)
             PistonCrystal.printChat("AutoSort Turned Off!", true);
     }
 
-    @Override
+
     public void onUpdate() {
         // Wait
         if (delayTimeTicks < tickDelay.getValue()) {

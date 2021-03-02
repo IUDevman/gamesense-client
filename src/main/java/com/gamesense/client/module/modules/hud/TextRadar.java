@@ -27,7 +27,6 @@ public class TextRadar extends HUDModule {
     private BooleanSetting sortRight;
     private IntegerSetting range;
     private ModeSetting display;
-    private PlayerList list = new PlayerList();
 
     public void setup() {
         ArrayList<String> displayModes = new ArrayList<>();
@@ -39,6 +38,8 @@ public class TextRadar extends HUDModule {
         sortRight = registerBoolean("Sort Right", false);
         range = registerInteger("Range", 100, 1, 260);
     }
+
+    private PlayerList list = new PlayerList();
 
     @Override
     public void populate(Theme theme) {

@@ -14,8 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * @author unknown
- * @author 0b00101010
+ * Edited by 0b00101010
  * @since 25/01/21
  */
 

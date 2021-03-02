@@ -41,13 +41,14 @@ public class TargetHUD extends HUDModule {
     private ColorSetting outline;
     private ColorSetting background;
     private IntegerSetting range;
-    private static EntityPlayer targetPlayer;
 
     public void setup() {
         range = registerInteger("Range", 100, 10, 260);
         outline = registerColor("Outline", new GSColor(255, 0, 0, 255));
         background = registerColor("Background", new GSColor(0, 0, 0, 255));
     }
+
+    private static EntityPlayer targetPlayer;
 
     @Override
     public void populate(Theme theme) {

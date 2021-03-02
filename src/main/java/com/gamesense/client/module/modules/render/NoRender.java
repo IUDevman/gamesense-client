@@ -27,8 +27,6 @@ public class NoRender extends Module {
     public static BooleanSetting noCluster;
     public static IntegerSetting maxNoClusterRender;
 
-    public static int currentClusterAmount = 0;
-
     public void setup() {
         armor = registerBoolean("Armor", false);
         fire = registerBoolean("Fire", false);
@@ -41,6 +39,8 @@ public class NoRender extends Module {
         noCluster = registerBoolean("No Cluster", false);
         maxNoClusterRender = registerInteger("No Cluster Max", 5, 1, 25);
     }
+
+    public static int currentClusterAmount = 0;
 
     public void onUpdate() {
         if (blind.getValue() && mc.player.isPotionActive(MobEffects.BLINDNESS))

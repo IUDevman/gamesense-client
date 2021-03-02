@@ -25,13 +25,14 @@ public class ArrayListModule extends HUDModule {
     private BooleanSetting sortUp;
     private BooleanSetting sortRight;
     private ColorSetting color;
-    private ModuleList list = new ModuleList();
 
     public void setup() {
         sortUp = registerBoolean("Sort Up", true);
         sortRight = registerBoolean("Sort Right", false);
         color = registerColor("Color", new GSColor(255, 0, 0, 255));
     }
+
+    private ModuleList list = new ModuleList();
 
     @Override
     public void populate(Theme theme) {

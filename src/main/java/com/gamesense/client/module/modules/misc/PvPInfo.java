@@ -32,14 +32,6 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "PvPInfo", category = Category.Misc)
 public class PvPInfo extends Module {
 
-    List<Entity> knownPlayers = new ArrayList<>();
-    List<Entity> antipearlspamplz = new ArrayList<>();
-    List<Entity> players;
-    List<Entity> pearls;
-    List<Entity> burrowedPlayers = new ArrayList<>();
-    List<Entity> strengthedPlayers = new ArrayList<>();
-    private HashMap<String, Integer> popCounterHashMap = new HashMap<>();
-
     BooleanSetting visualRange;
     BooleanSetting pearlAlert;
     BooleanSetting strengthDetect;
@@ -72,6 +64,15 @@ public class PvPInfo extends Module {
         popCounter = registerBoolean("Pop Counter", false);
         ChatColor = registerMode("Color", colors, "Light Purple");
     }
+
+    List<Entity> knownPlayers = new ArrayList<>();
+    List<Entity> antiPearlList = new ArrayList<>();
+    List<Entity> players;
+    List<Entity> pearls;
+    List<Entity> burrowedPlayers = new ArrayList<>();
+    List<Entity> strengthPlayers = new ArrayList<>();
+    private HashMap<String, Integer> popCounterHashMap = new HashMap<>();
+
 
     public void onUpdate() {
         if (mc.player == null || mc.world == null) {
@@ -124,8 +125,8 @@ public class PvPInfo extends Module {
             try {
                 for (Entity e : pearls) {
                     if (e instanceof EntityEnderPearl) {
-                        if (!antipearlspamplz.contains(e)) {
-                            antipearlspamplz.add(e);
+                        if (!antiPearlList.contains(e)) {
+                            antiPearlList.add(e);
                             MessageBus.sendClientPrefixMessage(getTextColor() + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + " has just thrown a pearl!");
                         }
                     }
@@ -135,13 +136,13 @@ public class PvPInfo extends Module {
         }
         if (strengthDetect.getValue()) {
             for (EntityPlayer player : mc.world.playerEntities) {
-                if (player.isPotionActive(MobEffects.STRENGTH) && !(strengthedPlayers.contains(player))) {
+                if (player.isPotionActive(MobEffects.STRENGTH) && !(strengthPlayers.contains(player))) {
                     MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " has (drank) strength!");
-                    strengthedPlayers.add(player);
+                    strengthPlayers.add(player);
                 }
-                if (!(player.isPotionActive(MobEffects.STRENGTH)) && strengthedPlayers.contains(player)) {
+                if (!(player.isPotionActive(MobEffects.STRENGTH)) && strengthPlayers.contains(player)) {
                     MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " no longer has strength!");
-                    strengthedPlayers.remove(player);
+                    strengthPlayers.remove(player);
                 }
             }
         }

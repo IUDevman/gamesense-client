@@ -27,7 +27,6 @@ public class Watermark extends HUDModule {
         component = new ListComponent(getName(), theme.getPanelRenderer(), position, new WatermarkList());
     }
 
-
     private class WatermarkList implements HUDList {
 
         @Override

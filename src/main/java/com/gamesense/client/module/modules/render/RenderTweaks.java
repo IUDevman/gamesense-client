@@ -18,10 +18,6 @@ public class RenderTweaks extends Module {
     DoubleSetting lowOffhandSlider;
     IntegerSetting fovChangerSlider;
 
-    ItemRenderer itemRenderer = mc.entityRenderer.itemRenderer;
-
-    private float oldFOV;
-
     public void setup() {
         viewClip = registerBoolean("View Clip", false);
         nekoAnimation = registerBoolean("Neko Animation", false);
@@ -31,7 +27,10 @@ public class RenderTweaks extends Module {
         fovChangerSlider = registerInteger("FOV Slider", 90, 70, 200);
     }
 
-    @Override
+    ItemRenderer itemRenderer = mc.entityRenderer.itemRenderer;
+
+    private float oldFOV;
+
     public void onUpdate() {
         if (nekoAnimation.getValue()) {
             if (mc.player.getHeldItemMainhand().getItem() instanceof ItemSword && mc.entityRenderer.itemRenderer.prevEquippedProgressMainHand >= 0.9) {

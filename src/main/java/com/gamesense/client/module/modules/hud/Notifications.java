@@ -20,13 +20,14 @@ public class Notifications extends HUDModule {
     private static BooleanSetting sortUp;
     private static BooleanSetting sortRight;
     public static BooleanSetting disableChat;
-    private static NotificationsList list = new NotificationsList();
 
     public void setup() {
         sortUp = registerBoolean("Sort Up", false);
         sortRight = registerBoolean("Sort Right", false);
         disableChat = registerBoolean("No Chat Msg", true);
     }
+
+    private static NotificationsList list = new NotificationsList();
 
     @Override
     public void populate(Theme theme) {

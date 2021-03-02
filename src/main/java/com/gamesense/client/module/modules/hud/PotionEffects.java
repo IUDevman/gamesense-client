@@ -23,13 +23,14 @@ public class PotionEffects extends HUDModule {
     private BooleanSetting sortUp;
     private BooleanSetting sortRight;
     private ColorSetting color;
-    private PotionList list = new PotionList();
 
     public void setup() {
         sortUp = registerBoolean("Sort Up", false);
         sortRight = registerBoolean("Sort Right", false);
         color = registerColor("Color", new GSColor(0, 255, 0, 255));
     }
+
+    private PotionList list = new PotionList();
 
     @Override
     public void populate(Theme theme) {

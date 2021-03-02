@@ -17,13 +17,13 @@ public class AutoTool extends Module {
 
     BooleanSetting switchBack;
 
-    boolean shouldMoveBack = false;
-    int lastSlot = 0;
-    long lastChange = 0L;
-
     public void setup() {
         switchBack = registerBoolean("Switch Back", false);
     }
+
+    boolean shouldMoveBack = false;
+    int lastSlot = 0;
+    long lastChange = 0L;
 
     @EventHandler
     private final Listener<DamageBlockEvent> leftClickListener = new Listener<>(event -> {

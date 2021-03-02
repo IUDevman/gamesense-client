@@ -19,18 +19,18 @@ import java.awt.*;
 @Module.Declaration(name = "CoordinateHud", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 0)
 public class CoordinateHud extends HUDModule {
+
     private BooleanSetting showNetherOverworld;
     private BooleanSetting thousandsSeparator;
     private IntegerSetting decimalPlaces;
 
-    private final String[] coordinateString = {"", ""};
-
-    @Override
     public void setup() {
         showNetherOverworld = registerBoolean("Show Nether/Overworld", true);
         thousandsSeparator = registerBoolean("Thousands Separator", true);
         decimalPlaces = registerInteger("Decimal Places", 1, 0, 5);
     }
+
+    private final String[] coordinateString = {"", ""};
 
     @SuppressWarnings("unused")
     @EventHandler

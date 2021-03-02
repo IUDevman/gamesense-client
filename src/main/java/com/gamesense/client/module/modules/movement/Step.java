@@ -17,7 +17,6 @@ import java.util.ArrayList;
 @Module.Declaration(name = "Step", category = Category.Movement)
 public class Step extends Module {
 
-    private int ticks = 0;
     DoubleSetting height;
     BooleanSetting timer;
     BooleanSetting reverse;
@@ -32,6 +31,8 @@ public class Step extends Module {
         reverse = registerBoolean("Reverse", false);
         mode = registerMode("Modes", modes, "Normal");
     }
+
+    private int ticks = 0;
 
     public void onUpdate() {
         if (mc.world == null || mc.player == null) {

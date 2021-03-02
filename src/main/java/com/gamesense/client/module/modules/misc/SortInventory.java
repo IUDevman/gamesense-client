@@ -1,13 +1,4 @@
 package com.gamesense.client.module.modules.misc;
-/*
-    TODO: Read perfectly your inventory
-    TODO: Create a json
-    TODO: Read the json
-    TODO: Create line-config
-    TODO: Read perfectly a shulker/chest
-    TODO: Take chest/shulker items to inventory
-    TODO: Sort inventory
- */
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
@@ -23,6 +14,15 @@ import java.util.*;
 
 /**
  * @Author TechAle
+ */
+/*
+    TODO: Read perfectly your inventory
+    TODO: Create a json
+    TODO: Read the json
+    TODO: Create line-config
+    TODO: Read perfectly a shulker/chest
+    TODO: Take chest/shulker items to inventory
+    TODO: Sort inventory
  */
 /*
     INVENTORY SORTING ALGORITHM
@@ -46,12 +46,21 @@ import java.util.*;
 @Module.Declaration(name = "SortInventory", category = Category.Misc)
 public class SortInventory extends Module {
 
-    BooleanSetting chatMsg,
-            debugMode,
-            confirmSort,
-            instaSort,
-            closeAfter;
+    BooleanSetting chatMsg;
+    BooleanSetting debugMode;
+    BooleanSetting confirmSort;
+    BooleanSetting instaSort;
+    BooleanSetting closeAfter;
     IntegerSetting tickDelay;
+
+    public void setup() {
+        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+        confirmSort = registerBoolean("Confirm Sort", true);
+        chatMsg = registerBoolean("Chat Msg", true);
+        instaSort = registerBoolean("Insta Sort", false);
+        closeAfter = registerBoolean("Close After", false);
+        debugMode = registerBoolean("Debug Mode", false);
+    }
 
     // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();
@@ -67,17 +76,6 @@ public class SortInventory extends Module {
             finishSort,
             doneBefore;
 
-    @Override
-    public void setup() {
-        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
-        confirmSort = registerBoolean("Confirm Sort", true);
-        chatMsg = registerBoolean("Chat Msg", true);
-        instaSort = registerBoolean("Insta Sort", false);
-        closeAfter = registerBoolean("Close After", false);
-        debugMode = registerBoolean("Debug Mode", false);
-    }
-
-    @Override
     public void onEnable() {
         // Msg
         if (chatMsg.getValue())
@@ -129,14 +127,11 @@ public class SortInventory extends Module {
             mc.displayGuiScreen(new GuiInventory(mc.player));
     }
 
-    @Override
     public void onDisable() {
         if (chatMsg.getValue() && planInventory.size() > 0)
             PistonCrystal.printChat("AutoSort Turned Off!", true);
     }
 
-
-    @Override
     public void onUpdate() {
         // Wait
         if (delayTimeTicks < tickDelay.getValue()) {
@@ -331,13 +326,11 @@ public class SortInventory extends Module {
                     }
                 }
             }
-
         }
 
         if (planMove.size() != 0 && planMove.get(planMove.size() - 1).equals(planMove.get(planMove.size() - 2))) {
             planMove.remove(planMove.size() - 1);
         }
-
 
         // Print all path
         if (debugMode.getValue()) {
@@ -358,5 +351,4 @@ public class SortInventory extends Module {
         }
         return output;
     }
-
 }

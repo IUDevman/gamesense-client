@@ -16,10 +16,7 @@ import java.util.Scanner;
 @Module.Declaration(name = "PhysicsSpammer", category = Category.Misc)
 public class PhysicsSpammer extends Module {
 
-    private List<String> cache = new LinkedList<String>();
-    private long lastTime, delay;
     private IntegerSetting minDelay, maxDelay;
-    private Random random = new Random(System.currentTimeMillis());
 
     public void setup() {
         minDelay = registerInteger("Min Delay", 5, 1, 100);
@@ -27,7 +24,10 @@ public class PhysicsSpammer extends Module {
         updateTimes();
     }
 
-    @Override
+    private List<String> cache = new LinkedList<String>();
+    private long lastTime, delay;
+    private Random random = new Random(System.currentTimeMillis());
+
     public void onUpdate() {
         if (delay > Math.max(minDelay.getValue(), maxDelay.getValue()))
             delay = Math.max(minDelay.getValue(), maxDelay.getValue());
