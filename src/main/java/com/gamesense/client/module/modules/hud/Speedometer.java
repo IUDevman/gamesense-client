@@ -19,9 +19,9 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
 
-@Module.Declaration(name = "SpeedHud", category = Category.HUD)
+@Module.Declaration(name = "Speedometer", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 70)
-public class SpeedHud extends HUDModule {
+public class Speedometer extends HUDModule {
 
     private static final String MPS = "m/s";
     private static final String KMH = "km/h";
@@ -32,7 +32,7 @@ public class SpeedHud extends HUDModule {
     private IntegerSetting averageSpeedTicks;
 
     public void setup() {
-        speedUnit = registerMode("Speed Unit", Arrays.asList(MPS, KMH, MPH), KMH);
+        speedUnit = registerMode("Unit", Arrays.asList(MPS, KMH, MPH), KMH);
         averageSpeed = registerBoolean("Average Speed", true);
         averageSpeedTicks = registerInteger("Average Time", 20, 5, 100);
     }

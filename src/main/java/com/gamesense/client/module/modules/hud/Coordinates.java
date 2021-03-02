@@ -16,16 +16,16 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 
-@Module.Declaration(name = "CoordinateHud", category = Category.HUD)
+@Module.Declaration(name = "Coordinates", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 0)
-public class CoordinateHud extends HUDModule {
+public class Coordinates extends HUDModule {
 
     private BooleanSetting showNetherOverworld;
     private BooleanSetting thousandsSeparator;
     private IntegerSetting decimalPlaces;
 
     public void setup() {
-        showNetherOverworld = registerBoolean("Show Nether/Overworld", true);
+        showNetherOverworld = registerBoolean("Show Nether", true);
         thousandsSeparator = registerBoolean("Thousands Separator", true);
         decimalPlaces = registerInteger("Decimal Places", 1, 0, 5);
     }
