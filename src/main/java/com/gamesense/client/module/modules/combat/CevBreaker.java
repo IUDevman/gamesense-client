@@ -1,7 +1,10 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.event.events.DestroyBlockEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
@@ -37,13 +40,13 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 @Module.Declaration(name = "CevBreaker", category = Category.Combat)
 public class CevBreaker extends Module {
 
-    Setting.Mode breakCrystal,
+    ModeSetting breakCrystal,
                 breakBlock,
             target;
 
-    Setting.Double  enemyRange;
+    DoubleSetting enemyRange;
 
-    Setting.Integer
+    IntegerSetting
             crystalDelay,
             blocksPerTick,
             hitDelay,
@@ -51,7 +54,7 @@ public class CevBreaker extends Module {
             supDelay,
             pickSwitchTick,
             endDelay;
-    Setting.Boolean rotate,
+    BooleanSetting rotate,
             confirmBreak,
             confirmPlace,
             antiWeakness,

@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.WaterPushEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
@@ -16,10 +16,10 @@ import org.lwjgl.input.Keyboard;
 @Module.Declaration(name = "PlayerTweaks", category = Category.Movement)
 public class PlayerTweaks extends Module {
 
-	public Setting.Boolean guiMove;
-	public static Setting.Boolean noPush;
-	public Setting.Boolean noSlow;
-	Setting.Boolean antiKnockBack;
+	public BooleanSetting guiMove;
+	public static BooleanSetting noPush;
+	public BooleanSetting noSlow;
+	BooleanSetting antiKnockBack;
 
 	public void setup() {
 		guiMove = registerBoolean("Gui Move", false);

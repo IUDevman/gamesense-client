@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.gui;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -12,13 +13,13 @@ import java.util.ArrayList;
 @Module.Declaration(name = "Colors", category = Category.GUI, drawn = false)
 public class ColorMain extends Module {
 
-	public static Setting.Mode colorModel;
-	public static Setting.Mode friendColor;
-	public static Setting.Mode enemyColor;
-	public static Setting.Mode chatEnableColor;
-	public static Setting.Mode chatDisableColor;
-	public static Setting.Boolean customFont;
-	public static Setting.Boolean textFont;
+	public static ModeSetting colorModel;
+	public static ModeSetting friendColor;
+	public static ModeSetting enemyColor;
+	public static ModeSetting chatEnableColor;
+	public static ModeSetting chatDisableColor;
+	public static BooleanSetting customFont;
+	public static BooleanSetting textFont;
 
 	public void setup() {
 		ArrayList<String> tab = new ArrayList<>();
@@ -56,7 +57,7 @@ public class ColorMain extends Module {
 		this.disable();
 	}
 	
-	private static TextFormatting settingToFormatting (Setting.Mode setting) {
+	private static TextFormatting settingToFormatting (ModeSetting setting) {
 		if (setting.getValue().equalsIgnoreCase("Black")) {
 			return TextFormatting.BLACK;
 		}
@@ -124,7 +125,7 @@ public class ColorMain extends Module {
 		return settingToFormatting(chatDisableColor);
 	}
 	
-	private static Color settingToColor (Setting.Mode setting) {
+	private static Color settingToColor (ModeSetting setting) {
 		if (setting.getValue().equalsIgnoreCase("Black")) {
 			return Color.BLACK;
 		}

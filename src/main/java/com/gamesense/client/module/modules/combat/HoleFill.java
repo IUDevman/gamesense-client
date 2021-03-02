@@ -1,6 +1,9 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
@@ -40,18 +43,18 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "HoleFill", category = Category.Combat)
 public class HoleFill extends Module {
 
-	Setting.Boolean chatMsgs;
-	Setting.Boolean autoSwitch;
-	Setting.Boolean rotate;
-	Setting.Boolean disableOnFinish;
-	Setting.Boolean offHandObby;
-	Setting.Boolean onlyPlayer;
-	Setting.Integer placeDelay;
-	Setting.Integer retryDelay;
-	Setting.Integer bpc;
-	Setting.Double playerRange;
-	Setting.Double range;
-	Setting.Mode mode;
+	BooleanSetting chatMsgs;
+	BooleanSetting autoSwitch;
+	BooleanSetting rotate;
+	BooleanSetting disableOnFinish;
+	BooleanSetting offHandObby;
+	BooleanSetting onlyPlayer;
+	IntegerSetting placeDelay;
+	IntegerSetting retryDelay;
+	IntegerSetting bpc;
+	DoubleSetting playerRange;
+	DoubleSetting range;
+	ModeSetting mode;
 
 	public void setup() {
 		ArrayList<String> modes = new ArrayList<>();

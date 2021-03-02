@@ -1,7 +1,9 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.BlockUtil;
@@ -22,12 +24,12 @@ import java.util.List;
 @Module.Declaration(name = "VoidESP", category = Category.Render)
 public class VoidESP extends Module {
 
-	Setting.Integer renderDistance;
-	Setting.Integer activeYValue;
-	Setting.Mode renderType;
-	Setting.Mode renderMode;
-	Setting.Integer width;
-	Setting.ColorSetting color;
+	IntegerSetting renderDistance;
+	IntegerSetting activeYValue;
+	ModeSetting renderType;
+	ModeSetting renderMode;
+	IntegerSetting width;
+	ColorSetting color;
 
 	public void setup() {
 		ArrayList<String> render = new ArrayList<>();

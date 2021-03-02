@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
@@ -30,9 +31,9 @@ import java.util.stream.Collectors;
 @HUDModule.Declaration(posX = 0, posZ = 150)
 public class CombatInfo extends HUDModule {
 
-    private Setting.Mode infoType;
-    private Setting.ColorSetting color1;
-    private Setting.ColorSetting color2;
+    private ModeSetting infoType;
+    private ColorSetting color1;
+    private ColorSetting color2;
     private InfoList list=new InfoList();
     private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};;
 	private static final String[] hoosiersModules={"AutoCrystalGS","KillAura","Surround","AutoTrap","SelfTrap"};

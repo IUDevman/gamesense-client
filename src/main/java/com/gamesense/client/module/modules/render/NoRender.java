@@ -1,7 +1,8 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.BossbarEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
@@ -15,16 +16,16 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 @Module.Declaration(name = "NoRender", category = Category.Render)
 public class NoRender extends Module {
 
-	public Setting.Boolean armor;
-	Setting.Boolean fire;
-	Setting.Boolean blind;
-	Setting.Boolean nausea;
-	public Setting.Boolean hurtCam;
-	public Setting.Boolean noOverlay;
-	Setting.Boolean noBossBar;
-	public Setting.Boolean noSkylight;
-	public static Setting.Boolean noCluster;
-	public static Setting.Integer maxNoClusterRender;
+	public BooleanSetting armor;
+	BooleanSetting fire;
+	BooleanSetting blind;
+	BooleanSetting nausea;
+	public BooleanSetting hurtCam;
+	public BooleanSetting noOverlay;
+	BooleanSetting noBossBar;
+	public BooleanSetting noSkylight;
+	public static BooleanSetting noCluster;
+	public static IntegerSetting maxNoClusterRender;
 
 	public static int currentClusterAmount = 0;
 

@@ -1,7 +1,9 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
@@ -33,17 +35,17 @@ import java.util.Iterator;
 @Module.Declaration(name = "Nametags", category = Category.Render)
 public class Nametags extends Module {
 
-	Setting.Integer range;
-	Setting.Boolean durability;
-	Setting.Boolean armor;
-	Setting.Boolean enchantnames;
-	Setting.Boolean itemName;
-	Setting.Boolean gamemode;
-	Setting.Boolean health;
-	Setting.Boolean ping;
-	Setting.Boolean entityId;
-	public static Setting.Boolean customColor;
-	public static Setting.ColorSetting borderColor;
+	IntegerSetting range;
+	BooleanSetting durability;
+	BooleanSetting armor;
+	BooleanSetting enchantnames;
+	BooleanSetting itemName;
+	BooleanSetting gamemode;
+	BooleanSetting health;
+	BooleanSetting ping;
+	BooleanSetting entityId;
+	public static BooleanSetting customColor;
+	public static ColorSetting borderColor;
 
 	public void setup() {
 		range = registerInteger("Range", 100, 10, 260);

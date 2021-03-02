@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
@@ -27,18 +27,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Module.Declaration(name = "HoleESP", category = Category.Render)
 public class HoleESP extends Module {
 
-    public static Setting.Integer rangeS;
-    Setting.Boolean hideOwn;
-    Setting.Boolean flatOwn;
-    Setting.Mode customHoles;
-    Setting.Mode mode;
-    Setting.Mode type;
-    Setting.Double slabHeight;
-    Setting.Integer width;
-    Setting.ColorSetting bedrockColor;
-    Setting.ColorSetting obsidianColor;
-    Setting.ColorSetting customColor;
-    Setting.Integer ufoAlpha;
+    public static IntegerSetting rangeS;
+    BooleanSetting hideOwn;
+    BooleanSetting flatOwn;
+    ModeSetting customHoles;
+    ModeSetting mode;
+    ModeSetting type;
+    DoubleSetting slabHeight;
+    IntegerSetting width;
+    ColorSetting bedrockColor;
+    ColorSetting obsidianColor;
+    ColorSetting customColor;
+    IntegerSetting ufoAlpha;
 
     public void setup() {
         ArrayList<String> holes = new ArrayList<>();

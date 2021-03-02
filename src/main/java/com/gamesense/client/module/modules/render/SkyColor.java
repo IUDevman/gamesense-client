@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.render;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -11,8 +12,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Module.Declaration(name = "SkyColor", category = Category.Render)
 public class SkyColor extends Module {
 
-    public static Setting.ColorSetting color;
-    public static Setting.Boolean fog;
+    public static ColorSetting color;
+    public static BooleanSetting fog;
 
     @Override
     public void setup() {

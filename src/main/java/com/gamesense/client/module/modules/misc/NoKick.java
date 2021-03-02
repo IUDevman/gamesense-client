@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
@@ -15,9 +15,9 @@ import net.minecraft.network.play.server.SPacketSoundEffect;
 @Module.Declaration(name = "NoKick", category = Category.Misc)
 public class NoKick extends Module {
 
-	public Setting.Boolean noPacketKick;
-	Setting.Boolean noSlimeCrash;
-	Setting.Boolean noOffhandCrash;
+	public BooleanSetting noPacketKick;
+	BooleanSetting noSlimeCrash;
+	BooleanSetting noOffhandCrash;
 
 	public void setup() {
 		noPacketKick = registerBoolean("Packet", true);

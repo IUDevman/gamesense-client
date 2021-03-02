@@ -1,7 +1,9 @@
 package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.event.events.PlayerMoveEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.MotionUtil;
@@ -24,11 +26,11 @@ import java.util.ArrayList;
 @Module.Declaration(name = "Speed", category = Category.Movement)
 public class Speed extends Module {
 
-	Setting.Boolean timerBool;
-	Setting.Double timerVal;
-	Setting.Double jumpHeight;
-	Setting.Double yPortSpeed;
-	Setting.Mode mode;
+	BooleanSetting timerBool;
+	DoubleSetting timerVal;
+	DoubleSetting jumpHeight;
+	DoubleSetting yPortSpeed;
+	ModeSetting mode;
 
 	public void setup() {
 		ArrayList<String> modes = new ArrayList<>();
@@ -93,7 +95,7 @@ public class Speed extends Module {
 			double speedY = jumpHeight.getValue();
 
 			if (mc.player.onGround && MotionUtil.isMoving(mc.player) && timer.hasReached(300)) {
-				EntityUtil.setTimer((float)timerVal.getValue());
+				EntityUtil.setTimer(timerVal.getValue().floatValue());
 				if (mc.player.isPotionActive(MobEffects.JUMP_BOOST)) {
 					speedY += (mc.player.getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1f;
 				}

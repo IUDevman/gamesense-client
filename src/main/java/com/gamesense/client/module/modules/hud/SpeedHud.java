@@ -1,6 +1,8 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -25,9 +27,9 @@ public class SpeedHud extends HUDModule {
     private static final String KMH = "km/h";
     private static final String MPH = "mph";
 
-    private Setting.Mode speedUnit;
-    private Setting.Boolean averageSpeed;
-    private Setting.Integer averageSpeedTicks;
+    private ModeSetting speedUnit;
+    private BooleanSetting averageSpeed;
+    private IntegerSetting averageSpeedTicks;
 
     private final ArrayDeque<Double> speedDeque = new ArrayDeque<>();
     private String speedString = "";

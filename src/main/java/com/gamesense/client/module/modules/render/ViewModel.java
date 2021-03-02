@@ -1,7 +1,9 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.TransformSideFirstPersonEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
@@ -22,15 +24,15 @@ import java.util.ArrayList;
 @Module.Declaration(name = "ViewModel", category = Category.Render)
 public class ViewModel extends Module {
 
-	public Setting.Boolean cancelEating;
-	Setting.Mode type;
-	Setting.Double xRight;
-	Setting.Double yRight;
-	Setting.Double zRight;
-	Setting.Double xLeft;
-	Setting.Double yLeft;
-	Setting.Double zLeft;
-	Setting.Double fov;
+	public BooleanSetting cancelEating;
+	ModeSetting type;
+	DoubleSetting xRight;
+	DoubleSetting yRight;
+	DoubleSetting zRight;
+	DoubleSetting xLeft;
+	DoubleSetting yLeft;
+	DoubleSetting zLeft;
+	DoubleSetting fov;
 
 	public void setup() {
 		ArrayList<String> types = new ArrayList<>();
@@ -63,7 +65,7 @@ public class ViewModel extends Module {
 	@SubscribeEvent
 	public void onFov(EntityViewRenderEvent.FOVModifier event) {
 		if (type.getValue().equalsIgnoreCase("FOV") || type.getValue().equalsIgnoreCase("Both")) {
-			event.setFOV((float) fov.getValue());
+			event.setFOV(fov.getValue().floatValue());
 		}
 	}
 

@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -19,13 +19,13 @@ import java.util.List;
 @Module.Declaration(name = "AutoArmor", category = Category.Combat)
 public class AutoArmor extends Module {
 
-	Setting.Boolean noThorns;
-	Setting.Boolean lastResortThorns;
+	BooleanSetting noThorns;
+	BooleanSetting lastResortThorns;
 
 	@Override
 	public void setup() {
 		noThorns = registerBoolean("No Thorns", false);
-		lastResortThorns = registerBoolean("No other Thorns", false);
+		lastResortThorns = registerBoolean("No Other Thorns", false);
 	}
 
 	@Override

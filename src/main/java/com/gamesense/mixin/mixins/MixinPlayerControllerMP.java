@@ -41,7 +41,7 @@ public abstract class MixinPlayerControllerMP {
 	@Inject(method = "getBlockReachDistance", at = @At("RETURN"), cancellable = true)
 	private void getReachDistanceHook(final CallbackInfoReturnable<Float> distance) {
 		if (ModuleManager.isModuleEnabled(Reach.class)) {
-			distance.setReturnValue((float) Reach.distance.getValue());
+			distance.setReturnValue(Reach.distance.getValue().floatValue());
 		}
 	}
 

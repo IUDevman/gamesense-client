@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.HUDModule;
@@ -20,8 +20,8 @@ import java.awt.*;
 @HUDModule.Declaration(posX = 0, posZ = 10)
 public class InventoryViewer extends HUDModule {
 
-	private Setting.ColorSetting fillColor;
-    private Setting.ColorSetting outlineColor;
+	private ColorSetting fillColor;
+    private ColorSetting outlineColor;
 
     public void setup() {
         fillColor = registerColor("Fill", new GSColor(0, 0, 0, 100));

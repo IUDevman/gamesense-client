@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -18,9 +19,9 @@ import java.awt.*;
 @Module.Declaration(name = "CoordinateHud", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 0)
 public class CoordinateHud extends HUDModule {
-    private Setting.Boolean showNetherOverworld;
-    private Setting.Boolean thousandsSeparator;
-    private Setting.Integer decimalPlaces;
+    private BooleanSetting showNetherOverworld;
+    private BooleanSetting thousandsSeparator;
+    private IntegerSetting decimalPlaces;
 
     private final String[] coordinateString = {"", ""};
 

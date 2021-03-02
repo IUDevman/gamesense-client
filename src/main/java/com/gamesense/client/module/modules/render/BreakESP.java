@@ -1,7 +1,10 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
@@ -21,11 +24,11 @@ import java.util.ArrayList;
 @Module.Declaration(name = "BreakESP", category = Category.Render)
 public class BreakESP extends Module {
 
-    Setting.Mode renderType;
-    Setting.ColorSetting color;
-    Setting.Integer range;
-    Setting.Integer lineWidth;
-    public static Setting.Boolean cancelAnimation;
+    ModeSetting renderType;
+    ColorSetting color;
+    IntegerSetting range;
+    IntegerSetting lineWidth;
+    public static BooleanSetting cancelAnimation;
 
     public void setup() {
         ArrayList<String> renderTypes = new ArrayList<>();

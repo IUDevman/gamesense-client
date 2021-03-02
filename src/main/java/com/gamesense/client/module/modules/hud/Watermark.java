@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.HUDModule;
@@ -16,7 +16,7 @@ import java.awt.*;
 @HUDModule.Declaration(posX = 0, posZ = 0)
 public class Watermark extends HUDModule {
 
-	private Setting.ColorSetting color;
+	private ColorSetting color;
 
 	public void setup() {
 		color=registerColor("Color", new GSColor(255, 0, 0, 255));

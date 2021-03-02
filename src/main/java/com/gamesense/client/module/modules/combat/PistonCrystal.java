@@ -1,6 +1,9 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.PlayerUtil;
@@ -45,15 +48,15 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 @Module.Declaration(name = "PistonCrystal", category = Category.Combat)
 public class PistonCrystal extends Module {
 
-    Setting.Mode    breakType,
+    ModeSetting breakType,
                     placeMode,
                     target;
 
-    Setting.Double  enemyRange,
+    DoubleSetting enemyRange,
                     torchRange,
                     crystalDeltaBreak;
 
-    Setting.Integer blocksPerTick,
+    IntegerSetting blocksPerTick,
                     startDelay,
                     supBlocksDelay,
                     pistonDelay,
@@ -62,7 +65,7 @@ public class PistonCrystal extends Module {
                     midHitDelay,
                     stuckDetector,
                     maxYincr;
-    Setting.Boolean rotate,
+   BooleanSetting rotate,
                     blockPlayer,
                     confirmBreak,
                     confirmPlace,

@@ -1,7 +1,9 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
@@ -22,10 +24,10 @@ import java.util.ArrayList;
 @Module.Declaration(name = "BlockHighlight", category = Category.Render)
 public class BlockHighlight extends Module {
 
-    Setting.Integer lineWidth;
-    Setting.Mode renderType;
-    Setting.Mode renderLook;
-    Setting.ColorSetting renderColor;
+    IntegerSetting lineWidth;
+    ModeSetting renderType;
+    ModeSetting renderLook;
+    ColorSetting renderColor;
 
     public void setup() {
         ArrayList<String> renderLooks = new ArrayList<>();

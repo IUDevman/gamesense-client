@@ -1,7 +1,8 @@
 package com.gamesense.client.module;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.SettingsManager;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.modules.Category;
@@ -133,37 +134,37 @@ public abstract class Module implements Toggleable, KeybindSetting {
 		this.drawn = drawn;
 	}
 
-	protected Setting.Integer registerInteger(final String name, final int value, final int min, final int max) {
-		final Setting.Integer setting = new Setting.Integer(name, this, getCategory(), value, min, max);
-		GameSense.getInstance().settingsManager.addSetting(setting);
-		return setting;
+	protected IntegerSetting registerInteger(String name, int value, int min, int max) {
+		IntegerSetting integerSetting = new IntegerSetting(name, this, value, min, max);
+		SettingsManager.addSetting(integerSetting);
+		return integerSetting;
 	}
 
-	protected Setting.Double registerDouble(final String name, final double value, final double min, final double max) {
-		final Setting.Double setting = new Setting.Double(name, this, getCategory(), value, min, max);
-		GameSense.getInstance().settingsManager.addSetting(setting);
-		return setting;
+	protected DoubleSetting registerDouble(String name, double value, double min, double max) {
+		DoubleSetting doubleSetting = new DoubleSetting(name, this, value, min, max);
+		SettingsManager.addSetting(doubleSetting);
+		return doubleSetting;
 	}
 
-	protected Setting.Boolean registerBoolean(final String name, final boolean value) {
-		final Setting.Boolean setting = new Setting.Boolean(name, this, getCategory(), value);
-		GameSense.getInstance().settingsManager.addSetting(setting);
-		return setting;
+	protected BooleanSetting registerBoolean(String name, boolean value) {
+		BooleanSetting booleanSetting = new BooleanSetting(name, this, value);
+		SettingsManager.addSetting(booleanSetting);
+		return booleanSetting;
 	}
 
-	protected Setting.Mode registerMode(final String name, final List<String> modes, final String value) {
-		final Setting.Mode setting = new Setting.Mode(name, this, getCategory(), modes, value);
-		GameSense.getInstance().settingsManager.addSetting(setting);
-		return setting;
+	protected ModeSetting registerMode(String name, List<String> modes, String value) {
+		ModeSetting modeSetting = new ModeSetting(name, this, value, modes);
+		SettingsManager.addSetting(modeSetting);
+		return modeSetting;
 	}
 	
-	protected Setting.ColorSetting registerColor (final String name, GSColor color) {
-		final Setting.ColorSetting setting = new Setting.ColorSetting(name, this, getCategory(), false, color);
-		GameSense.getInstance().settingsManager.addSetting(setting);
-		return setting;
+	protected ColorSetting registerColor(String name, GSColor color) {
+		ColorSetting colorSetting = new ColorSetting(name, this, false, color);
+		SettingsManager.addSetting(colorSetting);
+		return colorSetting;
 	}
 	
-	protected Setting.ColorSetting registerColor (final String name) {
+	protected ColorSetting registerColor(String name) {
 		return registerColor(name, new GSColor(90,145,240));
 	}
 

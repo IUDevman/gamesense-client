@@ -1,7 +1,10 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
@@ -29,15 +32,15 @@ import java.util.ArrayList;
 @Module.Declaration(name = "ESP", category = Category.Render)
 public class ESP extends Module {
 
-    Setting.Mode playerESPMode;
-    Setting.Mode mobESPMode;
-    Setting.Boolean containerRender;
-    Setting.Boolean itemRender;
-    Setting.Boolean entityRender;
-    Setting.Boolean glowCrystals;
-    Setting.Integer width;
-    Setting.Integer range;
-    Setting.ColorSetting mainColor;
+    ModeSetting playerESPMode;
+    ModeSetting mobESPMode;
+    BooleanSetting containerRender;
+    BooleanSetting itemRender;
+    BooleanSetting entityRender;
+    BooleanSetting glowCrystals;
+    IntegerSetting width;
+    IntegerSetting range;
+    ColorSetting mainColor;
 
     public void setup() {
         ArrayList<String> playerEsp = new ArrayList<>();

@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.render;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
@@ -18,8 +18,8 @@ import java.awt.*;
 @Module.Declaration(name = "ShulkerViewer", category = Category.Render)
 public class ShulkerViewer extends Module {
 
-	public static Setting.ColorSetting outlineColor;
-	public static Setting.ColorSetting fillColor;
+	public static ColorSetting outlineColor;
+	public static ColorSetting fillColor;
 
 	public void setup() {
 		outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));

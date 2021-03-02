@@ -3,7 +3,8 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerJumpEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -40,15 +41,15 @@ public class Announcer extends Module {
 	int blocksBroken = 0;
 	int eaten = 0;
 
-	public Setting.Boolean clientSide;
-	Setting.Boolean walk;
-	Setting.Boolean place;
-	Setting.Boolean jump;
-	Setting.Boolean breaking;
-	Setting.Boolean attack;
-	Setting.Boolean eat;
-	public Setting.Boolean clickGui;
-	Setting.Integer delay;
+	public BooleanSetting clientSide;
+	BooleanSetting walk;
+	BooleanSetting place;
+	BooleanSetting jump;
+	BooleanSetting breaking;
+	BooleanSetting attack;
+	BooleanSetting eat;
+	public BooleanSetting clickGui;
+	IntegerSetting delay;
 
 	//TODO: Multilingual announcer :D
 	public static String walkMessage = "I just walked{blocks} meters thanks to GameSense!";

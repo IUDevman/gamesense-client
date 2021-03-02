@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -17,9 +17,9 @@ import java.util.List;
 @HUDModule.Declaration(posX = 0, posZ = 50)
 public class Notifications extends HUDModule {
 
-	private static Setting.Boolean sortUp;
-	private static Setting.Boolean sortRight;
-	public static Setting.Boolean disableChat;
+	private static BooleanSetting sortUp;
+	private static BooleanSetting sortRight;
+	public static BooleanSetting disableChat;
 	private static NotificationsList list=new NotificationsList();
 
 	public void setup() {

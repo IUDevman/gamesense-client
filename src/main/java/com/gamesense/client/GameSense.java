@@ -58,7 +58,6 @@ public class GameSense {
 	public VersionChecker versionChecker;
 	public EventProcessor eventProcessor;
 	public CFontRenderer cFontRenderer;
-	public SettingsManager settingsManager;
 	public Friends friends;
 	public Enemies enemies;
 	public GameSenseGUI gameSenseGUI;
@@ -77,7 +76,7 @@ public class GameSense {
 		cFontRenderer = new CFontRenderer(new Font("Verdana", Font.PLAIN, 18), true,true);
 		LOGGER.info("Custom font initialized!");
 
-		settingsManager = new SettingsManager();
+		SettingsManager.init();
 		LOGGER.info("Settings initialized!");
 
 		friends = new Friends();

@@ -2,7 +2,8 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.TotemPopEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
@@ -39,12 +40,12 @@ public class PvPInfo extends Module {
 	List<Entity> strengthedPlayers = new ArrayList<>();
 	private HashMap<String, Integer> popCounterHashMap = new HashMap<>();
 
-	Setting.Boolean visualRange;
-	Setting.Boolean pearlAlert;
-	Setting.Boolean strengthDetect;
-	Setting.Boolean popCounter;
-	Setting.Boolean burrowAlert;
-	Setting.Mode ChatColor;
+	BooleanSetting visualRange;
+	BooleanSetting pearlAlert;
+	BooleanSetting strengthDetect;
+	BooleanSetting popCounter;
+	BooleanSetting burrowAlert;
+	ModeSetting ChatColor;
 
 	public void setup() {
 		ArrayList<String> colors = new ArrayList<>();

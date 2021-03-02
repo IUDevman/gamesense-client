@@ -1,6 +1,9 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.misc.Timer;
@@ -39,18 +42,18 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "BedAura", category = Category.Combat)
 public class BedAura extends Module {
 
-    Setting.Mode attackMode;
-    Setting.Double attackRange;
-    Setting.Integer breakDelay;
-    Setting.Integer placeDelay;
-    Setting.Double targetRange;
-    Setting.Boolean antiSuicide;
-    Setting.Integer antiSuicideHealth;
-    Setting.Integer minDamage;
-    Setting.Boolean rotate;
-    Setting.Boolean chatMsgs;
-    Setting.Boolean disableNone;
-    Setting.Boolean autoSwitch;
+    ModeSetting attackMode;
+    DoubleSetting attackRange;
+    IntegerSetting breakDelay;
+    IntegerSetting placeDelay;
+    DoubleSetting targetRange;
+    BooleanSetting antiSuicide;
+    IntegerSetting antiSuicideHealth;
+    IntegerSetting minDamage;
+    BooleanSetting rotate;
+    BooleanSetting chatMsgs;
+    BooleanSetting disableNone;
+    BooleanSetting autoSwitch;
 
     public void setup() {
         ArrayList<String> attackModes = new ArrayList<>();
@@ -281,7 +284,7 @@ public class BedAura extends Module {
     private NonNullList<BlockPos> findTargetPlacePos(EntityPlayer entityPlayer) {
         NonNullList<BlockPos> targetPlacePos = NonNullList.create();
 
-        targetPlacePos.addAll(EntityUtil.getSphere(mc.player.getPosition(), (float) attackRange.getValue(), (int) attackRange.getValue(), false, true, 0)
+        targetPlacePos.addAll(EntityUtil.getSphere(mc.player.getPosition(), attackRange.getValue().floatValue(), attackRange.getValue().intValue(), false, true, 0)
                 .stream()
                 .filter(this::canPlaceBed)
                 .sorted(Comparator.comparing(blockPos -> 1 - (DamageUtil.calculateDamage(blockPos.up().getX(), blockPos.up().getY(), blockPos.up().getZ(), entityPlayer))))

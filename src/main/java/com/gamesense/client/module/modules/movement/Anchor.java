@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.movement;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -19,8 +20,8 @@ import java.util.HashMap;
 @Module.Declaration(name = "Anchor", category = Category.Movement)
 public class Anchor extends Module {
 
-    Setting.Boolean guarantee;
-    Setting.Integer activateHeight;
+    BooleanSetting guarantee;
+    IntegerSetting activateHeight;
 
     public void setup() {
         guarantee = registerBoolean("Guarantee Hole", true);

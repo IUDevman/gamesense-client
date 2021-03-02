@@ -1,6 +1,9 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Module;
@@ -33,17 +36,17 @@ import java.util.Map;
 @Module.Declaration(name = "Offhand", category = Category.Combat)
 public class OffHand extends Module {
 
-    public static Setting.Mode  defaultItem,
+    public static ModeSetting defaultItem,
                                 nonDefaultItem,
                                 noPlayerItem;
-    Setting.Mode    potionChoose;
-    Setting.Integer healthSwitch,
+    ModeSetting    potionChoose;
+    IntegerSetting healthSwitch,
                     tickDelay,
                     fallDistance,
                     maxSwitchPerSecond;
-    Setting.Double  biasDamage,
+    DoubleSetting biasDamage,
                     playerDistance;
-    Setting.Boolean pickObby,
+    BooleanSetting pickObby,
                     leftGap,
                     shiftPot,
                     swordCheck,
@@ -354,7 +357,7 @@ public class OffHand extends Module {
     }
 
     private boolean nearPlayer() {
-        if ((int) playerDistance.getValue() == 0)
+        if (playerDistance.getValue().intValue() == 0)
             return true;
         for(EntityPlayer pl : mc.world.playerEntities) {
             if (pl != mc.player && mc.player.getDistance(pl) < playerDistance.getValue())

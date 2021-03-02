@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.DamageBlockEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
@@ -15,7 +15,7 @@ import org.lwjgl.input.Mouse;
 @Module.Declaration(name = "AutoTool", category = Category.Misc)
 public class AutoTool extends Module {
 
-	Setting.Boolean switchBack;
+	BooleanSetting switchBack;
 
 	boolean shouldMoveBack = false;
 	int lastSlot = 0;

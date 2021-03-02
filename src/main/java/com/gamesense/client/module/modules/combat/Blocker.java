@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
@@ -28,12 +29,12 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 @Module.Declaration(name = "Blocker", category = Category.Combat)
 public class Blocker extends Module {
 
-    Setting.Boolean chatMsg;
-    Setting.Boolean rotate;
-    Setting.Boolean anvilBlocker;
-    Setting.Boolean pistonBlocker;
-    Setting.Boolean offHandObby;
-    Setting.Integer tickDelay;
+    BooleanSetting chatMsg;
+    BooleanSetting rotate;
+    BooleanSetting anvilBlocker;
+    BooleanSetting pistonBlocker;
+    BooleanSetting offHandObby;
+    IntegerSetting tickDelay;
 
     public void setup() {
         rotate = registerBoolean("Rotate", true);

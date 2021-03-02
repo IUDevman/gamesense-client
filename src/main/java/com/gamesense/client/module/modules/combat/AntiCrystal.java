@@ -1,6 +1,8 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
@@ -27,15 +29,15 @@ import net.minecraft.util.math.Vec3d;
 @Module.Declaration(name = "AntiCrystal", category = Category.Combat)
 public class AntiCrystal extends Module {
 
-    Setting.Double  rangePlace,
+    DoubleSetting rangePlace,
                     damageMin,
                     enemyRange,
                     biasDamage;
 
-    Setting.Integer     tickDelay,
+    IntegerSetting tickDelay,
                         blocksPerTick;
 
-    Setting.Boolean rotate,
+    BooleanSetting rotate,
                     offHandMode,
                     onlyIfEnemy,
                     nonAbusive,

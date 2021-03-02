@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import net.minecraft.init.Items;
@@ -8,10 +8,10 @@ import net.minecraft.init.Items;
 @Module.Declaration(name = "FastPlace", category = Category.Misc)
 public class FastPlace extends Module {
 
-	Setting.Boolean exp;
-	Setting.Boolean crystals;
-	Setting.Boolean offhandCrystal;
-	Setting.Boolean everything;
+	BooleanSetting exp;
+	BooleanSetting crystals;
+	BooleanSetting offhandCrystal;
+	BooleanSetting everything;
 
 	public void setup() {
 		exp = registerBoolean("Exp", false);

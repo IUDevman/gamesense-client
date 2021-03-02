@@ -1,6 +1,8 @@
 package com.gamesense.api.config;
 
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.SettingsManager;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.enemy.Enemy;
 import com.gamesense.api.util.player.friend.Friend;
@@ -89,28 +91,21 @@ public class SaveConfig {
         JsonObject settingObject = new JsonObject();
         moduleObject.add("Module", new JsonPrimitive(module.getName()));
 
-        for (Setting setting : GameSense.getInstance().settingsManager.getSettingsForMod(module)) {
-            switch (setting.getType()) {
-                case BOOLEAN: {
-                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Boolean) setting).getValue()));
-                    break;
-                }
-                case INTEGER: {
-                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Integer) setting).getValue()));
-                    break;
-                }
-                case DOUBLE: {
-                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Double) setting).getValue()));
-                    break;
-                }
-                case COLOR: {
-                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.ColorSetting) setting).toInteger()));
-                    break;
-                }
-                case MODE: {
-                    settingObject.add(setting.getConfigName(), new JsonPrimitive(((Setting.Mode) setting).getValue()));
-                    break;
-                }
+        for (Setting setting : SettingsManager.getSettingsForModule(module)) {
+            if (setting instanceof BooleanSetting) {
+               settingObject.add(setting.getConfigName(), new JsonPrimitive(((BooleanSetting) setting).getValue()));
+            }
+            else if (setting instanceof IntegerSetting) {
+                settingObject.add(setting.getConfigName(), new JsonPrimitive(((IntegerSetting) setting).getValue()));
+            }
+            else if (setting instanceof DoubleSetting) {
+                settingObject.add(setting.getConfigName(), new JsonPrimitive(((DoubleSetting) setting).getValue()));
+            }
+            else if (setting instanceof ColorSetting) {
+                settingObject.add(setting.getConfigName(), new JsonPrimitive(((ColorSetting) setting).toInteger()));
+            }
+            else if (setting instanceof ModeSetting) {
+                settingObject.add(setting.getConfigName(), new JsonPrimitive(((ModeSetting) setting).getValue()));
             }
         }
         moduleObject.add("Settings", settingObject);

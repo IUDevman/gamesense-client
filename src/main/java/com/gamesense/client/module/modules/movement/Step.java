@@ -1,6 +1,8 @@
 package com.gamesense.client.module.modules.movement;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.MotionUtil;
 import com.gamesense.client.module.Module;
@@ -16,10 +18,10 @@ import java.util.ArrayList;
 public class Step extends Module {
 
 	private int ticks = 0;
-	Setting.Double height;
-	Setting.Boolean timer;
-	Setting.Boolean reverse;
-	Setting.Mode mode;
+	DoubleSetting height;
+	BooleanSetting timer;
+	BooleanSetting reverse;
+	ModeSetting mode;
 
 	public void setup() {
 		ArrayList<String> modes = new ArrayList<>();

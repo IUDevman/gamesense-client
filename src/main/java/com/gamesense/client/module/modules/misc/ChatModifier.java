@@ -1,7 +1,8 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -19,13 +20,13 @@ import java.util.Date;
 @Module.Declaration(name = "ChatModifier", category = Category.Misc)
 public class ChatModifier extends Module {
 
-	public Setting.Boolean clearBkg;
-	Setting.Boolean chatTimeStamps;
-	Setting.Mode format;
-	Setting.Mode color;
-	Setting.Mode decoration;
-	Setting.Boolean space;
-	Setting.Boolean greenText;
+	public BooleanSetting clearBkg;
+	BooleanSetting chatTimeStamps;
+	ModeSetting format;
+	ModeSetting color;
+	ModeSetting decoration;
+	BooleanSetting space;
+	BooleanSetting greenText;
 
 	public void setup() {
 		ArrayList<String> formats = new ArrayList<>();

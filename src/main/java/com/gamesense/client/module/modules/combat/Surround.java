@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
@@ -27,7 +28,7 @@ import net.minecraft.util.math.Vec3d;
 @Module.Declaration(name = "Surround", category = Category.Combat)
 public class Surround extends Module {
 
-    Setting.Boolean chatMsg,
+    BooleanSetting chatMsg,
                     triggerSurround,
                     shiftOnly,
                     rotate,
@@ -36,7 +37,7 @@ public class Surround extends Module {
                     offHandObby,
                     cityBlocker,
                     centerPlayer;
-    Setting.Integer tickDelay,
+    IntegerSetting tickDelay,
                     timeOutTicks,
                     blocksPerTick;
 

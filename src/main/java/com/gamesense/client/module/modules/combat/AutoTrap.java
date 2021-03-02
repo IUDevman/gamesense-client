@@ -1,6 +1,8 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
@@ -30,13 +32,13 @@ import java.util.List;
 @Module.Declaration(name = "AutoTrap", category = Category.Combat)
 public class AutoTrap extends Module {
 
-    Setting.Mode    trapType,
+    ModeSetting trapType,
                     target;
-    Setting.Boolean chatMsg,
+    BooleanSetting chatMsg,
                     rotate,
                     offHandObby,
                     disableNone;
-    Setting.Integer enemyRange,
+    IntegerSetting enemyRange,
                     tickDelay,
                     blocksPerTick;
 

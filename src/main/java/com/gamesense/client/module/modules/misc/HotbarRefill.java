@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Module;
@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "HotbarRefill", category = Category.Misc)
 public class HotbarRefill extends Module {
 
-    Setting.Integer threshold;
-    Setting.Integer tickDelay;
+    IntegerSetting threshold;
+    IntegerSetting tickDelay;
 
     public void setup() {
         threshold = registerInteger("Threshold", 32, 1, 63);

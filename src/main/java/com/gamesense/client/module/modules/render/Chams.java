@@ -1,7 +1,10 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEntityEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.ChamsUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
@@ -25,17 +28,17 @@ import java.util.ArrayList;
 @Module.Declaration(name = "Chams", category = Category.Render)
 public class Chams extends Module {
 
-    Setting.Mode chamsType;
-    Setting.ColorSetting playerColor;
-    Setting.ColorSetting mobColor;
-    Setting.ColorSetting crystalColor;
-    Setting.Integer colorOpacity;
-    Setting.Integer wireOpacity;
-    Setting.Integer lineWidth;
-    Setting.Integer range;
-    Setting.Boolean player;
-    Setting.Boolean mob;
-    Setting.Boolean crystal;
+    ModeSetting chamsType;
+    ColorSetting playerColor;
+    ColorSetting mobColor;
+    ColorSetting crystalColor;
+    IntegerSetting colorOpacity;
+    IntegerSetting wireOpacity;
+    IntegerSetting lineWidth;
+    IntegerSetting range;
+    BooleanSetting player;
+    BooleanSetting mob;
+    BooleanSetting crystal;
 
     public void setup() {
         ArrayList<String> chamsTypes = new ArrayList<>();

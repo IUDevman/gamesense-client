@@ -4,7 +4,7 @@ import com.gamesense.api.event.Phase;
 import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.math.RotationUtils;
@@ -60,36 +60,36 @@ import java.util.stream.IntStream;
 @Module.Declaration(name = "AutoCrystalGS", category = Category.Combat, priority = 100)
 public class AutoCrystalGS extends Module {
 
-    Setting.Boolean breakCrystal;
-    Setting.Boolean antiWeakness;
-    Setting.Boolean placeCrystal;
-    Setting.Boolean autoSwitch;
-    Setting.Boolean raytrace;
-    Setting.Boolean rotate;
-    Setting.Boolean chat;
-    Setting.Boolean showDamage;
-    Setting.Boolean antiSuicide;
-    Setting.Boolean multiPlace;
-    public static Setting.Boolean endCrystalMode;
-    Setting.Boolean cancelCrystal;
-    Setting.Boolean noGapSwitch;
-    Setting.Boolean refresh;
-    Setting.Integer facePlaceValue;
-    Setting.Integer attackSpeed;
-    Setting.Integer antiSuicideValue;
-    Setting.Integer attackValue;
-    Setting.Double maxSelfDmg;
-    Setting.Double wallsRange;
-    Setting.Double minDmg;
-    Setting.Double minBreakDmg;
-    Setting.Double enemyRange;
-    public static Setting.Double placeRange;
-    public static Setting.Double breakRange;
-    Setting.Mode handBreak;
-    Setting.Mode breakMode;
-    Setting.Mode hudDisplay;
-    Setting.Mode breakType;
-    Setting.ColorSetting color;
+    BooleanSetting breakCrystal;
+    BooleanSetting antiWeakness;
+    BooleanSetting placeCrystal;
+    BooleanSetting autoSwitch;
+    BooleanSetting raytrace;
+    BooleanSetting rotate;
+    BooleanSetting chat;
+    BooleanSetting showDamage;
+    BooleanSetting antiSuicide;
+    BooleanSetting multiPlace;
+    public static BooleanSetting endCrystalMode;
+    BooleanSetting cancelCrystal;
+    BooleanSetting noGapSwitch;
+    BooleanSetting refresh;
+    IntegerSetting facePlaceValue;
+    IntegerSetting attackSpeed;
+    IntegerSetting antiSuicideValue;
+    IntegerSetting attackValue;
+    DoubleSetting maxSelfDmg;
+    DoubleSetting wallsRange;
+    DoubleSetting minDmg;
+    DoubleSetting minBreakDmg;
+    DoubleSetting enemyRange;
+    public static DoubleSetting placeRange;
+    public static DoubleSetting breakRange;
+    ModeSetting handBreak;
+    ModeSetting breakMode;
+    ModeSetting hudDisplay;
+    ModeSetting breakType;
+    ColorSetting color;
 
     public void setup() {
         ArrayList<String> hands = new ArrayList<>();
@@ -290,7 +290,7 @@ public class AutoCrystalGS extends Module {
             return;
         }
 
-        List<BlockPos> blocks = CrystalUtil.findCrystalBlocks((float) placeRange.getValue(), endCrystalMode.getValue());
+        List<BlockPos> blocks = CrystalUtil.findCrystalBlocks(placeRange.getValue().floatValue(), endCrystalMode.getValue());
 
         List<Entity> entities = mc.world.playerEntities.stream().filter(entityPlayer -> !EntityUtil.basicChecksEntity(entityPlayer)).sorted(Comparator.comparing(e -> mc.player.getDistance(e))).collect(Collectors.toList());
 

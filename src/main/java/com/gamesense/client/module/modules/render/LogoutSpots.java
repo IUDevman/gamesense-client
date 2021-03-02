@@ -3,7 +3,10 @@ package com.gamesense.client.module.modules.render;
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.render.GSColor;
@@ -32,12 +35,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Module.Declaration(name = "LogoutSpots", category = Category.Render)
 public class LogoutSpots extends Module {
 
-    Setting.Boolean chatMsg;
-    Setting.Boolean nameTag;
-    Setting.Integer lineWidth;
-    Setting.Integer range;
-    Setting.Mode renderMode;
-    Setting.ColorSetting color;
+    BooleanSetting chatMsg;
+    BooleanSetting nameTag;
+    IntegerSetting lineWidth;
+    IntegerSetting range;
+    ModeSetting renderMode;
+    ColorSetting color;
 
     public void setup() {
         ArrayList<String> renderModes = new ArrayList<>();

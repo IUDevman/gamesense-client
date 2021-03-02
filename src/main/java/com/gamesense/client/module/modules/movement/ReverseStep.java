@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.movement;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.Category;
@@ -8,7 +8,7 @@ import com.gamesense.client.module.modules.Category;
 @Module.Declaration(name = "ReverseStep", category = Category.Movement)
 public class ReverseStep extends Module {
 
-	Setting.Double height;
+	DoubleSetting height;
 
 	public void setup() {
 		height = registerDouble("Height", 2.5, 0.5, 2.5);

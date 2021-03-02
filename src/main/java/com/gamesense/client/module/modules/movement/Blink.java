@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Module.Declaration(name = "Blink", category = Category.Movement)
 public class Blink extends Module {
 
-    private Setting.Boolean ghostPlayer;
+    private BooleanSetting ghostPlayer;
 
     public void setup() {
         ghostPlayer = registerBoolean("Ghost Player", true);

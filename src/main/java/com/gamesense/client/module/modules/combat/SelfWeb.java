@@ -1,6 +1,8 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
@@ -23,14 +25,14 @@ import java.util.ArrayList;
 @Module.Declaration(name = "SelfWeb", category = Category.Combat)
 public class SelfWeb extends Module {
 
-    Setting.Boolean chatMsg;
-    Setting.Boolean shiftOnly;
-    Setting.Boolean singleWeb;
-    Setting.Boolean rotate;
-    Setting.Boolean disableNone;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
-    Setting.Mode placeType;
+    BooleanSetting chatMsg;
+    BooleanSetting shiftOnly;
+    BooleanSetting singleWeb;
+    BooleanSetting rotate;
+    BooleanSetting disableNone;
+    IntegerSetting tickDelay;
+    IntegerSetting blocksPerTick;
+    ModeSetting placeType;
 
     public void setup() {
         ArrayList<String> placeModes = new ArrayList<>();

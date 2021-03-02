@@ -1,6 +1,9 @@
 package com.gamesense.client.module.modules.gui;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
@@ -15,17 +18,17 @@ import java.util.ArrayList;
 @Module.Declaration(name = "ClickGUI", category = Category.GUI, bind = Keyboard.KEY_O, drawn = false)
 public class ClickGuiModule extends Module {
 
-	public static Setting.Integer scrollSpeed;
-	public static Setting.Integer opacity;
-	public static Setting.ColorSetting enabledColor;
-	public static Setting.ColorSetting outlineColor;
-	public static Setting.ColorSetting backgroundColor;
-	public static Setting.ColorSetting settingBackgroundColor;
-	public static Setting.ColorSetting fontColor;
-	public static Setting.Integer animationSpeed;
-	public static Setting.Mode scrolling;
-	public static Setting.Boolean showHUD;
-	public static Setting.Mode theme;
+	public static IntegerSetting scrollSpeed;
+	public static IntegerSetting opacity;
+	public static ColorSetting enabledColor;
+	public static ColorSetting outlineColor;
+	public static ColorSetting backgroundColor;
+	public static ColorSetting settingBackgroundColor;
+	public static ColorSetting fontColor;
+	public static IntegerSetting animationSpeed;
+	public static ModeSetting scrolling;
+	public static BooleanSetting showHUD;
+	public static ModeSetting theme;
 
 	public void setup() {
 		ArrayList<String> models=new ArrayList<>();

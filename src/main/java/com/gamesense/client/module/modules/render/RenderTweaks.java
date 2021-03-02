@@ -1,6 +1,8 @@
 package com.gamesense.client.module.modules.render;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -9,12 +11,12 @@ import net.minecraft.item.ItemSword;
 @Module.Declaration(name = "RenderTweaks", category = Category.Render)
 public class RenderTweaks extends Module {
 
-	public Setting.Boolean viewClip;
-	Setting.Boolean nekoAnimation;
-	Setting.Boolean lowOffhand;
-	Setting.Boolean fovChanger;
-	Setting.Double lowOffhandSlider;
-	Setting.Integer fovChangerSlider;
+	public BooleanSetting viewClip;
+	BooleanSetting nekoAnimation;
+	BooleanSetting lowOffhand;
+	BooleanSetting fovChanger;
+	DoubleSetting lowOffhandSlider;
+	IntegerSetting fovChangerSlider;
 
 	ItemRenderer itemRenderer = mc.entityRenderer.itemRenderer;
 
@@ -38,7 +40,7 @@ public class RenderTweaks extends Module {
 			}
 		}
 		if (lowOffhand.getValue()) {
-			itemRenderer.equippedProgressOffHand = (float)lowOffhandSlider.getValue();
+			itemRenderer.equippedProgressOffHand = lowOffhandSlider.getValue().floatValue();
 		}
 		if (fovChanger.getValue()) {
 			mc.gameSettings.fovSetting = (float)fovChangerSlider.getValue();

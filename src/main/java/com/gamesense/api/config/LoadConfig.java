@@ -1,6 +1,8 @@
 package com.gamesense.api.config;
 
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.SettingsManager;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
@@ -88,26 +90,24 @@ public class LoadConfig {
         }
 
         JsonObject settingObject = moduleObject.get("Settings").getAsJsonObject();
-        for (Setting setting : GameSense.getInstance().settingsManager.getSettingsForMod(module)) {
+        for (Setting setting : SettingsManager.getSettingsForModule(module)) {
             JsonElement dataObject = settingObject.get(setting.getConfigName());
             try {
                 if (dataObject != null && dataObject.isJsonPrimitive()) {
-                    switch (setting.getType()) {
-                        case BOOLEAN:
-                            ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
-                            break;
-                        case INTEGER:
-                            ((Setting.Integer) setting).setValue(dataObject.getAsInt());
-                            break;
-                        case DOUBLE:
-                            ((Setting.Double) setting).setValue(dataObject.getAsDouble());
-                            break;
-                        case COLOR:
-                            ((Setting.ColorSetting) setting).fromInteger(dataObject.getAsInt());
-                            break;
-                        case MODE:
-                            ((Setting.Mode) setting).setValue(dataObject.getAsString());
-                            break;
+                    if (setting instanceof BooleanSetting) {
+                        setting.setValue(dataObject.getAsBoolean());
+                    }
+                    else if (setting instanceof IntegerSetting) {
+                        setting.setValue(dataObject.getAsInt());
+                    }
+                    else if (setting instanceof DoubleSetting) {
+                        setting.setValue(dataObject.getAsDouble());
+                    }
+                    else if (setting instanceof ColorSetting) {
+                        ((ColorSetting) setting).fromInteger(dataObject.getAsInt());
+                    }
+                    else if (setting instanceof ModeSetting) {
+                        setting.setValue(dataObject.getAsString());
                     }
                 }
             }catch(java.lang.NumberFormatException e) {

@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Module;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 @Module.Declaration(name = "ChatSuffix", category = Category.Misc)
 public class ChatSuffix extends Module {
 
-	Setting.Mode Separator;
+	ModeSetting Separator;
 
 	public void setup() {
 		ArrayList<String> Separators = new ArrayList<>();

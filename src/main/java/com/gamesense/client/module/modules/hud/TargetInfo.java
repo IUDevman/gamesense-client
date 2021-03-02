@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
@@ -28,9 +29,9 @@ import java.util.Comparator;
 @HUDModule.Declaration(posX = 0, posZ = 150)
 public class TargetInfo extends HUDModule {
 
-    private Setting.Integer range;
-    private Setting.ColorSetting backgroundColor;
-    private Setting.ColorSetting outlineColor;
+    private IntegerSetting range;
+    private ColorSetting backgroundColor;
+    private ColorSetting outlineColor;
 
     public void setup() {
         range = registerInteger("Range", 100, 10, 260);

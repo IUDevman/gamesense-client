@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import net.minecraft.item.ItemBow;
@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 @Module.Declaration(name = "FastBow", category = Category.Combat)
 public class FastBow extends Module {
 
-	Setting.Integer drawLength;
+	IntegerSetting drawLength;
 
 	@Override
 	public void setup() {

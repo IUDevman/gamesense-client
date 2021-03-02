@@ -1,9 +1,11 @@
 package com.gamesense.client.clickgui;
 
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.SettingsManager;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -145,17 +147,17 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 	private void addModule (CollapsibleContainer panel, Module module) {
 		CollapsibleContainer container = new CollapsibleContainer(module.getName(), null, theme.getContainerRenderer(), new SimpleToggleable(false), new SettingsAnimation(ClickGuiModule.animationSpeed), module);
 		panel.addComponent(container);
-		for (Setting property: GameSense.getInstance().settingsManager.getSettingsForMod(module)) {
-			if (property instanceof Setting.Boolean) {
-				container.addComponent(new BooleanComponent(property.getName(), null, theme.getComponentRenderer(), (Setting.Boolean) property));
-			} else if (property instanceof Setting.Integer) {
-				container.addComponent(new NumberComponent(property.getName(), null, theme.getComponentRenderer(), (Setting.Integer) property, ((Setting.Integer) property).getMin(), ((Setting.Integer) property).getMax()));
-			} else if (property instanceof Setting.Double) {
-				container.addComponent(new NumberComponent(property.getName(), null, theme.getComponentRenderer(), (Setting.Double) property, ((Setting.Double) property).getMin(), ((Setting.Double) property).getMax()));
-			} else if (property instanceof Setting.Mode) {
-				container.addComponent(new EnumComponent(property.getName(), null, theme.getComponentRenderer(),(Setting.Mode) property));
-			} else if (property instanceof Setting.ColorSetting) {
-				container.addComponent(new SyncableColorComponent(theme, (Setting.ColorSetting) property, colorToggle, new SettingsAnimation(ClickGuiModule.animationSpeed)));
+		for (Setting property: SettingsManager.getSettingsForModule(module)) {
+			if (property instanceof BooleanSetting) {
+				container.addComponent(new BooleanComponent(property.getName(), null, theme.getComponentRenderer(), (BooleanSetting) property));
+			} else if (property instanceof IntegerSetting) {
+				container.addComponent(new NumberComponent(property.getName(), null, theme.getComponentRenderer(), (IntegerSetting) property, ((IntegerSetting) property).getMin(), ((IntegerSetting) property).getMax()));
+			} else if (property instanceof DoubleSetting) {
+				container.addComponent(new NumberComponent(property.getName(), null, theme.getComponentRenderer(), (DoubleSetting) property, ((DoubleSetting) property).getMin(), ((DoubleSetting) property).getMax()));
+			} else if (property instanceof ModeSetting) {
+				container.addComponent(new EnumComponent(property.getName(), null, theme.getComponentRenderer(),(ModeSetting) property));
+			} else if (property instanceof ColorSetting) {
+				container.addComponent(new SyncableColorComponent(theme, (ColorSetting) property, colorToggle, new SettingsAnimation(ClickGuiModule.animationSpeed)));
 			}
 		}
 		container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(), module));

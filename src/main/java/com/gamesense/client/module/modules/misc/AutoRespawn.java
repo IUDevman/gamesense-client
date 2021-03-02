@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
@@ -15,8 +16,8 @@ public class AutoRespawn extends Module {
 
     private static String AutoRespawnMessage = "/kit";
 
-    Setting.Boolean respawnMessage;
-    Setting.Integer respawnMessageDelay;
+    BooleanSetting respawnMessage;
+    IntegerSetting respawnMessageDelay;
 
     private boolean isDead;
     private boolean sentRespawnMessage = true;

@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.movement;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -8,7 +8,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 @Module.Declaration(name = "Sprint", category = Category.Movement)
 public class Sprint extends Module {
 
-	private Setting.Boolean multiDirection;
+	private BooleanSetting multiDirection;
 
     public void setup() {
         multiDirection = registerBoolean("Multi Direction", true);

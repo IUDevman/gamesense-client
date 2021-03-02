@@ -1,7 +1,9 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.math.RotationUtils;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
@@ -44,17 +46,17 @@ import java.util.Optional;
 @Module.Declaration(name = "KillAura", category = Category.Combat)
 public class KillAura extends Module {
 
-	Setting.Boolean players;
-	Setting.Boolean hostileMobs;
-	Setting.Boolean passiveMobs;
-	Setting.Mode itemUsed;
-	Setting.Boolean swordPriority;
-	Setting.Boolean caCheck;
-	Setting.Boolean criticals;
-	Setting.Boolean rotation;
-	Setting.Boolean autoSwitch;
-	Setting.Double switchHealth;
-	Setting.Double range;
+	BooleanSetting players;
+	BooleanSetting hostileMobs;
+	BooleanSetting passiveMobs;
+	ModeSetting itemUsed;
+	BooleanSetting swordPriority;
+	BooleanSetting caCheck;
+	BooleanSetting criticals;
+	BooleanSetting rotation;
+	BooleanSetting autoSwitch;
+	DoubleSetting switchHealth;
+	DoubleSetting range;
 
 	public void setup() {
 		List<String> weapons = Arrays.asList("Sword", "Axe", "Both", "All");

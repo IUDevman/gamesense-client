@@ -1,6 +1,8 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.client.module.HUDModule;
@@ -21,10 +23,10 @@ import java.util.List;
 @HUDModule.Declaration(posX = 0, posZ = 50)
 public class TextRadar extends HUDModule {
 
-	private Setting.Boolean sortUp;
-	private Setting.Boolean sortRight;
-	private Setting.Integer range;
-	private Setting.Mode display;
+	private BooleanSetting sortUp;
+	private BooleanSetting sortRight;
+	private IntegerSetting range;
+	private ModeSetting display;
 	private PlayerList list=new PlayerList();
 
 	public void setup() {

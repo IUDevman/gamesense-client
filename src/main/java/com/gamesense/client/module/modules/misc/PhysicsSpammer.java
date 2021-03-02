@@ -1,6 +1,6 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -18,7 +18,7 @@ public class PhysicsSpammer extends Module {
 
 	private List<String> cache=new LinkedList<String>();
 	private long lastTime,delay;
-	private Setting.Integer minDelay,maxDelay;
+	private IntegerSetting minDelay,maxDelay;
 	private Random random=new Random(System.currentTimeMillis());
 
 	public void setup() {

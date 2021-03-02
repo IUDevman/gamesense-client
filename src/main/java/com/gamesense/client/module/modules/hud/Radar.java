@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
@@ -32,11 +33,11 @@ import java.awt.*;
 @HUDModule.Declaration(posX = 0, posZ = 200)
 public class Radar extends HUDModule {
 
-    private Setting.Boolean renderPlayer;
-    private Setting.Boolean renderMobs;
-    private Setting.ColorSetting playerColor;
-    private Setting.ColorSetting outlineColor;
-    private Setting.ColorSetting fillColor;
+    private BooleanSetting renderPlayer;
+    private BooleanSetting renderMobs;
+    private ColorSetting playerColor;
+    private ColorSetting outlineColor;
+    private ColorSetting fillColor;
 
     public void setup() {
         renderPlayer = registerBoolean("Player", true);

@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
@@ -37,9 +38,9 @@ import java.util.Objects;
 @HUDModule.Declaration(posX = 0, posZ = 70)
 public class TargetHUD extends HUDModule {
 
-    private Setting.ColorSetting outline;
-    private Setting.ColorSetting background;
-    private Setting.Integer range;
+    private ColorSetting outline;
+    private ColorSetting background;
+    private IntegerSetting range;
     private static EntityPlayer targetPlayer;
 
     public void setup() {

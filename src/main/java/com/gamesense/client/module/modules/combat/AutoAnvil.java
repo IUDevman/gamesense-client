@@ -1,6 +1,9 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
@@ -34,17 +37,17 @@ import java.util.List;
 @Module.Declaration(name = "AutoAnvil", category = Category.Combat)
 public class AutoAnvil extends Module {
     
-    Setting.Mode    anvilMode,
+    ModeSetting anvilMode,
                     target,
                     anvilPlace;
-    Setting.Double  enemyRange,
+    DoubleSetting enemyRange,
                     decrease;
-    Setting.Boolean rotate,
+    BooleanSetting rotate,
                     antiCrystal,
                     fastAnvil,
                     offHandObby,
                     chatMsg;
-    Setting.Integer tickDelay,
+    IntegerSetting tickDelay,
                     blocksPerTick,
                     hDistance,
                     minH,

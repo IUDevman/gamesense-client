@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
@@ -32,18 +32,18 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "CityESP", category = Category.Render)
 public class CityESP extends Module {
 
-    Setting.Integer range;
-    Setting.Integer down;
-    Setting.Integer sides;
-    Setting.Integer depth;
-    Setting.Double minDamage;
-    Setting.Double maxDamage;
-    Setting.Boolean ignoreCrystals;
-    Setting.Mode targetMode;
-    Setting.Mode selectMode;
-    Setting.Mode renderMode;
-    Setting.Integer width;
-    Setting.ColorSetting color;
+    IntegerSetting range;
+    IntegerSetting down;
+    IntegerSetting sides;
+    IntegerSetting depth;
+    DoubleSetting minDamage;
+    DoubleSetting maxDamage;
+    BooleanSetting ignoreCrystals;
+    ModeSetting targetMode;
+    ModeSetting selectMode;
+    ModeSetting renderMode;
+    IntegerSetting width;
+    ColorSetting color;
 
     public void setup() {
         ArrayList<String> targetModes = new ArrayList<>();

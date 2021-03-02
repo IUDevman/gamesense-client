@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.command.commands.AutoGearCommand;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.Category;
@@ -15,13 +16,13 @@ import java.util.*;
 @Module.Declaration(name = "AutoGear", category = Category.Misc)
 public class AutoGear extends Module {
 
-    Setting.Boolean chatMsg,
+    BooleanSetting chatMsg,
                     debugMode,
                     enderChest,
                     confirmSort,
                     invasive,
                     closeAfter;
-    Setting.Integer tickDelay;
+    IntegerSetting tickDelay;
 
     // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();

@@ -1,7 +1,10 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
@@ -25,12 +28,12 @@ import java.util.ArrayList;
 @Module.Declaration(name = "Tracers", category = Category.Render)
 public class Tracers extends Module {
 
-	Setting.Boolean colorType;
-	Setting.Integer renderDistance;
-	Setting.Mode pointsTo;
-	Setting.ColorSetting nearColor;
-	Setting.ColorSetting midColor;
-	Setting.ColorSetting farColor;
+	BooleanSetting colorType;
+	IntegerSetting renderDistance;
+	ModeSetting pointsTo;
+	ColorSetting nearColor;
+	ColorSetting midColor;
+	ColorSetting farColor;
 
 	public void setup() {
 		renderDistance = registerInteger("Distance", 100, 10, 260);
