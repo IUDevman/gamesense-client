@@ -1,21 +1,17 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
 import com.lukflug.panelstudio.theme.Theme;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.monster.EntityMob;
@@ -25,11 +21,15 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 
+import java.awt.*;
+
 /**
  * @author Hoosiers
  * @since 12/15/2020
  */
 
+@Module.Declaration(name = "Radar", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 200)
 public class Radar extends HUDModule {
 
     private Setting.Boolean renderPlayer;
@@ -37,10 +37,6 @@ public class Radar extends HUDModule {
     private Setting.ColorSetting playerColor;
     private Setting.ColorSetting outlineColor;
     private Setting.ColorSetting fillColor;
-
-    public Radar() {
-        super("Radar", new Point(0, 300));
-    }
 
     public void setup() {
         renderPlayer = registerBoolean("Player", true);

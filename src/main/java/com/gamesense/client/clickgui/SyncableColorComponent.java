@@ -10,7 +10,6 @@ import com.lukflug.panelstudio.settings.ColorComponent;
 import com.lukflug.panelstudio.settings.Toggleable;
 import com.lukflug.panelstudio.theme.Renderer;
 import com.lukflug.panelstudio.theme.Theme;
-
 import net.minecraft.util.text.TextFormatting;
 
 public class SyncableColorComponent extends ColorComponent {

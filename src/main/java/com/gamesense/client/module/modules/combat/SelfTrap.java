@@ -6,6 +6,7 @@ import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
@@ -25,11 +26,8 @@ import java.util.ArrayList;
  * Ported and modified from Surround.java
  */
 
+@Module.Declaration(name = "SelfTrap", category = Category.Combat)
 public class SelfTrap extends Module {
-
-    public SelfTrap() {
-        super("SelfTrap", Category.Combat);
-    }
 
     Setting.Mode trapType;
     Setting.Boolean shiftOnly;

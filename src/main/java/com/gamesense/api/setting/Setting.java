@@ -1,13 +1,14 @@
 package com.gamesense.api.setting;
 
-import java.awt.Color;
-import java.util.List;
-
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.lukflug.panelstudio.settings.EnumSetting;
 import com.lukflug.panelstudio.settings.NumberSetting;
 import com.lukflug.panelstudio.settings.Toggleable;
+
+import java.awt.*;
+import java.util.List;
 
 /**
  * @author Finz0 for Osiris
@@ -22,10 +23,10 @@ public abstract class Setting {
 	private final String name;
 	private final String configName;
 	private final Module parent;
-	private final Module.Category category;
+	private final Category category;
 	private final Type type;
 
-	public Setting(final String name, final Module parent, final Module.Category category, final Type type) {
+	public Setting(final String name, final Module parent, final Category category, final Type type) {
 		this.name = name;
 		this.configName = name.replace(" ", "");
 		this.parent = parent;
@@ -49,7 +50,7 @@ public abstract class Setting {
 		return this.type;
 	}
 
-	public Module.Category getCategory() {
+	public Category getCategory() {
 		return this.category;
 	}
 
@@ -67,7 +68,7 @@ public abstract class Setting {
 		private final int min;
 		private final int max;
 
-		public Integer(final String name, final Module parent, final Module.Category category, final int value, final int min, final int max) {
+		public Integer(final String name, final Module parent, final Category category, final int value, final int min, final int max) {
 			super(name, parent, category, Type.INTEGER);
 			this.value = value;
 			this.min = min;
@@ -122,7 +123,7 @@ public abstract class Setting {
 		private final double min;
 		private final double max;
 
-		public Double(final String name, final Module parent, final Module.Category category, final double value, final double min, final double max) {
+		public Double(final String name, final Module parent, final Category category, final double value, final double min, final double max) {
 			super(name, parent, category, Type.DOUBLE);
 			this.value = value;
 			this.min = min;
@@ -175,7 +176,7 @@ public abstract class Setting {
 
 		private boolean value;
 
-		public Boolean(final String name, final Module parent, final Module.Category category, final boolean value) {
+		public Boolean(final String name, final Module parent, final Category category, final boolean value) {
 			super(name, parent, category, Type.BOOLEAN);
 			this.value = value;
 		}
@@ -204,7 +205,7 @@ public abstract class Setting {
 		private String value;
 		private final java.util.List<String> modes;
 
-		public Mode(final String name, final Module parent, final Module.Category category, final java.util.List<String> modes, final String value) {
+		public Mode(final String name, final Module parent, final Category category, final java.util.List<String> modes, final String value) {
 			super(name, parent, category, Type.MODE);
 			this.value = value;
 			this.modes = modes;
@@ -240,7 +241,7 @@ public abstract class Setting {
 		private boolean rainbow;
 		private GSColor value;
 		
-		public ColorSetting (final String name, final Module parent, final Module.Category category, boolean rainbow, final GSColor value) {
+		public ColorSetting (final String name, final Module parent, final Category category, boolean rainbow, final GSColor value) {
 			super(name, parent, category, Type.COLOR);
 			this.rainbow=rainbow;
 			this.value=value;

@@ -7,6 +7,7 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
@@ -29,15 +30,9 @@ import java.util.List;
  * @Author TechAle on 12/16/20
  * Ported and modified from Surround.java
  */
-/*
-    Now AutoAnvil is going to stop himself if the player place a block above him
- */
 
+@Module.Declaration(name = "AutoAnvil", category = Category.Combat)
 public class AutoAnvil extends Module {
-
-    public AutoAnvil() {
-        super("AutoAnvil", Category.Combat);
-    }
     
     Setting.Mode    anvilMode,
                     target,

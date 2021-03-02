@@ -1,29 +1,26 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
-
 import net.minecraft.util.text.TextComponentString;
 
-// PanelStudio rewrite by lukflug
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Module.Declaration(name = "Notifications", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 50)
 public class Notifications extends HUDModule {
 
 	private static Setting.Boolean sortUp;
 	private static Setting.Boolean sortRight;
 	public static Setting.Boolean disableChat;
 	private static NotificationsList list=new NotificationsList();
-	
-	public Notifications() {
-		super("Notifications",new Point(0,50));
-	}
 
 	public void setup() {
 		sortUp = registerBoolean("Sort Up", false);

@@ -8,16 +8,8 @@ import com.gamesense.client.module.modules.misc.AutoGG;
  * @Author Hoosiers on 11/04/2020
  */
 
+@Command.Declaration(name = "AutoGG", syntax = "autogg add/del [message] (use _ for spaces)", alias = { "autogg", "gg" })
 public class AutoGGCommand extends Command {
-
-    public AutoGGCommand() {
-        super("AutoGG");
-
-        setCommandSyntax(Command.getCommandPrefix() + "autogg add/del [message] (use _ for spaces)");
-        setCommandAlias(new String[]{
-                "autogg", "gg"
-        });
-    }
 
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];

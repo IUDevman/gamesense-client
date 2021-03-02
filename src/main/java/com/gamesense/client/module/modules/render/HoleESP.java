@@ -9,6 +9,7 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.google.common.collect.Sets;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -22,11 +23,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @reworked by 0b00101010 on 14/01/2021
  */
-public class HoleESP extends Module {
 
-    public HoleESP() {
-        super("HoleESP", Category.Render);
-    }
+@Module.Declaration(name = "HoleESP", category = Category.Render)
+public class HoleESP extends Module {
 
     public static Setting.Integer rangeS;
     Setting.Boolean hideOwn;

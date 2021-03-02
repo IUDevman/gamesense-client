@@ -1,20 +1,20 @@
 package com.gamesense.client.module.modules.render;
 
-import java.util.ArrayList;
-
 import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
-import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
-
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.ArrayList;
 
 /**
  * @author Hoosiers
@@ -22,11 +22,8 @@ import net.minecraft.util.math.Vec3d;
  * some GL from Osiris/KAMI was referenced.
  */
 
+@Module.Declaration(name = "Tracers", category = Category.Render)
 public class Tracers extends Module {
-
-	public Tracers() {
-		super("Tracers", Category.Render);
-	}
 
 	Setting.Boolean colorType;
 	Setting.Integer renderDistance;

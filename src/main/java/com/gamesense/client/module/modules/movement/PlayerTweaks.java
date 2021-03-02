@@ -3,8 +3,8 @@ package com.gamesense.client.module.modules.movement;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.WaterPushEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.gui.GuiChat;
@@ -13,11 +13,8 @@ import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraftforge.client.event.InputUpdateEvent;
 import org.lwjgl.input.Keyboard;
 
+@Module.Declaration(name = "PlayerTweaks", category = Category.Movement)
 public class PlayerTweaks extends Module {
-
-	public PlayerTweaks() {
-		super("PlayerTweaks", Category.Movement);
-	}
 
 	public Setting.Boolean guiMove;
 	public static Setting.Boolean noPush;

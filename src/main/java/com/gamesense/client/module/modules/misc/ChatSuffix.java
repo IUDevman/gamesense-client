@@ -3,19 +3,17 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.GameSense;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.network.play.client.CPacketChatMessage;
 
 import java.util.ArrayList;
 
+@Module.Declaration(name = "ChatSuffix", category = Category.Misc)
 public class ChatSuffix extends Module {
-
-	public ChatSuffix() {
-		super("ChatSuffix", Category.Misc);
-	}
 
 	Setting.Mode Separator;
 
@@ -31,7 +29,7 @@ public class ChatSuffix extends Module {
 	@EventHandler
 	private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
 		if (event.getPacket() instanceof CPacketChatMessage) {
-			if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(Command.getCommandPrefix()))
+			if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(CommandManager.getCommandPrefix()))
 				return;
 			String Separator2 = null;
 			if (Separator.getValue().equalsIgnoreCase(">>")) {

@@ -13,16 +13,8 @@ import com.gamesense.client.module.ModuleManager;
  * @Ported and modified on 11/05/2020
  */
 
+@Command.Declaration(name = "Set", syntax = "set [module] [setting] value (no color support)", alias = { "set", "setmodule", "changesetting", "setting" })
 public class SetCommand extends Command {
-
-    public SetCommand() {
-        super("Set");
-
-        setCommandSyntax(Command.getCommandPrefix() + "set [module] [setting] value (no color support)");
-        setCommandAlias(new String[]{
-                "set", "setmodule", "changesetting", "setting"
-        });
-    }
 
     //I should probably add an option for color settings in the future
     public void onCommand(String command, String[] message) throws Exception {
@@ -31,7 +23,7 @@ public class SetCommand extends Command {
         Module module = ModuleManager.getModule(main);
 
         if (module == null) {
-            MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
+            MessageBus.sendCommandMessage(this.getSyntax(), true);
             return;
         }
 
@@ -42,7 +34,7 @@ public class SetCommand extends Command {
                     MessageBus.sendCommandMessage(module.getName() + " " + setting.getConfigName() + " set to: " + ((Setting.Boolean) setting).getValue() + "!", true);
                 }
                 else {
-                    MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
+                    MessageBus.sendCommandMessage(this.getSyntax(), true);
                 }
             }
             else if (setting.getType().equals(Setting.Type.INTEGER)) {
@@ -71,7 +63,7 @@ public class SetCommand extends Command {
             }
             else if (setting.getType().equals(Setting.Type.MODE)) {
                 if (!((Setting.Mode) setting).getModes().contains(message[2])) {
-                    MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
+                    MessageBus.sendCommandMessage(this.getSyntax(), true);
                 }
                 else {
                     ((Setting.Mode) setting).setValue(message[2]);
@@ -79,7 +71,7 @@ public class SetCommand extends Command {
                 }
             }
             else {
-                MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
+                MessageBus.sendCommandMessage(this.getSyntax(), true);
             }
         });
     }

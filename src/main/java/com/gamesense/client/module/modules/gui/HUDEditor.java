@@ -4,15 +4,12 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.misc.Announcer;
 import org.lwjgl.input.Keyboard;
 
+@Module.Declaration(name = "HudEditor", category = Category.GUI, bind = Keyboard.KEY_P, drawn = false)
 public class HUDEditor extends Module {
-	public HUDEditor() {
-		super("HUDEditor", Category.GUI);
-		setBind(Keyboard.KEY_P);
-		setDrawn(false);
-	}
 
 	public void onEnable() {
 		GameSense.getInstance().gameSenseGUI.enterHUDEditor();

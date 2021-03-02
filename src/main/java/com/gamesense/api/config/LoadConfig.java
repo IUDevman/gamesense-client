@@ -1,19 +1,12 @@
 package com.gamesense.api.config;
 
-import java.awt.Font;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GuiConfig;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
@@ -23,6 +16,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author Hoosiers
@@ -216,7 +216,7 @@ public class LoadConfig {
         JsonElement prefixObject = mainObject.get("Prefix");
 
         if (prefixObject != null && prefixObject.isJsonPrimitive()) {
-            Command.setCommandPrefix(prefixObject.getAsString());
+            CommandManager.setCommandPrefix(prefixObject.getAsString());
         }
         inputStream.close();
     }

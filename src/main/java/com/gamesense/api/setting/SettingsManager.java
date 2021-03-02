@@ -1,10 +1,11 @@
 package com.gamesense.api.setting;
 
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.gamesense.client.module.Module;
 
 public class SettingsManager {
 
@@ -34,7 +35,7 @@ public class SettingsManager {
 		return this.settings.stream().filter(s -> s.getParent().equals(parent)).collect(Collectors.toList());
 	}
 
-	public List<Setting> getSettingsByCategory(final Module.Category category) {
+	public List<Setting> getSettingsByCategory(final Category category) {
 		return this.settings.stream().filter(s -> s.getCategory().equals(category)).collect(Collectors.toList());
 	}
 

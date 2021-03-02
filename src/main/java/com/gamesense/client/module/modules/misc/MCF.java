@@ -1,9 +1,9 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.util.player.friend.Friends;
-import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -12,11 +12,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Mouse;
 
+@Module.Declaration(name = "MCF", category = Category.Misc)
 public class MCF extends Module {
-
-	public MCF() {
-		super("MCF", Category.Misc);
-	}
 
 	@EventHandler
 	private final Listener<InputEvent.MouseInputEvent> listener = new Listener<>(event -> {

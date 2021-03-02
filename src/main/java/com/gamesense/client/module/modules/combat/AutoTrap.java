@@ -6,6 +6,7 @@ import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
@@ -25,17 +26,9 @@ import java.util.List;
  * @Author Hoosiers on 09/19/20
  * Ported and modified from Surround.java
  */
-/*
-    Added new mode: target. this allow to choose in which way he is going to choose the target
-    2 modes: nearest (who is cloosest), looking (who you are looking)
-    Now some modules are in common (closestTarget, lookingAt)
- */
 
+@Module.Declaration(name = "AutoTrap", category = Category.Combat)
 public class AutoTrap extends Module {
-
-    public AutoTrap() {
-        super("AutoTrap", Category.Combat);
-    }
 
     Setting.Mode    trapType,
                     target;

@@ -2,6 +2,8 @@ package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -13,16 +15,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 
+@Module.Declaration(name = "CoordinateHud", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 0)
 public class CoordinateHud extends HUDModule {
     private Setting.Boolean showNetherOverworld;
     private Setting.Boolean thousandsSeparator;
     private Setting.Integer decimalPlaces;
 
     private final String[] coordinateString = {"", ""};
-
-    public CoordinateHud() {
-        super("CoordinateHud", new Point(0, 0));
-    }
 
     @Override
     public void setup() {

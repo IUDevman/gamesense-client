@@ -5,17 +5,15 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.MotionUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.network.play.client.CPacketPlayer;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+@Module.Declaration(name = "Step", category = Category.Movement)
 public class Step extends Module {
-
-	public Step() {
-		super("Step", Category.Movement);
-	}
 
 	private int ticks = 0;
 	Setting.Double height;

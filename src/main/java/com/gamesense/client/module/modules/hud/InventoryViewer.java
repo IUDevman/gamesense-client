@@ -4,6 +4,8 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
@@ -14,15 +16,12 @@ import net.minecraft.util.NonNullList;
 
 import java.awt.*;
 
-// PanelStudio rewrite by lukflug
+@Module.Declaration(name = "InventoryViewer", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 10)
 public class InventoryViewer extends HUDModule {
 
 	private Setting.ColorSetting fillColor;
     private Setting.ColorSetting outlineColor;
-    
-    public InventoryViewer() {
-    	super("InventoryViewer",new Point(0,10));
-    }
 
     public void setup() {
         fillColor = registerColor("Fill", new GSColor(0, 0, 0, 100));

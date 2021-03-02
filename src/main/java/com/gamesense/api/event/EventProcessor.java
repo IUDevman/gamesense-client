@@ -5,7 +5,6 @@ import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSense;
-import com.gamesense.client.command.Command;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.ModuleManager;
 import com.google.common.collect.Maps;
@@ -164,7 +163,7 @@ public class EventProcessor {
 
         EntityPlayerSP player = mc.player;
         if (player != null && !player.isSneaking()) {
-            String prefix = Command.getCommandPrefix();
+            String prefix = CommandManager.getCommandPrefix();
             char typedChar = Keyboard.getEventCharacter();
             if (prefix.length() == 1 && prefix.charAt(0) == typedChar) {
                 mc.displayGuiScreen(new GuiChat(prefix));
@@ -184,7 +183,7 @@ public class EventProcessor {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChatSent(ClientChatEvent event) {
-        if (event.getMessage().startsWith(Command.getCommandPrefix())) {
+        if (event.getMessage().startsWith(CommandManager.getCommandPrefix())) {
             event.setCanceled(true);
             try {
                 mc.ingameGUI.getChatGUI().addToSentMessages(event.getMessage());

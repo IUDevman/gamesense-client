@@ -6,6 +6,7 @@ import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockObsidian;
@@ -22,11 +23,9 @@ import net.minecraft.util.math.Vec3d;
 /**
  * @Author Hoosiers on 09/18/20
  */
-public class Surround extends Module {
 
-    public Surround() {
-        super("Surround", Category.Combat);
-    }
+@Module.Declaration(name = "Surround", category = Category.Combat)
+public class Surround extends Module {
 
     Setting.Boolean chatMsg,
                     triggerSurround,

@@ -6,6 +6,7 @@ import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,11 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Module.Declaration(name = "AutoWeb", category = Category.Combat)
 public class AutoWeb extends Module {
-
-	public AutoWeb() {
-		super("AutoWeb", Category.Combat);
-	}
 
 	Setting.Mode trapType;
 	Setting.Boolean chatMsg;

@@ -1,5 +1,10 @@
 package com.gamesense.client.module.modules.misc;
 
+import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,20 +13,17 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.module.Module;
-
+@Module.Declaration(name = "PhysicsSpammer", category = Category.Misc)
 public class PhysicsSpammer extends Module {
+
 	private List<String> cache=new LinkedList<String>();
 	private long lastTime,delay;
 	private Setting.Integer minDelay,maxDelay;
 	private Random random=new Random(System.currentTimeMillis());
-	
-	public PhysicsSpammer() {
-		super("PhysicsSpammer",Category.Misc);
-		minDelay=registerInteger("Min Delay",5,1,100);
-		maxDelay=registerInteger("Max Delay",5,1,100);
+
+	public void setup() {
+		minDelay = registerInteger("Min Delay",5,1,100);
+		maxDelay = registerInteger("Max Delay",5,1,100);
 		updateTimes();
 	}
 	

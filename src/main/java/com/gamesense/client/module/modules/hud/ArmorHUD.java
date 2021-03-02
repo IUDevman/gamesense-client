@@ -3,17 +3,15 @@ package com.gamesense.client.module.modules.hud;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 
+@Module.Declaration(name = "ArmorHUD", category = Category.HUD)
 public class ArmorHUD extends Module {
-
-    public ArmorHUD() {
-        super("ArmorHUD", Category.HUD);
-    }
 
     private static final RenderItem itemRender = mc.getRenderItem();
 

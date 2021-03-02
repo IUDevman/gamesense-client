@@ -4,6 +4,7 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -28,10 +29,8 @@ import java.util.Map;
  * Ported and modified from the ex module AutoTotem
  * Crystal Damage calculation autoCrystal
  */
-/*
- Fix: SwordCheck was inverted
-*/
 
+@Module.Declaration(name = "Offhand", category = Category.Combat)
 public class OffHand extends Module {
 
     public static Setting.Mode  defaultItem,
@@ -100,11 +99,6 @@ public class OffHand extends Module {
             put("Obby", Blocks.OBSIDIAN);
         }
     };
-
-
-    public OffHand() {
-        super("Offhand", Category.Combat);
-    }
 
     @Override
     public void setup() {

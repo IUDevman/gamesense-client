@@ -4,13 +4,13 @@ import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.misc.Timer;
-import com.gamesense.client.GameSense;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,18 +19,18 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.world.WorldEvent;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Rewrote by Hoosiers on 10/30/20
  */
 
+@Module.Declaration(name = "LogoutSpots", category = Category.Render)
 public class LogoutSpots extends Module {
-
-    public LogoutSpots() {
-        super("LogoutSpots", Category.Render);
-    }
 
     Setting.Boolean chatMsg;
     Setting.Boolean nameTag;

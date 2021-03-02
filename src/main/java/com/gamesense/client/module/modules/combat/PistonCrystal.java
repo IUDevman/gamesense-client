@@ -9,12 +9,12 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.*;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
@@ -42,11 +42,8 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
     TODO: add check which item is missing
  */
 
+@Module.Declaration(name = "PistonCrystal", category = Category.Combat)
 public class PistonCrystal extends Module {
-
-    public PistonCrystal() {
-        super("PistonCrystal", Category.Combat);
-    }
 
     Setting.Mode    breakType,
                     placeMode,

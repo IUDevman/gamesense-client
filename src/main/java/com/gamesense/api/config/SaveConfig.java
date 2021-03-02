@@ -1,13 +1,5 @@
 package com.gamesense.api.config;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.enemy.Enemy;
@@ -15,18 +7,21 @@ import com.gamesense.api.util.player.friend.Friend;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GuiConfig;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
 import com.gamesense.client.module.modules.misc.AutoRespawn;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author Hoosiers
@@ -189,7 +184,7 @@ public class SaveConfig {
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "CommandPrefix" + ".json"), StandardCharsets.UTF_8);
         JsonObject prefixObject = new JsonObject();
 
-        prefixObject.add("Prefix", new JsonPrimitive(Command.getCommandPrefix()));
+        prefixObject.add("Prefix", new JsonPrimitive(CommandManager.getCommandPrefix()));
         String jsonString = gson.toJson(new JsonParser().parse(prefixObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();

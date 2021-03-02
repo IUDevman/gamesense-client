@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.enchantment.Enchantment;
@@ -15,14 +16,11 @@ import net.minecraft.item.ItemStack;
 import java.util.HashMap;
 import java.util.List;
 
+@Module.Declaration(name = "AutoArmor", category = Category.Combat)
 public class AutoArmor extends Module {
 
 	Setting.Boolean noThorns;
 	Setting.Boolean lastResortThorns;
-
-	public AutoArmor() {
-		super("AutoArmor", Category.Combat);
-	}
 
 	@Override
 	public void setup() {

@@ -2,6 +2,7 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.block.BlockEnderChest;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.item.Item;
@@ -9,15 +10,12 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemPickaxe;
 
 /**
- * @author unkown
  * @author 0b00101010
  * @since 25/01/21
  */
-public class NoEntityTrace extends Module {
 
-	public NoEntityTrace() {
-		super("NoEntityTrace", Category.Misc);
-	}
+@Module.Declaration(name = "NoEntityTrace", category = Category.Misc)
+public class NoEntityTrace extends Module {
 
 	Setting.Boolean pickaxe;
 	Setting.Boolean obsidian;

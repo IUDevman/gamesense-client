@@ -1,8 +1,8 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.gui.GuiGameOver;
@@ -10,7 +10,9 @@ import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.network.play.client.CPacketClientStatus;
 import net.minecraftforge.client.event.GuiOpenEvent;
 
+@Module.Declaration(name = "AutoRespawn", category = Category.Misc)
 public class AutoRespawn extends Module {
+
     private static String AutoRespawnMessage = "/kit";
 
     Setting.Boolean respawnMessage;
@@ -19,10 +21,6 @@ public class AutoRespawn extends Module {
     private boolean isDead;
     private boolean sentRespawnMessage = true;
     long timeSinceRespawn;
-
-    public AutoRespawn() {
-        super("AutoRespawn", Category.Misc);
-    }
 
     @Override
     public void setup() {

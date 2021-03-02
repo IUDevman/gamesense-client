@@ -4,6 +4,7 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Items;
@@ -16,11 +17,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Module.Declaration(name = "HotbarRefill", category = Category.Misc)
 public class HotbarRefill extends Module {
-
-    public HotbarRefill() {
-        super("HotbarRefill", Category.Misc);
-    }
 
     Setting.Integer threshold;
     Setting.Integer tickDelay;

@@ -2,6 +2,8 @@ package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -15,6 +17,8 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
 
+@Module.Declaration(name = "SpeedHud", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 70)
 public class SpeedHud extends HUDModule {
 
     private static final String MPS = "m/s";
@@ -27,10 +31,6 @@ public class SpeedHud extends HUDModule {
 
     private final ArrayDeque<Double> speedDeque = new ArrayDeque<>();
     private String speedString = "";
-
-    public SpeedHud() {
-        super("SpeedHud", new Point(69, 69));
-    }
 
     @Override
     public void setup() {

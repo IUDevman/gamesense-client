@@ -3,9 +3,10 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.TotemPopEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -27,11 +28,8 @@ import java.util.stream.Collectors;
  * @src https://github.com/DarkiBoi/CliNet/blob/master/src/main/java/me/zeroeightsix/kami/module/modules/combat/TotemPopCounter.java
  **/
 
+@Module.Declaration(name = "PvPInfo", category = Category.Misc)
 public class PvPInfo extends Module {
-
-	public PvPInfo() {
-		super("PvPInfo", Category.Misc);
-	}
 
 	List<Entity> knownPlayers = new ArrayList<>();
 	List<Entity> antipearlspamplz = new ArrayList<>();

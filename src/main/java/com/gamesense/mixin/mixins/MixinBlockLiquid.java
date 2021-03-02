@@ -3,7 +3,6 @@ package com.gamesense.mixin.mixins;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.exploits.LiquidInteract;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

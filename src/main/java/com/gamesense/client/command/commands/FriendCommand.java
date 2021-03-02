@@ -8,16 +8,8 @@ import com.gamesense.client.command.Command;
  * @Author Hoosiers on 11/05/2020
  */
 
+@Command.Declaration(name = "Friend", syntax = "friend list/add/del [player]", alias = { "friend", "friends", "f" })
 public class FriendCommand extends Command {
-
-    public FriendCommand() {
-        super("Friend");
-
-        setCommandSyntax(Command.getCommandPrefix() + "friend list/add/del [player]");
-        setCommandAlias(new String[]{
-                "friend", "friends", "f"
-        });
-    }
 
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];

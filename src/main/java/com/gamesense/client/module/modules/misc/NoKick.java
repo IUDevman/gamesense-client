@@ -2,8 +2,8 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.monster.EntitySlime;
@@ -12,11 +12,8 @@ import net.minecraft.network.play.server.SPacketSoundEffect;
 
 // @see com.gamesense.mixin.mixins.MixinNetworkManager for PacketKick
 
+@Module.Declaration(name = "NoKick", category = Category.Misc)
 public class NoKick extends Module {
-
-	public NoKick() {
-		super("NoKick", Category.Misc);
-	}
 
 	public Setting.Boolean noPacketKick;
 	Setting.Boolean noSlimeCrash;

@@ -1,11 +1,5 @@
 package com.gamesense.client;
 
-import java.awt.Font;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.Display;
-
 import com.gamesense.api.config.ConfigStopper;
 import com.gamesense.api.config.LoadConfig;
 import com.gamesense.api.config.SaveConfig;
@@ -20,11 +14,15 @@ import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.manager.ManagerLoader;
 import com.gamesense.client.module.ModuleManager;
-
 import me.zero.alpine.EventBus;
 import me.zero.alpine.EventManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.Display;
+
+import java.awt.*;
 
 @Mod(modid = GameSense.MODID, name = GameSense.MODNAME, version = GameSense.MODVER)
 public class GameSense {

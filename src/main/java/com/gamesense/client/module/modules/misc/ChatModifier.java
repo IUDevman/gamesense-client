@@ -2,9 +2,9 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -16,11 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+@Module.Declaration(name = "ChatModifier", category = Category.Misc)
 public class ChatModifier extends Module {
-
-	public ChatModifier() {
-		super("ChatModifier", Category.Misc);
-	}
 
 	public Setting.Boolean clearBkg;
 	Setting.Boolean chatTimeStamps;
@@ -72,7 +69,7 @@ public class ChatModifier extends Module {
 	private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
 		if (greenText.getValue()) {
 			if (event.getPacket() instanceof CPacketChatMessage) {
-				if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(Command.getCommandPrefix()))
+				if (((CPacketChatMessage) event.getPacket()).getMessage().startsWith("/") || ((CPacketChatMessage) event.getPacket()).getMessage().startsWith(CommandManager.getCommandPrefix()))
 					return;
 				String message = ((CPacketChatMessage) event.getPacket()).getMessage();
 				String prefix = "";

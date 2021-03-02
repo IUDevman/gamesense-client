@@ -3,23 +3,17 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.command.commands.AutoGearCommand;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerShulkerBox;
 import net.minecraft.item.ItemStack;
 
-/*
-    The algo is the same as AutoSort, just with few difference because of how inventory works
- */
-
 import java.util.*;
 
+@Module.Declaration(name = "AutoGear", category = Category.Misc)
 public class AutoGear extends Module {
-
-    public AutoGear() {
-        super("AutoGear", Category.Misc);
-    }
 
     Setting.Boolean chatMsg,
                     debugMode,

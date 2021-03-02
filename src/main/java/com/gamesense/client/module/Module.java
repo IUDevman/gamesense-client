@@ -1,68 +1,53 @@
 package com.gamesense.client.module;
 
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
+import com.gamesense.client.module.modules.Category;
 import com.lukflug.panelstudio.settings.KeybindSetting;
 import com.lukflug.panelstudio.settings.Toggleable;
-
 import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Keyboard;
 
-public abstract class Module implements Toggleable,KeybindSetting {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.List;
+
+public abstract class Module implements Toggleable, KeybindSetting {
 
 	protected static final Minecraft mc = Minecraft.getMinecraft();
 
-	String name;
-	Category category;
-	int bind;
-	boolean enabled;
-	boolean drawn;
-
-	int priority;
-
-	public Module(String name, Category category) {
-		this(name, category, 0);
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	public @interface Declaration {
+		String name();
+		Category category();
+		int priority() default 0;
+		int bind() default Keyboard.KEY_NONE;
+		boolean enabled() default false;
+		boolean drawn() default true;
 	}
 
-	public Module(String name, Category category, int priority) {
-		this.name = name;
-		this.category = category;
-		this.bind = Keyboard.KEY_NONE;
-		this.enabled = false;
-		this.drawn = true;
-		this.priority = priority;
+	private final String name = getDeclaration().name();
+	private final Category category = getDeclaration().category();
+	private final int priority = getDeclaration().priority();
+	private int bind = getDeclaration().bind();
+	private boolean enabled = getDeclaration().enabled();
+	private boolean drawn = getDeclaration().drawn();
+
+	public Module() {
 		setup();
 	}
 
-	public String getName() {
-		return this.name;
+	private Declaration getDeclaration() {
+		return getClass().getAnnotation(Declaration.class);
 	}
 
-	public void setName(String name){
-		this.name = name;
-	}
+	public void setup() {
 
-	public Category getCategory() {
-		return this.category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
-	public int getBind() {
-		return this.bind;
-	}
-
-	public void setBind(int bind){
-		if (bind >= 0 && bind <= 255) {
-			this.bind = bind;
-		}
 	}
 
 	protected void onEnable() {
@@ -114,12 +99,30 @@ public abstract class Module implements Toggleable,KeybindSetting {
 		}
 	}
 
-	public String getHudInfo() {
-		return "";
+	public String getName() {
+		return this.name;
 	}
 
-	public void setup() {
+	public Category getCategory() {
+		return this.category;
+	}
 
+	public int getPriority() {
+		return priority;
+	}
+
+	public int getBind() {
+		return this.bind;
+	}
+
+	public void setBind(int bind){
+		if (bind >= 0 && bind <= 255) {
+			this.bind = bind;
+		}
+	}
+
+	public String getHudInfo() {
+		return "";
 	}
 
 	public boolean isDrawn() {
@@ -129,8 +132,6 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	public void setDrawn(boolean drawn) {
 		this.drawn = drawn;
 	}
-
-	/** Check Setting.java */
 
 	protected Setting.Integer registerInteger(final String name, final int value, final int min, final int max) {
 		final Setting.Integer setting = new Setting.Integer(name, this, getCategory(), value, min, max);
@@ -164,20 +165,6 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	
 	protected Setting.ColorSetting registerColor (final String name) {
 		return registerColor(name, new GSColor(90,145,240));
-	}
-
-	public enum Category {
-		Combat,
-		Exploits,
-		Movement,
-		Misc,
-		Render,
-		HUD,
-		GUI
-	}
-
-	public int getPriority() {
-		return priority;
 	}
 
 	@Override

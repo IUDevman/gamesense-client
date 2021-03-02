@@ -6,6 +6,7 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -18,11 +19,8 @@ import java.util.ArrayList;
  * @Author Hoosiers on 10/10/2020
  */
 
+@Module.Declaration(name = "BlockHighlight", category = Category.Render)
 public class BlockHighlight extends Module {
-
-    public BlockHighlight() {
-        super("BlockHighlight", Category.Render);
-    }
 
     Setting.Integer lineWidth;
     Setting.Mode renderType;

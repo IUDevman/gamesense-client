@@ -1,12 +1,13 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
-import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -25,11 +26,8 @@ import java.util.ArrayList;
  * @author Techale on 12/19/2020
  */
 
+@Module.Declaration(name = "ESP", category = Category.Render)
 public class ESP extends Module {
-
-    public ESP() {
-        super("ESP", Category.Render);
-    }
 
     Setting.Mode playerESPMode;
     Setting.Mode mobESPMode;

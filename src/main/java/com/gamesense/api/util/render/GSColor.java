@@ -1,8 +1,8 @@
 package com.gamesense.api.util.render;
 
-import java.awt.Color;
-
 import net.minecraft.client.renderer.GlStateManager;
+
+import java.awt.*;
 
 /**
 * @author lukflug

@@ -8,16 +8,8 @@ import com.gamesense.client.command.Command;
  * @Author Hoosiers on 11/05/2020
  */
 
+@Command.Declaration(name = "Enemy", syntax = "enemy list/add/del [player]", alias = { "enemy", "enemies", "e" })
 public class EnemyCommand extends Command {
-
-    public EnemyCommand() {
-        super("Enemy");
-
-        setCommandSyntax(Command.getCommandPrefix() + "enemy list/add/del [player]");
-        setCommandAlias(new String[]{
-                "enemy", "enemies", "e"
-        });
-    }
 
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];

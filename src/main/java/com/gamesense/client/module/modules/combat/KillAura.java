@@ -11,6 +11,7 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -36,16 +37,12 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author GameSense client for original code (actual author unknown)
- * @source https://github.com/IUDevman/gamesense-client/blob/2.2.6/src/main/java/com/gamesense/client/module/modules/combat/KillAura.java
  * @author 0b00101010
  * @since 07/02/2021
  */
-public class KillAura extends Module {
 
-	public KillAura() {
-		super("KillAura", Category.Combat);
-	}
+@Module.Declaration(name = "KillAura", category = Category.Combat)
+public class KillAura extends Module {
 
 	Setting.Boolean players;
 	Setting.Boolean hostileMobs;

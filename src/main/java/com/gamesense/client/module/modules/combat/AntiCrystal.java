@@ -5,6 +5,7 @@ import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockPressurePlate;
@@ -23,6 +24,7 @@ import net.minecraft.util.math.Vec3d;
  * @Author TechAle
  */
 
+@Module.Declaration(name = "AntiCrystal", category = Category.Combat)
 public class AntiCrystal extends Module {
 
     Setting.Double  rangePlace,
@@ -45,10 +47,6 @@ public class AntiCrystal extends Module {
 
     private int delayTimeTicks;
     private boolean isSneaking = false;
-
-    public AntiCrystal() {
-        super("AntiCrystal", Category.Combat);
-    }
 
     @Override
     public void setup() {

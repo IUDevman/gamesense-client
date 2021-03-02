@@ -1,23 +1,24 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
 
-// PanelStudio rewrite by lukflug
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Module.Declaration(name = "TextRadar", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 50)
 public class TextRadar extends HUDModule {
 
 	private Setting.Boolean sortUp;
@@ -25,10 +26,6 @@ public class TextRadar extends HUDModule {
 	private Setting.Integer range;
 	private Setting.Mode display;
 	private PlayerList list=new PlayerList();
-	
-	public TextRadar() {
-		super("TextRadar",new Point(0,50));
-	}
 
 	public void setup() {
 		ArrayList<String> displayModes = new ArrayList<>();

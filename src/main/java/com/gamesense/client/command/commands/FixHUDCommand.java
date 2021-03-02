@@ -2,18 +2,12 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
+import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.HUDModule;
 
+@Command.Declaration(name = "FixHUD", syntax = "fixhud", alias = { "fixhud", "hud", "resethud" })
 public class FixHUDCommand extends Command {
-	public FixHUDCommand() {
-		super("FixHUD");
-		setCommandSyntax(Command.getCommandPrefix() + "fixhud");
-        setCommandAlias(new String[]{
-                "fixhud", "hud", "resethud"
-        });
-	}
 
 	@Override
 	public void onCommand(String command, String[] message) throws Exception {
@@ -24,5 +18,4 @@ public class FixHUDCommand extends Command {
 		}
         MessageBus.sendCommandMessage("HUD positions reset!", true);
 	}
-
 }

@@ -1,23 +1,14 @@
 package com.gamesense.client.clickgui;
 
-import java.awt.Point;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import com.google.gson.*;
+import com.lukflug.panelstudio.ConfigList;
+import com.lukflug.panelstudio.PanelConfig;
+
+import java.awt.*;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.lukflug.panelstudio.ConfigList;
-import com.lukflug.panelstudio.PanelConfig;
 
 public class GuiConfig implements ConfigList {
 

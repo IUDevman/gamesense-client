@@ -2,13 +2,11 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.init.Items;
 
+@Module.Declaration(name = "FastPlace", category = Category.Misc)
 public class FastPlace extends Module {
-
-	public FastPlace() {
-		super("FastPlace", Category.Misc);
-	}
 
 	Setting.Boolean exp;
 	Setting.Boolean crystals;

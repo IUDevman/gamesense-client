@@ -1,12 +1,5 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.Comparator;
-import java.util.Objects;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
@@ -14,12 +7,13 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
 import com.lukflug.panelstudio.theme.Theme;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,22 +23,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextFormatting;
 
+import java.awt.*;
+import java.util.Comparator;
+import java.util.Objects;
+
 /**
  * @Author Hoosiers on 10/19/2020,
  * update by linustouchtips on 10/27/2020,
  * rewritten by lukflug on 21.11.2020
  */
 
+@Module.Declaration(name = "TargetHUD", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 70)
 public class TargetHUD extends HUDModule {
 
     private Setting.ColorSetting outline;
     private Setting.ColorSetting background;
     private Setting.Integer range;
     private static EntityPlayer targetPlayer;
-    
-    public TargetHUD() {
-        super("TargetHUD",new Point(0,70));
-    }
 
     public void setup() {
     	range = registerInteger("Range", 100, 10, 260);

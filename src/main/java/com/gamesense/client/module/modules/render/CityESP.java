@@ -9,6 +9,7 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -27,11 +28,9 @@ import java.util.stream.Collectors;
  * @author 0b00101010
  * @since 30/01/2021
  */
-public class CityESP extends Module {
 
-    public CityESP() {
-        super("CityESP", Category.Render);
-    }
+@Module.Declaration(name = "CityESP", category = Category.Render)
+public class CityESP extends Module {
 
     Setting.Integer range;
     Setting.Integer down;

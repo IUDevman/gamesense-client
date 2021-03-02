@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.render;
 import com.gamesense.api.event.events.BossbarEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.material.Material;
@@ -11,11 +12,8 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+@Module.Declaration(name = "NoRender", category = Category.Render)
 public class NoRender extends Module {
-
-	public NoRender() {
-		super("NoRender", Category.Render);
-	}
 
 	public Setting.Boolean armor;
 	Setting.Boolean fire;

@@ -1,8 +1,8 @@
 package com.gamesense.mixin.mixins;
 
+import com.gamesense.api.event.events.PlayerJumpEvent;
 import com.gamesense.api.event.events.WaterPushEvent;
 import com.gamesense.client.GameSense;
-import com.gamesense.api.event.events.PlayerJumpEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import org.spongepowered.asm.mixin.Mixin;

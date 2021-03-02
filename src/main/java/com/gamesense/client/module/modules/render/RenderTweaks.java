@@ -2,14 +2,12 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemSword;
 
+@Module.Declaration(name = "RenderTweaks", category = Category.Render)
 public class RenderTweaks extends Module {
-
-	public RenderTweaks() {
-		super("RenderTweaks", Category.Render);
-	}
 
 	public Setting.Boolean viewClip;
 	Setting.Boolean nekoAnimation;

@@ -1,9 +1,10 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
@@ -18,12 +19,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Module.Declaration(name = "AutoGG", category = Category.Misc)
 public class AutoGG extends Module {
 
 	public static AutoGG INSTANCE;
 
 	public AutoGG() {
-		super("AutoGG", Category.Misc);
 		INSTANCE = this;
 	}
 

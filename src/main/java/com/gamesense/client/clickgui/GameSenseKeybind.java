@@ -1,11 +1,10 @@
 package com.gamesense.client.clickgui;
 
-import org.lwjgl.input.Keyboard;
-
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.settings.KeybindComponent;
 import com.lukflug.panelstudio.settings.KeybindSetting;
 import com.lukflug.panelstudio.theme.Renderer;
+import org.lwjgl.input.Keyboard;
 
 public class GameSenseKeybind extends KeybindComponent {
 

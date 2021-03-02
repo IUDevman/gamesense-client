@@ -14,10 +14,10 @@ import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -57,11 +57,8 @@ import java.util.stream.IntStream;
  * @author CyberTF2 and Hoosiers
  */
 
+@Module.Declaration(name = "AutoCrystalGS", category = Category.Combat, priority = 100)
 public class AutoCrystalGS extends Module {
-
-    public AutoCrystalGS() {
-        super("AutoCrystalGS", Category.Combat, 100);
-    }
 
     Setting.Boolean breakCrystal;
     Setting.Boolean antiWeakness;

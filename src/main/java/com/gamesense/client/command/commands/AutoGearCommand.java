@@ -2,16 +2,18 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
-import com.gamesense.client.module.modules.misc.SortInventory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.item.ItemStack;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 
+@Command.Declaration(name = "AutoGear", syntax = "gear set/save/del/list [name]", alias = { "gear", "gr", "kit" })
 public class AutoGearCommand extends Command {
 
     final static private String pathSave = "GameSense/Misc/AutoGear.json";
@@ -24,17 +26,6 @@ public class AutoGearCommand extends Command {
             put("NoEx", "Kit not found");
         }
     };
-
-    public AutoGearCommand() {
-        super("AutoGear");
-
-        setCommandSyntax(Command.getCommandPrefix() + "gear set/save/del/list [name]");
-
-        setCommandAlias(new String[]{
-                "gear", "gr", "kit"
-        });
-
-    }
 
     public void onCommand(String command, String[] message) throws Exception {
 
@@ -206,5 +197,4 @@ public class AutoGearCommand extends Command {
         errorMessage("NoEx");
         return "";
     }
-
 }

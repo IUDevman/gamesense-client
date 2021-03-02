@@ -1,12 +1,12 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerJumpEvent;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -22,11 +22,8 @@ import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Module.Declaration(name = "Announcer", category = Category.Misc)
 public class Announcer extends Module {
-
-	public Announcer() {
-		super("Announcer", Category.Misc);
-	}
 
 	public static int blockBrokeDelay = 0;
 	static int blockPlacedDelay = 0;

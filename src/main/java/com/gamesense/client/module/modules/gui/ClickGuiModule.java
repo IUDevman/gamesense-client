@@ -6,21 +6,14 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.misc.Announcer;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 
+@Module.Declaration(name = "ClickGUI", category = Category.GUI, bind = Keyboard.KEY_O, drawn = false)
 public class ClickGuiModule extends Module {
-
-	public ClickGuiModule INSTANCE;
-
-	public ClickGuiModule() {
-		super("ClickGUI", Category.GUI);
-		setBind(Keyboard.KEY_O);
-		setDrawn(false);
-		INSTANCE = this;
-	}
 
 	public static Setting.Integer scrollSpeed;
 	public static Setting.Integer opacity;

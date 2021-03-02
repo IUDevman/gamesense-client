@@ -1,9 +1,9 @@
 package com.gamesense.client.module.modules.movement;
 
-import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.api.event.events.PacketEvent;
+import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -12,16 +12,12 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.client.CPacketPlayer;
 
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+@Module.Declaration(name = "Blink", category = Category.Movement)
 public class Blink extends Module {
-
-    public Blink() {
-        super("Blink", Category.Movement);
-    }
 
     private Setting.Boolean ghostPlayer;
 

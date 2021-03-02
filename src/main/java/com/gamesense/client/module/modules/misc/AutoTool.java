@@ -2,8 +2,8 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.event.events.DamageBlockEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.state.IBlockState;
@@ -12,11 +12,8 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Mouse;
 
+@Module.Declaration(name = "AutoTool", category = Category.Misc)
 public class AutoTool extends Module {
-
-	public AutoTool() {
-		super("AutoTool", Category.Misc);
-	}
 
 	Setting.Boolean switchBack;
 

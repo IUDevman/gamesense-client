@@ -8,6 +8,7 @@ import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEnderChest;
@@ -34,13 +35,10 @@ import java.util.stream.Collectors;
  * @author 0b00101010
  * @since 26/01/2021
  * @author TechAle
- * @since add this later
  */
-public class HoleFill extends Module {
 
-	public HoleFill() {
-		super("HoleFill", Category.Combat);
-	}
+@Module.Declaration(name = "HoleFill", category = Category.Combat)
+public class HoleFill extends Module {
 
 	Setting.Boolean chatMsgs;
 	Setting.Boolean autoSwitch;

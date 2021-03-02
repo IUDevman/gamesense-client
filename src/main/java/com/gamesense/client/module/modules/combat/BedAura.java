@@ -3,11 +3,12 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.api.util.misc.Timer;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,11 +36,8 @@ import java.util.stream.Collectors;
  * @since 1/2/2020
  */
 
+@Module.Declaration(name = "BedAura", category = Category.Combat)
 public class BedAura extends Module {
-
-    public BedAura() {
-        super("BedAura", Category.Combat);
-    }
 
     Setting.Mode attackMode;
     Setting.Double attackRange;

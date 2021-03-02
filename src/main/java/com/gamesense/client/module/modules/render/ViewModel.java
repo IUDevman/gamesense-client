@@ -2,8 +2,8 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.TransformSideFirstPersonEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,11 +19,8 @@ import java.util.ArrayList;
  * @Author NekoPvP (Item FOV)
  */
 
+@Module.Declaration(name = "ViewModel", category = Category.Render)
 public class ViewModel extends Module {
-
-	public ViewModel() {
-		super("ViewModel", Category.Render);
-	}
 
 	public Setting.Boolean cancelEating;
 	Setting.Mode type;

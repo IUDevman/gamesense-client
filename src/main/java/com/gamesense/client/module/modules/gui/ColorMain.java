@@ -3,17 +3,14 @@ package com.gamesense.client.module.modules.gui;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.util.ArrayList;
 
+@Module.Declaration(name = "Colors", category = Category.GUI, drawn = false)
 public class ColorMain extends Module {
-
-	public ColorMain() {
-		super("Colors", Category.GUI);
-		setDrawn(false);
-	}
 
 	public static Setting.Mode colorModel;
 	public static Setting.Mode friendColor;

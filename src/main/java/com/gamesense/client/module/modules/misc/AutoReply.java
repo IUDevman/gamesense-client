@@ -1,17 +1,14 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.client.GameSense;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
+@Module.Declaration(name = "AutoReply", category = Category.Misc)
 public class AutoReply extends Module {
-
-	public AutoReply() {
-		super("AutoReply", Category.Misc);
-	}
 
 	private static String reply = "I don't speak to newfags!";
 

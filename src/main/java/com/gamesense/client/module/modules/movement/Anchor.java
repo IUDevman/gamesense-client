@@ -2,8 +2,8 @@ package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.world.HoleUtil;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
@@ -16,11 +16,8 @@ import java.util.HashMap;
  * @since 25/01/21
  */
 
+@Module.Declaration(name = "Anchor", category = Category.Movement)
 public class Anchor extends Module {
-
-    public Anchor() {
-        super("Anchor", Category.Movement);
-    }
 
     Setting.Boolean guarantee;
     Setting.Integer activateHeight;

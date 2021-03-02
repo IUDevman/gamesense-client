@@ -3,7 +3,6 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.combat.CrystalUtil;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
@@ -11,10 +10,13 @@ import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,18 +28,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 
+@Module.Declaration(name = "CevBreaker", category = Category.Combat)
 public class CevBreaker extends Module {
-
-    public CevBreaker() {
-        super("CevBreaker", Category.Combat);
-    }
 
     Setting.Mode breakCrystal,
                 breakBlock,

@@ -1,14 +1,11 @@
 package com.gamesense.client.module.modules.render;
 
-import java.util.ArrayList;
-
 import com.gamesense.api.event.events.RenderEntityEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.ChamsUtil;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
-
+import com.gamesense.client.module.modules.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
@@ -18,16 +15,15 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.ArrayList;
+
 /**
  * @author Techale
  * @author Hoosiers
  */
 
+@Module.Declaration(name = "Chams", category = Category.Render)
 public class Chams extends Module {
-
-    public Chams() {
-        super("Chams", Category.Render);
-    }
 
     Setting.Mode chamsType;
     Setting.ColorSetting playerColor;

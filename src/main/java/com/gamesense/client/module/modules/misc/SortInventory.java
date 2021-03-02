@@ -8,13 +8,16 @@ package com.gamesense.client.module.modules.misc;
     TODO: Take chest/shulker items to inventory
     TODO: Sort inventory
  */
+
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.command.commands.AutoGearCommand;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
+
 import java.util.*;
 
 /**
@@ -39,11 +42,8 @@ import java.util.*;
     I added double check because, so the end is going to be perfect in anyway
  */
 
+@Module.Declaration(name = "SortInventory", category = Category.Misc)
 public class SortInventory extends Module {
-
-    public SortInventory() {
-        super("SortInventory", Category.Misc);
-    }
 
     Setting.Boolean chatMsg,
                     debugMode,

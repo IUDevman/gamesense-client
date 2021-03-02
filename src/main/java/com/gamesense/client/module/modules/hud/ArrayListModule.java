@@ -1,33 +1,30 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
-// PanelStudio rewrite by lukflug
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+@Module.Declaration(name = "ArrayList", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 200)
 public class ArrayListModule extends HUDModule {
 
     private Setting.Boolean sortUp;
     private Setting.Boolean sortRight;
     private Setting.ColorSetting color;
-	private ModuleList list=new ModuleList();
-
-    public ArrayListModule() {
-    	super("ArrayList",new Point(0,200));
-    }
+	private ModuleList list = new ModuleList();
 
     public void setup() {
         sortUp = registerBoolean("Sort Up", true);

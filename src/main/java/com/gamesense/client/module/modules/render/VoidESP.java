@@ -1,8 +1,5 @@
 package com.gamesense.client.module.modules.render;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
@@ -10,20 +7,20 @@ import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
-
+import com.gamesense.client.module.modules.Category;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: Hoosiers on 08/14/20
  */
 
+@Module.Declaration(name = "VoidESP", category = Category.Render)
 public class VoidESP extends Module {
-
-	public VoidESP() {
-		super("VoidESP", Category.Render);
-	}
 
 	Setting.Integer renderDistance;
 	Setting.Integer activeYValue;

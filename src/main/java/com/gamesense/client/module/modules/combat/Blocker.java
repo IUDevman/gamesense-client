@@ -7,6 +7,7 @@ import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
@@ -24,11 +25,8 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
  * Ported Crystal Break from AutoCrystal.java
  */
 
+@Module.Declaration(name = "Blocker", category = Category.Combat)
 public class Blocker extends Module {
-
-    public Blocker() {
-        super("Blocker", Category.Combat);
-    }
 
     Setting.Boolean chatMsg;
     Setting.Boolean rotate;

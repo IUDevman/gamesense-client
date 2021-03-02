@@ -1,10 +1,5 @@
 package com.gamesense.client.clickgui;
 
-import java.awt.Color;
-import java.awt.Point;
-
-import org.lwjgl.opengl.GL11;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
@@ -12,6 +7,7 @@ import com.gamesense.client.GameSense;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.CollapsibleContainer;
@@ -22,24 +18,17 @@ import com.lukflug.panelstudio.hud.HUDClickGUI;
 import com.lukflug.panelstudio.hud.HUDPanel;
 import com.lukflug.panelstudio.mc12.GLInterface;
 import com.lukflug.panelstudio.mc12.MinecraftHUDGUI;
-import com.lukflug.panelstudio.settings.BooleanComponent;
-import com.lukflug.panelstudio.settings.EnumComponent;
-import com.lukflug.panelstudio.settings.NumberComponent;
-import com.lukflug.panelstudio.settings.SimpleToggleable;
-import com.lukflug.panelstudio.settings.Toggleable;
-import com.lukflug.panelstudio.theme.ClearTheme;
-import com.lukflug.panelstudio.theme.ColorScheme;
-import com.lukflug.panelstudio.theme.GameSenseTheme;
-import com.lukflug.panelstudio.theme.SettingsColorScheme;
-import com.lukflug.panelstudio.theme.Theme;
-import com.lukflug.panelstudio.theme.ThemeMultiplexer;
-
+import com.lukflug.panelstudio.settings.*;
+import com.lukflug.panelstudio.theme.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 
 public class GameSenseGUI extends MinecraftHUDGUI {
 
@@ -134,7 +123,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			}
 		}
 		Point pos = new Point(DISTANCE, DISTANCE);
-		for (Module.Category category: Module.Category.values()) {
+		for (Category category: Category.values()) {
 			DraggableContainer panel = new DraggableContainer(category.name(), null, theme.getPanelRenderer(), new SimpleToggleable(false), new SettingsAnimation(ClickGuiModule.animationSpeed), null, new Point(pos), WIDTH) {
 
 				@Override

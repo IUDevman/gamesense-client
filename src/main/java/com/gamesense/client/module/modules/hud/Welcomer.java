@@ -1,23 +1,21 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Point;
-
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 
-// PanelStudio rewrite by lukflug
+import java.awt.*;
+
+@Module.Declaration(name = "Welcomer", category = Category.HUD)
+@HUDModule.Declaration(posX = 450, posZ = 0)
 public class Welcomer extends HUDModule {
 
 	private Setting.ColorSetting color;
-	
-	public Welcomer() {
-		super("Welcomer",new Point(450,0));
-	}
 	
 	public void setup() {
 		color=registerColor("Color", new GSColor(255, 0, 0, 255));

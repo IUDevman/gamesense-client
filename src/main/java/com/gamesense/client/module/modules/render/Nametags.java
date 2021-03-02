@@ -1,19 +1,15 @@
 package com.gamesense.client.module.modules.render;
 
-import java.util.Iterator;
-
-import org.lwjgl.opengl.GL11;
-
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.util.font.FontUtil;
+import com.gamesense.api.util.player.enemy.Enemies;
+import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.enchantment.Enchantment;
@@ -25,17 +21,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Iterator;
 
 /**
  * Author: CyberTF2
  * Edited by Hoosiers :D
  */
 
+@Module.Declaration(name = "Nametags", category = Category.Render)
 public class Nametags extends Module {
-
-	public Nametags() {
-		super("Nametags", Category.Render);
-	}
 
 	Setting.Integer range;
 	Setting.Boolean durability;

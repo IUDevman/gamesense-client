@@ -2,8 +2,9 @@ package com.gamesense.mixin.mixins;
 
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.NoEntityTrace;
-import com.gamesense.client.module.modules.render.RenderTweaks;
 import com.gamesense.client.module.modules.render.NoRender;
+import com.gamesense.client.module.modules.render.RenderTweaks;
+import com.google.common.base.Predicate;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.entity.Entity;
@@ -14,12 +15,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.base.Predicate;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class MixinEntityRenderer {

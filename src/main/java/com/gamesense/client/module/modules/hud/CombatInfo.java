@@ -5,7 +5,9 @@ import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.combat.AutoCrystalGS;
 import com.gamesense.client.module.modules.combat.OffHand;
 import com.lukflug.panelstudio.hud.HUDList;
@@ -24,6 +26,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Module.Declaration(name = "CombatInfo", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 150)
 public class CombatInfo extends HUDModule {
 
     private Setting.Mode infoType;
@@ -33,10 +37,6 @@ public class CombatInfo extends HUDModule {
     private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};;
 	private static final String[] hoosiersModules={"AutoCrystalGS","KillAura","Surround","AutoTrap","SelfTrap"};
 	private static final String[] hoosiersNames={"AC","KA","SU","AT","ST"};
-	
-    public CombatInfo() {
-    	super("CombatInfo",new Point(0,150));
-    }
 
     public void setup() {
         ArrayList<String> infoTypes = new ArrayList<>();

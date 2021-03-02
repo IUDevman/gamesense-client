@@ -6,6 +6,7 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -17,11 +18,8 @@ import java.util.ArrayList;
  * @since 12/13/2020
  */
 
+@Module.Declaration(name = "BreakESP", category = Category.Render)
 public class BreakESP extends Module {
-
-    public BreakESP() {
-        super("BreakESP", Category.Render);
-    }
 
     Setting.Mode renderType;
     Setting.ColorSetting color;

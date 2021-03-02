@@ -3,12 +3,10 @@ package com.gamesense.client.module.modules.movement;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.Category;
 
+@Module.Declaration(name = "ReverseStep", category = Category.Movement)
 public class ReverseStep extends Module {
-
-	public ReverseStep() {
-		super("ReverseStep", Category.Movement);
-	}
 
 	Setting.Double height;
 

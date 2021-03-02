@@ -5,16 +5,13 @@ import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Module;
-
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
+@Module.Declaration(name = "HitSpheres", category = Category.Render)
 public class HitSpheres extends Module {
-
-	public HitSpheres() {
-		super("HitSpheres", Category.Render);
-	}
 
 	public void onWorldRender(RenderEvent event) {
 		for (Entity entity : mc.world.loadedEntityList) {
