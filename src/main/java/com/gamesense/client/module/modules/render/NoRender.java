@@ -2,7 +2,6 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.BossbarEvent;
 import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -38,7 +37,7 @@ public class NoRender extends Module {
 		nausea = registerBoolean("Nausea", false);
 		hurtCam = registerBoolean("HurtCam", false);
 		noSkylight = registerBoolean("Skylight", false);
-		noOverlay = registerBoolean("No Overlay", false); //need to make sure this works better
+		noOverlay = registerBoolean("No Overlay", false);
 		noBossBar = registerBoolean("No Boss Bar", false);
 		noCluster = registerBoolean("No Cluster", false);
 		maxNoClusterRender = registerInteger("No Cluster Max", 5, 1, 25);
@@ -76,7 +75,7 @@ public class NoRender extends Module {
 	// Disable screen overlays Overlays
 	@EventHandler
 	private final Listener<RenderBlockOverlayEvent> renderBlockOverlayEventListener = new Listener<>(event -> {
-		event.setCanceled(true);
+		if (noOverlay.getValue()) event.setCanceled(true);
 	});
 
 	@EventHandler
@@ -98,14 +97,6 @@ public class NoRender extends Module {
 			event.cancel();
 		}
 	});
-
-	public void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
-	}
-
-	public void onDisable() {
-		GameSense.EVENT_BUS.unsubscribe(this);
-	}
 
 	// return whether to render or not
 	public static boolean incrementNoClusterRender() {

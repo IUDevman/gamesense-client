@@ -23,12 +23,19 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	boolean enabled;
 	boolean drawn;
 
+	int priority;
+
 	public Module(String name, Category category) {
+		this(name, category, 0);
+	}
+
+	public Module(String name, Category category, int priority) {
 		this.name = name;
 		this.category = category;
 		this.bind = Keyboard.KEY_NONE;
 		this.enabled = false;
 		this.drawn = true;
+		this.priority = priority;
 		setup();
 	}
 
@@ -53,7 +60,9 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	}
 
 	public void setBind(int bind){
-		this.bind = bind;
+		if (bind >= 0 && bind <= 255) {
+			this.bind = bind;
+		}
 	}
 
 	protected void onEnable() {
@@ -86,11 +95,13 @@ public abstract class Module implements Toggleable,KeybindSetting {
 
 	public void enable() {
 		setEnabled(true);
+		GameSense.EVENT_BUS.subscribe(this);
 		onEnable();
 	}
 
 	public void disable() {
 		setEnabled(false);
+		GameSense.EVENT_BUS.unsubscribe(this);
 		onDisable();
 	}
 
@@ -164,7 +175,11 @@ public abstract class Module implements Toggleable,KeybindSetting {
 		HUD,
 		GUI
 	}
-	
+
+	public int getPriority() {
+		return priority;
+	}
+
 	@Override
 	public boolean isOn() {
 		return this.enabled;
@@ -172,16 +187,20 @@ public abstract class Module implements Toggleable,KeybindSetting {
 	
 	@Override
 	public int getKey() {
-		return this.bind;
+		return this.getBind();
 	}
 	
 	@Override
 	public void setKey(int key) {
-		this.bind = key;
+		setBind(key);
 	}
     
 	@Override
 	public String getKeyName() {
-		return Keyboard.getKeyName(this.bind);
+		if (this.bind <= 0 || this.bind > 255) {
+			return "NONE";
+		} else {
+			return Keyboard.getKeyName(this.bind);
+		}
 	}
 }

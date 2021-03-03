@@ -8,7 +8,7 @@ public class Friends {
 	public static List<Friend> friends;
 
 	public Friends(){
-		this.friends = new ArrayList<>();
+		friends = new ArrayList<>();
 	}
 
 	public static List<Friend> getFriends() {
@@ -17,9 +17,7 @@ public class Friends {
 
 	public static List<String> getFriendsByName() {
 		ArrayList<String> friendsName = new ArrayList<>();
-		friends.forEach(friend -> {
-			friendsName.add(friend.getName());
-		});
+		friends.forEach(friend -> friendsName.add(friend.getName()));
 
 		return friendsName;
 	}
@@ -29,6 +27,7 @@ public class Friends {
 		for (Friend f : getFriends()) {
 			if (f.getName().equalsIgnoreCase(name)) {
 				b = true;
+				break;
 			}
 		}
 

@@ -18,6 +18,7 @@ public class CommandManager {
         addCommand(new AutoGGCommand());
         addCommand(new AutoReplyCommand());
         addCommand(new AutoRespawnCommand());
+        addCommand(new BackupConfigCommand());
         addCommand(new BindCommand());
         addCommand(new CmdListCommand());
         addCommand(new DisableAllCommand());

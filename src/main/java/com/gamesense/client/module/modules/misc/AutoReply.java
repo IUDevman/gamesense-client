@@ -33,12 +33,4 @@ public class AutoReply extends Module {
 	public static void setReply(String r) {
 		reply = r;
 	}
-
-	public void onEnable() {
-		GameSense.EVENT_BUS.subscribe(this);
-	}
-
-	public void onDisable() {
-		GameSense.EVENT_BUS.unsubscribe(this);
-	}
 }

@@ -71,12 +71,10 @@ public class ViewModel extends Module {
 	}
 
 	public void onEnable(){
-		GameSense.EVENT_BUS.subscribe(this);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	public void onDisable(){
-		GameSense.EVENT_BUS.unsubscribe(this);
 		MinecraftForge.EVENT_BUS.unregister(this);
 	}
 }

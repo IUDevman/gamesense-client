@@ -1,5 +1,11 @@
 package com.gamesense.client;
 
+import java.awt.Font;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.Display;
+
 import com.gamesense.api.config.ConfigStopper;
 import com.gamesense.api.config.LoadConfig;
 import com.gamesense.api.config.SaveConfig;
@@ -12,24 +18,20 @@ import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.CapeUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
+import com.gamesense.client.manager.ManagerLoader;
 import com.gamesense.client.module.ModuleManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.Display;
 
 import me.zero.alpine.EventBus;
 import me.zero.alpine.EventManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
-import java.awt.Font;
-
 @Mod(modid = GameSense.MODID, name = GameSense.MODNAME, version = GameSense.MODVER)
 public class GameSense {
 
 	public static final String MODNAME = "GameSense";
 	public static final String MODID = "gamesense";
-	public static final String MODVER = "v2.2.7";
+	public static final String MODVER = "v2.2.8";
 	/** Official release starts with a "v", dev versions start with a "d" to bypass version check */
 
 	public static final Logger LOGGER = LogManager.getLogger(MODNAME);
@@ -86,6 +88,9 @@ public class GameSense {
 
 		ModuleManager.init();
 		LOGGER.info("Modules initialized!");
+
+		ManagerLoader.init();
+		LOGGER.info("Managers initialized!");
 
 		gameSenseGUI = new GameSenseGUI();
 		LOGGER.info("GameSenseGUI initialized!");

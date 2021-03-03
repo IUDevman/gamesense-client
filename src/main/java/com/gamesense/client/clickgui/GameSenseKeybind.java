@@ -16,11 +16,12 @@ public class GameSenseKeybind extends KeybindComponent {
 	@Override
 	public void handleKey (Context context, int scancode) {
 		context.setHeight(renderer.getHeight(false));
-		if (hasFocus(context) && scancode==Keyboard.KEY_DELETE) {
+    
+		if (hasFocus(context) && (scancode == Keyboard.KEY_DELETE || scancode == Keyboard.KEY_BACK)) {
 			keybind.setKey(0);
 			releaseFocus();
 			return;
 		}
-		super.handleKey(context,scancode);
+		super.handleKey(context, scancode);
 	}
 }

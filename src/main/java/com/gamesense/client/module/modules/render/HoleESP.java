@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author GameSense client for original code (actual author unknown)
- * @source https://github.com/IUDevman/gamesense-client/blob/2.2.5/src/main/java/com/gamesense/client/module/modules/render/HoleESP.java
  * @reworked by 0b00101010 on 14/01/2021
  */
 public class HoleESP extends Module {
