@@ -31,7 +31,7 @@ public class GameSense {
 
 	public static final String MODNAME = "GameSense";
 	public static final String MODID = "gamesense";
-	public static final String MODVER = "d2.2.8";
+	public static final String MODVER = "v2.2.8";
 	/** Official release starts with a "v", dev versions start with a "d" to bypass version check */
 
 	public static final Logger LOGGER = LogManager.getLogger(MODNAME);
