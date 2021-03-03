@@ -13,20 +13,20 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 
-public class CoordinateHud extends HUDModule {
+public class Coordinates extends HUDModule {
     private Setting.Boolean showNetherOverworld;
     private Setting.Boolean thousandsSeparator;
     private Setting.Integer decimalPlaces;
 
     private final String[] coordinateString = {"", ""};
 
-    public CoordinateHud() {
-        super("CoordinateHud", new Point(0, 0));
+    public Coordinates() {
+        super("Coordinates", new Point(0, 0));
     }
 
     @Override
     public void setup() {
-        showNetherOverworld = registerBoolean("Show Nether/Overworld", true);
+        showNetherOverworld = registerBoolean("Show Nether", true);
         thousandsSeparator = registerBoolean("Thousands Separator", true);
         decimalPlaces = registerInteger("Decimal Places", 1, 0, 5);
     }

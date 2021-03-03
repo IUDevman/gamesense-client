@@ -15,7 +15,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class SpeedHud extends HUDModule {
+public class Speedometer extends HUDModule {
 
     private static final String MPS = "m/s";
     private static final String KMH = "km/h";
@@ -28,13 +28,13 @@ public class SpeedHud extends HUDModule {
     private final ArrayDeque<Double> speedDeque = new ArrayDeque<>();
     private String speedString = "";
 
-    public SpeedHud() {
-        super("SpeedHud", new Point(69, 69));
+    public Speedometer() {
+        super("Speedometer", new Point(69, 69));
     }
 
     @Override
     public void setup() {
-        speedUnit = registerMode("Speed Unit", Arrays.asList(MPS, KMH, MPH), KMH);
+        speedUnit = registerMode("Unit", Arrays.asList(MPS, KMH, MPH), KMH);
         averageSpeed = registerBoolean("Average Speed", true);
         averageSpeedTicks = registerInteger("Average Time", 20, 5, 100);
     }
