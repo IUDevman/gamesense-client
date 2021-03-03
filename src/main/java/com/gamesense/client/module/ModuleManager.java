@@ -87,6 +87,7 @@ public class ModuleManager {
         addMod(new PhysicsSpammer());
         addMod(new PvPInfo());
         addMod(new SortInventory());
+        addMod(new XCarry());
         //Render
         addMod(new BlockHighlight());
         addMod(new BreakESP());
