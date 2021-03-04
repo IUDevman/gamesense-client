@@ -1,5 +1,6 @@
 package com.gamesense.client.module.modules.render;
 
+import com.gamesense.api.event.events.DrawBlockDamageEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
@@ -10,6 +11,8 @@ import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -28,7 +31,7 @@ public class BreakESP extends Module {
     ColorSetting color;
     IntegerSetting range;
     IntegerSetting lineWidth;
-    public static BooleanSetting cancelAnimation;
+    BooleanSetting cancelAnimation;
 
     public void setup() {
         ArrayList<String> renderTypes = new ArrayList<>();
@@ -97,4 +100,11 @@ public class BreakESP extends Module {
             }
         }
     }
+
+    @EventHandler
+    private final Listener<DrawBlockDamageEvent> drawBlockDamageEventListener = new Listener<>(event -> {
+       if (cancelAnimation.getValue()) {
+           event.cancel();
+       }
+    });
 }

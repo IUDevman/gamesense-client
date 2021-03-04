@@ -1,5 +1,6 @@
 package com.gamesense.client.module.modules.movement;
 
+import com.gamesense.api.event.events.EntityCollisionEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.WaterPushEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
@@ -17,7 +18,7 @@ import org.lwjgl.input.Keyboard;
 public class PlayerTweaks extends Module {
 
     public BooleanSetting guiMove;
-    public static BooleanSetting noPush;
+    BooleanSetting noPush;
     public BooleanSetting noSlow;
     BooleanSetting antiKnockBack;
 
@@ -36,6 +37,13 @@ public class PlayerTweaks extends Module {
                 event.getMovementInput().moveStrafe *= 5;
                 event.getMovementInput().moveForward *= 5;
             }
+        }
+    });
+
+    @EventHandler
+    private final Listener<EntityCollisionEvent> entityCollisionEventListener = new Listener<>(event -> {
+        if (noPush.getValue()) {
+            event.cancel();
         }
     });
 
