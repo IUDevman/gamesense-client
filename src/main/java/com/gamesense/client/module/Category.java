@@ -1,4 +1,4 @@
-package com.gamesense.client.module.modules;
+package com.gamesense.client.module;
 
 public enum Category {
     Combat,

@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

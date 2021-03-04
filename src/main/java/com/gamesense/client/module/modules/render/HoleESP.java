@@ -9,7 +9,7 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import com.google.common.collect.Sets;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;

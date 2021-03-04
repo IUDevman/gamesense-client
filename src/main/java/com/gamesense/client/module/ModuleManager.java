@@ -3,7 +3,6 @@ package com.gamesense.client.module;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.GameSense;
-import com.gamesense.client.module.modules.Category;
 import com.gamesense.client.module.modules.combat.*;
 import com.gamesense.client.module.modules.exploits.*;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;

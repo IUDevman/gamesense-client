@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import net.minecraft.client.entity.EntityPlayerSP;
 
 @Module.Declaration(name = "Sprint", category = Category.Movement)

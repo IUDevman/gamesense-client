@@ -4,7 +4,7 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.command.commands.AutoGearCommand;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ContainerChest;

@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;

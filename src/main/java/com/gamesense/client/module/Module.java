@@ -5,7 +5,6 @@ import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
-import com.gamesense.client.module.modules.Category;
 import com.lukflug.panelstudio.settings.KeybindSetting;
 import com.lukflug.panelstudio.settings.Toggleable;
 import net.minecraft.client.Minecraft;

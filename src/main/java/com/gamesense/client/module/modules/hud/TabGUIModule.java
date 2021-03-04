@@ -4,7 +4,7 @@ import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.lukflug.panelstudio.Animation;
 import com.lukflug.panelstudio.SettingsAnimation;

@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import net.minecraft.init.Items;
 
 @Module.Declaration(name = "FastPlace", category = Category.Misc)

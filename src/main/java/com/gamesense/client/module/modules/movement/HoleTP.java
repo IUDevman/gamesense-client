@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.movement;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.material.Material;
@@ -15,6 +15,7 @@ import net.minecraft.util.math.MathHelper;
 
 /**
  * Edited by 0b00101010
+ *
  * @since 25/01/21
  */
 

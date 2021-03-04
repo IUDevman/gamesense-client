@@ -7,7 +7,7 @@ import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;

@@ -5,7 +5,7 @@ import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.network.play.client.CPacketChatMessage;

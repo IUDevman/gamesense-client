@@ -1,11 +1,11 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.client.module.modules.Category;
-import net.minecraft.network.play.client.*;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
+import net.minecraft.network.play.client.CPacketCloseWindow;
 
 /**
  * @author Soulbond
@@ -17,8 +17,8 @@ public class XCarry extends Module {
 
     @EventHandler
     private Listener<PacketEvent.Send> listener = new Listener<>(event -> {
-        if(event.getPacket() instanceof CPacketCloseWindow) {
-            if(((CPacketCloseWindow)event.getPacket()).windowId == mc.player.inventoryContainer.windowId) {
+        if (event.getPacket() instanceof CPacketCloseWindow) {
+            if (((CPacketCloseWindow) event.getPacket()).windowId == mc.player.inventoryContainer.windowId) {
                 event.cancel();
             }
         }

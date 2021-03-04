@@ -4,7 +4,7 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -23,13 +23,13 @@ public class Coordinates extends HUDModule {
     private BooleanSetting showNetherOverworld;
     private BooleanSetting thousandsSeparator;
     private IntegerSetting decimalPlaces;
-  
+
     public void setup() {
         showNetherOverworld = registerBoolean("Show Nether", true);
         thousandsSeparator = registerBoolean("Thousands Separator", true);
         decimalPlaces = registerInteger("Decimal Places", 1, 0, 5);
     }
-  
+
     private final String[] coordinateString = {"", ""};
 
     @SuppressWarnings("unused")

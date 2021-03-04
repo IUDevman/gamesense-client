@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.movement;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 
 @Module.Declaration(name = "ReverseStep", category = Category.Movement)
 public class ReverseStep extends Module {

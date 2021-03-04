@@ -8,7 +8,7 @@ import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.ChamsUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.Category;
+import com.gamesense.client.module.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
