@@ -24,12 +24,16 @@ public class Coordinates extends HUDModule {
     private BooleanSetting thousandsSeparator;
     private IntegerSetting decimalPlaces;
 
+    public Coordinates() {
+        super("Coordinates", new Point(0, 0));
+    }
+  
     public void setup() {
         showNetherOverworld = registerBoolean("Show Nether", true);
         thousandsSeparator = registerBoolean("Thousands Separator", true);
         decimalPlaces = registerInteger("Decimal Places", 1, 0, 5);
     }
-
+  
     private final String[] coordinateString = {"", ""};
 
     @SuppressWarnings("unused")

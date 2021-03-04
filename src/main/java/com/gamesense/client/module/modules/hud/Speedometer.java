@@ -26,7 +26,7 @@ public class Speedometer extends HUDModule {
     private static final String MPS = "m/s";
     private static final String KMH = "km/h";
     private static final String MPH = "mph";
-
+  
     private ModeSetting speedUnit;
     private BooleanSetting averageSpeed;
     private IntegerSetting averageSpeedTicks;
@@ -36,7 +36,7 @@ public class Speedometer extends HUDModule {
         averageSpeed = registerBoolean("Average Speed", true);
         averageSpeedTicks = registerInteger("Average Time", 20, 5, 100);
     }
-
+  
     private final ArrayDeque<Double> speedDeque = new ArrayDeque<>();
     private String speedString = "";
 
