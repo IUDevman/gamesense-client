@@ -22,39 +22,40 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerControllerMP.class)
 public abstract class MixinPlayerControllerMP {
 
-	@Shadow public abstract void syncCurrentPlayItem();
+    @Shadow
+    public abstract void syncCurrentPlayItem();
 
-	@Inject(method = "onPlayerDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playEvent(ILnet/minecraft/util/math/BlockPos;I)V"), cancellable = true)
-	private void onPlayerDestroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		GameSense.EVENT_BUS.post(new DestroyBlockEvent(pos));
-	}
+    @Inject(method = "onPlayerDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playEvent(ILnet/minecraft/util/math/BlockPos;I)V"), cancellable = true)
+    private void onPlayerDestroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        GameSense.EVENT_BUS.post(new DestroyBlockEvent(pos));
+    }
 
-	@Inject(method = "onPlayerDamageBlock(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;)Z", at = @At("HEAD"), cancellable = true)
-	private void onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		DamageBlockEvent event = new DamageBlockEvent(posBlock, directionFacing);
-		GameSense.EVENT_BUS.post(event);
-		if (event.isCancelled()) {
-			callbackInfoReturnable.setReturnValue(false);
-		}
-	}
+    @Inject(method = "onPlayerDamageBlock(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;)Z", at = @At("HEAD"), cancellable = true)
+    private void onPlayerDamageBlock(BlockPos posBlock, EnumFacing directionFacing, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        DamageBlockEvent event = new DamageBlockEvent(posBlock, directionFacing);
+        GameSense.EVENT_BUS.post(event);
+        if (event.isCancelled()) {
+            callbackInfoReturnable.setReturnValue(false);
+        }
+    }
 
-	@Inject(method = "getBlockReachDistance", at = @At("RETURN"), cancellable = true)
-	private void getReachDistanceHook(final CallbackInfoReturnable<Float> distance) {
-		if (ModuleManager.isModuleEnabled(Reach.class)) {
-			distance.setReturnValue((float) Reach.distance.getValue());
-		}
-	}
+    @Inject(method = "getBlockReachDistance", at = @At("RETURN"), cancellable = true)
+    private void getReachDistanceHook(final CallbackInfoReturnable<Float> distance) {
+        if (ModuleManager.isModuleEnabled(Reach.class)) {
+            distance.setReturnValue(Reach.distance.getValue().floatValue());
+        }
+    }
 
-	@Inject(method = "onStoppedUsingItem", at = @At("HEAD"), cancellable = true)
-	public void onStoppedUsingItem(EntityPlayer playerIn, CallbackInfo ci) {
-		if (ModuleManager.isModuleEnabled(PacketUse.class)) {
-			if ((PacketUse.food.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood)
-				|| (PacketUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
-				|| PacketUse.all.getValue()) {
-				this.syncCurrentPlayItem();
-				playerIn.stopActiveHand();
-				ci.cancel();
-			}
-		}
-	}
+    @Inject(method = "onStoppedUsingItem", at = @At("HEAD"), cancellable = true)
+    public void onStoppedUsingItem(EntityPlayer playerIn, CallbackInfo ci) {
+        if (ModuleManager.isModuleEnabled(PacketUse.class)) {
+            if ((PacketUse.food.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood)
+                    || (PacketUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
+                    || PacketUse.all.getValue()) {
+                this.syncCurrentPlayItem();
+                playerIn.stopActiveHand();
+                ci.cancel();
+            }
+        }
+    }
 }

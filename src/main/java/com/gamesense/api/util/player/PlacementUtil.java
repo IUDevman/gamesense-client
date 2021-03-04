@@ -4,8 +4,6 @@ import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.combat.AutoCrystalGS;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;

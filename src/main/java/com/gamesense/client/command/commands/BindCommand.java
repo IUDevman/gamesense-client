@@ -10,16 +10,8 @@ import org.lwjgl.input.Keyboard;
  * @Author Hoosiers on 11/05/2020
  */
 
+@Command.Declaration(name = "Bind", syntax = "bind [module] key", alias = {"bind", "b", "setbind", "key"})
 public class BindCommand extends Command {
-
-    public BindCommand() {
-        super("Bind");
-
-        setCommandSyntax(Command.getCommandPrefix() + "bind [module] key");
-        setCommandAlias(new String[]{
-                "bind", "b", "setbind", "key"
-        });
-    }
 
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
@@ -37,9 +29,8 @@ public class BindCommand extends Command {
 
                     module.setBind(key);
                     MessageBus.sendCommandMessage("Module " + module.getName() + " bind set to: " + value + "!", true);
-                }
-                else if (value.length() > 1) {
-                    MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
+                } else if (value.length() > 1) {
+                    MessageBus.sendCommandMessage(this.getSyntax(), true);
                 }
             }
         }

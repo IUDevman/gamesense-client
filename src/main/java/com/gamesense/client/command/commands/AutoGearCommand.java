@@ -2,16 +2,18 @@ package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
-import com.gamesense.client.module.modules.misc.SortInventory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.item.ItemStack;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 
+@Command.Declaration(name = "AutoGear", syntax = "gear set/save/del/list [name]", alias = {"gear", "gr", "kit"})
 public class AutoGearCommand extends Command {
 
     final static private String pathSave = "GameSense/Misc/AutoGear.json";
@@ -25,17 +27,6 @@ public class AutoGearCommand extends Command {
         }
     };
 
-    public AutoGearCommand() {
-        super("AutoGear");
-
-        setCommandSyntax(Command.getCommandPrefix() + "gear set/save/del/list [name]");
-
-        setCommandAlias(new String[]{
-                "gear", "gr", "kit"
-        });
-
-    }
-
     public void onCommand(String command, String[] message) throws Exception {
 
         switch (message[0].toLowerCase()) {
@@ -43,24 +34,24 @@ public class AutoGearCommand extends Command {
 
                 if (message.length == 1) {
                     listMessage();
-                }else errorMessage("NoPar");
+                } else errorMessage("NoPar");
                 break;
             case "set":
                 if (message.length == 2) {
                     set(message[1]);
-                }else errorMessage("NoPar");
+                } else errorMessage("NoPar");
                 break;
             case "save":
             case "add":
             case "create":
                 if (message.length == 2) {
                     save(message[1]);
-                }else errorMessage("NoPar");
+                } else errorMessage("NoPar");
                 break;
             case "del":
                 if (message.length == 2) {
                     delete(message[1]);
-                }else errorMessage("NoPar");
+                } else errorMessage("NoPar");
                 break;
             case "":
             case "help":
@@ -76,7 +67,7 @@ public class AutoGearCommand extends Command {
             // Read json
             completeJson = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject();
             int lenghtJson = completeJson.entrySet().size();
-            for(int i = 0; i < lenghtJson; i++) {
+            for (int i = 0; i < lenghtJson; i++) {
                 String item = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject().entrySet().toArray()[i].toString().split("=")[0];
                 if (!item.equals("pointer"))
                     PistonCrystal.printChat("Kit avaible: " + item, false);
@@ -101,7 +92,7 @@ public class AutoGearCommand extends Command {
                     completeJson.addProperty("pointer", "none");
                 // Save
                 saveFile(completeJson, name, "deleted");
-            }else errorMessage("NoEx");
+            } else errorMessage("NoEx");
 
         } catch (IOException e) {
             // Case not found, reset
@@ -119,11 +110,11 @@ public class AutoGearCommand extends Command {
                 completeJson.addProperty("pointer", name);
                 // Save
                 saveFile(completeJson, name, "selected");
-            }else errorMessage("NoEx");
+            } else errorMessage("NoEx");
 
         } catch (IOException e) {
             // Case not found, reset
-           errorMessage("NoEx");
+            errorMessage("NoEx");
         }
     }
 
@@ -145,7 +136,7 @@ public class AutoGearCommand extends Command {
 
         // String that is going to be our inventory
         StringBuilder jsonInventory = new StringBuilder();
-        for(ItemStack item : mc.player.inventory.mainInventory) {
+        for (ItemStack item : mc.player.inventory.mainInventory) {
             // Add everything
             jsonInventory.append(item.getItem().getRegistryName().toString() + item.getMetadata()).append(" ");
         }
@@ -206,5 +197,4 @@ public class AutoGearCommand extends Command {
         errorMessage("NoEx");
         return "";
     }
-
 }

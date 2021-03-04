@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.misc;
 
+import com.gamesense.client.module.modules.Category;
 import net.minecraft.network.play.client.*;
-import com.gamesense.client.GameSense;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
@@ -12,11 +12,8 @@ import me.zero.alpine.listener.Listener;
  * @since 02/28/2021
  */
 
+@Module.Declaration(name = "XCarry", category = Category.Misc)
 public class XCarry extends Module {
-
-	public XCarry() {
-		super("XCarry", Category.Misc);
-	}
 
     @EventHandler
     private Listener<PacketEvent.Send> listener = new Listener<>(event -> {

@@ -9,16 +9,8 @@ import com.gamesense.client.command.Command;
  * @since 1/1/2020
  */
 
+@Command.Declaration(name = "SaveConfig", syntax = "saveconfig", alias = {"saveconfig", "reloadconfig", "config", "saveconfiguration"})
 public class SaveConfigCommand extends Command {
-
-    public SaveConfigCommand() {
-        super("SaveConfig");
-
-        setCommandSyntax(Command.getCommandPrefix() + "saveconfig");
-        setCommandAlias(new String[]{
-                "saveconfig", "reloadconfig", "config", "saveconfiguration"
-        });
-    }
 
     public void onCommand(String command, String[] message) {
         ConfigStopper.saveConfig();

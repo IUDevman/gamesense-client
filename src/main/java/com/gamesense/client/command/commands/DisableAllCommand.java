@@ -9,16 +9,9 @@ import com.gamesense.client.module.ModuleManager;
  * @Author Hoosiers on 11/05/2020
  */
 
+
+@Command.Declaration(name = "DisableAll", syntax = "disableall", alias = {"disableall", "stop"})
 public class DisableAllCommand extends Command {
-
-    public DisableAllCommand() {
-        super("DisableAll");
-
-        setCommandSyntax(Command.getCommandPrefix() + "disableall");
-        setCommandAlias(new String[]{
-                "disableall", "stop"
-        });
-    }
 
     public void onCommand(String command, String[] message) throws Exception {
         int count = 0;
