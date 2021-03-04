@@ -49,6 +49,7 @@ public class ModuleManager {
         addMod(new SelfWeb());
         addMod(new Surround());
         //Exploits
+        addMod(new Burrow());
         addMod(new FastBreak());
         addMod(new LiquidInteract());
         addMod(new NoInteract());
