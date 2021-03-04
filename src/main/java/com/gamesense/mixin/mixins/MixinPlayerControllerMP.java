@@ -2,6 +2,7 @@ package com.gamesense.mixin.mixins;
 
 import com.gamesense.api.event.events.DamageBlockEvent;
 import com.gamesense.api.event.events.DestroyBlockEvent;
+import com.gamesense.api.event.events.ReachDistanceEvent;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.exploits.PacketUse;
@@ -41,9 +42,10 @@ public abstract class MixinPlayerControllerMP {
 
     @Inject(method = "getBlockReachDistance", at = @At("RETURN"), cancellable = true)
     private void getReachDistanceHook(final CallbackInfoReturnable<Float> distance) {
-        if (ModuleManager.isModuleEnabled(Reach.class)) {
-            distance.setReturnValue(Reach.distance.getValue().floatValue());
-        }
+        ReachDistanceEvent reachDistanceEvent = new ReachDistanceEvent(distance.getReturnValue());
+        GameSense.EVENT_BUS.post(reachDistanceEvent);
+
+        distance.setReturnValue(reachDistanceEvent.getDistance());
     }
 
     @Inject(method = "onStoppedUsingItem", at = @At("HEAD"), cancellable = true)
