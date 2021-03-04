@@ -23,10 +23,6 @@ public class Coordinates extends HUDModule {
     private BooleanSetting showNetherOverworld;
     private BooleanSetting thousandsSeparator;
     private IntegerSetting decimalPlaces;
-
-    public Coordinates() {
-        super("Coordinates", new Point(0, 0));
-    }
   
     public void setup() {
         showNetherOverworld = registerBoolean("Show Nether", true);
