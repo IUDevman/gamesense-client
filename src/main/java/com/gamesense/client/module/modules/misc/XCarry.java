@@ -7,7 +7,10 @@ import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 
-// Made by Soulbond, 2/28/21
+/**
+ * @author Soulbond
+ * @since 02/28/2021
+ */
 
 public class XCarry extends Module {
 
@@ -17,18 +20,10 @@ public class XCarry extends Module {
 
     @EventHandler
     private Listener<PacketEvent.Send> listener = new Listener<>(event -> {
-        if(event.getPacket() instanceof CPacketCloseWindow){
-            if(((CPacketCloseWindow)event.getPacket()).windowId == mc.player.inventoryContainer.windowId){
+        if(event.getPacket() instanceof CPacketCloseWindow) {
+            if(((CPacketCloseWindow)event.getPacket()).windowId == mc.player.inventoryContainer.windowId) {
                 event.cancel();
             }
         }
     });
-
-    public void onEnable(){
-        GameSense.EVENT_BUS.subscribe(this);
-    }
-
-    public void onDisable(){
-        GameSense.EVENT_BUS.unsubscribe(this);
-    }
 }
