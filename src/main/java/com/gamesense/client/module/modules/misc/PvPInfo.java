@@ -4,6 +4,7 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.TotemPopEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.ColorUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
@@ -86,7 +87,7 @@ public class PvPInfo extends Module {
                     if (e instanceof EntityPlayer && !e.getName().equalsIgnoreCase(mc.player.getName())) {
                         if (!knownPlayers.contains(e)) {
                             knownPlayers.add(e);
-                            MessageBus.sendClientPrefixMessage(getTextColor() + e.getName() + " has been spotted thanks to GameSense!");
+                            MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(ChatColor) + e.getName() + " has been spotted thanks to GameSense!");
                         }
                     }
                 }
@@ -112,10 +113,10 @@ public class PvPInfo extends Module {
 
                 if (!burrowedPlayers.contains(entity) && isBurrowed(entity)) {
                     burrowedPlayers.add(entity);
-                    MessageBus.sendClientPrefixMessage(getTextColor() + entity.getName() + " has just burrowed!");
+                    MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(ChatColor) + entity.getName() + " has just burrowed!");
                 } else if (burrowedPlayers.contains(entity) && !isBurrowed(entity)) {
                     burrowedPlayers.remove(entity);
-                    MessageBus.sendClientPrefixMessage(getTextColor() + entity.getName() + " is no longer burrowed!");
+                    MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(ChatColor) + entity.getName() + " is no longer burrowed!");
                 }
             }
         }
@@ -127,7 +128,7 @@ public class PvPInfo extends Module {
                     if (e instanceof EntityEnderPearl) {
                         if (!antiPearlList.contains(e)) {
                             antiPearlList.add(e);
-                            MessageBus.sendClientPrefixMessage(getTextColor() + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + " has just thrown a pearl!");
+                            MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(ChatColor) + e.getEntityWorld().getClosestPlayerToEntity(e, 3).getName() + " has just thrown a pearl!");
                         }
                     }
                 }
@@ -137,11 +138,11 @@ public class PvPInfo extends Module {
         if (strengthDetect.getValue()) {
             for (EntityPlayer player : mc.world.playerEntities) {
                 if (player.isPotionActive(MobEffects.STRENGTH) && !(strengthPlayers.contains(player))) {
-                    MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " has (drank) strength!");
+                    MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(ChatColor) + player.getName() + " has (drank) strength!");
                     strengthPlayers.add(player);
                 }
                 if (!(player.isPotionActive(MobEffects.STRENGTH)) && strengthPlayers.contains(player)) {
-                    MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " no longer has strength!");
+                    MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(ChatColor) + player.getName() + " no longer has strength!");
                     strengthPlayers.remove(player);
                 }
             }
@@ -150,7 +151,7 @@ public class PvPInfo extends Module {
             for (EntityPlayer player : mc.world.playerEntities) {
                 if (player.getHealth() <= 0) {
                     if (popCounterHashMap.containsKey(player.getDisplayNameString())) {
-                        MessageBus.sendClientPrefixMessage(getTextColor() + player.getName() + " died after popping " + ChatFormatting.GREEN + popCounterHashMap.get(player.getName()) + getTextColor() + " totems!");
+                        MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(ChatColor) + player.getName() + " died after popping " + ChatFormatting.GREEN + popCounterHashMap.get(player.getName()) + ColorUtil.textToChatFormatting(ChatColor) + " totems!");
                         popCounterHashMap.remove(player.getName(), popCounterHashMap.get(player.getName()));
                     }
                 }
@@ -208,67 +209,15 @@ public class PvPInfo extends Module {
 
             if (popCounterHashMap.get(event.getEntity().getName()) == null) {
                 popCounterHashMap.put(event.getEntity().getName(), 1);
-                MessageBus.sendClientPrefixMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + getTextColor() + " totem!");
+                MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(ChatColor) + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + ColorUtil.textToChatFormatting(ChatColor) + " totem!");
             } else if (popCounterHashMap.get(event.getEntity().getName()) != null) {
                 int popCounter = popCounterHashMap.get(event.getEntity().getName());
                 int newPopCounter = popCounter += 1;
                 popCounterHashMap.put(event.getEntity().getName(), newPopCounter);
-                MessageBus.sendClientPrefixMessage(getTextColor() + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + getTextColor() + " totems!");
+                MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(ChatColor) + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + ColorUtil.textToChatFormatting(ChatColor) + " totems!");
             }
         }
     });
-
-    public ChatFormatting getTextColor() {
-        if (ChatColor.getValue().equalsIgnoreCase("Black")) {
-            return ChatFormatting.BLACK;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Dark Green")) {
-            return ChatFormatting.DARK_GREEN;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Dark Red")) {
-            return ChatFormatting.DARK_RED;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Gold")) {
-            return ChatFormatting.GOLD;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Dark Gray")) {
-            return ChatFormatting.DARK_GRAY;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Green")) {
-            return ChatFormatting.GREEN;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Red")) {
-            return ChatFormatting.RED;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Yellow")) {
-            return ChatFormatting.YELLOW;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Dark Blue")) {
-            return ChatFormatting.DARK_BLUE;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Dark Aqua")) {
-            return ChatFormatting.DARK_AQUA;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Dark Purple")) {
-            return ChatFormatting.DARK_PURPLE;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Gray")) {
-            return ChatFormatting.GRAY;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Blue")) {
-            return ChatFormatting.BLUE;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Light Purple")) {
-            return ChatFormatting.LIGHT_PURPLE;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("White")) {
-            return ChatFormatting.WHITE;
-        }
-        if (ChatColor.getValue().equalsIgnoreCase("Aqua")) {
-            return ChatFormatting.AQUA;
-        }
-        return null;
-    }
 
     public void onEnable() {
         popCounterHashMap = new HashMap<>();
