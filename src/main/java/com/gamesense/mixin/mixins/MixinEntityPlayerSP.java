@@ -63,7 +63,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
     public void move(AbstractClientPlayer player, MoverType type, double x, double y, double z) {
         PlayerMoveEvent moveEvent = new PlayerMoveEvent(type, x, y, z);
         GameSense.EVENT_BUS.post(moveEvent);
-        super.move(type, moveEvent.x, moveEvent.y, moveEvent.z);
+        super.move(type, moveEvent.getX(), moveEvent.getY(), moveEvent.getZ());
     }
 
     @ModifyArg(method = "setSprinting", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;setSprinting(Z)V"), index = 0)

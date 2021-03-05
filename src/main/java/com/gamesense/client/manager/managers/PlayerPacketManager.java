@@ -23,6 +23,7 @@ import java.util.List;
 // Sponsored by KAMI Blue
 // https://github.com/kami-blue/client/blob/master/src/main/kotlin/org/kamiblue/client/manager/managers/PlayerPacketManager.kt
 public enum PlayerPacketManager implements Manager {
+
     INSTANCE;
 
     private final List<PlayerPacket> packets = new ArrayList<>();
@@ -32,7 +33,6 @@ public enum PlayerPacketManager implements Manager {
 
     private Vec2f prevServerSideRotation = Vec2f.ZERO;
     private Vec2f serverSideRotation = Vec2f.ZERO;
-
     private Vec2f clientSidePitch = Vec2f.ZERO;
 
     @SuppressWarnings("unused")
@@ -125,5 +125,4 @@ public enum PlayerPacketManager implements Manager {
     public Vec2f getServerSideRotation() {
         return serverSideRotation;
     }
-
 }

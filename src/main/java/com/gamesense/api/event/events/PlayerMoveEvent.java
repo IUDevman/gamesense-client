@@ -5,10 +5,10 @@ import net.minecraft.entity.MoverType;
 
 public class PlayerMoveEvent extends GameSenseEvent {
 
-    MoverType type;
-    public double x;
-    public double y;
-    public double z;
+    private MoverType type;
+    private double x;
+    private double y;
+    private double z;
 
     public PlayerMoveEvent(MoverType moverType, double x, double y, double z) {
         super();

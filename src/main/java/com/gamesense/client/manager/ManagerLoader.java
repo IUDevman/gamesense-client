@@ -20,5 +20,4 @@ public class ManagerLoader {
         managers.add(manager);
         GameSense.EVENT_BUS.subscribe(manager);
     }
-
 }

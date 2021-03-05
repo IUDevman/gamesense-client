@@ -154,8 +154,6 @@ public class EntityUtil {
         return new double[]{yaw, pitch};
     }
 
-    // Basic checks for an entity
-    // needed for crystal aura to not target freecam
     public static boolean basicChecksEntity(Entity pl) {
         return pl.getName().equals(mc.player.getName()) || Friends.isFriend(pl.getName()) || pl.isDead;
     }
