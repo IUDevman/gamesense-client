@@ -61,6 +61,7 @@ public class CevBreaker extends Module {
             chatMsg,
             switchSword,
             fastPlace,
+            fastBreak,
             predictBreak,
             placeCrystal,
             trapPlayer,
@@ -143,6 +144,7 @@ public class CevBreaker extends Module {
         switchSword = registerBoolean("Switch Sword", false);
         predictBreak = registerBoolean("Predict Break", false);
         fastPlace = registerBoolean("Fast Place", false);
+        fastBreak = registerBoolean("Fast Break", true);
         trapPlayer = registerBoolean("Trap Player", false);
         antiStep = registerBoolean("Anti Step", false);
         placeCrystal = registerBoolean("Place Crystal", true);
@@ -419,9 +421,7 @@ public class CevBreaker extends Module {
                     if (!switchSword.getValue() || (tickPick == pickSwitchTick.getValue() || tickPick++ == 0))
                         switchValue = 2;
 
-                    if (mc.player.inventory.currentItem != slot_mat[switchValue]) {
-                        mc.player.inventory.currentItem = slot_mat[switchValue];
-                    }
+                   switchPick(switchValue);
 
                     // Get block
                     BlockPos obbyBreak = new BlockPos(enemyCoordsDouble[0], enemyCoordsInt[1] + 2, enemyCoordsDouble[2]);
@@ -466,9 +466,25 @@ public class CevBreaker extends Module {
 
     }
 
+    private void switchPick(int switchValue) {
+        if (mc.player.inventory.currentItem != slot_mat[switchValue]) {
+            mc.player.inventory.currentItem = slot_mat[switchValue];
+        }
+    }
+
     private void placeCrystal() {
         // Check pistonPlace if confirmPlace
         placeBlockThings(stage);
+        // If fastBreak
+        if (fastBreak.getValue()) {
+            fastBreakFun();
+        }
+    }
+
+    private void fastBreakFun() {
+        switchPick(3);
+        mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
+                new BlockPos(enemyCoordsInt[0], enemyCoordsInt[1] + 2, enemyCoordsInt[2]), EnumFacing.UP));
     }
 
     private Entity getCrystal() {
