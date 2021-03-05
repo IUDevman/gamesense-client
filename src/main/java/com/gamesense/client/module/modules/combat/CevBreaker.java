@@ -89,6 +89,8 @@ public class CevBreaker extends Module {
             {0, 1, -1}
     };
 
+    public static boolean isActive;
+
     private int[] slot_mat,
             delayTable,
             enemyCoordsInt;
@@ -112,6 +114,7 @@ public class CevBreaker extends Module {
 
     // Setup the options of the gui
     public void setup() {
+        isActive = false;
         ArrayList<String> breakCrystalList = new ArrayList<>();
         breakCrystalList.add("Vanilla");
         breakCrystalList.add("Packet");
@@ -148,6 +151,7 @@ public class CevBreaker extends Module {
 
     // Everytime you enable
     public void onEnable() {
+
         if (predictBreak.getValue())
             GameSense.EVENT_BUS.subscribe(this);
 
@@ -205,6 +209,7 @@ public class CevBreaker extends Module {
 
     // Init some values
     private void initValues() {
+        isActive = true;
         // Reset aimtarget
         aimTarget = null;
         // Create new delay table
@@ -294,8 +299,7 @@ public class CevBreaker extends Module {
             oldSlot = -1;
         }
 
-        noMaterials = false;
-        AutoCrystalGS.stopAC = false;
+        noMaterials = isActive = AutoCrystalGS.stopAC = false;
     }
 
     private String getMissingMaterials() {
