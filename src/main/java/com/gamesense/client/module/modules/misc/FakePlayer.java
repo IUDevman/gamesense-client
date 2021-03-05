@@ -1,18 +1,15 @@
 package com.gamesense.client.module.modules.misc;
 
-import java.util.UUID;
-
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.world.GameType;
 
-public class FakePlayer extends Module {
+import java.util.UUID;
 
-    public FakePlayer() {
-        super("FakePlayer", Category.Misc);
-    }
+@Module.Declaration(name = "FakePlayer", category = Category.Misc)
+public class FakePlayer extends Module {
 
     private EntityOtherPlayerMP clonedPlayer;
 
@@ -22,7 +19,7 @@ public class FakePlayer extends Module {
             return;
         }
 
-    	clonedPlayer = new EntityOtherPlayerMP(mc.world, new GameProfile(UUID.fromString("fdee323e-7f0c-4c15-8d1c-0f277442342a"), "Fit"));
+        clonedPlayer = new EntityOtherPlayerMP(mc.world, new GameProfile(UUID.fromString("fdee323e-7f0c-4c15-8d1c-0f277442342a"), "Fit"));
         clonedPlayer.copyLocationAndAnglesFrom(mc.player);
         clonedPlayer.rotationYawHead = mc.player.rotationYawHead;
         clonedPlayer.rotationYaw = mc.player.rotationYaw;

@@ -86,7 +86,8 @@ public enum PlayerPacketManager implements Manager {
     private final Listener<RenderEntityEvent.Head> renderEntityEventHeadListener = new Listener<>(event -> {
         EntityPlayerSP player = getPlayer();
 
-        if (player == null || player.isRiding() || event.getType() != RenderEntityEvent.Type.TEXTURE || event.getEntity() != player) return;
+        if (player == null || player.isRiding() || event.getType() != RenderEntityEvent.Type.TEXTURE || event.getEntity() != player)
+            return;
 
         clientSidePitch = new Vec2f(player.prevRotationPitch, player.rotationPitch);
         player.prevRotationPitch = prevServerSideRotation.y;
@@ -98,7 +99,8 @@ public enum PlayerPacketManager implements Manager {
     private final Listener<RenderEntityEvent.Return> renderEntityEventReturnListener = new Listener<>(event -> {
         EntityPlayerSP player = getPlayer();
 
-        if (player == null || player.isRiding() || event.getType() != RenderEntityEvent.Type.TEXTURE || event.getEntity() != player) return;
+        if (player == null || player.isRiding() || event.getType() != RenderEntityEvent.Type.TEXTURE || event.getEntity() != player)
+            return;
 
         player.prevRotationPitch = clientSidePitch.x;
         player.rotationPitch = clientSidePitch.y;

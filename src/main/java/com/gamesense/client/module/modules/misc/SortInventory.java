@@ -1,4 +1,20 @@
 package com.gamesense.client.module.modules.misc;
+
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.client.command.commands.AutoGearCommand;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
+import com.gamesense.client.module.modules.combat.PistonCrystal;
+import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.inventory.ClickType;
+import net.minecraft.item.ItemStack;
+
+import java.util.*;
+
+/**
+ * @Author TechAle
+ */
 /*
     TODO: Read perfectly your inventory
     TODO: Create a json
@@ -7,18 +23,6 @@ package com.gamesense.client.module.modules.misc;
     TODO: Read perfectly a shulker/chest
     TODO: Take chest/shulker items to inventory
     TODO: Sort inventory
- */
-import com.gamesense.api.setting.Setting;
-import com.gamesense.client.command.commands.AutoGearCommand;
-import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.combat.PistonCrystal;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.item.ItemStack;
-import java.util.*;
-
-/**
- * @Author TechAle
  */
 /*
     INVENTORY SORTING ALGORITHM
@@ -39,34 +43,16 @@ import java.util.*;
     I added double check because, so the end is going to be perfect in anyway
  */
 
+@Module.Declaration(name = "SortInventory", category = Category.Misc)
 public class SortInventory extends Module {
 
-    public SortInventory() {
-        super("SortInventory", Category.Misc);
-    }
+    BooleanSetting chatMsg;
+    BooleanSetting debugMode;
+    BooleanSetting confirmSort;
+    BooleanSetting instaSort;
+    BooleanSetting closeAfter;
+    IntegerSetting tickDelay;
 
-    Setting.Boolean chatMsg,
-                    debugMode,
-                    confirmSort,
-                    instaSort,
-                    closeAfter;
-    Setting.Integer tickDelay;
-
-    // Our inventory variables
-    private HashMap<Integer, String> planInventory = new HashMap<>();
-    private HashMap<String, Integer> nItems = new HashMap<>();
-    // Sort item
-    private ArrayList<Integer> sortItems = new ArrayList<>();
-
-    // Tickets
-    private int delayTimeTicks,
-                stepNow;
-    // If we had opened before a chest/inventory
-    private boolean openedBefore,
-                    finishSort,
-                    doneBefore;
-
-    @Override
     public void setup() {
         tickDelay = registerInteger("Tick Delay", 0, 0, 20);
         confirmSort = registerBoolean("Confirm Sort", true);
@@ -76,7 +62,20 @@ public class SortInventory extends Module {
         debugMode = registerBoolean("Debug Mode", false);
     }
 
-    @Override
+    // Our inventory variables
+    private HashMap<Integer, String> planInventory = new HashMap<>();
+    private HashMap<String, Integer> nItems = new HashMap<>();
+    // Sort item
+    private ArrayList<Integer> sortItems = new ArrayList<>();
+
+    // Tickets
+    private int delayTimeTicks,
+            stepNow;
+    // If we had opened before a chest/inventory
+    private boolean openedBefore,
+            finishSort,
+            doneBefore;
+
     public void onEnable() {
         // Msg
         if (chatMsg.getValue())
@@ -105,7 +104,7 @@ public class SortInventory extends Module {
         planInventory = new HashMap<>();
         nItems = new HashMap<>();
         // Iterate for creating planInventory and nItems
-        for(int i = 0; i < inventoryDivided.length; i++) {
+        for (int i = 0; i < inventoryDivided.length; i++) {
             // Add to planInventory if it's not air
             if (!inventoryDivided[i].contains("air")) {
                 // Add it
@@ -128,21 +127,17 @@ public class SortInventory extends Module {
             mc.displayGuiScreen(new GuiInventory(mc.player));
     }
 
-    @Override
     public void onDisable() {
         if (chatMsg.getValue() && planInventory.size() > 0)
             PistonCrystal.printChat("AutoSort Turned Off!", true);
     }
 
-
-    @Override
     public void onUpdate() {
         // Wait
         if (delayTimeTicks < tickDelay.getValue()) {
             delayTimeTicks++;
             return;
-        }
-        else {
+        } else {
             delayTimeTicks = 0;
         }
 
@@ -150,11 +145,10 @@ public class SortInventory extends Module {
         if (planInventory.size() == 0)
             disable();
         // Check if your inventory is open
-        if ( mc.currentScreen instanceof GuiInventory) {
+        if (mc.currentScreen instanceof GuiInventory) {
             // In that case, sort the inventory
             sortInventoryAlgo();
-        }
-        else openedBefore = false;
+        } else openedBefore = false;
 
     }
 
@@ -180,12 +174,12 @@ public class SortInventory extends Module {
                         disable();
                 }
 
-            }else {
+            } else {
                 finishSort = true;
                 stepNow = 0;
             }
             openedBefore = true;
-        // if we have to start sorting
+            // if we have to start sorting
         } else if (finishSort) {
             int slotChange;
             // This is the sort area
@@ -332,19 +326,17 @@ public class SortInventory extends Module {
                     }
                 }
             }
-
         }
 
         if (planMove.size() != 0 && planMove.get(planMove.size() - 1).equals(planMove.get(planMove.size() - 2))) {
             planMove.remove(planMove.size() - 1);
         }
 
-
         // Print all path
         if (debugMode.getValue()) {
             // Print every values
-            for(int valuePath : planMove) {
-                PistonCrystal.printChat(Integer.toString(valuePath),  false);
+            for (int valuePath : planMove) {
+                PistonCrystal.printChat(Integer.toString(valuePath), false);
             }
         }
 
@@ -354,10 +346,9 @@ public class SortInventory extends Module {
     // This give a copy of our inventory
     private ArrayList<String> getInventoryCopy() {
         ArrayList<String> output = new ArrayList<>();
-        for(ItemStack i : mc.player.inventory.mainInventory) {
+        for (ItemStack i : mc.player.inventory.mainInventory) {
             output.add(Objects.requireNonNull(i.getItem().getRegistryName()).toString() + i.getMetadata());
         }
         return output;
     }
-
 }

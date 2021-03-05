@@ -1,377 +1,389 @@
 package com.gamesense.client.module.modules.render;
 
-import java.util.Iterator;
-
-import org.lwjgl.opengl.GL11;
-
 import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.font.FontUtil;
+import com.gamesense.api.util.misc.ColorUtil;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 /**
- * Author: CyberTF2
- * Edited by Hoosiers :D
+ * @author CyberTF2
+ * Rewrote by Hoosiers
  */
 
+@Module.Declaration(name = "Nametags", category = Category.Render)
 public class Nametags extends Module {
 
-	public Nametags() {
-		super("Nametags", Category.Render);
-	}
+    BooleanSetting renderSelf;
+    BooleanSetting showItems;
+    BooleanSetting showDurability;
+    BooleanSetting showEnchantName;
+    BooleanSetting showItemName;
+    BooleanSetting showGameMode;
+    BooleanSetting showHealth;
+    BooleanSetting showPing;
+    BooleanSetting showEntityID;
+    IntegerSetting range;
+    ModeSetting levelColor;
+    public static BooleanSetting customColor;
+    public static ColorSetting borderColor;
 
-	Setting.Integer range;
-	Setting.Boolean durability;
-	Setting.Boolean armor;
-	Setting.Boolean enchantnames;
-	Setting.Boolean itemName;
-	Setting.Boolean gamemode;
-	Setting.Boolean health;
-	Setting.Boolean ping;
-	Setting.Boolean entityId;
-	public static Setting.Boolean customColor;
-	public static Setting.ColorSetting borderColor;
+    public void setup() {
+        ArrayList<String> tab = new ArrayList<>();
+        tab.add("Black");
+        tab.add("Dark Green");
+        tab.add("Dark Red");
+        tab.add("Gold");
+        tab.add("Dark Gray");
+        tab.add("Green");
+        tab.add("Red");
+        tab.add("Yellow");
+        tab.add("Dark Blue");
+        tab.add("Dark Aqua");
+        tab.add("Dark Purple");
+        tab.add("Gray");
+        tab.add("Blue");
+        tab.add("Aqua");
+        tab.add("Light Purple");
+        tab.add("White");
 
-	public void setup() {
-		range = registerInteger("Range", 100, 10, 260);
-		durability = registerBoolean("Durability", true);
-		armor = registerBoolean("Armor", true);
-		enchantnames = registerBoolean("Enchants", true);
-		itemName = registerBoolean("Item Name", false);
-		gamemode = registerBoolean("Gamemode", false);
-		health = registerBoolean("Health", true);
-		ping = registerBoolean("Ping", false);
-		entityId = registerBoolean("Entity Id", false);
-		customColor = registerBoolean("Custom Color", true);
-		borderColor = registerColor("Border Color");
-	}
+        range = registerInteger("Range", 100, 10, 260);
+        renderSelf = registerBoolean("Render Self", false);
+        showDurability = registerBoolean("Durability", true);
+        showItems = registerBoolean("Items", true);
+        showEnchantName = registerBoolean("Enchants", true);
+        showItemName = registerBoolean("Item Name", false);
+        showGameMode = registerBoolean("Gamemode", false);
+        showHealth = registerBoolean("Health", true);
+        showPing = registerBoolean("Ping", false);
+        showEntityID = registerBoolean("Entity Id", false);
+        levelColor = registerMode("Level Color", tab, "Green");
+        customColor = registerBoolean("Custom Color", true);
+        borderColor = registerColor("Border Color", new GSColor(255, 0, 0, 255));
+    }
 
-	public void onWorldRender(RenderEvent event) {
-		for (Object o : mc.world.playerEntities) {
-			final Entity entity = (Entity) o;
-			if (entity instanceof EntityPlayer && entity != mc.player && entity.isEntityAlive() && entity.getDistance(mc.player) <= range.getValue()) {
-				Vec3d m = renderPosEntity(entity);
-				renderNameTagsFor((EntityPlayer) entity, m.x, m.y, m.z);
-			}
-		}
-	}
+    public void onWorldRender(RenderEvent event) {
+        if (mc.player == null || mc.world == null) {
+            return;
+        }
 
-	public void renderNameTagsFor(final EntityPlayer entityPlayer, final double n, final double n2, final double n3) {
-		renderNametags(entityPlayer, n, n2, n3);
-	}
+        mc.world.playerEntities.stream().filter(this::shouldRender).forEach(entityPlayer -> {
+            Vec3d vec3d = findEntityVec3d(entityPlayer);
+            renderNameTags(entityPlayer, vec3d.x, vec3d.y, vec3d.z);
+        });
+    }
 
-	public static double timerPos(final double n, final double n2) {
-		return n2 + (n - n2) * mc.timer.renderPartialTicks;
-	}
+    private boolean shouldRender(EntityPlayer entityPlayer) {
+        if (entityPlayer == mc.player && !renderSelf.getValue()) return false;
 
-	public static Vec3d renderPosEntity(final Entity entity) {
-		return new Vec3d(timerPos(entity.posX, entity.lastTickPosX), timerPos(entity.posY, entity.lastTickPosY), timerPos(entity.posZ, entity.lastTickPosZ));
-	}
+        if (entityPlayer.isDead || entityPlayer.getHealth() <= 0) return false;
 
-	private void renderEnchants(ItemStack itemStack, int x, int y) {
-		GlStateManager.enableTexture2D();
-		final Iterator<Enchantment> iterator2;
-		Iterator<Enchantment> iterator = iterator2 = EnchantmentHelper.getEnchantments(itemStack).keySet().iterator();
-		while (iterator.hasNext()) {
-			final Enchantment enchantment;
-			if ((enchantment = iterator2.next()) == null) {
-				iterator = iterator2;
-			}
-			else {
-				final Enchantment enchantment3 = enchantment;
-				if (enchantnames.getValue()) {
-					FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), this.stringForEnchants(enchantment3, EnchantmentHelper.getEnchantmentLevel(enchantment3, itemStack)), (x * 2), y, new GSColor(255,255,255));
-				}
-				else {
-					return;
-				}
-				y += 8;
-				iterator = iterator2;
-			}
-		}
-		if (itemStack.getItem().equals(Items.GOLDEN_APPLE) && itemStack.hasEffect()) {
-			FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), "God", (x * 2), y,new GSColor(195,77,65));
-		}
-		GlStateManager.disableTexture2D();
-	}
+        return !(entityPlayer.getDistance(mc.player) > range.getValue());
+    }
 
-	private String stringForEnchants(final Enchantment enchantment, final int n) {
-		final ResourceLocation resourceLocation;
-		String substring = ((resourceLocation = Enchantment.REGISTRY.getNameForObject(enchantment)) == null) ? enchantment.getName() : resourceLocation.toString();
-		final int n2 = (n > 1) ? 12 : 13;
-		if (substring.length() > n2) {
-			substring = substring.substring(10, n2);
-		}
-		final StringBuilder sb = new StringBuilder();
-		final String s = substring;
-		final int n3 = 0;
-		String s2 = sb.insert(n3, s.substring(n3, 1).toUpperCase()).append(substring.substring(1)).toString();
-		if (n > 1) {
-			s2 = new StringBuilder().insert(0, s2).append(n).toString();
-		}
-		return s2;
-	}
-	
-	private void renderItemName(ItemStack itemStack, int x, int y) {
-		GlStateManager.enableTexture2D();
-		GlStateManager.pushMatrix();
-		GlStateManager.scale(.5,.5,.5);
-		FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), -FontUtil.getStringWidth(ColorMain.customFont.getValue(), itemStack.getDisplayName()) /2, y, new GSColor(255,255,255));
-		GlStateManager.popMatrix();
-		GlStateManager.disableTexture2D();
-	}
+    private Vec3d findEntityVec3d(EntityPlayer entityPlayer) {
+        double posX = balancePosition(entityPlayer.posX, entityPlayer.lastTickPosX);
+        double posY = balancePosition(entityPlayer.posY, entityPlayer.lastTickPosY);
+        double posZ = balancePosition(entityPlayer.posZ, entityPlayer.lastTickPosZ);
 
-	private void renderItemDurability(final ItemStack itemStack, final int x, final int y) {
-		final int maxDamage = itemStack.getMaxDamage();
-		final float n3 = (maxDamage - itemStack.getItemDamage()) / (float)maxDamage;
-		float green = ((float) itemStack.getMaxDamage() - (float) itemStack.getItemDamage()) / (float) itemStack.getMaxDamage();
-		if (green>1) green=1;					// Ensure that the color value is in range
-		else if (green<0) green=0;
-		float red = 1 - green;
-		GlStateManager.enableTexture2D();
-		GlStateManager.pushMatrix();
-		GlStateManager.scale(.5,.5,.5);
-		FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(),new StringBuilder().insert(0, (int) (n3 * 100.0f)).append('%').toString(), (x * 2), y, new GSColor((int) (red * 255), (int) (green * 255), 0));
-		GlStateManager.popMatrix();
-		GlStateManager.disableTexture2D();
-	}
+        return new Vec3d(posX, posY, posZ);
+    }
 
-	private void renderItems(final ItemStack itemStack, final int n, final int n2, final int n3) {
-		GlStateManager.enableTexture2D();
-		GlStateManager.depthMask(true);
-		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
-		GlStateManager.enableDepth();
-		GlStateManager.disableAlpha();
-		final int n4 = (n3 > 4) ? ((n3 - 4) * 8 / 2) : 0;
-		mc.getRenderItem().zLevel = -150.0f;
-		RenderHelper.enableStandardItemLighting();
-		mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, n, n2 + n4);
-		mc.getRenderItem().renderItemOverlays(mc.fontRenderer, itemStack, n, n2 + n4);
-		RenderHelper.disableStandardItemLighting();
-		mc.getRenderItem().zLevel = 0.0f;
-		RenderUtil.prepare();		// Restore expected state
-		GlStateManager.pushMatrix();
-		GlStateManager.scale(.5,.5,.5);
-		renderEnchants(itemStack, n, n2 - 24);
-		GlStateManager.popMatrix();
-	}
+    private double balancePosition(double newPosition, double oldPosition) {
+        return oldPosition + (newPosition - oldPosition) * mc.timer.renderPartialTicks;
+    }
 
-	//RENDER THE ACTUAL NAMETAGS
-	private void renderNametags(final EntityPlayer entityPlayer, final double n, double distance, final double n2) {
-		double tempY = distance;
-		tempY += (entityPlayer.isSneaking() ? 0.5 : 0.7);
-		final Entity entity2;
-		final Entity entity = entity2 = (mc.getRenderViewEntity() == null) ? mc.player : mc.getRenderViewEntity();
-		final double posX = entity2.posX;
-		final double posY = entity2.posY;
-		final double posZ = entity2.posZ;
-		final Vec3d m;
-		entity2.posX = (m = renderPosEntity(entity2)).x;
-		entity2.posY = m.y;
-		entity2.posZ = m.z;
-		distance = entity.getDistance(n, distance, n2);
-		String[] text=new String[1];
-		text[0]=renderEntityName(entityPlayer);
-		RenderUtil.drawNametag(n,tempY+1.4,n2,text,renderPing(entityPlayer),2);
-		// Other stuff
-		final ItemStack heldItemMainhand = entityPlayer.getHeldItemMainhand();
-		final ItemStack heldItemOffhand = entityPlayer.getHeldItemOffhand();
-		int n10 = 0;
-		int n11 = 0;
-		boolean b = false;
-		int i = 3;
-		int n12 = 3;
-		while (i >= 0) {
-			final ItemStack itemStack;
-			if (!(itemStack = entityPlayer.inventory.armorInventory.get(n12)).isEmpty()) {
-				final boolean j = this.durability.getValue();
-				n10 -= 8;
-				if (j) {
-					b = true;
-				}
-				final int size;
-				if (this.armor.getValue() && (size = EnchantmentHelper.getEnchantments(itemStack).size()) > n11) {
-					n11 = size;
-				}
-			}
-			i = --n12;
-		}
-		if (!heldItemOffhand.isEmpty() && (this.armor.getValue() || (this.durability.getValue() && heldItemOffhand.isItemStackDamageable()))) {
-			n10 -= 8;
-			if (this.durability.getValue() && heldItemOffhand.isItemStackDamageable()) {
-				b = true;
-			}
-			final int size2;
-			if (this.armor.getValue() && (size2 = EnchantmentHelper.getEnchantments(heldItemOffhand).size()) > n11) {
-				n11 = size2;
-			}
-		}
-		if (!heldItemMainhand.isEmpty()) {
-			final int size3;
-			if (this.armor.getValue() && (size3 = EnchantmentHelper.getEnchantments(heldItemMainhand).size()) > n11) {
-				n11 = size3;
-			}
-			int k = this.armorValue(n11);
-			if (this.armor.getValue() || (this.durability.getValue() && heldItemMainhand.isItemStackDamageable())) {
-				n10 -= 8;
-			}
-			if (this.armor.getValue()) {
-				final ItemStack itemStack2 = heldItemMainhand;
-				final int n13 = n10;
-				final int n14 = k;
-				k -= 32;
-				this.renderItems(itemStack2, n13, n14, n11);
-			}
-			Nametags nametags;
-			if (this.durability.getValue() && heldItemMainhand.isItemStackDamageable()) {
-				final int n15 = k;
-				this.renderItemDurability(heldItemMainhand, n10, k);
-				k = n15 - (ColorMain.customFont.getValue() ? FontUtil.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
-				nametags = this;
-			}
-			else {
-				if (b) {
-					k -= (ColorMain.customFont.getValue() ? FontUtil.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
-				}
-				nametags = this;
-			}
-			if (nametags.itemName.getValue()) {
-				this.renderItemName(heldItemMainhand, n10, k);
-			}
-			if (this.armor.getValue() || (this.durability.getValue() && heldItemMainhand.isItemStackDamageable())) {
-				n10 += 16;
-			}
-		}
-		int l = 3;
-		int n16 = 3;
-		while (l >= 0) {
-			final ItemStack itemStack3;
-			if (!(itemStack3 = entityPlayer.inventory.armorInventory.get(n16)).isEmpty()) {
-				int m2 = this.armorValue(n11);
-				if (this.armor.getValue()) {
-					final ItemStack itemStack4 = itemStack3;
-					final int n17 = n10;
-					final int n18 = m2;
-					m2 -= 32;
-					this.renderItems(itemStack4, n17, n18, n11);
-				}
-				if (this.durability.getValue() && itemStack3.isItemStackDamageable()) {
-					this.renderItemDurability(itemStack3, n10, m2);
-				}
-				n10 += 16;
-			}
-			l = --n16;
-		}
-		if (!heldItemOffhand.isEmpty()) {
-			int m3 = this.armorValue(n11);
-			if (this.armor.getValue()) {
-				final ItemStack itemStack5 = heldItemOffhand;
-				final int n19 = n10;
-				final int n20 = m3;
-				m3 -= 32;
-				this.renderItems(itemStack5, n19, n20, n11);
-			}
-			if (this.durability.getValue() && heldItemOffhand.isItemStackDamageable()) {
-				this.renderItemDurability(heldItemOffhand, n10, m3);
-			}
-			n10 += 16;
-		}
-		GlStateManager.popMatrix();
-		final double posZ2 = posZ;
-		final Entity entity3 = entity;
-		final double posY2 = posY;
-		entity.posX = posX;
-		entity3.posY = posY2;
-		entity3.posZ = posZ2;
-	}
-	
-	private GSColor renderPing(final EntityPlayer entityPlayer) {
-		if (Friends.isFriend(entityPlayer.getName())) {
-			return ColorMain.getFriendGSColor();
-		}
-		if (Enemies.isEnemy(entityPlayer.getName())){
-			return ColorMain.getEnemyGSColor();
-		}
-		if (entityPlayer.isInvisible()) {
-			return new GSColor(128,128,128);
-		}
-		if (mc.getConnection() != null && mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()) == null) {
-			return new GSColor(239,1,71);
-		}
-		if (entityPlayer.isSneaking()) {
-			return new GSColor(255,153,0);
-		}
-		return new GSColor(255,255,255);
-	}
+    private void renderNameTags(EntityPlayer entityPlayer, double posX, double posY, double posZ) {
+        double adjustedY = posY + (entityPlayer.isSneaking() ? 1.9 : 2.1);
 
-	private String renderEntityName(final EntityPlayer entityPlayer) {
-		String s = entityPlayer.getDisplayName().getFormattedText();
-		if (this.entityId.getValue()) {
-			s = new StringBuilder().insert(0, s).append(" ID: ").append(entityPlayer.getEntityId()).toString();
-		}
-		Label_0195: {
-			if (this.gamemode.getValue()) {
-				if (entityPlayer.isCreative()) {
-					s = new StringBuilder().insert(0, s).append(" [C]").toString();
-					break Label_0195;
-				}
-				if (entityPlayer.isSpectator()) {
-					s = new StringBuilder().insert(0, s).append(" [I]").toString();
-					break Label_0195;
-				}
-				s = new StringBuilder().insert(0, s).append(" [S]").toString();
-			}
-		}
-		if (this.ping.getValue() && mc.getConnection() != null && mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()) != null) {
-			s = new StringBuilder().insert(0, s).append(" ").append(mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()).getResponseTime()).append("ms").toString();
-		}
-		if (!this.health.getValue()) {
-			return s;
-		}
-		final double ceil;
-		String s2 = TextFormatting.GREEN.toString();
-		if ((ceil = Math.ceil(entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount())) > 0.0) {
+        String[] name = new String[1];
+        name[0] = buildEntityNameString(entityPlayer);
 
-			if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) <= 5) {
-				s2 = TextFormatting.RED.toString();
-			} else if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) > 5 && (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) <= 10) {
-				s2 = TextFormatting.GOLD.toString();
-			} else if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) > 10 && (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) <= 15) {
-				s2 = TextFormatting.YELLOW.toString();
-			} else if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) > 15 && (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) <= 20) {
-				s2 = TextFormatting.DARK_GREEN.toString();
-			} else if ((entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount()) > 20) {
-				s2 = TextFormatting.GREEN.toString();
-			}
-		}
-		else {
-			s2 = TextFormatting.DARK_RED.toString();
-		}
-		return new StringBuilder().insert(0, s).append(s2).append(" ").append((ceil > 0.0) ? Integer.valueOf((int)ceil) : "0").toString();
-	}
+        RenderUtil.drawNametag(posX, adjustedY, posZ, name, findTextColor(entityPlayer), 2);
+        renderItemsAndArmor(entityPlayer, 0, 0);
+        GlStateManager.popMatrix();
+    }
 
-	private int armorValue(final int n) {
-		int n2 = this.armor.getValue() ? -26 : -27;
-		if (n > 4) {
-			n2 -= (n - 4) * 8;
-		}
-		return n2;
-	}
+    private String buildEntityNameString(EntityPlayer entityPlayer) {
+        String name = entityPlayer.getName();
+
+        if (showEntityID.getValue()) {
+            name = name + " ID: " + entityPlayer.getEntityId();
+        }
+
+        if (showGameMode.getValue()) {
+            if (entityPlayer.isCreative()) {
+                name = name + " [C]";
+            }
+            else if (entityPlayer.isSpectator()) {
+                name = name + " [I]";
+            }
+            else {
+                name = name + " [S]";
+            }
+        }
+
+        if (showPing.getValue()) {
+            int value = 0;
+
+            if (mc.getConnection() != null && mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()) != null) {
+                value = mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()).getResponseTime();
+            }
+
+            name = name + " " + value + "ms";
+        }
+
+        if (showHealth.getValue()) {
+            int health = (int) (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount());
+            TextFormatting textFormatting = findHealthColor(health);
+
+            name = name + " " + textFormatting + health;
+        }
+
+        return name;
+    }
+
+    private TextFormatting findHealthColor(int health) {
+        if (health <= 0) {
+            return TextFormatting.DARK_RED;
+        } else if (health <= 5) {
+            return TextFormatting.RED;
+        } else if (health <= 10) {
+            return TextFormatting.GOLD;
+        } else if (health <= 15) {
+            return TextFormatting.YELLOW;
+        } else if (health <= 20) {
+            return TextFormatting.DARK_GREEN;
+        }
+
+        return TextFormatting.GREEN;
+    }
+
+    private GSColor findTextColor(EntityPlayer entityPlayer) {
+        if (Friends.isFriend(entityPlayer.getName())) {
+            return ColorMain.getFriendGSColor();
+        } else if (Enemies.isEnemy(entityPlayer.getName())) {
+            return ColorMain.getEnemyGSColor();
+        } else if (entityPlayer.isInvisible()) {
+            return new GSColor(128, 128, 128);
+        } else if (mc.getConnection() != null && mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()) == null) {
+            return new GSColor(239, 1, 71);
+        } else if (entityPlayer.isSneaking()) {
+            return new GSColor(255, 153, 0);
+        }
+
+        return new GSColor(255, 255, 255);
+    }
+
+    private void renderItemsAndArmor(EntityPlayer entityPlayer, int posX, int posY) {
+        ItemStack mainHandItem = entityPlayer.getHeldItemMainhand();
+        ItemStack offHandItem = entityPlayer.getHeldItemOffhand();
+
+        int armorCount = 3;
+        for (int i = 0; i <= 3; i++) {
+            ItemStack itemStack = entityPlayer.inventory.armorInventory.get(armorCount);
+
+            if (!itemStack.isEmpty()) {
+                posX -= 8;
+
+                int size = EnchantmentHelper.getEnchantments(itemStack).size();
+
+                if (showItems.getValue() && size > posY) {
+                    posY = size;
+                }
+            }
+            armorCount --;
+        }
+
+        if (!mainHandItem.isEmpty() && (showItems.getValue() || showDurability.getValue() && offHandItem.isItemStackDamageable())) {
+            posX -= 8;
+
+            int enchantSize = EnchantmentHelper.getEnchantments(offHandItem).size();
+            if (showItems.getValue() && enchantSize > posY) {
+                posY = enchantSize;
+            }
+        }
+
+        if (!mainHandItem.isEmpty()) {
+
+            int enchantSize = EnchantmentHelper.getEnchantments(mainHandItem).size();
+
+            if (showItems.getValue() && enchantSize > posY) {
+                posY = enchantSize;
+            }
+
+            int armorY = findArmorY(posY);
+
+            if (showItems.getValue() || (showDurability.getValue() && mainHandItem.isItemStackDamageable())) {
+                posX -= 8;
+            }
+
+            if (showItems.getValue()) {
+                renderItem(mainHandItem, posX, armorY, posY);
+                armorY -= 32;
+            }
+
+            if (showDurability.getValue() && mainHandItem.isItemStackDamageable()) {
+                renderItemDurability(mainHandItem, posX, armorY);
+            }
+
+            armorY -= (ColorMain.customFont.getValue() ? FontUtil.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
+
+            if (showItemName.getValue()) {
+                renderItemName(mainHandItem, armorY);
+            }
+
+            if (showItems.getValue() || (showDurability.getValue() && mainHandItem.isItemStackDamageable())) {
+                posX += 16;
+            }
+        }
+
+        int armorCount2 = 3;
+        for (int i = 0; i <= 3; i++) {
+            ItemStack itemStack = entityPlayer.inventory.armorInventory.get(armorCount2);
+
+            if (!itemStack.isEmpty()) {
+                int armorY = findArmorY(posY);
+
+                if (showItems.getValue()) {
+                    renderItem(itemStack, posX, armorY, posY);
+                    armorY -= 32;
+                }
+
+                if (showDurability.getValue() && itemStack.isItemStackDamageable()) {
+                    renderItemDurability(itemStack, posX, armorY);
+                }
+                posX += 16;
+            }
+            armorCount2--;
+        }
+
+        if (!offHandItem.isEmpty()) {
+            int armorY = findArmorY(posY);
+
+            if (showItems.getValue()) {
+                renderItem(offHandItem, posX, armorY, posY);
+                armorY -= 32;
+            }
+
+            if (showDurability.getValue() && offHandItem.isItemStackDamageable()) {
+                renderItemDurability(offHandItem, posX, armorY);
+            }
+        }
+    }
+
+    private int findArmorY(int posY) {
+        int posY2 = showItems.getValue() ? -26 : -27;
+        if (posY > 4) {
+            posY2 -= (posY - 4) * 8;
+        }
+
+        return posY2;
+    }
+
+    private void renderItemName(ItemStack itemStack, int posY) {
+        GlStateManager.enableTexture2D();
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(0.5, 0.5, 0.5);
+        FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), -FontUtil.getStringWidth(ColorMain.customFont.getValue(), itemStack.getDisplayName()) / 2, posY, new GSColor(255, 255, 255));
+        GlStateManager.popMatrix();
+        GlStateManager.disableTexture2D();
+    }
+
+    private void renderItemDurability(ItemStack itemStack, int posX, int posY) {
+        float damagePercent = (itemStack.getMaxDamage() - itemStack.getItemDamage()) / (float) itemStack.getMaxDamage();
+
+        float green = damagePercent;
+        if (green > 1) green = 1;
+        else if (green < 0) green = 0;
+
+        float red = 1 - green;
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(0.5, 0.5, 0.5);
+        FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), (int) (damagePercent * 100) + "%", posX * 2, posY, new GSColor((int) (red * 255), (int) (green * 255), 0));
+        GlStateManager.popMatrix();
+        GlStateManager.disableTexture2D();
+    }
+
+    private void renderItem(ItemStack itemStack, int posX, int posY, int posY2) {
+        GlStateManager.enableTexture2D();
+        GlStateManager.depthMask(true);
+        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+        GlStateManager.enableDepth();
+        GlStateManager.disableAlpha();
+
+        final int posY3 = (posY2 > 4) ? ((posY2 - 4) * 8 / 2) : 0;
+
+        mc.getRenderItem().zLevel = -150.0f;
+        RenderHelper.enableStandardItemLighting();
+        mc.getRenderItem().renderItemAndEffectIntoGUI(itemStack, posX, posY + posY3);
+        mc.getRenderItem().renderItemOverlays(mc.fontRenderer, itemStack, posX, posY + posY3);
+        RenderHelper.disableStandardItemLighting();
+        mc.getRenderItem().zLevel = 0.0f;
+        RenderUtil.prepare();
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(.5, .5, .5);
+        renderEnchants(itemStack, posX, posY - 24);
+        GlStateManager.popMatrix();
+    }
+
+    private void renderEnchants(ItemStack itemStack, int posX, int posY) {
+        GlStateManager.enableTexture2D();
+
+        for (Enchantment enchantment : EnchantmentHelper.getEnchantments(itemStack).keySet()) {
+            if (enchantment == null) {
+                continue;
+            }
+
+            if (showEnchantName.getValue()) {
+                int level = EnchantmentHelper.getEnchantmentLevel(enchantment, itemStack);
+                FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), findStringForEnchants(enchantment, level), posX * 2, posY, new GSColor(255, 255, 255));
+            }
+            posY += 8;
+        }
+
+        if (itemStack.getItem().equals(Items.GOLDEN_APPLE) && itemStack.hasEffect()) {
+            FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), "God", posX * 2, posY, new GSColor(195, 77, 65));
+        }
+
+        GlStateManager.disableTexture2D();
+    }
+
+    private String findStringForEnchants(Enchantment enchantment, int level) {
+        ResourceLocation resourceLocation = Enchantment.REGISTRY.getNameForObject(enchantment);
+
+        String string = resourceLocation == null ? enchantment.getName() : resourceLocation.toString();
+
+        int charCount = (level > 1) ? 12 : 13;
+
+        if (string.length() > charCount) {
+            string = string.substring(10, charCount);
+        }
+
+        return string.substring(0, 1).toUpperCase() + string.substring(1) + ColorUtil.settingToTextFormatting(levelColor) + ((level > 1) ? level : "");
+    }
 }

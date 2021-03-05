@@ -1,11 +1,14 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
@@ -25,27 +28,19 @@ import java.util.List;
  * @Author Hoosiers on 09/19/20
  * Ported and modified from Surround.java
  */
-/*
-    Added new mode: target. this allow to choose in which way he is going to choose the target
-    2 modes: nearest (who is cloosest), looking (who you are looking)
-    Now some modules are in common (closestTarget, lookingAt)
- */
 
+@Module.Declaration(name = "AutoTrap", category = Category.Combat)
 public class AutoTrap extends Module {
 
-    public AutoTrap() {
-        super("AutoTrap", Category.Combat);
-    }
-
-    Setting.Mode    trapType,
-                    target;
-    Setting.Boolean chatMsg,
-                    rotate,
-                    offHandObby,
-                    disableNone;
-    Setting.Integer enemyRange,
-                    tickDelay,
-                    blocksPerTick;
+    ModeSetting trapType,
+            target;
+    BooleanSetting chatMsg,
+            rotate,
+            offHandObby,
+            disableNone;
+    IntegerSetting enemyRange,
+            tickDelay,
+            blocksPerTick;
 
     public void setup() {
         ArrayList<String> trapTypes = new ArrayList<>();
@@ -63,7 +58,7 @@ public class AutoTrap extends Module {
         offHandObby = registerBoolean("Off Hand Obby", false);
         tickDelay = registerInteger("Tick Delay", 5, 0, 10);
         blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        enemyRange = registerInteger("Range",4, 0, 6);
+        enemyRange = registerInteger("Range", 4, 0, 6);
         chatMsg = registerBoolean("Chat Msgs", true);
     }
 
@@ -101,8 +96,7 @@ public class AutoTrap extends Module {
         if (chatMsg.getValue()) {
             if (noObby) {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
-            }
-            else {
+            } else {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoTrap turned OFF!");
             }
         }
@@ -133,7 +127,7 @@ public class AutoTrap extends Module {
 
         if (target.getValue().equals("Nearest"))
             aimTarget = PlayerUtil.findClosestTarget(enemyRange.getValue(), aimTarget);
-        else if(target.getValue().equals("Looking"))
+        else if (target.getValue().equals("Looking"))
             aimTarget = PlayerUtil.findLookingPlayer(enemyRange.getValue());
 
         if (aimTarget == null) {
@@ -145,18 +139,16 @@ public class AutoTrap extends Module {
             if (InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff) == -1) {
                 noObby = true;
                 return;
-            }else {
+            } else {
                 noObby = false;
                 activedOff = true;
             }
-        }
-        else {
+        } else {
 
             if (delayTimeTicks < tickDelay.getValue()) {
                 delayTimeTicks++;
                 return;
-            }
-            else {
+            } else {
                 delayTimeTicks = 0;
             }
         }
@@ -168,60 +160,58 @@ public class AutoTrap extends Module {
 
         int blocksPlaced = 0;
         if (!noObby)
-        while (blocksPlaced <= blocksPerTick.getValue()) {
+            while (blocksPlaced <= blocksPerTick.getValue()) {
 
-            List<Vec3d> placeTargets = new ArrayList<>();
-            int maxSteps;
+                List<Vec3d> placeTargets = new ArrayList<>();
+                int maxSteps;
 
-            if (trapType.getValue().equalsIgnoreCase("Normal")) {
-                Collections.addAll(placeTargets, Offsets.TRAP);
-                maxSteps = AutoTrap.Offsets.TRAP.length;
-            }
-            else if (trapType.getValue().equalsIgnoreCase("Air")) {
-                Collections.addAll(placeTargets, Offsets.AIR);
-                maxSteps = AutoTrap.Offsets.AIR.length;
-            }
-            else {
-                Collections.addAll(placeTargets, Offsets.TRAPFULLROOF);
-                maxSteps = AutoTrap.Offsets.TRAPFULLROOF.length;
-            }
+                if (trapType.getValue().equalsIgnoreCase("Normal")) {
+                    Collections.addAll(placeTargets, Offsets.TRAP);
+                    maxSteps = AutoTrap.Offsets.TRAP.length;
+                } else if (trapType.getValue().equalsIgnoreCase("Air")) {
+                    Collections.addAll(placeTargets, Offsets.AIR);
+                    maxSteps = AutoTrap.Offsets.AIR.length;
+                } else {
+                    Collections.addAll(placeTargets, Offsets.TRAPFULLROOF);
+                    maxSteps = AutoTrap.Offsets.TRAPFULLROOF.length;
+                }
 
-            if (offsetSteps >= maxSteps) {
-                offsetSteps = 0;
-                break;
-            }
-
-            BlockPos offsetPos = new BlockPos(placeTargets.get(offsetSteps));
-            BlockPos targetPos = new BlockPos(aimTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-
-            if (aimTarget.posY % 1 > .2) {
-                targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
-            }
-
-            boolean tryPlacing = true;
-
-            if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
-                tryPlacing = false;
-            }
-
-            for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetPos))) {
-                if (entity instanceof EntityPlayer) {
-                    tryPlacing = false;
+                if (offsetSteps >= maxSteps) {
+                    offsetSteps = 0;
                     break;
                 }
-            }
 
-            if (tryPlacing && placeBlock(targetPos, enemyRange.getValue())) {
-                blocksPlaced++;
-            }
+                BlockPos offsetPos = new BlockPos(placeTargets.get(offsetSteps));
+                BlockPos targetPos = new BlockPos(aimTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
-            offsetSteps++;
+                if (aimTarget.posY % 1 > .2) {
+                    targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
+                }
 
-            if (isSneaking) {
-                mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-                isSneaking = false;
+                boolean tryPlacing = true;
+
+                if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
+                    tryPlacing = false;
+                }
+
+                for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetPos))) {
+                    if (entity instanceof EntityPlayer) {
+                        tryPlacing = false;
+                        break;
+                    }
+                }
+
+                if (tryPlacing && placeBlock(targetPos, enemyRange.getValue())) {
+                    blocksPlaced++;
+                }
+
+                offsetSteps++;
+
+                if (isSneaking) {
+                    mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+                    isSneaking = false;
+                }
             }
-        }
     }
 
     private boolean placeBlock(BlockPos pos, int range) {
@@ -259,7 +249,7 @@ public class AutoTrap extends Module {
                 new Vec3d(1, -1, 0),
                 new Vec3d(0, -1, 1),
                 new Vec3d(-1, -1, 0),
-                new Vec3d(0, 0,-1),
+                new Vec3d(0, 0, -1),
                 new Vec3d(1, 0, 0),
                 new Vec3d(0, 0, 1),
                 new Vec3d(-1, 0, 0),
@@ -294,7 +284,7 @@ public class AutoTrap extends Module {
                 new Vec3d(1, -1, 0),
                 new Vec3d(0, -1, 1),
                 new Vec3d(-1, -1, 0),
-                new Vec3d(0, 0,-1),
+                new Vec3d(0, 0, -1),
                 new Vec3d(0, 1, -1),
                 new Vec3d(0, 2, -1),
                 new Vec3d(0, 2, 0),

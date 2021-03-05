@@ -1,10 +1,13 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.Category;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockPressurePlate;
@@ -23,39 +26,36 @@ import net.minecraft.util.math.Vec3d;
  * @Author TechAle
  */
 
+@Module.Declaration(name = "AntiCrystal", category = Category.Combat)
 public class AntiCrystal extends Module {
 
-    Setting.Double  rangePlace,
-                    damageMin,
-                    enemyRange,
-                    biasDamage;
+    DoubleSetting rangePlace,
+            damageMin,
+            enemyRange,
+            biasDamage;
 
-    Setting.Integer     tickDelay,
-                        blocksPerTick;
+    IntegerSetting tickDelay,
+            blocksPerTick;
 
-    Setting.Boolean rotate,
-                    offHandMode,
-                    onlyIfEnemy,
-                    nonAbusive,
-                    checkDamage,
-                    switchBack,
-                    notOurCrystals,
-                    chatMsg;
+    BooleanSetting rotate,
+            offHandMode,
+            onlyIfEnemy,
+            nonAbusive,
+            checkDamage,
+            switchBack,
+            notOurCrystals,
+            chatMsg;
 
 
     private int delayTimeTicks;
     private boolean isSneaking = false;
 
-    public AntiCrystal() {
-        super("AntiCrystal", Category.Combat);
-    }
-
     @Override
     public void setup() {
         // Range of place
-        rangePlace = registerDouble("Range Place",5.9, 0, 6);
+        rangePlace = registerDouble("Range Place", 5.9, 0, 6);
         // Range of place
-        enemyRange = registerDouble("Enemy Range",12, 0, 20);
+        enemyRange = registerDouble("Enemy Range", 12, 0, 20);
         // Damage
         damageMin = registerDouble("Damage Min", 4, 0, 15);
         // Bias Damage
@@ -113,7 +113,7 @@ public class AntiCrystal extends Module {
         if (delayTimeTicks < tickDelay.getValue()) {
             delayTimeTicks++;
             return;
-        }else delayTimeTicks = 0;
+        } else delayTimeTicks = 0;
 
         if (onlyIfEnemy.getValue()) {
             if (mc.world.playerEntities.size() > 1) {
@@ -129,8 +129,7 @@ public class AntiCrystal extends Module {
                 // If there is only 1 enemy
                 if (!found)
                     return;
-            }
-            else return;
+            } else return;
         }
 
         int blocksPlaced = 0;
@@ -138,7 +137,7 @@ public class AntiCrystal extends Module {
         boolean pressureSwitch = true;
         int slotPressure = -1;
         // Iterate for every entity
-        for(Entity t : mc.world.loadedEntityList) {
+        for (Entity t : mc.world.loadedEntityList) {
             // If it's a crystal
             if (t instanceof EntityEnderCrystal && mc.player.getDistance(t) <= rangePlace.getValue()) {
                 /// I decided to put this here so it's going to be checked only if there is at least 1 crystal
@@ -147,7 +146,7 @@ public class AntiCrystal extends Module {
                     // If offhand is not on
                     if (offHandMode.getValue() && isOffHandPressure()) {
                         slotPressure = 9;
-                    }else {
+                    } else {
                         // get number and check if it's -1
                         if ((slotPressure = getHotBarPressure()) == -1)
                             return;
@@ -163,7 +162,7 @@ public class AntiCrystal extends Module {
                 // Check for the damage
                 if (checkDamage.getValue()) {
                     // Get it
-                    damage = (float) (DamageUtil.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue()) ;
+                    damage = (float) (DamageUtil.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue());
                     // If it's lower then damageMin and is lower the our health, exit
                     if (damage < damageMin.getValue() && damage < mc.player.getHealth())
                         return;
@@ -215,8 +214,7 @@ public class AntiCrystal extends Module {
                 if (switchBack.getValue())
                     oldSlot = mc.player.inventory.currentItem;
                 mc.player.inventory.currentItem = slotPressure;
-            }
-            else
+            } else
                 return;
         }
 
@@ -242,7 +240,7 @@ public class AntiCrystal extends Module {
             swingHand = EnumHand.OFF_HAND;
             if (!isPressure(mc.player.getHeldItemOffhand()))
                 return;
-        }else {
+        } else {
             if (!isPressure(mc.player.getHeldItemMainhand()))
                 return;
         }
@@ -275,7 +273,7 @@ public class AntiCrystal extends Module {
     // Get the index of the Pressure Plate on the hotBar
     private int getHotBarPressure() {
         // Iterate for the entire inventory
-        for(int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) {
             // Check if it's a piece of pressure plate
             if (isPressure(mc.player.inventory.getStackInSlot(i)))
                 return i;

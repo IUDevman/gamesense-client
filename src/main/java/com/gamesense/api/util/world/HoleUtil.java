@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.HashMap;
 
 public class HoleUtil {
-    
+
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static BlockSafety isBlockSafe(Block block) {
@@ -53,7 +53,7 @@ public class HoleUtil {
             return output;
         }
         // have one open side
-         else if (size == 1 && !onlyOneWide) {
+        else if (size == 1 && !onlyOneWide) {
             return isDoubleHole(output, centreBlock, unsafeSides.keySet().stream().findFirst().get());
         } else {
             output.setSafety(BlockSafety.BREAKABLE);
@@ -174,6 +174,7 @@ public class HoleUtil {
         public BlockSafety getSafety() {
             return safety;
         }
+
         public AxisAlignedBB getCentre() {
             return centre;
         }

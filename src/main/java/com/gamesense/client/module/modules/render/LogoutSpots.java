@@ -3,14 +3,17 @@ package com.gamesense.client.module.modules.render;
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.api.util.misc.Timer;
-import com.gamesense.client.GameSense;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,25 +22,25 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.world.WorldEvent;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Rewrote by Hoosiers on 10/30/20
  */
 
+@Module.Declaration(name = "LogoutSpots", category = Category.Render)
 public class LogoutSpots extends Module {
 
-    public LogoutSpots() {
-        super("LogoutSpots", Category.Render);
-    }
-
-    Setting.Boolean chatMsg;
-    Setting.Boolean nameTag;
-    Setting.Integer lineWidth;
-    Setting.Integer range;
-    Setting.Mode renderMode;
-    Setting.ColorSetting color;
+    BooleanSetting chatMsg;
+    BooleanSetting nameTag;
+    IntegerSetting lineWidth;
+    IntegerSetting range;
+    ModeSetting renderMode;
+    ColorSetting color;
 
     public void setup() {
         ArrayList<String> renderModes = new ArrayList<>();
@@ -93,12 +96,12 @@ public class LogoutSpots extends Module {
         nameTagMessage[1] = "(" + posX + "," + posY + "," + posZ + ")";
 
         GlStateManager.pushMatrix();
-        RenderUtil.drawNametag(entity, nameTagMessage, color.getValue(),0);
+        RenderUtil.drawNametag(entity, nameTagMessage, color.getValue(), 0);
 
         switch (renderMode.getValue()) {
             case "Both": {
                 RenderUtil.drawBoundingBox(entity.getRenderBoundingBox(), lineWidth.getValue(), color.getValue());
-                RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4, new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
                 break;
             }
             case "Outline": {
@@ -106,14 +109,16 @@ public class LogoutSpots extends Module {
                 break;
             }
             case "Fill": {
-                RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4,  new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(entity.getRenderBoundingBox(), true, -0.4, new GSColor(color.getValue(), 50), GeometryMasks.Quad.ALL);
                 break;
             }
         }
         GlStateManager.popMatrix();
     }
 
-    /** event handlers below: **/
+    /**
+     * event handlers below:
+     **/
 
     @EventHandler
     private final Listener<PlayerJoinEvent> playerJoinEventListener = new Listener<>(event -> {

@@ -5,7 +5,6 @@ import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSense;
-import com.gamesense.client.command.Command;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.ModuleManager;
 import com.google.common.collect.Maps;
@@ -42,11 +41,11 @@ public class EventProcessor {
 
     public static EventProcessor INSTANCE;
     Minecraft mc = Minecraft.getMinecraft();
-	CommandManager commandManager = new CommandManager();
+    CommandManager commandManager = new CommandManager();
 
-	public EventProcessor() {
-		INSTANCE = this;
-	}
+    public EventProcessor() {
+        INSTANCE = this;
+    }
 
     @SubscribeEvent
     public void onRenderScreen(RenderGameOverlayEvent.Text event) {
@@ -98,6 +97,16 @@ public class EventProcessor {
         GameSense.EVENT_BUS.post(event);
     }
 
+    @SubscribeEvent
+    public void onFogColor(EntityViewRenderEvent.FogColors event) {
+        GameSense.EVENT_BUS.post(event);
+    }
+
+    @SubscribeEvent
+    public void onFogDensity(EntityViewRenderEvent.FogDensity event) {
+        GameSense.EVENT_BUS.post(event);
+    }
+
     @EventHandler
     private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (event.getPacket() instanceof SPacketPlayerListItem) {
@@ -139,7 +148,7 @@ public class EventProcessor {
             ModuleManager.onUpdate();
         }
 
-		  GameSense.EVENT_BUS.post(event);
+        GameSense.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent
@@ -164,7 +173,7 @@ public class EventProcessor {
 
         EntityPlayerSP player = mc.player;
         if (player != null && !player.isSneaking()) {
-            String prefix = Command.getCommandPrefix();
+            String prefix = CommandManager.getCommandPrefix();
             char typedChar = Keyboard.getEventCharacter();
             if (prefix.length() == 1 && prefix.charAt(0) == typedChar) {
                 mc.displayGuiScreen(new GuiChat(prefix));
@@ -184,7 +193,7 @@ public class EventProcessor {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChatSent(ClientChatEvent event) {
-        if (event.getMessage().startsWith(Command.getCommandPrefix())) {
+        if (event.getMessage().startsWith(CommandManager.getCommandPrefix())) {
             event.setCanceled(true);
             try {
                 mc.ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
@@ -196,7 +205,7 @@ public class EventProcessor {
         }
     }
 
-	private final Map<String, String> uuidNameCache = Maps.newConcurrentMap();
+    private final Map<String, String> uuidNameCache = Maps.newConcurrentMap();
 
     public String resolveName(String uuid) {
         uuid = uuid.replace("-", "");

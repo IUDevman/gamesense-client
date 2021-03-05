@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * @author linustouchtips
- * @since 12/14/2020
  * @author Hoosiers
+ * @since 12/14/2020
  * @since 12/31/2020
  */
 
@@ -47,8 +47,7 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends 
             if (!NoRender.incrementNoClusterRender()) {
                 callbackInfo.cancel();
             }
-        }
-        else {
+        } else {
             isClustered = false;
         }
 

@@ -5,17 +5,17 @@ import com.gamesense.api.util.world.Location;
 
 public class JumpEvent extends GameSenseEvent {
 
-	private Location location;
+    private Location location;
 
-	public JumpEvent(Location location) {
-		this.location = location;
-	}
+    public JumpEvent(Location location) {
+        this.location = location;
+    }
 
-	public Location getLocation() {
-		return this.location;
-	}
+    public Location getLocation() {
+        return this.location;
+    }
 
-	public void setLocation(Location location) {
-		this.location = location;
-	}
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

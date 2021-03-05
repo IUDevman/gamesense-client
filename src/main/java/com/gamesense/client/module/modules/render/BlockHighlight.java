@@ -1,11 +1,14 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -18,16 +21,13 @@ import java.util.ArrayList;
  * @Author Hoosiers on 10/10/2020
  */
 
+@Module.Declaration(name = "BlockHighlight", category = Category.Render)
 public class BlockHighlight extends Module {
 
-    public BlockHighlight() {
-        super("BlockHighlight", Category.Render);
-    }
-
-    Setting.Integer lineWidth;
-    Setting.Mode renderType;
-    Setting.Mode renderLook;
-    Setting.ColorSetting renderColor;
+    IntegerSetting lineWidth;
+    ModeSetting renderType;
+    ModeSetting renderLook;
+    ColorSetting renderColor;
 
     public void setup() {
         ArrayList<String> renderLooks = new ArrayList<>();
@@ -66,12 +66,12 @@ public class BlockHighlight extends Module {
         GSColor colorWithOpacity = new GSColor(renderColor.getValue(), 50);
 
         switch (renderLook.getValue()) {
-            case "Block" : {
+            case "Block": {
                 lookInt = 0;
                 break;
             }
 
-            case "Side" : {
+            case "Side": {
                 lookInt = 1;
                 break;
             }
@@ -106,8 +106,7 @@ public class BlockHighlight extends Module {
 
         if (lookInt == 0) {
             RenderUtil.drawBoundingBox(axisAlignedBB, width, color);
-        }
-        else if (lookInt == 1) {
+        } else if (lookInt == 1) {
             RenderUtil.drawBoundingBoxWithSides(axisAlignedBB, width, color, findRenderingSide(enumFacing));
         }
     }
@@ -117,8 +116,7 @@ public class BlockHighlight extends Module {
 
         if (lookInt == 0) {
             facing = GeometryMasks.Quad.ALL;
-        }
-        else if (lookInt == 1) {
+        } else if (lookInt == 1) {
             facing = findRenderingSide(enumFacing);
         }
 
@@ -130,20 +128,15 @@ public class BlockHighlight extends Module {
 
         if (enumFacing == EnumFacing.EAST) {
             facing = GeometryMasks.Quad.EAST;
-        }
-        else if (enumFacing == EnumFacing.WEST) {
+        } else if (enumFacing == EnumFacing.WEST) {
             facing = GeometryMasks.Quad.WEST;
-        }
-        else if (enumFacing == EnumFacing.NORTH) {
+        } else if (enumFacing == EnumFacing.NORTH) {
             facing = GeometryMasks.Quad.NORTH;
-        }
-        else if (enumFacing == EnumFacing.SOUTH) {
+        } else if (enumFacing == EnumFacing.SOUTH) {
             facing = GeometryMasks.Quad.SOUTH;
-        }
-        else if (enumFacing == EnumFacing.UP) {
+        } else if (enumFacing == EnumFacing.UP) {
             facing = GeometryMasks.Quad.UP;
-        }
-        else if (enumFacing == EnumFacing.DOWN) {
+        } else if (enumFacing == EnumFacing.DOWN) {
             facing = GeometryMasks.Quad.DOWN;
         }
 

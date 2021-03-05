@@ -1,24 +1,21 @@
 package com.gamesense.client.module.modules.render;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 
 import java.util.ArrayList;
 
+@Module.Declaration(name = "Capes", category = Category.Render, drawn = false)
 public class CapesModule extends Module {
 
-	public CapesModule() {
-		super("Capes", Category.Render);
-		setDrawn(false);
-	}
+    public ModeSetting capeMode;
 
-	public Setting.Mode capeMode;
+    public void setup() {
+        ArrayList<String> CapeType = new ArrayList<>();
+        CapeType.add("Black");
+        CapeType.add("White");
 
-	public void setup() {
-		ArrayList<String> CapeType = new ArrayList<>();
-		CapeType.add("Black");
-		CapeType.add("White");
-
-		capeMode = registerMode("Type", CapeType, "Black");
-	}
+        capeMode = registerMode("Type", CapeType, "Black");
+    }
 }

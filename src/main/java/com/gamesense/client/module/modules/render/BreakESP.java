@@ -1,11 +1,18 @@
 package com.gamesense.client.module.modules.render;
 
+import com.gamesense.api.event.events.DrawBlockDamageEvent;
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -17,17 +24,14 @@ import java.util.ArrayList;
  * @since 12/13/2020
  */
 
+@Module.Declaration(name = "BreakESP", category = Category.Render)
 public class BreakESP extends Module {
 
-    public BreakESP() {
-        super("BreakESP", Category.Render);
-    }
-
-    Setting.Mode renderType;
-    Setting.ColorSetting color;
-    Setting.Integer range;
-    Setting.Integer lineWidth;
-    public static Setting.Boolean cancelAnimation;
+    ModeSetting renderType;
+    ColorSetting color;
+    IntegerSetting range;
+    IntegerSetting lineWidth;
+    BooleanSetting cancelAnimation;
 
     public void setup() {
         ArrayList<String> renderTypes = new ArrayList<>();
@@ -81,19 +85,26 @@ public class BreakESP extends Module {
         AxisAlignedBB axisAlignedBB1 = new AxisAlignedBB(centerX - progressValX, centerY - progressValY, centerZ - progressValZ, centerX + progressValX, centerY + progressValY, centerZ + progressValZ);
 
         switch (renderType.getValue()) {
-            case "Fill" : {
+            case "Fill": {
                 RenderUtil.drawBox(axisAlignedBB1, true, 0, fillColor, GeometryMasks.Quad.ALL);
                 break;
             }
-            case "Outline" : {
+            case "Outline": {
                 RenderUtil.drawBoundingBox(axisAlignedBB1, lineWidth.getValue(), outlineColor);
                 break;
             }
-            case "Both" : {
+            case "Both": {
                 RenderUtil.drawBox(axisAlignedBB1, true, 0, fillColor, GeometryMasks.Quad.ALL);
                 RenderUtil.drawBoundingBox(axisAlignedBB1, lineWidth.getValue(), outlineColor);
                 break;
             }
         }
     }
+
+    @EventHandler
+    private final Listener<DrawBlockDamageEvent> drawBlockDamageEventListener = new Listener<>(event -> {
+       if (cancelAnimation.getValue()) {
+           event.cancel();
+       }
+    });
 }

@@ -8,20 +8,12 @@ import com.gamesense.client.command.CommandManager;
  * @Author Hoosiers on 11/05/2020
  */
 
+@Command.Declaration(name = "Commands", syntax = "commands", alias = {"commands", "cmd", "command", "commandlist", "help"})
 public class CmdListCommand extends Command {
-
-    public CmdListCommand() {
-        super("Commands");
-
-        setCommandSyntax(Command.getCommandPrefix() + "commands");
-        setCommandAlias(new String[]{
-                "commands", "cmd", "command", "commandlist", "help"
-        });
-    }
 
     public void onCommand(String command, String[] message) throws Exception {
         for (Command command1 : CommandManager.getCommands()) {
-            MessageBus.sendCommandMessage(command1.getCommandName() + ": " + "\"" + command1.getCommandSyntax() + "\"!", true);
+            MessageBus.sendCommandMessage(command1.getName() + ": " + "\"" + command1.getSyntax() + "\"!", true);
         }
     }
 }

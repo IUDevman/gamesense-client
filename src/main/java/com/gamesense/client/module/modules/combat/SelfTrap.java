@@ -1,11 +1,14 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
@@ -25,21 +28,18 @@ import java.util.ArrayList;
  * Ported and modified from Surround.java
  */
 
+@Module.Declaration(name = "SelfTrap", category = Category.Combat)
 public class SelfTrap extends Module {
 
-    public SelfTrap() {
-        super("SelfTrap", Category.Combat);
-    }
-
-    Setting.Mode trapType;
-    Setting.Boolean shiftOnly;
-    Setting.Boolean chatMsg;
-    Setting.Boolean rotate;
-    Setting.Boolean disableNone;
-    Setting.Boolean offHandObby;
-    Setting.Boolean centerPlayer;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
+    ModeSetting trapType;
+    BooleanSetting shiftOnly;
+    BooleanSetting chatMsg;
+    BooleanSetting rotate;
+    BooleanSetting disableNone;
+    BooleanSetting offHandObby;
+    BooleanSetting centerPlayer;
+    IntegerSetting tickDelay;
+    IntegerSetting blocksPerTick;
 
     public void setup() {
         ArrayList<String> trapTypes = new ArrayList<>();
@@ -101,8 +101,7 @@ public class SelfTrap extends Module {
         if (chatMsg.getValue()) {
             if (noObby) {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... SelfTrap turned OFF!");
-            }
-            else {
+            } else {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfTrap turned OFF!");
             }
         }
@@ -148,22 +147,20 @@ public class SelfTrap extends Module {
             if (InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff) == -1) {
                 noObby = true;
                 return;
-            }else {
+            } else {
                 noObby = false;
                 activedOff = true;
             }
-        }
-        else {
+        } else {
             if (delayTimeTicks < tickDelay.getValue()) {
                 delayTimeTicks++;
                 return;
-            }
-            else {
+            } else {
                 delayTimeTicks = 0;
             }
         }
 
-        if (shiftOnly.getValue() && !mc.player.isSneaking()){
+        if (shiftOnly.getValue() && !mc.player.isSneaking()) {
             return;
         }
 
@@ -174,27 +171,22 @@ public class SelfTrap extends Module {
 
             if (xDeviation <= 0.1 && zDeviation <= 0.1) {
                 centeredBlock = Vec3d.ZERO;
-            }
-            else {
+            } else {
                 double newX;
                 double newZ;
                 if (mc.player.posX > Math.round(mc.player.posX)) {
                     newX = Math.round(mc.player.posX) + 0.5;
-                }
-                else if (mc.player.posX < Math.round(mc.player.posX)) {
+                } else if (mc.player.posX < Math.round(mc.player.posX)) {
                     newX = Math.round(mc.player.posX) - 0.5;
-                }
-                else {
+                } else {
                     newX = mc.player.posX;
                 }
 
                 if (mc.player.posZ > Math.round(mc.player.posZ)) {
                     newZ = Math.round(mc.player.posZ) + 0.5;
-                }
-                else if (mc.player.posZ < Math.round(mc.player.posZ)) {
+                } else if (mc.player.posZ < Math.round(mc.player.posZ)) {
                     newZ = Math.round(mc.player.posZ) - 0.5;
-                }
-                else {
+                } else {
                     newZ = mc.player.posZ;
                 }
 
@@ -213,12 +205,10 @@ public class SelfTrap extends Module {
             if (trapType.getValue().equalsIgnoreCase("Normal")) {
                 offsetPattern = Offsets.TRAP;
                 maxSteps = Offsets.TRAP.length;
-            }
-            else if (trapType.getValue().equalsIgnoreCase("No Step")) {
+            } else if (trapType.getValue().equalsIgnoreCase("No Step")) {
                 offsetPattern = Offsets.TRAPFULLROOF;
                 maxSteps = Offsets.TRAPFULLROOF.length;
-            }
-            else {
+            } else {
                 offsetPattern = Offsets.TRAPSIMPLE;
                 maxSteps = Offsets.TRAPSIMPLE.length;
             }
@@ -277,7 +267,7 @@ public class SelfTrap extends Module {
             if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
                 // We can continue
                 handSwing = EnumHand.OFF_HAND;
-            }else return false;
+            } else return false;
         }
 
         if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
@@ -293,7 +283,7 @@ public class SelfTrap extends Module {
                 new Vec3d(1, -1, 0),
                 new Vec3d(0, -1, 1),
                 new Vec3d(-1, -1, 0),
-                new Vec3d(0, 0,-1),
+                new Vec3d(0, 0, -1),
                 new Vec3d(1, 0, 0),
                 new Vec3d(0, 0, 1),
                 new Vec3d(-1, 0, 0),
@@ -325,12 +315,12 @@ public class SelfTrap extends Module {
 
         private static final Vec3d[] TRAPSIMPLE = {
                 new Vec3d(-1, -1, 0),
-                new Vec3d(1, -1,0),
-                new Vec3d(0,-1,-1),
-                new Vec3d(0,-1,1),
-                new Vec3d(1, 0,0),
-                new Vec3d(0,0,-1),
-                new Vec3d(0,0,1),
+                new Vec3d(1, -1, 0),
+                new Vec3d(0, -1, -1),
+                new Vec3d(0, -1, 1),
+                new Vec3d(1, 0, 0),
+                new Vec3d(0, 0, -1),
+                new Vec3d(0, 0, 1),
                 new Vec3d(-1, 0, 0),
                 new Vec3d(-1, 1, 0),
                 new Vec3d(-1, 2, 0),

@@ -2,6 +2,11 @@ package com.gamesense.client.command;
 
 import net.minecraft.client.Minecraft;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * @Author Hoosiers on 11/04/2020
  */
@@ -10,42 +15,34 @@ public abstract class Command {
 
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
-    public static String commandPrefix = "-";
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface Declaration {
+        String name();
 
-    String commandName;
-    String[] commandAlias;
-    String commandSyntax;
+        String syntax();
 
-    public Command(String commandName) {
-        this.commandName = commandName;
+        String[] alias();
     }
 
-    public static String getCommandPrefix() {
-        return commandPrefix;
+    private Declaration getDeclaration() {
+        return getClass().getAnnotation(Declaration.class);
     }
 
-    public String getCommandName() {
-        return this.commandName;
+    private final String name = getDeclaration().name();
+    private final String[] alias = getDeclaration().alias();
+    private final String syntax = getDeclaration().syntax();
+
+    public String getName() {
+        return this.name;
     }
 
-    public String getCommandSyntax() {
-        return this.commandSyntax;
+    public String getSyntax() {
+        return CommandManager.getCommandPrefix() + this.syntax;
     }
 
-    public String[] getCommandAlias() {
-        return this.commandAlias;
-    }
-
-    public static void setCommandPrefix(String prefix) {
-        commandPrefix = prefix;
-    }
-
-    public void setCommandSyntax(String syntax) {
-        this.commandSyntax = syntax;
-    }
-
-    public void setCommandAlias(String[] alias) {
-        this.commandAlias = alias;
+    public String[] getAlias() {
+        return this.alias;
     }
 
     public abstract void onCommand(String command, String[] message) throws Exception;

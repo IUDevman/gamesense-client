@@ -1,9 +1,10 @@
 package com.gamesense.client.module.modules.movement;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.world.HoleUtil;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
@@ -11,19 +12,16 @@ import java.util.HashMap;
 
 /**
  * @author Hoosiers
- * @since 09/28/20
  * @author 0b00101010
+ * @since 09/28/20
  * @since 25/01/21
  */
 
+@Module.Declaration(name = "Anchor", category = Category.Movement)
 public class Anchor extends Module {
 
-    public Anchor() {
-        super("Anchor", Category.Movement);
-    }
-
-    Setting.Boolean guarantee;
-    Setting.Integer activateHeight;
+    BooleanSetting guarantee;
+    IntegerSetting activateHeight;
 
     public void setup() {
         guarantee = registerBoolean("Guarantee Hole", true);

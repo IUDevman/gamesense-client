@@ -13,32 +13,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LayerBipedArmor.class)
 public class MixinLayerBipedArmor {
 
-	@Inject(method = "setModelSlotVisible", at = @At(value = "HEAD"), cancellable = true)
-	protected void setModelSlotVisible(ModelBiped model, EntityEquipmentSlot slotIn, CallbackInfo callbackInfo) {
-		NoRender noRender = ModuleManager.getModule(NoRender.class);
+    @Inject(method = "setModelSlotVisible", at = @At(value = "HEAD"), cancellable = true)
+    protected void setModelSlotVisible(ModelBiped model, EntityEquipmentSlot slotIn, CallbackInfo callbackInfo) {
+        NoRender noRender = ModuleManager.getModule(NoRender.class);
 
-		if (noRender.isEnabled() && noRender.armor.getValue()) {
-			callbackInfo.cancel();
-			switch (slotIn) {
-				case HEAD: {
-					model.bipedHead.showModel = false;
-					model.bipedHeadwear.showModel = false;
-				}
-				case CHEST: {
-					model.bipedBody.showModel = false;
-					model.bipedRightArm.showModel = false;
-					model.bipedLeftArm.showModel = false;
-				}
-				case LEGS: {
-					model.bipedBody.showModel = false;
-					model.bipedRightLeg.showModel = false;
-					model.bipedLeftLeg.showModel = false;
-				}
-				case FEET: {
-					model.bipedRightLeg.showModel = false;
-					model.bipedLeftLeg.showModel = false;
-				}
-			}
-		}
-	}
+        if (noRender.isEnabled() && noRender.armor.getValue()) {
+            callbackInfo.cancel();
+            switch (slotIn) {
+                case HEAD: {
+                    model.bipedHead.showModel = false;
+                    model.bipedHeadwear.showModel = false;
+                }
+                case CHEST: {
+                    model.bipedBody.showModel = false;
+                    model.bipedRightArm.showModel = false;
+                    model.bipedLeftArm.showModel = false;
+                }
+                case LEGS: {
+                    model.bipedBody.showModel = false;
+                    model.bipedRightLeg.showModel = false;
+                    model.bipedLeftLeg.showModel = false;
+                }
+                case FEET: {
+                    model.bipedRightLeg.showModel = false;
+                    model.bipedLeftLeg.showModel = false;
+                }
+            }
+        }
+    }
 }

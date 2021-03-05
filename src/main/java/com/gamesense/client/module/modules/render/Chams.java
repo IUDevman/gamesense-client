@@ -1,14 +1,14 @@
 package com.gamesense.client.module.modules.render;
 
-import java.util.ArrayList;
-
 import com.gamesense.api.event.events.RenderEntityEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.ChamsUtil;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Module;
-
+import com.gamesense.client.module.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
@@ -18,28 +18,27 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.ArrayList;
+
 /**
  * @author Techale
  * @author Hoosiers
  */
 
+@Module.Declaration(name = "Chams", category = Category.Render)
 public class Chams extends Module {
 
-    public Chams() {
-        super("Chams", Category.Render);
-    }
-
-    Setting.Mode chamsType;
-    Setting.ColorSetting playerColor;
-    Setting.ColorSetting mobColor;
-    Setting.ColorSetting crystalColor;
-    Setting.Integer colorOpacity;
-    Setting.Integer wireOpacity;
-    Setting.Integer lineWidth;
-    Setting.Integer range;
-    Setting.Boolean player;
-    Setting.Boolean mob;
-    Setting.Boolean crystal;
+    ModeSetting chamsType;
+    ColorSetting playerColor;
+    ColorSetting mobColor;
+    ColorSetting crystalColor;
+    IntegerSetting colorOpacity;
+    IntegerSetting wireOpacity;
+    IntegerSetting lineWidth;
+    IntegerSetting range;
+    BooleanSetting player;
+    BooleanSetting mob;
+    BooleanSetting crystal;
 
     public void setup() {
         ArrayList<String> chamsTypes = new ArrayList<>();
@@ -64,8 +63,7 @@ public class Chams extends Module {
     private final Listener<RenderEntityEvent.Head> renderEntityHeadEventListener = new Listener<>(event -> {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
             return;
-        }
-        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
+        } else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
             return;
         }
 
@@ -96,8 +94,7 @@ public class Chams extends Module {
     private final Listener<RenderEntityEvent.Return> renderEntityReturnEventListener = new Listener<>(event -> {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
             return;
-        }
-        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
+        } else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
             return;
         }
 
@@ -127,11 +124,11 @@ public class Chams extends Module {
     private void renderChamsPre(GSColor color, boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Texture": {
-            	ChamsUtil.createChamsPre();
+                ChamsUtil.createChamsPre();
                 break;
             }
             case "Color": {
-            	ChamsUtil.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
+                ChamsUtil.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
                 break;
             }
             case "WireFrame": {
@@ -144,15 +141,15 @@ public class Chams extends Module {
     private void renderChamsPost(boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Texture": {
-            	ChamsUtil.createChamsPost();
+                ChamsUtil.createChamsPost();
                 break;
             }
             case "Color": {
-            	ChamsUtil.createColorPost(isPlayer);
+                ChamsUtil.createColorPost(isPlayer);
                 break;
             }
             case "WireFrame": {
-            	ChamsUtil.createWirePost(isPlayer);
+                ChamsUtil.createWirePost(isPlayer);
                 break;
             }
         }

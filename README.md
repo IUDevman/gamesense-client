@@ -3,8 +3,8 @@
 
 
 <!-- PROJECT SHIELDS -->
-[![version](https://img.shields.io/badge/Release-2.2.7-green.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
-[![version](https://img.shields.io/badge/Dev-2.2.8-orange.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
+[![version](https://img.shields.io/badge/Release-2.2.8-green.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
+[![version](https://img.shields.io/badge/Dev-2.3.0-orange.svg)](https://github.com/IUDevman/gamesense-client/releases/latest)
 [![discord](https://img.shields.io/badge/Discord-xfgPw63-8080c0)](https://discord.gg/xfgPw63)
 ![build](https://github.com/IUDevman/gamesense-master/workflows/Java%20CI%20with%20Gradle/badge.svg)
 ![GitHub All Releases](https://img.shields.io/github/downloads/IUDevman/gamesense-client/total)
@@ -53,7 +53,8 @@ Most notable features:
 * TechAle (AutoAnvil, PistonCrystal, Blocker)
 * 0b00101010 (HoleESP rewrite, misc render)
 * A2H (Bug fixes, compatability)
-* Xiaro (Code improvement, compatability)
+* Xiaro (Code improvement, compatability, Rotation Manager)
+* Soulbond (XCarry)
 
 #### Credits
 ***Check specific class files for full credits.***
@@ -89,5 +90,6 @@ If you have any questions about this, feel free to ask in the discord or by mess
 ## Support
 Feature requests and major bug reports can be given by creating an issue. 
 Please try to explain in detail the feature/problem and also provide the names of the other mods you are using with GameSense (bug reporting).
+If you have any questions regarding the usage of the client, check the wiki documentation and the pinned messages on the discord.
 
-For small bug reports/faster help, join the discord and ask your questions there.
+For small bug reports, join the discord and ask your questions there.

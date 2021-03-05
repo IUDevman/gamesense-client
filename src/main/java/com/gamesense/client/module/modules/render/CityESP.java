@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
@@ -9,6 +9,7 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -23,34 +24,32 @@ import java.util.stream.Collectors;
 
 /**
  * @author Hoosiers
- * @since 10/20/2020
  * @author 0b00101010
+ * @since 10/20/2020
  * @since 30/01/2021
  */
+
+@Module.Declaration(name = "CityESP", category = Category.Render)
 public class CityESP extends Module {
 
-    public CityESP() {
-        super("CityESP", Category.Render);
-    }
-
-    Setting.Integer range;
-    Setting.Integer down;
-    Setting.Integer sides;
-    Setting.Integer depth;
-    Setting.Double minDamage;
-    Setting.Double maxDamage;
-    Setting.Boolean ignoreCrystals;
-    Setting.Mode targetMode;
-    Setting.Mode selectMode;
-    Setting.Mode renderMode;
-    Setting.Integer width;
-    Setting.ColorSetting color;
+    IntegerSetting range;
+    IntegerSetting down;
+    IntegerSetting sides;
+    IntegerSetting depth;
+    DoubleSetting minDamage;
+    DoubleSetting maxDamage;
+    BooleanSetting ignoreCrystals;
+    ModeSetting targetMode;
+    ModeSetting selectMode;
+    ModeSetting renderMode;
+    IntegerSetting width;
+    ColorSetting color;
 
     public void setup() {
         ArrayList<String> targetModes = new ArrayList<>();
         targetModes.add("Single");
         targetModes.add("All");
-      
+
         ArrayList<String> selectModes = new ArrayList<>();
         selectModes.add("Closest");
         selectModes.add("All");
@@ -71,7 +70,7 @@ public class CityESP extends Module {
         selectMode = registerMode("Select", selectModes, "Closest");
         renderMode = registerMode("Render", renderModes, "Both");
         width = registerInteger("Width", 1, 1, 10);
-        color = registerColor("Color", new GSColor(102,51,153));
+        color = registerColor("Color", new GSColor(102, 51, 153));
     }
 
     private final HashMap<EntityPlayer, List<BlockPos>> cityable = new HashMap<>();
@@ -86,7 +85,7 @@ public class CityESP extends Module {
                 .filter(entityPlayer -> entityPlayer.getDistanceSq(mc.player) <= range.getValue() * range.getValue())
                 .filter(entityPlayer -> !EntityUtil.basicChecksEntity(entityPlayer)).collect(Collectors.toList());
 
-        for (EntityPlayer player: players) {
+        for (EntityPlayer player : players) {
             if (player == mc.player) {
                 continue;
             }
@@ -174,8 +173,8 @@ public class CityESP extends Module {
                 if (this.canPlaceCrystal(pos.down(), ignoreCrystals.getValue())) {
                     // believe i have the right location for the crystal
                     // pos is the block one above the bedrock/obsidian
-                    if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ()+ 0.5d, player) >= minDamage.getValue()) {
-                        if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ()+ 0.5d, mc.player) <= maxDamage.getValue()) {
+                    if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ() + 0.5d, player) >= minDamage.getValue()) {
+                        if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ() + 0.5d, mc.player) <= maxDamage.getValue()) {
                             cityableSides.add(blockPos);
                         }
                         break;

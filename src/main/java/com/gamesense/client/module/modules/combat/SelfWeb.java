@@ -1,10 +1,13 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.network.play.client.CPacketEntityAction;
@@ -19,20 +22,17 @@ import java.util.ArrayList;
  * Ported and modified from Surround.java
  */
 
+@Module.Declaration(name = "SelfWeb", category = Category.Combat)
 public class SelfWeb extends Module {
 
-    public SelfWeb() {
-        super("SelfWeb", Category.Combat);
-    }
-
-    Setting.Boolean chatMsg;
-    Setting.Boolean shiftOnly;
-    Setting.Boolean singleWeb;
-    Setting.Boolean rotate;
-    Setting.Boolean disableNone;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
-    Setting.Mode placeType;
+    BooleanSetting chatMsg;
+    BooleanSetting shiftOnly;
+    BooleanSetting singleWeb;
+    BooleanSetting rotate;
+    BooleanSetting disableNone;
+    IntegerSetting tickDelay;
+    IntegerSetting blocksPerTick;
+    ModeSetting placeType;
 
     public void setup() {
         ArrayList<String> placeModes = new ArrayList<>();
@@ -86,8 +86,7 @@ public class SelfWeb extends Module {
         if (chatMsg.getValue()) {
             if (noWeb) {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... SelfWeb turned OFF!");
-            }
-            else {
+            } else {
                 MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfWeb turned OFF!");
             }
         }
@@ -134,13 +133,11 @@ public class SelfWeb extends Module {
                 noWeb = true;
                 disable();
             }
-        }
-        else {
+        } else {
             if (delayTimeTicks < tickDelay.getValue()) {
                 delayTimeTicks++;
                 return;
-            }
-            else {
+            } else {
                 delayTimeTicks = 0;
             }
         }
@@ -158,8 +155,7 @@ public class SelfWeb extends Module {
             if (placeType.getValue().equalsIgnoreCase("Double")) {
                 offsetPattern = Offsets.DOUBLE;
                 maxSteps = Offsets.DOUBLE.length;
-            }
-            else {
+            } else {
                 offsetPattern = Offsets.SINGLE;
                 maxSteps = Offsets.SINGLE.length;
             }

@@ -8,16 +8,8 @@ import com.gamesense.client.module.modules.misc.AutoReply;
  * @Author Hoosiers on 11/04/2020
  */
 
+@Command.Declaration(name = "AutoReply", syntax = "autoreply set [message] (use _ for spaces)", alias = {"autoreply", "reply"})
 public class AutoReplyCommand extends Command {
-
-    public AutoReplyCommand() {
-        super("AutoReply");
-
-        setCommandSyntax(Command.getCommandPrefix() + "autoreply set [message] (use _ for spaces)");
-        setCommandAlias(new String[]{
-                "autoreply", "reply"
-        });
-    }
 
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
