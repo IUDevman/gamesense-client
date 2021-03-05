@@ -70,7 +70,7 @@ public class AutoCrystalGS extends Module {
     BooleanSetting showDamage;
     BooleanSetting antiSuicide;
     BooleanSetting multiPlace;
-    public static BooleanSetting endCrystalMode;
+    public BooleanSetting endCrystalMode;
     BooleanSetting cancelCrystal;
     BooleanSetting noGapSwitch;
     BooleanSetting refresh;
@@ -83,8 +83,8 @@ public class AutoCrystalGS extends Module {
     DoubleSetting minDmg;
     DoubleSetting minBreakDmg;
     DoubleSetting enemyRange;
-    public static DoubleSetting placeRange;
-    public static DoubleSetting breakRange;
+    public DoubleSetting placeRange;
+    public DoubleSetting breakRange;
     ModeSetting handBreak;
     ModeSetting breakMode;
     ModeSetting hudDisplay;

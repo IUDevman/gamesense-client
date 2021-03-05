@@ -193,7 +193,8 @@ public class AntiCrystal extends Module {
 
     // This function check if the offHand has "Plates" as value
     public static boolean isOffHandPressure() {
-        return OffHand.nonDefaultItem.getValue().equals("Plates") || OffHand.defaultItem.getValue().equals("Plates");
+        OffHand offHand = ModuleManager.getModule(OffHand.class);
+        return offHand.nonDefaultItem.getValue().equals("Plates") || offHand.defaultItem.getValue().equals("Plates");
     }
 
     // Place block

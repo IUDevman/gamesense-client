@@ -3,6 +3,7 @@ package com.gamesense.api.util.render;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.render.Nametags;
 import net.minecraft.client.Minecraft;
@@ -317,8 +318,10 @@ public class RenderUtil {
         if (type == 2) {
             double width = 0;
             GSColor bcolor = new GSColor(0, 0, 0, 51);
-            if (Nametags.customColor.getValue()) {
-                bcolor = Nametags.borderColor.getValue();
+            Nametags nametags = ModuleManager.getModule(Nametags.class);
+
+            if (nametags.customColor.getValue()) {
+                bcolor = nametags.borderColor.getValue();
             }
             for (int i = 0; i < text.length; i++) {
                 double w = FontUtil.getStringWidth(ColorMain.customFont.getValue(), text[i]) / 2;

@@ -50,10 +50,12 @@ public abstract class MixinPlayerControllerMP {
 
     @Inject(method = "onStoppedUsingItem", at = @At("HEAD"), cancellable = true)
     public void onStoppedUsingItem(EntityPlayer playerIn, CallbackInfo ci) {
-        if (ModuleManager.isModuleEnabled(PacketUse.class)) {
-            if ((PacketUse.food.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood)
-                    || (PacketUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
-                    || PacketUse.all.getValue()) {
+        PacketUse packetUse = ModuleManager.getModule(PacketUse.class);
+
+        if (packetUse.isEnabled()) {
+            if ((packetUse.food.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood)
+                    || (packetUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
+                    || packetUse.all.getValue()) {
                 this.syncCurrentPlayItem();
                 playerIn.stopActiveHand();
                 ci.cancel();

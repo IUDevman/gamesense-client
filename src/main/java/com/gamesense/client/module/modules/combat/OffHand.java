@@ -36,7 +36,7 @@ import java.util.Map;
 @Module.Declaration(name = "Offhand", category = Category.Combat)
 public class OffHand extends Module {
 
-    public static ModeSetting defaultItem,
+    ModeSetting defaultItem,
             nonDefaultItem,
             noPlayerItem;
     ModeSetting potionChoose;

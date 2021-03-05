@@ -55,11 +55,12 @@ public class CombatInfo extends HUDModule {
     }
 
     public void onRender() {
+        AutoCrystalGS autoCrystalGS = ModuleManager.getModule(AutoCrystalGS.class);
         list.totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum() + ((mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) ? 1 : 0);
         list.players = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityOtherPlayerMP)
                 .filter(entity -> !Friends.isFriend(entity.getName()))
-                .filter(e -> mc.player.getDistance(e) <= AutoCrystalGS.placeRange.getValue())
+                .filter(e -> mc.player.getDistance(e) <= autoCrystalGS.placeRange.getValue())
                 .map(entity -> (EntityOtherPlayerMP) entity)
                 .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
                 .orElse(null);
@@ -71,16 +72,16 @@ public class CombatInfo extends HUDModule {
                 ++i;
                 BlockPos o = new BlockPos(e.getPositionVector().x, e.getPositionVector().y, e.getPositionVector().z).add(add.getX(), add.getY(), add.getZ());
                 if (mc.world.getBlockState(o).getBlock() == Blocks.OBSIDIAN) {
-                    if (i == 1 && CrystalUtil.canPlaceCrystal(o.north(1).down(), AutoCrystalGS.endCrystalMode.getValue())) {
+                    if (i == 1 && CrystalUtil.canPlaceCrystal(o.north(1).down(), autoCrystalGS.endCrystalMode.getValue())) {
                         list.lby = true;
                         list.renderLby = true;
-                    } else if (i == 2 && CrystalUtil.canPlaceCrystal(o.east(1).down(), AutoCrystalGS.endCrystalMode.getValue())) {
+                    } else if (i == 2 && CrystalUtil.canPlaceCrystal(o.east(1).down(), autoCrystalGS.endCrystalMode.getValue())) {
                         list.lby = true;
                         list.renderLby = true;
-                    } else if (i == 3 && CrystalUtil.canPlaceCrystal(o.south(1).down(), AutoCrystalGS.endCrystalMode.getValue())) {
+                    } else if (i == 3 && CrystalUtil.canPlaceCrystal(o.south(1).down(), autoCrystalGS.endCrystalMode.getValue())) {
                         list.lby = true;
                         list.renderLby = true;
-                    } else if (i == 4 && CrystalUtil.canPlaceCrystal(o.west(1).down(), AutoCrystalGS.endCrystalMode.getValue())) {
+                    } else if (i == 4 && CrystalUtil.canPlaceCrystal(o.west(1).down(), autoCrystalGS.endCrystalMode.getValue())) {
                         list.lby = true;
                         list.renderLby = true;
                     }
@@ -140,6 +141,8 @@ public class CombatInfo extends HUDModule {
 
         @Override
         public Color getItemColor(int index) {
+            AutoCrystalGS autoCrystalGS = ModuleManager.getModule(AutoCrystalGS.class);
+
             if (infoType.getValue().equals("Hoosiers")) {
                 if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return color1.getValue();
                 else return color2.getValue();
@@ -149,11 +152,11 @@ public class CombatInfo extends HUDModule {
                     on = true;
                 } else if (index == 1) {
                     if (players != null) {
-                        on = mc.player.getDistance(players) <= AutoCrystalGS.breakRange.getValue();
+                        on = mc.player.getDistance(players) <= autoCrystalGS.breakRange.getValue();
                     }
                 } else if (index == 2) {
                     if (players != null) {
-                        on = mc.player.getDistance(players) <= AutoCrystalGS.placeRange.getValue();
+                        on = mc.player.getDistance(players) <= autoCrystalGS.placeRange.getValue();
                     }
                 } else if (index == 3) {
                     on = totems > 0 && ModuleManager.isModuleEnabled(OffHand.class);

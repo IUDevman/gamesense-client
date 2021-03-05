@@ -18,15 +18,15 @@ import java.awt.*;
 @Module.Declaration(name = "ShulkerViewer", category = Category.Render)
 public class ShulkerViewer extends Module {
 
-    public static ColorSetting outlineColor;
-    public static ColorSetting fillColor;
+    public ColorSetting outlineColor;
+    public ColorSetting fillColor;
 
     public void setup() {
         outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
         fillColor = registerColor("Fill", new GSColor(0, 0, 0, 255));
     }
 
-    public static void renderShulkerPreview(ItemStack itemStack, int posX, int posY, int width, int height) {
+    public void renderShulkerPreview(ItemStack itemStack, int posX, int posY, int width, int height) {
         GSColor outline = new GSColor(outlineColor.getValue(), 255);
         GSColor fill = new GSColor(fillColor.getValue(), 200);
 

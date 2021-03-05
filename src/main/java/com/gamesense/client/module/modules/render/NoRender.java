@@ -24,8 +24,8 @@ public class NoRender extends Module {
     public BooleanSetting noOverlay;
     BooleanSetting noBossBar;
     public BooleanSetting noSkylight;
-    public static BooleanSetting noCluster;
-    public static IntegerSetting maxNoClusterRender;
+    public BooleanSetting noCluster;
+    public IntegerSetting maxNoClusterRender;
 
     public void setup() {
         armor = registerBoolean("Armor", false);
@@ -103,12 +103,12 @@ public class NoRender extends Module {
     });
 
     // return whether to render or not
-    public static boolean incrementNoClusterRender() {
+    public boolean incrementNoClusterRender() {
         ++currentClusterAmount;
         return currentClusterAmount <= maxNoClusterRender.getValue();
     }
 
-    public static boolean getNoClusterRender() {
+    public boolean getNoClusterRender() {
         return currentClusterAmount <= maxNoClusterRender.getValue();
     }
 }

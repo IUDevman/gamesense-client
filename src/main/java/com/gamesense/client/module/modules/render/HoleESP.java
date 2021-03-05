@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Module.Declaration(name = "HoleESP", category = Category.Render)
 public class HoleESP extends Module {
 
-    public static IntegerSetting rangeS;
+    public IntegerSetting range;
     BooleanSetting hideOwn;
     BooleanSetting flatOwn;
     ModeSetting customHoles;
@@ -69,7 +69,7 @@ public class HoleESP extends Module {
         modes.add("Slab");
         modes.add("Double");
 
-        rangeS = registerInteger("Range", 5, 1, 20);
+        range = registerInteger("Range", 5, 1, 20);
         customHoles = registerMode("Show", holes, "Single");
         type = registerMode("Render", render, "Both");
         mode = registerMode("Mode", modes, "Air");
@@ -96,7 +96,7 @@ public class HoleESP extends Module {
             holes.clear();
         }
 
-        int range = (int) Math.ceil(rangeS.getValue());
+        int range = (int) Math.ceil(this.range.getValue());
 
         // hashSets are easier to navigate
         HashSet<BlockPos> possibleHoles = Sets.newHashSet();

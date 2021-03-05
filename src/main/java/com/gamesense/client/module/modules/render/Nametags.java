@@ -47,8 +47,8 @@ public class Nametags extends Module {
     BooleanSetting showEntityID;
     IntegerSetting range;
     ModeSetting levelColor;
-    public static BooleanSetting customColor;
-    public static ColorSetting borderColor;
+    public BooleanSetting customColor;
+    public ColorSetting borderColor;
 
     public void setup() {
         ArrayList<String> tab = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.ModuleManager;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -17,9 +18,9 @@ import java.util.List;
 @HUDModule.Declaration(posX = 0, posZ = 50)
 public class Notifications extends HUDModule {
 
-    private static BooleanSetting sortUp;
-    private static BooleanSetting sortRight;
-    public static BooleanSetting disableChat;
+    public BooleanSetting sortUp;
+    public BooleanSetting sortRight;
+    public BooleanSetting disableChat;
 
     public void setup() {
         sortUp = registerBoolean("Sort Up", false);
@@ -47,7 +48,7 @@ public class Notifications extends HUDModule {
             list.list.remove(0);
     }
 
-    public static void addMessage(TextComponentString m) {
+    public void addMessage(TextComponentString m) {
         if (list.list.size() < 3) {
             list.list.remove(m);
             list.list.add(m);
@@ -79,12 +80,12 @@ public class Notifications extends HUDModule {
 
         @Override
         public boolean sortUp() {
-            return sortUp.isOn();
+            return ModuleManager.getModule(Notifications.class).sortUp.isOn();
         }
 
         @Override
         public boolean sortRight() {
-            return sortRight.isOn();
+            return ModuleManager.getModule(Notifications.class).sortRight.isOn();
         }
     }
 }
