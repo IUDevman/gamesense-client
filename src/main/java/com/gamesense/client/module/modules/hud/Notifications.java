@@ -1,9 +1,9 @@
 package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.Category;
 import com.gamesense.client.module.ModuleManager;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
@@ -18,15 +18,9 @@ import java.util.List;
 @HUDModule.Declaration(posX = 0, posZ = 50)
 public class Notifications extends HUDModule {
 
-    public BooleanSetting sortUp;
-    public BooleanSetting sortRight;
-    public BooleanSetting disableChat;
-
-    public void setup() {
-        sortUp = registerBoolean("Sort Up", false);
-        sortRight = registerBoolean("Sort Right", false);
-        disableChat = registerBoolean("No Chat Msg", true);
-    }
+    public BooleanSetting sortUp = registerBoolean("Sort Up", false);
+    public BooleanSetting sortRight = registerBoolean("Sort Right", false);
+    public BooleanSetting disableChat = registerBoolean("No Chat Msg", true);
 
     private static NotificationsList list = new NotificationsList();
 

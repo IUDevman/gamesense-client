@@ -288,6 +288,7 @@ public class RenderUtil {
     }
 
     public static void drawNametag(double x, double y, double z, String[] text, GSColor color, int type) {
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
         double dist = mc.player.getDistance(x, y, z);
         double scale = 1, offset = 0;
         int start = 0;
@@ -324,7 +325,7 @@ public class RenderUtil {
                 bcolor = nametags.borderColor.getValue();
             }
             for (int i = 0; i < text.length; i++) {
-                double w = FontUtil.getStringWidth(ColorMain.customFont.getValue(), text[i]) / 2;
+                double w = FontUtil.getStringWidth(colorMain.customFont.getValue(), text[i]) / 2;
                 if (w > width) {
                     width = w;
                 }
@@ -333,7 +334,7 @@ public class RenderUtil {
         }
         GlStateManager.enableTexture2D();
         for (int i = 0; i < text.length; i++) {
-            FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), text[i], -FontUtil.getStringWidth(ColorMain.customFont.getValue(), text[i]) / 2, i * (mc.fontRenderer.FONT_HEIGHT + 1) + start, color);
+            FontUtil.drawStringWithShadow(colorMain.customFont.getValue(), text[i], -FontUtil.getStringWidth(colorMain.customFont.getValue(), text[i]) / 2, i * (mc.fontRenderer.FONT_HEIGHT + 1) + start, color);
         }
         GlStateManager.disableTexture2D();
         if (type != 2) {

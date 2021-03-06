@@ -10,8 +10,9 @@ import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEnderChest;
@@ -25,10 +26,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -43,39 +41,18 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "HoleFill", category = Category.Combat)
 public class HoleFill extends Module {
 
-    BooleanSetting chatMsgs;
-    BooleanSetting autoSwitch;
-    BooleanSetting rotate;
-    BooleanSetting disableOnFinish;
-    BooleanSetting offHandObby;
-    BooleanSetting onlyPlayer;
-    IntegerSetting placeDelay;
-    IntegerSetting retryDelay;
-    IntegerSetting bpc;
-    DoubleSetting playerRange;
-    DoubleSetting range;
-    ModeSetting mode;
-
-    public void setup() {
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Obby");
-        modes.add("Echest");
-        modes.add("Both");
-        modes.add("Web");
-
-        mode = registerMode("Type", modes, "Obby");
-        placeDelay = registerInteger("Delay", 2, 0, 10);
-        retryDelay = registerInteger("Retry Delay", 10, 0, 50);
-        bpc = registerInteger("Block pre Cycle", 2, 1, 5);
-        range = registerDouble("Range", 4, 0, 10);
-        playerRange = registerDouble("Player Range", 3, 1, 6);
-        onlyPlayer = registerBoolean("Only Player", false);
-        rotate = registerBoolean("Rotate", true);
-        autoSwitch = registerBoolean("Switch", true);
-        offHandObby = registerBoolean("Off Hand Obby", false);
-        chatMsgs = registerBoolean("Chat Msgs", true);
-        disableOnFinish = registerBoolean("Disable on Finish", true);
-    }
+    ModeSetting mode = registerMode("Type", Arrays.asList("Obby", "Echest", "Both", "Web"), "Obby");
+    IntegerSetting placeDelay = registerInteger("Delay", 2, 0, 10);
+    IntegerSetting retryDelay = registerInteger("Retry Delay", 10, 0, 50);
+    IntegerSetting bpc = registerInteger("Block pre Cycle", 2, 1, 5);
+    DoubleSetting range = registerDouble("Range", 4, 0, 10);
+    DoubleSetting playerRange = registerDouble("Player Range", 3, 1, 6);
+    BooleanSetting onlyPlayer = registerBoolean("Only Player", false);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting autoSwitch = registerBoolean("Switch", true);
+    BooleanSetting offHandObby = registerBoolean("Off Hand Obby", false);
+    BooleanSetting chatMsgs = registerBoolean("Chat Msgs", true);
+    BooleanSetting disableOnFinish = registerBoolean("Disable on Finish", true);
 
     private int delayTicks = 0;
     private int oldHandEnable = -1;
@@ -92,7 +69,7 @@ public class HoleFill extends Module {
         activedOff = false;
         PlacementUtil.onEnable();
         if (chatMsgs.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "HoleFill turned ON!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "HoleFill turned ON!");
         }
         if (autoSwitch.getValue() && mc.player != null) {
             oldHandEnable = mc.player.inventory.currentItem;
@@ -106,7 +83,7 @@ public class HoleFill extends Module {
     public void onDisable() {
         PlacementUtil.onDisable();
         if (chatMsgs.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "HoleFill turned OFF!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "HoleFill turned OFF!");
         }
         if (autoSwitch.getValue() && mc.player != null) {
             mc.player.inventory.currentItem = oldHandEnable;

@@ -4,10 +4,10 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -22,15 +22,9 @@ import java.util.List;
 @HUDModule.Declaration(posX = 0, posZ = 200)
 public class ArrayListModule extends HUDModule {
 
-    private BooleanSetting sortUp;
-    private BooleanSetting sortRight;
-    private ColorSetting color;
-
-    public void setup() {
-        sortUp = registerBoolean("Sort Up", true);
-        sortRight = registerBoolean("Sort Right", false);
-        color = registerColor("Color", new GSColor(255, 0, 0, 255));
-    }
+    BooleanSetting sortUp = registerBoolean("Sort Up", true);
+    BooleanSetting sortRight = registerBoolean("Sort Right", false);
+    ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
 
     private ModuleList list = new ModuleList();
 

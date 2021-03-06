@@ -5,9 +5,10 @@ import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.Category;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
@@ -17,27 +18,17 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Module.Declaration(name = "TextRadar", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 50)
 public class TextRadar extends HUDModule {
 
-    private BooleanSetting sortUp;
-    private BooleanSetting sortRight;
-    private IntegerSetting range;
-    private ModeSetting display;
-
-    public void setup() {
-        ArrayList<String> displayModes = new ArrayList<>();
-        displayModes.add("All");
-        displayModes.add("Friend");
-        displayModes.add("Enemy");
-        display = registerMode("Display", displayModes, "All");
-        sortUp = registerBoolean("Sort Up", false);
-        sortRight = registerBoolean("Sort Right", false);
-        range = registerInteger("Range", 100, 1, 260);
-    }
+    ModeSetting display = registerMode("Display", Arrays.asList("All", "Friend", "Enemy"), "All");
+    BooleanSetting sortUp = registerBoolean("Sort Up", false);
+    BooleanSetting sortRight = registerBoolean("Sort Right", false);
+    IntegerSetting range = registerInteger("Range", 100, 1, 260);
 
     private PlayerList list = new PlayerList();
 
@@ -80,9 +71,9 @@ public class TextRadar extends HUDModule {
             EntityPlayer e = players.get(index);
             TextFormatting friendcolor;
             if (Friends.isFriend(e.getName())) {
-                friendcolor = ColorMain.getFriendColor();
+                friendcolor = ModuleManager.getModule(ColorMain.class).getFriendColor();
             } else if (Enemies.isEnemy(e.getName())) {
-                friendcolor = ColorMain.getEnemyColor();
+                friendcolor = ModuleManager.getModule(ColorMain.class).getEnemyColor();
             } else {
                 friendcolor = TextFormatting.GRAY;
             }

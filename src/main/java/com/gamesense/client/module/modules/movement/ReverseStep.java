@@ -1,18 +1,14 @@
 package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 
 @Module.Declaration(name = "ReverseStep", category = Category.Movement)
 public class ReverseStep extends Module {
 
-    DoubleSetting height;
-
-    public void setup() {
-        height = registerDouble("Height", 2.5, 0.5, 2.5);
-    }
+    DoubleSetting height = registerDouble("Height", 2.5, 0.5, 2.5);
 
     public void onUpdate() {
         if (mc.world == null || mc.player == null || mc.player.isInWater() || mc.player.isInLava() || mc.player.isOnLadder()

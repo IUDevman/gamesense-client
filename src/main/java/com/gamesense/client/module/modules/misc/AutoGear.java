@@ -3,8 +3,8 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.command.commands.AutoGearCommand;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ContainerChest;
@@ -16,24 +16,13 @@ import java.util.*;
 @Module.Declaration(name = "AutoGear", category = Category.Misc)
 public class AutoGear extends Module {
 
-    BooleanSetting chatMsg;
-    BooleanSetting debugMode;
-    BooleanSetting enderChest;
-    BooleanSetting confirmSort;
-    BooleanSetting invasive;
-    BooleanSetting closeAfter;
-    IntegerSetting tickDelay;
-
-    public void setup() {
-        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
-        chatMsg = registerBoolean("Chat Msg", true);
-        enderChest = registerBoolean("EnderChest", false);
-        confirmSort = registerBoolean("Confirm Sort", true);
-        invasive = registerBoolean("Invasive", false);
-        closeAfter = registerBoolean("Close After", false);
-        debugMode = registerBoolean("Debug Mode", false);
-
-    }
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+    BooleanSetting chatMsg = registerBoolean("Chat Msg", true);
+    BooleanSetting enderChest = registerBoolean("EnderChest", false);
+    BooleanSetting confirmSort = registerBoolean("Confirm Sort", true);
+    BooleanSetting invasive = registerBoolean("Invasive", false);
+    BooleanSetting closeAfter = registerBoolean("Close After", false);
+    BooleanSetting debugMode = registerBoolean("Debug Mode", false);
 
     // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();

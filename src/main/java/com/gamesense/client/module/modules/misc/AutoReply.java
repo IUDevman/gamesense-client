@@ -1,8 +1,8 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;

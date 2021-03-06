@@ -2,8 +2,8 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.util.player.InventoryUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.enchantment.Enchantment;
@@ -19,16 +19,9 @@ import java.util.List;
 @Module.Declaration(name = "AutoArmor", category = Category.Combat)
 public class AutoArmor extends Module {
 
-    BooleanSetting noThorns;
-    BooleanSetting lastResortThorns;
+    BooleanSetting noThorns = registerBoolean("No Thorns", false);
+    BooleanSetting lastResortThorns = registerBoolean("No Other Thorns", false);
 
-    @Override
-    public void setup() {
-        noThorns = registerBoolean("No Thorns", false);
-        lastResortThorns = registerBoolean("No Other Thorns", false);
-    }
-
-    @Override
     public void onUpdate() {
         if (mc.player.ticksExisted % 2 == 0) return;
         // check screen

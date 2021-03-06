@@ -2,9 +2,9 @@ package com.gamesense.client.module.modules.gui;
 
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSense;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.misc.Announcer;
 import org.lwjgl.input.Keyboard;
 

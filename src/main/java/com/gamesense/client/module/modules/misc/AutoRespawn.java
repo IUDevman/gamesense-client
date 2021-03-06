@@ -2,8 +2,8 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.gui.GuiGameOver;
@@ -14,13 +14,8 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 @Module.Declaration(name = "AutoRespawn", category = Category.Misc)
 public class AutoRespawn extends Module {
 
-    BooleanSetting respawnMessage;
-    IntegerSetting respawnMessageDelay;
-
-    public void setup() {
-        respawnMessage = registerBoolean("Respawn Message", false);
-        respawnMessageDelay = registerInteger("Msg Delay(ms)", 0, 0, 5000);
-    }
+    BooleanSetting respawnMessage = registerBoolean("Respawn Message", false);
+    IntegerSetting respawnMessageDelay = registerInteger("Msg Delay(ms)", 0, 0, 5000);
 
     private static String AutoRespawnMessage = "/kit";
 

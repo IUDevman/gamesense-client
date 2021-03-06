@@ -5,10 +5,10 @@ import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.combat.AutoCrystalGS;
 import com.gamesense.client.module.modules.combat.OffHand;
 import com.lukflug.panelstudio.hud.HUDList;
@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,18 +32,9 @@ import java.util.stream.Collectors;
 @HUDModule.Declaration(posX = 0, posZ = 150)
 public class CombatInfo extends HUDModule {
 
-    private ModeSetting infoType;
-    private ColorSetting color1;
-    private ColorSetting color2;
-
-    public void setup() {
-        ArrayList<String> infoTypes = new ArrayList<>();
-        infoTypes.add("Cyber");
-        infoTypes.add("Hoosiers");
-        infoType = registerMode("Type", infoTypes, "Hoosiers");
-        color1 = registerColor("On", new GSColor(0, 255, 0, 255));
-        color2 = registerColor("Off", new GSColor(255, 0, 0, 255));
-    }
+    ModeSetting infoType = registerMode("Type", Arrays.asList("Cyber", "Hoosiers"), "Hoosiers");
+    ColorSetting color1 = registerColor("On", new GSColor(0, 255, 0, 255));
+    ColorSetting color2 = registerColor("Off", new GSColor(255, 0, 0, 255));
 
     private InfoList list = new InfoList();
     private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};

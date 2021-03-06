@@ -8,8 +8,8 @@ import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -24,54 +24,26 @@ import java.util.stream.Collectors;
 
 /**
  * @author Hoosiers
- * @author 0b00101010
  * @since 10/20/2020
- * @since 30/01/2021
+ * @author 0b00101010
+ * @since 01/30/2021
  */
 
 @Module.Declaration(name = "CityESP", category = Category.Render)
 public class CityESP extends Module {
 
-    IntegerSetting range;
-    IntegerSetting down;
-    IntegerSetting sides;
-    IntegerSetting depth;
-    DoubleSetting minDamage;
-    DoubleSetting maxDamage;
-    BooleanSetting ignoreCrystals;
-    ModeSetting targetMode;
-    ModeSetting selectMode;
-    ModeSetting renderMode;
-    IntegerSetting width;
-    ColorSetting color;
-
-    public void setup() {
-        ArrayList<String> targetModes = new ArrayList<>();
-        targetModes.add("Single");
-        targetModes.add("All");
-
-        ArrayList<String> selectModes = new ArrayList<>();
-        selectModes.add("Closest");
-        selectModes.add("All");
-
-        ArrayList<String> renderModes = new ArrayList<>();
-        renderModes.add("Outline");
-        renderModes.add("Fill");
-        renderModes.add("Both");
-
-        range = registerInteger("Range", 20, 1, 30);
-        down = registerInteger("Down", 1, 0, 3);
-        sides = registerInteger("Sides", 1, 0, 4);
-        depth = registerInteger("Depth", 3, 0, 10);
-        minDamage = registerDouble("Min Damage", 5, 0, 10);
-        maxDamage = registerDouble("Max Self Damage", 7, 0, 20);
-        ignoreCrystals = registerBoolean("Ignore Crystals", true);
-        targetMode = registerMode("Target", targetModes, "Single");
-        selectMode = registerMode("Select", selectModes, "Closest");
-        renderMode = registerMode("Render", renderModes, "Both");
-        width = registerInteger("Width", 1, 1, 10);
-        color = registerColor("Color", new GSColor(102, 51, 153));
-    }
+    IntegerSetting range = registerInteger("Range", 20, 1, 30);
+    IntegerSetting down = registerInteger("Down", 1, 0, 3);
+    IntegerSetting sides = registerInteger("Sides", 1, 0, 4);
+    IntegerSetting depth = registerInteger("Depth", 3, 0, 10);
+    DoubleSetting minDamage = registerDouble("Min Damage", 5, 0, 10);
+    DoubleSetting maxDamage = registerDouble("Max Self Damage", 7, 0, 20);
+    BooleanSetting ignoreCrystals = registerBoolean("Ignore Crystals", true);
+    ModeSetting targetMode = registerMode("Target", Arrays.asList("Single", "All"), "Single");
+    ModeSetting selectMode = registerMode("Select", Arrays.asList("Closest", "All"), "Closest");
+    ModeSetting renderMode = registerMode("Render", Arrays.asList("Outline", "Fill", "Both"), "Both");
+    IntegerSetting width = registerInteger("Width", 1, 1, 10);
+    ColorSetting color = registerColor("Color", new GSColor(102, 51, 153));
 
     private final HashMap<EntityPlayer, List<BlockPos>> cityable = new HashMap<>();
 

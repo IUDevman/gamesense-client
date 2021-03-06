@@ -6,7 +6,6 @@ import com.gamesense.api.event.events.ReachDistanceEvent;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.exploits.PacketUse;
-import com.gamesense.client.module.modules.exploits.Reach;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;

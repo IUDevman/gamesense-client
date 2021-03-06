@@ -4,8 +4,8 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerMoveEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -18,13 +18,8 @@ import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 @Module.Declaration(name = "Freecam", category = Category.Render)
 public class Freecam extends Module {
 
-    BooleanSetting cancelPackets;
-    DoubleSetting speed;
-
-    public void setup() {
-        cancelPackets = registerBoolean("Cancel Packets", true);
-        speed = registerDouble("Speed", 10, 0, 20);
-    }
+    BooleanSetting cancelPackets = registerBoolean("Cancel Packets", true);
+    DoubleSetting speed = registerDouble("Speed", 10, 0, 20);
 
     private double posX, posY, posZ;
     private float pitch, yaw;

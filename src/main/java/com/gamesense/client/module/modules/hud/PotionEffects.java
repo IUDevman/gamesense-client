@@ -3,9 +3,9 @@ package com.gamesense.client.module.modules.hud;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.Category;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -20,15 +20,9 @@ import java.awt.*;
 @HUDModule.Declaration(posX = 0, posZ = 300)
 public class PotionEffects extends HUDModule {
 
-    private BooleanSetting sortUp;
-    private BooleanSetting sortRight;
-    private ColorSetting color;
-
-    public void setup() {
-        sortUp = registerBoolean("Sort Up", false);
-        sortRight = registerBoolean("Sort Right", false);
-        color = registerColor("Color", new GSColor(0, 255, 0, 255));
-    }
+    BooleanSetting sortUp = registerBoolean("Sort Up", false);
+    BooleanSetting sortRight = registerBoolean("Sort Right", false);
+    ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 255));
 
     private PotionList list = new PotionList();
 

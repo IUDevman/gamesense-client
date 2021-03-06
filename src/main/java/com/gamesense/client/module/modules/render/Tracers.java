@@ -9,15 +9,16 @@ import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Hoosiers
@@ -28,30 +29,17 @@ import java.util.ArrayList;
 @Module.Declaration(name = "Tracers", category = Category.Render)
 public class Tracers extends Module {
 
-    BooleanSetting colorType;
-    IntegerSetting renderDistance;
-    ModeSetting pointsTo;
-    ColorSetting nearColor;
-    ColorSetting midColor;
-    ColorSetting farColor;
-
-    public void setup() {
-        renderDistance = registerInteger("Distance", 100, 10, 260);
-
-        ArrayList<String> link = new ArrayList<>();
-        link.add("Head");
-        link.add("Feet");
-
-        pointsTo = registerMode("Draw To", link, "Feet");
-        colorType = registerBoolean("Color Sync", true);
-        nearColor = registerColor("Near Color", new GSColor(255, 0, 0, 255));
-        midColor = registerColor("Middle Color", new GSColor(255, 255, 0, 255));
-        farColor = registerColor("Far Color", new GSColor(0, 255, 0, 255));
-    }
+    IntegerSetting renderDistance = registerInteger("Distance", 100, 10, 260);
+    ModeSetting pointsTo = registerMode("Draw To", Arrays.asList("Head", "Feet"), "Feet");
+    BooleanSetting colorType = registerBoolean("Color Sync", true);
+    ColorSetting nearColor = registerColor("Near Color", new GSColor(255, 0, 0, 255));
+    ColorSetting midColor = registerColor("Middle Color", new GSColor(255, 255, 0, 255));
+    ColorSetting farColor = registerColor("Far Color", new GSColor(0, 255, 0, 255));
 
     GSColor tracerColor;
 
     public void onWorldRender(RenderEvent event) {
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
         mc.world.loadedEntityList.stream()
                 .filter(e -> e instanceof EntityPlayer)
                 .filter(e -> e != mc.player)
@@ -60,9 +48,9 @@ public class Tracers extends Module {
                         return;
                     } else {
                         if (Friends.isFriend(e.getName())) {
-                            tracerColor = ColorMain.getFriendGSColor();
+                            tracerColor = colorMain.getFriendGSColor();
                         } else if (Enemies.isEnemy(e.getName())) {
-                            tracerColor = ColorMain.getEnemyGSColor();
+                            tracerColor = colorMain.getEnemyGSColor();
                         } else {
                             if (mc.player.getDistance(e) < 20) {
                                 tracerColor = nearColor.getValue();

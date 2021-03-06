@@ -9,8 +9,9 @@ import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -22,7 +23,7 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.*;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Hoosiers on 09/22/2020
@@ -32,39 +33,15 @@ import java.util.ArrayList;
 @Module.Declaration(name = "ESP", category = Category.Render)
 public class ESP extends Module {
 
-    ModeSetting playerESPMode;
-    ModeSetting mobESPMode;
-    BooleanSetting containerRender;
-    BooleanSetting itemRender;
-    BooleanSetting entityRender;
-    BooleanSetting glowCrystals;
-    IntegerSetting width;
-    IntegerSetting range;
-    ColorSetting mainColor;
-
-    public void setup() {
-        ArrayList<String> playerEsp = new ArrayList<>();
-        playerEsp.add("None");
-        playerEsp.add("Glowing");
-        playerEsp.add("Box");
-        playerEsp.add("Direction");
-
-        ArrayList<String> mobEsp = new ArrayList<>();
-        mobEsp.add("None");
-        mobEsp.add("Glowing");
-        mobEsp.add("Box");
-        mobEsp.add("Direction");
-
-        mainColor = registerColor("Color");
-        range = registerInteger("Range", 100, 10, 260);
-        width = registerInteger("Line Width", 2, 1, 5);
-        playerESPMode = registerMode("Player", playerEsp, "Box");
-        mobESPMode = registerMode("Mob", mobEsp, "Box");
-        entityRender = registerBoolean("Entity", false);
-        itemRender = registerBoolean("Item", true);
-        containerRender = registerBoolean("Container", false);
-        glowCrystals = registerBoolean("Glow Crystal", false);
-    }
+    ColorSetting mainColor = registerColor("Color");
+    IntegerSetting range = registerInteger("Range", 100, 10, 260);
+    IntegerSetting width = registerInteger("Line Width", 2, 1, 5);
+    ModeSetting playerESPMode = registerMode("Player", Arrays.asList("None", "Glowing", "Box", "Direction"), "Box");
+    ModeSetting mobESPMode = registerMode("Mob", Arrays.asList("None", "Glowing", "Box", "Direction"), "Box");
+    BooleanSetting entityRender = registerBoolean("Entity", false);
+    BooleanSetting itemRender = registerBoolean("Item", true);
+    BooleanSetting containerRender = registerBoolean("Container", false);
+    BooleanSetting glowCrystals = registerBoolean("Glow Crystal", false);
 
     GSColor playerColor;
     GSColor mobColor;
@@ -171,9 +148,9 @@ public class ESP extends Module {
         //should have everything covered here, mob categorizing is weird
         if (entity instanceof EntityPlayer) {
             if (Friends.isFriend(entity.getName())) {
-                playerColor = ColorMain.getFriendGSColor();
+                playerColor = ModuleManager.getModule(ColorMain.class).getFriendGSColor();
             } else if (Enemies.isEnemy(entity.getName())) {
-                playerColor = ColorMain.getEnemyGSColor();
+                playerColor = ModuleManager.getModule(ColorMain.class).getEnemyGSColor();
             } else {
                 playerColor = new GSColor(mainColor.getValue(), opacityGradient);
             }

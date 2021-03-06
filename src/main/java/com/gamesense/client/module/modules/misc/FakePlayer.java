@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.world.GameType;

@@ -6,9 +6,10 @@ import com.gamesense.api.util.player.enemy.Enemies;
 import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.clickgui.GameSenseGUI;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.Category;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
@@ -29,15 +30,9 @@ import java.util.Comparator;
 @HUDModule.Declaration(posX = 0, posZ = 150)
 public class TargetInfo extends HUDModule {
 
-    private IntegerSetting range;
-    private ColorSetting backgroundColor;
-    private ColorSetting outlineColor;
-
-    public void setup() {
-        range = registerInteger("Range", 100, 10, 260);
-        backgroundColor = registerColor("Background", new GSColor(0, 0, 0, 255));
-        outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
-    }
+    IntegerSetting range = registerInteger("Range", 100, 10, 260);
+    ColorSetting backgroundColor = registerColor("Background", new GSColor(0, 0, 0, 255));
+    ColorSetting outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
 
     public void populate(Theme theme) {
         component = new TargetInfoComponent(theme);
@@ -45,9 +40,9 @@ public class TargetInfo extends HUDModule {
 
     private Color getNameColor(EntityPlayer entityPlayer) {
         if (Friends.isFriend(entityPlayer.getName())) {
-            return new GSColor(ColorMain.getFriendGSColor(), 255);
+            return new GSColor(ModuleManager.getModule(ColorMain.class).getFriendGSColor(), 255);
         } else if (Enemies.isEnemy(entityPlayer.getName())) {
-            return new GSColor(ColorMain.getEnemyGSColor(), 255);
+            return new GSColor(ModuleManager.getModule(ColorMain.class).getEnemyGSColor(), 255);
         } else {
             return new GSColor(255, 255, 255, 255);
         }

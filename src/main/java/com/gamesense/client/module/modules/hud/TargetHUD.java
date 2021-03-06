@@ -7,9 +7,10 @@ import com.gamesense.api.util.player.friend.Friends;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.Category;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
@@ -38,15 +39,9 @@ import java.util.Objects;
 @HUDModule.Declaration(posX = 0, posZ = 70)
 public class TargetHUD extends HUDModule {
 
-    private ColorSetting outline;
-    private ColorSetting background;
-    private IntegerSetting range;
-
-    public void setup() {
-        range = registerInteger("Range", 100, 10, 260);
-        outline = registerColor("Outline", new GSColor(255, 0, 0, 255));
-        background = registerColor("Background", new GSColor(0, 0, 0, 255));
-    }
+    IntegerSetting range = registerInteger("Range", 100, 10, 260);
+    ColorSetting outline = registerColor("Outline", new GSColor(255, 0, 0, 255));
+    ColorSetting background = registerColor("Background", new GSColor(0, 0, 0, 255));
 
     private static EntityPlayer targetPlayer;
 
@@ -57,9 +52,9 @@ public class TargetHUD extends HUDModule {
 
     private static Color getNameColor(String playerName) {
         if (Friends.isFriend(playerName)) {
-            return new GSColor(ColorMain.getFriendGSColor(), 255);
+            return new GSColor(ModuleManager.getModule(ColorMain.class).getFriendGSColor(), 255);
         } else if (Enemies.isEnemy(playerName)) {
-            return new GSColor(ColorMain.getEnemyGSColor(), 255);
+            return new GSColor(ModuleManager.getModule(ColorMain.class).getEnemyGSColor(), 255);
         } else {
             return new GSColor(255, 255, 255, 255);
         }

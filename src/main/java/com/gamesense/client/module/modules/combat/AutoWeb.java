@@ -7,8 +7,9 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,33 +19,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @Module.Declaration(name = "AutoWeb", category = Category.Combat)
 public class AutoWeb extends Module {
 
-    ModeSetting trapType;
-    BooleanSetting chatMsg;
-    BooleanSetting rotate;
-    BooleanSetting disableNone;
-    IntegerSetting enemyRange;
-    IntegerSetting tickDelay;
-    IntegerSetting blocksPerTick;
-
-    public void setup() {
-        ArrayList<String> trapTypes = new ArrayList<>();
-        trapTypes.add("Single");
-        trapTypes.add("Double");
-
-        trapType = registerMode("Mode", trapTypes, "Double");
-        disableNone = registerBoolean("Disable No Web", true);
-        rotate = registerBoolean("Rotate", true);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        enemyRange = registerInteger("Range", 4, 0, 6);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
+    ModeSetting trapType = registerMode("Mode", Arrays.asList("Single", "Double"), "Double");
+    BooleanSetting disableNone = registerBoolean("Disable No Web", true);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noWeb = false;
     private boolean isSneaking = false;
@@ -62,7 +50,7 @@ public class AutoWeb extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoWeb turned ON!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoWeb turned ON!");
         }
 
         oldSlot = mc.player.inventory.currentItem;
@@ -81,9 +69,9 @@ public class AutoWeb extends Module {
 
         if (chatMsg.getValue()) {
             if (noWeb) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... AutoWeb turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No web detected... AutoWeb turned OFF!");
             } else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoWeb turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoWeb turned OFF!");
             }
         }
 
