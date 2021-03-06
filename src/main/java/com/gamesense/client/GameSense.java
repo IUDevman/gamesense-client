@@ -7,8 +7,7 @@ import com.gamesense.api.event.EventProcessor;
 import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.misc.VersionChecker;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.CapeUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
@@ -38,14 +37,10 @@ public class GameSense {
     public static final EventBus EVENT_BUS = new EventManager();
 
     @Mod.Instance
-    private static GameSense INSTANCE;
+    public static GameSense INSTANCE;
 
     public GameSense() {
         INSTANCE = this;
-    }
-
-    public static GameSense getInstance() {
-        return INSTANCE;
     }
 
     @Mod.EventHandler
@@ -57,18 +52,15 @@ public class GameSense {
         LOGGER.info("Finished initialization for " + MODNAME + " " + MODVER + "!");
     }
 
-    public VersionChecker versionChecker;
     public EventProcessor eventProcessor;
     public CFontRenderer cFontRenderer;
-    public Friends friends;
-    public Enemies enemies;
     public GameSenseGUI gameSenseGUI;
     public SaveConfig saveConfig;
     public LoadConfig loadConfig;
     public CapeUtil capeUtil;
 
     private void startClient() {
-        versionChecker = new VersionChecker();
+        VersionChecker.init();
         LOGGER.info("Version checked!");
 
         eventProcessor = new EventProcessor();
@@ -81,8 +73,7 @@ public class GameSense {
         SettingsManager.init();
         LOGGER.info("Settings initialized!");
 
-        friends = new Friends();
-        enemies = new Enemies();
+        SocialManager.init();
         LOGGER.info("Friends and enemies initialized!");
 
         ModuleManager.init();
@@ -94,7 +85,7 @@ public class GameSense {
         gameSenseGUI = new GameSenseGUI();
         LOGGER.info("GameSenseGUI initialized!");
 
-        CommandManager.registerCommands();
+        CommandManager.init();
         LOGGER.info("Commands initialized!");
 
         saveConfig = new SaveConfig();

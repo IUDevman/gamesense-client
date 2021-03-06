@@ -14,7 +14,7 @@ public class CommandManager {
     private static String commandPrefix = "-";
     public static ArrayList<Command> commands = new ArrayList<>();
 
-    public static void registerCommands() {
+    public static void init() {
         addCommand(new AutoGearCommand());
         addCommand(new AutoGGCommand());
         addCommand(new AutoReplyCommand());

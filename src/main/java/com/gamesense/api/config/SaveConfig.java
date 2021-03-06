@@ -3,10 +3,9 @@ package com.gamesense.api.config;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.setting.values.*;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.enemy.Enemy;
-import com.gamesense.api.util.player.friend.Friend;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.Enemy;
+import com.gamesense.api.util.player.social.Friend;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GuiConfig;
 import com.gamesense.client.command.CommandManager;
@@ -187,8 +186,8 @@ public class SaveConfig {
         OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + miscName + "CustomFont" + ".json"), StandardCharsets.UTF_8);
         JsonObject fontObject = new JsonObject();
 
-        fontObject.add("Font Name", new JsonPrimitive(GameSense.getInstance().cFontRenderer.getFontName()));
-        fontObject.add("Font Size", new JsonPrimitive(GameSense.getInstance().cFontRenderer.getFontSize()));
+        fontObject.add("Font Name", new JsonPrimitive(GameSense.INSTANCE.cFontRenderer.getFontName()));
+        fontObject.add("Font Size", new JsonPrimitive(GameSense.INSTANCE.cFontRenderer.getFontSize()));
         String jsonString = gson.toJson(new JsonParser().parse(fontObject.toString()));
         fileOutputStreamWriter.write(jsonString);
         fileOutputStreamWriter.close();
@@ -203,7 +202,7 @@ public class SaveConfig {
         JsonObject mainObject = new JsonObject();
         JsonArray friendArray = new JsonArray();
 
-        for (Friend friend : Friends.getFriends()) {
+        for (Friend friend : SocialManager.getFriends()) {
             friendArray.add(friend.getName());
         }
         mainObject.add("Friends", friendArray);
@@ -221,7 +220,7 @@ public class SaveConfig {
         JsonObject mainObject = new JsonObject();
         JsonArray enemyArray = new JsonArray();
 
-        for (Enemy enemy : Enemies.getEnemies()) {
+        for (Enemy enemy : SocialManager.getEnemies()) {
             enemyArray.add(enemy.getName());
         }
         mainObject.add("Enemies", enemyArray);
@@ -232,7 +231,7 @@ public class SaveConfig {
 
     public void saveClickGUIPositions() throws IOException {
         registerFiles(mainName, "ClickGUI");
-        GameSense.getInstance().gameSenseGUI.gui.saveConfig(new GuiConfig(fileName + mainName));
+        GameSense.INSTANCE.gameSenseGUI.gui.saveConfig(new GuiConfig(fileName + mainName));
     }
 
     public void saveAutoGG() throws IOException {

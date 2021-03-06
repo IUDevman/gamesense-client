@@ -31,7 +31,7 @@ public class ClickGuiModule extends Module {
     public ModeSetting theme = registerMode("Skin", Arrays.asList("2.2", "2.1.2", "2.0"), "2.2");
 
     public void onEnable() {
-        GameSense.getInstance().gameSenseGUI.enterGUI();
+        GameSense.INSTANCE.gameSenseGUI.enterGUI();
         Announcer announcer = ModuleManager.getModule(Announcer.class);
 
         if (announcer.clickGui.getValue() && announcer.isEnabled() && mc.player != null) {

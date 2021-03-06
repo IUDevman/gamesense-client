@@ -2,8 +2,7 @@ package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
@@ -39,9 +38,9 @@ public class TargetInfo extends HUDModule {
     }
 
     private Color getNameColor(EntityPlayer entityPlayer) {
-        if (Friends.isFriend(entityPlayer.getName())) {
+        if (SocialManager.isFriend(entityPlayer.getName())) {
             return new GSColor(ModuleManager.getModule(ColorMain.class).getFriendGSColor(), 255);
-        } else if (Enemies.isEnemy(entityPlayer.getName())) {
+        } else if (SocialManager.isEnemy(entityPlayer.getName())) {
             return new GSColor(ModuleManager.getModule(ColorMain.class).getEnemyGSColor(), 255);
         } else {
             return new GSColor(255, 255, 255, 255);

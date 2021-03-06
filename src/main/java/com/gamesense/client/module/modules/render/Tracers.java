@@ -5,8 +5,7 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Category;
@@ -47,9 +46,9 @@ public class Tracers extends Module {
                     if (mc.player.getDistance(e) > renderDistance.getValue()) {
                         return;
                     } else {
-                        if (Friends.isFriend(e.getName())) {
+                        if (SocialManager.isFriend(e.getName())) {
                             tracerColor = colorMain.getFriendGSColor();
-                        } else if (Enemies.isEnemy(e.getName())) {
+                        } else if (SocialManager.isEnemy(e.getName())) {
                             tracerColor = colorMain.getEnemyGSColor();
                         } else {
                             if (mc.player.getDistance(e) < 20) {

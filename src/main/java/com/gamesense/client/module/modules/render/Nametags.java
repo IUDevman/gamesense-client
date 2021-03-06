@@ -7,8 +7,7 @@ import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.misc.ColorUtil;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Category;
@@ -148,9 +147,9 @@ public class Nametags extends Module {
 
     private GSColor findTextColor(EntityPlayer entityPlayer) {
         ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
-        if (Friends.isFriend(entityPlayer.getName())) {
+        if (SocialManager.isFriend(entityPlayer.getName())) {
             return colorMain.getFriendGSColor();
-        } else if (Enemies.isEnemy(entityPlayer.getName())) {
+        } else if (SocialManager.isEnemy(entityPlayer.getName())) {
             return colorMain.getEnemyGSColor();
         } else if (entityPlayer.isInvisible()) {
             return new GSColor(128, 128, 128);

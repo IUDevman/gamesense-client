@@ -3,8 +3,7 @@ package com.gamesense.client.module.modules.hud;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
@@ -46,10 +45,10 @@ public class TextRadar extends HUDModule {
                     if (mc.player.getDistance(e) > range.getValue()) {
                         return;
                     }
-                    if (display.getValue().equalsIgnoreCase("Friend") && !(Friends.isFriend(e.getName()))) {
+                    if (display.getValue().equalsIgnoreCase("Friend") && !(SocialManager.isFriend(e.getName()))) {
                         return;
                     }
-                    if (display.getValue().equalsIgnoreCase("Enemy") && !(Enemies.isEnemy(e.getName()))) {
+                    if (display.getValue().equalsIgnoreCase("Enemy") && !(SocialManager.isEnemy(e.getName()))) {
                         return;
                     }
                     list.players.add((EntityPlayer) e);
@@ -70,9 +69,9 @@ public class TextRadar extends HUDModule {
         public String getItem(int index) {
             EntityPlayer e = players.get(index);
             TextFormatting friendcolor;
-            if (Friends.isFriend(e.getName())) {
+            if (SocialManager.isFriend(e.getName())) {
                 friendcolor = ModuleManager.getModule(ColorMain.class).getFriendColor();
-            } else if (Enemies.isEnemy(e.getName())) {
+            } else if (SocialManager.isEnemy(e.getName())) {
                 friendcolor = ModuleManager.getModule(ColorMain.class).getEnemyColor();
             } else {
                 friendcolor = TextFormatting.GRAY;

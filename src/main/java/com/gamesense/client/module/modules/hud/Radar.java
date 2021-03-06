@@ -2,8 +2,7 @@ package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
@@ -46,9 +45,9 @@ public class Radar extends HUDModule {
     }
 
     private Color getPlayerColor(EntityPlayer entityPlayer) {
-        if (Friends.isFriend(entityPlayer.getName())) {
+        if (SocialManager.isFriend(entityPlayer.getName())) {
             return new GSColor(ModuleManager.getModule(ColorMain.class).getFriendGSColor(), 255);
-        } else if (Enemies.isEnemy(entityPlayer.getName())) {
+        } else if (SocialManager.isEnemy(entityPlayer.getName())) {
             return new GSColor(ModuleManager.getModule(ColorMain.class).getEnemyGSColor(), 255);
         } else {
             return new GSColor(playerColor.getValue(), 255);

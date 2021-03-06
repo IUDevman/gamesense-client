@@ -1,7 +1,6 @@
 package com.gamesense.mixin.mixins;
 
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
@@ -25,9 +24,9 @@ public class MixinGuiPlayerTabOverlay {
                 networkPlayerInfoIn.getDisplayName().getFormattedText() :
                 ScorePlayerTeam.formatPlayerName(networkPlayerInfoIn.getPlayerTeam(), networkPlayerInfoIn.getGameProfile().getName());
 
-        if (Friends.isFriend(displayName)) {
+        if (SocialManager.isFriend(displayName)) {
             return ModuleManager.getModule(ColorMain.class).getFriendColor() + displayName;
-        } else if (Enemies.isEnemy(displayName)) {
+        } else if (SocialManager.isEnemy(displayName)) {
             return ModuleManager.getModule(ColorMain.class).getEnemyColor() + displayName;
         } else {
             return displayName;

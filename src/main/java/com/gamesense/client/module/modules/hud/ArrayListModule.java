@@ -38,7 +38,7 @@ public class ArrayListModule extends HUDModule {
         for (Module module : ModuleManager.getModules()) {
             if (module.isEnabled() && module.isDrawn()) list.activeModules.add(module);
         }
-        list.activeModules.sort(Comparator.comparing(module -> -GameSense.getInstance().gameSenseGUI.guiInterface.getFontWidth(module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo())));
+        list.activeModules.sort(Comparator.comparing(module -> -GameSense.INSTANCE.gameSenseGUI.guiInterface.getFontWidth(module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo())));
     }
 
     private class ModuleList implements HUDList {

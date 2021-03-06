@@ -4,8 +4,7 @@ import com.gamesense.api.setting.Setting;
 import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.font.CFontRenderer;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GuiConfig;
 import com.gamesense.client.command.CommandManager;
@@ -246,12 +245,12 @@ public class LoadConfig {
         }
 
         if (name != null && size != -1) {
-            GameSense.getInstance().cFontRenderer = new CFontRenderer(new Font(name, Font.PLAIN, size), true, true);
-            GameSense.getInstance().cFontRenderer.setFont(new Font(name, Font.PLAIN, size));
-            GameSense.getInstance().cFontRenderer.setAntiAlias(true);
-            GameSense.getInstance().cFontRenderer.setFractionalMetrics(true);
-            GameSense.getInstance().cFontRenderer.setFontName(name);
-            GameSense.getInstance().cFontRenderer.setFontSize(size);
+            GameSense.INSTANCE.cFontRenderer = new CFontRenderer(new Font(name, Font.PLAIN, size), true, true);
+            GameSense.INSTANCE.cFontRenderer.setFont(new Font(name, Font.PLAIN, size));
+            GameSense.INSTANCE.cFontRenderer.setAntiAlias(true);
+            GameSense.INSTANCE.cFontRenderer.setFractionalMetrics(true);
+            GameSense.INSTANCE.cFontRenderer.setFontName(name);
+            GameSense.INSTANCE.cFontRenderer.setFontSize(size);
         }
         inputStream.close();
     }
@@ -272,7 +271,7 @@ public class LoadConfig {
 
         JsonArray friendObject = mainObject.get("Friends").getAsJsonArray();
 
-        friendObject.forEach(object -> Friends.addFriend(object.getAsString()));
+        friendObject.forEach(object -> SocialManager.addFriend(object.getAsString()));
         inputStream.close();
     }
 
@@ -292,12 +291,12 @@ public class LoadConfig {
 
         JsonArray enemyObject = mainObject.get("Enemies").getAsJsonArray();
 
-        enemyObject.forEach(object -> Enemies.addEnemy(object.getAsString()));
+        enemyObject.forEach(object -> SocialManager.addEnemy(object.getAsString()));
         inputStream.close();
     }
 
     public void loadClickGUIPositions() {
-        GameSense.getInstance().gameSenseGUI.gui.loadConfig(new GuiConfig(fileName + mainName));
+        GameSense.INSTANCE.gameSenseGUI.gui.loadConfig(new GuiConfig(fileName + mainName));
     }
 
     public void loadAutoGG() throws IOException {

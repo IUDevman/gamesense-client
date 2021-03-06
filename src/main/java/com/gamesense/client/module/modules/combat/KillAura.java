@@ -8,7 +8,7 @@ import com.gamesense.api.util.math.RotationUtils;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlayerPacket;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
@@ -192,7 +192,7 @@ public class KillAura extends Module {
     }
 
     private boolean attackCheck(Entity entity) {
-        if (players.getValue() && entity instanceof EntityPlayer && !Friends.isFriend(entity.getName())) {
+        if (players.getValue() && entity instanceof EntityPlayer && !SocialManager.isFriend(entity.getName())) {
             if (((EntityPlayer) entity).getHealth() > 0) {
                 return true;
             }

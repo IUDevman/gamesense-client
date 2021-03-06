@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.hud;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.CrystalUtil;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
@@ -51,13 +51,13 @@ public class CombatInfo extends HUDModule {
         list.totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum() + ((mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) ? 1 : 0);
         list.players = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityOtherPlayerMP)
-                .filter(entity -> !Friends.isFriend(entity.getName()))
+                .filter(entity -> !SocialManager.isFriend(entity.getName()))
                 .filter(e -> mc.player.getDistance(e) <= autoCrystalGS.placeRange.getValue())
                 .map(entity -> (EntityOtherPlayerMP) entity)
                 .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
                 .orElse(null);
         list.renderLby = false;
-        List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !Friends.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
+        List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !SocialManager.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
         for (EntityPlayer e : entities) {
             int i = 0;
             for (BlockPos add : surroundOffset) {

@@ -13,7 +13,7 @@ import com.gamesense.client.command.Command;
 public class FixGUICommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {
-        GameSense.getInstance().gameSenseGUI = new GameSenseGUI();
+        GameSense.INSTANCE.gameSenseGUI = new GameSenseGUI();
         MessageBus.sendCommandMessage("ClickGUI positions reset!", true);
     }
 }

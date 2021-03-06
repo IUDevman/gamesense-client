@@ -18,11 +18,11 @@ import java.util.Scanner;
 
 public class VersionChecker {
 
-    public VersionChecker() {
+    public static void init() {
         checkVersion(GameSense.MODVER);
     }
 
-    private void checkVersion(String version) {
+    private static void checkVersion(String version) {
         boolean isLatest = true;
         String newVersion = "null";
 
@@ -51,7 +51,7 @@ public class VersionChecker {
     }
 
     //thank god for stack overflow... https://stackoverflow.com/questions/8348063/clickable-links-in-joptionpane
-    private void generatePopUp(String newVersion) {
+    private static void generatePopUp(String newVersion) {
         JLabel label = new JLabel();
         Font font = label.getFont();
 

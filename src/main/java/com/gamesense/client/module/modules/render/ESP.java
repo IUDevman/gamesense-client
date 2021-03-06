@@ -5,8 +5,7 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Category;
@@ -147,9 +146,9 @@ public class ESP extends Module {
     private void defineEntityColors(Entity entity) {
         //should have everything covered here, mob categorizing is weird
         if (entity instanceof EntityPlayer) {
-            if (Friends.isFriend(entity.getName())) {
+            if (SocialManager.isFriend(entity.getName())) {
                 playerColor = ModuleManager.getModule(ColorMain.class).getFriendGSColor();
-            } else if (Enemies.isEnemy(entity.getName())) {
+            } else if (SocialManager.isEnemy(entity.getName())) {
                 playerColor = ModuleManager.getModule(ColorMain.class).getEnemyGSColor();
             } else {
                 playerColor = new GSColor(mainColor.getValue(), opacityGradient);

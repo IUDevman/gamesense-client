@@ -12,7 +12,7 @@ import org.lwjgl.input.Keyboard;
 public class HUDEditor extends Module {
 
     public void onEnable() {
-        GameSense.getInstance().gameSenseGUI.enterHUDEditor();
+        GameSense.INSTANCE.gameSenseGUI.enterHUDEditor();
         Announcer announcer = ModuleManager.getModule(Announcer.class);
 
         if (announcer.clickGui.getValue() && announcer.isEnabled() && mc.player != null) {

@@ -22,9 +22,9 @@ public class FontCommand extends Command {
             value = 18;
         }
 
-        GameSense.getInstance().cFontRenderer = new CFontRenderer(new Font(main, Font.PLAIN, value), true, true);
-        GameSense.getInstance().cFontRenderer.setFontName(main);
-        GameSense.getInstance().cFontRenderer.setFontSize(value);
+        GameSense.INSTANCE.cFontRenderer = new CFontRenderer(new Font(main, Font.PLAIN, value), true, true);
+        GameSense.INSTANCE.cFontRenderer.setFontName(main);
+        GameSense.INSTANCE.cFontRenderer.setFontSize(value);
 
         MessageBus.sendCommandMessage("Font set to: " + main.toUpperCase() + ", size " + value + "!", true);
     }
