@@ -1,8 +1,8 @@
 package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.setting.values.BooleanSetting;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import net.minecraft.block.BlockEnderChest;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.item.Item;
@@ -17,19 +17,11 @@ import net.minecraft.item.ItemPickaxe;
 @Module.Declaration(name = "NoEntityTrace", category = Category.Misc)
 public class NoEntityTrace extends Module {
 
-    BooleanSetting pickaxe;
-    BooleanSetting obsidian;
-    BooleanSetting eChest;
-    BooleanSetting block;
-    BooleanSetting all;
-
-    public void setup() {
-        pickaxe = registerBoolean("Pickaxe", true);
-        obsidian = registerBoolean("Obsidian", false);
-        eChest = registerBoolean("EnderChest", false);
-        block = registerBoolean("Blocks", false);
-        all = registerBoolean("All", false);
-    }
+    BooleanSetting pickaxe = registerBoolean("Pickaxe", true);
+    BooleanSetting obsidian = registerBoolean("Obsidian", false);
+    BooleanSetting eChest = registerBoolean("EnderChest", false);
+    BooleanSetting block = registerBoolean("Blocks", false);
+    BooleanSetting all = registerBoolean("All", false);
 
     boolean isHoldingPickaxe = false;
     boolean isHoldingObsidian = false;

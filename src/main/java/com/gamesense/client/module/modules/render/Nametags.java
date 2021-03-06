@@ -7,12 +7,12 @@ import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.misc.ColorUtil;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -26,8 +26,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-
 /**
  * @author CyberTF2
  * Rewrote by Hoosiers
@@ -36,53 +34,19 @@ import java.util.ArrayList;
 @Module.Declaration(name = "Nametags", category = Category.Render)
 public class Nametags extends Module {
 
-    BooleanSetting renderSelf;
-    BooleanSetting showItems;
-    BooleanSetting showDurability;
-    BooleanSetting showEnchantName;
-    BooleanSetting showItemName;
-    BooleanSetting showGameMode;
-    BooleanSetting showHealth;
-    BooleanSetting showPing;
-    BooleanSetting showEntityID;
-    IntegerSetting range;
-    ModeSetting levelColor;
-    public static BooleanSetting customColor;
-    public static ColorSetting borderColor;
-
-    public void setup() {
-        ArrayList<String> tab = new ArrayList<>();
-        tab.add("Black");
-        tab.add("Dark Green");
-        tab.add("Dark Red");
-        tab.add("Gold");
-        tab.add("Dark Gray");
-        tab.add("Green");
-        tab.add("Red");
-        tab.add("Yellow");
-        tab.add("Dark Blue");
-        tab.add("Dark Aqua");
-        tab.add("Dark Purple");
-        tab.add("Gray");
-        tab.add("Blue");
-        tab.add("Aqua");
-        tab.add("Light Purple");
-        tab.add("White");
-
-        range = registerInteger("Range", 100, 10, 260);
-        renderSelf = registerBoolean("Render Self", false);
-        showDurability = registerBoolean("Durability", true);
-        showItems = registerBoolean("Items", true);
-        showEnchantName = registerBoolean("Enchants", true);
-        showItemName = registerBoolean("Item Name", false);
-        showGameMode = registerBoolean("Gamemode", false);
-        showHealth = registerBoolean("Health", true);
-        showPing = registerBoolean("Ping", false);
-        showEntityID = registerBoolean("Entity Id", false);
-        levelColor = registerMode("Level Color", tab, "Green");
-        customColor = registerBoolean("Custom Color", true);
-        borderColor = registerColor("Border Color", new GSColor(255, 0, 0, 255));
-    }
+    IntegerSetting range = registerInteger("Range", 100, 10, 260);
+    BooleanSetting renderSelf = registerBoolean("Render Self", false);
+    BooleanSetting showDurability = registerBoolean("Durability", true);
+    BooleanSetting showItems = registerBoolean("Items", true);
+    BooleanSetting showEnchantName = registerBoolean("Enchants", true);
+    BooleanSetting showItemName = registerBoolean("Item Name", false);
+    BooleanSetting showGameMode = registerBoolean("Gamemode", false);
+    BooleanSetting showHealth = registerBoolean("Health", true);
+    BooleanSetting showPing = registerBoolean("Ping", false);
+    BooleanSetting showEntityID = registerBoolean("Entity Id", false);
+    ModeSetting levelColor = registerMode("Level Color", ColorUtil.colors, "Green");
+    public BooleanSetting customColor = registerBoolean("Custom Color", true);
+    public ColorSetting borderColor = registerColor("Border Color", new GSColor(255, 0, 0, 255));
 
     public void onWorldRender(RenderEvent event) {
         if (mc.player == null || mc.world == null) {
@@ -182,10 +146,11 @@ public class Nametags extends Module {
     }
 
     private GSColor findTextColor(EntityPlayer entityPlayer) {
-        if (Friends.isFriend(entityPlayer.getName())) {
-            return ColorMain.getFriendGSColor();
-        } else if (Enemies.isEnemy(entityPlayer.getName())) {
-            return ColorMain.getEnemyGSColor();
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
+        if (SocialManager.isFriend(entityPlayer.getName())) {
+            return colorMain.getFriendGSColor();
+        } else if (SocialManager.isEnemy(entityPlayer.getName())) {
+            return colorMain.getEnemyGSColor();
         } else if (entityPlayer.isInvisible()) {
             return new GSColor(128, 128, 128);
         } else if (mc.getConnection() != null && mc.getConnection().getPlayerInfo(entityPlayer.getUniqueID()) == null) {
@@ -249,7 +214,8 @@ public class Nametags extends Module {
                 renderItemDurability(mainHandItem, posX, armorY);
             }
 
-            armorY -= (ColorMain.customFont.getValue() ? FontUtil.getFontHeight(ColorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
+            ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
+            armorY -= (colorMain.customFont.getValue() ? FontUtil.getFontHeight(colorMain.customFont.getValue()) : mc.fontRenderer.FONT_HEIGHT);
 
             if (showItemName.getValue()) {
                 renderItemName(mainHandItem, armorY);
@@ -307,7 +273,8 @@ public class Nametags extends Module {
         GlStateManager.enableTexture2D();
         GlStateManager.pushMatrix();
         GlStateManager.scale(0.5, 0.5, 0.5);
-        FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), -FontUtil.getStringWidth(ColorMain.customFont.getValue(), itemStack.getDisplayName()) / 2, posY, new GSColor(255, 255, 255));
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
+        FontUtil.drawStringWithShadow(colorMain.customFont.getValue(), itemStack.getDisplayName(), -FontUtil.getStringWidth(colorMain.customFont.getValue(), itemStack.getDisplayName()) / 2, posY, new GSColor(255, 255, 255));
         GlStateManager.popMatrix();
         GlStateManager.disableTexture2D();
     }
@@ -324,7 +291,8 @@ public class Nametags extends Module {
         GlStateManager.enableTexture2D();
         GlStateManager.pushMatrix();
         GlStateManager.scale(0.5, 0.5, 0.5);
-        FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), (int) (damagePercent * 100) + "%", posX * 2, posY, new GSColor((int) (red * 255), (int) (green * 255), 0));
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
+        FontUtil.drawStringWithShadow(colorMain.customFont.getValue(), (int) (damagePercent * 100) + "%", posX * 2, posY, new GSColor((int) (red * 255), (int) (green * 255), 0));
         GlStateManager.popMatrix();
         GlStateManager.disableTexture2D();
     }
@@ -361,13 +329,15 @@ public class Nametags extends Module {
 
             if (showEnchantName.getValue()) {
                 int level = EnchantmentHelper.getEnchantmentLevel(enchantment, itemStack);
-                FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), findStringForEnchants(enchantment, level), posX * 2, posY, new GSColor(255, 255, 255));
+                ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
+                FontUtil.drawStringWithShadow(colorMain.customFont.getValue(), findStringForEnchants(enchantment, level), posX * 2, posY, new GSColor(255, 255, 255));
             }
             posY += 8;
         }
 
         if (itemStack.getItem().equals(Items.GOLDEN_APPLE) && itemStack.hasEffect()) {
-            FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), "God", posX * 2, posY, new GSColor(195, 77, 65));
+            ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
+            FontUtil.drawStringWithShadow(colorMain.customFont.getValue(), "God", posX * 2, posY, new GSColor(195, 77, 65));
         }
 
         GlStateManager.disableTexture2D();

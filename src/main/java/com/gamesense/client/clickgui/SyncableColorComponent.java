@@ -1,6 +1,7 @@
 package com.gamesense.client.clickgui;
 
 import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.lukflug.panelstudio.Animation;
 import com.lukflug.panelstudio.Context;
@@ -16,7 +17,8 @@ public class SyncableColorComponent extends ColorComponent {
 
     public SyncableColorComponent(Theme theme, ColorSetting setting, Toggleable colorToggle, Animation animation) {
         super(TextFormatting.BOLD + setting.getName(), null, theme.getContainerRenderer(), animation, theme.getComponentRenderer(), setting, false, true, colorToggle);
-        if (setting != ClickGuiModule.enabledColor) addComponent(new SyncButton(theme.getComponentRenderer()));
+
+        if (setting != ModuleManager.getModule(ClickGuiModule.class).enabledColor) addComponent(new SyncButton(theme.getComponentRenderer()));
     }
 
     private class SyncButton extends FocusableComponent {
@@ -36,9 +38,10 @@ public class SyncableColorComponent extends ColorComponent {
         @Override
         public void handleButton(Context context, int button) {
             super.handleButton(context, button);
+            ClickGuiModule clickGuiModule = ModuleManager.getModule(ClickGuiModule.class);
             if (button == Interface.LBUTTON && context.isClicked()) {
-                setting.setValue(ClickGuiModule.enabledColor.getColor());
-                setting.setRainbow(ClickGuiModule.enabledColor.getRainbow());
+                setting.setValue(clickGuiModule.enabledColor.getColor());
+                setting.setRainbow(clickGuiModule.enabledColor.getRainbow());
             }
         }
     }

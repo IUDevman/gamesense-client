@@ -3,8 +3,8 @@ package com.gamesense.client.module.modules.movement;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.world.HoleUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
@@ -20,13 +20,8 @@ import java.util.HashMap;
 @Module.Declaration(name = "Anchor", category = Category.Movement)
 public class Anchor extends Module {
 
-    BooleanSetting guarantee;
-    IntegerSetting activateHeight;
-
-    public void setup() {
-        guarantee = registerBoolean("Guarantee Hole", true);
-        activateHeight = registerInteger("Activate Height", 2, 1, 5);
-    }
+    BooleanSetting guarantee = registerBoolean("Guarantee Hole", true);
+    IntegerSetting activateHeight = registerInteger("Activate Height", 2, 1, 5);
 
     BlockPos playerPos;
 

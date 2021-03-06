@@ -1,21 +1,20 @@
 package com.gamesense.client.module.modules.movement;
 
 import com.gamesense.api.event.events.PlayerMoveEvent;
-import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.MotionUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.init.MobEffects;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Crystallinqq/Auto for original code
@@ -26,24 +25,10 @@ import java.util.ArrayList;
 @Module.Declaration(name = "Speed", category = Category.Movement)
 public class Speed extends Module {
 
-    BooleanSetting timerBool;
-    DoubleSetting timerVal;
-    DoubleSetting jumpHeight;
-    DoubleSetting yPortSpeed;
-    ModeSetting mode;
-
-    public void setup() {
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Strafe");
-        modes.add("Fake");
-        modes.add("YPort");
-
-        mode = registerMode("Mode", modes, "Strafe");
-        yPortSpeed = registerDouble("Y Port Speed", 0.06, 0.01, 0.15);
-        jumpHeight = registerDouble("Jump Speed", 0.41, 0, 1);
-        timerBool = registerBoolean("Timer", true);
-        timerVal = registerDouble("Timer Speed", 1.15, 1, 1.5);
-    }
+    ModeSetting mode = registerMode("Mode", Arrays.asList("Strafe", "Fake", "YPort"), "Strafe");
+    DoubleSetting yPortSpeed = registerDouble("Y Port Speed", 0.06, 0.01, 0.15);
+    DoubleSetting jumpHeight = registerDouble("Jump Speed", 0.41, 0, 1);
+    DoubleSetting timerVal = registerDouble("Timer Speed", 1.15, 1, 1.5);
 
     private boolean slowDown;
     private double playerSpeed;

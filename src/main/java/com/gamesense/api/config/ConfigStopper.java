@@ -13,19 +13,19 @@ public class ConfigStopper extends Thread {
 
     public static void saveConfig() {
         try {
-            GameSense.getInstance().saveConfig.saveConfig();
-            GameSense.getInstance().saveConfig.saveModules();
-            GameSense.getInstance().saveConfig.saveEnabledModules();
-            GameSense.getInstance().saveConfig.saveModuleKeybinds();
-            GameSense.getInstance().saveConfig.saveDrawnModules();
-            GameSense.getInstance().saveConfig.saveCommandPrefix();
-            GameSense.getInstance().saveConfig.saveCustomFont();
-            GameSense.getInstance().saveConfig.saveFriendsList();
-            GameSense.getInstance().saveConfig.saveEnemiesList();
-            GameSense.getInstance().saveConfig.saveClickGUIPositions();
-            GameSense.getInstance().saveConfig.saveAutoGG();
-            GameSense.getInstance().saveConfig.saveAutoReply();
-            GameSense.getInstance().saveConfig.saveAutoRespawn();
+            GameSense.INSTANCE.saveConfig.saveConfig();
+            GameSense.INSTANCE.saveConfig.saveModules();
+            GameSense.INSTANCE.saveConfig.saveEnabledModules();
+            GameSense.INSTANCE.saveConfig.saveModuleKeybinds();
+            GameSense.INSTANCE.saveConfig.saveDrawnModules();
+            GameSense.INSTANCE.saveConfig.saveCommandPrefix();
+            GameSense.INSTANCE.saveConfig.saveCustomFont();
+            GameSense.INSTANCE.saveConfig.saveFriendsList();
+            GameSense.INSTANCE.saveConfig.saveEnemiesList();
+            GameSense.INSTANCE.saveConfig.saveClickGUIPositions();
+            GameSense.INSTANCE.saveConfig.saveAutoGG();
+            GameSense.INSTANCE.saveConfig.saveAutoReply();
+            GameSense.INSTANCE.saveConfig.saveAutoRespawn();
             GameSense.LOGGER.info("Saved Config!");
         } catch (IOException e) {
             e.printStackTrace();

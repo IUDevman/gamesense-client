@@ -3,9 +3,10 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.ColorUtil;
 import com.gamesense.client.command.CommandManager;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -14,47 +15,19 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 @Module.Declaration(name = "ChatModifier", category = Category.Misc)
 public class ChatModifier extends Module {
 
-    public BooleanSetting clearBkg;
-    BooleanSetting chatTimeStamps;
-    ModeSetting format;
-    ModeSetting color;
-    ModeSetting decoration;
-    BooleanSetting space;
-    BooleanSetting greenText;
-
-    public void setup() {
-        ArrayList<String> formats = new ArrayList<>();
-        formats.add("H24:mm");
-        formats.add("H12:mm");
-        formats.add("H12:mm a");
-        formats.add("H24:mm:ss");
-        formats.add("H12:mm:ss");
-        formats.add("H12:mm:ss a");
-        ArrayList<String> deco = new ArrayList<>();
-        deco.add("< >");
-        deco.add("[ ]");
-        deco.add("{ }");
-        deco.add(" ");
-        ArrayList<String> colors = new ArrayList<>();
-        for (ChatFormatting cf : ChatFormatting.values()) {
-            colors.add(cf.getName());
-        }
-
-        clearBkg = registerBoolean("Clear Chat", false);
-        greenText = registerBoolean("Green Text", false);
-        chatTimeStamps = registerBoolean("Chat Time Stamps", false);
-        format = registerMode("Format", formats, "H24:mm");
-        decoration = registerMode("Deco", deco, "[ ]");
-        color = registerMode("Color", colors, ChatFormatting.GRAY.getName());
-        space = registerBoolean("Space", false);
-
-    }
+    public BooleanSetting clearBkg = registerBoolean("Clear Chat", false);
+    BooleanSetting greenText = registerBoolean("Green Text", false);
+    BooleanSetting chatTimeStamps = registerBoolean("Chat Time Stamps", false);
+    ModeSetting format = registerMode("Format", Arrays.asList("H24:mm", "H12:mm", "H12:mm a", "H24:mm:ss", "H12:mm:ss", "H12:mm:ss a"), "H24:mm");
+    ModeSetting decoration = registerMode("Deco", Arrays.asList("< >", "[ ]", "{ }", " "), "[ ]");
+    ModeSetting color = registerMode("Color", ColorUtil.colors, ChatFormatting.GRAY.getName());
+    BooleanSetting space = registerBoolean("Space", false);
 
     @EventHandler
     private final Listener<ClientChatReceivedEvent> chatReceivedEventListener = new Listener<>(event -> {

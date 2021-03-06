@@ -6,7 +6,7 @@
 	"version": "${version}",
 	"mcversion": "1.12.2",
 	"url": "https://discord.gg/xfgPw63",
-	"authorList": ["Go_Hoosiers", "CyberTF2","lukflug","auburnhud2","Dngerr","linustouchtips","DarkiBoi","GL_DONT_CARE","NekoPvP","TechAle","A2H","0b00101010","Xiaro"],
+	"authorList": ["Go_Hoosiers", "CyberTF2","lukflug","auburnhud2","Dngerr","linustouchtips","DarkiBoi","GL_DONT_CARE","NekoPvP","TechAle","A2H","0b00101010","Xiaro","Soulbond"],
 	"credits": "https://github.com/IUDevman/gamesense-client",
 	"logoFile": "assets/gamesense/gamesense.png",
 	"screenshots": [],

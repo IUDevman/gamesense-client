@@ -10,7 +10,7 @@ public class FontUtil {
 
     public static float drawStringWithShadow(boolean customFont, String text, int x, int y, GSColor color) {
         if (customFont) {
-            return GameSense.getInstance().cFontRenderer.drawStringWithShadow(text, x, y, color);
+            return GameSense.INSTANCE.cFontRenderer.drawStringWithShadow(text, x, y, color);
         } else {
             return mc.fontRenderer.drawStringWithShadow(text, x, y, color.getRGB());
         }
@@ -18,7 +18,7 @@ public class FontUtil {
 
     public static int getStringWidth(boolean customFont, String string) {
         if (customFont) {
-            return GameSense.getInstance().cFontRenderer.getStringWidth(string);
+            return GameSense.INSTANCE.cFontRenderer.getStringWidth(string);
         } else {
             return mc.fontRenderer.getStringWidth(string);
         }
@@ -26,7 +26,7 @@ public class FontUtil {
 
     public static int getFontHeight(boolean customFont) {
         if (customFont) {
-            return GameSense.getInstance().cFontRenderer.getHeight();
+            return GameSense.INSTANCE.cFontRenderer.getHeight();
         } else {
             return mc.fontRenderer.FONT_HEIGHT;
         }

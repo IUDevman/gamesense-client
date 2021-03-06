@@ -40,5 +40,4 @@ public class PlayerPacket {
     public Vec2f getRotation() {
         return rotation;
     }
-
 }

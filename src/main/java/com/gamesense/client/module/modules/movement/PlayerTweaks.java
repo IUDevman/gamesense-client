@@ -4,8 +4,8 @@ import com.gamesense.api.event.events.EntityCollisionEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.WaterPushEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.gui.GuiChat;
@@ -17,17 +17,10 @@ import org.lwjgl.input.Keyboard;
 @Module.Declaration(name = "PlayerTweaks", category = Category.Movement)
 public class PlayerTweaks extends Module {
 
-    public BooleanSetting guiMove;
-    BooleanSetting noPush;
-    public BooleanSetting noSlow;
-    BooleanSetting antiKnockBack;
-
-    public void setup() {
-        guiMove = registerBoolean("Gui Move", false);
-        noPush = registerBoolean("No Push", false);
-        noSlow = registerBoolean("No Slow", false);
-        antiKnockBack = registerBoolean("Velocity", false);
-    }
+    public BooleanSetting guiMove = registerBoolean("Gui Move", false);
+    BooleanSetting noPush = registerBoolean("No Push", false);
+    public BooleanSetting noSlow = registerBoolean("No Slow", false);
+    BooleanSetting antiKnockBack = registerBoolean("Velocity", false);
 
     //No Slow
     @EventHandler

@@ -181,7 +181,7 @@ public class EventProcessor {
         }
 
         ModuleManager.onBind(Keyboard.getEventKey());
-        GameSense.getInstance().gameSenseGUI.handleKeyEvent(Keyboard.getEventKey());
+        GameSense.INSTANCE.gameSenseGUI.handleKeyEvent(Keyboard.getEventKey());
     }
 
     @SubscribeEvent

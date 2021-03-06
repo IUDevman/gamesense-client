@@ -10,9 +10,9 @@ import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
@@ -40,84 +41,35 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
  * Break crystal from AutoCrystal
  */
 
-/*
-    TODO: add check item
-    TODO: add check which item is missing
- */
-
 @Module.Declaration(name = "PistonCrystal", category = Category.Combat)
 public class PistonCrystal extends Module {
 
-    ModeSetting breakType,
-            placeMode,
-            target;
-
-    DoubleSetting enemyRange,
-            torchRange,
-            crystalDeltaBreak;
-
-    IntegerSetting blocksPerTick,
-            startDelay,
-            supBlocksDelay,
-            pistonDelay,
-            crystalDelay,
-            hitDelay,
-            midHitDelay,
-            stuckDetector,
-            maxYincr;
-    BooleanSetting rotate,
-            blockPlayer,
-            confirmBreak,
-            confirmPlace,
-            allowCheapMode,
-            betterPlacement,
-            bypassObsidian,
-            antiWeakness,
-            debugMode,
-            speedMeter,
-            chatMsg;
-
-    // Setup the options of the gui
-    public void setup() {
-        ArrayList<String> breakTypes = new ArrayList<>();
-        breakTypes.add("Swing");
-        breakTypes.add("Packet");
-        ArrayList<String> placeModes = new ArrayList<>();
-        placeModes.add("Torch");
-        placeModes.add("Block");
-        placeModes.add("Both");
-        ArrayList<String> targetChoose = new ArrayList<>();
-        targetChoose.add("Nearest");
-        targetChoose.add("Looking");
-        breakType = registerMode("Type", breakTypes, "Swing");
-        placeMode = registerMode("Place", placeModes, "Torch");
-        target = registerMode("Target", targetChoose, "Nearest");
-        enemyRange = registerDouble("Range", 4.9, 0, 6);
-        torchRange = registerDouble("Torch Range", 5.5, 0, 6);
-        crystalDeltaBreak = registerDouble("Center Break", 0.1, 0, 0.5);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 20);
-        supBlocksDelay = registerInteger("Surround Delay", 4, 0, 20);
-        startDelay = registerInteger("Start Delay", 4, 0, 20);
-        pistonDelay = registerInteger("Piston Delay", 2, 0, 20);
-        crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
-        midHitDelay = registerInteger("Mid Hit Delay", 5, 0, 20);
-        hitDelay = registerInteger("Hit Delay", 2, 0, 20);
-        stuckDetector = registerInteger("Stuck Check", 35, 0, 200);
-        maxYincr = registerInteger("Max Y", 3, 0, 5);
-        blockPlayer = registerBoolean("Trap Player", true);
-        rotate = registerBoolean("Rotate", false);
-        confirmBreak = registerBoolean("No Glitch Break", true);
-        confirmPlace = registerBoolean("No Glitch Place", true);
-        allowCheapMode = registerBoolean("Cheap Mode", false);
-        betterPlacement = registerBoolean("Better Place", true);
-        bypassObsidian = registerBoolean("Bypass Obsidian", false);
-        antiWeakness = registerBoolean("Anti Weakness", false);
-        debugMode = registerBoolean("Debug Mode", false);
-        speedMeter = registerBoolean("Speed Meter", false);
-        chatMsg = registerBoolean("Chat Msgs", true);
-        // Reset round
-        round = 0;
-    }
+    ModeSetting breakType = registerMode("Type", Arrays.asList("Swing", "Packet"), "Swing");
+    ModeSetting placeMode = registerMode("Place", Arrays.asList("Torch", "Block", "Both"), "Torch");
+    ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
+    DoubleSetting enemyRange = registerDouble("Range", 4.9, 0, 6);
+    DoubleSetting torchRange = registerDouble("Torch Range", 5.5, 0, 6); //todo: unused variable
+    DoubleSetting crystalDeltaBreak = registerDouble("Center Break", 0.1, 0, 0.5);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 20);
+    IntegerSetting supBlocksDelay = registerInteger("Surround Delay", 4, 0, 20);
+    IntegerSetting startDelay = registerInteger("Start Delay", 4, 0, 20);
+    IntegerSetting pistonDelay = registerInteger("Piston Delay", 2, 0, 20);
+    IntegerSetting crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
+    IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 5, 0, 20);
+    IntegerSetting hitDelay = registerInteger("Hit Delay", 2, 0, 20);
+    IntegerSetting stuckDetector = registerInteger("Stuck Check", 35, 0, 200);
+    IntegerSetting maxYincr = registerInteger("Max Y", 3, 0, 5);
+    BooleanSetting blockPlayer = registerBoolean("Trap Player", true);
+    BooleanSetting rotate = registerBoolean("Rotate", false);
+    BooleanSetting confirmBreak = registerBoolean("No Glitch Break", true);
+    BooleanSetting confirmPlace = registerBoolean("No Glitch Place", true);
+    BooleanSetting allowCheapMode = registerBoolean("Cheap Mode", false);
+    BooleanSetting betterPlacement = registerBoolean("Better Place", true);
+    BooleanSetting bypassObsidian = registerBoolean("Bypass Obsidian", false);
+    BooleanSetting antiWeakness = registerBoolean("Anti Weakness", false);
+    BooleanSetting debugMode = registerBoolean("Debug Mode", false);
+    BooleanSetting speedMeter = registerBoolean("Speed Meter", false);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -139,7 +91,7 @@ public class PistonCrystal extends Module {
             delayTimeTicks,
             stuck = 0,
             hitTryTick,
-            round,
+            round = 0,
             nCrystal;
     private long startTime, endTime;
 
@@ -1442,6 +1394,7 @@ public class PistonCrystal extends Module {
 
     // PrintChat
     public static void printChat(String text, Boolean error) {
-        MessageBus.sendClientPrefixMessage((error ? ColorMain.getDisabledColor() : ColorMain.getEnabledColor()) + text);
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
+        MessageBus.sendClientPrefixMessage((error ? colorMain.getDisabledColor() : colorMain.getEnabledColor()) + text);
     }
 }

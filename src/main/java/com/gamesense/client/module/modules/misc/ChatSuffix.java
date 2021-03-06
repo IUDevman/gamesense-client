@@ -4,27 +4,18 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.command.CommandManager;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.network.play.client.CPacketChatMessage;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 @Module.Declaration(name = "ChatSuffix", category = Category.Misc)
 public class ChatSuffix extends Module {
 
-    ModeSetting Separator;
-
-    public void setup() {
-        ArrayList<String> Separators = new ArrayList<>();
-        Separators.add(">>");
-        Separators.add("<<");
-        Separators.add("|");
-
-        Separator = registerMode("Separator", Separators, "|");
-    }
+    ModeSetting Separator = registerMode("Separator", Arrays.asList(">>", "<<", "|"), "|");
 
     @EventHandler
     private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {

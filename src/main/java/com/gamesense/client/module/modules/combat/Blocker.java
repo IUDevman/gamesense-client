@@ -7,8 +7,9 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
@@ -29,21 +30,12 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 @Module.Declaration(name = "Blocker", category = Category.Combat)
 public class Blocker extends Module {
 
-    BooleanSetting chatMsg;
-    BooleanSetting rotate;
-    BooleanSetting anvilBlocker;
-    BooleanSetting pistonBlocker;
-    BooleanSetting offHandObby;
-    IntegerSetting tickDelay;
-
-    public void setup() {
-        rotate = registerBoolean("Rotate", true);
-        anvilBlocker = registerBoolean("Anvil", true);
-        offHandObby = registerBoolean("Off Hand Obby", true);
-        pistonBlocker = registerBoolean("Piston", true);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting anvilBlocker = registerBoolean("Anvil", true);
+    BooleanSetting offHandObby = registerBoolean("Off Hand Obby", true);
+    BooleanSetting pistonBlocker = registerBoolean("Piston", true);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private int delayTimeTicks = 0;
     private boolean noObby;
@@ -69,7 +61,7 @@ public class Blocker extends Module {
 
             if (!output.equals("")) {
                 noActive = false;
-                MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + output + " turned ON!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + output + " turned ON!");
             } else {
                 noActive = true;
                 disable();
@@ -86,11 +78,11 @@ public class Blocker extends Module {
         }
         if (chatMsg.getValue()) {
             if (noActive) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Nothing is active... Blocker turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "Nothing is active... Blocker turned OFF!");
             } else if (noObby)
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Obsidian not found... Blocker turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "Obsidian not found... Blocker turned OFF!");
             else
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Blocker turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "Blocker turned OFF!");
         }
 
     }
@@ -137,7 +129,7 @@ public class Blocker extends Module {
                         && BlockUtil.getBlock(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
                     // Place the block
                     placeBlock(new BlockPos(mc.player.posX, mc.player.posY + 2, mc.player.posZ));
-                    MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoAnvil detected... Anvil Blocked!");
+                    MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoAnvil detected... Anvil Blocked!");
                     found = true;
                 }
             }
@@ -165,7 +157,7 @@ public class Blocker extends Module {
                             if (BlockUtil.getBlock(t.posX + i, t.posY, t.posZ + j) instanceof BlockPistonBase) {
                                 // Break
                                 breakCrystalPiston(t);
-                                MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "PistonCrystal detected... Destroyed crystal!");
+                                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "PistonCrystal detected... Destroyed crystal!");
                             }
                         }
                     }
