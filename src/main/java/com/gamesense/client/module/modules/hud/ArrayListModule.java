@@ -53,7 +53,7 @@ public class ArrayListModule extends HUDModule {
         @Override
         public String getItem(int index) {
             Module module = activeModules.get(index);
-            return module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo();
+            return (!module.getHudInfo().equals("")) ? module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo() : module.getName();
         }
 
         @Override
