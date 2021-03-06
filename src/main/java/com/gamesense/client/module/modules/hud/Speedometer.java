@@ -3,9 +3,9 @@ package com.gamesense.client.module.modules.hud;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.Category;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -27,15 +27,9 @@ public class Speedometer extends HUDModule {
     private static final String KMH = "km/h";
     private static final String MPH = "mph";
 
-    private ModeSetting speedUnit;
-    private BooleanSetting averageSpeed;
-    private IntegerSetting averageSpeedTicks;
-
-    public void setup() {
-        speedUnit = registerMode("Unit", Arrays.asList(MPS, KMH, MPH), KMH);
-        averageSpeed = registerBoolean("Average Speed", true);
-        averageSpeedTicks = registerInteger("Average Time", 20, 5, 100);
-    }
+    ModeSetting speedUnit = registerMode("Unit", Arrays.asList(MPS, KMH, MPH), KMH);
+    BooleanSetting averageSpeed = registerBoolean("Average Speed", true);
+    IntegerSetting averageSpeedTicks = registerInteger("Average Time", 20, 5, 100);
 
     private final ArrayDeque<Double> speedDeque = new ArrayDeque<>();
     private String speedString = "";

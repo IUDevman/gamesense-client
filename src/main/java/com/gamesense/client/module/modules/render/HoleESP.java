@@ -8,14 +8,14 @@ import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import com.google.common.collect.Sets;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,61 +27,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Module.Declaration(name = "HoleESP", category = Category.Render)
 public class HoleESP extends Module {
 
-    public static IntegerSetting rangeS;
-    BooleanSetting hideOwn;
-    BooleanSetting flatOwn;
-    ModeSetting customHoles;
-    ModeSetting mode;
-    ModeSetting type;
-    DoubleSetting slabHeight;
-    IntegerSetting width;
-    ColorSetting bedrockColor;
-    ColorSetting obsidianColor;
-    ColorSetting customColor;
-    IntegerSetting ufoAlpha;
-
-    public void setup() {
-        ArrayList<String> holes = new ArrayList<>();
-        holes.add("Single");
-        // https://github.com/IUDevman/gamesense-client/issues/57
-        holes.add("Double");
-        /*
-         * This refers to two wide holes with one down block being blast resistant
-         * and the other being air or a breakable block
-         *
-         * This is technically a safe hole as putting in that block or switching it
-         * to a blast resistant one makes it a two wide hole
-         *
-         * CAUTION: standing over the air gap can cause you to be crystallized which
-         * is why I gave it a separate mode
-         */
-        holes.add("Custom");
-
-        ArrayList<String> render = new ArrayList<>();
-        render.add("Outline");
-        render.add("Fill");
-        render.add("Both");
-
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Air");
-        modes.add("Ground");
-        modes.add("Flat");
-        modes.add("Slab");
-        modes.add("Double");
-
-        rangeS = registerInteger("Range", 5, 1, 20);
-        customHoles = registerMode("Show", holes, "Single");
-        type = registerMode("Render", render, "Both");
-        mode = registerMode("Mode", modes, "Air");
-        hideOwn = registerBoolean("Hide Own", false);
-        flatOwn = registerBoolean("Flat Own", false);
-        slabHeight = registerDouble("Slab Height", 0.5, 0.1, 1.5);
-        width = registerInteger("Width", 1, 1, 10);
-        bedrockColor = registerColor("Bedrock Color", new GSColor(0, 255, 0));
-        obsidianColor = registerColor("Obsidian Color", new GSColor(255, 0, 0));
-        customColor = registerColor("Custom Color", new GSColor(0, 0, 255));
-        ufoAlpha = registerInteger("UFOAlpha", 255, 0, 255);
-    }
+    public IntegerSetting range = registerInteger("Range", 5, 1, 20);
+    ModeSetting customHoles = registerMode("Show", Arrays.asList("Single", "Double", "Custom"), "Single");
+    ModeSetting type = registerMode("Render", Arrays.asList("Outline", "Fill", "Both"), "Both");
+    ModeSetting mode = registerMode("Mode", Arrays.asList("Air", "Ground", "Flat", "Slab", "Double"), "Air");
+    BooleanSetting hideOwn = registerBoolean("Hide Own", false);
+    BooleanSetting flatOwn = registerBoolean("Flat Own", false);
+    DoubleSetting slabHeight = registerDouble("Slab Height", 0.5, 0.1, 1.5);
+    IntegerSetting width = registerInteger("Width", 1, 1, 10);
+    ColorSetting bedrockColor = registerColor("Bedrock Color", new GSColor(0, 255, 0));
+    ColorSetting obsidianColor = registerColor("Obsidian Color", new GSColor(255, 0, 0));
+    ColorSetting customColor = registerColor("Custom Color", new GSColor(0, 0, 255));
+    IntegerSetting ufoAlpha = registerInteger("UFOAlpha", 255, 0, 255);
 
     private ConcurrentHashMap<AxisAlignedBB, GSColor> holes;
 
@@ -96,7 +53,7 @@ public class HoleESP extends Module {
             holes.clear();
         }
 
-        int range = (int) Math.ceil(rangeS.getValue());
+        int range = (int) Math.ceil(this.range.getValue());
 
         // hashSets are easier to navigate
         HashSet<BlockPos> possibleHoles = Sets.newHashSet();

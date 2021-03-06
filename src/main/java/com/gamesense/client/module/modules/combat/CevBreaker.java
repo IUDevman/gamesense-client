@@ -11,9 +11,9 @@ import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.GameSense;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.Block;
@@ -33,6 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
@@ -40,32 +41,29 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
 @Module.Declaration(name = "CevBreaker", category = Category.Combat)
 public class CevBreaker extends Module {
 
-    ModeSetting breakCrystal,
-            breakBlock,
-            target;
-
-    DoubleSetting enemyRange;
-
-    IntegerSetting
-            crystalDelay,
-            blocksPerTick,
-            hitDelay,
-            midHitDelay,
-            supDelay,
-            pickSwitchTick,
-            endDelay;
-    BooleanSetting rotate,
-            confirmBreak,
-            confirmPlace,
-            antiWeakness,
-            chatMsg,
-            switchSword,
-            fastPlace,
-            fastBreak,
-            predictBreak,
-            placeCrystal,
-            trapPlayer,
-            antiStep;
+    ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
+    ModeSetting breakCrystal = registerMode("Break Crystal", Arrays.asList("Vanilla", "Packet", "None"), "Packet");
+    ModeSetting breakBlock = registerMode("Break Block", Arrays.asList("Normal", "Packet"), "Packet");
+    DoubleSetting enemyRange = registerDouble("Range", 4.9, 0, 6);
+    IntegerSetting supDelay = registerInteger("Support Delay", 1, 0, 4);
+    IntegerSetting crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 2, 6);
+    IntegerSetting hitDelay = registerInteger("Hit Delay", 2, 0, 20);
+    IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 1, 0, 5);
+    IntegerSetting endDelay = registerInteger("End Delay", 1, 0, 4);
+    IntegerSetting pickSwitchTick = registerInteger("Pick Switch Tick", 100, 0, 500);
+    BooleanSetting rotate = registerBoolean("Rotate", false);
+    BooleanSetting confirmBreak = registerBoolean("No Glitch Break", true);
+    BooleanSetting confirmPlace = registerBoolean("No Glitch Place", true);
+    BooleanSetting antiWeakness = registerBoolean("Anti Weakness", false);
+    BooleanSetting switchSword = registerBoolean("Switch Sword", false);
+    BooleanSetting predictBreak = registerBoolean("Predict Break", false);
+    BooleanSetting fastPlace = registerBoolean("Fast Place", false);
+    BooleanSetting fastBreak = registerBoolean("Fast Break", true);
+    BooleanSetting trapPlayer = registerBoolean("Trap Player", false);
+    BooleanSetting antiStep = registerBoolean("Anti Step", false);
+    BooleanSetting placeCrystal = registerBoolean("Place Crystal", true);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -90,7 +88,7 @@ public class CevBreaker extends Module {
             {0, 1, -1}
     };
 
-    public static boolean isActive;
+    public static boolean isActive = false;
 
     private int[] slot_mat,
             delayTable,
@@ -112,44 +110,6 @@ public class CevBreaker extends Module {
             destroyCrystalAlgo();
         }
     });
-
-    // Setup the options of the gui
-    public void setup() {
-        isActive = false;
-        ArrayList<String> breakCrystalList = new ArrayList<>();
-        breakCrystalList.add("Vanilla");
-        breakCrystalList.add("Packet");
-        breakCrystalList.add("None");
-        ArrayList<String> breakBlockList = new ArrayList<>();
-        breakBlockList.add("Normal");
-        breakBlockList.add("Packet");
-        ArrayList<String> targetChoose = new ArrayList<>();
-        targetChoose.add("Nearest");
-        targetChoose.add("Looking");
-        target = registerMode("Target", targetChoose, "Nearest");
-        breakCrystal = registerMode("Break Crystal", breakCrystalList, "Packet");
-        breakBlock = registerMode("Break Block", breakBlockList, "Packet");
-        enemyRange = registerDouble("Range", 4.9, 0, 6);
-        supDelay = registerInteger("Support Delay", 1, 0, 4);
-        crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 2, 6);
-        hitDelay = registerInteger("Hit Delay", 2, 0, 20);
-        midHitDelay = registerInteger("Mid Hit Delay", 1, 0, 5);
-        endDelay = registerInteger("End Delay", 1, 0, 4);
-        pickSwitchTick = registerInteger("Pick Switch Tick", 100, 0, 500);
-        rotate = registerBoolean("Rotate", false);
-        confirmBreak = registerBoolean("No Glitch Break", true);
-        confirmPlace = registerBoolean("No Glitch Place", true);
-        antiWeakness = registerBoolean("Anti Weakness", false);
-        switchSword = registerBoolean("Switch Sword", false);
-        predictBreak = registerBoolean("Predict Break", false);
-        fastPlace = registerBoolean("Fast Place", false);
-        fastBreak = registerBoolean("Fast Break", true);
-        trapPlayer = registerBoolean("Trap Player", false);
-        antiStep = registerBoolean("Anti Step", false);
-        placeCrystal = registerBoolean("Place Crystal", true);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
 
     // Everytime you enable
     public void onEnable() {

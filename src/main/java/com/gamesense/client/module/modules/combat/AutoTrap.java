@@ -7,8 +7,9 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
@@ -21,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,35 +34,15 @@ import java.util.List;
 @Module.Declaration(name = "AutoTrap", category = Category.Combat)
 public class AutoTrap extends Module {
 
-    ModeSetting trapType,
-            target;
-    BooleanSetting chatMsg,
-            rotate,
-            offHandObby,
-            disableNone;
-    IntegerSetting enemyRange,
-            tickDelay,
-            blocksPerTick;
-
-    public void setup() {
-        ArrayList<String> trapTypes = new ArrayList<>();
-        trapTypes.add("Normal");
-        trapTypes.add("No Step");
-        trapTypes.add("Air");
-        ArrayList<String> targetChoose = new ArrayList<>();
-        targetChoose.add("Nearest");
-        targetChoose.add("Looking");
-
-        trapType = registerMode("Mode", trapTypes, "Normal");
-        target = registerMode("Target", targetChoose, "Nearest");
-        disableNone = registerBoolean("Disable No Obby", true);
-        rotate = registerBoolean("Rotate", true);
-        offHandObby = registerBoolean("Off Hand Obby", false);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        enemyRange = registerInteger("Range", 4, 0, 6);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
+    ModeSetting trapType = registerMode("Mode", Arrays.asList("Normal", "No Step", "Air"), "Normal");
+    ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
+    BooleanSetting disableNone = registerBoolean("Disable No Obby", true);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting offHandObby = registerBoolean("Off Hand Obby", false);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noObby = false;
     private boolean isSneaking = false;
@@ -82,7 +64,7 @@ public class AutoTrap extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoTrap turned ON!");
         }
 
     }
@@ -95,9 +77,9 @@ public class AutoTrap extends Module {
 
         if (chatMsg.getValue()) {
             if (noObby) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
             } else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoTrap turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoTrap turned OFF!");
             }
         }
 

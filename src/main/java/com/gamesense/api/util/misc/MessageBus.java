@@ -26,8 +26,9 @@ public class MessageBus {
         TextComponentString string1 = new TextComponentString(watermark + messageFormatting + message);
         TextComponentString string2 = new TextComponentString(messageFormatting + message);
 
-        Notifications.addMessage(string2);
-        if (ModuleManager.isModuleEnabled(Notifications.class) && Notifications.disableChat.getValue()) {
+        Notifications notifications = ModuleManager.getModule(Notifications.class);
+        notifications.addMessage(string2);
+        if (notifications.isEnabled() && notifications.disableChat.getValue()) {
             return;
         }
         mc.player.sendMessage(string1);
@@ -49,8 +50,9 @@ public class MessageBus {
     public static void sendClientRawMessage(String message) {
         TextComponentString string = new TextComponentString(messageFormatting + message);
 
-        Notifications.addMessage(string);
-        if (ModuleManager.isModuleEnabled(Notifications.class) && Notifications.disableChat.getValue()) {
+        Notifications notifications = ModuleManager.getModule(Notifications.class);
+        notifications.addMessage(string);
+        if (ModuleManager.isModuleEnabled(Notifications.class) && notifications.disableChat.getValue()) {
             return;
         }
         mc.player.sendMessage(string);

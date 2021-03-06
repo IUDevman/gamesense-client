@@ -3,9 +3,9 @@ package com.gamesense.client.module.modules.hud;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.clickgui.GameSenseGUI;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.Category;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
@@ -20,13 +20,8 @@ import java.awt.*;
 @HUDModule.Declaration(posX = 0, posZ = 10)
 public class InventoryViewer extends HUDModule {
 
-    private ColorSetting fillColor;
-    private ColorSetting outlineColor;
-
-    public void setup() {
-        fillColor = registerColor("Fill", new GSColor(0, 0, 0, 100));
-        outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
-    }
+    ColorSetting fillColor = registerColor("Fill", new GSColor(0, 0, 0, 100));
+    ColorSetting outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
 
     @Override
     public void populate(Theme theme) {

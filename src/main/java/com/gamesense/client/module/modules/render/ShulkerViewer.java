@@ -5,8 +5,9 @@ import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.ItemStackHelper;
@@ -18,15 +19,10 @@ import java.awt.*;
 @Module.Declaration(name = "ShulkerViewer", category = Category.Render)
 public class ShulkerViewer extends Module {
 
-    public static ColorSetting outlineColor;
-    public static ColorSetting fillColor;
+    public ColorSetting outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
+    public ColorSetting fillColor = registerColor("Fill", new GSColor(0, 0, 0, 255));
 
-    public void setup() {
-        outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
-        fillColor = registerColor("Fill", new GSColor(0, 0, 0, 255));
-    }
-
-    public static void renderShulkerPreview(ItemStack itemStack, int posX, int posY, int width, int height) {
+    public void renderShulkerPreview(ItemStack itemStack, int posX, int posY, int width, int height) {
         GSColor outline = new GSColor(outlineColor.getValue(), 255);
         GSColor fill = new GSColor(fillColor.getValue(), 200);
 
@@ -41,7 +37,7 @@ public class ShulkerViewer extends Module {
 
         //name
         GlStateManager.disableDepth();
-        FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), itemStack.getDisplayName(), posX + 3, posY + 3, new GSColor(255, 255, 255, 255));
+        FontUtil.drawStringWithShadow(ModuleManager.getModule(ColorMain.class).customFont.getValue(), itemStack.getDisplayName(), posX + 3, posY + 3, new GSColor(255, 255, 255, 255));
         GlStateManager.enableDepth();
 
         //items

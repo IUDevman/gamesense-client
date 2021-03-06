@@ -4,7 +4,6 @@ import com.gamesense.api.event.events.DrawBlockDamageEvent;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.render.BlockHighlight;
-import com.gamesense.client.module.modules.render.BreakESP;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;

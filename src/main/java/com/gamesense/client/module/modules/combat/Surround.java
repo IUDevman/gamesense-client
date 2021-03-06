@@ -6,8 +6,9 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockObsidian;
@@ -28,33 +29,18 @@ import net.minecraft.util.math.Vec3d;
 @Module.Declaration(name = "Surround", category = Category.Combat)
 public class Surround extends Module {
 
-    BooleanSetting chatMsg;
-    BooleanSetting triggerSurround;
-    BooleanSetting shiftOnly;
-    BooleanSetting rotate;
-    BooleanSetting disableNone;
-    BooleanSetting disableOnJump;
-    BooleanSetting offHandObby;
-    BooleanSetting cityBlocker;
-    BooleanSetting centerPlayer;
-    IntegerSetting tickDelay;
-    IntegerSetting timeOutTicks;
-    IntegerSetting blocksPerTick;
-
-    public void setup() {
-        triggerSurround = registerBoolean("Triggerable", false);
-        shiftOnly = registerBoolean("Shift Only", false);
-        cityBlocker = registerBoolean("City Blocker", false);
-        disableNone = registerBoolean("Disable No Obby", true);
-        disableOnJump = registerBoolean("Disable On Jump", false);
-        rotate = registerBoolean("Rotate", true);
-        offHandObby = registerBoolean("Off Hand Obby", false);
-        centerPlayer = registerBoolean("Center Player", false);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        timeOutTicks = registerInteger("Timeout Ticks", 40, 1, 100);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
+    BooleanSetting triggerSurround = registerBoolean("Triggerable", false);
+    BooleanSetting shiftOnly = registerBoolean("Shift Only", false);
+    BooleanSetting cityBlocker = registerBoolean("City Blocker", false);
+    BooleanSetting disableNone = registerBoolean("Disable No Obby", true);
+    BooleanSetting disableOnJump = registerBoolean("Disable On Jump", false);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting offHandObby = registerBoolean("Off Hand Obby", false);
+    BooleanSetting centerPlayer = registerBoolean("Center Player", false);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    IntegerSetting timeOutTicks = registerInteger("Timeout Ticks", 40, 1, 100);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noObby = false;
     private boolean isSneaking = false;
@@ -77,7 +63,7 @@ public class Surround extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "Surround turned ON!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "Surround turned ON!");
         }
 
         if (centerPlayer.getValue() && mc.player.onGround) {
@@ -98,9 +84,9 @@ public class Surround extends Module {
 
         if (chatMsg.getValue()) {
             if (noObby) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... Surround turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No obsidian detected... Surround turned OFF!");
             } else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "Surround turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "Surround turned OFF!");
             }
         }
 

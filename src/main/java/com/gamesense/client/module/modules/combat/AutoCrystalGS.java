@@ -15,9 +15,9 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -46,10 +46,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -60,87 +57,36 @@ import java.util.stream.IntStream;
 @Module.Declaration(name = "AutoCrystalGS", category = Category.Combat, priority = 100)
 public class AutoCrystalGS extends Module {
 
-    BooleanSetting breakCrystal;
-    BooleanSetting antiWeakness;
-    BooleanSetting placeCrystal;
-    BooleanSetting autoSwitch;
-    BooleanSetting raytrace;
-    BooleanSetting rotate;
-    BooleanSetting chat;
-    BooleanSetting showDamage;
-    BooleanSetting antiSuicide;
-    BooleanSetting multiPlace;
-    public static BooleanSetting endCrystalMode;
-    BooleanSetting cancelCrystal;
-    BooleanSetting noGapSwitch;
-    BooleanSetting refresh;
-    IntegerSetting facePlaceValue;
-    IntegerSetting attackSpeed;
-    IntegerSetting antiSuicideValue;
-    IntegerSetting attackValue;
-    DoubleSetting maxSelfDmg;
-    DoubleSetting wallsRange;
-    DoubleSetting minDmg;
-    DoubleSetting minBreakDmg;
-    DoubleSetting enemyRange;
-    public static DoubleSetting placeRange;
-    public static DoubleSetting breakRange;
-    ModeSetting handBreak;
-    ModeSetting breakMode;
-    ModeSetting hudDisplay;
-    ModeSetting breakType;
-    ColorSetting color;
-
-    public void setup() {
-        ArrayList<String> hands = new ArrayList<>();
-        hands.add("Main");
-        hands.add("Offhand");
-        hands.add("Both");
-
-        ArrayList<String> breakModes = new ArrayList<>();
-        breakModes.add("All");
-        breakModes.add("Smart");
-        breakModes.add("Own");
-
-        ArrayList<String> hudModes = new ArrayList<>();
-        hudModes.add("Mode");
-        hudModes.add("None");
-
-        ArrayList<String> breakTypes = new ArrayList<>();
-        breakTypes.add("Swing");
-        breakTypes.add("Packet");
-
-        breakMode = registerMode("Target", breakModes, "All");
-        handBreak = registerMode("Hand", hands, "Main");
-        breakType = registerMode("Type", breakTypes, "Swing");
-        breakCrystal = registerBoolean("Break", true);
-        placeCrystal = registerBoolean("Place", true);
-        attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
-        attackValue = registerInteger("Hit Amount", 1, 1, 10);
-        breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
-        placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
-        wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
-        enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
-        refresh = registerBoolean("Refresh", true);
-        antiWeakness = registerBoolean("Anti Weakness", true);
-        antiSuicide = registerBoolean("Anti Suicide", true);
-        antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
-        autoSwitch = registerBoolean("Switch", true);
-        noGapSwitch = registerBoolean("No Gap Switch", false);
-        multiPlace = registerBoolean("Multi Place", false);
-        endCrystalMode = registerBoolean("1.13 Place", false);
-        cancelCrystal = registerBoolean("Cancel Crystal", false);
-        minDmg = registerDouble("Min Damage", 5, 0, 36);
-        minBreakDmg = registerDouble("Min Break Dmg", 5, 0, 36.0);
-        maxSelfDmg = registerDouble("Max Self Dmg", 10, 1.0, 36.0);
-        facePlaceValue = registerInteger("FacePlace HP", 8, 0, 36);
-        rotate = registerBoolean("Rotate", true);
-        raytrace = registerBoolean("Raytrace", false);
-        showDamage = registerBoolean("Render Dmg", true);
-        chat = registerBoolean("Chat Msgs", true);
-        hudDisplay = registerMode("HUD", hudModes, "Mode");
-        color = registerColor("Color", new GSColor(0, 255, 0, 50));
-    }
+    ModeSetting breakMode = registerMode("Target", Arrays.asList("All", "Smart", "Own"), "All");
+    ModeSetting handBreak = registerMode("Hand", Arrays.asList("Main", "Offhand", "Both"), "Main");
+    ModeSetting breakType = registerMode("Type", Arrays.asList("Swing", "Packet"), "Swing");
+    BooleanSetting breakCrystal = registerBoolean("Break", true);
+    BooleanSetting placeCrystal = registerBoolean("Place", true);
+    IntegerSetting attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
+    IntegerSetting attackValue = registerInteger("Hit Amount", 1, 1, 10);
+    public DoubleSetting breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
+    public DoubleSetting placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
+    DoubleSetting wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
+    DoubleSetting enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
+    BooleanSetting refresh = registerBoolean("Refresh", true);
+    BooleanSetting antiWeakness = registerBoolean("Anti Weakness", true);
+    BooleanSetting antiSuicide = registerBoolean("Anti Suicide", true);
+    IntegerSetting antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
+    BooleanSetting autoSwitch = registerBoolean("Switch", true);
+    BooleanSetting noGapSwitch = registerBoolean("No Gap Switch", false);
+    BooleanSetting multiPlace = registerBoolean("Multi Place", false);
+    public BooleanSetting endCrystalMode = registerBoolean("1.13 Place", false);
+    BooleanSetting cancelCrystal = registerBoolean("Cancel Crystal", false);
+    DoubleSetting minDmg = registerDouble("Min Damage", 5, 0, 36);
+    DoubleSetting minBreakDmg = registerDouble("Min Break Dmg", 5, 0, 36.0);
+    DoubleSetting maxSelfDmg = registerDouble("Max Self Dmg", 10, 1.0, 36.0);
+    IntegerSetting facePlaceValue = registerInteger("FacePlace HP", 8, 0, 36);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting raytrace = registerBoolean("Raytrace", false);
+    BooleanSetting showDamage = registerBoolean("Render Dmg", true);
+    BooleanSetting chat = registerBoolean("Chat Msgs", true);
+    ModeSetting hudDisplay = registerMode("HUD", Arrays.asList("Mode", "None"), "Mode");
+    ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 50));
 
     private boolean switchCooldown = false;
     private boolean isAttacking = false;
@@ -508,7 +454,7 @@ public class AutoCrystalGS extends Module {
         PlacedCrystals.clear();
         isActive = false;
         if (chat.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoCrystalGS turned ON!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoCrystalGS turned ON!");
         }
     }
 
@@ -519,7 +465,7 @@ public class AutoCrystalGS extends Module {
         PlacedCrystals.clear();
         isActive = false;
         if (chat.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoCrystalGS turned OFF!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoCrystalGS turned OFF!");
         }
     }
 

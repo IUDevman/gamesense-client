@@ -156,7 +156,7 @@ public class ModuleManager {
             if (!module.isEnabled()) continue;
             module.onRender();
         }
-        GameSense.getInstance().gameSenseGUI.render();
+        GameSense.INSTANCE.gameSenseGUI.render();
     }
 
     public static void onWorldRender(RenderWorldLastEvent event) {

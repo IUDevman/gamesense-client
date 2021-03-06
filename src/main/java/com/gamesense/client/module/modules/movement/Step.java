@@ -5,32 +5,22 @@ import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.MotionUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.network.play.client.CPacketPlayer;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 @Module.Declaration(name = "Step", category = Category.Movement)
 public class Step extends Module {
 
-    DoubleSetting height;
-    BooleanSetting timer;
-    BooleanSetting reverse;
-    ModeSetting mode;
-
-    public void setup() {
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Normal");
-        modes.add("Vanilla");
-        height = registerDouble("Height", 2.5, 0.5, 2.5);
-        timer = registerBoolean("Timer", false);
-        reverse = registerBoolean("Reverse", false);
-        mode = registerMode("Modes", modes, "Normal");
-    }
+    DoubleSetting height = registerDouble("Height", 2.5, 0.5, 2.5);
+    BooleanSetting timer = registerBoolean("Timer", false);
+    BooleanSetting reverse = registerBoolean("Reverse", false);
+    ModeSetting mode = registerMode("Modes", Arrays.asList("Normal", "Vanilla"), "Normal");
 
     private int ticks = 0;
 

@@ -7,8 +7,9 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
@@ -21,7 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @Author Hoosiers on 09/19/20
@@ -31,32 +32,15 @@ import java.util.ArrayList;
 @Module.Declaration(name = "SelfTrap", category = Category.Combat)
 public class SelfTrap extends Module {
 
-    ModeSetting trapType;
-    BooleanSetting shiftOnly;
-    BooleanSetting chatMsg;
-    BooleanSetting rotate;
-    BooleanSetting disableNone;
-    BooleanSetting offHandObby;
-    BooleanSetting centerPlayer;
-    IntegerSetting tickDelay;
-    IntegerSetting blocksPerTick;
-
-    public void setup() {
-        ArrayList<String> trapTypes = new ArrayList<>();
-        trapTypes.add("Normal");
-        trapTypes.add("No Step");
-        trapTypes.add("Simple");
-
-        trapType = registerMode("Mode", trapTypes, "Normal");
-        shiftOnly = registerBoolean("Shift Only", false);
-        disableNone = registerBoolean("Disable No Obby", true);
-        rotate = registerBoolean("Rotate", true);
-        offHandObby = registerBoolean("Off Hand Obby", false);
-        centerPlayer = registerBoolean("Center Player", false);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
+    ModeSetting trapType = registerMode("Mode", Arrays.asList("Normal", "No Step", "Simple"), "Normal");
+    BooleanSetting shiftOnly = registerBoolean("Shift Only", false);
+    BooleanSetting disableNone = registerBoolean("Disable No Obby", true);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting offHandObby = registerBoolean("Off Hand Obby", false);
+    BooleanSetting centerPlayer = registerBoolean("Center Player", false);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noObby = false;
     private boolean isSneaking = false;
@@ -64,7 +48,6 @@ public class SelfTrap extends Module {
     private boolean activedOff;
 
     private int delayTimeTicks = 0;
-    private final int playerYLevel = 0;
     private int offsetSteps = 0;
     private int oldSlot = -1;
 
@@ -78,7 +61,7 @@ public class SelfTrap extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "SelfTrap turned ON!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "SelfTrap turned ON!");
         }
 
         if (centerPlayer.getValue() && mc.player.onGround) {
@@ -100,9 +83,9 @@ public class SelfTrap extends Module {
 
         if (chatMsg.getValue()) {
             if (noObby) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... SelfTrap turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No obsidian detected... SelfTrap turned OFF!");
             } else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfTrap turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "SelfTrap turned OFF!");
             }
         }
 

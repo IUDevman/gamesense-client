@@ -3,6 +3,7 @@ package com.gamesense.api.util.render;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.render.Nametags;
 import net.minecraft.client.Minecraft;
@@ -287,6 +288,7 @@ public class RenderUtil {
     }
 
     public static void drawNametag(double x, double y, double z, String[] text, GSColor color, int type) {
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
         double dist = mc.player.getDistance(x, y, z);
         double scale = 1, offset = 0;
         int start = 0;
@@ -317,11 +319,13 @@ public class RenderUtil {
         if (type == 2) {
             double width = 0;
             GSColor bcolor = new GSColor(0, 0, 0, 51);
-            if (Nametags.customColor.getValue()) {
-                bcolor = Nametags.borderColor.getValue();
+            Nametags nametags = ModuleManager.getModule(Nametags.class);
+
+            if (nametags.customColor.getValue()) {
+                bcolor = nametags.borderColor.getValue();
             }
             for (int i = 0; i < text.length; i++) {
-                double w = FontUtil.getStringWidth(ColorMain.customFont.getValue(), text[i]) / 2;
+                double w = FontUtil.getStringWidth(colorMain.customFont.getValue(), text[i]) / 2;
                 if (w > width) {
                     width = w;
                 }
@@ -330,7 +334,7 @@ public class RenderUtil {
         }
         GlStateManager.enableTexture2D();
         for (int i = 0; i < text.length; i++) {
-            FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), text[i], -FontUtil.getStringWidth(ColorMain.customFont.getValue(), text[i]) / 2, i * (mc.fontRenderer.FONT_HEIGHT + 1) + start, color);
+            FontUtil.drawStringWithShadow(colorMain.customFont.getValue(), text[i], -FontUtil.getStringWidth(colorMain.customFont.getValue(), text[i]) / 2, i * (mc.fontRenderer.FONT_HEIGHT + 1) + start, color);
         }
         GlStateManager.disableTexture2D();
         if (type != 2) {

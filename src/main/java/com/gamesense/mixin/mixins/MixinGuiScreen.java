@@ -15,11 +15,13 @@ public class MixinGuiScreen {
 
     @Inject(method = "renderToolTip", at = @At("HEAD"), cancellable = true)
     public void renderToolTip(ItemStack stack, int x, int y, CallbackInfo callbackInfo) {
-        if (ModuleManager.isModuleEnabled(ShulkerViewer.class) && stack.getItem() instanceof ItemShulkerBox) {
+        ShulkerViewer shulkerViewer = ModuleManager.getModule(ShulkerViewer.class);
+
+        if (shulkerViewer.isEnabled() && stack.getItem() instanceof ItemShulkerBox) {
             if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("BlockEntityTag", 10)) {
                 if (stack.getTagCompound().getCompoundTag("BlockEntityTag").hasKey("Items", 9)) {
                     callbackInfo.cancel();
-                    ShulkerViewer.renderShulkerPreview(stack, x + 6, y - 33, 162, 66);
+                    shulkerViewer.renderShulkerPreview(stack, x + 6, y - 33, 162, 66);
                 }
             }
         }

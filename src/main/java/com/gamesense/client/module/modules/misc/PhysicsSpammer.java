@@ -2,8 +2,8 @@ package com.gamesense.client.module.modules.misc;
 
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -16,11 +16,10 @@ import java.util.Scanner;
 @Module.Declaration(name = "PhysicsSpammer", category = Category.Misc)
 public class PhysicsSpammer extends Module {
 
-    private IntegerSetting minDelay, maxDelay;
+    IntegerSetting minDelay = registerInteger("Min Delay", 5, 1, 100);
+    IntegerSetting maxDelay = registerInteger("Max Delay", 5, 1, 100);
 
-    public void setup() {
-        minDelay = registerInteger("Min Delay", 5, 1, 100);
-        maxDelay = registerInteger("Max Delay", 5, 1, 100);
+    public PhysicsSpammer() {
         updateTimes();
     }
 

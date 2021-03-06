@@ -9,15 +9,15 @@ import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Hoosiers
@@ -27,24 +27,11 @@ import java.util.ArrayList;
 @Module.Declaration(name = "BreakESP", category = Category.Render)
 public class BreakESP extends Module {
 
-    ModeSetting renderType;
-    ColorSetting color;
-    IntegerSetting range;
-    IntegerSetting lineWidth;
-    BooleanSetting cancelAnimation;
-
-    public void setup() {
-        ArrayList<String> renderTypes = new ArrayList<>();
-        renderTypes.add("Outline");
-        renderTypes.add("Fill");
-        renderTypes.add("Both");
-
-        renderType = registerMode("Render", renderTypes, "Both");
-        lineWidth = registerInteger("Width", 1, 0, 5);
-        range = registerInteger("Range", 100, 1, 200);
-        cancelAnimation = registerBoolean("No Animation", true);
-        color = registerColor("Color", new GSColor(0, 255, 0, 255));
-    }
+    ModeSetting renderType = registerMode("Render", Arrays.asList("Outline", "Fill", "Both"), "Both");
+    IntegerSetting lineWidth = registerInteger("Width", 1, 0, 5);
+    IntegerSetting range = registerInteger("Range", 100, 1, 200);
+    BooleanSetting cancelAnimation = registerBoolean("No Animation", true);
+    ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 255));
 
     public void onWorldRender(RenderEvent event) {
         if (mc.player == null || mc.world == null) {
