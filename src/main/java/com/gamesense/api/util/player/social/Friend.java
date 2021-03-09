@@ -1,8 +1,8 @@
-package com.gamesense.api.util.player.friend;
+package com.gamesense.api.util.player.social;
 
 public class Friend {
 
-    String name;
+    private final String name;
 
     public Friend(String name) {
         this.name = name;

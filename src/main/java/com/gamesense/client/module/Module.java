@@ -43,16 +43,8 @@ public abstract class Module implements Toggleable, KeybindSetting {
     private boolean enabled = getDeclaration().enabled();
     private boolean drawn = getDeclaration().drawn();
 
-    public Module() {
-        setup();
-    }
-
     private Declaration getDeclaration() {
         return getClass().getAnnotation(Declaration.class);
-    }
-
-    public void setup() {
-
     }
 
     protected void onEnable() {

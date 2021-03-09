@@ -10,8 +10,9 @@ import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -42,37 +44,18 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "BedAura", category = Category.Combat)
 public class BedAura extends Module {
 
-    ModeSetting attackMode;
-    DoubleSetting attackRange;
-    IntegerSetting breakDelay;
-    IntegerSetting placeDelay;
-    DoubleSetting targetRange;
-    BooleanSetting antiSuicide;
-    IntegerSetting antiSuicideHealth;
-    IntegerSetting minDamage;
-    BooleanSetting rotate;
-    BooleanSetting chatMsgs;
-    BooleanSetting disableNone;
-    BooleanSetting autoSwitch;
-
-    public void setup() {
-        ArrayList<String> attackModes = new ArrayList<>();
-        attackModes.add("Normal");
-        attackModes.add("Own");
-
-        attackMode = registerMode("Mode", attackModes, "Own");
-        attackRange = registerDouble("Attack Range", 4, 0, 10);
-        breakDelay = registerInteger("Break Delay", 1, 0, 20);
-        placeDelay = registerInteger("Place Delay", 1, 0, 20);
-        targetRange = registerDouble("Target Range", 7, 0, 16);
-        rotate = registerBoolean("Rotate", true);
-        disableNone = registerBoolean("Disable No Bed", false);
-        autoSwitch = registerBoolean("Switch", true);
-        antiSuicide = registerBoolean("Anti Suicide", false);
-        antiSuicideHealth = registerInteger("Suicide Health", 14, 1, 36);
-        minDamage = registerInteger("Min Damage", 5, 1, 36);
-        chatMsgs = registerBoolean("Chat Msgs", true);
-    }
+    ModeSetting attackMode = registerMode("Mode", Arrays.asList("Normal", "Own"), "Own");
+    DoubleSetting attackRange = registerDouble("Attack Range", 4, 0, 10);
+    IntegerSetting breakDelay = registerInteger("Break Delay", 1, 0, 20);
+    IntegerSetting placeDelay = registerInteger("Place Delay", 1, 0, 20);
+    DoubleSetting targetRange = registerDouble("Target Range", 7, 0, 16);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting disableNone = registerBoolean("Disable No Bed", false);
+    BooleanSetting autoSwitch = registerBoolean("Switch", true);
+    BooleanSetting antiSuicide = registerBoolean("Anti Suicide", false);
+    IntegerSetting antiSuicideHealth = registerInteger("Suicide Health", 14, 1, 36);
+    IntegerSetting minDamage = registerInteger("Min Damage", 5, 1, 36);
+    BooleanSetting chatMsgs = registerBoolean("Chat Msgs", true);
 
     private boolean hasNone = false;
     private int oldSlot = -1;
@@ -99,7 +82,7 @@ public class BedAura extends Module {
         }
 
         if (chatMsgs.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "BedAura turned ON!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "BedAura turned ON!");
         }
     }
 
@@ -116,9 +99,9 @@ public class BedAura extends Module {
 
         if (chatMsgs.getValue()) {
             if (hasNone && disableNone.getValue()) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No beds detected... BedAura turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No beds detected... BedAura turned OFF!");
             } else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "BedAura turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "BedAura turned OFF!");
             }
         }
 

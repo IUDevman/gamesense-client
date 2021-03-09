@@ -6,8 +6,9 @@ import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.network.play.client.CPacketEntityAction;
@@ -15,7 +16,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @Author Hoosiers on 09/23/20
@@ -25,29 +26,14 @@ import java.util.ArrayList;
 @Module.Declaration(name = "SelfWeb", category = Category.Combat)
 public class SelfWeb extends Module {
 
-    BooleanSetting chatMsg;
-    BooleanSetting shiftOnly;
-    BooleanSetting singleWeb;
-    BooleanSetting rotate;
-    BooleanSetting disableNone;
-    IntegerSetting tickDelay;
-    IntegerSetting blocksPerTick;
-    ModeSetting placeType;
-
-    public void setup() {
-        ArrayList<String> placeModes = new ArrayList<>();
-        placeModes.add("Single");
-        placeModes.add("Double");
-
-        placeType = registerMode("Place", placeModes, "Single");
-        shiftOnly = registerBoolean("Shift Only", false);
-        singleWeb = registerBoolean("One Place", false);
-        disableNone = registerBoolean("Disable No Web", true);
-        rotate = registerBoolean("Rotate", true);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
+    ModeSetting placeType = registerMode("Place", Arrays.asList("Single", "Double"), "Single");
+    BooleanSetting shiftOnly = registerBoolean("Shift Only", false);
+    BooleanSetting singleWeb = registerBoolean("One Place", false);
+    BooleanSetting disableNone = registerBoolean("Disable No Web", true);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noWeb = false;
     private boolean isSneaking = false;
@@ -66,7 +52,7 @@ public class SelfWeb extends Module {
         }
 
         if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "SelfWeb turned ON!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "SelfWeb turned ON!");
         }
 
         oldSlot = mc.player.inventory.currentItem;
@@ -85,9 +71,9 @@ public class SelfWeb extends Module {
 
         if (chatMsg.getValue()) {
             if (noWeb) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... SelfWeb turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No web detected... SelfWeb turned OFF!");
             } else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfWeb turned OFF!");
+                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "SelfWeb turned OFF!");
             }
         }
 

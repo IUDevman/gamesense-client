@@ -12,8 +12,8 @@ import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,7 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.world.WorldEvent;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -35,26 +35,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Module.Declaration(name = "LogoutSpots", category = Category.Render)
 public class LogoutSpots extends Module {
 
-    BooleanSetting chatMsg;
-    BooleanSetting nameTag;
-    IntegerSetting lineWidth;
-    IntegerSetting range;
-    ModeSetting renderMode;
-    ColorSetting color;
-
-    public void setup() {
-        ArrayList<String> renderModes = new ArrayList<>();
-        renderModes.add("Both");
-        renderModes.add("Outline");
-        renderModes.add("Fill");
-
-        range = registerInteger("Range", 100, 10, 260);
-        chatMsg = registerBoolean("Chat Msgs", true);
-        nameTag = registerBoolean("Nametag", true);
-        lineWidth = registerInteger("Width", 1, 1, 10);
-        renderMode = registerMode("Render", renderModes, "Both");
-        color = registerColor("Color", new GSColor(255, 0, 0, 255));
-    }
+    IntegerSetting range = registerInteger("Range", 100, 10, 260);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
+    BooleanSetting nameTag = registerBoolean("Nametag", true);
+    IntegerSetting lineWidth = registerInteger("Width", 1, 1, 10);
+    ModeSetting renderMode = registerMode("Render", Arrays.asList("Both", "Outline", "Fill"), "Both");
+    ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
 
     Map<net.minecraft.entity.Entity, String> loggedPlayers = new ConcurrentHashMap<>();
     Set<EntityPlayer> worldPlayers = ConcurrentHashMap.newKeySet();
@@ -96,7 +82,10 @@ public class LogoutSpots extends Module {
         nameTagMessage[1] = "(" + posX + "," + posY + "," + posZ + ")";
 
         GlStateManager.pushMatrix();
-        RenderUtil.drawNametag(entity, nameTagMessage, color.getValue(), 0);
+
+        if (nameTag.getValue()) {
+            RenderUtil.drawNametag(entity, nameTagMessage, color.getValue(), 0);
+        }
 
         switch (renderMode.getValue()) {
             case "Both": {

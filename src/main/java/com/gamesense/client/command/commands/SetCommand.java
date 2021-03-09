@@ -18,7 +18,6 @@ import com.gamesense.client.module.ModuleManager;
 @Command.Declaration(name = "Set", syntax = "set [module] [setting] value (no color support)", alias = {"set", "setmodule", "changesetting", "setting"})
 public class SetCommand extends Command {
 
-    //I should probably add an option for color settings in the future
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
 

@@ -1,25 +1,17 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 @Module.Declaration(name = "Fullbright", category = Category.Render)
 public class Fullbright extends Module {
 
-    ModeSetting mode;
-
-    public void setup() {
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Gamma");
-        modes.add("Potion");
-
-        mode = registerMode("Mode", modes, "Gamma");
-    }
+    ModeSetting mode = registerMode("Mode", Arrays.asList("Gamma", "Potion"), "Gamma");
 
     float oldGamma;
 

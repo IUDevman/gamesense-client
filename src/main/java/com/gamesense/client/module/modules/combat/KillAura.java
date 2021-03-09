@@ -8,12 +8,12 @@ import com.gamesense.api.util.math.RotationUtils;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlayerPacket;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -46,33 +46,17 @@ import java.util.Optional;
 @Module.Declaration(name = "KillAura", category = Category.Combat)
 public class KillAura extends Module {
 
-    BooleanSetting players;
-    BooleanSetting hostileMobs;
-    BooleanSetting passiveMobs;
-    ModeSetting itemUsed;
-    BooleanSetting swordPriority;
-    BooleanSetting caCheck;
-    BooleanSetting criticals;
-    BooleanSetting rotation;
-    BooleanSetting autoSwitch;
-    DoubleSetting switchHealth;
-    DoubleSetting range;
-
-    public void setup() {
-        List<String> weapons = Arrays.asList("Sword", "Axe", "Both", "All");
-
-        players = registerBoolean("Players", true);
-        hostileMobs = registerBoolean("Monsters", false);
-        passiveMobs = registerBoolean("Animals", false);
-        itemUsed = registerMode("Item used", weapons, "Sword");
-        swordPriority = registerBoolean("Prioritise Sword", true);
-        caCheck = registerBoolean("AC Check", false);
-        criticals = registerBoolean("Criticals", true);
-        rotation = registerBoolean("Rotation", true);
-        autoSwitch = registerBoolean("Switch", false);
-        switchHealth = registerDouble("Min Switch Health", 0f, 0f, 20f);
-        range = registerDouble("Range", 5, 0, 10);
-    }
+    BooleanSetting players = registerBoolean("Players", true);
+    BooleanSetting hostileMobs = registerBoolean("Monsters", false);
+    BooleanSetting passiveMobs = registerBoolean("Animals", false);
+    ModeSetting itemUsed = registerMode("Item used", Arrays.asList("Sword", "Axe", "Both", "All"), "Sword");
+    BooleanSetting swordPriority = registerBoolean("Prioritise Sword", true);
+    BooleanSetting caCheck = registerBoolean("AC Check", false);
+    BooleanSetting criticals = registerBoolean("Criticals", true);
+    BooleanSetting rotation = registerBoolean("Rotation", true);
+    BooleanSetting autoSwitch = registerBoolean("Switch", false);
+    DoubleSetting switchHealth = registerDouble("Min Switch Health", 0f, 0f, 20f);
+    DoubleSetting range = registerDouble("Range", 5, 0, 10);
 
     private boolean isAttacking = false;
 
@@ -208,7 +192,7 @@ public class KillAura extends Module {
     }
 
     private boolean attackCheck(Entity entity) {
-        if (players.getValue() && entity instanceof EntityPlayer && !Friends.isFriend(entity.getName())) {
+        if (players.getValue() && entity instanceof EntityPlayer && !SocialManager.isFriend(entity.getName())) {
             if (((EntityPlayer) entity).getHealth() > 0) {
                 return true;
             }

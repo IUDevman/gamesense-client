@@ -6,10 +6,10 @@ import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.CollapsibleContainer;
@@ -41,27 +41,29 @@ public class GameSenseGUI extends MinecraftHUDGUI {
     private final Theme theme, gameSenseTheme, clearTheme, clearGradientTheme;
 
     public GameSenseGUI() {
-        ColorScheme scheme = new SettingsColorScheme(ClickGuiModule.enabledColor, ClickGuiModule.backgroundColor, ClickGuiModule.settingBackgroundColor, ClickGuiModule.outlineColor, ClickGuiModule.fontColor, ClickGuiModule.opacity);
+        ClickGuiModule clickGuiModule = ModuleManager.getModule(ClickGuiModule.class);
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
+        ColorScheme scheme = new SettingsColorScheme(clickGuiModule.enabledColor, clickGuiModule.backgroundColor, clickGuiModule.settingBackgroundColor, clickGuiModule.outlineColor, clickGuiModule.fontColor, clickGuiModule.opacity);
         gameSenseTheme = new GameSenseTheme(scheme, HEIGHT, 2, 5);
         clearTheme = new ClearTheme(scheme, false, HEIGHT, 1);
         clearGradientTheme = new ClearTheme(scheme, true, HEIGHT, 1);
         theme = new ThemeMultiplexer() {
             @Override
             protected Theme getTheme() {
-                if (ClickGuiModule.theme.getValue().equals("2.0")) return clearTheme;
-                else if (ClickGuiModule.theme.getValue().equals("2.1.2")) return clearGradientTheme;
+                if (clickGuiModule.theme.getValue().equals("2.0")) return clearTheme;
+                else if (clickGuiModule.theme.getValue().equals("2.1.2")) return clearGradientTheme;
                 else return gameSenseTheme;
             }
         };
         colorToggle = new Toggleable() {
             @Override
             public void toggle() {
-                ColorMain.colorModel.increment();
+                colorMain.colorModel.increment();
             }
 
             @Override
             public boolean isOn() {
-                return ColorMain.colorModel.getValue().equals("HSB");
+                return colorMain.colorModel.getValue().equals("HSB");
             }
         };
         guiInterface = new GUIInterface(true) {
@@ -69,22 +71,22 @@ public class GameSenseGUI extends MinecraftHUDGUI {
             public void drawString(Point pos, String s, Color c) {
                 GLInterface.end();
                 int x = pos.x + 2, y = pos.y + 1;
-                if (!ColorMain.customFont.getValue()) {
+                if (!colorMain.customFont.getValue()) {
                     x += 1;
                     y += 1;
                 }
-                FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), s, x, y, new GSColor(c));
+                FontUtil.drawStringWithShadow(colorMain.customFont.getValue(), s, x, y, new GSColor(c));
                 GLInterface.begin();
             }
 
             @Override
             public int getFontWidth(String s) {
-                return Math.round(FontUtil.getStringWidth(ColorMain.customFont.getValue(), s)) + 4;
+                return Math.round(FontUtil.getStringWidth(colorMain.customFont.getValue(), s)) + 4;
             }
 
             @Override
             public int getFontHeight() {
-                return Math.round(FontUtil.getFontHeight(ColorMain.customFont.getValue())) + 2;
+                return Math.round(FontUtil.getFontHeight(colorMain.customFont.getValue())) + 2;
             }
 
             @Override
@@ -96,7 +98,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
             @Override
             public void handleScroll(int diff) {
                 super.handleScroll(diff);
-                if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
+                if (clickGuiModule.scrolling.getValue().equals("Screen")) {
                     for (FixedComponent component : components) {
                         if (!hudComponents.contains(component)) {
                             Point p = component.getPosition(guiInterface);
@@ -114,23 +116,23 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 
             @Override
             public boolean isOn() {
-                return gui.isOn() && ClickGuiModule.showHUD.isOn() || hudEditor;
+                return gui.isOn() && clickGuiModule.showHUD.isOn() || hudEditor;
             }
         };
 
         for (Module module : ModuleManager.getModules()) {
             if (module instanceof HUDModule) {
                 ((HUDModule) module).populate(theme);
-                gui.addHUDComponent(new HUDPanel(((HUDModule) module).getComponent(), theme.getPanelRenderer(), module, new SettingsAnimation(ClickGuiModule.animationSpeed), hudToggle, HUD_BORDER));
+                gui.addHUDComponent(new HUDPanel(((HUDModule) module).getComponent(), theme.getPanelRenderer(), module, new SettingsAnimation(clickGuiModule.animationSpeed), hudToggle, HUD_BORDER));
             }
         }
         Point pos = new Point(DISTANCE, DISTANCE);
         for (Category category : Category.values()) {
-            DraggableContainer panel = new DraggableContainer(category.name(), null, theme.getPanelRenderer(), new SimpleToggleable(false), new SettingsAnimation(ClickGuiModule.animationSpeed), null, new Point(pos), WIDTH) {
+            DraggableContainer panel = new DraggableContainer(category.name(), null, theme.getPanelRenderer(), new SimpleToggleable(false), new SettingsAnimation(clickGuiModule.animationSpeed), null, new Point(pos), WIDTH) {
 
                 @Override
                 protected int getScrollHeight(int childHeight) {
-                    if (ClickGuiModule.scrolling.getValue().equals("Screen")) {
+                    if (clickGuiModule.scrolling.getValue().equals("Screen")) {
                         return childHeight;
                     }
                     return Math.min(childHeight, Math.max(HEIGHT * 4, GameSenseGUI.this.height - getPosition(guiInterface).y - renderer.getHeight(open.getValue() != 0) - HEIGHT));
@@ -145,7 +147,8 @@ public class GameSenseGUI extends MinecraftHUDGUI {
     }
 
     private void addModule(CollapsibleContainer panel, Module module) {
-        CollapsibleContainer container = new CollapsibleContainer(module.getName(), null, theme.getContainerRenderer(), new SimpleToggleable(false), new SettingsAnimation(ClickGuiModule.animationSpeed), module);
+        ClickGuiModule clickGuiModule = ModuleManager.getModule(ClickGuiModule.class);
+        CollapsibleContainer container = new CollapsibleContainer(module.getName(), null, theme.getContainerRenderer(), new SimpleToggleable(false), new SettingsAnimation(clickGuiModule.animationSpeed), module);
         panel.addComponent(container);
         for (Setting property : SettingsManager.getSettingsForModule(module)) {
             if (property instanceof BooleanSetting) {
@@ -157,7 +160,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
             } else if (property instanceof ModeSetting) {
                 container.addComponent(new EnumComponent(property.getName(), null, theme.getComponentRenderer(), (ModeSetting) property));
             } else if (property instanceof ColorSetting) {
-                container.addComponent(new SyncableColorComponent(theme, (ColorSetting) property, colorToggle, new SettingsAnimation(ClickGuiModule.animationSpeed)));
+                container.addComponent(new SyncableColorComponent(theme, (ColorSetting) property, colorToggle, new SettingsAnimation(clickGuiModule.animationSpeed)));
             }
         }
         container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(), module));
@@ -215,6 +218,6 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 
     @Override
     protected int getScrollSpeed() {
-        return ClickGuiModule.scrollSpeed.getValue();
+        return ModuleManager.getModule(ClickGuiModule.class).scrollSpeed.getValue();
     }
 }

@@ -6,8 +6,8 @@ import com.gamesense.api.event.events.PlayerJumpEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -26,27 +26,15 @@ import java.util.concurrent.ThreadLocalRandom;
 @Module.Declaration(name = "Announcer", category = Category.Misc)
 public class Announcer extends Module {
 
-    public BooleanSetting clientSide;
-    BooleanSetting walk;
-    BooleanSetting place;
-    BooleanSetting jump;
-    BooleanSetting breaking;
-    BooleanSetting attack;
-    BooleanSetting eat;
-    public BooleanSetting clickGui;
-    IntegerSetting delay;
-
-    public void setup() {
-        clientSide = registerBoolean("Client Side", false);
-        walk = registerBoolean("Walk", true);
-        place = registerBoolean("Place", true);
-        jump = registerBoolean("Jump", true);
-        breaking = registerBoolean("Breaking", true);
-        attack = registerBoolean("Attack", true);
-        eat = registerBoolean("Eat", true);
-        clickGui = registerBoolean("GUI", true);
-        delay = registerInteger("Delay", 1, 1, 20);
-    }
+    public BooleanSetting clientSide = registerBoolean("Client Side", false);
+    BooleanSetting walk = registerBoolean("Walk", true);
+    BooleanSetting place = registerBoolean("Place", true);
+    BooleanSetting jump = registerBoolean("Jump", true);
+    BooleanSetting breaking = registerBoolean("Breaking", true);
+    BooleanSetting attack = registerBoolean("Attack", true);
+    BooleanSetting eat = registerBoolean("Eat", true);
+    public BooleanSetting clickGui = registerBoolean("GUI", true);
+    IntegerSetting delay = registerInteger("Delay", 1, 1, 20);
 
     public static int blockBrokeDelay = 0;
     static int blockPlacedDelay = 0;

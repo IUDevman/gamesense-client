@@ -2,12 +2,12 @@ package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.Category;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
@@ -33,19 +33,11 @@ import java.awt.*;
 @HUDModule.Declaration(posX = 0, posZ = 200)
 public class Radar extends HUDModule {
 
-    private BooleanSetting renderPlayer;
-    private BooleanSetting renderMobs;
-    private ColorSetting playerColor;
-    private ColorSetting outlineColor;
-    private ColorSetting fillColor;
-
-    public void setup() {
-        renderPlayer = registerBoolean("Player", true);
-        renderMobs = registerBoolean("Mobs", true);
-        playerColor = registerColor("Player Color", new GSColor(0, 0, 255, 255));
-        outlineColor = registerColor("Outline Color", new GSColor(255, 0, 0, 255));
-        fillColor = registerColor("Fill Color", new GSColor(0, 0, 0, 255));
-    }
+    BooleanSetting renderPlayer = registerBoolean("Player", true);
+    BooleanSetting renderMobs = registerBoolean("Mobs", true);
+    ColorSetting playerColor = registerColor("Player Color", new GSColor(0, 0, 255, 255));
+    ColorSetting outlineColor = registerColor("Outline Color", new GSColor(255, 0, 0, 255));
+    ColorSetting fillColor = registerColor("Fill Color", new GSColor(0, 0, 0, 255));
 
     @Override
     public void populate(Theme theme) {
@@ -53,10 +45,10 @@ public class Radar extends HUDModule {
     }
 
     private Color getPlayerColor(EntityPlayer entityPlayer) {
-        if (Friends.isFriend(entityPlayer.getName())) {
-            return new GSColor(ColorMain.getFriendGSColor(), 255);
-        } else if (Enemies.isEnemy(entityPlayer.getName())) {
-            return new GSColor(ColorMain.getEnemyGSColor(), 255);
+        if (SocialManager.isFriend(entityPlayer.getName())) {
+            return new GSColor(ModuleManager.getModule(ColorMain.class).getFriendGSColor(), 255);
+        } else if (SocialManager.isEnemy(entityPlayer.getName())) {
+            return new GSColor(ModuleManager.getModule(ColorMain.class).getEnemyGSColor(), 255);
         } else {
             return new GSColor(playerColor.getValue(), 255);
         }

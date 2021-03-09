@@ -8,9 +8,9 @@ import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.Category;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,52 +38,21 @@ import java.util.List;
 @Module.Declaration(name = "AutoAnvil", category = Category.Combat)
 public class AutoAnvil extends Module {
 
-    ModeSetting anvilMode,
-            target,
-            anvilPlace;
-    DoubleSetting enemyRange,
-            decrease;
-    BooleanSetting rotate,
-            antiCrystal,
-            fastAnvil,
-            offHandObby,
-            chatMsg;
-    IntegerSetting tickDelay,
-            blocksPerTick,
-            hDistance,
-            minH,
-            failStop;
-
-
-    public void setup() {
-        ArrayList<String> anvilTypesList = new ArrayList<>();
-        anvilTypesList.add("Pick");
-        anvilTypesList.add("Feet");
-        anvilTypesList.add("None");
-        ArrayList<String> targetChoose = new ArrayList<>();
-        targetChoose.add("Nearest");
-        targetChoose.add("Looking");
-        ArrayList<String> anvilPlaceTypes = new ArrayList<>();
-        anvilPlaceTypes.add("single");
-        anvilPlaceTypes.add("double");
-        anvilPlaceTypes.add("full");
-
-        anvilMode = registerMode("Mode", anvilTypesList, "Pick");
-        target = registerMode("Target", targetChoose, "Nearest");
-        anvilPlace = registerMode("Anvil Place", anvilPlaceTypes, "single");
-        antiCrystal = registerBoolean("Anti Crystal", false);
-        fastAnvil = registerBoolean("Fast Anvil", true);
-        offHandObby = registerBoolean("Off Hand Obby", false);
-        rotate = registerBoolean("Rotate", true);
-        enemyRange = registerDouble("Range", 5.9, 0, 6);
-        decrease = registerDouble("Decrease", 2, 0, 6);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        hDistance = registerInteger("H Distance", 7, 1, 10);
-        minH = registerInteger("Min H", 3, 1, 10);
-        failStop = registerInteger("Fail Stop", 2, 1, 10);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
+    ModeSetting anvilMode = registerMode("Mode", Arrays.asList("Pick", "Feet", "None"), "Pick");
+    ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
+    ModeSetting anvilPlace = registerMode("Anvil Place", Arrays.asList("Single", "Double", "Full"), "Single");
+    BooleanSetting antiCrystal = registerBoolean("Anti Crystal", false);
+    BooleanSetting fastAnvil = registerBoolean("Fast Anvil", true);
+    BooleanSetting offHandObby = registerBoolean("Off Hand Obby", false);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    DoubleSetting enemyRange = registerDouble("Range", 5.9, 0, 6);
+    DoubleSetting decrease = registerDouble("Decrease", 2, 0, 6);
+    IntegerSetting  tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    IntegerSetting hDistance = registerInteger("H Distance", 7, 1, 10);
+    IntegerSetting minH = registerInteger("Min H", 3, 1, 10);
+    IntegerSetting failStop = registerInteger("Fail Stop", 2, 1, 10);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean isSneaking = false,
             firstRun = false,
@@ -615,13 +585,13 @@ public class AutoAnvil extends Module {
         double yRef = to_place.get(to_place.size() - 1).y;
         anvilBlock = 0;
         switch (anvilPlace.getValue()) {
-            case "full":
+            case "Full":
                 to_place.add(new Vec3d(0, 3, 0));
                 anvilBlock++;
-            case "double":
+            case "Double":
                 to_place.add(new Vec3d(0, 2, 0));
                 anvilBlock++;
-            case "single":
+            case "Single":
                 to_place.add(new Vec3d(0, yRef, 0));
                 anvilBlock++;
                 break;

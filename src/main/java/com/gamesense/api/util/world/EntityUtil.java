@@ -1,6 +1,6 @@
 package com.gamesense.api.util.world;
 
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -154,10 +154,8 @@ public class EntityUtil {
         return new double[]{yaw, pitch};
     }
 
-    // Basic checks for an entity
-    // needed for crystal aura to not target freecam
     public static boolean basicChecksEntity(Entity pl) {
-        return pl.getName().equals(mc.player.getName()) || Friends.isFriend(pl.getName()) || pl.isDead;
+        return pl.getName().equals(mc.player.getName()) || SocialManager.isFriend(pl.getName()) || pl.isDead;
     }
 
     public static BlockPos getPosition(Entity pl) {

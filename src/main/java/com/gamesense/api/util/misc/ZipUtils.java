@@ -7,6 +7,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public final class ZipUtils {
+
     public static void zip(File source, File dest) {
         List<String> list = new ArrayList<String>();
         createFileList(source, source, list);

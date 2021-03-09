@@ -6,8 +6,8 @@ import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.player.InventoryUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -36,36 +36,36 @@ import java.util.Map;
 @Module.Declaration(name = "Offhand", category = Category.Combat)
 public class OffHand extends Module {
 
-    public static ModeSetting defaultItem,
-            nonDefaultItem,
-            noPlayerItem;
-    ModeSetting potionChoose;
-    IntegerSetting healthSwitch,
-            tickDelay,
-            fallDistance,
-            maxSwitchPerSecond;
-    DoubleSetting biasDamage,
-            playerDistance;
-    BooleanSetting pickObby,
-            leftGap,
-            shiftPot,
-            swordCheck,
-            fallDistanceBol,
-            antiWeakness,
-            chatMsg,
-            noHotBar,
-            crystObby,
-            pickObbyShift,
-            onlyHotBar,
-            crystalCheck,
-            hotBarTotem;
+    ModeSetting defaultItem = registerMode("Default", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Totem");
+    ModeSetting nonDefaultItem = registerMode("Non Default", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Crystal");
+    ModeSetting noPlayerItem = registerMode("No Player", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Gapple");
+    ModeSetting potionChoose = registerMode("Potion", Arrays.asList("first", "strength", "swiftness"), "first");
+    IntegerSetting healthSwitch = registerInteger("Health Switch", 14, 0, 36);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+    IntegerSetting fallDistance = registerInteger("Fall Distance", 12, 0, 30);
+    IntegerSetting maxSwitchPerSecond = registerInteger("Max Switch", 6, 2, 10);
+    DoubleSetting biasDamage = registerDouble("Bias Damage", 1, 0, 3);
+    DoubleSetting playerDistance = registerDouble("Player Distance", 0, 0, 30);
+    BooleanSetting pickObby = registerBoolean("Pick Obby", false);
+    BooleanSetting pickObbyShift = registerBoolean("Pick Obby On Shift", false);
+    BooleanSetting crystObby = registerBoolean("Cryst Shift Obby", false);
+    BooleanSetting leftGap = registerBoolean("Left Click Gap", false);
+    BooleanSetting shiftPot = registerBoolean("Shift Pot", false);
+    BooleanSetting swordCheck = registerBoolean("Only Sword", true);
+    BooleanSetting fallDistanceBol = registerBoolean("Fall Distance", true);
+    BooleanSetting crystalCheck = registerBoolean("Crystal Check", false);
+    BooleanSetting noHotBar = registerBoolean("No HotBar", false);
+    BooleanSetting onlyHotBar = registerBoolean("Only HotBar", false);
+    BooleanSetting antiWeakness = registerBoolean("AntiWeakness", false);
+    BooleanSetting hotBarTotem = registerBoolean("HotBar Totem", false);
+    BooleanSetting chatMsg = registerBoolean("Chat Msg", true);
 
     int prevSlot,
             tickWaited,
             totems;
     boolean returnBack,
             stepChanging;
-    private static boolean activeT;
+    private static boolean activeT = false;
     private static int forceObby;
     private ArrayList<Long> switchDone = new ArrayList<>();
     private final ArrayList<Item> ignoreNoSword = new ArrayList<Item>() {
@@ -104,67 +104,6 @@ public class OffHand extends Module {
             put("Obby", Blocks.OBSIDIAN);
         }
     };
-
-    @Override
-    public void setup() {
-        // At start, offHand is not active
-        activeT = false;
-        // Default items
-        String[] allowedItems = {"Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"};
-        String[] allowedPotions = {"first", "strength", "swiftness"};
-        /// Initialize values
-        // Default items
-        ArrayList<String> defaultItems = new ArrayList<>(Arrays.asList(allowedItems));
-        // Default potions
-        ArrayList<String> defaultPotions = new ArrayList<>(Arrays.asList(allowedPotions));
-        /// Add to settings
-        // Default
-        defaultItem = registerMode("Default", defaultItems, "Totem");
-        // Non-Default
-        nonDefaultItem = registerMode("Non Default", defaultItems, "Crystal");
-        // Non-Player items
-        noPlayerItem = registerMode("No Player", defaultItems, "Gapple");
-        // Potions
-        potionChoose = registerMode("Potion", defaultPotions, "first");
-        // HealthSwitch
-        healthSwitch = registerInteger("Health Switch", 14, 0, 36);
-        // TickDelay
-        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
-        // Fall distance
-        fallDistance = registerInteger("Fall Distance", 12, 0, 30);
-        // Max switch per second
-        maxSwitchPerSecond = registerInteger("Max Switch", 6, 2, 10);
-        // Bias Damage
-        biasDamage = registerDouble("Bias Damage", 1, 0, 3);
-        // Distance player
-        playerDistance = registerDouble("Player Distance", 0, 0, 30);
-        // obby
-        pickObby = registerBoolean("Pick Obby", false);
-        // Enable pickObby only in shift
-        pickObbyShift = registerBoolean("Pick Obby On Shift", false);
-        // If you want crystal to offHand
-        crystObby = registerBoolean("Cryst Shift Obby", false);
-        // Gapple
-        leftGap = registerBoolean("Left Click Gap", false);
-        // Potion
-        shiftPot = registerBoolean("Shift Pot", false);
-        // Sword check
-        swordCheck = registerBoolean("Only Sword", true);
-        // Fall Distance
-        fallDistanceBol = registerBoolean("Fall Distance", true);
-        // Crystal Check
-        crystalCheck = registerBoolean("Crystal Check", false);
-        // NoHotbar
-        noHotBar = registerBoolean("No HotBar", false);
-        // OnlyHotBar
-        onlyHotBar = registerBoolean("Only HotBar", false);
-        // Anti Weakness
-        antiWeakness = registerBoolean("AntiWeakness", false);
-        // HotBar totem
-        hotBarTotem = registerBoolean("HotBar Totem", false);
-        // Chat
-        chatMsg = registerBoolean("Chat Msg", true);
-    }
 
     @Override
     public void onEnable() {
@@ -448,7 +387,7 @@ public class OffHand extends Module {
                 // Check if it's what we want
                 if (item == temp) {
                     // If it's a potion
-                    if (itemName.equals("Pot") && !(potionChoose.getValue().equals("first") || mc.player.inventory.getStackInSlot(i).stackTagCompound.toString().split(":")[2].contains(potionChoose.getValue())))
+                    if (itemName.equals("Pot") && !(potionChoose.getValue().equalsIgnoreCase("first") || mc.player.inventory.getStackInSlot(i).stackTagCompound.toString().split(":")[2].contains(potionChoose.getValue())))
                         continue;
                     return i;
                 }

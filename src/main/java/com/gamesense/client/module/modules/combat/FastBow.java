@@ -1,8 +1,8 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.values.IntegerSetting;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import net.minecraft.item.ItemBow;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
@@ -11,13 +11,7 @@ import net.minecraft.util.math.BlockPos;
 @Module.Declaration(name = "FastBow", category = Category.Combat)
 public class FastBow extends Module {
 
-    IntegerSetting drawLength;
-
-    @Override
-    public void setup() {
-        // https://minecraft.gamepedia.com/Bow#Weapon
-        drawLength = registerInteger("Draw Length", 3, 3, 21);
-    }
+    IntegerSetting drawLength = registerInteger("Draw Length", 3, 3, 21);
 
     public void onUpdate() {
         if (mc.player.getHeldItemMainhand().getItem() instanceof ItemBow && mc.player.isHandActive() && mc.player.getItemInUseMaxCount() >= drawLength.getValue()) {

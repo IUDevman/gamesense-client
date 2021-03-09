@@ -3,6 +3,7 @@ package com.gamesense.api.util.render;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.render.Nametags;
 import net.minecraft.client.Minecraft;
@@ -30,9 +31,9 @@ import static org.lwjgl.opengl.GL11.glHint;
  */
 
 public class RenderUtil {
+
     private static final Minecraft mc = Minecraft.getMinecraft();
 
-    // Line
     public static void drawLine(double posx, double posy, double posz, double posx2, double posy2, double posz2, GSColor color) {
         drawLine(posx, posy, posz, posx2, posy2, posz2, color, 1);
     }
@@ -48,7 +49,6 @@ public class RenderUtil {
         tessellator.draw();
     }
 
-    // Rectangle
     public static void draw2DRect(int posX, int posY, int width, int height, int zHeight, GSColor color) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -66,7 +66,6 @@ public class RenderUtil {
         GlStateManager.disableBlend();
     }
 
-    // Rectangle with border
     private static void drawBorderedRect(double x, double y, double x1, double y1, float lineWidth, GSColor inside, GSColor border) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -88,7 +87,6 @@ public class RenderUtil {
         tessellator.draw();
     }
 
-    // Filled box
     public static void drawBox(BlockPos blockPos, double height, GSColor color, int sides) {
         drawBox(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, height, 1, color, color.getAlpha(), sides);
     }
@@ -116,7 +114,6 @@ public class RenderUtil {
         GlStateManager.enableAlpha();
     }
 
-    // Bounding box
     public static void drawBoundingBox(BlockPos bp, double height, float width, GSColor color) {
         drawBoundingBox(getBoundingBox(bp, 1, height, 1), width, color, color.getAlpha());
     }
@@ -150,7 +147,6 @@ public class RenderUtil {
         tessellator.draw();
     }
 
-    // Bounding box with sides
     public static void drawBoundingBoxWithSides(BlockPos blockPos, int width, GSColor color, int sides) {
         drawBoundingBoxWithSides(getBoundingBox(blockPos, 1, 1, 1), width, color, color.getAlpha(), sides);
     }
@@ -292,6 +288,7 @@ public class RenderUtil {
     }
 
     public static void drawNametag(double x, double y, double z, String[] text, GSColor color, int type) {
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
         double dist = mc.player.getDistance(x, y, z);
         double scale = 1, offset = 0;
         int start = 0;
@@ -322,11 +319,13 @@ public class RenderUtil {
         if (type == 2) {
             double width = 0;
             GSColor bcolor = new GSColor(0, 0, 0, 51);
-            if (Nametags.customColor.getValue()) {
-                bcolor = Nametags.borderColor.getValue();
+            Nametags nametags = ModuleManager.getModule(Nametags.class);
+
+            if (nametags.customColor.getValue()) {
+                bcolor = nametags.borderColor.getValue();
             }
             for (int i = 0; i < text.length; i++) {
-                double w = FontUtil.getStringWidth(ColorMain.customFont.getValue(), text[i]) / 2;
+                double w = FontUtil.getStringWidth(colorMain.customFont.getValue(), text[i]) / 2;
                 if (w > width) {
                     width = w;
                 }
@@ -335,7 +334,7 @@ public class RenderUtil {
         }
         GlStateManager.enableTexture2D();
         for (int i = 0; i < text.length; i++) {
-            FontUtil.drawStringWithShadow(ColorMain.customFont.getValue(), text[i], -FontUtil.getStringWidth(ColorMain.customFont.getValue(), text[i]) / 2, i * (mc.fontRenderer.FONT_HEIGHT + 1) + start, color);
+            FontUtil.drawStringWithShadow(colorMain.customFont.getValue(), text[i], -FontUtil.getStringWidth(colorMain.customFont.getValue(), text[i]) / 2, i * (mc.fontRenderer.FONT_HEIGHT + 1) + start, color);
         }
         GlStateManager.disableTexture2D();
         if (type != 2) {
@@ -343,7 +342,6 @@ public class RenderUtil {
         }
     }
 
-    // Private misc util functions
     private static void vertex(double x, double y, double z, BufferBuilder bufferbuilder) {
         bufferbuilder.pos(x - mc.getRenderManager().viewerPosX, y - mc.getRenderManager().viewerPosY, z - mc.getRenderManager().viewerPosZ).endVertex();
     }
@@ -359,7 +357,6 @@ public class RenderUtil {
         return new AxisAlignedBB(x, y, z, x + width, y + height, z + depth);
     }
 
-    //hoosiers put this together with blood, sweat, and tears D:
     private static void doVerticies(AxisAlignedBB axisAlignedBB, GSColor color, int alpha, BufferBuilder bufferbuilder, int sides, boolean five) {
         if ((sides & GeometryMasks.Quad.EAST) != 0) {
             colorVertex(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ, color, color.getAlpha(), bufferbuilder);
@@ -411,7 +408,6 @@ public class RenderUtil {
         }
     }
 
-    // State prep and restore functions
     public static void prepare() {
         glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ZERO, GL11.GL_ONE);

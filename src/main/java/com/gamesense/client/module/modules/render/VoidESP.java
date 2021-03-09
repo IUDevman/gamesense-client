@@ -8,13 +8,13 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.GeometryMasks;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,34 +24,15 @@ import java.util.List;
 @Module.Declaration(name = "VoidESP", category = Category.Render)
 public class VoidESP extends Module {
 
-    IntegerSetting renderDistance;
-    IntegerSetting activeYValue;
-    ModeSetting renderType;
-    ModeSetting renderMode;
-    IntegerSetting width;
-    ColorSetting color;
-
-    public void setup() {
-        ArrayList<String> render = new ArrayList<>();
-        render.add("Outline");
-        render.add("Fill");
-        render.add("Both");
-
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Box");
-        modes.add("Flat");
-
-        renderDistance = registerInteger("Distance", 10, 1, 40);
-        activeYValue = registerInteger("Activate Y", 20, 0, 256);
-        renderType = registerMode("Render", render, "Both");
-        renderMode = registerMode("Mode", modes, "Flat");
-        width = registerInteger("Width", 1, 1, 10);
-        color = registerColor("Color", new GSColor(255, 255, 0));
-    }
+    IntegerSetting renderDistance = registerInteger("Distance", 10, 1, 40);
+    IntegerSetting activeYValue = registerInteger("Activate Y", 20, 0, 256);
+    ModeSetting renderType = registerMode("Render", Arrays.asList("Outline", "Fill", "Both"), "Both");
+    ModeSetting renderMode = registerMode("Mode", Arrays.asList("Box", "Flat"), "Flat");
+    IntegerSetting width = registerInteger("Width", 1, 1, 10);
+    ColorSetting color = registerColor("Color", new GSColor(255, 255, 0));
 
     private ConcurrentSet<BlockPos> voidHoles;
 
-    @Override
     public void onUpdate() {
         if (mc.player.dimension == 1) {
             return;

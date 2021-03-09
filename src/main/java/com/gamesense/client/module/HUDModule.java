@@ -38,6 +38,6 @@ public abstract class HUDModule extends Module {
     }
 
     public void resetPosition() {
-        component.setPosition(GameSense.getInstance().gameSenseGUI.guiInterface, position);
+        component.setPosition(GameSense.INSTANCE.gameSenseGUI.guiInterface, position);
     }
 }

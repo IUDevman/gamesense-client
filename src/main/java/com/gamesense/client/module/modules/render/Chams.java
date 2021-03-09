@@ -7,8 +7,8 @@ import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.ChamsUtil;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
@@ -18,7 +18,7 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Techale
@@ -28,36 +28,17 @@ import java.util.ArrayList;
 @Module.Declaration(name = "Chams", category = Category.Render)
 public class Chams extends Module {
 
-    ModeSetting chamsType;
-    ColorSetting playerColor;
-    ColorSetting mobColor;
-    ColorSetting crystalColor;
-    IntegerSetting colorOpacity;
-    IntegerSetting wireOpacity;
-    IntegerSetting lineWidth;
-    IntegerSetting range;
-    BooleanSetting player;
-    BooleanSetting mob;
-    BooleanSetting crystal;
-
-    public void setup() {
-        ArrayList<String> chamsTypes = new ArrayList<>();
-        chamsTypes.add("Texture");
-        chamsTypes.add("Color");
-        chamsTypes.add("WireFrame");
-
-        chamsType = registerMode("Type", chamsTypes, "Texture");
-        range = registerInteger("Range", 100, 10, 260);
-        player = registerBoolean("Player", true);
-        mob = registerBoolean("Mob", false);
-        crystal = registerBoolean("Crystal", false);
-        lineWidth = registerInteger("Line Width", 1, 1, 5);
-        colorOpacity = registerInteger("Color Opacity", 100, 0, 255);
-        wireOpacity = registerInteger("Wire Opacity", 200, 0, 255);
-        playerColor = registerColor("Player Color", new GSColor(0, 255, 255, 255));
-        mobColor = registerColor("Mob Color", new GSColor(255, 255, 0, 255));
-        crystalColor = registerColor("Crystal Color", new GSColor(0, 255, 0, 255));
-    }
+    ModeSetting chamsType = registerMode("Type", Arrays.asList("Texture", "Color", "WireFrame"), "Texture");
+    IntegerSetting range = registerInteger("Range", 100, 10, 260);
+    BooleanSetting player = registerBoolean("Player", true);
+    BooleanSetting mob = registerBoolean("Mob", false);
+    BooleanSetting crystal = registerBoolean("Crystal", false);
+    IntegerSetting lineWidth = registerInteger("Line Width", 1, 1, 5);
+    IntegerSetting colorOpacity = registerInteger("Color Opacity", 100, 0, 255);
+    IntegerSetting wireOpacity = registerInteger("Wire Opacity", 200, 0, 255);
+    ColorSetting playerColor = registerColor("Player Color", new GSColor(0, 255, 255, 255));
+    ColorSetting mobColor = registerColor("Mob Color", new GSColor(255, 255, 0, 255));
+    ColorSetting crystalColor = registerColor("Crystal Color", new GSColor(0, 255, 0, 255));
 
     @EventHandler
     private final Listener<RenderEntityEvent.Head> renderEntityHeadEventListener = new Listener<>(event -> {

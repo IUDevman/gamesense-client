@@ -24,6 +24,7 @@ public class RotationUtil {
 
     // Forces only ever one
     private RotationUtil() {
+
     }
 
     public void onEnable() {

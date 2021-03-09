@@ -3,8 +3,8 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.command.commands.AutoGearCommand;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.ClickType;
@@ -46,21 +46,12 @@ import java.util.*;
 @Module.Declaration(name = "SortInventory", category = Category.Misc)
 public class SortInventory extends Module {
 
-    BooleanSetting chatMsg;
-    BooleanSetting debugMode;
-    BooleanSetting confirmSort;
-    BooleanSetting instaSort;
-    BooleanSetting closeAfter;
-    IntegerSetting tickDelay;
-
-    public void setup() {
-        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
-        confirmSort = registerBoolean("Confirm Sort", true);
-        chatMsg = registerBoolean("Chat Msg", true);
-        instaSort = registerBoolean("Insta Sort", false);
-        closeAfter = registerBoolean("Close After", false);
-        debugMode = registerBoolean("Debug Mode", false);
-    }
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+    BooleanSetting confirmSort = registerBoolean("Confirm Sort", true);
+    BooleanSetting chatMsg = registerBoolean("Chat Msg", true);
+    BooleanSetting instaSort = registerBoolean("Insta Sort", false);
+    BooleanSetting closeAfter = registerBoolean("Close After", false);
+    BooleanSetting debugMode = registerBoolean("Debug Mode", false);
 
     // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();

@@ -9,7 +9,6 @@ import com.gamesense.client.module.ModuleManager;
  * @Author Hoosiers on 11/05/2020
  */
 
-
 @Command.Declaration(name = "Drawn", syntax = "drawn [module]", alias = {"drawn", "shown"})
 public class DrawnCommand extends Command {
 

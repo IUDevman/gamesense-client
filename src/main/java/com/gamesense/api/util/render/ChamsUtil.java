@@ -7,17 +7,13 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- * Thank to seppuku for the code that i can understand,
- * is this a skid? It depends by how you are looking this.
- * I didnt only "copy" and "pasted", i also tried to understand what is happening
- * (you can see this by reading every lines i commented)
- * https://github.com/seppukudevelopment/seppuku/blob/master/src/main/java/me/rigamortis/seppuku/impl/module/render/ChamsModule.java
- * Thank to lukflug for helping me to understand
- * and for finding a bug
- * <p>
- * Hoosiers here- Techale was right above, but I ended up porting in and modifying a few functions from the above link so credit to Seppuku...
- * we have the same license, so it's safe to port in
+ * @author Seth
+ * @source https://github.com/seppukudevelopment/seppuku/blob/master/src/main/java/me/rigamortis/seppuku/impl/module/render/ChamsModule.java
+ *
+ * @author Techale
+ * @author Hoosiers
  */
+
 public class ChamsUtil {
 
     private static final Minecraft mc = Minecraft.getMinecraft();

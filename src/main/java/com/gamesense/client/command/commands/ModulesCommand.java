@@ -14,14 +14,12 @@ import java.util.Collection;
 
 /**
  * @author Hoosiers on 11/05/2020
+ * @author Seth for Seppuku
  */
 
 @Command.Declaration(name = "Modules", syntax = "modules (click to toggle)", alias = {"modules", "module", "modulelist", "mod", "mods"})
 public class ModulesCommand extends Command {
 
-    /**
-     * ported from the old commands, @Author Seth for Seppuku
-     **/
     public void onCommand(String command, String[] message) throws Exception {
         TextComponentString msg = new TextComponentString("\2477Modules: " + "\247f ");
 

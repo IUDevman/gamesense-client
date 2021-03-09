@@ -1,7 +1,7 @@
 package com.gamesense.client.command.commands;
 
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.client.command.Command;
 
 /**
@@ -15,17 +15,17 @@ public class FriendCommand extends Command {
         String main = message[0];
 
         if (main.equalsIgnoreCase("list")) {
-            MessageBus.sendClientPrefixMessage("Friends: " + Friends.getFriendsByName() + "!");
+            MessageBus.sendClientPrefixMessage("Friends: " + SocialManager.getFriendsByName() + "!");
             return;
         }
 
         String value = message[1];
 
-        if (main.equalsIgnoreCase("add") && !Friends.isFriend(value)) {
-            Friends.addFriend(value);
+        if (main.equalsIgnoreCase("add") && !SocialManager.isFriend(value)) {
+            SocialManager.addFriend(value);
             MessageBus.sendCommandMessage("Added friend: " + value.toUpperCase() + "!", true);
-        } else if (main.equalsIgnoreCase("del") && Friends.isFriend(value)) {
-            Friends.delFriend(value);
+        } else if (main.equalsIgnoreCase("del") && SocialManager.isFriend(value)) {
+            SocialManager.delFriend(value);
             MessageBus.sendCommandMessage("Deleted friend: " + value.toUpperCase() + "!", true);
         }
     }

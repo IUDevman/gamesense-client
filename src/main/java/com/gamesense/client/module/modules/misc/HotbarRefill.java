@@ -3,8 +3,8 @@ package com.gamesense.client.module.modules.misc;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
-import com.gamesense.client.module.Module;
 import com.gamesense.client.module.Category;
+import com.gamesense.client.module.Module;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Items;
@@ -20,13 +20,8 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "HotbarRefill", category = Category.Misc)
 public class HotbarRefill extends Module {
 
-    IntegerSetting threshold;
-    IntegerSetting tickDelay;
-
-    public void setup() {
-        threshold = registerInteger("Threshold", 32, 1, 63);
-        tickDelay = registerInteger("Tick Delay", 2, 1, 10);
-    }
+    IntegerSetting threshold = registerInteger("Threshold", 32, 1, 63);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 2, 1, 10);
 
     private int delayStep = 0;
 

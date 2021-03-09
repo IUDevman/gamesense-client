@@ -6,7 +6,6 @@ import com.gamesense.api.event.events.ReachDistanceEvent;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.exploits.PacketUse;
-import com.gamesense.client.module.modules.exploits.Reach;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
@@ -50,10 +49,12 @@ public abstract class MixinPlayerControllerMP {
 
     @Inject(method = "onStoppedUsingItem", at = @At("HEAD"), cancellable = true)
     public void onStoppedUsingItem(EntityPlayer playerIn, CallbackInfo ci) {
-        if (ModuleManager.isModuleEnabled(PacketUse.class)) {
-            if ((PacketUse.food.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood)
-                    || (PacketUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
-                    || PacketUse.all.getValue()) {
+        PacketUse packetUse = ModuleManager.getModule(PacketUse.class);
+
+        if (packetUse.isEnabled()) {
+            if ((packetUse.food.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood)
+                    || (packetUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
+                    || packetUse.all.getValue()) {
                 this.syncCurrentPlayItem();
                 playerIn.stopActiveHand();
                 ci.cancel();

@@ -14,7 +14,7 @@ public class CommandManager {
     private static String commandPrefix = "-";
     public static ArrayList<Command> commands = new ArrayList<>();
 
-    public static void registerCommands() {
+    public static void init() {
         addCommand(new AutoGearCommand());
         addCommand(new AutoGGCommand());
         addCommand(new AutoReplyCommand());
@@ -45,15 +45,6 @@ public class CommandManager {
         return commands;
     }
 
-    public static Command getCommandByName(String name) {
-        for (Command command : commands) {
-            if (command.getName() == name) {
-                return command;
-            }
-        }
-        return null;
-    }
-
     public static String getCommandPrefix() {
         return commandPrefix;
     }
@@ -65,8 +56,9 @@ public class CommandManager {
     boolean isValidCommand = false;
 
     /**
-     * @Author 086 for KAMI, regex is a bitch
+     * @Author 086 for KAMI, regex
      **/
+
     public void callCommand(String input) {
         String[] split = input.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
         String command1 = split[0];

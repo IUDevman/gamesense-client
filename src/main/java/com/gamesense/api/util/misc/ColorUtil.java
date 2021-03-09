@@ -5,8 +5,12 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class ColorUtil {
+
+    public static List<String> colors = Arrays.asList("Black", "Dark Green", "Dark Red", "Gold", "Dark Gray", "Green", "Red", "Yellow", "Dark Blue", "Dark Aqua", "Dark Purple", "Gray", "Blue", "Aqua", "Light Purple", "White");
 
     public static TextFormatting settingToTextFormatting(ModeSetting setting) {
         if (setting.getValue().equalsIgnoreCase("Black")) {
