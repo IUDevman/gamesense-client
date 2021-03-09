@@ -3,13 +3,21 @@ package com.gamesense.client.module.modules.movement;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.PlacementUtil;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.MotionUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.combat.AutoCrystalGS;
+import com.gamesense.client.module.modules.combat.OffHand;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.util.math.Vec3d;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -21,6 +29,7 @@ public class Step extends Module {
     BooleanSetting timer = registerBoolean("Timer", false);
     BooleanSetting reverse = registerBoolean("Reverse", false);
     ModeSetting mode = registerMode("Modes", Arrays.asList("Normal", "Vanilla"), "Normal");
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private int ticks = 0;
 
@@ -122,9 +131,29 @@ public class Step extends Module {
         }
     }
 
-    public void onDisable() {
-        mc.player.stepHeight = 0.5F;
+    public void onEnable() {
+        if (mc.player == null) {
+            disable();
+            return;
+        }
+
+        if (chatMsg.getValue()) {
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "Step turned ON!");
+        }
     }
+
+    public void onDisable() {
+        if (mc.player == null) {
+            return;
+        }
+
+        mc.player.stepHeight = 0.5F;
+
+        if (chatMsg.getValue()) {
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "Step turned OFF!");
+        }
+    }
+
 
     public String getHudInfo() {
         String t = "";

@@ -5,6 +5,7 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.math.RotationUtils;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlayerPacket;
@@ -14,6 +15,7 @@ import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -57,6 +59,7 @@ public class KillAura extends Module {
     BooleanSetting autoSwitch = registerBoolean("Switch", false);
     DoubleSetting switchHealth = registerDouble("Min Switch Health", 0f, 0f, 20f);
     DoubleSetting range = registerDouble("Range", 5, 0, 10);
+    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean isAttacking = false;
 
@@ -125,6 +128,28 @@ public class KillAura extends Module {
             }
         }
     });
+
+    public void onEnable() {
+        if (mc.player == null) {
+            disable();
+            return;
+        }
+
+        if (chatMsg.getValue()) {
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "KillAura turned ON!");
+        }
+    }
+
+    public void onDisable() {
+        if (mc.player == null) {
+            return;
+        }
+
+        if (chatMsg.getValue()) {
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "KillAura turned OFF!");
+        }
+    }
+
 
     private Pair<Float, Integer> findSwordSlot() {
         List<Integer> items = InventoryUtil.findAllItemSlots(ItemSword.class);
