@@ -42,7 +42,6 @@ public class AutoTrap extends Module {
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
     IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
-    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noObby = false;
     private boolean isSneaking = false;
@@ -62,11 +61,6 @@ public class AutoTrap extends Module {
             disable();
             return;
         }
-
-        if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoTrap turned ON!");
-        }
-
     }
 
     public void onDisable() {
@@ -75,13 +69,7 @@ public class AutoTrap extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            if (noObby) {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
-            } else {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoTrap turned OFF!");
-            }
-        }
+        if (noObby) setDisabledMessage("No obsidian detected... AutoTrap turned OFF!");
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
             mc.player.inventory.currentItem = oldSlot;

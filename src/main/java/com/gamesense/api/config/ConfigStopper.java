@@ -18,6 +18,7 @@ public class ConfigStopper extends Thread {
             GameSense.INSTANCE.saveConfig.saveEnabledModules();
             GameSense.INSTANCE.saveConfig.saveModuleKeybinds();
             GameSense.INSTANCE.saveConfig.saveDrawnModules();
+            GameSense.INSTANCE.saveConfig.saveToggleMessagesModules();
             GameSense.INSTANCE.saveConfig.saveCommandPrefix();
             GameSense.INSTANCE.saveConfig.saveCustomFont();
             GameSense.INSTANCE.saveConfig.saveFriendsList();

@@ -51,7 +51,6 @@ public class HoleFill extends Module {
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting autoSwitch = registerBoolean("Switch", true);
     BooleanSetting offHandObby = registerBoolean("Off Hand Obby", false);
-    BooleanSetting chatMsgs = registerBoolean("Chat Msgs", true);
     BooleanSetting disableOnFinish = registerBoolean("Disable on Finish", true);
 
     private int delayTicks = 0;
@@ -68,9 +67,7 @@ public class HoleFill extends Module {
     public void onEnable() {
         activedOff = false;
         PlacementUtil.onEnable();
-        if (chatMsgs.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "HoleFill turned ON!");
-        }
+
         if (autoSwitch.getValue() && mc.player != null) {
             oldHandEnable = mc.player.inventory.currentItem;
         }
@@ -82,9 +79,7 @@ public class HoleFill extends Module {
 
     public void onDisable() {
         PlacementUtil.onDisable();
-        if (chatMsgs.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "HoleFill turned OFF!");
-        }
+
         if (autoSwitch.getValue() && mc.player != null) {
             mc.player.inventory.currentItem = oldHandEnable;
         }

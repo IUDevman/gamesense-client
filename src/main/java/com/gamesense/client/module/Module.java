@@ -3,8 +3,10 @@ package com.gamesense.client.module;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.setting.values.*;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
+import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.settings.KeybindSetting;
 import com.lukflug.panelstudio.settings.Toggleable;
 import net.minecraft.client.Minecraft;
@@ -34,6 +36,8 @@ public abstract class Module implements Toggleable, KeybindSetting {
         boolean enabled() default false;
 
         boolean drawn() default true;
+
+        boolean toggleMsg() default false;
     }
 
     private final String name = getDeclaration().name();
@@ -42,6 +46,7 @@ public abstract class Module implements Toggleable, KeybindSetting {
     private int bind = getDeclaration().bind();
     private boolean enabled = getDeclaration().enabled();
     private boolean drawn = getDeclaration().drawn();
+    private boolean toggleMsg = getDeclaration().toggleMsg();
 
     private Declaration getDeclaration() {
         return getClass().getAnnotation(Declaration.class);
@@ -75,16 +80,25 @@ public abstract class Module implements Toggleable, KeybindSetting {
         this.enabled = enabled;
     }
 
+    private String disabledMessage = name + " turned OFF!";
+
+    public void setDisabledMessage(String message) {
+        this.disabledMessage = message;
+    }
+
     public void enable() {
         setEnabled(true);
         GameSense.EVENT_BUS.subscribe(this);
         onEnable();
+        if (toggleMsg && mc.player != null) MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + name + " turned ON!");
     }
 
     public void disable() {
         setEnabled(false);
         GameSense.EVENT_BUS.unsubscribe(this);
         onDisable();
+        if (toggleMsg && mc.player != null) MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + disabledMessage);
+        setDisabledMessage(name + " turned OFF!");
     }
 
     public void toggle() {
@@ -127,6 +141,14 @@ public abstract class Module implements Toggleable, KeybindSetting {
 
     public void setDrawn(boolean drawn) {
         this.drawn = drawn;
+    }
+
+    public boolean isToggleMsg() {
+        return this.toggleMsg;
+    }
+
+    public void setToggleMsg(boolean toggleMsg) {
+        this.toggleMsg = toggleMsg;
     }
 
     protected IntegerSetting registerInteger(String name, int value, int min, int max) {

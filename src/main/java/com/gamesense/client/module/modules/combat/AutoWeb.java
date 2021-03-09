@@ -32,7 +32,6 @@ public class AutoWeb extends Module {
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
     IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
-    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noWeb = false;
     private boolean isSneaking = false;
@@ -49,10 +48,6 @@ public class AutoWeb extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoWeb turned ON!");
-        }
-
         oldSlot = mc.player.inventory.currentItem;
 
         int newSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
@@ -67,13 +62,7 @@ public class AutoWeb extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            if (noWeb) {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No web detected... AutoWeb turned OFF!");
-            } else {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoWeb turned OFF!");
-            }
-        }
+        if (noWeb) setDisabledMessage("No web detected... AutoWeb turned OFF!");
 
         if (isSneaking) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));

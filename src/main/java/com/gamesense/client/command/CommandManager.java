@@ -30,6 +30,7 @@ public class CommandManager {
         addCommand(new FontCommand());
         addCommand(new FriendCommand());
         addCommand(new ModulesCommand());
+        addCommand(new MsgsCommand());
         addCommand(new OpenFolderCommand());
         addCommand(new PrefixCommand());
         addCommand(new SaveConfigCommand());
