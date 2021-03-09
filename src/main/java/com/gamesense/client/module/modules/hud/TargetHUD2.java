@@ -36,7 +36,7 @@ import java.util.Objects;
  */
 
 @Module.Declaration(name = "TargetHUD", category = Category.HUD)
-@HUDModule.Declaration(posX = 0, posZ = 70)
+@HUDModule.Declaration(posX = 0, posZ = 200)
 public class TargetHUD2 extends HUDModule {
 
     private ColorSetting outline;
@@ -53,6 +53,7 @@ public class TargetHUD2 extends HUDModule {
 
     @Override
     public void populate(Theme theme) {
+
         component = new TargetHUDComponent(theme);
     }
 
