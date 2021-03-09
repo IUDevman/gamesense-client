@@ -72,7 +72,11 @@ public class PvPInfo extends Module {
     List<Entity> pearls;
     List<Entity> burrowedPlayers = new ArrayList<>();
     List<Entity> strengthPlayers = new ArrayList<>();
-    private HashMap<String, Integer> popCounterHashMap = new HashMap<>();
+    private static HashMap<String, Integer> popCounterHashMap = new HashMap<>();
+
+    public static String getPopName(String name) {
+        return popCounterHashMap.containsKey(name) ? String.valueOf(popCounterHashMap.get(name)) : "0";
+    }
 
 
     public void onUpdate() {

@@ -41,10 +41,6 @@ import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
  * Break crystal from AutoCrystal
  */
 
-/*
-    TODO: add check item
-    TODO: add check which item is missing
- */
 
 @Module.Declaration(name = "PistonCrystal", category = Category.Combat)
 public class PistonCrystal extends Module {

@@ -14,6 +14,7 @@ import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.client.module.modules.misc.PvPInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.enchantment.Enchantment;
@@ -45,6 +46,7 @@ public class Nametags extends Module {
     BooleanSetting showHealth;
     BooleanSetting showPing;
     BooleanSetting showEntityID;
+    BooleanSetting showTotem;
     IntegerSetting range;
     ModeSetting levelColor;
     public static BooleanSetting customColor;
@@ -79,6 +81,7 @@ public class Nametags extends Module {
         showHealth = registerBoolean("Health", true);
         showPing = registerBoolean("Ping", false);
         showEntityID = registerBoolean("Entity Id", false);
+        showTotem = registerBoolean("Show Totem", false);
         levelColor = registerMode("Level Color", tab, "Green");
         customColor = registerBoolean("Custom Color", true);
         borderColor = registerColor("Border Color", new GSColor(255, 0, 0, 255));
@@ -143,6 +146,10 @@ public class Nametags extends Module {
             else {
                 name = name + " [S]";
             }
+        }
+
+        if(showTotem.getValue()) {
+            name += " ["+ PvPInfo.getPopName(entityPlayer.getName()) +"] " ;
         }
 
         if (showPing.getValue()) {
