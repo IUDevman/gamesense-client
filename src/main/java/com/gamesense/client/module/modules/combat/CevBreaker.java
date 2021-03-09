@@ -6,6 +6,7 @@ import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.CrystalUtil;
+import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
@@ -598,34 +599,6 @@ public class CevBreaker extends Module {
 
     // Place a block
     private boolean placeBlock(BlockPos pos, int step) {
-        // Get the block
-        Block block = mc.world.getBlockState(pos).getBlock();
-        // Get all sides
-        EnumFacing side = BlockUtil.getPlaceableSide(pos);
-
-        // If there is a solid block
-        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
-            return false;
-        }
-        // If we cannot find any side
-        if (side == null) {
-            return false;
-        }
-
-        // Get position of the side
-        BlockPos neighbour = pos.offset(side);
-        EnumFacing opposite = side.getOpposite();
-
-
-        // If that block can be clicked
-        if (!BlockUtil.canBeClicked(neighbour)) {
-            return false;
-        }
-
-        // Get the position where we are gonna click
-        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
-        Block neighbourBlock = mc.world.getBlockState(neighbour).getBlock();
-
         /*
 			// I use this as a remind to which index refers to what
 			0 => obsidian
@@ -646,27 +619,13 @@ public class CevBreaker extends Module {
             return false;
         }
 
-
-        // Why?
-        if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
-            isSneaking = true;
-        }
-
-        // For the rotation
-        if (rotate.getValue()) {
-            // Look
-            BlockUtil.faceVectorPacketInstant(hitVec, true);
-        }
         // If we are placing with the main hand
         EnumHand handSwing = EnumHand.MAIN_HAND;
         // If we are placing with the offhand
         if (slot_mat[step] == 11)
             handSwing = EnumHand.OFF_HAND;
 
-        // Place the block
-        mc.playerController.processRightClickBlock(mc.player, mc.world, neighbour, opposite, hitVec, handSwing);
-        mc.player.swingArm(handSwing);
+        PlacementUtil.place(pos, handSwing, rotate.getValue());
 
         return true;
     }

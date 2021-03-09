@@ -6,6 +6,7 @@ import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
@@ -75,6 +76,7 @@ public class PistonCrystal extends Module {
             antiWeakness,
             debugMode,
             speedMeter,
+            packetReducer,
             chatMsg;
 
     // Setup the options of the gui
@@ -114,6 +116,7 @@ public class PistonCrystal extends Module {
         antiWeakness = registerBoolean("Anti Weakness", false);
         debugMode = registerBoolean("Debug Mode", false);
         speedMeter = registerBoolean("Speed Meter", false);
+        packetReducer = registerBoolean("Packet Reducer", true);
         chatMsg = registerBoolean("Chat Msgs", true);
         // Reset round
         round = 0;
@@ -759,7 +762,7 @@ public class PistonCrystal extends Module {
                 BlockPos targetPos = getTargetPos(checksDone);
 
                 // Try to place the block
-                if (placeBlock(targetPos, 0, 0, 0, 1, false)) {
+                if (packetReducer.getValue() ? placeBlockConfirm(targetPos, 0, 0, 0, 1, false) : placeBlock(targetPos, 0, 0, 0, 1, false)) {
                     // If we reached the limit
                     if (++blockDone == blocksPerTick.getValue())
                         // Return false
@@ -877,14 +880,112 @@ public class PistonCrystal extends Module {
         return true;
     }
 
+    // Place a block
+    private boolean placeBlockConfirm(BlockPos pos, int step, double offsetX, double offsetZ, double offsetY, boolean redstone) {
+        // Get the block
+        Block block = mc.world.getBlockState(pos).getBlock();
+        // Get all sides
+        EnumFacing side;
+        if (redstone && redstoneAbovePiston) {
+            side = BlockUtil.getPlaceableSideExlude(pos, EnumFacing.DOWN);
+        } else side = BlockUtil.getPlaceableSide(pos);
+
+        // If there is a solid block
+        if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
+            return false;
+        }
+        // If we cannot find any side
+        if (side == null) {
+            return false;
+        }
+
+        // Get position of the side
+        BlockPos neighbour = pos.offset(side);
+        EnumFacing opposite = side.getOpposite();
+
+
+        // If that block can be clicked
+        if (!BlockUtil.canBeClicked(neighbour)) {
+            return false;
+        }
+
+        // Get the position where we are gonna click
+        Vec3d hitVec = new Vec3d(neighbour).add(0.5 + offsetX, offsetY, 0.5 + offsetZ).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+
+        /*
+			// I use this as a remind to which index refers to what
+			0 => obsidian
+			1 => piston
+			2 => Crystals
+			3 => redstone
+		 */
+        // Get what slot we are going to select
+        // If it's not empty
+        try {
+            if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
+                // Is it is correct
+                if (mc.player.inventory.currentItem != slot_mat[step]) {
+                    // Change the hand's item (è qui l'errore)
+                    mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
+                }
+            } else {
+                noMaterials = true;
+                return false;
+            }
+        }
+        catch (Exception e) {
+            printChat("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
+            final Logger LOGGER = LogManager.getLogger("GameSense");
+            LOGGER.error("[PistonCrystal] error during the creation of the structure.");
+            if (e.getMessage() != null)
+                LOGGER.error("[PistonCrystal] error message: " + e.getClass().getName() + " " + e.getMessage());
+            else
+                LOGGER.error("[PistonCrystal] cannot find the cause");
+            int i5 = 0;
+
+            if (e.getStackTrace().length != 0) {
+                LOGGER.error("[PistonCrystal] StackTrace Start");
+                for (StackTraceElement errorMess : e.getStackTrace()) {
+                    LOGGER.error("[PistonCrystal] " + errorMess.toString());
+                }
+                LOGGER.error("[PistonCrystal] StackTrace End");
+            }
+            printChat(Integer.toString(step), true);
+            disable();
+        }
+
+
+        Vec3d positionHit = null;
+        // For the rotation
+        if (rotate.getValue() || step == 1) {
+            positionHit = hitVec;
+            // if rotate and we are not in rotate
+            if (!rotate.getValue() && step == 1) {
+                // Dont look at the block but just the direction
+                positionHit = new Vec3d(mc.player.posX + offsetX, mc.player.posY + (offsetY == -1 ? offsetY : 0), mc.player.posZ + offsetZ);
+            }
+            // Look
+            // BlockUtil.faceVectorPacketInstant(positionHit, true);
+        }
+        // If we are placing with the main hand
+        EnumHand handSwing = EnumHand.MAIN_HAND;
+        // If we are placing with the offhand
+        if (slot_mat[step] == 11)
+            handSwing = EnumHand.OFF_HAND;
+
+        PlacementUtil.placePrecise(pos, handSwing, rotate.getValue() || step == 1, positionHit, side);
+
+        return true;
+    }
+
     // Given a step, place the block
     public void placeBlockThings(int step, boolean redstone) {
         // Get absolute position
         BlockPos targetPos = compactBlockPos(step);
         // Place 93 4 -29
-        placeBlock(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone);
-        // Next step
-        stage++;
+        if (packetReducer.getValue() ? placeBlockConfirm(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone) : placeBlock(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone))
+            // Next step
+            stage++;
     }
 
     // Given a step, return the absolute block position
