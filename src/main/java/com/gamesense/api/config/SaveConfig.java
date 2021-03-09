@@ -164,6 +164,25 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
+    public void saveToggleMessagesModules() throws IOException {
+
+        registerFiles(mainName, "ToggleMessages");
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        OutputStreamWriter fileOutputStreamWriter = new OutputStreamWriter(new FileOutputStream(fileName + mainName + "ToggleMessages" + ".json"), StandardCharsets.UTF_8);
+        JsonObject moduleObject = new JsonObject();
+        JsonObject toggleMessagesObject = new JsonObject();
+
+        for (Module module : ModuleManager.getModules()) {
+
+            toggleMessagesObject.add(module.getName(), new JsonPrimitive(module.isToggleMsg()));
+        }
+        moduleObject.add("Modules", toggleMessagesObject);
+        String jsonString = gson.toJson(new JsonParser().parse(moduleObject.toString()));
+        fileOutputStreamWriter.write(jsonString);
+        fileOutputStreamWriter.close();
+    }
+
     public void saveCommandPrefix() throws IOException {
 
         registerFiles(mainName, "CommandPrefix");

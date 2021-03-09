@@ -41,7 +41,7 @@ public class AutoGear extends Module {
     public void onEnable() {
         // Msg
         if (chatMsg.getValue())
-            PistonCrystal.printChat("AutoSort Turned On!", false);
+            PistonCrystal.printDebug("AutoSort Turned On!", false);
         // Get name of the config
         // Config variables
         String curConfigName = AutoGearCommand.getCurrentSet();
@@ -52,7 +52,7 @@ public class AutoGear extends Module {
         }
         // Print the config
         if (chatMsg.getValue())
-            PistonCrystal.printChat("Config " + curConfigName + " actived", false);
+            PistonCrystal.printDebug("Config " + curConfigName + " actived", false);
         // Get the inventory
         String inventoryConfig = AutoGearCommand.getInventoryKit(curConfigName);
         // If none, exit
@@ -88,7 +88,7 @@ public class AutoGear extends Module {
 
     public void onDisable() {
         if (chatMsg.getValue() && planInventory.size() > 0)
-            PistonCrystal.printChat("AutoSort Turned Off!", true);
+            PistonCrystal.printDebug("AutoSort Turned Off!", true);
     }
 
 
@@ -119,7 +119,7 @@ public class AutoGear extends Module {
         if (!openedBefore) {
             // Print
             if (chatMsg.getValue() && !doneBefore)
-                PistonCrystal.printChat("Start sorting inventory...", false);
+                PistonCrystal.printDebug("Start sorting inventory...", false);
 
             int maxValue = mc.player.openContainer instanceof ContainerChest ? ((ContainerChest) mc.player.openContainer).getLowerChestInventory().getSizeInventory()
                     : 27;
@@ -141,7 +141,7 @@ public class AutoGear extends Module {
                 finishSort = false;
                 // Print
                 if (chatMsg.getValue())
-                    PistonCrystal.printChat("Inventory arleady sorted...", true);
+                    PistonCrystal.printDebug("Inventory arleady sorted...", true);
                 if (closeAfter.getValue())
                     mc.player.closeScreen();
             } else {
@@ -177,7 +177,7 @@ public class AutoGear extends Module {
                 finishSort = false;
                 // Print
                 if (chatMsg.getValue()) {
-                    PistonCrystal.printChat("Inventory sorted", false);
+                    PistonCrystal.printDebug("Inventory sorted", false);
                 }
                 // Check if the last slot has been placed
                 checkLastItem();
@@ -346,7 +346,7 @@ public class AutoGear extends Module {
         if (debugMode.getValue()) {
             // Print every values
             for (int valuePath : planMove) {
-                PistonCrystal.printChat(Integer.toString(valuePath), false);
+                PistonCrystal.printDebug(Integer.toString(valuePath), false);
             }
         }
 

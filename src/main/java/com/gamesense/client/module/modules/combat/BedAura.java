@@ -55,7 +55,6 @@ public class BedAura extends Module {
     BooleanSetting antiSuicide = registerBoolean("Anti Suicide", false);
     IntegerSetting antiSuicideHealth = registerInteger("Suicide Health", 14, 1, 36);
     IntegerSetting minDamage = registerInteger("Min Damage", 5, 1, 36);
-    BooleanSetting chatMsgs = registerBoolean("Chat Msgs", true);
 
     private boolean hasNone = false;
     private int oldSlot = -1;
@@ -80,10 +79,6 @@ public class BedAura extends Module {
         } else if (bedSlot == -1) {
             hasNone = true;
         }
-
-        if (chatMsgs.getValue()) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "BedAura turned ON!");
-        }
     }
 
     public void onDisable() {
@@ -97,13 +92,7 @@ public class BedAura extends Module {
             mc.player.inventory.currentItem = oldSlot;
         }
 
-        if (chatMsgs.getValue()) {
-            if (hasNone && disableNone.getValue()) {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No beds detected... BedAura turned OFF!");
-            } else {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "BedAura turned OFF!");
-            }
-        }
+        if (hasNone && disableNone.getValue()) setDisabledMessage("No beds detected... BedAura turned OFF!");
 
         hasNone = false;
         oldSlot = -1;

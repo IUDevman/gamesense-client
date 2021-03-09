@@ -42,7 +42,6 @@ public class AntiCrystal extends Module {
     BooleanSetting checkDamage = registerBoolean("Damage Check", true);
     BooleanSetting switchBack = registerBoolean("Switch Back", true);
     BooleanSetting notOurCrystals = registerBoolean("Ignore AutoCrystal", true);
-    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private int delayTimeTicks;
     private boolean isSneaking = false;
@@ -50,18 +49,10 @@ public class AntiCrystal extends Module {
     @Override
     public void onEnable() {
         delayTimeTicks = 0;
-
-        if (chatMsg.getValue()) {
-            PistonCrystal.printChat("AntiCrystal turned ON!", false);
-        }
     }
 
     @Override
     public void onDisable() {
-        if (chatMsg.getValue()) {
-            PistonCrystal.printChat("AntiCrystal turned Off!", true);
-        }
-
         if (isSneaking) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             isSneaking = false;

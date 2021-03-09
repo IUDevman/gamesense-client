@@ -84,7 +84,6 @@ public class AutoCrystalGS extends Module {
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting raytrace = registerBoolean("Raytrace", false);
     BooleanSetting showDamage = registerBoolean("Render Dmg", true);
-    BooleanSetting chat = registerBoolean("Chat Msgs", true);
     ModeSetting hudDisplay = registerMode("HUD", Arrays.asList("Mode", "None"), "Mode");
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 50));
 
@@ -453,9 +452,6 @@ public class AutoCrystalGS extends Module {
     public void onEnable() {
         PlacedCrystals.clear();
         isActive = false;
-        if (chat.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoCrystalGS turned ON!");
-        }
     }
 
     public void onDisable() {
@@ -464,9 +460,6 @@ public class AutoCrystalGS extends Module {
         rotating = false;
         PlacedCrystals.clear();
         isActive = false;
-        if (chat.getValue()) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoCrystalGS turned OFF!");
-        }
     }
 
     public String getHudInfo() {

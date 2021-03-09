@@ -70,7 +70,7 @@ public class SortInventory extends Module {
     public void onEnable() {
         // Msg
         if (chatMsg.getValue())
-            PistonCrystal.printChat("AutoSort Turned On!", false);
+            PistonCrystal.printDebug("AutoSort Turned On!", false);
         // Get name of the config
         // Config variables
         String curConfigName = AutoGearCommand.getCurrentSet();
@@ -81,7 +81,7 @@ public class SortInventory extends Module {
         }
         // Print the config
         if (chatMsg.getValue())
-            PistonCrystal.printChat("Config " + curConfigName + " actived", false);
+            PistonCrystal.printDebug("Config " + curConfigName + " actived", false);
         // Get the inventory
         String inventoryConfig = AutoGearCommand.getInventoryKit(curConfigName);
         // If none, exit
@@ -120,7 +120,7 @@ public class SortInventory extends Module {
 
     public void onDisable() {
         if (chatMsg.getValue() && planInventory.size() > 0)
-            PistonCrystal.printChat("AutoSort Turned Off!", true);
+            PistonCrystal.printDebug("AutoSort Turned Off!", true);
     }
 
     public void onUpdate() {
@@ -149,7 +149,7 @@ public class SortInventory extends Module {
         if (!openedBefore) {
             // Print
             if (chatMsg.getValue() && !doneBefore)
-                PistonCrystal.printChat("Start sorting inventory...", false);
+                PistonCrystal.printDebug("Start sorting inventory...", false);
             // Get the plan to create
             sortItems = getInventorySort();
             // Check some errors / doubleCheck
@@ -157,7 +157,7 @@ public class SortInventory extends Module {
                 finishSort = false;
                 // Print
                 if (chatMsg.getValue())
-                    PistonCrystal.printChat("Inventory arleady sorted...", true);
+                    PistonCrystal.printDebug("Inventory arleady sorted...", true);
                 // If we are using instaSort, close
                 if (instaSort.getValue() || closeAfter.getValue()) {
                     mc.player.closeScreen();
@@ -198,7 +198,7 @@ public class SortInventory extends Module {
                 finishSort = false;
                 // Print
                 if (chatMsg.getValue()) {
-                    PistonCrystal.printChat("Inventory sorted", false);
+                    PistonCrystal.printDebug("Inventory sorted", false);
                 }
                 // Check if the last slot has been placed
                 checkLastItem();
@@ -327,7 +327,7 @@ public class SortInventory extends Module {
         if (debugMode.getValue()) {
             // Print every values
             for (int valuePath : planMove) {
-                PistonCrystal.printChat(Integer.toString(valuePath), false);
+                PistonCrystal.printDebug(Integer.toString(valuePath), false);
             }
         }
 

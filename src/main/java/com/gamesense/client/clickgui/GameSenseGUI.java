@@ -163,6 +163,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
                 container.addComponent(new SyncableColorComponent(theme, (ColorSetting) property, colorToggle, new SettingsAnimation(clickGuiModule.animationSpeed)));
             }
         }
+        container.addComponent(new GameSenseToggleMessage(theme.getComponentRenderer(), module));
         container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(), module));
     }
 
