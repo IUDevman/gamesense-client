@@ -9,6 +9,7 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.modules.combat.PistonCrystal;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -47,9 +48,11 @@ public class PvPInfo extends Module {
     List<Entity> burrowedPlayers = new ArrayList<>();
     List<Entity> strengthPlayers = new ArrayList<>();
     private static HashMap<String, Integer> popCounterHashMap = new HashMap<>();
+    private static boolean isEnabled;
+    private static boolean popCount;
 
-    public static String getPopName(String name) {
-        return popCounterHashMap.containsKey(name) ? String.valueOf(popCounterHashMap.get(name)) : "0";
+    public static boolean popEnabled() {
+        return  isEnabled && popCount;
     }
 
     public void onUpdate() {
@@ -196,11 +199,20 @@ public class PvPInfo extends Module {
         }
     });
 
+    public static String getPopName(String name) {
+        return popCounterHashMap.containsKey(name) ? String.valueOf(popCounterHashMap.get(name)) : "0";
+    }
+
     public void onEnable() {
         popCounterHashMap = new HashMap<>();
+        isEnabled = true;
+        if (popCounter.getValue())
+            popCount = true;
+        else popCount = false;
     }
 
     public void onDisable() {
         knownPlayers.clear();
+        isEnabled = false;
     }
 }

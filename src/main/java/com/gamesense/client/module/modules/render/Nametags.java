@@ -1,31 +1,43 @@
 package com.gamesense.client.module.modules.render;
 
+import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.event.events.TotemPopEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.misc.ColorUtil;
+import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
+import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.combat.PistonCrystal;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.misc.PvPInfo;
+import com.mojang.realmsclient.gui.ChatFormatting;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketEntityStatus;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
+
+import java.util.HashMap;
 
 /**
  * @author CyberTF2
@@ -46,9 +58,15 @@ public class Nametags extends Module {
     BooleanSetting showPing = registerBoolean("Ping", false);
     BooleanSetting showEntityID = registerBoolean("Entity Id", false);
     BooleanSetting showTotem = registerBoolean("Show Totem", true);
+    BooleanSetting totemText = registerBoolean("Totem Text", true);
     ModeSetting levelColor = registerMode("Level Color", ColorUtil.colors, "Green");
     public BooleanSetting customColor = registerBoolean("Custom Color", true);
     public ColorSetting borderColor = registerColor("Border Color", new GSColor(255, 0, 0, 255));
+    private String number;
+
+    private static String getPopName(String name) {
+        return popCounterHashMap.containsKey(name) ? String.valueOf(popCounterHashMap.get(name)) : "0";
+    }
 
     public void onWorldRender(RenderEvent event) {
         if (mc.player == null || mc.world == null) {
@@ -64,7 +82,12 @@ public class Nametags extends Module {
     private boolean shouldRender(EntityPlayer entityPlayer) {
         if (entityPlayer == mc.player && !renderSelf.getValue()) return false;
 
-        if (entityPlayer.isDead || entityPlayer.getHealth() <= 0) return false;
+        if (entityPlayer.isDead || entityPlayer.getHealth() <= 0) {
+            if (showTotem.getValue()) {
+                popCounterHashMap.remove(entityPlayer.getName(), popCounterHashMap.get(entityPlayer.getName()));
+            }
+            return false;
+        }
 
         return !(entityPlayer.getDistance(mc.player) > range.getValue());
     }
@@ -112,7 +135,10 @@ public class Nametags extends Module {
         }
 
         if(showTotem.getValue()) {
-            name += " ["+ PvPInfo.getPopName(entityPlayer.getName()) +"] " ;
+            number = (PvPInfo.popEnabled() ? PvPInfo.getPopName(entityPlayer.getName()) : getPopName(entityPlayer.getName()));
+            if (totemText.getValue())
+                name += " ["+ number +"] " ;
+
         }
 
         if (showPing.getValue()) {
@@ -264,6 +290,13 @@ public class Nametags extends Module {
                 renderItemDurability(offHandItem, posX, armorY);
             }
         }
+
+        if (showTotem.getValue() && !totemText.getValue()) {
+            int armorY = findArmorY(posY) - 23;
+            ItemStack totem = new ItemStack(Items.TOTEM_OF_UNDYING);
+            totem.setCount(Integer.parseInt(number));
+            renderItem(totem, -34, armorY, posY);
+        }
     }
 
     private int findArmorY(int posY) {
@@ -362,4 +395,41 @@ public class Nametags extends Module {
 
         return string.substring(0, 1).toUpperCase() + string.substring(1) + ColorUtil.settingToTextFormatting(levelColor) + ((level > 1) ? level : "");
     }
+
+    @EventHandler
+    private final Listener<PacketEvent.Receive> packetEventListener = new Listener<>(event -> {
+        if (mc.world == null || mc.player == null) {
+            return;
+        }
+
+        if (event.getPacket() instanceof SPacketEntityStatus) {
+            SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
+            // PistonCrystal.printChat(Byte.toString(packet.getOpCode()), false);
+            if (packet.getOpCode() == 35 && (showTotem.getValue() && !PvPInfo.popEnabled())) {
+                Entity entity = packet.getEntity(mc.world);
+                GameSense.EVENT_BUS.post(new TotemPopEvent(entity));
+            }
+        }
+
+    });
+    private static HashMap<String, Integer> popCounterHashMap = new HashMap<>();
+    @EventHandler
+    private final Listener<TotemPopEvent> totemPopEventListener = new Listener<>(event -> {
+        if (mc.world == null || mc.player == null) {
+            return;
+        }
+
+        if (popCounterHashMap == null) {
+            popCounterHashMap = new HashMap<>();
+        }
+
+        if (popCounterHashMap.get(event.getEntity().getName()) == null) {
+            popCounterHashMap.put(event.getEntity().getName(), 1);
+        } else if (popCounterHashMap.get(event.getEntity().getName()) != null) {
+            int popCounter = popCounterHashMap.get(event.getEntity().getName());
+            int newPopCounter = popCounter += 1;
+            popCounterHashMap.put(event.getEntity().getName(), newPopCounter);
+        }
+
+    });
 }
