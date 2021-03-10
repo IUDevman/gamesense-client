@@ -9,6 +9,7 @@ import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraftforge.client.event.InputUpdateEvent;
@@ -19,6 +20,7 @@ public class PlayerTweaks extends Module {
 
     public BooleanSetting guiMove = registerBoolean("Gui Move", false);
     BooleanSetting noPush = registerBoolean("No Push", false);
+    BooleanSetting noFall = registerBoolean("No Fall", false);
     public BooleanSetting noSlow = registerBoolean("No Slow", false);
     BooleanSetting antiKnockBack = registerBoolean("Velocity", false);
 
@@ -80,6 +82,15 @@ public class PlayerTweaks extends Module {
             }
         }
     });
+
+    @EventHandler
+    private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
+        if (noFall.getValue() && event.getPacket() instanceof CPacketPlayer && mc.player.fallDistance >= 3.0) {
+            CPacketPlayer packet = (CPacketPlayer) event.getPacket();
+            packet.onGround = true;
+        }
+    });
+
 
     @EventHandler
     private final Listener<WaterPushEvent> waterPushEventListener = new Listener<>(event -> {
