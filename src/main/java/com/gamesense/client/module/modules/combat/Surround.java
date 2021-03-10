@@ -7,8 +7,6 @@ import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;

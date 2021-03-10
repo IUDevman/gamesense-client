@@ -8,7 +8,6 @@ import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.math.RotationUtils;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.api.util.render.GSColor;
@@ -18,12 +17,10 @@ import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -83,6 +80,7 @@ public class AutoCrystalGS extends Module {
     IntegerSetting facePlaceValue = registerInteger("FacePlace HP", 8, 0, 36);
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting raytrace = registerBoolean("Raytrace", false);
+    BooleanSetting predict = registerBoolean("Predict", true);
     BooleanSetting showDamage = registerBoolean("Render Dmg", true);
     ModeSetting hudDisplay = registerMode("HUD", Arrays.asList("Mode", "None"), "Mode");
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 50));
@@ -435,14 +433,17 @@ public class AutoCrystalGS extends Module {
 
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
+        if (!predict.getValue()) return;
+
         if (event.getPacket() instanceof SPacketSoundEffect) {
             final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
             if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
-                for (Entity e : Minecraft.getMinecraft().world.loadedEntityList) {
-                    if (e instanceof EntityEnderCrystal) {
-                        if (e.getDistance(packet.getX(), packet.getY(), packet.getZ()) <= 6.0f) {
-                            e.setDead();
-                        }
+                for (BlockPos blockPos : PlacedCrystals) {
+                    if (blockPos.getDistance((int) packet.getX(), (int) packet.getY(), (int) packet.getZ()) <= 6) {
+                        CPacketUseEntity cPacketUseEntity = new CPacketUseEntity(new EntityEnderCrystal(mc.world, blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+                        mc.player.connection.sendPacket(cPacketUseEntity);
+                        PlacedCrystals.remove(blockPos);
+                        return;
                     }
                 }
             }
