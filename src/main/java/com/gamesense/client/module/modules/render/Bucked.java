@@ -19,6 +19,11 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;
 
+/**
+ * @author Hoosiers
+ * @since 03/10/2021
+ */
+
 @Module.Declaration(name = "Bucked", category = Category.Render)
 public class Bucked extends Module {
 
