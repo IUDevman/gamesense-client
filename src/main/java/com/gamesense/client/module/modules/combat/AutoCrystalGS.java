@@ -5,14 +5,14 @@ import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.values.*;
-import com.gamesense.api.util.combat.CrystalUtil;
-import com.gamesense.api.util.combat.DamageUtil;
-import com.gamesense.api.util.math.RotationUtils;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.PlayerPacket;
+import com.gamesense.api.util.player.RotationUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.combat.CrystalUtil;
+import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
@@ -105,7 +105,7 @@ public class AutoCrystalGS extends Module {
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotating) return;
 
-        Vec2f rotation = RotationUtils.getRotationTo(lastHitVec);
+        Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
         PlayerPacket packet = new PlayerPacket(this, rotation);
         PlayerPacketManager.INSTANCE.addPacket(packet);
     });

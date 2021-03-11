@@ -2,11 +2,11 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
-import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -19,7 +19,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 
-import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
+import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
  * @Author TechAle on (date)

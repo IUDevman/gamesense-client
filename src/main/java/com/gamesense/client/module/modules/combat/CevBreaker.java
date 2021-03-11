@@ -5,11 +5,11 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
+import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
+import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 @Module.Declaration(name = "CevBreaker", category = Category.Combat)
 public class CevBreaker extends Module {

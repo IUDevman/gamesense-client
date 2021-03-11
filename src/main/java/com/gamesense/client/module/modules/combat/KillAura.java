@@ -4,10 +4,10 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.math.RotationUtils;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlayerPacket;
+import com.gamesense.api.util.player.RotationUtil;
 import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
@@ -103,7 +103,7 @@ public class KillAura extends Module {
                 Entity target = optionalTarget.get();
 
                 if (rotation.getValue()) {
-                    Vec2f rotation = RotationUtils.getRotationTo(target.getEntityBoundingBox());
+                    Vec2f rotation = RotationUtil.getRotationTo(target.getEntityBoundingBox());
                     PlayerPacket packet = new PlayerPacket(this, rotation);
                     PlayerPacketManager.INSTANCE.addPacket(packet);
                 }
