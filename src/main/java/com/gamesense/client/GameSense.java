@@ -79,14 +79,14 @@ public class GameSense {
         ModuleManager.init();
         LOGGER.info("Modules initialized!");
 
+        CommandManager.init();
+        LOGGER.info("Commands initialized!");
+
         ManagerLoader.init();
         LOGGER.info("Managers initialized!");
 
         gameSenseGUI = new GameSenseGUI();
         LOGGER.info("GameSenseGUI initialized!");
-
-        CommandManager.init();
-        LOGGER.info("Commands initialized!");
 
         saveConfig = new SaveConfig();
         loadConfig = new LoadConfig();
