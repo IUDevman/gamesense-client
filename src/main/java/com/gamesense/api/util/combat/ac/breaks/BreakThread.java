@@ -1,9 +1,9 @@
-package com.gamesense.api.util.combat.ca.breaks;
+package com.gamesense.api.util.combat.ac.breaks;
 
 import com.gamesense.api.util.combat.DamageUtil;
-import com.gamesense.api.util.combat.ca.CASettings;
-import com.gamesense.api.util.combat.ca.CrystalInfo;
-import com.gamesense.api.util.combat.ca.PlayerInfo;
+import com.gamesense.api.util.combat.ac.ACSettings;
+import com.gamesense.api.util.combat.ac.CrystalInfo;
+import com.gamesense.api.util.combat.ac.PlayerInfo;
 import net.minecraft.entity.item.EntityEnderCrystal;
 
 import java.util.ArrayList;
@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public class BreakThread implements Callable<List<CrystalInfo.BreakInfo>> {
-    private final CASettings settings;
+    private final ACSettings settings;
 
     private final List<EntityEnderCrystal> crystals;
     private final List<PlayerInfo> targets;
 
-    public BreakThread(CASettings setting, List<EntityEnderCrystal> crystals, List<PlayerInfo> targets) {
+    public BreakThread(ACSettings setting, List<EntityEnderCrystal> crystals, List<PlayerInfo> targets) {
         this.settings = setting;
 
         this.crystals = crystals;
@@ -62,7 +62,7 @@ public class BreakThread implements Callable<List<CrystalInfo.BreakInfo>> {
                 }
 
                 if (shouldAdd) {
-                    worthyCrystals.add(new CrystalInfo.BreakInfo(bestDamage, target.entity, best));
+                    worthyCrystals.add(new CrystalInfo.BreakInfo(bestDamage, target, best));
                 }
             }
         }

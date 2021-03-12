@@ -4,14 +4,14 @@ import com.gamesense.api.event.Phase;
 import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.combat.DamageUtil;
-import com.gamesense.api.util.combat.ca.CASettings;
-import com.gamesense.api.util.combat.ca.CrystalInfo;
-import com.gamesense.api.util.combat.ca.PlayerInfo;
-import com.gamesense.api.util.combat.ca.breaks.BreakThread;
-import com.gamesense.api.util.combat.ca.place.PlaceThread;
+import com.gamesense.api.util.combat.ac.ACSettings;
+import com.gamesense.api.util.combat.ac.CrystalInfo;
+import com.gamesense.api.util.combat.ac.PlayerInfo;
+import com.gamesense.api.util.combat.ac.breaks.BreakThread;
+import com.gamesense.api.util.combat.ac.place.PlaceThread;
 import com.gamesense.api.util.math.RotationUtils;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.misc.Timer;
@@ -22,6 +22,7 @@ import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
@@ -60,105 +61,43 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
+@Module.Declaration(name = "AutoCrystalRewrite", category = Category.Combat, priority = 100)
 public class AutoCrystalRewrite extends Module {
 
-    public AutoCrystalRewrite() {
-        super("AutoCrystalRewrite", Category.Combat);
-    }
+    ModeSetting breakMode = registerMode("Target", Arrays.asList("All", "Smart", "Own"), "All");
+    ModeSetting handBreak = registerMode("Hand", Arrays.asList("Main", "Offhand", "Both"), "Main");
+    ModeSetting breakType = registerMode("Type", Arrays.asList("Swing", "Packet"), "Swing");
+    ModeSetting crystalPriority = registerMode("Prioritise", Arrays.asList("Damage", "Closest", "Health"), "Damage");
+    BooleanSetting breakCrystal = registerBoolean("Break", true);
+    BooleanSetting placeCrystal = registerBoolean("Place", true);
+    IntegerSetting attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
+    DoubleSetting breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
+    DoubleSetting placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
+    DoubleSetting wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
+    DoubleSetting enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
+    BooleanSetting antiWeakness = registerBoolean("Anti Weakness", true);
+    BooleanSetting antiTotemPop = registerBoolean("Anti Totem Pop", true);
+    BooleanSetting antiSuicide = registerBoolean("Anti Suicide", true);
+    IntegerSetting antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
+    BooleanSetting autoSwitch = registerBoolean("Switch", true);
+    BooleanSetting noGapSwitch = registerBoolean("No Gap Switch", false);
+    BooleanSetting endCrystalMode = registerBoolean("1.13 Place", false);
+    DoubleSetting minDmg = registerDouble("Min Damage", 5, 0, 36);
+    DoubleSetting minBreakDmg = registerDouble("Min Break Dmg", 5, 0, 36.0);
+    DoubleSetting maxSelfDmg = registerDouble("Max Self Dmg", 10, 1.0, 36.0);
+    IntegerSetting facePlaceValue = registerInteger("FacePlace HP", 8, 0, 36);
+    IntegerSetting armourFacePlace = registerInteger("Armour Health%", 20, 0, 100);
+    DoubleSetting minFacePlaceDmg = registerDouble("FacePlace Dmg", 2, 0, 10);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting raytrace = registerBoolean("Raytrace", false);
+    BooleanSetting showDamage = registerBoolean("Render Dmg", true);
+    BooleanSetting showOwn = registerBoolean("Show Own", false);
+    BooleanSetting chat = registerBoolean("Chat Msgs", true);
+    ModeSetting hudDisplay = registerMode("HUD", Arrays.asList("Mode", "Target", "None"), "Mode");
+    ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 50));
 
-    Setting.Boolean breakCrystal;
-    Setting.Boolean antiWeakness;
-    Setting.Boolean placeCrystal;
-    Setting.Boolean autoSwitch;
-    Setting.Boolean raytrace;
-    Setting.Boolean rotate;
-    Setting.Boolean chat;
-    Setting.Boolean showDamage;
-    Setting.Boolean antiSuicide;
-    Setting.Boolean showOwn;
-    Setting.Boolean endCrystalMode;
-    Setting.Boolean noGapSwitch;
-    Setting.Integer facePlaceValue;
-    Setting.Integer armourFacePlace;
-    Setting.Integer attackSpeed;
-    Setting.Integer antiSuicideValue;
-    Setting.Double maxSelfDmg;
-    Setting.Double wallsRange;
-    Setting.Double minDmg;
-    Setting.Double minBreakDmg;
-    Setting.Double minFacePlaceDmg;
-    Setting.Double enemyRange;
-    Setting.Double placeRange;
-    Setting.Double breakRange;
-    Setting.Mode handBreak;
-    Setting.Mode breakMode;
-    Setting.Mode crystalPriority;
-    Setting.Mode hudDisplay;
-    Setting.Mode breakType;
-    Setting.ColorSetting color;
-
-    Setting.Integer breakThreads;
-    Setting.Integer timeout;
-
-    public void setup() {
-        ArrayList<String> hands = new ArrayList<>();
-        hands.add("Main");
-        hands.add("Offhand");
-        hands.add("Both");
-
-        ArrayList<String> breakModes = new ArrayList<>();
-        breakModes.add("All");
-        breakModes.add("Smart");
-        breakModes.add("Own");
-
-        ArrayList<String> priority = new ArrayList<>();
-        priority.add("Damage");
-        priority.add("Closest");
-        priority.add("Health");
-
-        ArrayList<String> hudModes = new ArrayList<>();
-        hudModes.add("Mode");
-        hudModes.add("Target");
-        hudModes.add("None");
-
-        ArrayList<String> breakTypes = new ArrayList<>();
-        breakTypes.add("Swing");
-        breakTypes.add("Packet");
-
-        breakMode = registerMode("Target", breakModes, "All");
-        handBreak = registerMode("Hand", hands, "Main");
-        crystalPriority = registerMode("Prioritise", priority, "Damage");
-        breakType = registerMode("Type", breakTypes, "Swing");
-        breakCrystal = registerBoolean("Break", true);
-        placeCrystal = registerBoolean("Place", true);
-        attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
-        breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
-        placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
-        wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
-        enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
-        antiWeakness = registerBoolean("Anti Weakness", true);
-        antiSuicide = registerBoolean("Anti Suicide", true);
-        antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
-        autoSwitch = registerBoolean("Switch", true);
-        noGapSwitch = registerBoolean("No Gap Switch", false);
-        endCrystalMode = registerBoolean("1.13 Place", false);
-        minDmg = registerDouble("Min Damage", 5, 0, 36);
-        minBreakDmg = registerDouble("Min Break Dmg", 5, 0,36.0);
-        maxSelfDmg = registerDouble("Max Self Dmg", 10, 1.0, 36.0);
-        facePlaceValue = registerInteger("FacePlace HP", 8, 0, 36);
-        armourFacePlace = registerInteger("Armour Health%", 20, 0, 100);
-        minFacePlaceDmg = registerDouble("FacePlace Dmg", 2.0, 1, 10);
-        rotate = registerBoolean("Rotate", true);
-        raytrace = registerBoolean("Raytrace", false);
-        showDamage = registerBoolean("Render Dmg", true);
-        showOwn = registerBoolean("Debug Own", false);
-        chat = registerBoolean("Chat Msgs", true);
-        hudDisplay = registerMode("HUD", hudModes, "Mode");
-        color = registerColor("Color", new GSColor(0, 255, 0, 50));
-
-        breakThreads = registerInteger("Break Threads", 2, 1, 5);
-        timeout = registerInteger("Timeout (ms)", 5, 1, 10);
-    }
+    IntegerSetting breakThreads = registerInteger("Break Threads", 2, 1, 5);
+    IntegerSetting timeout = registerInteger("Timeout (ms)", 5, 1, 10);
 
     private boolean switchCooldown = false;
     private boolean isAttacking = false;
@@ -228,7 +167,7 @@ public class AutoCrystalRewrite extends Module {
             });
         }
 
-        CASettings settings = new CASettings(enemyRange.getValue(), minDmg.getValue(), minBreakDmg.getValue(), minFacePlaceDmg.getValue(), facePlaceValue.getValue(), breakMode.getValue(), mc.player.getPositionVector());
+        ACSettings settings = new ACSettings(breakCrystal.getValue(), placeCrystal.getValue(), enemyRange.getValue(), breakRange.getValue(), wallsRange.getValue(), minDmg.getValue(), minBreakDmg.getValue(), minFacePlaceDmg.getValue(), maxSelfDmg.getValue(), breakThreads.getValue(), facePlaceValue.getValue(), antiSuicide.getValue(), breakMode.getValue(), crystalPriority.getValue(), mc.player.getPositionVector());
         List<PlayerInfo> targetsInfo = new ArrayList<>();
 
         float armourPercent = armourFacePlace.getValue() / 100.0f;
@@ -405,7 +344,7 @@ public class AutoCrystalRewrite extends Module {
         }
     }
 
-    private List<Future<List<CrystalInfo.BreakInfo>>> startBreakThreads(List<PlayerInfo> targets, CASettings settings) {
+    private List<Future<List<CrystalInfo.BreakInfo>>> startBreakThreads(List<PlayerInfo> targets, ACSettings settings) {
         final double breakRangeSq = breakRange.getValue() * breakRange.getValue();
         List<EntityEnderCrystal> crystalList = allCrystals.stream()
                 .filter(entity -> mc.player.getDistanceSq(entity) <= breakRangeSq)
@@ -418,7 +357,7 @@ public class AutoCrystalRewrite extends Module {
         // remove all crystals that deal more than max self damage
         // no point in checking these
         final boolean antiSuicideValue = antiSuicide.getValue();
-        final float maxSelfDamage = (float) maxSelfDmg.getValue();
+        final float maxSelfDamage = maxSelfDmg.getValue().floatValue();
         final float playerHealth = mc.player.getHealth() + mc.player.getAbsorptionAmount();
         crystalList.removeIf(crystal -> {
             float damage = DamageUtil.calculateDamage(crystal.posX, crystal.posY, crystal.posZ, mc.player);
@@ -487,7 +426,7 @@ public class AutoCrystalRewrite extends Module {
             Optional<CrystalInfo.BreakInfo> out = crystals.stream().min(Comparator.comparing(info -> mc.player.getDistanceSq(info.crystal)));
             return out.map(breakInfo -> breakInfo.crystal).orElse(null);
         } else if (crystalPriority.getValue().equalsIgnoreCase("Health")) {
-            Optional<CrystalInfo.BreakInfo> out = crystals.stream().min(Comparator.comparing(info -> info.target.getHealth() + info.target.getAbsorptionAmount()));
+            Optional<CrystalInfo.BreakInfo> out = crystals.stream().min(Comparator.comparing(info -> info.target.health));
             return out.map(breakInfo -> breakInfo.crystal).orElse(null);
         } else {
             Optional<CrystalInfo.BreakInfo> out = crystals.stream().max(Comparator.comparing(info -> info.damage));
@@ -495,12 +434,12 @@ public class AutoCrystalRewrite extends Module {
         }
     }
 
-    private List<Future<CrystalInfo.PlaceInfo>> startPlaceThreads(List<PlayerInfo> targets, CASettings settings) {
-        List<BlockPos> blocks = CrystalUtil.findCrystalBlocks((float) placeRange.getValue(), endCrystalMode.getValue());
+    private List<Future<CrystalInfo.PlaceInfo>> startPlaceThreads(List<PlayerInfo> targets, ACSettings settings) {
+        List<BlockPos> blocks = CrystalUtil.findCrystalBlocks(placeRange.getValue().floatValue(), endCrystalMode.getValue());
         // remove all placements that deal more than max self damage
         // no point in checking these
         final boolean antiSuicideValue = antiSuicide.getValue();
-        final float maxSelfDamage = (float) maxSelfDmg.getValue();
+        final float maxSelfDamage = maxSelfDmg.getValue().floatValue();
         final float playerHealth = mc.player.getHealth() + mc.player.getAbsorptionAmount();
         blocks.removeIf(crystal -> {
             float damage = DamageUtil.calculateDamage((double) crystal.getX() + 0.5d, (double) crystal.getY() + 1.0d, (double) crystal.getZ() + 0.5d, mc.player);
@@ -550,19 +489,19 @@ public class AutoCrystalRewrite extends Module {
         if (crystalPriority.getValue().equalsIgnoreCase("Closest")) {
             Optional<CrystalInfo.PlaceInfo> out = crystals.stream().min(Comparator.comparing(info -> mc.player.getDistanceSq(info.crystal)));
             return out.map(placeInfo -> {
-                renderEntity = placeInfo.target;
+                renderEntity = placeInfo.target.entity;
                 return placeInfo.crystal;
             }).orElse(null);
         } else if (crystalPriority.getValue().equalsIgnoreCase("Health")) {
-            Optional<CrystalInfo.PlaceInfo> out = crystals.stream().min(Comparator.comparing(info -> info.target.getHealth() + info.target.getAbsorptionAmount()));
+            Optional<CrystalInfo.PlaceInfo> out = crystals.stream().min(Comparator.comparing(info -> info.target.health));
             return out.map(placeInfo -> {
-                renderEntity = placeInfo.target;
+                renderEntity = placeInfo.target.entity;
                 return placeInfo.crystal;
             }).orElse(null);
         } else {
             Optional<CrystalInfo.PlaceInfo> out = crystals.stream().max(Comparator.comparing(info -> info.damage));
             return out.map(placeInfo -> {
-                renderEntity = placeInfo.target;
+                renderEntity = placeInfo.target.entity;
                 float damage = DamageUtil.calculateDamage((double) placeInfo.crystal.getX() + 0.5d, (double) placeInfo.crystal.getY() + 1.0d, (double) placeInfo.crystal.getZ() + 0.5d, renderEntity);
                 if (damage != placeInfo.damage) {
                     PistonCrystal.printChat(String.format("%.1f", damage) + " " + String.format("%.1f", placeInfo.damage), false);
@@ -636,7 +575,7 @@ public class AutoCrystalRewrite extends Module {
         allCrystals.addAll(loadedCrystals);
 
         if(chat.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoCrystal turned ON!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoCrystal turned ON!");
         }
     }
 
@@ -650,7 +589,7 @@ public class AutoCrystalRewrite extends Module {
         placedCrystals.clear();
 
         if(chat.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoCrystal turned OFF!");
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoCrystal turned OFF!");
         }
     }
 

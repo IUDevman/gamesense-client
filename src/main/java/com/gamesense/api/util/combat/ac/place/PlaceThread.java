@@ -1,21 +1,21 @@
-package com.gamesense.api.util.combat.ca.place;
+package com.gamesense.api.util.combat.ac.place;
 
 import com.gamesense.api.util.combat.DamageUtil;
-import com.gamesense.api.util.combat.ca.CASettings;
-import com.gamesense.api.util.combat.ca.CrystalInfo;
-import com.gamesense.api.util.combat.ca.PlayerInfo;
+import com.gamesense.api.util.combat.ac.ACSettings;
+import com.gamesense.api.util.combat.ac.CrystalInfo;
+import com.gamesense.api.util.combat.ac.PlayerInfo;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 public class PlaceThread implements Callable<CrystalInfo.PlaceInfo> {
-    private final CASettings settings;
+    private final ACSettings settings;
 
     private final List<BlockPos> possibleLocations;
     private final PlayerInfo target;
 
-    public PlaceThread(CASettings setting, List<BlockPos> possibleLocations, PlayerInfo target) {
+    public PlaceThread(ACSettings setting, List<BlockPos> possibleLocations, PlayerInfo target) {
         this.settings = setting;
 
         this.possibleLocations = possibleLocations;
@@ -51,7 +51,7 @@ public class PlaceThread implements Callable<CrystalInfo.PlaceInfo> {
 
         if (best != null) {
             if (bestDamage >= settings.minDamage || ((target.health <= settings.facePlaceHealth || target.lowArmour) && bestDamage >= settings.minFacePlaceDamage)) {
-                return new CrystalInfo.PlaceInfo(bestDamage, target.entity, best);
+                return new CrystalInfo.PlaceInfo(bestDamage, target, best);
             }
         }
 

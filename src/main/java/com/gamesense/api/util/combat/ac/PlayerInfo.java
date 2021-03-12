@@ -1,4 +1,4 @@
-package com.gamesense.api.util.combat.ca;
+package com.gamesense.api.util.combat.ac;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -38,7 +38,19 @@ public class PlayerInfo {
                 break;
             }
         }
-        lowArmour = i;
+        this.lowArmour = i;
     }
 
+    public PlayerInfo(EntityPlayer entity, boolean lowArmour) {
+        this.entity = entity;
+
+        this.totalArmourValue = entity.getTotalArmorValue();
+        this.armourToughness = (float) entity.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue();
+        this.health = entity.getHealth() + entity.getAbsorptionAmount();
+        this.enchantModifier = EnchantmentHelper.getEnchantmentModifierDamage(entity.getArmorInventoryList(), EXPLOSION_SOURCE);
+
+        this.hasResistance = entity.isPotionActive(RESISTANCE);
+
+        this.lowArmour = lowArmour;
+    }
 }

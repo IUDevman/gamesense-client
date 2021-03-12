@@ -1,6 +1,6 @@
 package com.gamesense.api.util.combat;
 
-import com.gamesense.api.util.combat.ca.PlayerInfo;
+import com.gamesense.api.util.combat.ac.PlayerInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
