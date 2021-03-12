@@ -50,6 +50,7 @@ public class LoadConfig {
         loadEnabledModules();
         loadModuleKeybinds();
         loadDrawnModules();
+        loadToggleMessageModules();
         loadCommandPrefix();
         loadCustomFont();
         loadFriendsList();
@@ -187,6 +188,31 @@ public class LoadConfig {
 
             if (dataObject != null && dataObject.isJsonPrimitive()) {
                 module.setDrawn(dataObject.getAsBoolean());
+            }
+        }
+        inputStream.close();
+    }
+
+    public void loadToggleMessageModules() throws IOException {
+        String toggleMessageLocation = fileName + mainName;
+
+        if (!Files.exists(Paths.get(toggleMessageLocation + "ToggleMessages" + ".json"))) {
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(toggleMessageLocation + "ToggleMessages" + ".json"));
+        JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (moduleObject.get("Modules") == null) {
+            return;
+        }
+
+        JsonObject toggleObject = moduleObject.get("Modules").getAsJsonObject();
+        for (Module module : ModuleManager.getModules()) {
+            JsonElement dataObject = toggleObject.get(module.getName());
+
+            if (dataObject != null && dataObject.isJsonPrimitive()) {
+                module.setToggleMsg(dataObject.getAsBoolean());
             }
         }
         inputStream.close();

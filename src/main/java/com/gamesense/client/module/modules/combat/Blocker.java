@@ -2,11 +2,11 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
-import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -19,7 +19,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 
-import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
+import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
  * @Author TechAle on (date)
@@ -35,7 +35,6 @@ public class Blocker extends Module {
     BooleanSetting offHandObby = registerBoolean("Off Hand Obby", true);
     BooleanSetting pistonBlocker = registerBoolean("Piston", true);
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private int delayTimeTicks = 0;
     private boolean noObby;
@@ -50,41 +49,19 @@ public class Blocker extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-
-            String output = "";
-
-            if (anvilBlocker.getValue())
-                output += "Anvil ";
-            if (pistonBlocker.getValue())
-                output += " Piston ";
-
-            if (!output.equals("")) {
-                noActive = false;
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + output + " turned ON!");
-            } else {
-                noActive = true;
-                disable();
-            }
-        }
         noObby = false;
     }
 
     public void onDisable() {
         ROTATION_UTIL.onDisable();
         PlacementUtil.onDisable();
+
         if (mc.player == null) {
             return;
         }
-        if (chatMsg.getValue()) {
-            if (noActive) {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "Nothing is active... Blocker turned OFF!");
-            } else if (noObby)
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "Obsidian not found... Blocker turned OFF!");
-            else
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "Blocker turned OFF!");
-        }
 
+        if (noActive) setDisabledMessage("Nothing is active... Blocker turned OFF!");
+        else if (noObby) setDisabledMessage("Obsidian not found... Blocker turned OFF!");
     }
 
     public void onUpdate() {

@@ -2,9 +2,9 @@ package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.combat.CrystalUtil;
 import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;

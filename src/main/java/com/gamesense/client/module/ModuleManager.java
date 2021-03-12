@@ -91,6 +91,7 @@ public class ModuleManager {
         //Render
         addMod(new BlockHighlight());
         addMod(new BreakESP());
+        addMod(new Bucked());
         addMod(new CapesModule());
         addMod(new Chams());
         addMod(new CityESP());

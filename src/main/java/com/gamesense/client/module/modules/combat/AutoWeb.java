@@ -3,14 +3,11 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.CPacketEntityAction;
@@ -32,7 +29,6 @@ public class AutoWeb extends Module {
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
     IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
-    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noWeb = false;
     private boolean isSneaking = false;
@@ -49,10 +45,6 @@ public class AutoWeb extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoWeb turned ON!");
-        }
-
         oldSlot = mc.player.inventory.currentItem;
 
         int newSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
@@ -67,13 +59,7 @@ public class AutoWeb extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            if (noWeb) {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No web detected... AutoWeb turned OFF!");
-            } else {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoWeb turned OFF!");
-            }
-        }
+        if (noWeb) setDisabledMessage("No web detected... AutoWeb turned OFF!");
 
         if (isSneaking) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));

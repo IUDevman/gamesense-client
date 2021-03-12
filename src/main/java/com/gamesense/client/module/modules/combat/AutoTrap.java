@@ -3,14 +3,11 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,7 +39,6 @@ public class AutoTrap extends Module {
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
     IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
-    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noObby = false;
     private boolean isSneaking = false;
@@ -62,11 +58,6 @@ public class AutoTrap extends Module {
             disable();
             return;
         }
-
-        if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoTrap turned ON!");
-        }
-
     }
 
     public void onDisable() {
@@ -75,13 +66,7 @@ public class AutoTrap extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            if (noObby) {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
-            } else {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoTrap turned OFF!");
-            }
-        }
+        if (noObby) setDisabledMessage("No obsidian detected... AutoTrap turned OFF!");
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
             mc.player.inventory.currentItem = oldSlot;

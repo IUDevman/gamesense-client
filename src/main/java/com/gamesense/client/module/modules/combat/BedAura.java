@@ -4,16 +4,13 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.combat.DamageUtil;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -55,7 +52,6 @@ public class BedAura extends Module {
     BooleanSetting antiSuicide = registerBoolean("Anti Suicide", false);
     IntegerSetting antiSuicideHealth = registerInteger("Suicide Health", 14, 1, 36);
     IntegerSetting minDamage = registerInteger("Min Damage", 5, 1, 36);
-    BooleanSetting chatMsgs = registerBoolean("Chat Msgs", true);
 
     private boolean hasNone = false;
     private int oldSlot = -1;
@@ -80,10 +76,6 @@ public class BedAura extends Module {
         } else if (bedSlot == -1) {
             hasNone = true;
         }
-
-        if (chatMsgs.getValue()) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "BedAura turned ON!");
-        }
     }
 
     public void onDisable() {
@@ -97,13 +89,7 @@ public class BedAura extends Module {
             mc.player.inventory.currentItem = oldSlot;
         }
 
-        if (chatMsgs.getValue()) {
-            if (hasNone && disableNone.getValue()) {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No beds detected... BedAura turned OFF!");
-            } else {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "BedAura turned OFF!");
-            }
-        }
+        if (hasNone && disableNone.getValue()) setDisabledMessage("No beds detected... BedAura turned OFF!");
 
         hasNone = false;
         oldSlot = -1;

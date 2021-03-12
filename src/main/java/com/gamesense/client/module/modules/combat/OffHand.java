@@ -4,8 +4,8 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.combat.DamageUtil;
 import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -58,7 +58,6 @@ public class OffHand extends Module {
     BooleanSetting onlyHotBar = registerBoolean("Only HotBar", false);
     BooleanSetting antiWeakness = registerBoolean("AntiWeakness", false);
     BooleanSetting hotBarTotem = registerBoolean("HotBar Totem", false);
-    BooleanSetting chatMsg = registerBoolean("Chat Msg", true);
 
     int prevSlot,
             tickWaited,
@@ -113,22 +112,12 @@ public class OffHand extends Module {
         forceObby = 0;
 
         returnBack = false;
-
-        if (chatMsg.getValue()) {
-            PistonCrystal.printChat("OffHand enabled", false);
-        }
-
     }
 
     @Override
     public void onDisable() {
         activeT = false;
         forceObby = 0;
-
-        if (chatMsg.getValue()) {
-            PistonCrystal.printChat("OffHand disabled", true);
-        }
-
     }
 
     @Override
@@ -185,7 +174,7 @@ public class OffHand extends Module {
         if (prevSlot != -1) {
             mc.playerController.windowClick(0, prevSlot < 9 ? prevSlot + 36 : prevSlot, 0, ClickType.PICKUP, mc.player);
         } else
-            PistonCrystal.printChat("Your inventory is full. the item that was on your offhand is going to be dropped. Open your inventory and choose where to put it", true);
+            PistonCrystal.printDebug("Your inventory is full. the item that was on your offhand is going to be dropped. Open your inventory and choose where to put it", true);
         // Set to false
         returnBack = false;
         tickWaited = 0;

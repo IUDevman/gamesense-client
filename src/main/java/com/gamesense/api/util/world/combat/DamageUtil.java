@@ -1,4 +1,4 @@
-package com.gamesense.api.util.combat;
+package com.gamesense.api.util.world.combat;
 
 import com.gamesense.api.util.combat.ac.PlayerInfo;
 import net.minecraft.client.Minecraft;

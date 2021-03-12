@@ -70,7 +70,7 @@ public class AutoGearCommand extends Command {
             for (int i = 0; i < lenghtJson; i++) {
                 String item = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject().entrySet().toArray()[i].toString().split("=")[0];
                 if (!item.equals("pointer"))
-                    PistonCrystal.printChat("Kit avaible: " + item, false);
+                    PistonCrystal.printDebug("Kit avaible: " + item, false);
             }
 
         } catch (IOException e) {
@@ -156,14 +156,14 @@ public class AutoGearCommand extends Command {
             // Save
             bw.close();
             // Chat message
-            PistonCrystal.printChat("Kit " + name + " " + operation, false);
+            PistonCrystal.printDebug("Kit " + name + " " + operation, false);
         } catch (IOException e) {
             errorMessage("Saving");
         }
     }
 
     private static void errorMessage(String e) {
-        PistonCrystal.printChat("Error: " + errorMessage.get(e), true);
+        PistonCrystal.printDebug("Error: " + errorMessage.get(e), true);
     }
 
     public static String getCurrentSet() {
