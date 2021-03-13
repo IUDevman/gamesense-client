@@ -55,18 +55,15 @@ public class HoleESP extends Module {
 
         int range = (int) Math.ceil(this.range.getValue());
 
-        // hashSets are easier to navigate
         HashSet<BlockPos> possibleHoles = Sets.newHashSet();
         List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), range, range, false, true, 0);
 
-        // find all holes
         for (BlockPos pos : blockPosList) {
 
             if (!mc.world.getBlockState(pos).getBlock().equals(Blocks.AIR)) {
                 continue;
             }
-            // if air below, we are wasting our time and hashset space
-            // we do not remove check from surround offset as potentially a weak block
+
             if (mc.world.getBlockState(pos.add(0, -1, 0)).getBlock().equals(Blocks.AIR)) {
                 continue;
             }
@@ -83,7 +80,7 @@ public class HoleESP extends Module {
             HoleUtil.HoleInfo holeInfo = HoleUtil.isHole(pos, false, false);
             HoleUtil.HoleType holeType = holeInfo.getType();
             if (holeType != HoleUtil.HoleType.NONE) {
-                // We have a hole!
+
                 HoleUtil.BlockSafety holeSafety = holeInfo.getSafety();
                 AxisAlignedBB centreBlocks = holeInfo.getCentre();
 
@@ -91,7 +88,7 @@ public class HoleESP extends Module {
                     return;
 
                 GSColor colour;
-                // get Colour
+
                 if (holeSafety == HoleUtil.BlockSafety.UNBREAKABLE) {
                     colour = new GSColor(bedrockColor.getValue(), 255);
                 } else {

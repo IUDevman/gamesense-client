@@ -29,8 +29,7 @@ public class Freecam extends Module {
     private boolean isRidingEntity;
     private Entity ridingEntity;
 
-    @Override
-    protected void onEnable() {
+    public void onEnable() {
         if (mc.player != null) {
             isRidingEntity = mc.player.getRidingEntity() != null;
 
@@ -56,8 +55,7 @@ public class Freecam extends Module {
         }
     }
 
-    @Override
-    protected void onDisable() {
+    public void onDisable() {
         EntityPlayer localPlayer = mc.player;
         if (localPlayer != null) {
             mc.player.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
@@ -76,7 +74,6 @@ public class Freecam extends Module {
         }
     }
 
-    @Override
     public void onUpdate() {
         mc.player.capabilities.isFlying = true;
         mc.player.capabilities.setFlySpeed((float) (speed.getValue() / 100f));

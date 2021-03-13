@@ -24,19 +24,13 @@ public class AutoGear extends Module {
     BooleanSetting infoMsgs = registerBoolean("Info Msgs", true);
     BooleanSetting debugMode = registerBoolean("Debug Mode", false);
 
-    // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();
     private HashMap<Integer, String> containerInv = new HashMap<>();
-    // Sort item
     private ArrayList<Integer> sortItems = new ArrayList<>();
 
-    // Tickets
     private int delayTimeTicks;
     private int stepNow;
-    // If we had opened before a chest/inventory
-    private boolean openedBefore,
-            finishSort,
-            doneBefore;
+    private boolean openedBefore, finishSort, doneBefore;
 
     public void onEnable() {
         // Get name of the config
