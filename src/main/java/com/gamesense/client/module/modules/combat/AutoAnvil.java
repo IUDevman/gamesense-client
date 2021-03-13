@@ -11,6 +11,7 @@ import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
@@ -148,6 +149,11 @@ public class AutoAnvil extends Module {
             if (aimTarget == null) {
                 return;
             }
+
+            if (ModuleManager.isModuleEnabled(AutoGG.class)) {
+                AutoGG.INSTANCE.addTargetedPlayer(aimTarget.getName());
+            }
+
             firstRun = false;
             if (getMaterialsSlot()) {
                 // check if the enemy is in a hole

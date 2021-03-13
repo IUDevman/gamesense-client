@@ -14,6 +14,7 @@ import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -80,7 +81,6 @@ public class KillAura extends Module {
             Pair<Float, Integer> newSlot = new Pair<>(0.0f, -1);
 
             if (autoSwitch.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount() >= switchHealth.getValue())) {
-                // find the best weapon in out hotbar
                 if (sword || both || all) {
                     newSlot = findSwordSlot();
                 }
@@ -92,13 +92,11 @@ public class KillAura extends Module {
                 }
             }
 
-            // we have found a slot
             int temp = mc.player.inventory.currentItem;
             if ((newSlot.getValue() != -1)) {
                 mc.player.inventory.currentItem = newSlot.getValue();
             }
 
-            // we have to switch slots for this check to work
             if (shouldAttack(sword, axe, both, all)) {
                 Entity target = optionalTarget.get();
 
@@ -108,9 +106,12 @@ public class KillAura extends Module {
                     PlayerPacketManager.INSTANCE.addPacket(packet);
                 }
 
+                if (ModuleManager.isModuleEnabled(AutoGG.class)) {
+                    AutoGG.INSTANCE.addTargetedPlayer(target.getName());
+                }
+
                 attack(target);
             } else {
-                // if check is false switch back
                 mc.player.inventory.currentItem = temp;
             }
         }
@@ -138,9 +139,8 @@ public class KillAura extends Module {
             }
 
             ItemStack stack = inventory.get(integer);
-            // generic best modifier
             float modifier = (EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED) + 1f) * ((ItemSword) stack.getItem()).getAttackDamage();
-            // is it the new best
+
             if (modifier > bestModifier) {
                 bestModifier = modifier;
                 correspondingSlot = integer;
@@ -162,9 +162,8 @@ public class KillAura extends Module {
             }
 
             ItemStack stack = inventory.get(integer);
-            // generic best modifier
             float modifier = (EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED) + 1f) * ((ItemAxe) stack.getItem()).attackDamage;
-            // is it the new best
+
             if (modifier > bestModifier) {
                 bestModifier = modifier;
                 correspondingSlot = integer;

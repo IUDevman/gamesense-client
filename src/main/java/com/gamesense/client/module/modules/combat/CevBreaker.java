@@ -14,6 +14,7 @@ import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.Block;
@@ -305,6 +306,10 @@ public class CevBreaker extends Module {
                 aimTarget = PlayerUtil.findLookingPlayer(enemyRange.getValue());
                 if (aimTarget != null) {
                     playerChecks();
+
+                    if (ModuleManager.isModuleEnabled(AutoGG.class)) {
+                        AutoGG.INSTANCE.addTargetedPlayer(aimTarget.getName());
+                    }
                 }
             } else
                 checkVariable();

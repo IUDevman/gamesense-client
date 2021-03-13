@@ -14,6 +14,7 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -332,6 +333,11 @@ public class PistonCrystal extends Module {
             if (aimTarget == null) {
                 aimTarget = PlayerUtil.findLookingPlayer(enemyRange.getValue());
                 if (aimTarget != null) {
+
+                    if (ModuleManager.isModuleEnabled(AutoGG.class)) {
+                        AutoGG.INSTANCE.addTargetedPlayer(aimTarget.getName());
+                    }
+
                     playerChecks();
                 }
             } else
