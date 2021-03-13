@@ -3,14 +3,11 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +37,6 @@ public class SelfTrap extends Module {
     BooleanSetting centerPlayer = registerBoolean("Center Player", false);
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noObby = false;
     private boolean isSneaking = false;
@@ -60,10 +56,6 @@ public class SelfTrap extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "SelfTrap turned ON!");
-        }
-
         if (centerPlayer.getValue() && mc.player.onGround) {
             mc.player.motionX = 0;
             mc.player.motionZ = 0;
@@ -81,13 +73,7 @@ public class SelfTrap extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            if (noObby) {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "No obsidian detected... SelfTrap turned OFF!");
-            } else {
-                MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "SelfTrap turned OFF!");
-            }
-        }
+        if (noObby) setDisabledMessage("No obsidian detected... SelfTrap turned OFF!");
 
         if (isSneaking) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));

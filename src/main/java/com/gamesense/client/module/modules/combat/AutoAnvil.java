@@ -11,6 +11,7 @@ import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
@@ -52,7 +53,6 @@ public class AutoAnvil extends Module {
     IntegerSetting hDistance = registerInteger("H Distance", 7, 1, 10);
     IntegerSetting minH = registerInteger("Min H", 3, 1, 10);
     IntegerSetting failStop = registerInteger("Fail Stop", 2, 1, 10);
-    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean isSneaking = false,
             firstRun = false,
@@ -99,10 +99,6 @@ public class AutoAnvil extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            PistonCrystal.printChat("AutoAnvil turned ON!", false);
-        }
-
         oldSlot = mc.player.inventory.currentItem;
     }
 
@@ -111,21 +107,11 @@ public class AutoAnvil extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            if (noMaterials) {
-                PistonCrystal.printChat("No Materials Detected... AutoAnvil turned OFF!", true);
-            } else if (!isHole) {
-                PistonCrystal.printChat("Enemy is not in a hole... AutoAnvil turned OFF!", true);
-            } else if (!enoughSpace) {
-                PistonCrystal.printChat("Not enough space... AutoAnvil turned OFF!", true);
-            } else if (hasMoved) {
-                PistonCrystal.printChat("Enemy moved away from the hole... AutoAnvil turned OFF!", true);
-            } else if (blockUp) {
-                PistonCrystal.printChat("Enemy head blocked.. AutoAnvil turned OFF!", true);
-            } else {
-                PistonCrystal.printChat("AutoAnvil turned OFF!", true);
-            }
-        }
+        if (noMaterials) setDisabledMessage("No Materials Detected... AutoAnvil turned OFF!");
+        else if (!isHole) setDisabledMessage("Enemy is not in a hole... AutoAnvil turned OFF!");
+        else if (!enoughSpace) setDisabledMessage("Not enough space... AutoAnvil turned OFF!");
+        else if (hasMoved) setDisabledMessage("Enemy moved away from the hole... AutoAnvil turned OFF!");
+        else if (blockUp) setDisabledMessage("Enemy head blocked.. AutoAnvil turned OFF!");
 
         if (isSneaking) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
@@ -163,6 +149,11 @@ public class AutoAnvil extends Module {
             if (aimTarget == null) {
                 return;
             }
+
+            if (ModuleManager.isModuleEnabled(AutoGG.class)) {
+                AutoGG.INSTANCE.addTargetedPlayer(aimTarget.getName());
+            }
+
             firstRun = false;
             if (getMaterialsSlot()) {
                 // check if the enemy is in a hole

@@ -54,16 +54,14 @@ public class ESP extends Module {
 
             if ((!playerESPMode.getValue().equals("None")) && entity instanceof EntityPlayer) {
 
-                // If the guy want to esp a player
                 if (!playerESPMode.getValue().equals("None")) {
 
-                    // If glowing
                     if (playerESPMode.getValue().equals("Glowing")) {
                         entity.setGlowing(true);
-                        // Else, remove glowing effect
-                    } else if (entity.isGlowing())
+
+                    } else if (entity.isGlowing()) {
                         entity.setGlowing(false);
-                    else {
+                    } else {
                         switch (playerESPMode.getValue()) {
                             case "Direction":
                                 RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), playerColor, entity.rotationYaw, width.getValue(), 0);
@@ -82,15 +80,14 @@ public class ESP extends Module {
 
                     if (mobESPMode.getValue().equals("Glowing")) {
                         entity.setGlowing(true);
-                        // Else, remove glowing effect
-                    } else if (entity.isGlowing())
-                        entity.setGlowing(false);
 
-                        // If the guy want to see the direction
-                    else if (mobESPMode.getValue().equals("Direction"))
+                    } else if (entity.isGlowing()) {
+                        entity.setGlowing(false);
+                    } else if (mobESPMode.getValue().equals("Direction")) {
                         RenderUtil.drawBoxWithDirection(entity.getEntityBoundingBox(), mobColor, entity.rotationYaw, width.getValue(), 0);
-                    else
+                    } else {
                         RenderUtil.drawBoundingBox(entity.getEntityBoundingBox(), width.getValue(), mobColor);
+                    }
                 }
             }
 
@@ -144,7 +141,6 @@ public class ESP extends Module {
     }
 
     private void defineEntityColors(Entity entity) {
-        //should have everything covered here, mob categorizing is weird
         if (entity instanceof EntityPlayer) {
             if (SocialManager.isFriend(entity.getName())) {
                 playerColor = ModuleManager.getModule(ColorMain.class).getFriendGSColor();
@@ -172,8 +168,6 @@ public class ESP extends Module {
         }
     }
 
-    //boolean range check and opacity gradient
-
     private boolean rangeEntityCheck(Entity entity) {
         if (entity.getDistance(mc.player) > range.getValue()) {
             return false;
@@ -195,7 +189,6 @@ public class ESP extends Module {
     }
 
     private boolean rangeTileCheck(TileEntity tileEntity) {
-        //the range value has to be squared for this
         if (tileEntity.getDistanceSq(mc.player.posX, mc.player.posY, mc.player.posZ) > range.getValue() * range.getValue()) {
             return false;
         }

@@ -55,6 +55,7 @@ Most notable features:
 * A2H (Bug fixes, compatability)
 * Xiaro (Code improvement, compatability, Rotation Manager)
 * Soulbond (XCarry)
+* Lyneez (NoFall)
 
 #### Credits
 ***Check specific class files for full credits.***

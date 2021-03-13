@@ -4,7 +4,6 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
-import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
@@ -12,8 +11,6 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEnderChest;
 import net.minecraft.block.BlockObsidian;
@@ -51,7 +48,6 @@ public class HoleFill extends Module {
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting autoSwitch = registerBoolean("Switch", true);
     BooleanSetting offHandObby = registerBoolean("Off Hand Obby", false);
-    BooleanSetting chatMsgs = registerBoolean("Chat Msgs", true);
     BooleanSetting disableOnFinish = registerBoolean("Disable on Finish", true);
 
     private int delayTicks = 0;
@@ -68,9 +64,7 @@ public class HoleFill extends Module {
     public void onEnable() {
         activedOff = false;
         PlacementUtil.onEnable();
-        if (chatMsgs.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "HoleFill turned ON!");
-        }
+
         if (autoSwitch.getValue() && mc.player != null) {
             oldHandEnable = mc.player.inventory.currentItem;
         }
@@ -82,9 +76,7 @@ public class HoleFill extends Module {
 
     public void onDisable() {
         PlacementUtil.onDisable();
-        if (chatMsgs.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "HoleFill turned OFF!");
-        }
+
         if (autoSwitch.getValue() && mc.player != null) {
             mc.player.inventory.currentItem = oldHandEnable;
         }

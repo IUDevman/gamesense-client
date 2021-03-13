@@ -11,10 +11,12 @@ import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
+import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.Block;
@@ -37,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.gamesense.api.util.player.RotationUtil.ROTATION_UTIL;
+import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 @Module.Declaration(name = "CevBreaker", category = Category.Combat)
 public class CevBreaker extends Module {
@@ -64,7 +66,6 @@ public class CevBreaker extends Module {
     BooleanSetting trapPlayer = registerBoolean("Trap Player", false);
     BooleanSetting antiStep = registerBoolean("Anti Step", false);
     BooleanSetting placeCrystal = registerBoolean("Place Crystal", true);
-    BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -194,10 +195,6 @@ public class CevBreaker extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            PistonCrystal.printChat("CevBreaker turned ON!", false);
-        }
-
         oldSlot = mc.player.inventory.currentItem;
 
         stoppedCa = false;
@@ -216,8 +213,7 @@ public class CevBreaker extends Module {
         if (mc.player == null) {
             return;
         }
-        // If output
-        if (chatMsg.getValue()) {
+
             String output = "";
             String materialsNeeded = "";
             // No target found
@@ -241,15 +237,13 @@ public class CevBreaker extends Module {
                     output = "Enemy is dead, gg! ";
                 }
             // Output in chat
-            PistonCrystal.printChat(output + "CevBreaker turned OFF!", true);
+            setDisabledMessage(output + "CevBreaker turned OFF!");
             if (!materialsNeeded.equals(""))
-                PistonCrystal.printChat("Materials missing:" + materialsNeeded, true);
+                setDisabledMessage("Materials missing:" + materialsNeeded);
 
-            // Re-Active ca
-            if (stoppedCa) {
-                AutoCrystalGS.stopAC = false;
-                stoppedCa = false;
-            }
+        if (stoppedCa) {
+            AutoCrystalGS.stopAC = false;
+            stoppedCa = false;
         }
 
         if (isSneaking) {
@@ -314,6 +308,10 @@ public class CevBreaker extends Module {
                 aimTarget = PlayerUtil.findLookingPlayer(enemyRange.getValue());
                 if (aimTarget != null) {
                     playerChecks();
+
+                    if (ModuleManager.isModuleEnabled(AutoGG.class)) {
+                        AutoGG.INSTANCE.addTargetedPlayer(aimTarget.getName());
+                    }
                 }
             } else
                 checkVariable();
