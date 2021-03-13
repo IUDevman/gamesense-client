@@ -1,21 +1,28 @@
 package com.gamesense.client.module.modules.combat;
 
+import com.gamesense.api.event.Phase;
+import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.PlacementUtil;
+import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.api.util.player.RotationUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.api.util.world.combat.CrystalUtil;
+import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.misc.AutoGG;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -27,6 +34,7 @@ import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,11 +58,11 @@ public class PistonCrystal extends Module {
     ModeSetting placeMode = registerMode("Place", Arrays.asList("Torch", "Block", "Both"), "Torch");
     ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
     DoubleSetting enemyRange = registerDouble("Range", 4.9, 0, 6);
-    DoubleSetting torchRange = registerDouble("Torch Range", 5.5, 0, 6); //todo: unused variable
     DoubleSetting crystalDeltaBreak = registerDouble("Center Break", 0.1, 0, 0.5);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 20);
     IntegerSetting supBlocksDelay = registerInteger("Surround Delay", 4, 0, 20);
     IntegerSetting startDelay = registerInteger("Start Delay", 4, 0, 20);
+    IntegerSetting redstoneDelay = registerInteger("Redstone Delay", 0, 0, 20);
     IntegerSetting pistonDelay = registerInteger("Piston Delay", 2, 0, 20);
     IntegerSetting crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
     IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 5, 0, 20);
@@ -72,6 +80,8 @@ public class PistonCrystal extends Module {
     BooleanSetting debugMode = registerBoolean("Debug Mode", false);
     BooleanSetting speedMeter = registerBoolean("Speed Meter", false);
     BooleanSetting packetReducer = registerBoolean("Packet Reducer", false);
+    BooleanSetting preRotation = registerBoolean("Pre Rotation", false);
+    BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
     BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noMaterials = false,
@@ -87,7 +97,8 @@ public class PistonCrystal extends Module {
             brokenRedstoneTorch,
             stoppedCa,
             deadPl,
-            rotationPlayerMoved;
+            rotationPlayerMoved,
+            preRotationBol = false;
 
     private int oldSlot = -1,
             stage,
@@ -95,7 +106,8 @@ public class PistonCrystal extends Module {
             stuck = 0,
             hitTryTick,
             round = 0,
-            nCrystal;
+            nCrystal,
+            redstoneTickDelay;
     private long startTime, endTime;
 
     private int[] slot_mat,
@@ -183,6 +195,7 @@ public class PistonCrystal extends Module {
 
     // Init some values
     private void initValues() {
+        lastHitVec = null;
         // Reset aimtarget
         aimTarget = null;
         // Create new delay table
@@ -315,6 +328,17 @@ public class PistonCrystal extends Module {
         return output.toString();
     }
 
+    Vec3d lastHitVec;
+
+    @EventHandler
+    private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null) return;
+
+        Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
+        PlayerPacket packet = new PlayerPacket(this, rotation);
+        PlayerPacketManager.INSTANCE.addPacket(packet);
+    });
+
     // Every updates
     public void onUpdate() {
         // If no mc.player
@@ -389,36 +413,62 @@ public class PistonCrystal extends Module {
             switch (stage) {
                 // Place the piston
                 case 1:
+                    if (preRotation.getValue() && !preRotationBol) {
+                        preRotationBol = true;
+                        placeBlockThings(stage, false, true);
+                        break;
+                    }
                     // Debug mode
                     if (debugMode.getValue())
                         printDebug("step 1", false);
                     // Check if there is a redstone torch to break
                     if (fastModeActive || breakRedstone()) {
                         if (!fastModeActive || checkCrystalPlace())
-                            placeBlockThings(stage, false);
+                            placeBlockThings(stage, false, false);
                         else
                             stage = 2;
                     }
+                    preRotationBol = false;
                     break;
 
                 // Place crystal
                 case 2:
+                    if (preRotation.getValue() && !preRotationBol) {
+                        preRotationBol = true;
+                        placeBlockThings(stage, false, true);
+                        break;
+                    }
                     // Debug mode
                     if (debugMode.getValue())
                         printDebug("step 2", false);
                     // Check pistonPlace if confirmPlace
                     if (fastModeActive || !confirmPlace.getValue() || checkPistonPlace())
-                        placeBlockThings(stage, false);
+                        placeBlockThings(stage, false, false);
+
+                    redstoneTickDelay = 0;
+                    preRotationBol = false;
                     break;
 
                 // Place redstone torch
                 case 3:
+                    if (preRotation.getValue() && !preRotationBol) {
+                        preRotationBol = true;
+                        placeBlockThings(stage, false, true);
+                        break;
+                    }
+                    // If redstone tick delay
+                    if (redstoneTickDelay++ != redstoneDelay.getValue()) {
+                        delayTimeTicks = 99;
+                        break;
+                    } else {
+                        redstoneTickDelay = 0;
+                    }
                     // Debug mode
                     if (debugMode.getValue())
                         printDebug("step 3", false);
                     // Check crystal if confirmPlace
                     if (fastModeActive || !confirmPlace.getValue() || checkCrystalPlace()) {
-                        placeBlockThings(stage, true);
+                        placeBlockThings(stage, true, false);
                         hitTryTick = 0;
                         if (fastModeActive && !checkPistonPlace())
                             stage = 1;
@@ -615,6 +665,9 @@ public class PistonCrystal extends Module {
         if (rotate.getValue()) {
             ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
         }
+        if (forceRotation.getValue()) {
+            lastHitVec = new Vec3d(crystal.posX, crystal.posY, crystal.posZ);
+        }
         /// Break type
         // Swing
         if (breakType.getValue().equals("Swing")) {
@@ -659,7 +712,9 @@ public class PistonCrystal extends Module {
                 EnumFacing opposite = side.getOpposite();
                 Vec3d hitVec = new Vec3d(neighbour).add(0.5, 1, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
                 BlockUtil.faceVectorPacketInstant(hitVec, true);
-
+                if (forceRotation.getValue()) {
+                    lastHitVec = hitVec;
+                }
             }
             // Destroy it
             mc.player.swingArm(EnumHand.MAIN_HAND);
@@ -716,7 +771,7 @@ public class PistonCrystal extends Module {
                 BlockPos targetPos = getTargetPos(checksDone);
 
                 // Try to place the block
-                if (packetReducer.getValue() ? placeBlockConfirm(targetPos, 0, 0, 0, 1, false) : placeBlock(targetPos, 0, 0, 0, 1, false)) {
+                if (packetReducer.getValue() ? placeBlockConfirm(targetPos, 0, 0, 0, 1, false, false) : placeBlock(targetPos, 0, 0, 0, 1, false)) {
                     // If we reached the limit
                     if (++blockDone == blocksPerTick.getValue())
                         // Return false
@@ -835,7 +890,7 @@ public class PistonCrystal extends Module {
     }
 
     // Place a block
-    private boolean placeBlockConfirm(BlockPos pos, int step, double offsetX, double offsetZ, double offsetY, boolean redstone) {
+    private boolean placeBlockConfirm(BlockPos pos, int step, double offsetX, double offsetZ, double offsetY, boolean redstone, boolean onlyRotation) {
         // Get the block
         Block block = mc.world.getBlockState(pos).getBlock();
         // Get all sides
@@ -865,6 +920,10 @@ public class PistonCrystal extends Module {
 
         // Get the position where we are gonna click
         Vec3d hitVec = new Vec3d(neighbour).add(0.5 + offsetX, offsetY, 0.5 + offsetZ).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+
+        if (forceRotation.getValue()) {
+            lastHitVec = hitVec;
+        }
 
         /*
 			// I use this as a remind to which index refers to what
@@ -927,19 +986,20 @@ public class PistonCrystal extends Module {
         if (slot_mat[step] == 11)
             handSwing = EnumHand.OFF_HAND;
 
-        PlacementUtil.placePrecise(pos, handSwing, rotate.getValue() || step == 1, positionHit, side);
+        PlacementUtil.placePrecise(pos, handSwing, rotate.getValue() || step == 1, positionHit, side, onlyRotation);
 
         return true;
     }
 
     // Given a step, place the block
-    public void placeBlockThings(int step, boolean redstone) {
+    public void placeBlockThings(int step, boolean redstone, boolean preRotation) {
         // Get absolute position
         BlockPos targetPos = compactBlockPos(step);
         // Place 93 4 -29
-        if (packetReducer.getValue() ? placeBlockConfirm(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone) : placeBlock(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone))
+        if (packetReducer.getValue() ? placeBlockConfirm(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone, preRotation) : placeBlock(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone))
             // Next step
-            stage++;
+            if (!preRotation)
+                stage++;
     }
 
     // Given a step, return the absolute block position

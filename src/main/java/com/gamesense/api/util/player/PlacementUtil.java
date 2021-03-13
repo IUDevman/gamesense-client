@@ -123,7 +123,7 @@ public class PlacementUtil {
         return action == EnumActionResult.SUCCESS;
     }
 
-    public static boolean placePrecise(BlockPos blockPos, EnumHand hand, boolean rotate, Vec3d precise, EnumFacing forceSide) {
+    public static boolean placePrecise(BlockPos blockPos, EnumHand hand, boolean rotate, Vec3d precise, EnumFacing forceSide, boolean onlyRotation) {
         EntityPlayerSP player = mc.player;
         WorldClient world = mc.world;
         PlayerControllerMP playerController = mc.playerController;
@@ -166,16 +166,18 @@ public class PlacementUtil {
             BlockUtil.faceVectorPacketInstant(precise == null ? hitVec : precise, true);
         }
 
-        EnumActionResult action = playerController.processRightClickBlock(player, world, neighbour, opposite, precise == null ? hitVec : precise, hand);
-        if (action == EnumActionResult.SUCCESS) {
-            player.swingArm(hand);
-            mc.rightClickDelayTimer = 4;
-        }
+        if (!onlyRotation) {
+            EnumActionResult action = playerController.processRightClickBlock(player, world, neighbour, opposite, precise == null ? hitVec : precise, hand);
+            if (action == EnumActionResult.SUCCESS) {
+                player.swingArm(hand);
+                mc.rightClickDelayTimer = 4;
+            }
 
-        if (stoppedAC) {
-            AutoCrystalGS.stopAC = false;
-        }
+            if (stoppedAC) {
+                AutoCrystalGS.stopAC = false;
+            }
+            return action == EnumActionResult.SUCCESS;
+        } return true;
 
-        return action == EnumActionResult.SUCCESS;
     }
 }
