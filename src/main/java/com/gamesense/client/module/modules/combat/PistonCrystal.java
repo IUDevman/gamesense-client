@@ -206,7 +206,7 @@ public class PistonCrystal extends Module {
         }
 
         if (chatMsg.getValue()) {
-            printChat("PistonCrystal turned ON!", false);
+            printDebug("PistonCrystal turned ON!", false);
         }
 
         oldSlot = mc.player.inventory.currentItem;
@@ -888,7 +888,7 @@ public class PistonCrystal extends Module {
             }
         }
         catch (Exception e) {
-            printChat("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
+            printDebug("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
             final Logger LOGGER = LogManager.getLogger("GameSense");
             LOGGER.error("[PistonCrystal] error during the creation of the structure.");
             if (e.getMessage() != null)
@@ -904,7 +904,7 @@ public class PistonCrystal extends Module {
                 }
                 LOGGER.error("[PistonCrystal] StackTrace End");
             }
-            printChat(Integer.toString(step), true);
+            printDebug(Integer.toString(step), true);
             disable();
         }
 
