@@ -440,7 +440,7 @@ public class CevBreaker extends Module {
     }
 
     private void fastBreakFun() {
-        switchPick(3);
+        switchPick(2);
         mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
                 new BlockPos(enemyCoordsInt[0], enemyCoordsInt[1] + 2, enemyCoordsInt[2]), EnumFacing.UP));
     }
@@ -568,7 +568,7 @@ public class CevBreaker extends Module {
         if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
             // Is it is correct
             if (mc.player.inventory.currentItem != slot_mat[step]) {
-                // Change the hand's item (è qui l'errore)
+                // Change the hand's item
                 mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
             }
         } else {
