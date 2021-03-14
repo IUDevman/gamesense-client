@@ -1,28 +1,20 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.event.events.TotemPopEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.ColorUtil;
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.GameSense;
+import com.gamesense.client.manager.managers.TotemPopManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.combat.PistonCrystal;
-import com.mojang.realmsclient.gui.ChatFormatting;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderPearl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
-import net.minecraft.network.play.server.SPacketEntityStatus;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,18 +39,14 @@ public class PvPInfo extends Module {
     List<Entity> pearls;
     List<Entity> burrowedPlayers = new ArrayList<>();
     List<Entity> strengthPlayers = new ArrayList<>();
-    private static HashMap<String, Integer> popCounterHashMap = new HashMap<>();
-    private static boolean isEnabled;
-    private static boolean popCount;
-
-    public static boolean popEnabled() {
-        return  isEnabled && popCount;
-    }
 
     public void onUpdate() {
         if (mc.player == null || mc.world == null) {
             return;
         }
+
+        TotemPopManager.INSTANCE.sendMsgs = popCounter.getValue();
+        if (popCounter.getValue()) TotemPopManager.INSTANCE.chatFormatting = ColorUtil.textToChatFormatting(chatColor);
 
         if (visualRange.getValue()) {
             players = mc.world.loadedEntityList.stream().filter(e -> e instanceof EntityPlayer).collect(Collectors.toList());
@@ -127,16 +115,6 @@ public class PvPInfo extends Module {
                 }
             }
         }
-        if (popCounter.getValue()) {
-            for (EntityPlayer player : mc.world.playerEntities) {
-                if (player.getHealth() <= 0) {
-                    if (popCounterHashMap.containsKey(player.getDisplayNameString())) {
-                        MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(chatColor) + player.getName() + " died after popping " + ChatFormatting.GREEN + popCounterHashMap.get(player.getName()) + ColorUtil.textToChatFormatting(chatColor) + " totems!");
-                        popCounterHashMap.remove(player.getName(), popCounterHashMap.get(player.getName()));
-                    }
-                }
-            }
-        }
     }
 
     private boolean isBurrowed(Entity entity) {
@@ -161,58 +139,8 @@ public class PvPInfo extends Module {
         return roundVal;
     }
 
-    @EventHandler
-    private final Listener<PacketEvent.Receive> packetEventListener = new Listener<>(event -> {
-        if (mc.world == null || mc.player == null) {
-            return;
-        }
-
-        if (event.getPacket() instanceof SPacketEntityStatus) {
-            SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
-            if (packet.getOpCode() == 35) {
-                Entity entity = packet.getEntity(mc.world);
-                GameSense.EVENT_BUS.post(new TotemPopEvent(entity));
-            }
-        }
-    });
-
-    @EventHandler
-    private final Listener<TotemPopEvent> totemPopEventListener = new Listener<>(event -> {
-        if (mc.world == null || mc.player == null) {
-            return;
-        }
-
-        if (popCounter.getValue()) {
-            if (popCounterHashMap == null) {
-                popCounterHashMap = new HashMap<>();
-            }
-
-            if (popCounterHashMap.get(event.getEntity().getName()) == null) {
-                popCounterHashMap.put(event.getEntity().getName(), 1);
-                MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(chatColor) + event.getEntity().getName() + " popped " + ChatFormatting.RED + 1 + ColorUtil.textToChatFormatting(chatColor) + " totem!");
-            } else if (popCounterHashMap.get(event.getEntity().getName()) != null) {
-                int popCounter = popCounterHashMap.get(event.getEntity().getName());
-                int newPopCounter = popCounter += 1;
-                popCounterHashMap.put(event.getEntity().getName(), newPopCounter);
-                MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(chatColor) + event.getEntity().getName() + " popped " + ChatFormatting.RED + newPopCounter + ColorUtil.textToChatFormatting(chatColor) + " totems!");
-            }
-        }
-    });
-
-    public static String getPopName(String name) {
-        return popCounterHashMap.containsKey(name) ? String.valueOf(popCounterHashMap.get(name)) : "0";
-    }
-
-    public void onEnable() {
-        popCounterHashMap = new HashMap<>();
-        isEnabled = true;
-        if (popCounter.getValue())
-            popCount = true;
-        else popCount = false;
-    }
-
     public void onDisable() {
         knownPlayers.clear();
-        isEnabled = false;
+        TotemPopManager.INSTANCE.sendMsgs = false;
     }
 }

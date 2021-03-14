@@ -2,6 +2,7 @@ package com.gamesense.client.manager;
 
 import com.gamesense.client.GameSense;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
+import com.gamesense.client.manager.managers.TotemPopManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class ManagerLoader {
         managers = new ArrayList<>();
 
         register(PlayerPacketManager.INSTANCE);
+        register(TotemPopManager.INSTANCE);
     }
 
     private static void register(Manager manager) {
