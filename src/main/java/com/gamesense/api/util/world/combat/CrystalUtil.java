@@ -3,6 +3,7 @@ package com.gamesense.api.util.world.combat;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -17,29 +18,32 @@ public class CrystalUtil {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
 
-    public static boolean canPlaceCrystal(BlockPos blockPos, boolean mode) {
-        BlockPos up = blockPos.add(0, 1, 0);
-        BlockPos up2 = blockPos.add(0, 2, 0);
-        if (!mode) {
-            // improved it use the same checks as ItemEndCrystal
-            Block block = mc.world.getBlockState(blockPos).getBlock();
+    public static boolean canPlaceCrystal(BlockPos blockPos, boolean newPlacement) {
+        if (!isValidBlock(mc.world.getBlockState(blockPos).getBlock())) return false;
 
-            if (block == Blocks.OBSIDIAN || block == Blocks.BEDROCK) {
-                if ((mc.world.isAirBlock(up) || block.isReplaceable(mc.world, up)) && (mc.world.isAirBlock(up2) || block.isReplaceable(mc.world, up2))) {
-                    double x = up.getX();
-                    double y = up.getY();
-                    double z = up.getZ();
-                    List<Entity> list = mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(x, y, z, x + 1.0D, y + 2.0D, z + 1.0D));
+        BlockPos posUp = blockPos.up();
 
-                    return list.isEmpty();
-                }
-            }
-            return false;
-        } else
-            return (mc.world.getBlockState(blockPos).getBlock() == Blocks.BEDROCK
-                    || mc.world.getBlockState(blockPos).getBlock() == Blocks.OBSIDIAN)
-                    && mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(up)).isEmpty()
-                    && mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(up2)).isEmpty();
+        if (newPlacement) {
+            if (!mc.world.isAirBlock(posUp)) return false;
+        } else {
+            if (notValidMaterial(mc.world.getBlockState(posUp).getMaterial())
+                    || notValidMaterial(mc.world.getBlockState(posUp.up()).getMaterial())) return false;
+        }
+
+        AxisAlignedBB box = new AxisAlignedBB(
+                posUp.x, posUp.y, posUp.z,
+                posUp.x + 1.0, posUp.y + 2.0, posUp.z + 1.0
+        );
+
+        return mc.world.getEntitiesWithinAABB(Entity.class, box, Entity::isEntityAlive).isEmpty();
+    }
+
+    public static boolean isValidBlock(Block block) {
+        return block == Blocks.BEDROCK || block == Blocks.OBSIDIAN;
+    }
+
+    public static boolean notValidMaterial(Material material) {
+        return material.isLiquid() || !material.isReplaceable();
     }
 
     public static List<BlockPos> findCrystalBlocks(float placeRange, boolean mode) {

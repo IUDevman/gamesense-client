@@ -1,4 +1,4 @@
-package com.gamesense.api.util.combat.ac;
+package com.gamesense.api.util.world.combat.ac;
 
 import net.minecraft.util.math.Vec3d;
 
@@ -15,7 +15,6 @@ public class ACSettings {
     public final float minFacePlaceDamage;
     public final float maxSelfDamage;
 
-    public final int breakThreads;
     public final float facePlaceHealth;
 
     public final boolean antiSuicide;
@@ -25,7 +24,7 @@ public class ACSettings {
 
     public final Vec3d player;
 
-    public ACSettings(boolean breakCrystals, boolean placeCrystals, double enemyRange, double breakRange, double wallsRange, double minDamage, double minBreakDamage, double minFacePlaceDamage, double maxSelfDamage, int breakThreads, double facePlaceHealth, boolean antiSuicide, String breakMode, String crystalPriority, Vec3d player) {
+    public ACSettings(boolean breakCrystals, boolean placeCrystals, double enemyRange, double breakRange, double wallsRange, double minDamage, double minBreakDamage, double minFacePlaceDamage, double maxSelfDamage, double facePlaceHealth, boolean antiSuicide, String breakMode, String crystalPriority, Vec3d player) {
         this.breakCrystals = breakCrystals;
         this.placeCrystals = placeCrystals;
 
@@ -38,7 +37,6 @@ public class ACSettings {
         this.minFacePlaceDamage = (float) minFacePlaceDamage;
         this.maxSelfDamage = (float) maxSelfDamage;
 
-        this.breakThreads = breakThreads;
         this.facePlaceHealth = (float) facePlaceHealth;
 
         this.antiSuicide = antiSuicide;

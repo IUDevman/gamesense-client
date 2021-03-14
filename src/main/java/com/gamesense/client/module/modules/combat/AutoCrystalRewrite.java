@@ -5,21 +5,20 @@ import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.values.*;
-import com.gamesense.api.util.combat.CrystalUtil;
-import com.gamesense.api.util.combat.DamageUtil;
-import com.gamesense.api.util.combat.ac.ACSettings;
-import com.gamesense.api.util.combat.ac.CrystalInfo;
-import com.gamesense.api.util.combat.ac.PlayerInfo;
-import com.gamesense.api.util.combat.ac.breaks.BreakThread;
-import com.gamesense.api.util.combat.ac.place.PlaceThread;
-import com.gamesense.api.util.math.RotationUtils;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlayerPacket;
+import com.gamesense.api.util.player.RotationUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.combat.CrystalUtil;
+import com.gamesense.api.util.world.combat.DamageUtil;
+import com.gamesense.api.util.world.combat.ac.ACHelper;
+import com.gamesense.api.util.world.combat.ac.ACSettings;
+import com.gamesense.api.util.world.combat.ac.CrystalInfo;
+import com.gamesense.api.util.world.combat.ac.PlayerInfo;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
@@ -55,7 +54,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -96,7 +94,7 @@ public class AutoCrystalRewrite extends Module {
     ModeSetting hudDisplay = registerMode("HUD", Arrays.asList("Mode", "Target", "None"), "Mode");
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 50));
 
-    IntegerSetting breakThreads = registerInteger("Break Threads", 2, 1, 5);
+    BooleanSetting wait = registerBoolean("Force Wait", true);
     IntegerSetting timeout = registerInteger("Timeout (ms)", 5, 1, 10);
 
     private boolean switchCooldown = false;
@@ -116,10 +114,8 @@ public class AutoCrystalRewrite extends Module {
     // and the corresponding crystal for that location (if there is any)
     private final Map<BlockPos, EntityEnderCrystal> placedCrystals = Collections.synchronizedMap(new HashMap<>());
 
-    // Threading Stuff
-    private static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
-
-    private long globalTimeoutTime;
+    private List<CrystalInfo.BreakInfo> breakTargets = null;
+    private List<CrystalInfo.PlaceInfo> placeTargets = null;
 
     @Override
     public void onUpdate() {
@@ -344,171 +340,61 @@ public class AutoCrystalRewrite extends Module {
         }
     }
 
-    private List<Future<List<CrystalInfo.BreakInfo>>> startBreakThreads(List<PlayerInfo> targets, ACSettings settings) {
-        final double breakRangeSq = breakRange.getValue() * breakRange.getValue();
-        List<EntityEnderCrystal> crystalList = allCrystals.stream()
-                .filter(entity -> mc.player.getDistanceSq(entity) <= breakRangeSq)
+    private void startTargetFinder() {
+        // entity range is the range from each crystal
+        // so adding these together should solve problem
+        // and reduce searching time
+        double enemyDistance = enemyRange.getValue() + placeRange.getValue();
+        final double entityRangeSq = (enemyDistance) * (enemyDistance);
+        List<EntityPlayer> targets = mc.world.playerEntities.stream()
+                .filter(entity -> mc.player.getDistanceSq(entity) <= entityRangeSq)
+                .filter(entity -> !EntityUtil.basicChecksEntity(entity))
+                .filter(entity -> entity.getHealth() > 0.0f)
                 .collect(Collectors.toList());
-        if (breakMode.getValue().equalsIgnoreCase("Own")) {
-            // no point in checking crystals that arent ours
-            crystalList.removeIf(crystal -> !placedCrystals.containsKey(EntityUtil.getPosition(crystal)));
-            GameSense.LOGGER.info(crystalList.size());
+        // no point continuing if there are no targets
+        if (targets.size() == 0) {
+            return;
         }
+
+        List<EntityEnderCrystal> allCrystals = mc.world.loadedEntityList.stream()
+                .filter(entity -> entity instanceof EntityEnderCrystal)
+                .map(entity -> (EntityEnderCrystal) entity).collect(Collectors.toList());
+
+        final boolean own = breakMode.getValue().equalsIgnoreCase("Own");
+        if (own) {
+            // remove own crystals that have been destroyed
+            allCrystals.removeIf(crystal -> !placedCrystals.containsKey(EntityUtil.getPosition(crystal)));
+            placedCrystals.values().removeIf(crystal -> {
+                if (crystal == null) {
+                    return false;
+                }
+                return crystal.isDead;
+            });
+        }
+
         // remove all crystals that deal more than max self damage
         // no point in checking these
         final boolean antiSuicideValue = antiSuicide.getValue();
         final float maxSelfDamage = maxSelfDmg.getValue().floatValue();
         final float playerHealth = mc.player.getHealth() + mc.player.getAbsorptionAmount();
-        crystalList.removeIf(crystal -> {
+        allCrystals.removeIf(crystal -> {
             float damage = DamageUtil.calculateDamage(crystal.posX, crystal.posY, crystal.posZ, mc.player);
             if (damage > maxSelfDamage) {
                 return true;
             } else return antiSuicideValue && damage > playerHealth;
         });
-        if (crystalList.size() == 0) {
-            return null;
-        }
 
-        List<Future<List<CrystalInfo.BreakInfo>>> output = new ArrayList<>();
-        // split targets equally between threads
-        int targetsPerThread = (int) Math.ceil((double) targets.size()/ (double) breakThreads.getValue());
-        int threadsPerTarget = (int) Math.floor((double) breakThreads.getValue()/ (double) targets.size());
-
-        List<List<EntityEnderCrystal>> splits = new ArrayList<>();
-        int smallListSize = (int) Math.ceil((double) crystalList.size()/ (double) threadsPerTarget);
-
-        int j = 0;
-        for (int i = smallListSize; i < crystalList.size(); i += smallListSize) {
-            splits.add(crystalList.subList(j, i + 1));
-            j += smallListSize;
-        }
-        splits.add(crystalList.subList(j, crystalList.size()));
-
-        j = 0;
-        for (int i = targetsPerThread; i < targets.size(); i += targetsPerThread) {
-            List<PlayerInfo> sublist = targets.subList(j, i + 1);
-            for (List<EntityEnderCrystal> split : splits) {
-                output.add(executor.submit(new BreakThread(settings, split, sublist)));
-            }
-            j += targetsPerThread;
-        }
-        List<PlayerInfo> sublist = targets.subList(j, targets.size());
-        for (List<EntityEnderCrystal> split : splits) {
-            output.add(executor.submit(new BreakThread(settings, split, sublist)));
-        }
-
-        return output;
-    }
-
-    private EntityEnderCrystal getCrystalToBreak(List<Future<List<CrystalInfo.BreakInfo>>> input) {
-        List<CrystalInfo.BreakInfo> crystals = new ArrayList<>();
-        for (Future<List<CrystalInfo.BreakInfo>> future : input) {
-            while (!future.isDone() && !future.isCancelled()) {
-                if (System.currentTimeMillis() > globalTimeoutTime) {
-                    break;
-                }
-            }
-            if (future.isDone()) {
-                try {
-                    crystals.addAll(future.get());
-                } catch (InterruptedException | ExecutionException ignored) {
-                }
-            } else {
-                future.cancel(true);
-            }
-        }
-        if (crystals.size() == 0) {
-            return null;
-        }
-
-        // get the best crystal based on our needs
-        if (crystalPriority.getValue().equalsIgnoreCase("Closest")) {
-            Optional<CrystalInfo.BreakInfo> out = crystals.stream().min(Comparator.comparing(info -> mc.player.getDistanceSq(info.crystal)));
-            return out.map(breakInfo -> breakInfo.crystal).orElse(null);
-        } else if (crystalPriority.getValue().equalsIgnoreCase("Health")) {
-            Optional<CrystalInfo.BreakInfo> out = crystals.stream().min(Comparator.comparing(info -> info.target.health));
-            return out.map(breakInfo -> breakInfo.crystal).orElse(null);
-        } else {
-            Optional<CrystalInfo.BreakInfo> out = crystals.stream().max(Comparator.comparing(info -> info.damage));
-            return out.map(breakInfo -> breakInfo.crystal).orElse(null);
-        }
-    }
-
-    private List<Future<CrystalInfo.PlaceInfo>> startPlaceThreads(List<PlayerInfo> targets, ACSettings settings) {
         List<BlockPos> blocks = CrystalUtil.findCrystalBlocks(placeRange.getValue().floatValue(), endCrystalMode.getValue());
-        // remove all placements that deal more than max self damage
-        // no point in checking these
-        final boolean antiSuicideValue = antiSuicide.getValue();
-        final float maxSelfDamage = maxSelfDmg.getValue().floatValue();
-        final float playerHealth = mc.player.getHealth() + mc.player.getAbsorptionAmount();
-        blocks.removeIf(crystal -> {
-            float damage = DamageUtil.calculateDamage((double) crystal.getX() + 0.5d, (double) crystal.getY() + 1.0d, (double) crystal.getZ() + 0.5d, mc.player);
-            if (damage > maxSelfDamage) {
-                return true;
-            } else return antiSuicideValue && damage > playerHealth;
-        });
-        if (blocks.size() == 0) {
-            return null;
+        ACSettings settings = new ACSettings(breakCrystal.getValue(), placeCrystal.getValue(), enemyRange.getValue(), breakRange.getValue(), wallsRange.getValue(), minDmg.getValue(), minBreakDmg.getValue(), minFacePlaceDmg.getValue(), maxSelfDmg.getValue(), facePlaceValue.getValue(), antiSuicide.getValue(), breakMode.getValue(), crystalPriority.getValue(), mc.player.getPositionVector());
+
+        List<PlayerInfo> targetsInfo = new ArrayList<>();
+        float armourPercent = armourFacePlace.getValue() / 100.0f;
+        for (EntityPlayer target : targets) {
+            targetsInfo.add(new PlayerInfo(target, armourPercent));
         }
 
-        List<Future<CrystalInfo.PlaceInfo>> output = new ArrayList<>();
-
-        for (PlayerInfo target : targets) {
-            output.add(executor.submit(new PlaceThread(settings, blocks, target)));
-        }
-
-        return output;
-    }
-
-    private BlockPos getPositionToPlace(List<Future<CrystalInfo.PlaceInfo>> input) {
-        List<CrystalInfo.PlaceInfo> crystals = new ArrayList<>();
-        for (Future<CrystalInfo.PlaceInfo> future : input) {
-            while (!future.isDone() && !future.isCancelled()) {
-                if (System.currentTimeMillis() > globalTimeoutTime) {
-                    break;
-                }
-            }
-            if (future.isDone()) {
-                CrystalInfo.PlaceInfo crystal = null;
-                try {
-                    crystal = future.get();
-                } catch (InterruptedException | ExecutionException ignored) {
-                }
-                if (crystal != null) {
-                    crystals.add(crystal);
-                }
-            } else {
-                future.cancel(true);
-            }
-        }
-        if (crystals.size() == 0) {
-            return null;
-        }
-
-        // get the best crystal based on our needs
-        if (crystalPriority.getValue().equalsIgnoreCase("Closest")) {
-            Optional<CrystalInfo.PlaceInfo> out = crystals.stream().min(Comparator.comparing(info -> mc.player.getDistanceSq(info.crystal)));
-            return out.map(placeInfo -> {
-                renderEntity = placeInfo.target.entity;
-                return placeInfo.crystal;
-            }).orElse(null);
-        } else if (crystalPriority.getValue().equalsIgnoreCase("Health")) {
-            Optional<CrystalInfo.PlaceInfo> out = crystals.stream().min(Comparator.comparing(info -> info.target.health));
-            return out.map(placeInfo -> {
-                renderEntity = placeInfo.target.entity;
-                return placeInfo.crystal;
-            }).orElse(null);
-        } else {
-            Optional<CrystalInfo.PlaceInfo> out = crystals.stream().max(Comparator.comparing(info -> info.damage));
-            return out.map(placeInfo -> {
-                renderEntity = placeInfo.target.entity;
-                float damage = DamageUtil.calculateDamage((double) placeInfo.crystal.getX() + 0.5d, (double) placeInfo.crystal.getY() + 1.0d, (double) placeInfo.crystal.getZ() + 0.5d, renderEntity);
-                if (damage != placeInfo.damage) {
-                    PistonCrystal.printChat(String.format("%.1f", damage) + " " + String.format("%.1f", placeInfo.damage), false);
-                }
-                return placeInfo.crystal;
-            }).orElse(null);
-        }
+        long timeoutTime = System.currentTimeMillis() + timeout.getValue();
+        ACHelper.INSTANCE.startCalculations(settings, targetsInfo, allCrystals, blocks, timeoutTime);
     }
 
     private void swingArm() {
@@ -528,7 +414,7 @@ public class AutoCrystalRewrite extends Module {
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotating) return;
 
-        Vec2f rotation = RotationUtils.getRotationTo(lastHitVec);
+        Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
         PlayerPacket packet = new PlayerPacket(this, rotation);
         PlayerPacketManager.INSTANCE.addPacket(packet);
     });

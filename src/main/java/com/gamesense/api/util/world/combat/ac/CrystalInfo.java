@@ -1,7 +1,6 @@
-package com.gamesense.api.util.combat.ac;
+package com.gamesense.api.util.world.combat.ac;
 
 import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 
 public class CrystalInfo {
