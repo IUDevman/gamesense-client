@@ -115,7 +115,6 @@ public class ModuleManager {
         addMod(new Speedometer());
         addMod(new TabGUIModule());
         addMod(new TargetHUD());
-        // addMod(new TargetHUD2());
         addMod(new TargetInfo());
         addMod(new TextRadar());
         addMod(new Watermark());

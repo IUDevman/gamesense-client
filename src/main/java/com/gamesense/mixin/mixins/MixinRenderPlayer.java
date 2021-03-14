@@ -2,7 +2,6 @@ package com.gamesense.mixin.mixins;
 
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.hud.TargetHUD;
-import com.gamesense.client.module.modules.hud.TargetHUD2;
 import com.gamesense.client.module.modules.hud.TargetInfo;
 import com.gamesense.client.module.modules.render.Nametags;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -21,8 +20,7 @@ public abstract class MixinRenderPlayer {
             callbackInfo.cancel();
         }
 
-        if ((ModuleManager.isModuleEnabled(TargetHUD.class) && TargetHUD.isRenderingEntity(entity)) ||
-            ModuleManager.isModuleEnabled(TargetHUD2.class) && TargetHUD2.isRenderingEntity(entity)) {
+        if (ModuleManager.isModuleEnabled(TargetHUD.class) && TargetHUD.isRenderingEntity(entity)) {
             callbackInfo.cancel();
         }
 
