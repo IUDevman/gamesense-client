@@ -68,9 +68,9 @@ public class PistonCrystal extends Module {
     IntegerSetting preRotationDelay = registerInteger("Pre Rotation Delay", 0, 0, 20);
     IntegerSetting afterRotationDelay = registerInteger("After Rotation Delay", 0, 0, 20);
     IntegerSetting startDelay = registerInteger("Start Delay", 4, 0, 20);
-    IntegerSetting redstoneDelay = registerInteger("Redstone Delay", 0, 0, 20);
     IntegerSetting pistonDelay = registerInteger("Piston Delay", 2, 0, 20);
     IntegerSetting crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
+    IntegerSetting redstoneDelay = registerInteger("Redstone Delay", 0, 0, 20);
     IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 5, 0, 20);
     IntegerSetting hitDelay = registerInteger("Hit Delay", 2, 0, 20);
     IntegerSetting stuckDetector = registerInteger("Stuck Check", 35, 0, 200);
@@ -354,7 +354,6 @@ public class PistonCrystal extends Module {
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null) return;
-
         Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
         PlayerPacket packet = new PlayerPacket(this, rotation);
         PlayerPacketManager.INSTANCE.addPacket(packet);
@@ -536,17 +535,18 @@ public class PistonCrystal extends Module {
                         afterRotationTick++;
                         break;
                     }
-                    // Check redstone
-                    if (confirmPlace.getValue() && checkRedstonePlace()) {
-                        stage = 3;
-                        break;
-                    }
+
                     // Debug mode
                     if (debugMode.getValue())
                         printDebug("step 4", false);
                     // Start destroy crystal
                     destroyCrystalAlgo();
                     preRotationBol = false;
+                    // Check redstone
+                    if (confirmPlace.getValue() && checkRedstonePlace()) {
+                        stage = 3;
+                        break;
+                    }
                     break;
             }
         }
@@ -842,37 +842,43 @@ public class PistonCrystal extends Module {
         // If we have to place
         if (toPlace.supportBlock > 0) {
 
-            // Rotate
-            /*
-            if (preRotation.getValue() && !preRotationBol) {
-                placeBlockThings(stage, false, true, true);
-                if (preRotationTick == preRotationDelay.getValue()) {
-                    preRotationBol = true;
-                    preRotationTick = 0;
-                } else {
-                    preRotationTick++;
-                    return false;
-                }
-            }*/
-
             // Lets iterate and check
             // Lets finish
             do {
-                BlockPos targetPos = getTargetPos(checksDone);
 
-                // Try to place the block
-                if (packetReducer.getValue() ? placeBlockConfirm(targetPos, 0, 0, 0, 1, false, false) : placeBlock(targetPos, 0, 0, 0, 1, false)) {
-                    // If we reached the limit
-                    if (++blockDone == blocksPerTick.getValue())
-                        // Return false
-                        return false;
+                BlockPos targetPos = getTargetPos(checksDone);
+                if (BlockUtil.getBlock(targetPos) instanceof BlockAir) {
+                    // Rotate
+                    if (preRotation.getValue() && !preRotationBol) {
+                        if (preRotationTick == 0)
+                            placeBlockConfirm(targetPos, 0, 0, 0, 1, false, true, false);
+                        if (preRotationTick == preRotationDelay.getValue()) {
+                            preRotationBol = true;
+                            preRotationTick = 0;
+                        } else {
+                            preRotationTick++;
+                            return false;
+                        }
+                    }
+
+                    // Try to place the block
+                    if (packetReducer.getValue() ? placeBlockConfirm(targetPos, 0, 0, 0, 1, false, false, false) : placeBlock(targetPos, 0, 0, 0, 1, false)) {
+                        preRotationBol = false;
+                        // If we reached the limit
+                        if (++blockDone == blocksPerTick.getValue())
+                            // Return false
+                            return false;
+                    }
                 }
 
                 // If we reached the limit, exit
             } while (++checksDone != toPlace.supportBlock);
+
         }
         stage = stage == 0 ? 1 : stage;
         return true;
+
+
     }
 
     // Place a block
@@ -980,14 +986,14 @@ public class PistonCrystal extends Module {
     }
 
     // Place a block
-    private boolean placeBlockConfirm(BlockPos pos, int step, double offsetX, double offsetZ, double offsetY, boolean redstone, boolean onlyRotation) {
+    private boolean placeBlockConfirm(BlockPos pos, int step, double offsetX, double offsetZ, double offsetY, boolean redstone, boolean onlyRotation, boolean support) {
         // Get the block
         Block block = mc.world.getBlockState(pos).getBlock();
         // Get all sides
         EnumFacing side;
         if (redstone && redstoneAbovePiston) {
             side = BlockUtil.getPlaceableSideExlude(pos, EnumFacing.DOWN);
-        } else side = BlockUtil.getPlaceableSide(pos);
+        } else side = BlockUtil.getPlaceableSide(pos); // 430 71 422
 
         // If there is a solid block
         if (!(block instanceof BlockAir) && !(block instanceof BlockLiquid)) {
@@ -1076,7 +1082,7 @@ public class PistonCrystal extends Module {
         if (slot_mat[step] == 11)
             handSwing = EnumHand.OFF_HAND;
 
-        PlacementUtil.placePrecise(pos, handSwing, rotate.getValue() || step == 1, positionHit, side, onlyRotation);
+        PlacementUtil.placePrecise(pos, handSwing, rotate.getValue() || step == 1, positionHit, side, onlyRotation, !support || !forceRotation.getValue());
 
         return true;
     }
@@ -1086,7 +1092,7 @@ public class PistonCrystal extends Module {
         // Get absolute position
         BlockPos targetPos = compactBlockPos(step);
         // Place 93 4 -29
-        if (packetReducer.getValue() ? placeBlockConfirm(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone, preRotation) : placeBlock(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone))
+        if (packetReducer.getValue() ? placeBlockConfirm(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone, preRotation, support) : placeBlock(targetPos, step, toPlace.offsetX, toPlace.offsetZ, toPlace.offsetY, redstone))
             // Next step
             if (!preRotation) {
                 stage++;

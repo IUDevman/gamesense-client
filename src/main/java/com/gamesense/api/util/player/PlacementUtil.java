@@ -123,7 +123,7 @@ public class PlacementUtil {
         return action == EnumActionResult.SUCCESS;
     }
 
-    public static boolean placePrecise(BlockPos blockPos, EnumHand hand, boolean rotate, Vec3d precise, EnumFacing forceSide, boolean onlyRotation) {
+    public static boolean placePrecise(BlockPos blockPos, EnumHand hand, boolean rotate, Vec3d precise, EnumFacing forceSide, boolean onlyRotation, boolean support) {
         EntityPlayerSP player = mc.player;
         WorldClient world = mc.world;
         PlayerControllerMP playerController = mc.playerController;
@@ -162,7 +162,7 @@ public class PlacementUtil {
             stoppedAC = true;
         }
 
-        if (rotate) {
+        if (rotate && !support) {
             BlockUtil.faceVectorPacketInstant(precise == null ? hitVec : precise, true);
         }
 
