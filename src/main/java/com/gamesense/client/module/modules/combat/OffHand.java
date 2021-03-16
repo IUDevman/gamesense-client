@@ -37,7 +37,7 @@ import java.util.Map;
 public class OffHand extends Module {
 
     ModeSetting defaultItem = registerMode("Default", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Totem");
-    ModeSetting nonDefaultItem = registerMode("Non Default", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Crystal");
+    ModeSetting nonDefaultItem = registerMode("Non Default", Arrays.asList("Totem", "Crystal", "Gapple", "Obby", "Pot", "Exp", "Plates", "String"), "Crystal");
     ModeSetting noPlayerItem = registerMode("No Player", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Gapple");
     ModeSetting potionChoose = registerMode("Potion", Arrays.asList("first", "strength", "swiftness"), "first");
     IntegerSetting healthSwitch = registerInteger("Health Switch", 14, 0, 36);
@@ -95,6 +95,7 @@ public class OffHand extends Module {
         put("Gapple", Items.GOLDEN_APPLE);
         put("Pot", Items.POTIONITEM);
         put("Exp", Items.EXPERIENCE_BOTTLE);
+        put("String", Items.STRING);
     }};
     // Create maps of allowed blocks
     Map<String, net.minecraft.block.Block> allowedItemsBlock = new HashMap<String, net.minecraft.block.Block>() {
