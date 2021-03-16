@@ -2,22 +2,32 @@ package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import com.sun.javafx.geom.Vec2d;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
+
+import java.util.Arrays;
 
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
@@ -34,6 +44,9 @@ public class Blocker extends Module {
     BooleanSetting anvilBlocker = registerBoolean("Anvil", true);
     BooleanSetting offHandObby = registerBoolean("Off Hand Obby", true);
     BooleanSetting pistonBlocker = registerBoolean("Piston", true);
+    BooleanSetting antiFacePlace = registerBoolean("Shift AntiFacePlace", true);
+    IntegerSetting BlocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 10);
+    ModeSetting blockPlaced = registerMode("Block Place", Arrays.asList("Pressure", "String"), "String");
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
 
     private int delayTimeTicks = 0;
@@ -47,6 +60,10 @@ public class Blocker extends Module {
         if (mc.player == null) {
             disable();
             return;
+        }
+        if (!anvilBlocker.getValue() && !pistonBlocker.getValue() && !antiFacePlace.getValue()) {
+            noActive = true;
+            disable();
         }
 
         noObby = false;
@@ -88,9 +105,38 @@ public class Blocker extends Module {
                 blockPiston();
             }
 
+            if (antiFacePlace.getValue() && mc.gameSettings.keyBindSneak.isPressed()) {
+                antiFacePlace();
+            }
+
         }
 
     }
+
+    private void antiFacePlace() {
+        int blocksPlaced = 0;
+        Block temp;
+        for(Vec2d surround : new Vec2d[] {
+                new Vec2d(1, 0),
+                new Vec2d(-1, 0),
+                new Vec2d(0, 1),
+                new Vec2d(0, -1)
+        }) {
+            BlockPos pos = new BlockPos(mc.player.posX + surround.x, mc.player.posY , mc.player.posZ + surround.y);
+            if ((temp = BlockUtil.getBlock(pos)) instanceof BlockObsidian ||
+                    temp == Blocks.BEDROCK) {
+                if (blocksPlaced++ == 0) {
+                    AntiCrystal.getHotBarPressure(blockPlaced.getValue());
+                }
+
+                PlacementUtil.placeItem(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()), EnumHand.MAIN_HAND, rotate.getValue(), Items.STRING.getClass());
+
+                if (blocksPlaced == BlocksPerTick.getValue())
+                    return;
+            }
+        }
+    }
+
 
     private void blockAnvil() {
         boolean found = false;

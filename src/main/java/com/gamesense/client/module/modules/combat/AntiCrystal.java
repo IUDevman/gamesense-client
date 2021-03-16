@@ -222,7 +222,7 @@ public class AntiCrystal extends Module {
     }
 
     // Check if a ItemStack is a Pressure Plate
-    private boolean isPressure(ItemStack stack) {
+    public static boolean isPressure(ItemStack stack) {
         // If it's not what we want
         if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
             return false;
@@ -232,7 +232,7 @@ public class AntiCrystal extends Module {
     }
 
     // Check if a ItemStack is a Pressure Plate
-    private boolean isString(ItemStack stack) {
+    public static boolean isString(ItemStack stack) {
         // If it's not what we want
         if (stack == ItemStack.EMPTY || (stack.getItem() instanceof ItemBlock)) {
             return false;
@@ -242,7 +242,7 @@ public class AntiCrystal extends Module {
     }
 
     // Get the index of the Pressure Plate on the hotBar
-    private int getHotBarPressure(String mode) {
+    public static int getHotBarPressure(String mode) {
         // Iterate for the entire inventory
         for (int i = 0; i < 9; i++) {
             // Check if it's a piece of pressure plate
