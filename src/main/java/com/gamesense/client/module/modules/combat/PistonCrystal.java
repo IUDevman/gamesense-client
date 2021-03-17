@@ -55,7 +55,7 @@ import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
  * Break crystal from AutoCrystal
  */
 
-@Module.Declaration(name = "PistonCrystal", category = Category.Combat)
+@Module.Declaration(name = "PistonCrystal", category = Category.Combat, priority = 999)
 public class PistonCrystal extends Module {
 
     ModeSetting breakType = registerMode("Type", Arrays.asList("Swing", "Packet"), "Swing");
@@ -64,6 +64,7 @@ public class PistonCrystal extends Module {
     DoubleSetting enemyRange = registerDouble("Range", 4.9, 0, 6);
     DoubleSetting crystalDeltaBreak = registerDouble("Center Break", 0.1, 0, 0.5);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 20);
+    IntegerSetting minHealth = registerInteger("Min Health", 8, 0, 20);
     IntegerSetting supBlocksDelay = registerInteger("Surround Delay", 4, 0, 20);
     IntegerSetting preRotationDelay = registerInteger("Pre Rotation Delay", 0, 0, 20);
     IntegerSetting afterRotationDelay = registerInteger("After Rotation Delay", 0, 0, 20);
@@ -104,7 +105,8 @@ public class PistonCrystal extends Module {
             stoppedCa,
             deadPl,
             rotationPlayerMoved,
-            preRotationBol = false;
+            preRotationBol = false,
+            minHp;
 
     private int oldSlot = -1,
             stage,
@@ -229,7 +231,7 @@ public class PistonCrystal extends Module {
         };
         // Default values reset
         toPlace = new structureTemp(0, 0, null);
-        isHole = true;
+        isHole = minHp = true;
         hasMoved = rotationPlayerMoved = deadPl = broken = brokenCrystalBug = brokenRedstoneTorch = yUnder = redstoneBlockMode = fastModeActive = false;
         slot_mat = new int[]{-1, -1, -1, -1, -1, -1};
         stage = delayTimeTicks = stuck = 0;
@@ -293,6 +295,8 @@ public class PistonCrystal extends Module {
                 output = "Enemy is dead, gg! ";
             } else if (rotationPlayerMoved) {
                 output = "You cannot move from your hole if you have rotation on. ";
+            } else if(!minHp) {
+                output = "Your hp is low";
             }
         // Output in chat
         setDisabledMessage(output + "PistonCrystal turned OFF!");
@@ -353,7 +357,7 @@ public class PistonCrystal extends Module {
 
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
-        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null) return;
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
         Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
         PlayerPacket packet = new PlayerPacket(this, rotation);
         PlayerPacketManager.INSTANCE.addPacket(packet);
@@ -400,6 +404,10 @@ public class PistonCrystal extends Module {
         if (aimTarget.isDead) {
             deadPl = true;
         }
+
+        // Hp Check
+        if (OffHand.getHealth() <= minHealth.getValue())
+            minHp = false;
         // If the guy moved from his hole with rotation on
         if (rotate.getValue() && !((int) mc.player.posX == meCoordsInt[0] || (int) mc.player.posZ == meCoordsInt[2]))
             rotationPlayerMoved = true;
@@ -1118,7 +1126,7 @@ public class PistonCrystal extends Module {
     // Check if we have to disable
     private boolean checkVariable() {
         // If something went wrong
-        if (noMaterials || !isHole || !enoughSpace || hasMoved || deadPl || rotationPlayerMoved) {
+        if (noMaterials || !isHole || !enoughSpace || hasMoved || deadPl || rotationPlayerMoved || !minHp) {
             disable();
             return true;
         }

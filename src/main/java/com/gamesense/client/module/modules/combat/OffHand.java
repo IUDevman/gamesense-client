@@ -296,12 +296,11 @@ public class OffHand extends Module {
     }
 
     private boolean crystalDamage() {
-        double ris2 = 0;
         // Check if the crystal exist
         for (Entity t : mc.world.loadedEntityList) {
             // If it's a crystal
             if (t instanceof EntityEnderCrystal && mc.player.getDistance(t) <= 12) {
-                if ((ris2 = DamageUtil.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue()) >= mc.player.getHealth()) {
+                if (DamageUtil.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue() >= mc.player.getHealth()) {
                     return true;
                 }
             }
@@ -338,7 +337,7 @@ public class OffHand extends Module {
     private String getItemToCheck(String str) {
 
 
-        return (mc.player.getHealth() + mc.player.getAbsorptionAmount() > healthSwitch.getValue())
+        return ( getHealth() > healthSwitch.getValue())
                 ? (str.equals("")
                 ? nonDefaultItem.getValue()
                 : str
@@ -346,6 +345,8 @@ public class OffHand extends Module {
                 : defaultItem.getValue();
 
     }
+
+    public static float getHealth() { return mc.player.getHealth() + mc.player.getAbsorptionAmount(); }
 
     private int getInventorySlot(String itemName) {
         // Get if it's a block or an item

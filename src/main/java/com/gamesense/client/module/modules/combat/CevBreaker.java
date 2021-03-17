@@ -40,7 +40,7 @@ import java.util.Objects;
 
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
-@Module.Declaration(name = "CevBreaker", category = Category.Combat)
+@Module.Declaration(name = "CevBreaker", category = Category.Combat, priority = 999)
 public class CevBreaker extends Module {
 
     ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
