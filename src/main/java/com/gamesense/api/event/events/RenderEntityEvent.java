@@ -10,8 +10,8 @@ import net.minecraft.entity.Entity;
 
 public class RenderEntityEvent extends GameSenseEvent {
 
-    public final Entity entity;
-    public final Type type;
+    private final Entity entity;
+    private final Type type;
 
     public RenderEntityEvent(Entity entity, Type type) {
         this.entity = entity;

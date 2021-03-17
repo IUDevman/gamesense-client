@@ -46,7 +46,7 @@ public class InventoryUtil {
     public static int findTotemSlot(int lower, int upper) {
         int slot = -1;
         List<ItemStack> mainInventory = mc.player.inventory.mainInventory;
-        for(int i = lower; i <= upper; i++) {
+        for (int i = lower; i <= upper; i++) {
             ItemStack stack = mainInventory.get(i);
             if (stack == ItemStack.EMPTY || stack.getItem() != Items.TOTEM_OF_UNDYING)
                 continue;

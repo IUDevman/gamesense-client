@@ -1,53 +1,35 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @Author Hoosiers on 09/23/20
  * Ported and modified from Surround.java
  */
 
+@Module.Declaration(name = "SelfWeb", category = Category.Combat)
 public class SelfWeb extends Module {
 
-    public SelfWeb() {
-        super("SelfWeb", Category.Combat);
-    }
-
-    Setting.Boolean chatMsg;
-    Setting.Boolean shiftOnly;
-    Setting.Boolean singleWeb;
-    Setting.Boolean rotate;
-    Setting.Boolean disableNone;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
-    Setting.Mode placeType;
-
-    public void setup() {
-        ArrayList<String> placeModes = new ArrayList<>();
-        placeModes.add("Single");
-        placeModes.add("Double");
-
-        placeType = registerMode("Place", placeModes, "Single");
-        shiftOnly = registerBoolean("Shift Only", false);
-        singleWeb = registerBoolean("One Place", false);
-        disableNone = registerBoolean("Disable No Web", true);
-        rotate = registerBoolean("Rotate", true);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
+    ModeSetting placeType = registerMode("Place", Arrays.asList("Single", "Double"), "Single");
+    BooleanSetting shiftOnly = registerBoolean("Shift Only", false);
+    BooleanSetting singleWeb = registerBoolean("One Place", false);
+    BooleanSetting disableNone = registerBoolean("Disable No Web", true);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
 
     private boolean noWeb = false;
     private boolean isSneaking = false;
@@ -65,10 +47,6 @@ public class SelfWeb extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "SelfWeb turned ON!");
-        }
-
         oldSlot = mc.player.inventory.currentItem;
 
         int newSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
@@ -83,14 +61,7 @@ public class SelfWeb extends Module {
             return;
         }
 
-        if (chatMsg.getValue()) {
-            if (noWeb) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... SelfWeb turned OFF!");
-            }
-            else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfWeb turned OFF!");
-            }
-        }
+        if (noWeb) setDisabledMessage("No web detected... SelfWeb turned OFF!");
 
         if (isSneaking) {
             mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
@@ -134,13 +105,11 @@ public class SelfWeb extends Module {
                 noWeb = true;
                 disable();
             }
-        }
-        else {
+        } else {
             if (delayTimeTicks < tickDelay.getValue()) {
                 delayTimeTicks++;
                 return;
-            }
-            else {
+            } else {
                 delayTimeTicks = 0;
             }
         }
@@ -158,8 +127,7 @@ public class SelfWeb extends Module {
             if (placeType.getValue().equalsIgnoreCase("Double")) {
                 offsetPattern = Offsets.DOUBLE;
                 maxSteps = Offsets.DOUBLE.length;
-            }
-            else {
+            } else {
                 offsetPattern = Offsets.SINGLE;
                 maxSteps = Offsets.SINGLE.length;
             }

@@ -2,13 +2,10 @@ package com.gamesense.api.util.misc;
 
 import com.gamesense.client.GameSense;
 
-import javax.swing.JLabel;
-import javax.swing.JEditorPane;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import java.awt.Desktop;
-import java.awt.Font;
+import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -21,11 +18,11 @@ import java.util.Scanner;
 
 public class VersionChecker {
 
-    public VersionChecker() {
+    public static void init() {
         checkVersion(GameSense.MODVER);
     }
 
-    private void checkVersion(String version) {
+    private static void checkVersion(String version) {
         boolean isLatest = true;
         String newVersion = "null";
 
@@ -43,8 +40,7 @@ public class VersionChecker {
                 isLatest = false;
                 newVersion = grabbedVersion;
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             isLatest = true;
         }
@@ -55,7 +51,7 @@ public class VersionChecker {
     }
 
     //thank god for stack overflow... https://stackoverflow.com/questions/8348063/clickable-links-in-joptionpane
-    private void generatePopUp(String newVersion) {
+    private static void generatePopUp(String newVersion) {
         JLabel label = new JLabel();
         Font font = label.getFont();
 
@@ -71,11 +67,9 @@ public class VersionChecker {
 
                     try {
                         Desktop.getDesktop().browse(event.getURL().toURI());
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
-                    }
-                    catch (URISyntaxException e) {
+                    } catch (URISyntaxException e) {
                         e.printStackTrace();
                     }
                 }

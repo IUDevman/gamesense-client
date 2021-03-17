@@ -9,16 +9,8 @@ import com.gamesense.client.module.ModuleManager;
  * @Author Hoosiers on 11/05/2020
  */
 
+@Command.Declaration(name = "Toggle", syntax = "toggle [module]", alias = {"toggle", "t", "enable", "disable"})
 public class ToggleCommand extends Command {
-
-    public ToggleCommand() {
-        super("Toggle");
-
-        setCommandSyntax(Command.getCommandPrefix() + "toggle [module]");
-        setCommandAlias(new String[]{
-                "toggle", "t", "enable", "disable"
-        });
-    }
 
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
@@ -26,7 +18,7 @@ public class ToggleCommand extends Command {
         Module module = ModuleManager.getModule(main);
 
         if (module == null) {
-            MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
+            MessageBus.sendCommandMessage(this.getSyntax(), true);
             return;
         }
 

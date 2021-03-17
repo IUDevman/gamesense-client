@@ -4,16 +4,8 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
 import com.gamesense.client.module.modules.misc.AutoRespawn;
 
-public class AutoRespawnCommand extends Command{
-
-    public AutoRespawnCommand() {
-        super("AutoRespawn");
-
-        setCommandSyntax(Command.getCommandPrefix() + "autorespawn get/set [message] (do NOT use _ for spaces)");
-        setCommandAlias(new String[]{
-                "autorespawn", "respawn"
-        });
-    }
+@Command.Declaration(name = "AutoRespawn", syntax = "autorespawn get/set [message] (do NOT use _ for spaces)", alias = {"autorespawn", "respawn"})
+public class AutoRespawnCommand extends Command {
 
     public void onCommand(String command, String[] message) throws Exception {
         String main = message[0];
@@ -28,7 +20,7 @@ public class AutoRespawnCommand extends Command{
             stringBuilder.append(message[i]);
             stringBuilder.append(" ");
         }
-        stringBuilder.deleteCharAt(stringBuilder.length() -1);
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
         String value = stringBuilder.toString();
 

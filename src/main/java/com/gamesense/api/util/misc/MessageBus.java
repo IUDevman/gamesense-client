@@ -19,19 +19,24 @@ public class MessageBus {
 
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
-    /** Sends a client-sided message WITH the client prefix **/
+    /**
+     * Sends a client-sided message WITH the client prefix
+     **/
     public static void sendClientPrefixMessage(String message) {
         TextComponentString string1 = new TextComponentString(watermark + messageFormatting + message);
         TextComponentString string2 = new TextComponentString(messageFormatting + message);
 
-        Notifications.addMessage(string2);
-        if (ModuleManager.isModuleEnabled(Notifications.class) && Notifications.disableChat.getValue()) {
+        Notifications notifications = ModuleManager.getModule(Notifications.class);
+        notifications.addMessage(string2);
+        if (notifications.isEnabled() && notifications.disableChat.getValue()) {
             return;
         }
         mc.player.sendMessage(string1);
     }
 
-    /** Command-oriented message, with the nature of commands we don't want them being a notification **/
+    /**
+     * Command-oriented message, with the nature of commands we don't want them being a notification
+     **/
     public static void sendCommandMessage(String message, boolean prefix) {
         String watermark1 = prefix ? watermark : "";
         TextComponentString string = new TextComponentString(watermark1 + messageFormatting + message);
@@ -39,18 +44,23 @@ public class MessageBus {
         mc.player.sendMessage(string);
     }
 
-    /** @Unused Sends a client-sided message WITHOUT the client prefix **/
+    /**
+     * @Unused Sends a client-sided message WITHOUT the client prefix
+     **/
     public static void sendClientRawMessage(String message) {
         TextComponentString string = new TextComponentString(messageFormatting + message);
 
-        Notifications.addMessage(string);
-        if (ModuleManager.isModuleEnabled(Notifications.class) && Notifications.disableChat.getValue()) {
+        Notifications notifications = ModuleManager.getModule(Notifications.class);
+        notifications.addMessage(string);
+        if (ModuleManager.isModuleEnabled(Notifications.class) && notifications.disableChat.getValue()) {
             return;
         }
         mc.player.sendMessage(string);
     }
 
-    /** Sends a server-sided message **/
+    /**
+     * Sends a server-sided message
+     **/
     public static void sendServerMessage(String message) {
         mc.player.connection.sendPacket(new CPacketChatMessage(message));
     }

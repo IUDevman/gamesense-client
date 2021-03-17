@@ -1,22 +1,23 @@
 package com.gamesense.mixin.mixins;
 
-import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.movement.PlayerTweaks;
+import com.gamesense.api.event.events.EntityCollisionEvent;
+import com.gamesense.client.GameSense;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
 public class MixinEntity {
 
-	@Redirect(method = "applyEntityCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
-	public void velocity(Entity entity, double x, double y, double z) {
-		if (!ModuleManager.isModuleEnabled(PlayerTweaks.class) || ModuleManager.isModuleEnabled(PlayerTweaks.class) && !PlayerTweaks.noPush.getValue()) {
-			entity.motionX += x;
-			entity.motionY += y;
-			entity.motionZ += z;
-			entity.isAirBorne = true;
-		}
-	}
+    @Inject(method = "applyEntityCollision", at = @At("HEAD"), cancellable = true)
+    public void velocity(Entity entityIn, CallbackInfo ci) {
+        EntityCollisionEvent event = new EntityCollisionEvent();
+        GameSense.EVENT_BUS.post(event);
+
+        if (event.isCancelled()) {
+            ci.cancel();
+        }
+    }
 }

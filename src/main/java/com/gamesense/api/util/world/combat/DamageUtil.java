@@ -1,4 +1,4 @@
-package com.gamesense.api.util.combat;
+package com.gamesense.api.util.world.combat;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -32,7 +32,7 @@ public class DamageUtil {
             if (entity instanceof EntityLivingBase) {
                 finald = getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage), new Explosion(mc.world, null, posX, posY, posZ, 6F, false, true));
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
         return (float) finald;

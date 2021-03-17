@@ -26,16 +26,16 @@ public class PlayerUtil {
 
         EntityPlayer closestTarget = null;
 
-        for (EntityPlayer entityPlayer : playerList){
+        for (EntityPlayer entityPlayer : playerList) {
 
             if (EntityUtil.basicChecksEntity(entityPlayer))
                 continue;
 
-            if (aimTarget == null && mc.player.getDistanceSq(entityPlayer) <= rangeMax){
+            if (aimTarget == null && mc.player.getDistanceSq(entityPlayer) <= rangeMax) {
                 closestTarget = entityPlayer;
                 continue;
             }
-            if (aimTarget != null && mc.player.getDistanceSq(entityPlayer) <= rangeMax && mc.player.getDistanceSq(entityPlayer) < mc.player.getDistanceSq(aimTarget)){
+            if (aimTarget != null && mc.player.getDistanceSq(entityPlayer) <= rangeMax && mc.player.getDistanceSq(entityPlayer) < mc.player.getDistanceSq(aimTarget)) {
                 closestTarget = entityPlayer;
             }
         }
@@ -69,7 +69,7 @@ public class PlayerUtil {
         // Get player
         ArrayList<EntityPlayer> listPlayer = new ArrayList<>();
         // Only who is in a distance of enemyRange
-        for(EntityPlayer playerSin : mc.world.playerEntities) {
+        for (EntityPlayer playerSin : mc.world.playerEntities) {
             if (EntityUtil.basicChecksEntity(playerSin))
                 continue;
             if (mc.player.getDistance(playerSin) <= rangeMax) {
@@ -84,19 +84,19 @@ public class PlayerUtil {
         // Precision
         int precision = 2;
         // Iterate for every blocks
-        for(int i = 0; i < (int) rangeMax; i++) {
+        for (int i = 0; i < (int) rangeMax; i++) {
             // Iterate for the precision
-            for(int j = precision; j > 0 ; j--) {
+            for (int j = precision; j > 0; j--) {
                 // Iterate for all players
-                for(EntityPlayer targetTemp : listPlayer) {
+                for (EntityPlayer targetTemp : listPlayer) {
                     // Get box of the player
                     AxisAlignedBB playerBox = targetTemp.getEntityBoundingBox();
                     // Get coordinate of the vec3d
-                    double xArray = positionEyes.x + (rotationEyes.x * i) + rotationEyes.x/j;
-                    double yArray = positionEyes.y + (rotationEyes.y * i) + rotationEyes.y/j;
-                    double zArray = positionEyes.z + (rotationEyes.z * i) + rotationEyes.z/j;
+                    double xArray = positionEyes.x + (rotationEyes.x * i) + rotationEyes.x / j;
+                    double yArray = positionEyes.y + (rotationEyes.y * i) + rotationEyes.y / j;
+                    double zArray = positionEyes.z + (rotationEyes.z * i) + rotationEyes.z / j;
                     // If it's inside
-                    if (   playerBox.maxY >= yArray && playerBox.minY <= yArray
+                    if (playerBox.maxY >= yArray && playerBox.minY <= yArray
                             && playerBox.maxX >= xArray && playerBox.minX <= xArray
                             && playerBox.maxZ >= zArray && playerBox.minZ <= zArray) {
                         // Get target
