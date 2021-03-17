@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * @author linustouchtips
- * @since 12/14/2020
  * @author Hoosiers
+ * @since 12/14/2020
  * @since 12/31/2020
  */
 
@@ -41,14 +41,13 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends 
 
         NoRender noRender = ModuleManager.getModule(NoRender.class);
 
-        if (noRender.isEnabled() && NoRender.noCluster.getValue() && mc.player.getDistance(entitylivingbaseIn) < 1 && entitylivingbaseIn != mc.player) {
+        if (noRender.isEnabled() && noRender.noCluster.getValue() && mc.player.getDistance(entitylivingbaseIn) < 1 && entitylivingbaseIn != mc.player) {
             GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
             isClustered = true;
-            if (!NoRender.incrementNoClusterRender()) {
+            if (!noRender.incrementNoClusterRender()) {
                 callbackInfo.cancel();
             }
-        }
-        else {
+        } else {
             isClustered = false;
         }
 
@@ -75,7 +74,7 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends 
     @Inject(method = "renderLayers", at = @At("HEAD"), cancellable = true)
     protected void renderLayers(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scaleIn, CallbackInfo callbackInfo) {
         if (isClustered) {
-            if (!NoRender.getNoClusterRender()) {
+            if (!ModuleManager.getModule(NoRender.class).getNoClusterRender()) {
                 callbackInfo.cancel();
             }
         }

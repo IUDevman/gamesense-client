@@ -1,8 +1,9 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -16,23 +17,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Module.Declaration(name = "HotbarRefill", category = Category.Misc)
 public class HotbarRefill extends Module {
 
-    public HotbarRefill() {
-        super("HotbarRefill", Category.Misc);
-    }
-
-    Setting.Integer threshold;
-    Setting.Integer tickDelay;
-
-    public void setup() {
-        threshold = registerInteger("Threshold", 32, 1, 63);
-        tickDelay = registerInteger("Tick Delay", 2, 1, 10);
-    }
+    IntegerSetting threshold = registerInteger("Threshold", 32, 1, 63);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 2, 1, 10);
 
     private int delayStep = 0;
 
-    @Override
     public void onUpdate() {
 
         if (mc.player == null) {
@@ -46,8 +38,7 @@ public class HotbarRefill extends Module {
         if (delayStep < tickDelay.getValue()) {
             delayStep++;
             return;
-        }
-        else {
+        } else {
             delayStep = 0;
         }
 
@@ -102,9 +93,9 @@ public class HotbarRefill extends Module {
     private int findCompatibleInventorySlot(ItemStack hotbarStack) {
         List<Integer> potentialSlots;
 
-        Item item= hotbarStack.getItem();
+        Item item = hotbarStack.getItem();
         if (item instanceof ItemBlock) {
-            potentialSlots = InventoryUtil.findAllBlockSlots(((ItemBlock)item).getBlock().getClass());
+            potentialSlots = InventoryUtil.findAllBlockSlots(((ItemBlock) item).getBlock().getClass());
         } else {
             potentialSlots = InventoryUtil.findAllItemSlots(item.getClass());
         }
@@ -114,7 +105,7 @@ public class HotbarRefill extends Module {
                 .sorted(Comparator.comparingInt(interger -> -interger))
                 .collect(Collectors.toList());
 
-        for (int slot: potentialSlots) {
+        for (int slot : potentialSlots) {
             if (isCompatibleStacks(hotbarStack, mc.player.inventory.getStackInSlot(slot))) {
                 return slot;
             }

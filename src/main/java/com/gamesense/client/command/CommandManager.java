@@ -11,9 +11,10 @@ import java.util.ArrayList;
 
 public class CommandManager {
 
+    private static String commandPrefix = "-";
     public static ArrayList<Command> commands = new ArrayList<>();
 
-    public static void registerCommands() {
+    public static void init() {
         addCommand(new AutoGearCommand());
         addCommand(new AutoGGCommand());
         addCommand(new AutoReplyCommand());
@@ -29,6 +30,7 @@ public class CommandManager {
         addCommand(new FontCommand());
         addCommand(new FriendCommand());
         addCommand(new ModulesCommand());
+        addCommand(new MsgsCommand());
         addCommand(new OpenFolderCommand());
         addCommand(new PrefixCommand());
         addCommand(new SaveConfigCommand());
@@ -44,18 +46,20 @@ public class CommandManager {
         return commands;
     }
 
-    public static Command getCommandByName(String name) {
-        for (Command command : commands) {
-            if (command.getCommandName() == name) {
-                return command;
-            }
-        }
-        return null;
+    public static String getCommandPrefix() {
+        return commandPrefix;
+    }
+
+    public static void setCommandPrefix(String prefix) {
+        commandPrefix = prefix;
     }
 
     boolean isValidCommand = false;
 
-    /** @Author 086 for KAMI, regex is a bitch **/
+    /**
+     * @Author 086 for KAMI, regex
+     **/
+
     public void callCommand(String input) {
         String[] split = input.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
         String command1 = split[0];
@@ -64,14 +68,13 @@ public class CommandManager {
         isValidCommand = false;
 
         commands.forEach(command -> {
-            for (String string : command.getCommandAlias()) {
+            for (String string : command.getAlias()) {
                 if (string.equalsIgnoreCase(command1)) {
                     isValidCommand = true;
                     try {
                         command.onCommand(args, args.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"));
-                    }
-                    catch (Exception e) {
-                        MessageBus.sendCommandMessage(command.getCommandSyntax(), true);
+                    } catch (Exception e) {
+                        MessageBus.sendCommandMessage(command.getSyntax(), true);
                     }
                 }
             }

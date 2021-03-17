@@ -1,59 +1,52 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Point;
-
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 
-// PanelStudio rewrite by lukflug
+import java.awt.*;
+
+@Module.Declaration(name = "Welcomer", category = Category.HUD)
+@HUDModule.Declaration(posX = 450, posZ = 0)
 public class Welcomer extends HUDModule {
 
-	private Setting.ColorSetting color;
-	
-	public Welcomer() {
-		super("Welcomer",new Point(450,0));
-	}
-	
-	public void setup() {
-		color=registerColor("Color", new GSColor(255, 0, 0, 255));
-	}
+    private ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
 
-	@Override
-	public void populate (Theme theme) {
-		component = new ListComponent(getName(),theme.getPanelRenderer(),position,new WelcomerList());
-	}
-	
-	
-	private class WelcomerList implements HUDList {
+    @Override
+    public void populate(Theme theme) {
+        component = new ListComponent(getName(), theme.getPanelRenderer(), position, new WelcomerList());
+    }
 
-		@Override
-		public int getSize() {
-			return 1;
-		}
+    private class WelcomerList implements HUDList {
 
-		@Override
-		public String getItem(int index) {
-			return "Hello " + mc.player.getName() + " :^)";
-		}
+        @Override
+        public int getSize() {
+            return 1;
+        }
 
-		@Override
-		public Color getItemColor(int index) {
-			return color.getValue();
-		}
+        @Override
+        public String getItem(int index) {
+            return "Hello " + mc.player.getName() + " :^)";
+        }
 
-		@Override
-		public boolean sortUp() {
-			return false;
-		}
+        @Override
+        public Color getItemColor(int index) {
+            return color.getValue();
+        }
 
-		@Override
-		public boolean sortRight() {
-			return false;
-		}
-	}
+        @Override
+        public boolean sortUp() {
+            return false;
+        }
+
+        @Override
+        public boolean sortRight() {
+            return false;
+        }
+    }
 }

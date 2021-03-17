@@ -1,20 +1,21 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.google.common.collect.Sets;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,67 +23,22 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @reworked by 0b00101010 on 14/01/2021
  */
+
+@Module.Declaration(name = "HoleESP", category = Category.Render)
 public class HoleESP extends Module {
 
-    public HoleESP() {
-        super("HoleESP", Category.Render);
-    }
-
-    public static Setting.Integer rangeS;
-    Setting.Boolean hideOwn;
-    Setting.Boolean flatOwn;
-    Setting.Mode customHoles;
-    Setting.Mode mode;
-    Setting.Mode type;
-    Setting.Double slabHeight;
-    Setting.Integer width;
-    Setting.ColorSetting bedrockColor;
-    Setting.ColorSetting obsidianColor;
-    Setting.ColorSetting customColor;
-    Setting.Integer ufoAlpha;
-
-    public void setup() {
-        ArrayList<String> holes = new ArrayList<>();
-        holes.add("Single");
-        // https://github.com/IUDevman/gamesense-client/issues/57
-        holes.add("Double");
-        /*
-         * This refers to two wide holes with one down block being blast resistant
-         * and the other being air or a breakable block
-         *
-         * This is technically a safe hole as putting in that block or switching it
-         * to a blast resistant one makes it a two wide hole
-         *
-         * CAUTION: standing over the air gap can cause you to be crystallized which
-         * is why I gave it a separate mode
-         */
-        holes.add("Custom");
-
-        ArrayList<String> render = new ArrayList<>();
-        render.add("Outline");
-        render.add("Fill");
-        render.add("Both");
-
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Air");
-        modes.add("Ground");
-        modes.add("Flat");
-        modes.add("Slab");
-        modes.add("Double");
-
-        rangeS = registerInteger("Range", 5, 1, 20);
-        customHoles = registerMode("Show", holes, "Single");
-        type = registerMode("Render", render, "Both");
-        mode = registerMode("Mode", modes, "Air");
-        hideOwn = registerBoolean("Hide Own", false);
-        flatOwn = registerBoolean("Flat Own", false);
-        slabHeight = registerDouble("Slab Height", 0.5, 0.1, 1.5);
-        width = registerInteger("Width",1,1,10);
-        bedrockColor = registerColor("Bedrock Color", new GSColor(0,255,0));
-        obsidianColor = registerColor("Obsidian Color", new GSColor(255,0,0));
-        customColor = registerColor("Custom Color", new GSColor(0,0,255));
-        ufoAlpha = registerInteger("UFOAlpha",255,0,255);
-    }
+    public IntegerSetting range = registerInteger("Range", 5, 1, 20);
+    ModeSetting customHoles = registerMode("Show", Arrays.asList("Single", "Double", "Custom"), "Single");
+    ModeSetting type = registerMode("Render", Arrays.asList("Outline", "Fill", "Both"), "Both");
+    ModeSetting mode = registerMode("Mode", Arrays.asList("Air", "Ground", "Flat", "Slab", "Double"), "Air");
+    BooleanSetting hideOwn = registerBoolean("Hide Own", false);
+    BooleanSetting flatOwn = registerBoolean("Flat Own", false);
+    DoubleSetting slabHeight = registerDouble("Slab Height", 0.5, 0.1, 1.5);
+    IntegerSetting width = registerInteger("Width", 1, 1, 10);
+    ColorSetting bedrockColor = registerColor("Bedrock Color", new GSColor(0, 255, 0));
+    ColorSetting obsidianColor = registerColor("Obsidian Color", new GSColor(255, 0, 0));
+    ColorSetting customColor = registerColor("Custom Color", new GSColor(0, 0, 255));
+    IntegerSetting ufoAlpha = registerInteger("UFOAlpha", 255, 0, 255);
 
     private ConcurrentHashMap<AxisAlignedBB, GSColor> holes;
 
@@ -93,25 +49,21 @@ public class HoleESP extends Module {
 
         if (holes == null) {
             holes = new ConcurrentHashMap<>();
-        }
-        else {
+        } else {
             holes.clear();
         }
 
-        int range = (int) Math.ceil(rangeS.getValue());
+        int range = (int) Math.ceil(this.range.getValue());
 
-        // hashSets are easier to navigate
         HashSet<BlockPos> possibleHoles = Sets.newHashSet();
         List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), range, range, false, true, 0);
 
-        // find all holes
         for (BlockPos pos : blockPosList) {
 
             if (!mc.world.getBlockState(pos).getBlock().equals(Blocks.AIR)) {
                 continue;
             }
-            // if air below, we are wasting our time and hashset space
-            // we do not remove check from surround offset as potentially a weak block
+
             if (mc.world.getBlockState(pos.add(0, -1, 0)).getBlock().equals(Blocks.AIR)) {
                 continue;
             }
@@ -128,7 +80,7 @@ public class HoleESP extends Module {
             HoleUtil.HoleInfo holeInfo = HoleUtil.isHole(pos, false, false);
             HoleUtil.HoleType holeType = holeInfo.getType();
             if (holeType != HoleUtil.HoleType.NONE) {
-                // We have a hole!
+
                 HoleUtil.BlockSafety holeSafety = holeInfo.getSafety();
                 AxisAlignedBB centreBlocks = holeInfo.getCentre();
 
@@ -136,7 +88,7 @@ public class HoleESP extends Module {
                     return;
 
                 GSColor colour;
-                // get Colour
+
                 if (holeSafety == HoleUtil.BlockSafety.UNBREAKABLE) {
                     colour = new GSColor(bedrockColor.getValue(), 255);
                 } else {
@@ -186,7 +138,7 @@ public class HoleESP extends Module {
 
     private void renderFill(AxisAlignedBB hole, GSColor color) {
         GSColor fillColor = new GSColor(color, 50);
-        int ufoAlpha=(this.ufoAlpha.getValue()*50)/255;
+        int ufoAlpha = (this.ufoAlpha.getValue() * 50) / 255;
 
         if (hideOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) return;
 
@@ -194,14 +146,13 @@ public class HoleESP extends Module {
             case "Air": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
                     RenderUtil.drawBox(hole, true, 1, fillColor, ufoAlpha, GeometryMasks.Quad.DOWN);
-                }
-                else {
+                } else {
                     RenderUtil.drawBox(hole, true, 1, fillColor, ufoAlpha, GeometryMasks.Quad.ALL);
                 }
                 break;
             }
             case "Ground": {
-                RenderUtil.drawBox(hole.offset(0, -1, 0), true, 1, new GSColor(fillColor,ufoAlpha), fillColor.getAlpha(), GeometryMasks.Quad.ALL);
+                RenderUtil.drawBox(hole.offset(0, -1, 0), true, 1, new GSColor(fillColor, ufoAlpha), fillColor.getAlpha(), GeometryMasks.Quad.ALL);
                 break;
             }
             case "Flat": {
@@ -211,8 +162,7 @@ public class HoleESP extends Module {
             case "Slab": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
                     RenderUtil.drawBox(hole, true, 1, fillColor, ufoAlpha, GeometryMasks.Quad.DOWN);
-                }
-                else {
+                } else {
                     RenderUtil.drawBox(hole, false, slabHeight.getValue(), fillColor, ufoAlpha, GeometryMasks.Quad.ALL);
                 }
                 break;
@@ -220,8 +170,7 @@ public class HoleESP extends Module {
             case "Double": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
                     RenderUtil.drawBox(hole, true, 1, fillColor, ufoAlpha, GeometryMasks.Quad.DOWN);
-                }
-                else {
+                } else {
                     RenderUtil.drawBox(hole.setMaxY(hole.maxY + 1), true, 2, fillColor, ufoAlpha, GeometryMasks.Quad.ALL);
                 }
                 break;
@@ -238,14 +187,13 @@ public class HoleESP extends Module {
             case "Air": {
                 if (flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
                     RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, ufoAlpha.getValue(), GeometryMasks.Quad.DOWN);
-                }
-                else {
+                } else {
                     RenderUtil.drawBoundingBox(hole, width.getValue(), outlineColor, ufoAlpha.getValue());
                 }
                 break;
             }
             case "Ground": {
-                RenderUtil.drawBoundingBox(hole.offset(0, -1, 0), width.getValue(), new GSColor(outlineColor,ufoAlpha.getValue()), outlineColor.getAlpha());
+                RenderUtil.drawBoundingBox(hole.offset(0, -1, 0), width.getValue(), new GSColor(outlineColor, ufoAlpha.getValue()), outlineColor.getAlpha());
                 break;
             }
             case "Flat": {
@@ -255,8 +203,7 @@ public class HoleESP extends Module {
             case "Slab": {
                 if (this.flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
                     RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, ufoAlpha.getValue(), GeometryMasks.Quad.DOWN);
-                }
-                else {
+                } else {
                     RenderUtil.drawBoundingBox(hole.setMaxY(hole.minY + slabHeight.getValue()), width.getValue(), outlineColor, ufoAlpha.getValue());
                 }
                 break;
@@ -264,8 +211,7 @@ public class HoleESP extends Module {
             case "Double": {
                 if (this.flatOwn.getValue() && hole.intersects(mc.player.getEntityBoundingBox())) {
                     RenderUtil.drawBoundingBoxWithSides(hole, width.getValue(), outlineColor, ufoAlpha.getValue(), GeometryMasks.Quad.DOWN);
-                }
-                else {
+                } else {
                     RenderUtil.drawBoundingBox(hole.setMaxY(hole.maxY + 1), width.getValue(), outlineColor, ufoAlpha.getValue());
                 }
                 break;

@@ -1,7 +1,10 @@
 package com.gamesense.client.module.modules.hud;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
@@ -13,23 +16,15 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 
+@Module.Declaration(name = "Coordinates", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 0)
 public class Coordinates extends HUDModule {
-    private Setting.Boolean showNetherOverworld;
-    private Setting.Boolean thousandsSeparator;
-    private Setting.Integer decimalPlaces;
+
+    BooleanSetting showNetherOverworld = registerBoolean("Show Nether", true);
+    BooleanSetting thousandsSeparator = registerBoolean("Thousands Separator", true);
+    IntegerSetting decimalPlaces = registerInteger("Decimal Places", 1, 0, 5);
 
     private final String[] coordinateString = {"", ""};
-
-    public Coordinates() {
-        super("Coordinates", new Point(0, 0));
-    }
-
-    @Override
-    public void setup() {
-        showNetherOverworld = registerBoolean("Show Nether", true);
-        thousandsSeparator = registerBoolean("Thousands Separator", true);
-        decimalPlaces = registerInteger("Decimal Places", 1, 0, 5);
-    }
 
     @SuppressWarnings("unused")
     @EventHandler
@@ -54,11 +49,11 @@ public class Coordinates extends HUDModule {
         switch (dimension) {
             case -1: // Nether
                 coordinateString[1] = "Overworld "
-                    + getFormattedCoords(viewEntity.posX * 8.0, viewEntity.posY, viewEntity.posZ * 8.0);
+                        + getFormattedCoords(viewEntity.posX * 8.0, viewEntity.posY, viewEntity.posZ * 8.0);
                 break;
             case 0: // Overworld
                 coordinateString[1] = "Nether "
-                    + getFormattedCoords(viewEntity.posX / 8.0, viewEntity.posY, viewEntity.posZ / 8.0);
+                        + getFormattedCoords(viewEntity.posX / 8.0, viewEntity.posY, viewEntity.posZ / 8.0);
                 break;
             default:
                 break;
@@ -66,7 +61,7 @@ public class Coordinates extends HUDModule {
     });
 
     private String getFormattedCoords(double x, double y, double z) {
-        return roundOrInt(x) + ", " + roundOrInt(y) + ", " +roundOrInt(z);
+        return roundOrInt(x) + ", " + roundOrInt(y) + ", " + roundOrInt(z);
     }
 
     private String roundOrInt(double input) {

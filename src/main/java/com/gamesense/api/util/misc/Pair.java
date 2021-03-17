@@ -6,6 +6,7 @@ package com.gamesense.api.util.misc;
  */
 
 public class Pair<T, S> {
+
     T key;
     S value;
 

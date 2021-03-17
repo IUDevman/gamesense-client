@@ -1,19 +1,13 @@
 package com.gamesense.api.config;
 
-import java.awt.Font;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.SettingsManager;
+import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.font.CFontRenderer;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GuiConfig;
-import com.gamesense.client.command.Command;
+import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
@@ -23,6 +17,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author Hoosiers
@@ -34,8 +35,7 @@ public class LoadConfig {
     public LoadConfig() {
         try {
             loadConfig();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -46,10 +46,11 @@ public class LoadConfig {
     String miscName = "Misc/";
 
     public void loadConfig() throws IOException {
-    	loadModules();
+        loadModules();
         loadEnabledModules();
         loadModuleKeybinds();
         loadDrawnModules();
+        loadToggleMessageModules();
         loadCommandPrefix();
         loadCustomFont();
         loadFriendsList();
@@ -67,8 +68,7 @@ public class LoadConfig {
         for (Module module : ModuleManager.getModules()) {
             try {
                 loadModuleDirect(moduleLocation, module);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println(module.getName());
                 e.printStackTrace();
             }
@@ -88,29 +88,23 @@ public class LoadConfig {
         }
 
         JsonObject settingObject = moduleObject.get("Settings").getAsJsonObject();
-        for (Setting setting : GameSense.getInstance().settingsManager.getSettingsForMod(module)) {
+        for (Setting setting : SettingsManager.getSettingsForModule(module)) {
             JsonElement dataObject = settingObject.get(setting.getConfigName());
             try {
                 if (dataObject != null && dataObject.isJsonPrimitive()) {
-                    switch (setting.getType()) {
-                        case BOOLEAN:
-                            ((Setting.Boolean) setting).setValue(dataObject.getAsBoolean());
-                            break;
-                        case INTEGER:
-                            ((Setting.Integer) setting).setValue(dataObject.getAsInt());
-                            break;
-                        case DOUBLE:
-                            ((Setting.Double) setting).setValue(dataObject.getAsDouble());
-                            break;
-                        case COLOR:
-                            ((Setting.ColorSetting) setting).fromInteger(dataObject.getAsInt());
-                            break;
-                        case MODE:
-                            ((Setting.Mode) setting).setValue(dataObject.getAsString());
-                            break;
+                    if (setting instanceof BooleanSetting) {
+                        setting.setValue(dataObject.getAsBoolean());
+                    } else if (setting instanceof IntegerSetting) {
+                        setting.setValue(dataObject.getAsInt());
+                    } else if (setting instanceof DoubleSetting) {
+                        setting.setValue(dataObject.getAsDouble());
+                    } else if (setting instanceof ColorSetting) {
+                        ((ColorSetting) setting).fromInteger(dataObject.getAsInt());
+                    } else if (setting instanceof ModeSetting) {
+                        setting.setValue(dataObject.getAsString());
                     }
                 }
-            }catch(java.lang.NumberFormatException e) {
+            } catch (java.lang.NumberFormatException e) {
                 System.out.println(setting.getConfigName() + " " + module.getName());
                 System.out.println(dataObject);
             }
@@ -140,7 +134,7 @@ public class LoadConfig {
                 if (dataObject.getAsBoolean()) {
                     try {
                         module.enable();
-                    }catch (NullPointerException e) {
+                    } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
                 }
@@ -199,6 +193,31 @@ public class LoadConfig {
         inputStream.close();
     }
 
+    public void loadToggleMessageModules() throws IOException {
+        String toggleMessageLocation = fileName + mainName;
+
+        if (!Files.exists(Paths.get(toggleMessageLocation + "ToggleMessages" + ".json"))) {
+            return;
+        }
+
+        InputStream inputStream = Files.newInputStream(Paths.get(toggleMessageLocation + "ToggleMessages" + ".json"));
+        JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+
+        if (moduleObject.get("Modules") == null) {
+            return;
+        }
+
+        JsonObject toggleObject = moduleObject.get("Modules").getAsJsonObject();
+        for (Module module : ModuleManager.getModules()) {
+            JsonElement dataObject = toggleObject.get(module.getName());
+
+            if (dataObject != null && dataObject.isJsonPrimitive()) {
+                module.setToggleMsg(dataObject.getAsBoolean());
+            }
+        }
+        inputStream.close();
+    }
+
     public void loadCommandPrefix() throws IOException {
         String prefixLocation = fileName + mainName;
 
@@ -216,7 +235,7 @@ public class LoadConfig {
         JsonElement prefixObject = mainObject.get("Prefix");
 
         if (prefixObject != null && prefixObject.isJsonPrimitive()) {
-            Command.setCommandPrefix(prefixObject.getAsString());
+            CommandManager.setCommandPrefix(prefixObject.getAsString());
         }
         inputStream.close();
     }
@@ -252,12 +271,12 @@ public class LoadConfig {
         }
 
         if (name != null && size != -1) {
-            GameSense.getInstance().cFontRenderer = new CFontRenderer(new Font(name, Font.PLAIN, size), true, true);
-            GameSense.getInstance().cFontRenderer.setFont(new Font(name, Font.PLAIN, size));
-            GameSense.getInstance().cFontRenderer.setAntiAlias(true);
-            GameSense.getInstance().cFontRenderer.setFractionalMetrics(true);
-            GameSense.getInstance().cFontRenderer.setFontName(name);
-            GameSense.getInstance().cFontRenderer.setFontSize(size);
+            GameSense.INSTANCE.cFontRenderer = new CFontRenderer(new Font(name, Font.PLAIN, size), true, true);
+            GameSense.INSTANCE.cFontRenderer.setFont(new Font(name, Font.PLAIN, size));
+            GameSense.INSTANCE.cFontRenderer.setAntiAlias(true);
+            GameSense.INSTANCE.cFontRenderer.setFractionalMetrics(true);
+            GameSense.INSTANCE.cFontRenderer.setFontName(name);
+            GameSense.INSTANCE.cFontRenderer.setFontSize(size);
         }
         inputStream.close();
     }
@@ -278,7 +297,7 @@ public class LoadConfig {
 
         JsonArray friendObject = mainObject.get("Friends").getAsJsonArray();
 
-        friendObject.forEach(object -> Friends.addFriend(object.getAsString()));
+        friendObject.forEach(object -> SocialManager.addFriend(object.getAsString()));
         inputStream.close();
     }
 
@@ -298,12 +317,12 @@ public class LoadConfig {
 
         JsonArray enemyObject = mainObject.get("Enemies").getAsJsonArray();
 
-        enemyObject.forEach(object -> Enemies.addEnemy(object.getAsString()));
+        enemyObject.forEach(object -> SocialManager.addEnemy(object.getAsString()));
         inputStream.close();
     }
 
     public void loadClickGUIPositions() {
-		GameSense.getInstance().gameSenseGUI.gui.loadConfig(new GuiConfig(fileName+mainName));
+        GameSense.INSTANCE.gameSenseGUI.gui.loadConfig(new GuiConfig(fileName + mainName));
     }
 
     public void loadAutoGG() throws IOException {

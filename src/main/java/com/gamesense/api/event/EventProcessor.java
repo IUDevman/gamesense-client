@@ -3,10 +3,12 @@ package com.gamesense.api.event;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
+import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.GameSense;
-import com.gamesense.client.command.Command;
 import com.gamesense.client.command.CommandManager;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.google.common.collect.Maps;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -42,11 +44,11 @@ public class EventProcessor {
 
     public static EventProcessor INSTANCE;
     Minecraft mc = Minecraft.getMinecraft();
-	CommandManager commandManager = new CommandManager();
+    CommandManager commandManager = new CommandManager();
 
-	public EventProcessor() {
-		INSTANCE = this;
-	}
+    public EventProcessor() {
+        INSTANCE = this;
+    }
 
     @SubscribeEvent
     public void onRenderScreen(RenderGameOverlayEvent.Text event) {
@@ -98,6 +100,16 @@ public class EventProcessor {
         GameSense.EVENT_BUS.post(event);
     }
 
+    @SubscribeEvent
+    public void onFogColor(EntityViewRenderEvent.FogColors event) {
+        GameSense.EVENT_BUS.post(event);
+    }
+
+    @SubscribeEvent
+    public void onFogDensity(EntityViewRenderEvent.FogDensity event) {
+        GameSense.EVENT_BUS.post(event);
+    }
+
     @EventHandler
     private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (event.getPacket() instanceof SPacketPlayerListItem) {
@@ -136,26 +148,49 @@ public class EventProcessor {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (mc.player != null) {
-            ModuleManager.onUpdate();
+            for (Module module : ModuleManager.getModules()) {
+                if (!module.isEnabled()) continue;
+                module.onUpdate();
+            }
         }
 
-		  GameSense.EVENT_BUS.post(event);
+        GameSense.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (event.isCanceled()) {
-            return;
+        if (event.isCanceled()) return;
+
+        mc.profiler.startSection("gamesense");
+        mc.profiler.startSection("setup");
+        RenderUtil.prepare();
+        RenderEvent event1 = new RenderEvent(event.getPartialTicks());
+        Minecraft.getMinecraft().profiler.endSection();
+
+        for (Module module : ModuleManager.getModules()) {
+            if (!module.isEnabled()) continue;
+            mc.profiler.startSection(module.getName());
+            module.onWorldRender(event1);
+            mc.profiler.endSection();
         }
-        ModuleManager.onWorldRender(event);
+
+        mc.profiler.startSection("release");
+        RenderUtil.release();
+        mc.profiler.endSection();
+        mc.profiler.endSection();
     }
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
-        GameSense.EVENT_BUS.post(event);
         if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
-            ModuleManager.onRender();
+            for (Module module : ModuleManager.getModules()) {
+                if (!module.isEnabled()) continue;
+                module.onRender();
+            }
+            GameSense.INSTANCE.gameSenseGUI.render();
         }
+
+        GameSense.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
@@ -164,15 +199,23 @@ public class EventProcessor {
 
         EntityPlayerSP player = mc.player;
         if (player != null && !player.isSneaking()) {
-            String prefix = Command.getCommandPrefix();
+            String prefix = CommandManager.getCommandPrefix();
             char typedChar = Keyboard.getEventCharacter();
             if (prefix.length() == 1 && prefix.charAt(0) == typedChar) {
                 mc.displayGuiScreen(new GuiChat(prefix));
             }
         }
 
-        ModuleManager.onBind(Keyboard.getEventKey());
-        GameSense.getInstance().gameSenseGUI.handleKeyEvent(Keyboard.getEventKey());
+        int key = Keyboard.getEventKey();
+
+        if (key != Keyboard.KEY_NONE) {
+            for (Module module : ModuleManager.getModules()) {
+                if (module.getBind() != key) continue;
+                module.toggle();
+            }
+        }
+
+        GameSense.INSTANCE.gameSenseGUI.handleKeyEvent(Keyboard.getEventKey());
     }
 
     @SubscribeEvent
@@ -184,7 +227,7 @@ public class EventProcessor {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChatSent(ClientChatEvent event) {
-        if (event.getMessage().startsWith(Command.getCommandPrefix())) {
+        if (event.getMessage().startsWith(CommandManager.getCommandPrefix())) {
             event.setCanceled(true);
             try {
                 mc.ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
@@ -196,7 +239,7 @@ public class EventProcessor {
         }
     }
 
-	private final Map<String, String> uuidNameCache = Maps.newConcurrentMap();
+    private final Map<String, String> uuidNameCache = Maps.newConcurrentMap();
 
     public String resolveName(String uuid) {
         uuid = uuid.replace("-", "");
