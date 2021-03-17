@@ -7,14 +7,11 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.world.BlockUtil;
-import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import com.sun.javafx.geom.Vec2d;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -25,7 +22,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 
 import java.util.Arrays;
 
@@ -116,20 +112,20 @@ public class Blocker extends Module {
     private void antiFacePlace() {
         int blocksPlaced = 0;
         Block temp;
-        for(Vec2d surround : new Vec2d[] {
-                new Vec2d(1, 0),
-                new Vec2d(-1, 0),
-                new Vec2d(0, 1),
-                new Vec2d(0, -1)
+        for(Vec3d surround : new Vec3d[] {
+                new Vec3d(1,1, 0),
+                new Vec3d(-1, 1, 0),
+                new Vec3d(0, 1, 1),
+                new Vec3d(0, 1, -1)
         }) {
-            BlockPos pos = new BlockPos(mc.player.posX + surround.x, mc.player.posY , mc.player.posZ + surround.y);
+            BlockPos pos = new BlockPos(mc.player.posX + surround.x, mc.player.posY , mc.player.posZ + surround.z);
             if ((temp = BlockUtil.getBlock(pos)) instanceof BlockObsidian ||
                     temp == Blocks.BEDROCK) {
                 if (blocksPlaced++ == 0) {
                     AntiCrystal.getHotBarPressure(blockPlaced.getValue());
                 }
 
-                PlacementUtil.placeItem(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()), EnumHand.MAIN_HAND, rotate.getValue(), Items.STRING.getClass());
+                PlacementUtil.placeItem(new BlockPos(pos.getX(), pos.getY() + surround.y, pos.getZ()), EnumHand.MAIN_HAND, rotate.getValue(), Items.STRING.getClass());
 
                 if (blocksPlaced == BlocksPerTick.getValue())
                     return;
