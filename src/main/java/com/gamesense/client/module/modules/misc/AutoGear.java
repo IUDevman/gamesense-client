@@ -132,7 +132,8 @@ public class AutoGear extends Module {
                 finishSort = false;
                 // Print
                 if (infoMsgs.getValue())
-                    PistonCrystal.printDebug("Inventory arleady sorted...", true);
+                    PistonCrystal.printDebug("Inventory already sorted...", true);
+              
                 if (closeAfter.getValue())
                     mc.player.closeScreen();
             } else {
