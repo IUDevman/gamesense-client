@@ -161,7 +161,7 @@ public class AutoGear extends Module {
                 finishSort = false;
                 // Print
                 if (chatMsg.getValue())
-                    PistonCrystal.printChat("Inventory arleady sorted...", true);
+                    PistonCrystal.printChat("Inventory already sorted...", true);
                 if (closeAfter.getValue())
                     mc.player.closeScreen();
             }else {
