@@ -446,6 +446,10 @@ public class PistonCrystal extends Module {
                             stage = 4;
                             break;
                         }
+                    if (checkPistonPlace(false)) {
+                        stage++;
+                        return;
+                    }
 
                     if (preRotation.getValue() && !preRotationBol) {
                         placeBlockThings(stage, false, true, false);
@@ -493,7 +497,7 @@ public class PistonCrystal extends Module {
                     if (debugMode.getValue())
                         printDebug("step 2", false);
                     // Check pistonPlace if confirmPlace
-                    if (fastModeActive || !confirmPlace.getValue() || checkPistonPlace())
+                    if (fastModeActive || !confirmPlace.getValue() || checkPistonPlace(true))
                         placeBlockThings(stage, false, false, false);
 
                     redstoneTickDelay = 0;
@@ -531,7 +535,7 @@ public class PistonCrystal extends Module {
                     if (fastModeActive || !confirmPlace.getValue() || checkCrystalPlaceExt(true)) {
                         placeBlockThings(stage, true, false, false);
                         hitTryTick = 0;
-                        if (fastModeActive && !checkPistonPlace())
+                        if (fastModeActive && !checkPistonPlace(true))
                             stage = 1;
                     }
                     preRotationBol = false;
@@ -603,7 +607,7 @@ public class PistonCrystal extends Module {
             // If it got stuck
             if (++stuck >= stuckDetector.getValue()) {
                 // Check if the piston was not placed
-                if (!checkPistonPlace()) {
+                if (!checkPistonPlace(true)) {
                     BlockPos crystPos = getTargetPos(toPlace.supportBlock + 1);
                     printDebug(String.format("aim: %d %d", crystPos.getX(), crystPos.getZ()), false);
                     Entity crystalF = null;
@@ -793,12 +797,12 @@ public class PistonCrystal extends Module {
     }
 
     // Check if the piston has been placed
-    private boolean checkPistonPlace() {
+    private boolean checkPistonPlace(boolean decr) {
         // Check for the piston 255 3 -56
         BlockPos targetPosPist = compactBlockPos(1);
         if (!(BlockUtil.getBlock(targetPosPist.getX(), targetPosPist.getY(), targetPosPist.getZ()) instanceof BlockPistonBase)) {
             // Go back placing the piston
-            if (stage != 4)
+            if (stage != 4 && decr)
                 stage--;
             return false;
         } else return true;
