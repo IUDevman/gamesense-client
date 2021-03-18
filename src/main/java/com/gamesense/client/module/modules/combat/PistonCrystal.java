@@ -63,6 +63,7 @@ public class PistonCrystal extends Module {
     ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
     DoubleSetting enemyRange = registerDouble("Range", 4.9, 0, 6);
     DoubleSetting crystalDeltaBreak = registerDouble("Center Break", 0.1, 0, 0.5);
+    IntegerSetting crystalPlaceTry = registerInteger("Crystal Place Try", 15, 2, 30);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 20);
     IntegerSetting minHealth = registerInteger("Min Health", 8, 0, 20);
     IntegerSetting supBlocksDelay = registerInteger("Surround Delay", 4, 0, 20);
@@ -106,7 +107,8 @@ public class PistonCrystal extends Module {
             deadPl,
             rotationPlayerMoved,
             preRotationBol = false,
-            minHp;
+            minHp,
+            itemCrystal;
 
     private int oldSlot = -1,
             stage,
@@ -117,7 +119,8 @@ public class PistonCrystal extends Module {
             nCrystal,
             redstoneTickDelay,
             preRotationTick,
-            afterRotationTick;
+            afterRotationTick,
+            placeTry;
     private long startTime, endTime;
 
     private int[] slot_mat,
@@ -232,7 +235,7 @@ public class PistonCrystal extends Module {
         // Default values reset
         toPlace = new structureTemp(0, 0, null);
         isHole = minHp = true;
-        hasMoved = rotationPlayerMoved = deadPl = broken = brokenCrystalBug = brokenRedstoneTorch = yUnder = redstoneBlockMode = fastModeActive = false;
+        hasMoved = itemCrystal = rotationPlayerMoved = deadPl = broken = brokenCrystalBug = brokenRedstoneTorch = yUnder = redstoneBlockMode = fastModeActive = false;
         slot_mat = new int[]{-1, -1, -1, -1, -1, -1};
         stage = delayTimeTicks = stuck = 0;
 
@@ -297,6 +300,8 @@ public class PistonCrystal extends Module {
                 output = "You cannot move from your hole if you have rotation on. ";
             } else if(!minHp) {
                 output = "Your hp is low";
+            } else if(itemCrystal) {
+                output = "An item is where the crystal should be placed";
             }
         // Output in chat
         setDisabledMessage(output + "PistonCrystal turned OFF!");
@@ -441,6 +446,7 @@ public class PistonCrystal extends Module {
             switch (stage) {
                 // Place the piston
                 case 1:
+                    placeTry = 0;
                     if (confirmBreak.getValue())
                         if (checkCrystalPlaceExt(false) || checkCrystalPlaceIns() != null) {
                             stage = 4;
@@ -478,6 +484,10 @@ public class PistonCrystal extends Module {
 
                 // Place crystal
                 case 2:
+                    if (placeTry++ >= crystalPlaceTry.getValue()) {
+                        itemCrystal = true;
+                        return;
+                    }
                     if (afterRotationTick != afterRotationDelay.getValue()) {
                         afterRotationTick++;
                         break;
@@ -1130,7 +1140,7 @@ public class PistonCrystal extends Module {
     // Check if we have to disable
     private boolean checkVariable() {
         // If something went wrong
-        if (noMaterials || !isHole || !enoughSpace || hasMoved || deadPl || rotationPlayerMoved || !minHp) {
+        if (noMaterials || !isHole || !enoughSpace || hasMoved || deadPl || rotationPlayerMoved || !minHp || itemCrystal) {
             disable();
             return true;
         }
