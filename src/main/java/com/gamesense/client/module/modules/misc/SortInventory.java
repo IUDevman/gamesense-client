@@ -15,15 +15,7 @@ import java.util.*;
 /**
  * @Author TechAle
  */
-/*
-    TODO: Read perfectly your inventory
-    TODO: Create a json
-    TODO: Read the json
-    TODO: Create line-config
-    TODO: Read perfectly a shulker/chest
-    TODO: Take chest/shulker items to inventory
-    TODO: Sort inventory
- */
+
 /*
     INVENTORY SORTING ALGORITHM
     Lets start from the beginning, the inventory on the json.

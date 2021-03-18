@@ -467,6 +467,10 @@ public class PistonCrystal extends Module {
                             break;
                         }
                     }
+                    if (afterRotationTick != afterRotationDelay.getValue()) {
+                        afterRotationTick++;
+                        break;
+                    }
                     // Debug mode
                     if (debugMode.getValue())
                         printDebug("step 1", false);
