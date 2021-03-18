@@ -1,6 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.event.events.DestroyBlockEvent;
+import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
@@ -20,17 +21,19 @@ import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.*;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -47,6 +50,8 @@ public class CevBreaker extends Module {
     ModeSetting breakCrystal = registerMode("Break Crystal", Arrays.asList("Vanilla", "Packet", "None"), "Packet");
     ModeSetting breakBlock = registerMode("Break Block", Arrays.asList("Normal", "Packet"), "Packet");
     DoubleSetting enemyRange = registerDouble("Range", 4.9, 0, 6);
+    IntegerSetting preRotationDelay = registerInteger("Pre Rotation Delay", 0, 0, 20);
+    IntegerSetting afterRotationDelay = registerInteger("After Rotation Delay", 0, 0, 20);
     IntegerSetting supDelay = registerInteger("Support Delay", 1, 0, 4);
     IntegerSetting crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 2, 6);
@@ -65,6 +70,8 @@ public class CevBreaker extends Module {
     BooleanSetting trapPlayer = registerBoolean("Trap Player", false);
     BooleanSetting antiStep = registerBoolean("Anti Step", false);
     BooleanSetting placeCrystal = registerBoolean("Place Crystal", true);
+    BooleanSetting preRotation = registerBoolean("Pre Rotation", false);
+    BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -109,6 +116,18 @@ public class CevBreaker extends Module {
 
         if (enemyCoordsInt != null && event.getBlockPos().x + (event.getBlockPos().x < 0 ? 1 : 0) == enemyCoordsInt[0] && event.getBlockPos().z + (event.getBlockPos().z < 0 ? 1 : 0) == enemyCoordsInt[2]) {
             destroyCrystalAlgo();
+        }
+    });
+
+    @EventHandler
+    private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
+
+        if (event.getPacket() instanceof SPacketSoundEffect) {
+            final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
+            if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
+                if ((int) packet.getX() == enemyCoordsInt[0] && (int) packet.getZ() == enemyCoordsInt[2])
+                    stage = 1;
+            }
         }
     });
 
