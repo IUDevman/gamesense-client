@@ -11,10 +11,7 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEnderChest;
-import net.minecraft.block.BlockObsidian;
-import net.minecraft.block.BlockWeb;
+import net.minecraft.block.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -33,12 +30,14 @@ import java.util.stream.Collectors;
  * @author TechAle
  * @since 10/31/2020
  * @since 26/01/2021
+ * @author Madmegsox1
+ * @since 18/03/2021
  */
 
 @Module.Declaration(name = "HoleFill", category = Category.Combat)
 public class HoleFill extends Module {
 
-    ModeSetting mode = registerMode("Type", Arrays.asList("Obby", "Echest", "Both", "Web"), "Obby");
+    ModeSetting mode = registerMode("Type", Arrays.asList("Obby", "Echest", "Both", "Web", "PressurePlate"), "Obby");
     IntegerSetting placeDelay = registerInteger("Delay", 2, 0, 10);
     IntegerSetting retryDelay = registerInteger("Retry Delay", 10, 0, 50);
     IntegerSetting bpc = registerInteger("Block pre Cycle", 2, 1, 5);
@@ -111,11 +110,12 @@ public class HoleFill extends Module {
         }
 
         if (autoSwitch.getValue()) {
-            int oldHand = mc.player.inventory.currentItem;
-            int newHand = findRightBlock(oldHand);
+            //int oldHand = mc.player.inventory.currentItem;
+            int newHand = findRightBlock();
 
             if (newHand != -1) {
                 mc.player.inventory.currentItem = newHand;
+                mc.playerController.syncCurrentPlayItem();
             } else {
                 return;
             }
@@ -174,24 +174,25 @@ public class HoleFill extends Module {
 
     private boolean placeBlock(BlockPos pos) {
         EnumHand handSwing = EnumHand.MAIN_HAND;
+        if(offHandObby.getValue()) {
+            int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
 
-        int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
+            if (obsidianSlot == -1) {
+                return false;
+            }
 
-        if (obsidianSlot == -1) {
-            return false;
+            if (obsidianSlot == 9) {
+                activedOff = true;
+                if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
+                    // We can continue
+                    handSwing = EnumHand.OFF_HAND;
+                } else return false;
+            }
         }
 
-        if (obsidianSlot == 9) {
-            activedOff = true;
-            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
-                // We can continue
-                handSwing = EnumHand.OFF_HAND;
-            } else return false;
-        }
-
-        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
-            mc.player.inventory.currentItem = obsidianSlot;
-        }
+        //if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
+           // mc.player.inventory.currentItem = obsidianSlot;
+        //}
 
         return PlacementUtil.place(pos, handSwing, rotate.getValue());
     }
@@ -207,11 +208,10 @@ public class HoleFill extends Module {
                 holes.add(blockPos);
             }
         }
-
         return holes;
     }
 
-    private int findRightBlock(int oldHand) {
+    private int findRightBlock() {
         int newHand = -1;
 
         if (mode.getValue().equalsIgnoreCase("Both")) {
@@ -224,12 +224,11 @@ public class HoleFill extends Module {
         } else if (mode.getValue().equalsIgnoreCase("Echest")) {
             newHand = InventoryUtil.findFirstBlockSlot(BlockEnderChest.class, 0, 8);
         } else if (mode.getValue().equalsIgnoreCase("Web")) {
-            newHand = InventoryUtil.findFirstBlockSlot(BlockEnderChest.class, 0, 8);
+            newHand = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
+        } else if(mode.getValue().equalsIgnoreCase("PressurePlate")){
+            newHand = InventoryUtil.findFirstBlockSlot(BlockPressurePlate.class, 0 ,8);
         }
 
-        if (newHand == -1) {
-            newHand = oldHand;
-        }
 
         return newHand;
     }
@@ -247,6 +246,8 @@ public class HoleFill extends Module {
             } else if (mode.getValue().equalsIgnoreCase("Echest") && block instanceof BlockEnderChest) {
                 return true;
             } else if (mode.getValue().equalsIgnoreCase("Both") && (block instanceof BlockObsidian || block instanceof BlockEnderChest)) {
+                return true;
+            }else if(mode.getValue().equalsIgnoreCase("PressurePlate") && block instanceof BlockPressurePlate){
                 return true;
             } else return mode.getValue().equalsIgnoreCase("Web") && block instanceof BlockWeb;
         }
