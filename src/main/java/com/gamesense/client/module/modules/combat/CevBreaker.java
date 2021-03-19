@@ -1,18 +1,23 @@
 package com.gamesense.client.module.modules.combat;
 
+import com.gamesense.api.event.Phase;
 import com.gamesense.api.event.events.DestroyBlockEvent;
+import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.PlacementUtil;
+import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.api.util.player.RotationUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.client.GameSense;
+import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -35,6 +40,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -82,13 +88,16 @@ public class CevBreaker extends Module {
             stoppedCa,
             deadPl,
             rotationPlayerMoved,
-            prevBreak;
+            prevBreak,
+            preRotationBol;
 
     private int oldSlot = -1,
             stage,
             delayTimeTicks,
             hitTryTick,
-            tickPick;
+            tickPick,
+            afterRotationTick,
+            preRotationTick;
     private final int[][] model = new int[][]{
             {1, 1, 0},
             {-1, 1, 0},
@@ -129,6 +138,16 @@ public class CevBreaker extends Module {
                     stage = 1;
             }
         }
+    });
+
+    Vec3d lastHitVec;
+
+    @EventHandler
+    private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
+        Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
+        PlayerPacket packet = new PlayerPacket(this, rotation);
+        PlayerPacketManager.INSTANCE.addPacket(packet);
     });
 
     // Everytime you enable
@@ -191,6 +210,8 @@ public class CevBreaker extends Module {
 
     // Init some values
     private void initValues() {
+        preRotationBol = false;
+        afterRotationTick = preRotationTick = 0;
         isActive = true;
         // Reset aimtarget
         aimTarget = null;
@@ -364,9 +385,26 @@ public class CevBreaker extends Module {
             switch (stage) {
                 // Place obsidian
                 case 1:
-                    placeBlockThings(stage);
+
+                    if (afterRotationTick != afterRotationDelay.getValue()) {
+                        afterRotationTick++;
+                        return;
+                    }
+
+                    if (preRotation.getValue() && !preRotationBol) {
+                        placeBlockThings(stage, true);
+                        if (preRotationTick == preRotationDelay.getValue()) {
+                            preRotationBol = true;
+                            preRotationTick = 0;
+                        } else {
+                            preRotationTick++;
+                            break;
+                        }
+                    }
+
+                    placeBlockThings(stage, false);
                     if (fastPlace.getValue()) {
-                        placeCrystal();
+                        placeCrystal(false);
                     }
                     prevBreak = false;
                     tickPick = 0;
@@ -374,6 +412,21 @@ public class CevBreaker extends Module {
 
                 // Place crystal
                 case 2:
+                    if (afterRotationTick != afterRotationDelay.getValue()) {
+                        afterRotationTick++;
+                        return;
+                    }
+
+                    if (preRotation.getValue() && !preRotationBol) {
+                        placeCrystal(true);
+                        if (preRotationTick == preRotationDelay.getValue()) {
+                            preRotationBol = true;
+                            preRotationTick = 0;
+                        } else {
+                            preRotationTick++;
+                            break;
+                        }
+                    }
                     // Confirm Place
                     if (confirmPlace.getValue())
                         if (!(BlockUtil.getBlock(compactBlockPos(0)) instanceof BlockObsidian)) {
@@ -381,11 +434,16 @@ public class CevBreaker extends Module {
                             return;
                         }
 
-                    placeCrystal();
+                    placeCrystal(false);
+
                     break;
 
                 // Break
                 case 3:
+
+                    if (forceRotation.getValue()) {
+                        placeBlockThings(1, true);
+                    }
                     // Confirm Place
                     if (confirmPlace.getValue())
                         if (getCrystal() == null) {
@@ -449,11 +507,11 @@ public class CevBreaker extends Module {
         }
     }
 
-    private void placeCrystal() {
+    private void placeCrystal(boolean onlyRotate) {
         // Check pistonPlace if confirmPlace
-        placeBlockThings(stage);
+        placeBlockThings(stage, onlyRotate);
         // If fastBreak
-        if (fastBreak.getValue()) {
+        if (fastBreak.getValue() && !onlyRotate) {
             fastBreakFun();
         }
     }
@@ -559,7 +617,7 @@ public class CevBreaker extends Module {
                 BlockPos targetPos = getTargetPos(checksDone);
 
                 // Try to place the block
-                if (placeBlock(targetPos, 0)) {
+                if (placeBlock(targetPos, 0, false)) {
                     // If we reached the limit
                     if (++blockDone == blocksPerTick.getValue())
                         // Return false
@@ -574,7 +632,7 @@ public class CevBreaker extends Module {
     }
 
     // Place a block
-    private boolean placeBlock(BlockPos pos, int step) {
+    private boolean placeBlock(BlockPos pos, int step, boolean onlyRotate) {
         /*
 			// I use this as a remind to which index refers to what
 			0 => obsidian
@@ -582,6 +640,23 @@ public class CevBreaker extends Module {
 			2 => Pick
 			3 => Sword
 		 */
+        if (onlyRotate) {
+            EnumFacing side = BlockUtil.getPlaceableSide(pos);
+
+            if (side == null) {
+                return false;
+            }
+
+            BlockPos neighbour = pos.offset(side);
+            EnumFacing opposite = side.getOpposite();
+
+            if (!BlockUtil.canBeClicked(neighbour)) {
+                return false;
+            }
+
+            lastHitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+            return false;
+        }
         // Get what slot we are going to select
         // If it's not empty
         if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
@@ -607,16 +682,20 @@ public class CevBreaker extends Module {
     }
 
     // Given a step, place the block
-    public void placeBlockThings(int step) {
+    public void placeBlockThings(int step, boolean onlyRotate) {
         if (step != 1 || placeCrystal.getValue()) {
             step--;
             // Get absolute position
             BlockPos targetPos = compactBlockPos(step);
             // Place 93 4 -29
-            placeBlock(targetPos, step);
+            placeBlock(targetPos, step, onlyRotate);
         }
-        // Next step
-        stage++;
+        if (!onlyRotate) {
+            // Next step
+            stage++;
+            afterRotationTick = 0;
+            preRotationBol = false;
+        }
     }
 
     // Given a step, return the absolute block position

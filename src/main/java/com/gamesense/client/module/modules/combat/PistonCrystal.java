@@ -220,6 +220,7 @@ public class PistonCrystal extends Module {
 
     // Init some values
     private void initValues() {
+        preRotationBol = false;
         preRotationTick = afterRotationTick = 0;
         lastHitVec = null;
         // Reset aimtarget
