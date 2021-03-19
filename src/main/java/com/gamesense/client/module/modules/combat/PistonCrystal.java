@@ -1109,7 +1109,7 @@ public class PistonCrystal extends Module {
         if (slot_mat[step] == 11)
             handSwing = EnumHand.OFF_HAND;
 
-        PlacementUtil.placePrecise(pos, handSwing, rotate.getValue() || step == 1, positionHit, side, onlyRotation, !support || !forceRotation.getValue());
+        PlacementUtil.placePrecise(pos, handSwing, step == 1 || (rotate.getValue() && !forceRotation.getValue()), positionHit, side, onlyRotation, !support || !forceRotation.getValue());
 
         return true;
     }

@@ -676,7 +676,7 @@ public class CevBreaker extends Module {
         if (slot_mat[step] == 11)
             handSwing = EnumHand.OFF_HAND;
 
-        PlacementUtil.place(pos, handSwing, rotate.getValue());
+        PlacementUtil.place(pos, handSwing, rotate.getValue() && !forceRotation.getValue());
 
         return true;
     }
