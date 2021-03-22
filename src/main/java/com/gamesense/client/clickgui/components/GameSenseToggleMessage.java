@@ -1,4 +1,4 @@
-package com.gamesense.client.clickgui;
+package com.gamesense.client.clickgui.components;
 
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.Context;

@@ -34,7 +34,7 @@ public class ColorSetting extends Setting<GSColor> implements com.lukflug.panels
 
     @Override
     public void setValue(Color value) {
-        super.setValue(this.rainbow ? GSColor.fromHSB((System.currentTimeMillis() % (360 * 32)) / (360f * 32), 1, 1) : new GSColor(value));
+        super.setValue(new GSColor(value));
     }
 
     @Override
