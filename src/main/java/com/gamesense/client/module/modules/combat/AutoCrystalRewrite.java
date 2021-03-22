@@ -6,20 +6,15 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.api.util.player.RotationUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
-import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.api.util.world.combat.DamageUtil;
-import com.gamesense.api.util.world.combat.ac.ACHelper;
-import com.gamesense.api.util.world.combat.ac.ACSettings;
-import com.gamesense.api.util.world.combat.ac.CrystalInfo;
-import com.gamesense.api.util.world.combat.ac.PlayerInfo;
-import com.gamesense.client.GameSense;
+import com.gamesense.api.util.world.combat.ac.*;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
@@ -32,7 +27,6 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
@@ -51,13 +45,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.stream.Collectors;
 
 @Module.Declaration(name = "AutoCrystalRewrite", category = Category.Combat, priority = 100)
 public class AutoCrystalRewrite extends Module {
@@ -89,13 +79,14 @@ public class AutoCrystalRewrite extends Module {
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting raytrace = registerBoolean("Raytrace", false);
     BooleanSetting showDamage = registerBoolean("Render Dmg", true);
-    BooleanSetting showOwn = registerBoolean("Show Own", false);
     BooleanSetting chat = registerBoolean("Chat Msgs", true);
     ModeSetting hudDisplay = registerMode("HUD", Arrays.asList("Mode", "Target", "None"), "Mode");
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 50));
 
     BooleanSetting wait = registerBoolean("Force Wait", true);
-    IntegerSetting timeout = registerInteger("Timeout (ms)", 5, 1, 10);
+    IntegerSetting timeout = registerInteger("Timeout (ms)", 10, 1, 50);
+    IntegerSetting maxBreakTargets = registerInteger("Break Targets", 2, 1, 5);
+    IntegerSetting maxPlaceTargets = registerInteger("Place Targets", 2, 1, 5);
 
     private boolean switchCooldown = false;
     private boolean isAttacking = false;
@@ -108,19 +99,14 @@ public class AutoCrystalRewrite extends Module {
     private Vec3d lastHitVec = Vec3d.ZERO;
     private boolean rotating = false;
 
-    // stores all know crystals
-    private final Set<EntityEnderCrystal> allCrystals = Collections.synchronizedSet(new HashSet<>());
-    // stores all the locations we have attempted to place crystals
-    // and the corresponding crystal for that location (if there is any)
-    private final Map<BlockPos, EntityEnderCrystal> placedCrystals = Collections.synchronizedMap(new HashMap<>());
+    // Threading Stuff
+    private List<CrystalInfo.BreakInfo> breakTargets = new ArrayList<>();
+    private List<CrystalInfo.PlaceInfo> placeTargets = new ArrayList<>();
+    private boolean finished = false;
 
-    private List<CrystalInfo.BreakInfo> breakTargets = null;
-    private List<CrystalInfo.PlaceInfo> placeTargets = null;
-
-    @Override
-    public void onUpdate() {
+    @EventHandler
+    private final Listener<TickEvent.ClientTickEvent> onUpdate = new Listener<>(event -> {
         if (mc.player == null || mc.world == null || mc.player.isDead) {
-            disable();
             return;
         }
 
@@ -128,66 +114,64 @@ public class AutoCrystalRewrite extends Module {
             return;
         }
 
-        if (antiSuicide.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount()) <= antiSuicideValue.getValue()) {
+        PlayerInfo player = new PlayerInfo(mc.player, false);
+        if (antiSuicide.getValue() && player.health <= antiSuicideValue.getValue()) {
             return;
         }
 
-        // entity range is the range from each crystal
-        // so adding these together should solve problem
-        // and reduce searching time
-        double enemyDistance = enemyRange.getValue() + placeRange.getValue();
-        final double entityRangeSq = (enemyDistance) * (enemyDistance);
-        List<EntityPlayer> targets = mc.world.playerEntities.stream()
-                .filter(entity -> mc.player.getDistanceSq(entity) <= entityRangeSq)
-                .filter(entity -> !EntityUtil.basicChecksEntity(entity))
-                .filter(entity -> entity.getHealth() > 0.0f)
-                .collect(Collectors.toList());
-        // no point continuing if there are no targets
-        if (targets.size() == 0) {
-            return;
-        }
-
-        allCrystals.clear();
-        allCrystals.addAll(mc.world.loadedEntityList.stream()
-                            .filter(entity -> entity instanceof EntityEnderCrystal)
-                            .map(entity -> (EntityEnderCrystal) entity).collect(Collectors.toSet()));
-
-        final boolean own = breakMode.getValue().equalsIgnoreCase("Own");
-        if (own) {
-            // remove own crystals that have been destroyed
-            placedCrystals.values().removeIf(crystal -> {
-                if (crystal == null) {
-                    return false;
-                }
-                return crystal.isDead;
-            });
-        }
-
-        ACSettings settings = new ACSettings(breakCrystal.getValue(), placeCrystal.getValue(), enemyRange.getValue(), breakRange.getValue(), wallsRange.getValue(), minDmg.getValue(), minBreakDmg.getValue(), minFacePlaceDmg.getValue(), maxSelfDmg.getValue(), breakThreads.getValue(), facePlaceValue.getValue(), antiSuicide.getValue(), breakMode.getValue(), crystalPriority.getValue(), mc.player.getPositionVector());
-        List<PlayerInfo> targetsInfo = new ArrayList<>();
-
+        ACSettings settings = new ACSettings(breakCrystal.getValue(), placeCrystal.getValue(), enemyRange.getValue(), breakRange.getValue(), wallsRange.getValue(), placeRange.getValue(), minDmg.getValue(), minBreakDmg.getValue(), minFacePlaceDmg.getValue(), maxSelfDmg.getValue(), facePlaceValue.getValue(), antiSuicide.getValue(), endCrystalMode.getValue(), breakMode.getValue(), crystalPriority.getValue(), player, mc.player.getPositionVector());
         float armourPercent = armourFacePlace.getValue() / 100.0f;
-        for (EntityPlayer target : targets) {
-            targetsInfo.add(new PlayerInfo(target, armourPercent));
-        }
+        double enemyDistance = enemyRange.getValue() + placeRange.getValue();
+        ACHelper.INSTANCE.recalculateValues(settings, player, armourPercent, enemyDistance);
 
-        List<Future<CrystalInfo.PlaceInfo>> placeFutures = null;
-        List<Future<List<CrystalInfo.BreakInfo>>> breakFutures = null;
-        if (placeCrystal.getValue()) {
-            placeFutures = startPlaceThreads(targetsInfo, settings);
-        }
-        if (breakCrystal.getValue()) {
-            if (allCrystals.size() == 0) {
-                placedCrystals.clear();
-            } else {
-                breakFutures = startBreakThreads(targetsInfo, settings);
+        if (event.phase == TickEvent.Phase.START) {
+            collectTargetFinder();
+        } else {
+            if (finished) {
+                startTargetFinder();
+                finished = false;
             }
         }
-        globalTimeoutTime = System.currentTimeMillis() + timeout.getValue();
 
-        if (breakFutures != null) {
-            EntityEnderCrystal crystal = getCrystalToBreak(breakFutures);
-            if (crystal != null && (mc.player.canEntityBeSeen(crystal) || mc.player.getDistance(crystal) < wallsRange.getValue())) {
+        if (!breakCrystal(settings)) {
+            placeCrystal(settings);
+        }
+    });
+
+    public boolean breakCrystal(ACSettings settings) {
+        // no longer target dead players
+        breakTargets.removeIf(breakInfo -> breakInfo.target.entity.isDead || breakInfo.target.entity.getHealth() == 0);
+        if (breakCrystal.getValue() && breakTargets.size() > 0) {
+            List<CrystalInfo.BreakInfo> currentTargets;
+            if (breakTargets.size() < maxBreakTargets.getValue()) {
+                currentTargets = new ArrayList<>(breakTargets);
+            } else {
+                currentTargets = new ArrayList<>(breakTargets.subList(0, maxBreakTargets.getValue()));
+            }
+            List<EntityEnderCrystal> crystals = ACHelper.INSTANCE.getTargetableCrystals();
+
+            TreeSet<CrystalInfo.BreakInfo> possibleCrystals;
+            String crystalPriorityValue = crystalPriority.getValue();
+            if (crystalPriorityValue.equalsIgnoreCase("Health")) {
+                possibleCrystals = new TreeSet<>(Comparator.comparingDouble((i) -> i.target.health));
+            } else if (crystalPriorityValue.equalsIgnoreCase("Closest")) {
+                possibleCrystals = new TreeSet<>(Comparator.comparingDouble((i) -> mc.player.getDistanceSq(i.target.entity)));
+            } else {
+                possibleCrystals = new TreeSet<>(Comparator.comparingDouble((i) -> i.damage));
+            }
+
+            for (CrystalInfo.BreakInfo currentTarget : currentTargets) {
+                CrystalInfo.BreakInfo breakInfo = ACUtil.calculateBestBreakable(settings, new PlayerInfo(currentTarget.target.entity, currentTarget.target.lowArmour), crystals);
+                if (breakInfo != null) {
+                    possibleCrystals.add(breakInfo);
+                }
+            }
+            if (possibleCrystals.size() == 0) {
+                return false;
+            }
+
+            EntityEnderCrystal crystal = possibleCrystals.last().crystal;
+            if (mc.player.canEntityBeSeen(crystal) || mc.player.getDistance(crystal) < wallsRange.getValue()) {
                 if (antiWeakness.getValue() && mc.player.isPotionActive(MobEffects.WEAKNESS)) {
                     if (!isAttacking) {
                         // save initial player hand
@@ -220,16 +204,8 @@ public class AutoCrystalRewrite extends Module {
                         swingArm();
                     }
                 }
-
-                // return so we don't try to place if we just broke
-                // stop place calculations as no point in continuing them
-                if (placeFutures != null) {
-                    for (Future<CrystalInfo.PlaceInfo> placeFuture : placeFutures) {
-                        placeFuture.cancel(true);
-                    }
-                }
-                return;
             }
+            return true;
         } else {
             rotating = false;
             if (oldSlot != -1) {
@@ -239,6 +215,10 @@ public class AutoCrystalRewrite extends Module {
             isAttacking = false;
         }
 
+        return false;
+    }
+
+    private void placeCrystal(ACSettings settings) {
         // check to see if we are holding crystals or not
         int crystalSlot = mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL ? mc.player.inventory.currentItem : -1;
         if (crystalSlot == -1) {
@@ -248,22 +228,42 @@ public class AutoCrystalRewrite extends Module {
         if (mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL) {
             offhand = true;
         } else if (crystalSlot == -1) {
-            // stop place calculations as no point in continuing them
-            if (placeFutures != null) {
-                for (Future<CrystalInfo.PlaceInfo> placeFuture : placeFutures) {
-                    placeFuture.cancel(true);
-                }
-            }
             return;
         }
 
-        if (placeFutures != null) {
-            BlockPos target = getPositionToPlace(placeFutures);
-            this.render = target;
-            if (target == null) {
-                rotating = false;
+        // no longer target dead players
+        placeTargets.removeIf(placeInfo -> placeInfo.target.entity.isDead || placeInfo.target.entity.getHealth() == 0);
+        if (placeCrystal.getValue()) {
+            List<CrystalInfo.PlaceInfo> currentTargets;
+            if (placeTargets.size() < maxPlaceTargets.getValue()) {
+                currentTargets = new ArrayList<>(placeTargets);
+            } else {
+                currentTargets = placeTargets.subList(0, maxPlaceTargets.getValue());
+            }
+            List<BlockPos> placements = ACHelper.INSTANCE.getPossiblePlacements();
+
+            TreeSet<CrystalInfo.PlaceInfo> possiblePlacements;
+            String crystalPriorityValue = crystalPriority.getValue();
+            if (crystalPriorityValue.equalsIgnoreCase("Health")) {
+                possiblePlacements = new TreeSet<>(Comparator.comparingDouble((i) -> i.target.health));
+            } else if (crystalPriorityValue.equalsIgnoreCase("Closest")) {
+                possiblePlacements = new TreeSet<>(Comparator.comparingDouble((i) -> mc.player.getDistanceSq(i.target.entity)));
+            } else {
+                possiblePlacements = new TreeSet<>(Comparator.comparingDouble((i) -> i.damage));
+            }
+
+            for (CrystalInfo.PlaceInfo currentTarget : currentTargets) {
+                CrystalInfo.PlaceInfo placeInfo = ACUtil.calculateBestPlacement(settings, new PlayerInfo(currentTarget.target.entity, currentTarget.target.lowArmour), placements);
+                if (placeInfo != null) {
+                    possiblePlacements.add(placeInfo);
+                }
+            }
+            if (possiblePlacements.size() == 0) {
                 return;
             }
+            CrystalInfo.PlaceInfo crystal = possiblePlacements.last();
+
+            this.render = crystal.crystal;
 
             // autoSwitch stuff
             if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
@@ -279,13 +279,12 @@ public class AutoCrystalRewrite extends Module {
 
             EnumFacing enumFacing = null;
             if (raytrace.getValue()) {
-                RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) target.getX() + 0.5d, (double) target.getY() - 0.5d, (double) target.getZ() + 0.5d));
+                RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) crystal.crystal.getX() + 0.5d, (double) crystal.crystal.getY() - 0.5d, (double) crystal.crystal.getZ() + 0.5d));
                 if (result == null || result.sideHit == null) {
                     render = null;
                     rotating = false;
                     return;
-                }
-                else {
+                } else {
                     enumFacing = result.sideHit;
                 }
             }
@@ -295,25 +294,18 @@ public class AutoCrystalRewrite extends Module {
                 return;
             }
 
-            if (own) {
-                BlockPos up = target.up();
-                if (!placedCrystals.containsKey(up)) {
-                    placedCrystals.put(up, null);
-                }
-            }
+            ACHelper.INSTANCE.onPlaceCrystal(crystal.crystal);
 
             rotating = rotate.getValue();
-            lastHitVec = new Vec3d(target).add(0.5, 0.5, 0.5);
+            lastHitVec = new Vec3d(crystal.crystal).add(0.5, 0.5, 0.5);
 
             if (raytrace.getValue() && enumFacing != null) {
-                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(target, enumFacing, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
-            }
-            else if (target.getY() == 255) {
+                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(crystal.crystal, enumFacing, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+            } else if (crystal.crystal.getY() == 255) {
                 // For Hoosiers. This is how we do build height. If the target block (q) is at Y 255. Then we send a placement packet to the bottom part of the block. Thus the EnumFacing.DOWN.
-                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(target, EnumFacing.DOWN, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
-            }
-            else {
-                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(target, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(crystal.crystal, EnumFacing.DOWN, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
+            } else {
+                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(crystal.crystal, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
             }
             mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
 
@@ -335,66 +327,28 @@ public class AutoCrystalRewrite extends Module {
                 RenderUtil.drawNametag((double) render.getX() + 0.5d,(double) render.getY() + 0.5d,(double) render.getZ() + 0.5d, damageText, new GSColor(255,255,255),1);
             }
         }
-        if (showOwn.getValue()) {
-            placedCrystals.forEach(((blockPos, entityEnderCrystal) -> RenderUtil.drawBoundingBox(blockPos, 1, 1.00f, new GSColor(255, 255, 255,150))));
-        }
     }
 
     private void startTargetFinder() {
-        // entity range is the range from each crystal
-        // so adding these together should solve problem
-        // and reduce searching time
-        double enemyDistance = enemyRange.getValue() + placeRange.getValue();
-        final double entityRangeSq = (enemyDistance) * (enemyDistance);
-        List<EntityPlayer> targets = mc.world.playerEntities.stream()
-                .filter(entity -> mc.player.getDistanceSq(entity) <= entityRangeSq)
-                .filter(entity -> !EntityUtil.basicChecksEntity(entity))
-                .filter(entity -> entity.getHealth() > 0.0f)
-                .collect(Collectors.toList());
-        // no point continuing if there are no targets
-        if (targets.size() == 0) {
-            return;
-        }
-
-        List<EntityEnderCrystal> allCrystals = mc.world.loadedEntityList.stream()
-                .filter(entity -> entity instanceof EntityEnderCrystal)
-                .map(entity -> (EntityEnderCrystal) entity).collect(Collectors.toList());
-
-        final boolean own = breakMode.getValue().equalsIgnoreCase("Own");
-        if (own) {
-            // remove own crystals that have been destroyed
-            allCrystals.removeIf(crystal -> !placedCrystals.containsKey(EntityUtil.getPosition(crystal)));
-            placedCrystals.values().removeIf(crystal -> {
-                if (crystal == null) {
-                    return false;
-                }
-                return crystal.isDead;
-            });
-        }
-
-        // remove all crystals that deal more than max self damage
-        // no point in checking these
-        final boolean antiSuicideValue = antiSuicide.getValue();
-        final float maxSelfDamage = maxSelfDmg.getValue().floatValue();
-        final float playerHealth = mc.player.getHealth() + mc.player.getAbsorptionAmount();
-        allCrystals.removeIf(crystal -> {
-            float damage = DamageUtil.calculateDamage(crystal.posX, crystal.posY, crystal.posZ, mc.player);
-            if (damage > maxSelfDamage) {
-                return true;
-            } else return antiSuicideValue && damage > playerHealth;
-        });
-
-        List<BlockPos> blocks = CrystalUtil.findCrystalBlocks(placeRange.getValue().floatValue(), endCrystalMode.getValue());
-        ACSettings settings = new ACSettings(breakCrystal.getValue(), placeCrystal.getValue(), enemyRange.getValue(), breakRange.getValue(), wallsRange.getValue(), minDmg.getValue(), minBreakDmg.getValue(), minFacePlaceDmg.getValue(), maxSelfDmg.getValue(), facePlaceValue.getValue(), antiSuicide.getValue(), breakMode.getValue(), crystalPriority.getValue(), mc.player.getPositionVector());
-
-        List<PlayerInfo> targetsInfo = new ArrayList<>();
-        float armourPercent = armourFacePlace.getValue() / 100.0f;
-        for (EntityPlayer target : targets) {
-            targetsInfo.add(new PlayerInfo(target, armourPercent));
-        }
-
         long timeoutTime = System.currentTimeMillis() + timeout.getValue();
-        ACHelper.INSTANCE.startCalculations(settings, targetsInfo, allCrystals, blocks, timeoutTime);
+        ACHelper.INSTANCE.startCalculations(timeoutTime);
+    }
+
+    private void collectTargetFinder() {
+        Pair<List<CrystalInfo.BreakInfo>, List<CrystalInfo.PlaceInfo>> output = ACHelper.INSTANCE.getOutput(wait.getValue());
+        if (output != null) {
+            finished = true;
+            List<CrystalInfo.BreakInfo> breakInfos = output.getKey();
+            if (breakInfos != null) {
+                this.breakTargets = output.getKey();
+            }
+            List<CrystalInfo.PlaceInfo> placeInfos = output.getValue();
+            if (placeInfos != null) {
+                this.placeTargets = output.getValue();
+            }
+        } else {
+            finished = false;
+        }
     }
 
     private void swingArm() {
@@ -436,29 +390,8 @@ public class AutoCrystalRewrite extends Module {
         }
     });
 
-    @EventHandler
-    private final Listener<EntityJoinWorldEvent> entitySpawnListener = new Listener<>(event -> {
-        Entity entity = event.getEntity();
-        if (entity instanceof EntityEnderCrystal) {
-            if (breakMode.getValue().equalsIgnoreCase("Own")) {
-                EntityEnderCrystal crystal = (EntityEnderCrystal) entity;
-                BlockPos crystalPos = EntityUtil.getPosition(crystal);
-                if (placedCrystals.containsKey(crystalPos)) {
-                    placedCrystals.replace(crystalPos, crystal);
-                }
-            }
-        }
-    });
-
     public void onEnable() {
-        GameSense.EVENT_BUS.subscribe(this);
-
-        // get all the currently loaded crystals
-        List<EntityEnderCrystal> loadedCrystals = mc.world.loadedEntityList.stream()
-                .filter(entity -> entity instanceof EntityEnderCrystal)
-                .map(entity -> (EntityEnderCrystal) entity).collect(Collectors.toList());
-
-        allCrystals.addAll(loadedCrystals);
+        ACHelper.INSTANCE.onEnable();
 
         if(chat.getValue() && mc.player != null) {
             MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoCrystal turned ON!");
@@ -466,13 +399,11 @@ public class AutoCrystalRewrite extends Module {
     }
 
     public void onDisable() {
-        GameSense.EVENT_BUS.unsubscribe(this);
         render = null;
         renderEntity = null;
         rotating = false;
 
-        allCrystals.clear();
-        placedCrystals.clear();
+        ACHelper.INSTANCE.onDisable();
 
         if(chat.getValue()) {
             MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoCrystal turned OFF!");

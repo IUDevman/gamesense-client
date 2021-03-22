@@ -6,22 +6,17 @@ import com.gamesense.api.util.world.combat.ac.ACHelper;
 import com.gamesense.api.util.world.combat.ac.ACSettings;
 import com.gamesense.api.util.world.combat.ac.CrystalInfo;
 import com.gamesense.api.util.world.combat.ac.PlayerInfo;
-import net.minecraft.client.Minecraft;
+import com.gamesense.client.GameSense;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 public class ACCalculate implements Callable<Pair<List<CrystalInfo.BreakInfo>, List<CrystalInfo.PlaceInfo>>> {
-    private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final List<Future<Pair<CrystalInfo.BreakInfo, CrystalInfo.PlaceInfo>>> EMPTY_LIST = new ArrayList<>();
 
     private final ACSettings settings;
 
@@ -48,19 +43,6 @@ public class ACCalculate implements Callable<Pair<List<CrystalInfo.BreakInfo>, L
 
     @Nonnull
     private List<Future<Pair<CrystalInfo.BreakInfo, CrystalInfo.PlaceInfo>>> startThreads() {
-        // remove all placements that deal more than max self damage
-        // no point in checking these
-        final float playerHealth = mc.player.getHealth() + mc.player.getAbsorptionAmount();
-        blocks.removeIf(crystal -> {
-            float damage = DamageUtil.calculateDamage((double) crystal.getX() + 0.5d, (double) crystal.getY() + 1.0d, (double) crystal.getZ() + 0.5d, mc.player);
-            if (damage > settings.maxSelfDamage) {
-                return true;
-            } else return settings.antiSuicide && damage > playerHealth;
-        });
-        if (blocks.size() == 0) {
-            return EMPTY_LIST;
-        }
-
         List<Future<Pair<CrystalInfo.BreakInfo, CrystalInfo.PlaceInfo>>> output = new ArrayList<>();
 
         for (PlayerInfo target : targets) {
@@ -86,15 +68,31 @@ public class ACCalculate implements Callable<Pair<List<CrystalInfo.BreakInfo>, L
                 } catch (InterruptedException | ExecutionException ignored) {
                 }
                 if (crystal != null) {
-                    place.add(crystal.getValue());
-                    breaks.add(crystal.getKey());
+                    CrystalInfo.BreakInfo breakInfo = crystal.getKey();
+                    CrystalInfo.PlaceInfo placeInfo = crystal.getValue();
+                    if (breakInfo != null) {
+                        breaks.add(breakInfo);
+                    }
+                    if (placeInfo != null) {
+                        place.add(placeInfo);
+                    }
                 }
             } else {
                 future.cancel(true);
             }
         }
 
-        // sort by damage
-        return new Pair<>(breaks.stream().sorted(Comparator.comparing(breakInfo -> breakInfo.damage)).collect(Collectors.toList()), place.stream().sorted(Comparator.comparing(placeInfo -> placeInfo.damage)).collect(Collectors.toList()));
+        if (settings.crystalPriority.equalsIgnoreCase("Health")) {
+            breaks.sort(Comparator.comparingDouble((i) -> i.target.health));
+            place.sort(Comparator.comparingDouble((i) -> i.target.health));
+        } else if (settings.crystalPriority.equalsIgnoreCase("Closest")) {
+            breaks.sort(Comparator.comparingDouble((i) -> settings.player.entity.getDistanceSq(i.target.entity)));
+            place.sort(Comparator.comparingDouble((i) -> settings.player.entity.getDistanceSq(i.target.entity)));
+        } else {
+            breaks.sort(Comparator.comparingDouble((i) -> i.damage));
+            place.sort(Comparator.comparingDouble((i) -> i.damage));
+        }
+
+        return new Pair<>(breaks, place);
     }
 }
