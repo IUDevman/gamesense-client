@@ -29,6 +29,7 @@ import java.util.Arrays;
 
 /**
  * @Author TechAle
+ * Ported and modified by holefill
  */
 
 @Module.Declaration(name = "AntiCrystal", category = Category.Combat)

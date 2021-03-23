@@ -13,6 +13,10 @@ import net.minecraft.item.ItemStack;
 
 import java.util.*;
 
+/*
+    @Author TechAle
+ */
+
 @Module.Declaration(name = "AutoGear", category = Category.Misc)
 public class AutoGear extends Module {
 

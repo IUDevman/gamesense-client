@@ -47,6 +47,11 @@ import java.util.Objects;
 
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
+/**
+ * @Author TechAle
+ * Ported and modified from PistonCrystal
+ */
+
 @Module.Declaration(name = "CevBreaker", category = Category.Combat, priority = 999)
 public class CevBreaker extends Module {
 

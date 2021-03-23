@@ -28,7 +28,7 @@ import java.util.Arrays;
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
- * @Author TechAle on (date)
+ * @Author TechAle
  * Ported and modified from AutoTrap.java,
  * Ported Crystal Break from AutoCrystal.java
  */
