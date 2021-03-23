@@ -614,14 +614,29 @@ public class CevBreaker extends Module {
             // Lets iterate and check
             // Lets finish
             do {
-                BlockPos targetPos = getTargetPos(checksDone);
 
-                // Try to place the block
-                if (BlockUtil.getBlock(targetPos) instanceof BlockAir && placeBlock(targetPos, 0, false)) {
-                    // If we reached the limit
-                    if (++blockDone == blocksPerTick.getValue())
-                        // Return false
-                        return false;
+                BlockPos targetPos = getTargetPos(checksDone);
+                if (BlockUtil.getBlock(targetPos) instanceof BlockAir) {
+                    // Rotate
+                    if (preRotation.getValue() && !preRotationBol) {
+                        if (preRotationTick == 0)
+                            placeBlock(targetPos, 0, true);
+                        if (preRotationTick == preRotationDelay.getValue()) {
+                            preRotationBol = true;
+                            preRotationTick = 0;
+                        } else {
+                            preRotationTick++;
+                            return false;
+                        }
+
+                        if (placeBlock(targetPos, 0, false)) {
+                            preRotationBol = false;
+                            // If we reached the limit
+                            if (++blockDone == blocksPerTick.getValue())
+                                // Return false
+                                return false;
+                        }
+                    }
                 }
 
                 // If we reached the limit, exit
@@ -691,8 +706,11 @@ public class CevBreaker extends Module {
             if (!isCrystal || onlyRotate || !forceRotation.getValue())
                 placeBlock(targetPos, step, onlyRotate);
             else {
-                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(targetPos.add(.5, .5, .5), EnumFacing.getDirectionFromEntityLiving(targetPos, mc.player), EnumHand.MAIN_HAND, 0, 0, 0));
-                mc.player.swingArm(EnumHand.MAIN_HAND);
+                EnumHand handSwing = EnumHand.MAIN_HAND;
+                if (slot_mat[step] == 11)
+                    handSwing = EnumHand.OFF_HAND;
+                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(targetPos.add(.5, .5, .5), EnumFacing.getDirectionFromEntityLiving(targetPos, mc.player), handSwing, 0, 0, 0));
+                mc.player.swingArm(handSwing);
 
             }
 
