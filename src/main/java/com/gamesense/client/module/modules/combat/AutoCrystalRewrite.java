@@ -5,8 +5,6 @@ import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.values.*;
-import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlayerPacket;
@@ -19,7 +17,6 @@ import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
@@ -27,6 +24,7 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
@@ -79,14 +77,12 @@ public class AutoCrystalRewrite extends Module {
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting raytrace = registerBoolean("Raytrace", false);
     BooleanSetting showDamage = registerBoolean("Render Dmg", true);
-    BooleanSetting chat = registerBoolean("Chat Msgs", true);
     ModeSetting hudDisplay = registerMode("HUD", Arrays.asList("Mode", "Target", "None"), "Mode");
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 50));
 
     BooleanSetting wait = registerBoolean("Force Wait", true);
     IntegerSetting timeout = registerInteger("Timeout (ms)", 10, 1, 50);
-    IntegerSetting maxBreakTargets = registerInteger("Break Targets", 2, 1, 5);
-    IntegerSetting maxPlaceTargets = registerInteger("Place Targets", 2, 1, 5);
+    IntegerSetting maxTargets = registerInteger("Max Targets", 2, 1, 5);
 
     private boolean switchCooldown = false;
     private boolean isAttacking = false;
@@ -100,8 +96,7 @@ public class AutoCrystalRewrite extends Module {
     private boolean rotating = false;
 
     // Threading Stuff
-    private List<CrystalInfo.BreakInfo> breakTargets = new ArrayList<>();
-    private List<CrystalInfo.PlaceInfo> placeTargets = new ArrayList<>();
+    private List<CrystalInfo.PlaceInfo> targets = new ArrayList<>();
     private boolean finished = false;
 
     @EventHandler
@@ -133,20 +128,20 @@ public class AutoCrystalRewrite extends Module {
             }
         }
 
+        // no longer target dead players
+        targets.removeIf(placeInfo -> placeInfo.target.entity.isDead || placeInfo.target.entity.getHealth() == 0);
         if (!breakCrystal(settings)) {
             placeCrystal(settings);
         }
     });
 
     public boolean breakCrystal(ACSettings settings) {
-        // no longer target dead players
-        breakTargets.removeIf(breakInfo -> breakInfo.target.entity.isDead || breakInfo.target.entity.getHealth() == 0);
-        if (breakCrystal.getValue() && breakTargets.size() > 0) {
-            List<CrystalInfo.BreakInfo> currentTargets;
-            if (breakTargets.size() < maxBreakTargets.getValue()) {
-                currentTargets = new ArrayList<>(breakTargets);
+        if (breakCrystal.getValue() && targets.size() > 0) {
+            List<CrystalInfo.PlaceInfo> currentTargets;
+            if (targets.size() < maxTargets.getValue()) {
+                currentTargets = new ArrayList<>(targets);
             } else {
-                currentTargets = new ArrayList<>(breakTargets.subList(0, maxBreakTargets.getValue()));
+                currentTargets = new ArrayList<>(targets.subList(0, maxTargets.getValue()));
             }
             List<EntityEnderCrystal> crystals = ACHelper.INSTANCE.getTargetableCrystals();
 
@@ -160,52 +155,50 @@ public class AutoCrystalRewrite extends Module {
                 possibleCrystals = new TreeSet<>(Comparator.comparingDouble((i) -> i.damage));
             }
 
-            for (CrystalInfo.BreakInfo currentTarget : currentTargets) {
+            for (CrystalInfo.PlaceInfo currentTarget : currentTargets) {
                 CrystalInfo.BreakInfo breakInfo = ACUtil.calculateBestBreakable(settings, new PlayerInfo(currentTarget.target.entity, currentTarget.target.lowArmour), crystals);
                 if (breakInfo != null) {
                     possibleCrystals.add(breakInfo);
                 }
             }
-            if (possibleCrystals.size() == 0) {
-                return false;
-            }
+            if (possibleCrystals.size() != 0) {
+                EntityEnderCrystal crystal = possibleCrystals.last().crystal;
+                if (mc.player.canEntityBeSeen(crystal) || mc.player.getDistance(crystal) < wallsRange.getValue()) {
+                    if (antiWeakness.getValue() && mc.player.isPotionActive(MobEffects.WEAKNESS)) {
+                        if (!isAttacking) {
+                            // save initial player hand
+                            oldSlot = mc.player.inventory.currentItem;
+                            isAttacking = true;
+                        }
+                        // search for sword and tools in hotbar
+                        int newSlot = InventoryUtil.findFirstItemSlot(ItemSword.class, 0, 8);
+                        if (newSlot == -1) {
+                            InventoryUtil.findFirstItemSlot(ItemTool.class, 0, 8);
+                        }
+                        // check if any swords or tools were found
+                        if (newSlot != -1) {
+                            mc.player.inventory.currentItem = newSlot;
+                            switchCooldown = true;
+                        }
+                    }
 
-            EntityEnderCrystal crystal = possibleCrystals.last().crystal;
-            if (mc.player.canEntityBeSeen(crystal) || mc.player.getDistance(crystal) < wallsRange.getValue()) {
-                if (antiWeakness.getValue() && mc.player.isPotionActive(MobEffects.WEAKNESS)) {
-                    if (!isAttacking) {
-                        // save initial player hand
-                        oldSlot = mc.player.inventory.currentItem;
-                        isAttacking = true;
+                    if (timer.getTimePassed() / 50L >= 20 - attackSpeed.getValue()) {
+                        timer.reset();
+
+                        rotating = rotate.getValue();
+                        lastHitVec = crystal.getPositionVector();
+
+                        if (breakType.getValue().equalsIgnoreCase("Swing")) {
+                            mc.playerController.attackEntity(mc.player, crystal);
+                            swingArm();
+                        } else if (breakType.getValue().equalsIgnoreCase("Packet")) {
+                            mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+                            swingArm();
+                        }
                     }
-                    // search for sword and tools in hotbar
-                    int newSlot = InventoryUtil.findFirstItemSlot(ItemSword.class, 0, 8);
-                    if (newSlot == -1) {
-                        InventoryUtil.findFirstItemSlot(ItemTool.class, 0, 8);
-                    }
-                    // check if any swords or tools were found
-                    if (newSlot != -1) {
-                        mc.player.inventory.currentItem = newSlot;
-                        switchCooldown = true;
-                    }
+                    return true;
                 }
-
-                if (timer.getTimePassed() / 50L >= 20 - attackSpeed.getValue()) {
-                    timer.reset();
-
-                    rotating = rotate.getValue();
-                    lastHitVec = crystal.getPositionVector();
-
-                    if (breakType.getValue().equalsIgnoreCase("Swing")) {
-                        mc.playerController.attackEntity(mc.player, crystal);
-                        swingArm();
-                    } else if (breakType.getValue().equalsIgnoreCase("Packet")) {
-                        mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-                        swingArm();
-                    }
-                }
             }
-            return true;
         } else {
             rotating = false;
             if (oldSlot != -1) {
@@ -231,14 +224,12 @@ public class AutoCrystalRewrite extends Module {
             return;
         }
 
-        // no longer target dead players
-        placeTargets.removeIf(placeInfo -> placeInfo.target.entity.isDead || placeInfo.target.entity.getHealth() == 0);
         if (placeCrystal.getValue()) {
             List<CrystalInfo.PlaceInfo> currentTargets;
-            if (placeTargets.size() < maxPlaceTargets.getValue()) {
-                currentTargets = new ArrayList<>(placeTargets);
+            if (targets.size() < maxTargets.getValue()) {
+                currentTargets = new ArrayList<>(targets);
             } else {
-                currentTargets = placeTargets.subList(0, maxPlaceTargets.getValue());
+                currentTargets = targets.subList(0, maxTargets.getValue());
             }
             List<BlockPos> placements = ACHelper.INSTANCE.getPossiblePlacements();
 
@@ -335,16 +326,27 @@ public class AutoCrystalRewrite extends Module {
     }
 
     private void collectTargetFinder() {
-        Pair<List<CrystalInfo.BreakInfo>, List<CrystalInfo.PlaceInfo>> output = ACHelper.INSTANCE.getOutput(wait.getValue());
+        List<CrystalInfo.PlaceInfo> output = ACHelper.INSTANCE.getOutput(wait.getValue());
         if (output != null) {
             finished = true;
-            List<CrystalInfo.BreakInfo> breakInfos = output.getKey();
-            if (breakInfos != null) {
-                this.breakTargets = output.getKey();
-            }
-            List<CrystalInfo.PlaceInfo> placeInfos = output.getValue();
-            if (placeInfos != null) {
-                this.placeTargets = output.getValue();
+            if (output.size() < maxTargets.getValue()) {
+                // merge list removing the old ones and recalculating order
+                HashSet<EntityPlayer> players = new HashSet<>();
+                for (CrystalInfo.PlaceInfo placeInfo : output) {
+                    players.add(placeInfo.target.entity);
+                }
+                targets.removeIf(placeInfo -> players.contains(placeInfo.target.entity));
+                targets.addAll(output);
+                String priority = crystalPriority.getValue();
+                if (priority.equalsIgnoreCase("Health")) {
+                    targets.sort(Comparator.comparingDouble((i) -> i.target.health));
+                } else if (priority.equalsIgnoreCase("Closest")) {
+                    targets.sort(Comparator.comparingDouble((i) -> mc.player.getDistanceSq(i.target.entity)));
+                } else {
+                    targets.sort(Comparator.comparingDouble((i) -> i.damage));
+                }
+            } else {
+                targets = output;
             }
         } else {
             finished = false;
@@ -355,11 +357,9 @@ public class AutoCrystalRewrite extends Module {
         if (handBreak.getValue().equalsIgnoreCase("Both")) {
             mc.player.swingArm(EnumHand.MAIN_HAND);
             mc.player.swingArm(EnumHand.OFF_HAND);
-        }
-        else if (handBreak.getValue().equalsIgnoreCase("Offhand")) {
+        } else if (handBreak.getValue().equalsIgnoreCase("Offhand")) {
             mc.player.swingArm(EnumHand.OFF_HAND);
-        }
-        else {
+        } else {
             mc.player.swingArm(EnumHand.MAIN_HAND);
         }
     }
@@ -392,10 +392,6 @@ public class AutoCrystalRewrite extends Module {
 
     public void onEnable() {
         ACHelper.INSTANCE.onEnable();
-
-        if(chat.getValue() && mc.player != null) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoCrystal turned ON!");
-        }
     }
 
     public void onDisable() {
@@ -404,10 +400,6 @@ public class AutoCrystalRewrite extends Module {
         rotating = false;
 
         ACHelper.INSTANCE.onDisable();
-
-        if(chat.getValue()) {
-            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + "AutoCrystal turned OFF!");
-        }
     }
 
     private static final String stringAll = "[" + ChatFormatting.WHITE + "All" + ChatFormatting.GRAY + "]";

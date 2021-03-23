@@ -1,6 +1,5 @@
 package com.gamesense.api.util.world.combat.ac;
 
-import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.api.util.world.combat.DamageUtil;
@@ -23,13 +22,13 @@ public enum ACHelper {
     INSTANCE;
 
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final Pair<List<CrystalInfo.BreakInfo>, List<CrystalInfo.PlaceInfo>> EMPTY_PAIR = new Pair<>(new ArrayList<>(), new ArrayList<>());
+    private static final List<CrystalInfo.PlaceInfo> EMPTY_LIST = new ArrayList<>();
 
     // Threading Stuff
     public static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
     private static final ExecutorService mainExecutors = Executors.newSingleThreadExecutor();
-    private Future<Pair<List<CrystalInfo.BreakInfo>, List<CrystalInfo.PlaceInfo>>> mainThreadOutput;
+    private Future<List<CrystalInfo.PlaceInfo>> mainThreadOutput;
 
     // stores all the locations we have attempted to place crystals
     // and the corresponding crystal for that location (if there is any)
@@ -40,18 +39,20 @@ public enum ACHelper {
     private List<EntityEnderCrystal> targetableCrystals = new ArrayList<>();
     private final List<PlayerInfo> targetsInfo = new ArrayList<>();
 
+    private List<BlockPos> threadPlacements = new ArrayList<>();
+
     public void startCalculations(long timeout) {
         if (mainThreadOutput != null) {
             mainThreadOutput.cancel(true);
         }
-        mainThreadOutput = mainExecutors.submit(new ACCalculate(settings, targetsInfo, targetableCrystals, possiblePlacements, timeout));
+        mainThreadOutput = mainExecutors.submit(new ACCalculate(settings, targetsInfo, threadPlacements, timeout));
     }
 
     // returns null if still calculating
-    // returns EMPTY_PAIR if finished or not started
-    public Pair<List<CrystalInfo.BreakInfo>, List<CrystalInfo.PlaceInfo>> getOutput(boolean wait) {
+    // returns EMPTY_LIST if finished or not started
+    public List<CrystalInfo.PlaceInfo> getOutput(boolean wait) {
         if (mainThreadOutput == null) {
-            return EMPTY_PAIR;
+            return EMPTY_LIST;
         }
 
         if (wait) {
@@ -62,11 +63,11 @@ public enum ACHelper {
                 return null;
             }
             if (mainThreadOutput.isCancelled()) {
-                return EMPTY_PAIR;
+                return EMPTY_LIST;
             }
         }
 
-        Pair<List<CrystalInfo.BreakInfo>, List<CrystalInfo.PlaceInfo>> output = EMPTY_PAIR;
+        List<CrystalInfo.PlaceInfo> output = EMPTY_LIST;
         try {
             output = mainThreadOutput.get();
         } catch (InterruptedException | ExecutionException ignored) {
@@ -126,6 +127,8 @@ public enum ACHelper {
                 return true;
             } else return settings.antiSuicide && damage > settings.player.health;
         });
+
+        threadPlacements = CrystalUtil.findCrystalBlocksExcludingCrystals(settings.placeRange, settings.endCrystalMode);
 
         targetsInfo.clear();
         for (EntityPlayer target : targets) {
