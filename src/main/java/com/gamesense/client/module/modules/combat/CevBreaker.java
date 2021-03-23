@@ -785,11 +785,9 @@ public class CevBreaker extends Module {
             i++;
         }
 
-        int bias = enemyCoordsInt[0] == (int) mc.player.posX || enemyCoordsInt[2] == (int) mc.player.posZ ? -1 : 1;
-
         // Create support blocks
-        toPlace.to_place.add(new Vec3d(model[cor][0] * bias, 1, model[cor][2] * bias));
-        toPlace.to_place.add(new Vec3d(model[cor][0] * bias, 2, model[cor][2] * bias));
+        toPlace.to_place.add(new Vec3d(model[cor][0] * -1, 1, model[cor][2] * -1));
+        toPlace.to_place.add(new Vec3d(model[cor][0] * -1, 2, model[cor][2] * -1));
         toPlace.supportBlock = 2;
 
         // Create antitrap + antiStep
