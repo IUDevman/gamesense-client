@@ -32,9 +32,7 @@ import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.*;
-import net.minecraft.network.play.client.CPacketEntityAction;
-import net.minecraft.network.play.client.CPacketPlayerDigging;
-import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -215,6 +213,7 @@ public class CevBreaker extends Module {
         isActive = true;
         // Reset aimtarget
         aimTarget = null;
+        lastHitVec = null;
         // Create new delay table
         delayTable = new int[]{
                 supDelay.getValue(),
@@ -392,7 +391,7 @@ public class CevBreaker extends Module {
                     }
 
                     if (preRotation.getValue() && !preRotationBol) {
-                        placeBlockThings(stage, true);
+                        placeBlockThings(stage, true, false);
                         if (preRotationTick == preRotationDelay.getValue()) {
                             preRotationBol = true;
                             preRotationTick = 0;
@@ -402,7 +401,7 @@ public class CevBreaker extends Module {
                         }
                     }
 
-                    placeBlockThings(stage, false);
+                    placeBlockThings(stage, false, false);
                     if (fastPlace.getValue()) {
                         placeCrystal(false);
                     }
@@ -441,15 +440,16 @@ public class CevBreaker extends Module {
                 // Break
                 case 3:
 
-                    if (forceRotation.getValue()) {
-                        placeBlockThings(1, true);
-                    }
                     // Confirm Place
                     if (confirmPlace.getValue())
                         if (getCrystal() == null) {
                             stage--;
                             return;
                         }
+
+                    if (forceRotation.getValue()) {
+                        placeBlockThings(1, true, false);
+                    }
 
                     // Switch to pick / sword
                     int switchValue = 3;
@@ -509,7 +509,7 @@ public class CevBreaker extends Module {
 
     private void placeCrystal(boolean onlyRotate) {
         // Check pistonPlace if confirmPlace
-        placeBlockThings(stage, onlyRotate);
+        placeBlockThings(stage, onlyRotate, true);
         // If fastBreak
         if (fastBreak.getValue() && !onlyRotate) {
             fastBreakFun();
@@ -617,7 +617,7 @@ public class CevBreaker extends Module {
                 BlockPos targetPos = getTargetPos(checksDone);
 
                 // Try to place the block
-                if (placeBlock(targetPos, 0, false)) {
+                if (BlockUtil.getBlock(targetPos) instanceof BlockAir && placeBlock(targetPos, 0, false)) {
                     // If we reached the limit
                     if (++blockDone == blocksPerTick.getValue())
                         // Return false
@@ -640,6 +640,16 @@ public class CevBreaker extends Module {
 			2 => Pick
 			3 => Sword
 		 */
+        if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
+            // Is it is correct
+            if (mc.player.inventory.currentItem != slot_mat[step]) {
+                // Change the hand's item
+                mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
+            }
+        } else {
+            noMaterials = true;
+            return false;
+        }
         if (onlyRotate) {
             EnumFacing side = BlockUtil.getPlaceableSide(pos);
 
@@ -653,22 +663,12 @@ public class CevBreaker extends Module {
             if (!BlockUtil.canBeClicked(neighbour)) {
                 return false;
             }
-
-            lastHitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+            double add = step == 1 && (int) mc.player.posY == enemyCoordsInt[1] ? -.5 : 0;
+            lastHitVec = new Vec3d(neighbour).add(0.5, 0.5 + add, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
             return false;
         }
         // Get what slot we are going to select
         // If it's not empty
-        if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
-            // Is it is correct
-            if (mc.player.inventory.currentItem != slot_mat[step]) {
-                // Change the hand's item
-                mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
-            }
-        } else {
-            noMaterials = true;
-            return false;
-        }
 
         // If we are placing with the main hand
         EnumHand handSwing = EnumHand.MAIN_HAND;
@@ -682,13 +682,20 @@ public class CevBreaker extends Module {
     }
 
     // Given a step, place the block
-    public void placeBlockThings(int step, boolean onlyRotate) {
+    public void placeBlockThings(int step, boolean onlyRotate, boolean isCrystal) {
         if (step != 1 || placeCrystal.getValue()) {
             step--;
             // Get absolute position
             BlockPos targetPos = compactBlockPos(step);
             // Place 93 4 -29
-            placeBlock(targetPos, step, onlyRotate);
+            if (!isCrystal || onlyRotate || !forceRotation.getValue())
+                placeBlock(targetPos, step, onlyRotate);
+            else {
+                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(targetPos.add(.5, .5, .5), EnumFacing.getDirectionFromEntityLiving(targetPos, mc.player), EnumHand.MAIN_HAND, 0, 0, 0));
+                mc.player.swingArm(EnumHand.MAIN_HAND);
+
+            }
+
         }
         if (!onlyRotate) {
             // Next step
@@ -783,8 +790,10 @@ public class CevBreaker extends Module {
 
 
         // Create structure
+        // Obsidian
         toPlace.to_place.add(new Vec3d(0, 2, 0));
-        toPlace.to_place.add(new Vec3d(0, 3, 0));
+        // Crystal
+        toPlace.to_place.add(new Vec3d(0, 2, 0));
         return true;
     }
 
