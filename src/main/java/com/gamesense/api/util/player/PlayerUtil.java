@@ -108,4 +108,8 @@ public class PlayerUtil {
 
         return target;
     }
+
+    // Return the health of the player
+    public static float getHealth() { return mc.player.getHealth() + mc.player.getAbsorptionAmount(); }
+
 }

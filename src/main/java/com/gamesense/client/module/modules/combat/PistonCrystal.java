@@ -412,7 +412,7 @@ public class PistonCrystal extends Module {
         }
 
         // Hp Check
-        if (OffHand.getHealth() <= minHealth.getValue())
+        if (PlayerUtil.getHealth() <= minHealth.getValue())
             minHp = false;
         // If the guy moved from his hole with rotation on
         if (rotate.getValue() && !((int) mc.player.posX == meCoordsInt[0] || (int) mc.player.posZ == meCoordsInt[2]))

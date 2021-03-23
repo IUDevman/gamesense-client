@@ -5,6 +5,7 @@ import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
@@ -337,7 +338,7 @@ public class OffHand extends Module {
     private String getItemToCheck(String str) {
 
 
-        return ( getHealth() > healthSwitch.getValue())
+        return ( PlayerUtil.getHealth() > healthSwitch.getValue())
                 ? (str.equals("")
                 ? nonDefaultItem.getValue()
                 : str
@@ -345,8 +346,6 @@ public class OffHand extends Module {
                 : defaultItem.getValue();
 
     }
-
-    public static float getHealth() { return mc.player.getHealth() + mc.player.getAbsorptionAmount(); }
 
     private int getInventorySlot(String itemName) {
         // Get if it's a block or an item
