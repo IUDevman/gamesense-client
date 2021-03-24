@@ -24,7 +24,6 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
@@ -329,23 +328,7 @@ public class AutoCrystalRewrite extends Module {
         List<CrystalInfo.PlaceInfo> output = ACHelper.INSTANCE.getOutput(wait.getValue());
         if (output != null) {
             finished = true;
-            if (output.size() < maxTargets.getValue()) {
-                // merge list removing the old ones and recalculating order
-                HashSet<EntityPlayer> players = new HashSet<>();
-                for (CrystalInfo.PlaceInfo placeInfo : output) {
-                    players.add(placeInfo.target.entity);
-                }
-                targets.removeIf(placeInfo -> players.contains(placeInfo.target.entity));
-                targets.addAll(output);
-                String priority = crystalPriority.getValue();
-                if (priority.equalsIgnoreCase("Health")) {
-                    targets.sort(Comparator.comparingDouble((i) -> i.target.health));
-                } else if (priority.equalsIgnoreCase("Closest")) {
-                    targets.sort(Comparator.comparingDouble((i) -> mc.player.getDistanceSq(i.target.entity)));
-                } else {
-                    targets.sort(Comparator.comparingDouble((i) -> i.damage));
-                }
-            } else {
+            if (output.size() > 0) {
                 targets = output;
             }
         } else {
@@ -398,6 +381,8 @@ public class AutoCrystalRewrite extends Module {
         render = null;
         renderEntity = null;
         rotating = false;
+
+        targets.clear();
 
         ACHelper.INSTANCE.onDisable();
     }
