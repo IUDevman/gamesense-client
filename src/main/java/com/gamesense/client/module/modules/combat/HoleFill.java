@@ -65,7 +65,7 @@ public class HoleFill extends Module {
 		mode = registerMode("Type", modes, "Obby");
 		placeDelay = registerInteger("Delay", 2, 0, 10);
 		retryDelay = registerInteger("Retry Delay", 10, 0, 50);
-		bpc = registerInteger("Block pre Cycle", 2, 1, 5);
+		bpc = registerInteger("Block Pre Cycle", 2, 1, 5);
 		range = registerDouble("Range", 4, 0, 10);
 		playerRange = registerDouble("Player Range", 3, 1, 6);
 		onlyPlayer = registerBoolean("Only Player", false);
