@@ -27,7 +27,6 @@ public class FakePlayer extends Module {
             new ItemStack(Items.DIAMOND_HELMET)
     };
 
-    private EntityOtherPlayerMP clonedPlayer;
     BooleanSetting playerStacked = registerBoolean("Player Stacked", false);
 
     public void onEnable() {
@@ -36,7 +35,7 @@ public class FakePlayer extends Module {
             return;
         }
 
-        clonedPlayer = new EntityOtherPlayerMP(mc.world, new GameProfile(UUID.fromString("fdee323e-7f0c-4c15-8d1c-0f277442342a"), "Fit"));
+        EntityOtherPlayerMP clonedPlayer = new EntityOtherPlayerMP(mc.world, new GameProfile(UUID.fromString("fdee323e-7f0c-4c15-8d1c-0f277442342a"), "Fit"));
         clonedPlayer.copyLocationAndAnglesFrom(mc.player);
         clonedPlayer.rotationYawHead = mc.player.rotationYawHead;
         clonedPlayer.rotationYaw = mc.player.rotationYaw;
@@ -60,7 +59,6 @@ public class FakePlayer extends Module {
         }
         clonedPlayer.onLivingUpdate();
     }
-
     public void onDisable() {
         if (mc.world != null) {
             mc.world.removeEntityFromWorld(-1234);

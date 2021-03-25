@@ -64,7 +64,8 @@ public class OffHand extends Module {
             tickWaited,
             totems;
     boolean returnBack,
-            stepChanging;
+            stepChanging,
+            firstChange;
     private static boolean activeT = false;
     private static int forceObby;
     private ArrayList<Long> switchDone = new ArrayList<>();
@@ -109,7 +110,7 @@ public class OffHand extends Module {
     @Override
     public void onEnable() {
         // Enable it
-        activeT = true;
+        activeT = firstChange = true;
         // If they are gonna force us obby
         forceObby = 0;
 
@@ -267,7 +268,6 @@ public class OffHand extends Module {
     }
 
     private boolean canSwitch() {
-        boolean result = false;
         long now = System.currentTimeMillis();
 
         // Lets remove every old one
@@ -357,44 +357,60 @@ public class OffHand extends Module {
             item = allowedItemsBlock.get(itemName);
             blockBool = true;
         }
-        // Temporany variable
-        Item temp;
+        int res;
+        // Check if the item return is what we want
+        if (!firstChange) {
+            res = isCorrect(prevSlot, blockBool, item, itemName);
+            if (res != -1)
+                return res;
+        }
         // Iterate
         for (int i = (onlyHotBar.getValue() ? 8 : 35); i > (noHotBar.getValue() ? 9 : -1); i--) {
-            // Get item
-            temp = mc.player.inventory.getStackInSlot(i).getItem();
 
-            // If we have to check if it's a block
-            if (blockBool) {
-                // Check if it's what we want
-                if (temp instanceof ItemBlock) {
-                    if (((ItemBlock) temp).getBlock() == item)
-                        return i;
-                }
-
-                // If we have to check if it's an item
-            } else {
-                // Check if it's what we want
-                if (item == temp) {
-                    // If it's a potion
-                    if (itemName.equals("Pot") && !(potionChoose.getValue().equalsIgnoreCase("first") || mc.player.inventory.getStackInSlot(i).stackTagCompound.toString().split(":")[2].contains(potionChoose.getValue())))
-                        continue;
-                    return i;
-                }
-            }
+            res = isCorrect(i, blockBool, item, itemName);
+            if (res != -1)
+                return res;
 
         }
         return -1;
 
     }
 
+    private int isCorrect(int i, boolean blockBool, Object item, String itemName) {
+        // Get item
+        Item temp = mc.player.inventory.getStackInSlot(i).getItem();
+        // If we have to check if it's a block
+        if (blockBool) {
+            // Check if it's what we want
+            if (temp instanceof ItemBlock) {
+                if (((ItemBlock) temp).getBlock() == item)
+                    return i;
+            }
+
+            // If we have to check if it's an item
+        } else {
+            // Check if it's what we want
+            if (item == temp) {
+                // If it's a potion
+                if (itemName.equals("Pot") && !(potionChoose.getValue().equalsIgnoreCase("first") || mc.player.inventory.getStackInSlot(i).stackTagCompound.toString().split(":")[2].contains(potionChoose.getValue())))
+                    return -1;
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+
     private void toOffHand(int t) {
 
         // Lets check if we have arleady an item
         if (!mc.player.getHeldItemOffhand().isEmpty()) {
             // After we have to return this
-            prevSlot = t;
+            if (firstChange)
+                prevSlot = t;
             returnBack = true;
+            firstChange = !firstChange;
         } else prevSlot = -1;
 
         // Move the item
