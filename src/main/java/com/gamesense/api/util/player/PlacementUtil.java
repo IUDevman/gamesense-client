@@ -51,7 +51,6 @@ public class PlacementUtil {
 
         return output;
     }
-
     public static boolean placeItem(BlockPos blockPos, EnumHand hand, boolean rotate, Class<? extends Item> itemToPlace) {
         int oldSlot = mc.player.inventory.currentItem;
         int newSlot = InventoryUtil.findFirstItemSlot(itemToPlace, 0, 8);
