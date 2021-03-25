@@ -46,8 +46,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.*;
 
-@Module.Declaration(name = "AutoCrystalRewrite", category = Category.Combat, priority = 100)
-public class AutoCrystalRewrite extends Module {
+@Module.Declaration(name = "AutoCrystal", category = Category.Combat, priority = 100)
+public class AutoCrystal extends Module {
 
     ModeSetting breakMode = registerMode("Target", Arrays.asList("All", "Smart", "Own"), "All");
     ModeSetting handBreak = registerMode("Hand", Arrays.asList("Main", "Offhand", "Both"), "Main");
@@ -61,7 +61,7 @@ public class AutoCrystalRewrite extends Module {
     DoubleSetting wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
     DoubleSetting enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
     BooleanSetting antiWeakness = registerBoolean("Anti Weakness", true);
-    BooleanSetting antiTotemPop = registerBoolean("Anti Totem Pop", true);
+    //BooleanSetting antiTotemPop = registerBoolean("Anti Totem Pop", true);
     BooleanSetting antiSuicide = registerBoolean("Anti Suicide", true);
     IntegerSetting antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
     BooleanSetting autoSwitch = registerBoolean("Switch", true);
@@ -86,7 +86,6 @@ public class AutoCrystalRewrite extends Module {
     private boolean switchCooldown = false;
     private boolean isAttacking = false;
     public static boolean stopAC = false;
-    private int oldSlot = -1;
     private Entity renderEntity;
     private BlockPos render;
     Timer timer = new Timer();
@@ -130,7 +129,10 @@ public class AutoCrystalRewrite extends Module {
         // no longer target dead players
         targets.removeIf(placeInfo -> placeInfo.target.entity.isDead || placeInfo.target.entity.getHealth() == 0);
         if (!breakCrystal(settings)) {
-            placeCrystal(settings);
+            if (!placeCrystal(settings)) {
+                rotating = false;
+                isAttacking = false;
+            }
         }
     });
 
@@ -147,9 +149,9 @@ public class AutoCrystalRewrite extends Module {
             TreeSet<CrystalInfo.BreakInfo> possibleCrystals;
             String crystalPriorityValue = crystalPriority.getValue();
             if (crystalPriorityValue.equalsIgnoreCase("Health")) {
-                possibleCrystals = new TreeSet<>(Comparator.comparingDouble((i) -> i.target.health));
+                possibleCrystals = new TreeSet<>(Comparator.comparingDouble((i) -> -i.target.health));
             } else if (crystalPriorityValue.equalsIgnoreCase("Closest")) {
-                possibleCrystals = new TreeSet<>(Comparator.comparingDouble((i) -> mc.player.getDistanceSq(i.target.entity)));
+                possibleCrystals = new TreeSet<>(Comparator.comparingDouble((i) -> -mc.player.getDistanceSq(i.target.entity)));
             } else {
                 possibleCrystals = new TreeSet<>(Comparator.comparingDouble((i) -> i.damage));
             }
@@ -165,8 +167,6 @@ public class AutoCrystalRewrite extends Module {
                 if (mc.player.canEntityBeSeen(crystal) || mc.player.getDistance(crystal) < wallsRange.getValue()) {
                     if (antiWeakness.getValue() && mc.player.isPotionActive(MobEffects.WEAKNESS)) {
                         if (!isAttacking) {
-                            // save initial player hand
-                            oldSlot = mc.player.inventory.currentItem;
                             isAttacking = true;
                         }
                         // search for sword and tools in hotbar
@@ -188,29 +188,21 @@ public class AutoCrystalRewrite extends Module {
                         lastHitVec = crystal.getPositionVector();
 
                         if (breakType.getValue().equalsIgnoreCase("Swing")) {
+                            swingArm();
                             mc.playerController.attackEntity(mc.player, crystal);
+                        } else {
                             swingArm();
-                        } else if (breakType.getValue().equalsIgnoreCase("Packet")) {
                             mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-                            swingArm();
                         }
                     }
                     return true;
                 }
             }
-        } else {
-            rotating = false;
-            if (oldSlot != -1) {
-                mc.player.inventory.currentItem = oldSlot;
-                oldSlot = -1;
-            }
-            isAttacking = false;
         }
-
         return false;
     }
 
-    private void placeCrystal(ACSettings settings) {
+    private boolean placeCrystal(ACSettings settings) {
         // check to see if we are holding crystals or not
         int crystalSlot = mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL ? mc.player.inventory.currentItem : -1;
         if (crystalSlot == -1) {
@@ -220,7 +212,7 @@ public class AutoCrystalRewrite extends Module {
         if (mc.player.getHeldItemOffhand().getItem() == Items.END_CRYSTAL) {
             offhand = true;
         } else if (crystalSlot == -1) {
-            return;
+            return false;
         }
 
         if (placeCrystal.getValue()) {
@@ -235,9 +227,9 @@ public class AutoCrystalRewrite extends Module {
             TreeSet<CrystalInfo.PlaceInfo> possiblePlacements;
             String crystalPriorityValue = crystalPriority.getValue();
             if (crystalPriorityValue.equalsIgnoreCase("Health")) {
-                possiblePlacements = new TreeSet<>(Comparator.comparingDouble((i) -> i.target.health));
+                possiblePlacements = new TreeSet<>(Comparator.comparingDouble((i) -> -i.target.health));
             } else if (crystalPriorityValue.equalsIgnoreCase("Closest")) {
-                possiblePlacements = new TreeSet<>(Comparator.comparingDouble((i) -> mc.player.getDistanceSq(i.target.entity)));
+                possiblePlacements = new TreeSet<>(Comparator.comparingDouble((i) -> -mc.player.getDistanceSq(i.target.entity)));
             } else {
                 possiblePlacements = new TreeSet<>(Comparator.comparingDouble((i) -> i.damage));
             }
@@ -249,10 +241,10 @@ public class AutoCrystalRewrite extends Module {
                 }
             }
             if (possiblePlacements.size() == 0) {
-                return;
+                return false;
             }
-            CrystalInfo.PlaceInfo crystal = possiblePlacements.last();
 
+            CrystalInfo.PlaceInfo crystal = possiblePlacements.last();
             this.render = crystal.crystal;
 
             // autoSwitch stuff
@@ -264,7 +256,7 @@ public class AutoCrystalRewrite extends Module {
                         this.switchCooldown = true;
                     }
                 }
-                return;
+                return false;
             }
 
             EnumFacing enumFacing = null;
@@ -272,8 +264,7 @@ public class AutoCrystalRewrite extends Module {
                 RayTraceResult result = mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d((double) crystal.crystal.getX() + 0.5d, (double) crystal.crystal.getY() - 0.5d, (double) crystal.crystal.getZ() + 0.5d));
                 if (result == null || result.sideHit == null) {
                     render = null;
-                    rotating = false;
-                    return;
+                    return false;
                 } else {
                     enumFacing = result.sideHit;
                 }
@@ -281,7 +272,7 @@ public class AutoCrystalRewrite extends Module {
 
             if (this.switchCooldown) {
                 this.switchCooldown = false;
-                return;
+                return false;
             }
 
             ACHelper.INSTANCE.onPlaceCrystal(crystal.crystal);
@@ -289,6 +280,7 @@ public class AutoCrystalRewrite extends Module {
             rotating = rotate.getValue();
             lastHitVec = new Vec3d(crystal.crystal).add(0.5, 0.5, 0.5);
 
+            mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
             if (raytrace.getValue() && enumFacing != null) {
                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(crystal.crystal, enumFacing, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
             } else if (crystal.crystal.getY() == 255) {
@@ -297,12 +289,14 @@ public class AutoCrystalRewrite extends Module {
             } else {
                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(crystal.crystal, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
             }
-            mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
 
             if (ModuleManager.isModuleEnabled("AutoGG")) {
                 AutoGG.INSTANCE.addTargetedPlayer(renderEntity.getName());
             }
+
+            return true;
         }
+        return false;
     }
 
     public void onWorldRender(RenderEvent event) {
@@ -362,7 +356,7 @@ public class AutoCrystalRewrite extends Module {
         if (packet instanceof SPacketSoundEffect) {
             final SPacketSoundEffect packetSoundEffect = (SPacketSoundEffect) packet;
             if (packetSoundEffect.getCategory() == SoundCategory.BLOCKS && packetSoundEffect.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
-                for (Entity entity : Minecraft.getMinecraft().world.loadedEntityList) {
+                for (Entity entity : new ArrayList<>(mc.world.loadedEntityList)) {
                     if (entity instanceof EntityEnderCrystal) {
                         if (entity.getDistanceSq(packetSoundEffect.getX(), packetSoundEffect.getY(), packetSoundEffect.getZ()) <= 36.0f) {
                             entity.setDead();

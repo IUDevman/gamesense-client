@@ -71,9 +71,9 @@ public class ACCalculate implements Callable<List<CrystalInfo.PlaceInfo>> {
         }
 
         if (settings.crystalPriority.equalsIgnoreCase("Health")) {
-            place.sort(Comparator.comparingDouble((i) -> i.target.health));
+            place.sort(Comparator.comparingDouble((i) -> -i.target.health));
         } else if (settings.crystalPriority.equalsIgnoreCase("Closest")) {
-            place.sort(Comparator.comparingDouble((i) -> settings.player.entity.getDistanceSq(i.target.entity)));
+            place.sort(Comparator.comparingDouble((i) -> -settings.player.entity.getDistanceSq(i.target.entity)));
         } else {
             place.sort(Comparator.comparingDouble((i) -> i.damage));
         }

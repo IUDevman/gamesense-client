@@ -14,7 +14,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,8 @@ public enum ACHelper {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final List<CrystalInfo.PlaceInfo> EMPTY_LIST = new ArrayList<>();
+    // very big numbers
+    private static final EntityEnderCrystal GENERIC_CRYSTAL = new EntityEnderCrystal(null, 0b00101010 * 10^42, 0b00101010 * 10^42, 0b00101010 * 10^42);
 
     // Threading Stuff
     public static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
@@ -32,7 +35,7 @@ public enum ACHelper {
 
     // stores all the locations we have attempted to place crystals
     // and the corresponding crystal for that location (if there is any)
-    private final Map<BlockPos, EntityEnderCrystal> placedCrystals = Collections.synchronizedMap(new HashMap<>());
+    private final ConcurrentHashMap<BlockPos, EntityEnderCrystal> placedCrystals = new ConcurrentHashMap<>();
 
     private ACSettings settings = null;
     private List<BlockPos> possiblePlacements = new ArrayList<>();
@@ -99,12 +102,8 @@ public enum ACHelper {
             // remove own crystals that have been destroyed
             targetableCrystals.removeIf(crystal -> !placedCrystals.containsKey(EntityUtil.getPosition(crystal)));
             synchronized (placedCrystals) {
-                placedCrystals.values().removeIf(crystal -> {
-                    if (crystal == null) {
-                        return false;
-                    }
-                    return crystal.isDead;
-                });
+                // GENERIC_CRYSTAL will always be false here
+                placedCrystals.values().removeIf(crystal -> crystal.isDead);
             }
         }
 
@@ -139,7 +138,7 @@ public enum ACHelper {
     public void onPlaceCrystal(BlockPos target) {
         if (settings.breakMode.equalsIgnoreCase("Own")) {
             BlockPos up = target.up();
-            placedCrystals.put(up, null);
+            placedCrystals.put(up, GENERIC_CRYSTAL);
         }
     }
 

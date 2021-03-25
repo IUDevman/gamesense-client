@@ -34,7 +34,7 @@ public class ModuleManager {
         addMod(new AutoAnvil());
         addMod(new AutoArmor());
         addMod(new AutoCrystalGS());
-        addMod(new AutoCrystalRewrite());
+        addMod(new AutoCrystal());
         addMod(new AutoTrap());
         addMod(new AutoWeb());
         addMod(new BedAura());
