@@ -514,6 +514,7 @@ public class CevBreaker extends Module {
     private void switchPick(int switchValue) {
         if (cur_item != slot_mat[switchValue]) {
             mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[switchValue])));
+            mc.player.inventory.currentItem = slot_mat[switchValue];
         }
     }
 
@@ -884,9 +885,6 @@ public class CevBreaker extends Module {
             if (val != -1)
                 count++;
         }
-
-        if (slot_mat[2] != -1)
-            mc.player.inventory.currentItem = slot_mat[2];
 
         // If we have everything we need, return true
         return count >= 3 + ((antiWeakness.getValue() || switchSword.getValue()) ? 1 : 0);
