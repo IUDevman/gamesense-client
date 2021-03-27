@@ -46,7 +46,7 @@ public class PlacementUtil {
         }
 
         mc.player.inventory.currentItem = newSlot;
-        boolean output = place(blockPos, hand, rotate);
+        boolean output = place(blockPos, hand, rotate, true);
         mc.player.inventory.currentItem = oldSlot;
 
         return output;
@@ -60,13 +60,13 @@ public class PlacementUtil {
         }
 
         mc.player.inventory.currentItem = newSlot;
-        boolean output = place(blockPos, hand, rotate);
+        boolean output = place(blockPos, hand, rotate, true);
         mc.player.inventory.currentItem = oldSlot;
 
         return output;
     }
 
-    public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate) {
+    public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate, boolean checkAction) {
         EntityPlayerSP player = mc.player;
         WorldClient world = mc.world;
         PlayerControllerMP playerController = mc.playerController;
@@ -110,7 +110,7 @@ public class PlacementUtil {
         }
 
         EnumActionResult action = playerController.processRightClickBlock(player, world, neighbour, opposite, hitVec, hand);
-        if (action == EnumActionResult.SUCCESS) {
+        if (!checkAction || action == EnumActionResult.SUCCESS) {
             player.swingArm(hand);
             mc.rightClickDelayTimer = 4;
         }

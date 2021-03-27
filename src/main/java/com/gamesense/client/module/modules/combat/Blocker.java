@@ -207,7 +207,7 @@ public class Blocker extends Module {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
-        PlacementUtil.place(pos, handSwing, rotate.getValue());
+        PlacementUtil.place(pos, handSwing, rotate.getValue(), true);
     }
 
     private void breakCrystalPiston(Entity crystal) {

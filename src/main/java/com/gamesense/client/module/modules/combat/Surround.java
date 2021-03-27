@@ -267,7 +267,7 @@ public class Surround extends Module {
             mc.player.inventory.currentItem = obsidianSlot;
         }
 
-        return PlacementUtil.place(pos, handSwing, rotate.getValue());
+        return PlacementUtil.place(pos, handSwing, rotate.getValue(), true);
     }
 
     private static class Offsets {
