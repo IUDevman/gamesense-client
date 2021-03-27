@@ -360,9 +360,11 @@ public class OffHand extends Module {
         int res;
         // Check if the item return is what we want
         if (!firstChange) {
-            res = isCorrect(prevSlot, blockBool, item, itemName);
-            if (res != -1)
-                return res;
+            if (prevSlot != -1) {
+                res = isCorrect(prevSlot, blockBool, item, itemName);
+                if (res != -1)
+                    return res;
+            }
         }
         // Iterate
         for (int i = (onlyHotBar.getValue() ? 8 : 35); i > (noHotBar.getValue() ? 9 : -1); i--) {
