@@ -1,4 +1,4 @@
-package com.gamesense.client.clickgui;
+package com.gamesense.client.clickgui.components;
 
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.settings.KeybindComponent;

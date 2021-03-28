@@ -46,12 +46,11 @@ public class PlacementUtil {
         }
 
         mc.player.inventory.currentItem = newSlot;
-        boolean output = place(blockPos, hand, rotate);
+        boolean output = place(blockPos, hand, rotate, true);
         mc.player.inventory.currentItem = oldSlot;
 
         return output;
     }
-
     public static boolean placeItem(BlockPos blockPos, EnumHand hand, boolean rotate, Class<? extends Item> itemToPlace) {
         int oldSlot = mc.player.inventory.currentItem;
         int newSlot = InventoryUtil.findFirstItemSlot(itemToPlace, 0, 8);
@@ -61,13 +60,13 @@ public class PlacementUtil {
         }
 
         mc.player.inventory.currentItem = newSlot;
-        boolean output = place(blockPos, hand, rotate);
+        boolean output = place(blockPos, hand, rotate, true);
         mc.player.inventory.currentItem = oldSlot;
 
         return output;
     }
 
-    public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate) {
+    public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate, boolean checkAction) {
         EntityPlayerSP player = mc.player;
         WorldClient world = mc.world;
         PlayerControllerMP playerController = mc.playerController;
@@ -111,7 +110,7 @@ public class PlacementUtil {
         }
 
         EnumActionResult action = playerController.processRightClickBlock(player, world, neighbour, opposite, hitVec, hand);
-        if (action == EnumActionResult.SUCCESS) {
+        if (!checkAction || action == EnumActionResult.SUCCESS) {
             player.swingArm(hand);
             mc.rightClickDelayTimer = 4;
         }
@@ -121,5 +120,63 @@ public class PlacementUtil {
         }
 
         return action == EnumActionResult.SUCCESS;
+    }
+
+    public static boolean placePrecise(BlockPos blockPos, EnumHand hand, boolean rotate, Vec3d precise, EnumFacing forceSide, boolean onlyRotation, boolean support) {
+        EntityPlayerSP player = mc.player;
+        WorldClient world = mc.world;
+        PlayerControllerMP playerController = mc.playerController;
+
+        if (player == null || world == null || playerController == null) return false;
+
+        if (!world.getBlockState(blockPos).getMaterial().isReplaceable()) {
+            return false;
+        }
+
+        EnumFacing side = forceSide == null ? BlockUtil.getPlaceableSide(blockPos) : forceSide;
+
+        if (side == null) {
+            return false;
+        }
+
+        BlockPos neighbour = blockPos.offset(side);
+        EnumFacing opposite = side.getOpposite();
+
+        if (!BlockUtil.canBeClicked(neighbour)) {
+            return false;
+        }
+
+        Vec3d hitVec = new Vec3d(neighbour).add(0.5, 0.5, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
+        Block neighbourBlock = world.getBlockState(neighbour).getBlock();
+
+        if (!isSneaking && BlockUtil.blackList.contains(neighbourBlock) || BlockUtil.shulkerList.contains(neighbourBlock)) {
+            player.connection.sendPacket(new CPacketEntityAction(player, CPacketEntityAction.Action.START_SNEAKING));
+            isSneaking = true;
+        }
+
+        boolean stoppedAC = false;
+
+        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
+            AutoCrystalGS.stopAC = true;
+            stoppedAC = true;
+        }
+
+        if (rotate && !support) {
+            BlockUtil.faceVectorPacketInstant(precise == null ? hitVec : precise, true);
+        }
+
+        if (!onlyRotation) {
+            EnumActionResult action = playerController.processRightClickBlock(player, world, neighbour, opposite, precise == null ? hitVec : precise, hand);
+            if (action == EnumActionResult.SUCCESS) {
+                player.swingArm(hand);
+                mc.rightClickDelayTimer = 4;
+            }
+
+            if (stoppedAC) {
+                AutoCrystalGS.stopAC = false;
+            }
+            return action == EnumActionResult.SUCCESS;
+        } return true;
+
     }
 }

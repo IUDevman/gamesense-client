@@ -6,6 +6,9 @@ import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.clickgui.components.GameSenseKeybind;
+import com.gamesense.client.clickgui.components.GameSenseToggleMessage;
+import com.gamesense.client.clickgui.components.GameSenseColor;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
@@ -160,7 +163,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
             } else if (property instanceof ModeSetting) {
                 container.addComponent(new EnumComponent(property.getName(), null, theme.getComponentRenderer(), (ModeSetting) property));
             } else if (property instanceof ColorSetting) {
-                container.addComponent(new SyncableColorComponent(theme, (ColorSetting) property, colorToggle, new SettingsAnimation(clickGuiModule.animationSpeed)));
+                container.addComponent(new GameSenseColor(theme, (ColorSetting) property, colorToggle, new SettingsAnimation(clickGuiModule.animationSpeed)));
             }
         }
         container.addComponent(new GameSenseToggleMessage(theme.getComponentRenderer(), module));

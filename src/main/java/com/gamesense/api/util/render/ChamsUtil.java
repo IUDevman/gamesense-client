@@ -44,6 +44,7 @@ public class ChamsUtil {
         mc.getRenderManager().setRenderOutlines(false);
         GlStateManager.pushMatrix();
         GlStateManager.depthMask(true);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
         glEnable(GL_POLYGON_OFFSET_FILL);
         glDepthRange(0.0, 0.01);
         glDisable(GL_TEXTURE_2D);
@@ -73,6 +74,7 @@ public class ChamsUtil {
         mc.getRenderManager().setRenderOutlines(false);
         GlStateManager.pushMatrix();
         GlStateManager.depthMask(true);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glEnable(GL_POLYGON_OFFSET_LINE);
         glDepthRange(0.0, 0.01);

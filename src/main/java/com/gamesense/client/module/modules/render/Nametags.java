@@ -10,6 +10,7 @@ import com.gamesense.api.util.misc.ColorUtil;
 import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
+import com.gamesense.client.manager.managers.TotemPopManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
@@ -43,6 +44,7 @@ public class Nametags extends Module {
     BooleanSetting showGameMode = registerBoolean("Gamemode", false);
     BooleanSetting showHealth = registerBoolean("Health", true);
     BooleanSetting showPing = registerBoolean("Ping", false);
+    BooleanSetting showTotem = registerBoolean("Totem Pops", true);
     BooleanSetting showEntityID = registerBoolean("Entity Id", false);
     ModeSetting levelColor = registerMode("Level Color", ColorUtil.colors, "Green");
     public BooleanSetting customColor = registerBoolean("Custom Color", true);
@@ -107,6 +109,10 @@ public class Nametags extends Module {
             else {
                 name = name + " [S]";
             }
+        }
+
+        if (showTotem.getValue()) {
+            name = name + " [" + TotemPopManager.INSTANCE.getPlayerPopCount(entityPlayer.getName()) +"]";
         }
 
         if (showPing.getValue()) {

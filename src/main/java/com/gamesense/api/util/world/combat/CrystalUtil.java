@@ -20,7 +20,7 @@ public class CrystalUtil {
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static boolean canPlaceCrystal(BlockPos blockPos, boolean newPlacement) {
-        if (!isValidBlock(mc.world.getBlockState(blockPos).getBlock())) return false;
+        if (notValidBlock(mc.world.getBlockState(blockPos).getBlock())) return false;
 
         BlockPos posUp = blockPos.up();
 
@@ -40,7 +40,7 @@ public class CrystalUtil {
     }
 
     public static boolean canPlaceCrystalExcludingCrystals(BlockPos blockPos, boolean newPlacement) {
-        if (!isValidBlock(mc.world.getBlockState(blockPos).getBlock())) return false;
+        if (notValidBlock(mc.world.getBlockState(blockPos).getBlock())) return false;
 
         BlockPos posUp = blockPos.up();
 
@@ -59,8 +59,8 @@ public class CrystalUtil {
         return mc.world.getEntitiesWithinAABB(Entity.class, box, entity -> !(entity.isDead ||entity instanceof EntityEnderCrystal)).isEmpty();
     }
 
-    public static boolean isValidBlock(Block block) {
-        return block == Blocks.BEDROCK || block == Blocks.OBSIDIAN;
+    public static boolean notValidBlock(Block block) {
+        return block != Blocks.BEDROCK && block != Blocks.OBSIDIAN;
     }
 
     public static boolean notValidMaterial(Material material) {

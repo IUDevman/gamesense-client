@@ -168,22 +168,15 @@ public class RenderUtil {
         tessellator.draw();
     }
 
-    /* Base for direction start */
     private static class Points {
-        // Coordinates
         double[][] point = new double[10][2];
-        // For counting when adding to point
         private int count = 0;
-        // Center of the 2d square
         private final double xCenter;
         private final double zCenter;
-        // Feet and Head
         public final double yMin;
         public final double yMax;
-        // Rotation
         private final float rotation;
 
-        // Constructor
         public Points(double yMin, double yMax, double xCenter, double zCenter, float rotation) {
             this.yMin = yMin;
             this.yMax = yMax;
@@ -192,75 +185,58 @@ public class RenderUtil {
             this.rotation = rotation;
         }
 
-        // This add and elaborate the points
         public void addPoints(double x, double z) {
-            /// Creating the rotation
-            // Make center = 0
             x -= xCenter;
             z -= zCenter;
-            // Matrix Rotation (https://en.wikipedia.org/wiki/Rotation_matrix)
             double rotateX = x * Math.cos(rotation) - z * Math.sin(rotation);
             double rotateZ = x * Math.sin(rotation) + z * Math.cos(rotation);
-            // Return to where we were
             rotateX += xCenter;
             rotateZ += zCenter;
-            // Add the point
             point[count++] = new double[]{rotateX, rotateZ};
         }
 
-        // Shorter way for getting a point
         public double[] getPoint(int index) {
             return point[index];
         }
-
     }
-	/*
-		Mode:
-		0 -> boxDirection
-		(maybe in the future if i want to add something)
-	 */
 
     public static void drawBoxWithDirection(AxisAlignedBB bb, GSColor color, float rotation, float width, int mode) {
-        // Get the center of the 2d square (we are going to rotate based from the cetner)
         double xCenter = bb.minX + (bb.maxX - bb.minX) / 2;
         double zCenter = bb.minZ + (bb.maxZ - bb.minZ) / 2;
-        // Collect every points
+
         Points square = new Points(bb.minY, bb.maxY, xCenter, zCenter, rotation);
-        /// Create every points
-        // For direction
+
         if (mode == 0) {
             square.addPoints(bb.minX, bb.minZ);
             square.addPoints(bb.minX, bb.maxZ);
             square.addPoints(bb.maxX, bb.maxZ);
             square.addPoints(bb.maxX, bb.minZ);
         }
-        // Direct to the drawning
+
         switch (mode) {
-            case 0:
+            case 0: {
                 drawDirection(square, color, width);
                 break;
+            }
+            //can add different modes in the future
         }
     }
-    /* Base for direction end */
 
-    /* drawBoxWithDirection start */
     public static void drawDirection(Points square, GSColor color, float width) {
-        /// Lets dreaw all the lines
-        // Down
         for (int i = 0; i < 4; i++) {
             drawLine(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
                     square.getPoint((i + 1) % 4)[0], square.yMin, square.getPoint((i + 1) % 4)[1],
                     color, width
             );
         }
-        // Up
+
         for (int i = 0; i < 4; i++) {
             drawLine(square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
                     square.getPoint((i + 1) % 4)[0], square.yMax, square.getPoint((i + 1) % 4)[1],
                     color, width
             );
         }
-        // Vertically
+
         for (int i = 0; i < 4; i++) {
             drawLine(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
                     square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
@@ -268,9 +244,7 @@ public class RenderUtil {
             );
         }
     }
-    /* drawBoxWithDirection end */
 
-    // Sphere
     public static void drawSphere(double x, double y, double z, float size, int slices, int stacks) {
         final Sphere s = new Sphere();
         GlStateManager.glLineWidth(1.2f);
@@ -281,7 +255,6 @@ public class RenderUtil {
         GlStateManager.popMatrix();
     }
 
-    // Nametags
     public static void drawNametag(Entity entity, String[] text, GSColor color, int type) {
         Vec3d pos = EntityUtil.getInterpolatedPos(entity, mc.getRenderPartialTicks());
         drawNametag(pos.x, pos.y + entity.height, pos.z, text, color, type);

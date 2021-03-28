@@ -1,4 +1,4 @@
-package com.gamesense.client.clickgui;
+package com.gamesense.client.clickgui.components;
 
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.client.module.ModuleManager;
@@ -13,9 +13,9 @@ import com.lukflug.panelstudio.theme.Renderer;
 import com.lukflug.panelstudio.theme.Theme;
 import net.minecraft.util.text.TextFormatting;
 
-public class SyncableColorComponent extends ColorComponent {
+public class GameSenseColor extends ColorComponent {
 
-    public SyncableColorComponent(Theme theme, ColorSetting setting, Toggleable colorToggle, Animation animation) {
+    public GameSenseColor(Theme theme, ColorSetting setting, Toggleable colorToggle, Animation animation) {
         super(TextFormatting.BOLD + setting.getName(), null, theme.getContainerRenderer(), animation, theme.getComponentRenderer(), setting, false, true, colorToggle);
 
         if (setting != ModuleManager.getModule(ClickGuiModule.class).enabledColor) addComponent(new SyncButton(theme.getComponentRenderer()));

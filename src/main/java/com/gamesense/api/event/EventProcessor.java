@@ -3,9 +3,12 @@ package com.gamesense.api.event;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
+import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.command.CommandManager;
+import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.google.common.collect.Maps;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -19,6 +22,7 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -107,6 +111,11 @@ public class EventProcessor {
         GameSense.EVENT_BUS.post(event);
     }
 
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        GameSense.EVENT_BUS.post(event);
+    }
+
     @EventHandler
     private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (event.getPacket() instanceof SPacketPlayerListItem) {
@@ -143,28 +152,53 @@ public class EventProcessor {
     });
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
-        if (mc.player != null) {
-            ModuleManager.onUpdate();
-        }
+    public void onUpdate(LivingEvent.LivingUpdateEvent event) {
+        if (mc.player == null || mc.world == null) return;
 
-        GameSense.EVENT_BUS.post(event);
+        if (event.getEntity().getEntityWorld().isRemote && event.getEntityLiving() == mc.player) {
+            for (Module module : ModuleManager.getModules()) {
+                if (!module.isEnabled()) continue;
+                module.onUpdate();
+            }
+
+            GameSense.EVENT_BUS.post(event);
+        }
     }
 
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
-        if (event.isCanceled()) {
-            return;
+        if (event.isCanceled()) return;
+
+        mc.profiler.startSection("gamesense");
+        mc.profiler.startSection("setup");
+        RenderUtil.prepare();
+        RenderEvent event1 = new RenderEvent(event.getPartialTicks());
+        Minecraft.getMinecraft().profiler.endSection();
+
+        for (Module module : ModuleManager.getModules()) {
+            if (!module.isEnabled()) continue;
+            mc.profiler.startSection(module.getName());
+            module.onWorldRender(event1);
+            mc.profiler.endSection();
         }
-        ModuleManager.onWorldRender(event);
+
+        mc.profiler.startSection("release");
+        RenderUtil.release();
+        mc.profiler.endSection();
+        mc.profiler.endSection();
     }
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
-        GameSense.EVENT_BUS.post(event);
         if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
-            ModuleManager.onRender();
+            for (Module module : ModuleManager.getModules()) {
+                if (!module.isEnabled()) continue;
+                module.onRender();
+            }
+            GameSense.INSTANCE.gameSenseGUI.render();
         }
+
+        GameSense.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
@@ -180,7 +214,15 @@ public class EventProcessor {
             }
         }
 
-        ModuleManager.onBind(Keyboard.getEventKey());
+        int key = Keyboard.getEventKey();
+
+        if (key != Keyboard.KEY_NONE) {
+            for (Module module : ModuleManager.getModules()) {
+                if (module.getBind() != key) continue;
+                module.toggle();
+            }
+        }
+
         GameSense.INSTANCE.gameSenseGUI.handleKeyEvent(Keyboard.getEventKey());
     }
 

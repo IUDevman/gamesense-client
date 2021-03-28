@@ -26,21 +26,17 @@ public class ShulkerViewer extends Module {
         GSColor outline = new GSColor(outlineColor.getValue(), 255);
         GSColor fill = new GSColor(fillColor.getValue(), 200);
 
-        //fill
         RenderUtil.draw2DRect(posX + 1, posY + 1, width - 2, height - 2, 1000, fill);
 
-        //outline
         RenderUtil.draw2DRect(posX, posY, width, 1, 1000, outline);
         RenderUtil.draw2DRect(posX, posY + height - 1, width, 1, 1000, outline);
         RenderUtil.draw2DRect(posX, posY, 1, height, 1000, outline);
         RenderUtil.draw2DRect(posX + width - 1, posY, 1, height, 1000, outline);
 
-        //name
         GlStateManager.disableDepth();
         FontUtil.drawStringWithShadow(ModuleManager.getModule(ColorMain.class).customFont.getValue(), itemStack.getDisplayName(), posX + 3, posY + 3, new GSColor(255, 255, 255, 255));
         GlStateManager.enableDepth();
 
-        //items
         NonNullList<ItemStack> contentItems = NonNullList.withSize(27, ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(itemStack.getTagCompound().getCompoundTag("BlockEntityTag"), contentItems);
 

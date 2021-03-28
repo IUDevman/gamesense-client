@@ -36,7 +36,6 @@ public class NoRender extends Module {
             mc.player.removePotionEffect(MobEffects.NAUSEA);
     }
 
-    @Override
     public void onRender() {
         currentClusterAmount = 0;
     }
@@ -51,7 +50,6 @@ public class NoRender extends Module {
             event.setCanceled(true);
     });
 
-    // Disable Water and lava fog
     @EventHandler
     private final Listener<EntityViewRenderEvent.FogDensity> fogDensityListener = new Listener<>(event -> {
         if (noOverlay.getValue()) {
@@ -63,7 +61,6 @@ public class NoRender extends Module {
         }
     });
 
-    // Disable screen overlays Overlays
     @EventHandler
     private final Listener<RenderBlockOverlayEvent> renderBlockOverlayEventListener = new Listener<>(event -> {
         if (noOverlay.getValue()) event.setCanceled(true);
@@ -81,7 +78,6 @@ public class NoRender extends Module {
         }
     });
 
-    // Bossbar
     @EventHandler
     private final Listener<BossbarEvent> bossbarEventListener = new Listener<>(event -> {
         if (noBossBar.getValue()) {
@@ -89,7 +85,6 @@ public class NoRender extends Module {
         }
     });
 
-    // return whether to render or not
     public boolean incrementNoClusterRender() {
         ++currentClusterAmount;
         return currentClusterAmount <= maxNoClusterRender.getValue();

@@ -24,7 +24,6 @@ public class PlayerTweaks extends Module {
     public BooleanSetting noSlow = registerBoolean("No Slow", false);
     BooleanSetting antiKnockBack = registerBoolean("Velocity", false);
 
-    //No Slow
     @EventHandler
     private final Listener<InputUpdateEvent> eventListener = new Listener<>(event -> {
         if (noSlow.getValue()) {
@@ -42,7 +41,6 @@ public class PlayerTweaks extends Module {
         }
     });
 
-    //Gui Move, this breaks with future for some reason... IDK if there is another way to do this
     public void onUpdate() {
         if (guiMove.getValue() && mc.currentScreen != null) {
             if (!(mc.currentScreen instanceof GuiChat)) {
@@ -68,7 +66,6 @@ public class PlayerTweaks extends Module {
         }
     }
 
-    //Velocity
     @EventHandler
     private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (antiKnockBack.getValue()) {

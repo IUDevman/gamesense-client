@@ -87,7 +87,6 @@ public class CityESP extends Module {
                 continue;
             }
 
-            // check if player is actually in a hole
             HoleUtil.HoleInfo holeInfo = HoleUtil.isHole(any.get(), false, true);
             if (holeInfo.getType() == HoleUtil.HoleType.NONE || holeInfo.getSafety() == HoleUtil.BlockSafety.UNBREAKABLE) {
                 continue;
@@ -136,15 +135,14 @@ public class CityESP extends Module {
             BlockPos pos1 = blockOffset.left(blockPos.down(down.getValue()), sides.getValue());
             BlockPos pos2 = blockOffset.forward(blockOffset.right(blockPos, sides.getValue()), depth.getValue());
             List<BlockPos> square = EntityUtil.getSquare(pos1, pos2);
-            // store to put back after calculation
+
             IBlockState holder = mc.world.getBlockState(blockPos);
             mc.world.setBlockToAir(blockPos);
 
 
             for (BlockPos pos : square) {
                 if (this.canPlaceCrystal(pos.down(), ignoreCrystals.getValue())) {
-                    // believe i have the right location for the crystal
-                    // pos is the block one above the bedrock/obsidian
+
                     if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ() + 0.5d, player) >= minDamage.getValue()) {
                         if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ() + 0.5d, mc.player) <= maxDamage.getValue()) {
                             cityableSides.add(blockPos);
@@ -154,7 +152,6 @@ public class CityESP extends Module {
                 }
             }
 
-            // put back
             mc.world.setBlockState(blockPos, holder);
         }));
 

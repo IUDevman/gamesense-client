@@ -11,6 +11,8 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -185,6 +187,10 @@ public class BedAura extends Module {
 
                 if (DamageUtil.calculateDamage(targetPos1.getX(), targetPos1.getY(), targetPos1.getZ(), entityPlayer) < minDamage.getValue()) {
                     continue;
+                }
+
+                if (ModuleManager.isModuleEnabled(AutoGG.class)) {
+                    AutoGG.INSTANCE.addTargetedPlayer(entityPlayer.getName());
                 }
 
                 if (mc.world.getBlockState(targetPos1.east()).getBlock() == Blocks.AIR) {
