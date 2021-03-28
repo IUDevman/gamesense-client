@@ -27,6 +27,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.event.MouseEvent;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,7 +50,7 @@ public class CityESP extends Module {
     DoubleSetting minDamage = registerDouble("Min Damage", 5, 0, 10);
     DoubleSetting maxDamage = registerDouble("Max Self Damage", 7, 0, 20);
     BooleanSetting ignoreCrystals = registerBoolean("Ignore Crystals", true);
-    BooleanSetting mine = registerBoolean("Shift Click Mine", false);
+    BooleanSetting mine = registerBoolean("Shift Mine", false);
     BooleanSetting switchPick = registerBoolean("Switch Pick", true);
     DoubleSetting distanceMine = registerDouble("Distance Mine", 5, 0, 10);
     ModeSetting mineMode = registerMode("Mine Mode", Arrays.asList("Packet", "Vanilla"), "Packet");
@@ -117,24 +118,6 @@ public class CityESP extends Module {
                 cityable.put(player, sides);
             }
         }
-    }
-
-    public void onWorldRender(RenderEvent event) {
-        AtomicBoolean noRender = new AtomicBoolean(false);
-
-        cityable.entrySet().stream().sorted((entry, entry1) -> (int) entry.getKey().getDistanceSq(entry1.getKey())).forEach((entry) -> {
-            if (noRender.get()) {
-                return;
-            }
-            renderBoxes(entry.getValue());
-            if (targetMode.getValue().equalsIgnoreCase("All")) {
-                noRender.set(true);
-            }
-        });
-    }
-
-    @EventHandler
-    private final Listener<DamageBlockEvent> listener = new Listener<>(event -> {
         if (mine.getValue()) {
             if (mc.gameSettings.keyBindSneak.isPressed()) {
                 for(List<BlockPos> poss : cityable.values()) {
@@ -181,7 +164,22 @@ public class CityESP extends Module {
                 }
             }
         }
-    });
+    }
+
+    public void onWorldRender(RenderEvent event) {
+        AtomicBoolean noRender = new AtomicBoolean(false);
+
+        cityable.entrySet().stream().sorted((entry, entry1) -> (int) entry.getKey().getDistanceSq(entry1.getKey())).forEach((entry) -> {
+            if (noRender.get()) {
+                return;
+            }
+            renderBoxes(entry.getValue());
+            if (targetMode.getValue().equalsIgnoreCase("All")) {
+                noRender.set(true);
+            }
+        });
+    }
+
 
     private List<BlockPos> cityableSides(BlockPos centre, Set<HoleUtil.BlockOffset> weakSides, EntityPlayer player) {
         List<BlockPos> cityableSides = new ArrayList<>();
