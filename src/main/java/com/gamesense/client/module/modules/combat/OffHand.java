@@ -171,7 +171,7 @@ public class OffHand extends Module {
     private void changeBack() {
         /// Change
         // Check if the slot is not air
-        if (!mc.player.inventory.getStackInSlot(prevSlot).isEmpty() || prevSlot == -1)
+        if (prevSlot == -1 || !mc.player.inventory.getStackInSlot(prevSlot).isEmpty())
             prevSlot = findEmptySlot();
         // If it's air
         if (prevSlot != -1) {
