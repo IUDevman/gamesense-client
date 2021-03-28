@@ -56,7 +56,7 @@ public class CrystalUtil {
                 posUp.getX() + 1.0, posUp.getY() + 2.0, posUp.getZ() + 1.0
         );
 
-        return mc.world.getEntitiesWithinAABB(Entity.class, box, entity -> !entity.isDead || !(entity instanceof EntityEnderCrystal)).isEmpty();
+        return mc.world.getEntitiesWithinAABB(Entity.class, box, entity -> !(entity.isDead ||entity instanceof EntityEnderCrystal)).isEmpty();
     }
 
     public static boolean isValidBlock(Block block) {
