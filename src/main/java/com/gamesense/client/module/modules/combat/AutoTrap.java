@@ -8,6 +8,10 @@ import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,11 +21,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @Author Hoosiers on 09/19/20
@@ -44,7 +43,7 @@ public class AutoTrap extends Module {
     private boolean isSneaking = false;
     private boolean firstRun = false;
     private boolean activedOff;
-    private int oldSlot = -1;
+    private final int oldSlot = -1;
 
     private int delayTimeTicks = 0;
     private int offsetSteps = 0;

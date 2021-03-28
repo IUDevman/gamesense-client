@@ -2,7 +2,11 @@ package com.gamesense.api.config;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.setting.SettingsManager;
-import com.gamesense.api.setting.values.*;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.social.Enemy;
 import com.gamesense.api.util.player.social.Friend;
 import com.gamesense.api.util.player.social.SocialManager;
@@ -14,8 +18,12 @@ import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.gamesense.client.module.modules.misc.AutoReply;
 import com.gamesense.client.module.modules.misc.AutoRespawn;
-import com.google.gson.*;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,6 +39,10 @@ import java.nio.file.Paths;
 
 public class SaveConfig {
 
+    public static final String fileName = "GameSense/";
+    String moduleName = "Modules/";
+    String mainName = "Main/";
+    String miscName = "Misc/";
     public SaveConfig() {
         try {
             saveConfig();
@@ -38,11 +50,6 @@ public class SaveConfig {
             e.printStackTrace();
         }
     }
-
-    public static final String fileName = "GameSense/";
-    String moduleName = "Modules/";
-    String mainName = "Main/";
-    String miscName = "Misc/";
 
     public void saveConfig() throws IOException {
         if (!Files.exists(Paths.get(fileName))) {

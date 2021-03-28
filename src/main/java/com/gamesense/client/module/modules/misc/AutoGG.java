@@ -5,6 +5,11 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
@@ -13,25 +18,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-
 @Module.Declaration(name = "AutoGG", category = Category.Misc)
 public class AutoGG extends Module {
 
     public static AutoGG INSTANCE;
-
-    public AutoGG() {
-        INSTANCE = this;
-    }
-
     static List<String> AutoGgMessages = new ArrayList<>();
-    private ConcurrentHashMap targetedPlayers = null;
     int index = -1;
-
+    private ConcurrentHashMap targetedPlayers = null;
     @EventHandler
     private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
         if (mc.player != null) {
@@ -71,6 +64,17 @@ public class AutoGG extends Module {
             }
         }
     });
+    public AutoGG() {
+        INSTANCE = this;
+    }
+
+    public static void addAutoGgMessage(String s) {
+        AutoGgMessages.add(s);
+    }
+
+    public static List<String> getAutoGgMessages() {
+        return AutoGgMessages;
+    }
 
     public void onEnable() {
         this.targetedPlayers = new ConcurrentHashMap();
@@ -141,14 +145,5 @@ public class AutoGG extends Module {
 
             targetedPlayers.put(name, 20);
         }
-    }
-
-
-    public static void addAutoGgMessage(String s) {
-        AutoGgMessages.add(s);
-    }
-
-    public static List<String> getAutoGgMessages() {
-        return AutoGgMessages;
     }
 }

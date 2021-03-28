@@ -11,11 +11,10 @@ import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import io.netty.util.internal.ConcurrentSet;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.Arrays;
 import java.util.List;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * @Author: Hoosiers on 08/14/20
@@ -32,6 +31,10 @@ public class VoidESP extends Module {
     ColorSetting color = registerColor("Color", new GSColor(255, 255, 0));
 
     private ConcurrentSet<BlockPos> voidHoles;
+
+    public static BlockPos getPlayerPos() {
+        return new BlockPos(Math.floor(mc.player.posX), Math.floor(mc.player.posY), Math.floor(mc.player.posZ));
+    }
 
     public void onUpdate() {
         if (mc.player.dimension == 1) {
@@ -79,10 +82,6 @@ public class VoidESP extends Module {
         });
     }
 
-    public static BlockPos getPlayerPos() {
-        return new BlockPos(Math.floor(mc.player.posX), Math.floor(mc.player.posY), Math.floor(mc.player.posZ));
-    }
-
     private boolean isAnyBedrock(BlockPos origin, BlockPos[] offset) {
         for (BlockPos pos : offset) {
             if (mc.world.getBlockState(origin.add(pos)).getBlock().equals(Blocks.BEDROCK)) {
@@ -90,14 +89,6 @@ public class VoidESP extends Module {
             }
         }
         return false;
-    }
-
-    private static class Offsets {
-        static final BlockPos[] center = {
-                new BlockPos(0, 0, 0),
-                new BlockPos(0, 1, 0),
-                new BlockPos(0, 2, 0)
-        };
     }
 
     private void drawFlat(BlockPos blockPos) {
@@ -125,5 +116,13 @@ public class VoidESP extends Module {
                 RenderUtil.drawBoundingBoxWithSides(blockPos, width, color.getValue(), GeometryMasks.Quad.DOWN);
             }
         }
+    }
+
+    private static class Offsets {
+        static final BlockPos[] center = {
+                new BlockPos(0, 0, 0),
+                new BlockPos(0, 1, 0),
+                new BlockPos(0, 2, 0)
+        };
     }
 }

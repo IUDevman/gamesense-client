@@ -19,11 +19,7 @@ import org.lwjgl.input.Keyboard;
 public class PlayerTweaks extends Module {
 
     public BooleanSetting guiMove = registerBoolean("Gui Move", false);
-    BooleanSetting noPush = registerBoolean("No Push", false);
-    BooleanSetting noFall = registerBoolean("No Fall", false);
     public BooleanSetting noSlow = registerBoolean("No Slow", false);
-    BooleanSetting antiKnockBack = registerBoolean("Velocity", false);
-
     @EventHandler
     private final Listener<InputUpdateEvent> eventListener = new Listener<>(event -> {
         if (noSlow.getValue()) {
@@ -33,11 +29,39 @@ public class PlayerTweaks extends Module {
             }
         }
     });
-
+    BooleanSetting noPush = registerBoolean("No Push", false);
     @EventHandler
     private final Listener<EntityCollisionEvent> entityCollisionEventListener = new Listener<>(event -> {
         if (noPush.getValue()) {
             event.cancel();
+        }
+    });
+    @EventHandler
+    private final Listener<WaterPushEvent> waterPushEventListener = new Listener<>(event -> {
+        if (noPush.getValue()) {
+            event.cancel();
+        }
+    });
+    BooleanSetting noFall = registerBoolean("No Fall", false);
+    @EventHandler
+    private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
+        if (noFall.getValue() && event.getPacket() instanceof CPacketPlayer && mc.player.fallDistance >= 3.0) {
+            CPacketPlayer packet = (CPacketPlayer) event.getPacket();
+            packet.onGround = true;
+        }
+    });
+    BooleanSetting antiKnockBack = registerBoolean("Velocity", false);
+    @EventHandler
+    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
+        if (antiKnockBack.getValue()) {
+            if (event.getPacket() instanceof SPacketEntityVelocity) {
+                if (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId()) {
+                    event.cancel();
+                }
+            }
+            if (event.getPacket() instanceof SPacketExplosion) {
+                event.cancel();
+            }
         }
     });
 
@@ -65,34 +89,4 @@ public class PlayerTweaks extends Module {
             }
         }
     }
-
-    @EventHandler
-    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
-        if (antiKnockBack.getValue()) {
-            if (event.getPacket() instanceof SPacketEntityVelocity) {
-                if (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId()) {
-                    event.cancel();
-                }
-            }
-            if (event.getPacket() instanceof SPacketExplosion) {
-                event.cancel();
-            }
-        }
-    });
-
-    @EventHandler
-    private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
-        if (noFall.getValue() && event.getPacket() instanceof CPacketPlayer && mc.player.fallDistance >= 3.0) {
-            CPacketPlayer packet = (CPacketPlayer) event.getPacket();
-            packet.onGround = true;
-        }
-    });
-
-
-    @EventHandler
-    private final Listener<WaterPushEvent> waterPushEventListener = new Listener<>(event -> {
-        if (noPush.getValue()) {
-            event.cancel();
-        }
-    });
 }

@@ -9,13 +9,12 @@ import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.Arrays;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-
-import java.util.Arrays;
 
 /**
  * @Author Hoosiers on 10/10/2020

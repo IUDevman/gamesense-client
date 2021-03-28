@@ -1,7 +1,11 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.values.*;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
@@ -11,14 +15,13 @@ import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.google.common.collect.Sets;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * @reworked by 0b00101010 on 14/01/2021

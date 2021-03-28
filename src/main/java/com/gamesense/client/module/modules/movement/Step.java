@@ -9,10 +9,9 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import net.minecraft.network.play.client.CPacketPlayer;
-
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import net.minecraft.network.play.client.CPacketPlayer;
 
 @Module.Declaration(name = "Step", category = Category.Movement)
 public class Step extends Module {

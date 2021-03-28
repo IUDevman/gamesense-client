@@ -1,6 +1,10 @@
 package com.gamesense.api.util.misc;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -16,7 +20,7 @@ public final class ZipUtils {
             for (String file : list) {
                 ZipEntry ze = new ZipEntry(file);
                 FileInputStream in = new FileInputStream(file);
-                byte buffer[] = new byte[1024];
+                byte[] buffer = new byte[1024];
                 zos.putNextEntry(ze);
                 while (true) {
                     int len = in.read(buffer);

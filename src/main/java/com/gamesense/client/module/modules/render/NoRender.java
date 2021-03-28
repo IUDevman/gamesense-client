@@ -17,39 +17,9 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class NoRender extends Module {
 
     public BooleanSetting armor = registerBoolean("Armor", false);
-    BooleanSetting fire = registerBoolean("Fire", false);
-    BooleanSetting blind = registerBoolean("Blind", false);
-    BooleanSetting nausea = registerBoolean("Nausea", false);
     public BooleanSetting hurtCam = registerBoolean("HurtCam", false);
     public BooleanSetting noSkylight = registerBoolean("Skylight", false);
     public BooleanSetting noOverlay = registerBoolean("No Overlay", false);
-    BooleanSetting noBossBar = registerBoolean("No Boss Bar", false);
-    public BooleanSetting noCluster = registerBoolean("No Cluster", false);
-    IntegerSetting maxNoClusterRender = registerInteger("No Cluster Max", 5, 1, 25);
-
-    public int currentClusterAmount = 0;
-
-    public void onUpdate() {
-        if (blind.getValue() && mc.player.isPotionActive(MobEffects.BLINDNESS))
-            mc.player.removePotionEffect(MobEffects.BLINDNESS);
-        if (nausea.getValue() && mc.player.isPotionActive(MobEffects.NAUSEA))
-            mc.player.removePotionEffect(MobEffects.NAUSEA);
-    }
-
-    public void onRender() {
-        currentClusterAmount = 0;
-    }
-
-    @EventHandler
-    public Listener<RenderBlockOverlayEvent> blockOverlayEventListener = new Listener<>(event -> {
-        if (fire.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.FIRE)
-            event.setCanceled(true);
-        if (noOverlay.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.WATER)
-            event.setCanceled(true);
-        if (noOverlay.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.BLOCK)
-            event.setCanceled(true);
-    });
-
     @EventHandler
     private final Listener<EntityViewRenderEvent.FogDensity> fogDensityListener = new Listener<>(event -> {
         if (noOverlay.getValue()) {
@@ -60,12 +30,10 @@ public class NoRender extends Module {
             }
         }
     });
-
     @EventHandler
     private final Listener<RenderBlockOverlayEvent> renderBlockOverlayEventListener = new Listener<>(event -> {
         if (noOverlay.getValue()) event.setCanceled(true);
     });
-
     @EventHandler
     private final Listener<RenderGameOverlayEvent> renderGameOverlayEventListener = new Listener<>(event -> {
         if (noOverlay.getValue()) {
@@ -77,13 +45,39 @@ public class NoRender extends Module {
             }
         }
     });
-
+    public BooleanSetting noCluster = registerBoolean("No Cluster", false);
+    public int currentClusterAmount = 0;
+    BooleanSetting fire = registerBoolean("Fire", false);
+    @EventHandler
+    public Listener<RenderBlockOverlayEvent> blockOverlayEventListener = new Listener<>(event -> {
+        if (fire.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.FIRE)
+            event.setCanceled(true);
+        if (noOverlay.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.WATER)
+            event.setCanceled(true);
+        if (noOverlay.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.BLOCK)
+            event.setCanceled(true);
+    });
+    BooleanSetting blind = registerBoolean("Blind", false);
+    BooleanSetting nausea = registerBoolean("Nausea", false);
+    BooleanSetting noBossBar = registerBoolean("No Boss Bar", false);
     @EventHandler
     private final Listener<BossbarEvent> bossbarEventListener = new Listener<>(event -> {
         if (noBossBar.getValue()) {
             event.cancel();
         }
     });
+    IntegerSetting maxNoClusterRender = registerInteger("No Cluster Max", 5, 1, 25);
+
+    public void onUpdate() {
+        if (blind.getValue() && mc.player.isPotionActive(MobEffects.BLINDNESS))
+            mc.player.removePotionEffect(MobEffects.BLINDNESS);
+        if (nausea.getValue() && mc.player.isPotionActive(MobEffects.NAUSEA))
+            mc.player.removePotionEffect(MobEffects.NAUSEA);
+    }
+
+    public void onRender() {
+        currentClusterAmount = 0;
+    }
 
     public boolean incrementNoClusterRender() {
         ++currentClusterAmount;

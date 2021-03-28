@@ -1,7 +1,11 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.values.*;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
@@ -10,6 +14,15 @@ import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -17,10 +30,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 /**
  * @author Hoosiers
@@ -32,6 +41,7 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "CityESP", category = Category.Render)
 public class CityESP extends Module {
 
+    private final HashMap<EntityPlayer, List<BlockPos>> cityable = new HashMap<>();
     IntegerSetting range = registerInteger("Range", 20, 1, 30);
     IntegerSetting down = registerInteger("Down", 1, 0, 3);
     IntegerSetting sides = registerInteger("Sides", 1, 0, 4);
@@ -44,8 +54,6 @@ public class CityESP extends Module {
     ModeSetting renderMode = registerMode("Render", Arrays.asList("Outline", "Fill", "Both"), "Both");
     IntegerSetting width = registerInteger("Width", 1, 1, 10);
     ColorSetting color = registerColor("Color", new GSColor(102, 51, 153));
-
-    private final HashMap<EntityPlayer, List<BlockPos>> cityable = new HashMap<>();
 
     public void onUpdate() {
         if (mc.player == null || mc.world == null)

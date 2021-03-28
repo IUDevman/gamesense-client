@@ -14,10 +14,9 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import java.util.Arrays;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.Arrays;
 
 /**
  * @author Hoosiers
@@ -60,9 +59,7 @@ public class Bucked extends Module {
 
         if (!self.getValue() && entityPlayer == mc.player) return false;
 
-        if (!friend.getValue() && SocialManager.isFriend(entityPlayer.getName())) return false;
-
-        return true;
+      return friend.getValue() || !SocialManager.isFriend(entityPlayer.getName());
     }
 
     private boolean isSurrounded(BlockPos blockPos) {

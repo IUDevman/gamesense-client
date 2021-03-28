@@ -5,6 +5,7 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -14,15 +15,23 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketPlayer;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 @Module.Declaration(name = "Blink", category = Category.Movement)
 public class Blink extends Module {
 
-    private BooleanSetting ghostPlayer = registerBoolean("Ghost Player", true);
-
-    private EntityOtherPlayerMP entity;
     private final ConcurrentLinkedQueue<Packet<?>> packets = new ConcurrentLinkedQueue<>();
+    @SuppressWarnings("unused")
+    @EventHandler
+    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
+        Packet<?> packet = event.getPacket();
+        EntityPlayerSP player = mc.player;
+
+        if (player != null && player.isEntityAlive() && packet instanceof CPacketPlayer) {
+            packets.add(packet);
+            event.cancel();
+        }
+    });
+    private final BooleanSetting ghostPlayer = registerBoolean("Ghost Player", true);
+    private EntityOtherPlayerMP entity;
 
     public void onEnable() {
         EntityPlayerSP player = mc.player;
@@ -66,18 +75,6 @@ public class Blink extends Module {
             packets.clear();
         }
     }
-
-    @SuppressWarnings("unused")
-    @EventHandler
-    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
-        Packet<?> packet = event.getPacket();
-        EntityPlayerSP player = mc.player;
-
-        if (player != null && player.isEntityAlive() && packet instanceof CPacketPlayer) {
-            packets.add(packet);
-            event.cancel();
-        }
-    });
 
     public String getHudInfo() {
         return "[" + ChatFormatting.WHITE + packets.size() + ChatFormatting.GRAY + "]";

@@ -15,16 +15,19 @@ import org.lwjgl.input.Mouse;
 @Module.Declaration(name = "AutoTool", category = Category.Misc)
 public class AutoTool extends Module {
 
-    BooleanSetting switchBack = registerBoolean("Switch Back", false);
-
-    boolean shouldMoveBack = false;
-    int lastSlot = 0;
-    long lastChange = 0L;
-
     @EventHandler
     private final Listener<DamageBlockEvent> leftClickListener = new Listener<>(event -> {
         equipBestTool(mc.world.getBlockState(event.getBlockPos()));
     });
+    BooleanSetting switchBack = registerBoolean("Switch Back", false);
+    boolean shouldMoveBack = false;
+    int lastSlot = 0;
+    long lastChange = 0L;
+
+    private static void equip(int slot) {
+        mc.player.inventory.currentItem = slot;
+        mc.playerController.syncCurrentPlayItem();
+    }
 
     public void onUpdate() {
         if (!switchBack.getValue())
@@ -63,11 +66,5 @@ public class AutoTool extends Module {
             }
         }
         if (bestSlot != -1) equip(bestSlot);
-    }
-
-
-    private static void equip(int slot) {
-        mc.player.inventory.currentItem = slot;
-        mc.playerController.syncCurrentPlayItem();
     }
 }

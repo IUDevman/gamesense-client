@@ -6,11 +6,14 @@ import com.gamesense.client.command.commands.AutoGearCommand;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
-
-import java.util.*;
 
 /**
  * @Author TechAle

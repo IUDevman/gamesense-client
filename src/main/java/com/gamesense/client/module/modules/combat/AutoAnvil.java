@@ -12,6 +12,9 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
@@ -27,10 +30,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @Author TechAle on 12/16/20
  * Ported and modified from Surround.java
@@ -39,6 +38,7 @@ import java.util.List;
 @Module.Declaration(name = "AutoAnvil", category = Category.Combat)
 public class AutoAnvil extends Module {
 
+    private static ArrayList<Vec3d> to_place = new ArrayList<Vec3d>();
     ModeSetting anvilMode = registerMode("Mode", Arrays.asList("Pick", "Feet", "None"), "Pick");
     ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
     ModeSetting anvilPlace = registerMode("Anvil Place", Arrays.asList("Single", "Double", "Full"), "Single");
@@ -53,7 +53,13 @@ public class AutoAnvil extends Module {
     IntegerSetting hDistance = registerInteger("H Distance", 7, 1, 10);
     IntegerSetting minH = registerInteger("Min H", 3, 1, 10);
     IntegerSetting failStop = registerInteger("Fail Stop", 2, 1, 10);
-
+    Double[][] sur_block;
+    int[][] model = new int[][]{
+            {1, 1, 0},
+            {-1, 1, 0},
+            {0, 1, 1},
+            {0, 1, -1}
+    };
     private boolean isSneaking = false,
             firstRun = false,
             noMaterials = false,
@@ -67,26 +73,15 @@ public class AutoAnvil extends Module {
     private ArrayList<Integer> anvilsPositions = new ArrayList<>();
     private int[] slot_mat = {-1, -1, -1, -1};
     private double[] enemyCoords;
-    Double[][] sur_block;
-    int[][] model = new int[][]{
-            {1, 1, 0},
-            {-1, 1, 0},
-            {0, 1, 1},
-            {0, 1, -1}
-    };
-
     private int blocksPlaced = 0;
     private int delayTimeTicks = 0;
     private int offsetSteps = 0;
     private boolean pick_d = false;
-
     private EntityPlayer aimTarget;
 
     public void onEnable() {
         // Setup
-        if (anvilMode.getValue().equalsIgnoreCase("Pick")) {
-            pick_d = true;
-        } else pick_d = false;
+      pick_d = anvilMode.getValue().equalsIgnoreCase("Pick");
         blocksPlaced = 0;
         isHole = true;
         hasMoved = blockUp = false;
@@ -410,8 +405,6 @@ public class AutoAnvil extends Module {
         }
         return null;
     }
-
-    private static ArrayList<Vec3d> to_place = new ArrayList<Vec3d>();
 
     private boolean getMaterialsSlot() {
 		/*

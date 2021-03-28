@@ -4,7 +4,6 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.misc.ZipUtils;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.command.Command;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;

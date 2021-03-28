@@ -9,15 +9,14 @@ import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
+import java.awt.Color;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Collection;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.awt.*;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Collection;
 
 @Module.Declaration(name = "Speedometer", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 70)
@@ -26,19 +25,11 @@ public class Speedometer extends HUDModule {
     private static final String MPS = "m/s";
     private static final String KMH = "km/h";
     private static final String MPH = "mph";
-
+    private final ArrayDeque<Double> speedDeque = new ArrayDeque<>();
     ModeSetting speedUnit = registerMode("Unit", Arrays.asList(MPS, KMH, MPH), KMH);
     BooleanSetting averageSpeed = registerBoolean("Average Speed", true);
     IntegerSetting averageSpeedTicks = registerInteger("Average Time", 20, 5, 100);
-
-    private final ArrayDeque<Double> speedDeque = new ArrayDeque<>();
     private String speedString = "";
-
-    protected void onDisable() {
-        speedDeque.clear();
-        speedString = "";
-    }
-
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TickEvent.ClientTickEvent> listener = new Listener<>(event -> {
@@ -67,6 +58,11 @@ public class Speedometer extends HUDModule {
 
         speedString = String.format("%.2f", displaySpeed) + ' ' + unit;
     });
+
+    protected void onDisable() {
+        speedDeque.clear();
+        speedString = "";
+    }
 
     private double calcSpeed(EntityPlayerSP player, String unit) {
         double tps = 1000.0 / mc.timer.tickLength;

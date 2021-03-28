@@ -18,14 +18,25 @@ import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 @Module.Declaration(name = "Freecam", category = Category.Render)
 public class Freecam extends Module {
 
+    @EventHandler
+    private final Listener<PlayerMoveEvent> moveListener = new Listener<>(event -> {
+        mc.player.noClip = true;
+    });
+    @EventHandler
+    private final Listener<PlayerSPPushOutOfBlocksEvent> pushListener = new Listener<>(event -> {
+        event.setCanceled(true);
+    });
     BooleanSetting cancelPackets = registerBoolean("Cancel Packets", true);
+    @EventHandler
+    private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
+        if ((event.getPacket() instanceof CPacketPlayer || event.getPacket() instanceof CPacketInput) && cancelPackets.getValue()) {
+            event.cancel();
+        }
+    });
     DoubleSetting speed = registerDouble("Speed", 10, 0, 20);
-
     private double posX, posY, posZ;
     private float pitch, yaw;
-
     private EntityOtherPlayerMP clonedPlayer;
-
     private boolean isRidingEntity;
     private Entity ridingEntity;
 
@@ -81,21 +92,4 @@ public class Freecam extends Module {
         mc.player.onGround = false;
         mc.player.fallDistance = 0;
     }
-
-    @EventHandler
-    private final Listener<PlayerMoveEvent> moveListener = new Listener<>(event -> {
-        mc.player.noClip = true;
-    });
-
-    @EventHandler
-    private final Listener<PlayerSPPushOutOfBlocksEvent> pushListener = new Listener<>(event -> {
-        event.setCanceled(true);
-    });
-
-    @EventHandler
-    private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
-        if ((event.getPacket() instanceof CPacketPlayer || event.getPacket() instanceof CPacketInput) && cancelPackets.getValue()) {
-            event.cancel();
-        }
-    });
 }

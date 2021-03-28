@@ -30,20 +30,20 @@ public class PlayerMoveEvent extends GameSenseEvent {
         return this.x;
     }
 
-    public double getY() {
-        return this.y;
-    }
-
-    public double getZ() {
-        return this.z;
-    }
-
     public void setX(double x) {
         this.x = x;
     }
 
+    public double getY() {
+        return this.y;
+    }
+
     public void setY(double y) {
         this.y = y;
+    }
+
+    public double getZ() {
+        return this.z;
     }
 
     public void setZ(double z) {

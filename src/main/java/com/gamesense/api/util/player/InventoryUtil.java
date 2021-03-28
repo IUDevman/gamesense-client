@@ -1,6 +1,8 @@
 package com.gamesense.api.util.player;
 
 import com.gamesense.client.module.modules.combat.OffHand;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.client.Minecraft;
@@ -8,9 +10,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class InventoryUtil {
 

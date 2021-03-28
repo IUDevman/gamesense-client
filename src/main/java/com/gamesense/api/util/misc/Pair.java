@@ -19,12 +19,12 @@ public class Pair<T, S> {
         return key;
     }
 
-    public S getValue() {
-        return value;
-    }
-
     public void setKey(T key) {
         this.key = key;
+    }
+
+    public S getValue() {
+        return value;
     }
 
     public void setValue(S value) {

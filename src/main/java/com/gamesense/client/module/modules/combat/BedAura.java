@@ -13,6 +13,10 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -30,11 +34,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.stream.Collectors;
-
 /**
  * @author Hoosiers
  * @since 1/2/2020
@@ -43,6 +42,9 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "BedAura", category = Category.Combat)
 public class BedAura extends Module {
 
+    private final ArrayList<BlockPos> placedPos = new ArrayList<>();
+    private final Timer breakTimer = new Timer();
+    private final Timer placeTimer = new Timer();
     ModeSetting attackMode = registerMode("Mode", Arrays.asList("Normal", "Own"), "Own");
     DoubleSetting attackRange = registerDouble("Attack Range", 4, 0, 10);
     IntegerSetting breakDelay = registerInteger("Break Delay", 1, 0, 20);
@@ -54,12 +56,8 @@ public class BedAura extends Module {
     BooleanSetting antiSuicide = registerBoolean("Anti Suicide", false);
     IntegerSetting antiSuicideHealth = registerInteger("Suicide Health", 14, 1, 36);
     IntegerSetting minDamage = registerInteger("Min Damage", 5, 1, 36);
-
     private boolean hasNone = false;
     private int oldSlot = -1;
-    private final ArrayList<BlockPos> placedPos = new ArrayList<>();
-    private final Timer breakTimer = new Timer();
-    private final Timer placeTimer = new Timer();
 
     public void onEnable() {
         hasNone = false;

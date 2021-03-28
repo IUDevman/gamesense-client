@@ -5,10 +5,9 @@ import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.HashMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.HashMap;
 
 /**
  * @author Hoosiers

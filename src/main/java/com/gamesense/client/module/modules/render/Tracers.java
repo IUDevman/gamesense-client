@@ -12,12 +12,11 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import java.util.Arrays;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.Arrays;
 
 /**
  * @author Hoosiers
@@ -36,6 +35,17 @@ public class Tracers extends Module {
     ColorSetting farColor = registerColor("Far Color", new GSColor(0, 255, 0, 255));
 
     GSColor tracerColor;
+
+    public static double[] interpolate(Entity entity) {
+        double posX = interpolate(entity.posX, entity.lastTickPosX);
+        double posY = interpolate(entity.posY, entity.lastTickPosY);
+        double posZ = interpolate(entity.posZ, entity.lastTickPosZ);
+        return new double[]{posX, posY, posZ};
+    }
+
+    public static double interpolate(double now, double then) {
+        return then + (now - then) * mc.getRenderPartialTicks();
+    }
 
     public void onWorldRender(RenderEvent event) {
         ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
@@ -73,17 +83,6 @@ public class Tracers extends Module {
     public void drawLineToEntityPlayer(Entity e, GSColor color) {
         double[] xyz = interpolate(e);
         drawLine1(xyz[0], xyz[1], xyz[2], e.height, color);
-    }
-
-    public static double[] interpolate(Entity entity) {
-        double posX = interpolate(entity.posX, entity.lastTickPosX);
-        double posY = interpolate(entity.posY, entity.lastTickPosY);
-        double posZ = interpolate(entity.posZ, entity.lastTickPosZ);
-        return new double[]{posX, posY, posZ};
-    }
-
-    public static double interpolate(double now, double then) {
-        return then + (now - then) * mc.getRenderPartialTicks();
     }
 
     public void drawLine1(double posx, double posy, double posz, double up, GSColor color) {

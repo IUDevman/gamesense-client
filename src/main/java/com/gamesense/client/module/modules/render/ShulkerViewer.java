@@ -9,12 +9,11 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import java.awt.Point;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
-import java.awt.*;
 
 @Module.Declaration(name = "ShulkerViewer", category = Category.Render)
 public class ShulkerViewer extends Module {

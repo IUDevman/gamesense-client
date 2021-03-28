@@ -30,6 +30,10 @@ public class Location {
         this.ground = true;
     }
 
+    public static Location fromBlockPos(BlockPos blockPos) {
+        return new Location(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    }
+
     public Location add(int x, int y, int z) {
         this.x += x;
         this.y += y;
@@ -98,10 +102,6 @@ public class Location {
     public Location setZ(double z) {
         this.z = z;
         return this;
-    }
-
-    public static Location fromBlockPos(BlockPos blockPos) {
-        return new Location(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 
     public BlockPos toBlockPos() {

@@ -6,11 +6,10 @@ import com.gamesense.client.GameSense;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.Arrays;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.network.play.client.CPacketChatMessage;
-
-import java.util.Arrays;
 
 @Module.Declaration(name = "ChatSuffix", category = Category.Misc)
 public class ChatSuffix extends Module {

@@ -4,10 +4,10 @@ import com.gamesense.client.module.Module;
 
 public abstract class Setting<T> {
 
-    private T value;
     private final String name;
     private final String configName;
     private final Module module;
+    private T value;
 
     public Setting(T value, String name, Module module) {
         this.value = value;

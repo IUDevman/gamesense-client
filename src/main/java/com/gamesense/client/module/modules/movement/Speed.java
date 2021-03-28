@@ -9,12 +9,11 @@ import com.gamesense.api.util.world.MotionUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import java.util.Arrays;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.init.MobEffects;
-
-import java.util.Arrays;
 
 /**
  * @author Crystallinqq/Auto for original code
@@ -32,7 +31,41 @@ public class Speed extends Module {
 
     private boolean slowDown;
     private double playerSpeed;
-    private Timer timer = new Timer();
+    private final Timer timer = new Timer();
+    @EventHandler
+    private final Listener<PlayerMoveEvent> playerMoveEventListener = new Listener<>(event -> {
+        if (mc.player.isInLava() || mc.player.isInWater() || mc.player.isOnLadder() || mc.player.isInWeb) {
+            return;
+        }
+
+        if (mode.getValue().equalsIgnoreCase("Strafe")) {
+            double speedY = jumpHeight.getValue();
+
+            if (mc.player.onGround && MotionUtil.isMoving(mc.player) && timer.hasReached(300)) {
+                EntityUtil.setTimer(timerVal.getValue().floatValue());
+                if (mc.player.isPotionActive(MobEffects.JUMP_BOOST)) {
+                    speedY += (mc.player.getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1f;
+                }
+
+                event.setY(mc.player.motionY = speedY);
+                playerSpeed = MotionUtil.getBaseMoveSpeed() * (EntityUtil.isColliding(0, -0.5, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid() ? 0.9 : 1.901);
+                slowDown = true;
+                timer.reset();
+            } else {
+                EntityUtil.resetTimer();
+                if (slowDown || mc.player.collidedHorizontally) {
+                    playerSpeed -= (EntityUtil.isColliding(0, -0.8, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid()) ? 0.4 : 0.7 * (playerSpeed = MotionUtil.getBaseMoveSpeed());
+                    slowDown = false;
+                } else {
+                    playerSpeed -= playerSpeed / 159.0;
+                }
+            }
+            playerSpeed = Math.max(playerSpeed, MotionUtil.getBaseMoveSpeed());
+            double[] dir = MotionUtil.forward(playerSpeed);
+            event.setX(dir[0]);
+            event.setZ(dir[1]);
+        }
+    });
 
     public void onEnable() {
         playerSpeed = MotionUtil.getBaseMoveSpeed();
@@ -68,41 +101,6 @@ public class Speed extends Module {
             EntityUtil.resetTimer();
         }
     }
-
-    @EventHandler
-    private final Listener<PlayerMoveEvent> playerMoveEventListener = new Listener<>(event -> {
-        if (mc.player.isInLava() || mc.player.isInWater() || mc.player.isOnLadder() || mc.player.isInWeb) {
-            return;
-        }
-
-        if (mode.getValue().equalsIgnoreCase("Strafe")) {
-            double speedY = jumpHeight.getValue();
-
-            if (mc.player.onGround && MotionUtil.isMoving(mc.player) && timer.hasReached(300)) {
-                EntityUtil.setTimer(timerVal.getValue().floatValue());
-                if (mc.player.isPotionActive(MobEffects.JUMP_BOOST)) {
-                    speedY += (mc.player.getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1f;
-                }
-
-                event.setY(mc.player.motionY = speedY);
-                playerSpeed = MotionUtil.getBaseMoveSpeed() * (EntityUtil.isColliding(0, -0.5, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid() ? 0.9 : 1.901);
-                slowDown = true;
-                timer.reset();
-            } else {
-                EntityUtil.resetTimer();
-                if (slowDown || mc.player.collidedHorizontally) {
-                    playerSpeed -= (EntityUtil.isColliding(0, -0.8, 0) instanceof BlockLiquid && !EntityUtil.isInLiquid()) ? 0.4 : 0.7 * (playerSpeed = MotionUtil.getBaseMoveSpeed());
-                    slowDown = false;
-                } else {
-                    playerSpeed -= playerSpeed / 159.0;
-                }
-            }
-            playerSpeed = Math.max(playerSpeed, MotionUtil.getBaseMoveSpeed());
-            double[] dir = MotionUtil.forward(playerSpeed);
-            event.setX(dir[0]);
-            event.setZ(dir[1]);
-        }
-    });
 
     public String getHudInfo() {
         String t = "";

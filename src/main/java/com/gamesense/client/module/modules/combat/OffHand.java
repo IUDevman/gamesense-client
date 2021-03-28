@@ -10,6 +10,10 @@ import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
@@ -23,11 +27,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @Author TechAle and Hossier
  * Ported and modified from the ex module AutoTotem
@@ -37,6 +36,16 @@ import java.util.Map;
 @Module.Declaration(name = "Offhand", category = Category.Combat)
 public class OffHand extends Module {
 
+    private static boolean activeT = false;
+    private static int forceObby;
+    private final ArrayList<Item> ignoreNoSword = new ArrayList<Item>() {
+        {
+            add(Items.GOLDEN_APPLE);
+            add(Items.EXPERIENCE_BOTTLE);
+            add(Items.BOW);
+            add(Items.POTIONITEM);
+        }
+    };
     ModeSetting defaultItem = registerMode("Default", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Totem");
     ModeSetting nonDefaultItem = registerMode("Non Default", Arrays.asList("Totem", "Crystal", "Gapple", "Obby", "Pot", "Exp", "Plates", "String"), "Crystal");
     ModeSetting noPlayerItem = registerMode("No Player", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Gapple");
@@ -59,37 +68,12 @@ public class OffHand extends Module {
     BooleanSetting onlyHotBar = registerBoolean("Only HotBar", false);
     BooleanSetting antiWeakness = registerBoolean("AntiWeakness", false);
     BooleanSetting hotBarTotem = registerBoolean("HotBar Totem", false);
-
     int prevSlot,
             tickWaited,
             totems;
     boolean returnBack,
             stepChanging,
             firstChange;
-    private static boolean activeT = false;
-    private static int forceObby;
-    private ArrayList<Long> switchDone = new ArrayList<>();
-    private final ArrayList<Item> ignoreNoSword = new ArrayList<Item>() {
-        {
-            add(Items.GOLDEN_APPLE);
-            add(Items.EXPERIENCE_BOTTLE);
-            add(Items.BOW);
-            add(Items.POTIONITEM);
-        }
-    };
-
-    public static boolean isActive() {
-        return activeT;
-    }
-
-    public static void requestObsidian() {
-        forceObby++;
-    }
-
-    public static void removeObsidian() {
-        if (forceObby != 0) forceObby--;
-    }
-
     // Create maps of allowed items
     Map<String, Item> allowedItemsItem = new HashMap<String, Item>() {{
         put("Totem", Items.TOTEM_OF_UNDYING);
@@ -106,6 +90,19 @@ public class OffHand extends Module {
             put("Obby", Blocks.OBSIDIAN);
         }
     };
+    private final ArrayList<Long> switchDone = new ArrayList<>();
+
+    public static boolean isActive() {
+        return activeT;
+    }
+
+    public static void requestObsidian() {
+        forceObby++;
+    }
+
+    public static void removeObsidian() {
+        if (forceObby != 0) forceObby--;
+    }
 
     @Override
     public void onEnable() {

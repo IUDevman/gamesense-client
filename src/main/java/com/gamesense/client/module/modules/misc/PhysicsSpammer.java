@@ -4,7 +4,6 @@ import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,14 +17,12 @@ public class PhysicsSpammer extends Module {
 
     IntegerSetting minDelay = registerInteger("Min Delay", 5, 1, 100);
     IntegerSetting maxDelay = registerInteger("Max Delay", 5, 1, 100);
-
+    private final List<String> cache = new LinkedList<String>();
+    private long lastTime, delay;
+    private final Random random = new Random(System.currentTimeMillis());
     public PhysicsSpammer() {
         updateTimes();
     }
-
-    private List<String> cache = new LinkedList<String>();
-    private long lastTime, delay;
-    private Random random = new Random(System.currentTimeMillis());
 
     public void onUpdate() {
         if (delay > Math.max(minDelay.getValue(), maxDelay.getValue()))

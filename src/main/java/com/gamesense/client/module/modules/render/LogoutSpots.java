@@ -14,19 +14,18 @@ import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.world.WorldEvent;
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.world.WorldEvent;
 
 /**
  * Rewrote by Hoosiers on 10/30/20
@@ -43,8 +42,60 @@ public class LogoutSpots extends Module {
     ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
 
     Map<net.minecraft.entity.Entity, String> loggedPlayers = new ConcurrentHashMap<>();
+    /**
+     * event handlers below:
+     **/
+
+    @EventHandler
+    private final Listener<PlayerJoinEvent> playerJoinEventListener = new Listener<>(event -> {
+        if (mc.world != null) {
+            loggedPlayers.keySet().removeIf((entity) -> {
+                if (entity.getName().equalsIgnoreCase(event.getName())) {
+                    if (chatMsg.getValue()) {
+                        MessageBus.sendClientPrefixMessage(event.getName() + " reconnected!");
+                    }
+                    return true;
+                }
+                return false;
+            });
+        }
+    });
     Set<EntityPlayer> worldPlayers = ConcurrentHashMap.newKeySet();
+    @EventHandler
+    private final Listener<WorldEvent.Unload> unloadListener = new Listener<>(event -> {
+        worldPlayers.clear();
+        if (mc.player == null || mc.world == null) {
+            loggedPlayers.clear();
+        }
+    });
+    @EventHandler
+    private final Listener<WorldEvent.Load> loadListener = new Listener<>(event -> {
+        worldPlayers.clear();
+        if (mc.player == null || mc.world == null) {
+            loggedPlayers.clear();
+        }
+    });
     Timer timer = new Timer();
+    @EventHandler
+    private final Listener<PlayerLeaveEvent> playerLeaveEventListener = new Listener<>(event -> {
+        if (mc.world != null) {
+            worldPlayers.removeIf(entity -> {
+                if (entity.getName().equalsIgnoreCase(event.getName())) {
+                    String date = new SimpleDateFormat("k:mm").format(new Date());
+                    loggedPlayers.put(entity, date);
+
+                    if (chatMsg.getValue() && timer.getTimePassed() / 50L >= 5) {
+                        String location = "(" + entity.posX + "," + entity.posY + "," + entity.posZ
+                            + ")";
+                        MessageBus.sendClientPrefixMessage(event.getName() + " disconnected at " + location + "!");
+                        timer.reset();
+                    }
+                    return true;
+                }
+                return false;
+            });
+        }
+    });
 
     public void onUpdate() {
         mc.world.playerEntities.stream()
@@ -104,59 +155,4 @@ public class LogoutSpots extends Module {
         }
         GlStateManager.popMatrix();
     }
-
-    /**
-     * event handlers below:
-     **/
-
-    @EventHandler
-    private final Listener<PlayerJoinEvent> playerJoinEventListener = new Listener<>(event -> {
-        if (mc.world != null) {
-            loggedPlayers.keySet().removeIf((entity) -> {
-                if (entity.getName().equalsIgnoreCase(event.getName())) {
-                    if (chatMsg.getValue()) {
-                        MessageBus.sendClientPrefixMessage(event.getName() + " reconnected!");
-                    }
-                    return true;
-                }
-                return false;
-            });
-        }
-    });
-
-    @EventHandler
-    private final Listener<PlayerLeaveEvent> playerLeaveEventListener = new Listener<>(event -> {
-        if (mc.world != null) {
-            worldPlayers.removeIf(entity -> {
-                if (entity.getName().equalsIgnoreCase(event.getName())) {
-                    String date = new SimpleDateFormat("k:mm").format(new Date());
-                    loggedPlayers.put(entity, date);
-
-                    if (chatMsg.getValue() && timer.getTimePassed() / 50L >= 5) {
-                        String location = "(" + (int) entity.posX + "," + (int) entity.posY + "," + (int) entity.posZ + ")";
-                        MessageBus.sendClientPrefixMessage(event.getName() + " disconnected at " + location + "!");
-                        timer.reset();
-                    }
-                    return true;
-                }
-                return false;
-            });
-        }
-    });
-
-    @EventHandler
-    private final Listener<WorldEvent.Unload> unloadListener = new Listener<>(event -> {
-        worldPlayers.clear();
-        if (mc.player == null || mc.world == null) {
-            loggedPlayers.clear();
-        }
-    });
-
-    @EventHandler
-    private final Listener<WorldEvent.Load> loadListener = new Listener<>(event -> {
-        worldPlayers.clear();
-        if (mc.player == null || mc.world == null) {
-            loggedPlayers.clear();
-        }
-    });
 }

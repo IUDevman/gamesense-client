@@ -2,11 +2,10 @@ package com.gamesense.api.util.misc;
 
 import com.gamesense.api.setting.values.ModeSetting;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import net.minecraft.util.text.TextFormatting;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
+import net.minecraft.util.text.TextFormatting;
 
 public class ColorUtil {
 

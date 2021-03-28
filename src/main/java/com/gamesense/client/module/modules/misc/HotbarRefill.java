@@ -5,6 +5,9 @@ import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Items;
@@ -12,10 +15,6 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Module.Declaration(name = "HotbarRefill", category = Category.Misc)
 public class HotbarRefill extends Module {

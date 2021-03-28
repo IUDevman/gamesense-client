@@ -4,13 +4,12 @@ import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.mojang.authlib.GameProfile;
+import java.util.UUID;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.GameType;
-
-import java.util.UUID;
 
 /*
     @Author TechAle

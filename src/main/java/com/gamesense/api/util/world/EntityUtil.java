@@ -1,6 +1,8 @@
 package com.gamesense.api.util.world;
 
 import com.gamesense.api.util.player.social.SocialManager;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
@@ -10,9 +12,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author 086

@@ -35,6 +35,8 @@ import org.lwjgl.opengl.GL11;
 @Module.Declaration(name = "Nametags", category = Category.Render)
 public class Nametags extends Module {
 
+    public BooleanSetting customColor = registerBoolean("Custom Color", true);
+    public ColorSetting borderColor = registerColor("Border Color", new GSColor(255, 0, 0, 255));
     IntegerSetting range = registerInteger("Range", 100, 10, 260);
     BooleanSetting renderSelf = registerBoolean("Render Self", false);
     BooleanSetting showDurability = registerBoolean("Durability", true);
@@ -47,8 +49,6 @@ public class Nametags extends Module {
     BooleanSetting showTotem = registerBoolean("Totem Pops", true);
     BooleanSetting showEntityID = registerBoolean("Entity Id", false);
     ModeSetting levelColor = registerMode("Level Color", ColorUtil.colors, "Green");
-    public BooleanSetting customColor = registerBoolean("Custom Color", true);
-    public ColorSetting borderColor = registerColor("Border Color", new GSColor(255, 0, 0, 255));
 
     public void onWorldRender(RenderEvent event) {
         if (mc.player == null || mc.world == null) {

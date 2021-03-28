@@ -2,44 +2,28 @@ package com.gamesense.client.module;
 
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.SettingsManager;
-import com.gamesense.api.setting.values.*;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.settings.KeybindSetting;
 import com.lukflug.panelstudio.settings.Toggleable;
-import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Keyboard;
 
 public abstract class Module implements Toggleable, KeybindSetting {
 
     protected static final Minecraft mc = Minecraft.getMinecraft();
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface Declaration {
-        String name();
-
-        Category category();
-
-        int priority() default 0;
-
-        int bind() default Keyboard.KEY_NONE;
-
-        boolean enabled() default false;
-
-        boolean drawn() default true;
-
-        boolean toggleMsg() default false;
-    }
-
     private final String name = getDeclaration().name();
     private final Category category = getDeclaration().category();
     private final int priority = getDeclaration().priority();
@@ -47,6 +31,7 @@ public abstract class Module implements Toggleable, KeybindSetting {
     private boolean enabled = getDeclaration().enabled();
     private boolean drawn = getDeclaration().drawn();
     private boolean toggleMsg = getDeclaration().toggleMsg();
+    private String disabledMessage = name + " turned OFF!";
 
     private Declaration getDeclaration() {
         return getClass().getAnnotation(Declaration.class);
@@ -79,8 +64,6 @@ public abstract class Module implements Toggleable, KeybindSetting {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
-    private String disabledMessage = name + " turned OFF!";
 
     public void setDisabledMessage(String message) {
         this.disabledMessage = message;
@@ -207,5 +190,23 @@ public abstract class Module implements Toggleable, KeybindSetting {
         } else {
             return Keyboard.getKeyName(this.bind);
         }
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface Declaration {
+        String name();
+
+        Category category();
+
+        int priority() default 0;
+
+        int bind() default Keyboard.KEY_NONE;
+
+        boolean enabled() default false;
+
+        boolean drawn() default true;
+
+        boolean toggleMsg() default false;
     }
 }

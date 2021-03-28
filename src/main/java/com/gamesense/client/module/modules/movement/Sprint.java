@@ -8,7 +8,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 @Module.Declaration(name = "Sprint", category = Category.Movement)
 public class Sprint extends Module {
 
-    private BooleanSetting multiDirection = registerBoolean("Multi Direction", true);
+    private final BooleanSetting multiDirection = registerBoolean("Multi Direction", true);
 
     public void onUpdate() {
         EntityPlayerSP player = mc.player;

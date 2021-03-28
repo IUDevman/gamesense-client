@@ -2,6 +2,8 @@ package com.gamesense.api.util.world.combat;
 
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.EntityUtil;
+import java.util.List;
+import java.util.stream.Collectors;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -11,9 +13,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CrystalUtil {
 

@@ -14,6 +14,12 @@ import com.gamesense.client.module.modules.combat.OffHand;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -21,25 +27,27 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Module.Declaration(name = "CombatInfo", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 150)
 public class CombatInfo extends HUDModule {
 
-    ModeSetting infoType = registerMode("Type", Arrays.asList("Cyber", "Hoosiers"), "Hoosiers");
-    ColorSetting color1 = registerColor("On", new GSColor(0, 255, 0, 255));
-    ColorSetting color2 = registerColor("Off", new GSColor(255, 0, 0, 255));
-
-    private InfoList list = new InfoList();
     private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};
     private static final String[] hoosiersModules = {"AutoCrystalGS", "KillAura", "Surround", "AutoTrap", "SelfTrap"};
     private static final String[] hoosiersNames = {"AC", "KA", "SU", "AT", "ST"};
+    ModeSetting infoType = registerMode("Type", Arrays.asList("Cyber", "Hoosiers"), "Hoosiers");
+    ColorSetting color1 = registerColor("On", new GSColor(0, 255, 0, 255));
+    ColorSetting color2 = registerColor("Off", new GSColor(255, 0, 0, 255));
+    private final InfoList list = new InfoList();
+
+    private static int getPing() {
+        int p = -1;
+        if (mc.player == null || mc.getConnection() == null || mc.getConnection().getPlayerInfo(mc.player.getName()) == null) {
+            p = -1;
+        } else {
+            p = mc.getConnection().getPlayerInfo(mc.player.getName()).getResponseTime();
+        }
+        return p;
+    }
 
     @Override
     public void populate(Theme theme) {
@@ -84,16 +92,6 @@ public class CombatInfo extends HUDModule {
 
             }
         }
-    }
-
-    private static int getPing() {
-        int p = -1;
-        if (mc.player == null || mc.getConnection() == null || mc.getConnection().getPlayerInfo(mc.player.getName()) == null) {
-            p = -1;
-        } else {
-            p = mc.getConnection().getPlayerInfo(mc.player.getName()).getResponseTime();
-        }
-        return p;
     }
 
     private class InfoList implements HUDList {

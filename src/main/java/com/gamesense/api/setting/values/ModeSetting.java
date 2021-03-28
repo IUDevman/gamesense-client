@@ -3,7 +3,6 @@ package com.gamesense.api.setting.values;
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.settings.EnumSetting;
-
 import java.util.List;
 
 public class ModeSetting extends Setting<String> implements EnumSetting {

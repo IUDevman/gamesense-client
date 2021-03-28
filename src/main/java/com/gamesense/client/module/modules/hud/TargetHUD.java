@@ -15,6 +15,12 @@ import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
 import com.lukflug.panelstudio.theme.Theme;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Comparator;
+import java.util.Objects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,10 +29,6 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextFormatting;
-
-import java.awt.*;
-import java.util.Comparator;
-import java.util.Objects;
 
 /**
  * @Author Hoosiers on 10/19/2020,
@@ -38,16 +40,10 @@ import java.util.Objects;
 @HUDModule.Declaration(posX = 0, posZ = 70)
 public class TargetHUD extends HUDModule {
 
+    private static EntityPlayer targetPlayer;
     IntegerSetting range = registerInteger("Range", 100, 10, 260);
     ColorSetting outline = registerColor("Outline", new GSColor(255, 0, 0, 255));
     ColorSetting background = registerColor("Background", new GSColor(0, 0, 0, 255));
-
-    private static EntityPlayer targetPlayer;
-
-    @Override
-    public void populate(Theme theme) {
-        component = new TargetHUDComponent(theme);
-    }
 
     private static Color getNameColor(String playerName) {
         if (SocialManager.isFriend(playerName)) {
@@ -89,6 +85,11 @@ public class TargetHUD extends HUDModule {
 
     public static boolean isRenderingEntity(EntityPlayer entityPlayer) {
         return targetPlayer == entityPlayer;
+    }
+
+    @Override
+    public void populate(Theme theme) {
+        component = new TargetHUDComponent(theme);
     }
 
     private class TargetHUDComponent extends HUDComponent {

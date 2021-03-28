@@ -1,15 +1,9 @@
 package com.gamesense.api.config;
 
 import com.gamesense.client.GameSense;
-
 import java.io.IOException;
 
 public class ConfigStopper extends Thread {
-
-    @Override
-    public void run() {
-        saveConfig();
-    }
 
     public static void saveConfig() {
         try {
@@ -31,5 +25,10 @@ public class ConfigStopper extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run() {
+        saveConfig();
     }
 }

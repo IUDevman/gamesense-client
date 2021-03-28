@@ -11,13 +11,12 @@ import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.Arrays;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.Arrays;
 
 /**
  * @author Hoosiers
@@ -31,6 +30,12 @@ public class BreakESP extends Module {
     IntegerSetting lineWidth = registerInteger("Width", 1, 0, 5);
     IntegerSetting range = registerInteger("Range", 100, 1, 200);
     BooleanSetting cancelAnimation = registerBoolean("No Animation", true);
+    @EventHandler
+    private final Listener<DrawBlockDamageEvent> drawBlockDamageEventListener = new Listener<>(event -> {
+       if (cancelAnimation.getValue()) {
+           event.cancel();
+       }
+    });
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 255));
 
     public void onWorldRender(RenderEvent event) {
@@ -87,11 +92,4 @@ public class BreakESP extends Module {
             }
         }
     }
-
-    @EventHandler
-    private final Listener<DrawBlockDamageEvent> drawBlockDamageEventListener = new Listener<>(event -> {
-       if (cancelAnimation.getValue()) {
-           event.cancel();
-       }
-    });
 }

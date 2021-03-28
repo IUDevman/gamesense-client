@@ -1,22 +1,25 @@
 package com.gamesense.api.util.font;
 
 import com.gamesense.api.util.render.GSColor;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
 public class CFontRenderer extends CFont {
-
-    protected CharData[] boldChars = new CharData[256];
-    protected CharData[] italicChars = new CharData[256];
-    protected CharData[] boldItalicChars = new CharData[256];
 
     private final int[] colorCode = new int[32];
     private final String colorcodeIdentifiers = "0123456789abcdefklmnor";
+    protected CharData[] boldChars = new CharData[256];
+    protected CharData[] italicChars = new CharData[256];
+    protected CharData[] boldItalicChars = new CharData[256];
+    protected DynamicTexture texBold;
+    protected DynamicTexture texItalic;
+    protected DynamicTexture texItalicBold;
+    String fontName = "Arial";
+    int fontSize = 18;
 
     public CFontRenderer(Font font, boolean antiAlias, boolean fractionalMetrics) {
         super(font, antiAlias, fractionalMetrics);
@@ -24,19 +27,16 @@ public class CFontRenderer extends CFont {
         setupBoldItalicIDs();
     }
 
-    String fontName = "Arial";
-    int fontSize = 18;
-
     public String getFontName() {
         return this.fontName;
     }
 
-    public int getFontSize() {
-        return this.fontSize;
-    }
-
     public void setFontName(String newName) {
         fontName = newName;
+    }
+
+    public int getFontSize() {
+        return this.fontSize;
     }
 
     public void setFontSize(int newSize) {
@@ -234,10 +234,6 @@ public class CFontRenderer extends CFont {
         super.setFractionalMetrics(fractionalMetrics);
         setupBoldItalicIDs();
     }
-
-    protected DynamicTexture texBold;
-    protected DynamicTexture texItalic;
-    protected DynamicTexture texItalicBold;
 
     private void setupBoldItalicIDs() {
         this.texBold = setupTexture(this.font.deriveFont(1), this.antiAlias, this.fractionalMetrics, this.boldChars);

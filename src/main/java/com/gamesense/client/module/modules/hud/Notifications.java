@@ -8,28 +8,25 @@ import com.gamesense.client.module.ModuleManager;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
-import net.minecraft.util.text.TextComponentString;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.util.text.TextComponentString;
 
 @Module.Declaration(name = "Notifications", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 50)
 public class Notifications extends HUDModule {
 
+    private static final NotificationsList list = new NotificationsList();
+    private static int waitCounter;
     public BooleanSetting sortUp = registerBoolean("Sort Up", false);
     public BooleanSetting sortRight = registerBoolean("Sort Right", false);
     public BooleanSetting disableChat = registerBoolean("No Chat Msg", true);
-
-    private static NotificationsList list = new NotificationsList();
 
     @Override
     public void populate(Theme theme) {
         component = new ListComponent(getName(), theme.getPanelRenderer(), position, list);
     }
-
-    private static int waitCounter;
 
     public void onUpdate() {
         if (waitCounter < 500) {

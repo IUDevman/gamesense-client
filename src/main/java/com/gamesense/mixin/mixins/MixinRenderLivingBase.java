@@ -25,13 +25,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RenderLivingBase.class)
 public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends Render<T> {
 
+    protected final Minecraft mc = Minecraft.getMinecraft();
+    private boolean isClustered;
+
     protected MixinRenderLivingBase() {
         super(null);
     }
-
-    protected final Minecraft mc = Minecraft.getMinecraft();
-
-    private boolean isClustered;
 
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     protected void renderModel(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, CallbackInfo callbackInfo) {

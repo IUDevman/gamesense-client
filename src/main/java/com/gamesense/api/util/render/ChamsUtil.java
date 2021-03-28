@@ -1,10 +1,25 @@
 package com.gamesense.api.util.render;
 
+import static org.lwjgl.opengl.GL11.GL_FILL;
+import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_LINE;
+import static org.lwjgl.opengl.GL11.GL_LINE_SMOOTH;
+import static org.lwjgl.opengl.GL11.GL_LINE_SMOOTH_HINT;
+import static org.lwjgl.opengl.GL11.GL_NICEST;
+import static org.lwjgl.opengl.GL11.GL_POLYGON_OFFSET_FILL;
+import static org.lwjgl.opengl.GL11.GL_POLYGON_OFFSET_LINE;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glDepthRange;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glHint;
+import static org.lwjgl.opengl.GL11.glLineWidth;
+import static org.lwjgl.opengl.GL11.glPolygonMode;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author Seth

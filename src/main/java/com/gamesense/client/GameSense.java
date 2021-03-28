@@ -13,6 +13,7 @@ import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.manager.ManagerLoader;
 import com.gamesense.client.module.ModuleManager;
+import java.awt.Font;
 import me.zero.alpine.EventBus;
 import me.zero.alpine.EventManager;
 import net.minecraftforge.fml.common.Mod;
@@ -20,8 +21,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
-
-import java.awt.*;
 
 @Mod(modid = GameSense.MODID, name = GameSense.MODNAME, version = GameSense.MODVER)
 public class GameSense {
@@ -38,7 +37,12 @@ public class GameSense {
 
     @Mod.Instance
     public static GameSense INSTANCE;
-
+    public EventProcessor eventProcessor;
+    public CFontRenderer cFontRenderer;
+    public GameSenseGUI gameSenseGUI;
+    public SaveConfig saveConfig;
+    public LoadConfig loadConfig;
+    public CapeUtil capeUtil;
     public GameSense() {
         INSTANCE = this;
     }
@@ -51,13 +55,6 @@ public class GameSense {
         startClient();
         LOGGER.info("Finished initialization for " + MODNAME + " " + MODVER + "!");
     }
-
-    public EventProcessor eventProcessor;
-    public CFontRenderer cFontRenderer;
-    public GameSenseGUI gameSenseGUI;
-    public SaveConfig saveConfig;
-    public LoadConfig loadConfig;
-    public CapeUtil capeUtil;
 
     private void startClient() {
         VersionChecker.init();

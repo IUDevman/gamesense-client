@@ -7,16 +7,15 @@ import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.manager.managers.TotemPopManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderPearl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Darki for popcounter
@@ -120,11 +119,8 @@ public class PvPInfo extends Module {
     private boolean isBurrowed(Entity entity) {
         BlockPos entityPos = new BlockPos(roundValueToCenter(entity.posX), entity.posY + .2, roundValueToCenter(entity.posZ));
 
-        if (mc.world.getBlockState(entityPos).getBlock() == Blocks.OBSIDIAN || mc.world.getBlockState(entityPos).getBlock() == Blocks.ENDER_CHEST) {
-            return true;
-        }
-
-        return false;
+      return mc.world.getBlockState(entityPos).getBlock() == Blocks.OBSIDIAN
+          || mc.world.getBlockState(entityPos).getBlock() == Blocks.ENDER_CHEST;
     }
 
     private double roundValueToCenter(double inputVal) {

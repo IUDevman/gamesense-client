@@ -3,7 +3,6 @@ package com.gamesense.client.manager;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.manager.managers.TotemPopManager;
-
 import java.util.ArrayList;
 import java.util.List;
 

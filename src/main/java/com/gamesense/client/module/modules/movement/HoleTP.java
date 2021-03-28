@@ -22,9 +22,9 @@ import net.minecraft.util.math.MathHelper;
 @Module.Declaration(name = "HoleTP", category = Category.Movement)
 public class HoleTP extends Module {
 
+    private final double[] oneblockPositions = new double[]{0.42, 0.75};
     private int packets;
     private boolean jumped;
-    private final double[] oneblockPositions = new double[]{0.42, 0.75};
 
     public void onUpdate() {
         if (mc.world == null || mc.player == null || ModuleManager.isModuleEnabled(Speed.class)) {

@@ -15,6 +15,10 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -33,11 +37,6 @@ import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec2f;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author 0b00101010
@@ -60,6 +59,15 @@ public class KillAura extends Module {
     DoubleSetting range = registerDouble("Range", 5, 0, 10);
 
     private boolean isAttacking = false;
+    @EventHandler
+    private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
+        if (event.getPacket() instanceof CPacketUseEntity) {
+            if (criticals.getValue() && ((CPacketUseEntity) event.getPacket()).getAction() == CPacketUseEntity.Action.ATTACK && mc.player.onGround && isAttacking) {
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.1f, mc.player.posZ, false));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY, mc.player.posZ, false));
+            }
+        }
+    });
 
     public void onUpdate() {
         if (mc.player == null || !mc.player.isEntityAlive()) return;
@@ -116,16 +124,6 @@ public class KillAura extends Module {
             }
         }
     }
-
-    @EventHandler
-    private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
-        if (event.getPacket() instanceof CPacketUseEntity) {
-            if (criticals.getValue() && ((CPacketUseEntity) event.getPacket()).getAction() == CPacketUseEntity.Action.ATTACK && mc.player.onGround && isAttacking) {
-                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.1f, mc.player.posZ, false));
-                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY, mc.player.posZ, false));
-            }
-        }
-    });
 
     private Pair<Float, Integer> findSwordSlot() {
         List<Integer> items = InventoryUtil.findAllItemSlots(ItemSword.class);

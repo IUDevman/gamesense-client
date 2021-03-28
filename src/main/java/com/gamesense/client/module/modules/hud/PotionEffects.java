@@ -10,11 +10,10 @@ import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import java.awt.Color;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-
-import java.awt.*;
 
 @Module.Declaration(name = "PotionEffects", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 300)
@@ -24,7 +23,7 @@ public class PotionEffects extends HUDModule {
     BooleanSetting sortRight = registerBoolean("Sort Right", false);
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 255));
 
-    private PotionList list = new PotionList();
+    private final PotionList list = new PotionList();
 
     @Override
     public void populate(Theme theme) {

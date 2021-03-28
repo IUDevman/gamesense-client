@@ -4,7 +4,11 @@ import com.gamesense.api.event.Phase;
 import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.values.*;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.api.util.player.RotationUtil;
@@ -19,6 +23,13 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
@@ -43,10 +54,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 /**
  * @author CyberTF2 and Hoosiers
  */
@@ -54,6 +61,12 @@ import java.util.stream.IntStream;
 @Module.Declaration(name = "AutoCrystalGS", category = Category.Combat, priority = 100)
 public class AutoCrystalGS extends Module {
 
+    public static final ArrayList<BlockPos> PlacedCrystals = new ArrayList<>();
+    public static boolean stopAC = false;
+    public DoubleSetting breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
+    public DoubleSetting placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
+    public BooleanSetting endCrystalMode = registerBoolean("1.13 Place", false);
+    public boolean isActive = false;
     ModeSetting breakMode = registerMode("Target", Arrays.asList("All", "Smart", "Own"), "All");
     ModeSetting handBreak = registerMode("Hand", Arrays.asList("Main", "Offhand", "Both"), "Main");
     ModeSetting breakType = registerMode("Type", Arrays.asList("Swing", "Packet"), "Swing");
@@ -61,8 +74,6 @@ public class AutoCrystalGS extends Module {
     BooleanSetting placeCrystal = registerBoolean("Place", true);
     IntegerSetting attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
     IntegerSetting attackValue = registerInteger("Hit Amount", 1, 1, 10);
-    public DoubleSetting breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
-    public DoubleSetting placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
     DoubleSetting wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
     DoubleSetting enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
     BooleanSetting refresh = registerBoolean("Refresh", true);
@@ -72,7 +83,6 @@ public class AutoCrystalGS extends Module {
     BooleanSetting autoSwitch = registerBoolean("Switch", true);
     BooleanSetting noGapSwitch = registerBoolean("No Gap Switch", false);
     BooleanSetting multiPlace = registerBoolean("Multi Place", false);
-    public BooleanSetting endCrystalMode = registerBoolean("1.13 Place", false);
     BooleanSetting cancelCrystal = registerBoolean("Cancel Crystal", false);
     DoubleSetting minDmg = registerDouble("Min Damage", 5, 0, 36);
     DoubleSetting minBreakDmg = registerDouble("Min Break Dmg", 5, 0, 36.0);
@@ -81,25 +91,37 @@ public class AutoCrystalGS extends Module {
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting raytrace = registerBoolean("Raytrace", false);
     BooleanSetting predict = registerBoolean("Predict", true);
+    @EventHandler
+    private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
+        if (!predict.getValue()) return;
+
+        if (event.getPacket() instanceof SPacketSoundEffect) {
+            final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
+            if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
+                for (BlockPos blockPos : PlacedCrystals) {
+                    if (blockPos.getDistance((int) packet.getX(), (int) packet.getY(), (int) packet.getZ()) <= 6) {
+                        CPacketUseEntity cPacketUseEntity = new CPacketUseEntity(new EntityEnderCrystal(mc.world, blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+                        mc.player.connection.sendPacket(cPacketUseEntity);
+                        PlacedCrystals.remove(blockPos);
+                        return;
+                    }
+                }
+            }
+        }
+    });
     BooleanSetting showDamage = registerBoolean("Render Dmg", true);
     ModeSetting hudDisplay = registerMode("HUD", Arrays.asList("Mode", "None"), "Mode");
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 50));
-
+    Timer timer = new Timer();
+    Timer stuckTimer = new Timer();
     private boolean switchCooldown = false;
     private boolean isAttacking = false;
-    public boolean isActive = false;
-    public static boolean stopAC = false;
     private int oldSlot = -1;
     private Entity renderEnt;
     private BlockPos render;
-    public static final ArrayList<BlockPos> PlacedCrystals = new ArrayList<>();
     private EnumFacing enumFacing;
-    Timer timer = new Timer();
-    Timer stuckTimer = new Timer();
-
     private Vec3d lastHitVec = Vec3d.ZERO;
     private boolean rotating = false;
-
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
@@ -431,25 +453,6 @@ public class AutoCrystalGS extends Module {
             mc.player.swingArm(EnumHand.MAIN_HAND);
         }
     }
-
-    @EventHandler
-    private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
-        if (!predict.getValue()) return;
-
-        if (event.getPacket() instanceof SPacketSoundEffect) {
-            final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
-            if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
-                for (BlockPos blockPos : PlacedCrystals) {
-                    if (blockPos.getDistance((int) packet.getX(), (int) packet.getY(), (int) packet.getZ()) <= 6) {
-                        CPacketUseEntity cPacketUseEntity = new CPacketUseEntity(new EntityEnderCrystal(mc.world, blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-                        mc.player.connection.sendPacket(cPacketUseEntity);
-                        PlacedCrystals.remove(blockPos);
-                        return;
-                    }
-                }
-            }
-        }
-    });
 
     public void onEnable() {
         PlacedCrystals.clear();

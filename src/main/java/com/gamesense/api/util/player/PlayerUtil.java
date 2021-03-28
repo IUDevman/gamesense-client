@@ -1,14 +1,13 @@
 package com.gamesense.api.util.player;
 
 import com.gamesense.api.util.world.EntityUtil;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlayerUtil {
 

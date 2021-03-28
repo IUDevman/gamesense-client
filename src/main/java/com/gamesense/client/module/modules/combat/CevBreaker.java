@@ -1,5 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
+import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
+
 import com.gamesense.api.event.Phase;
 import com.gamesense.api.event.events.DestroyBlockEvent;
 import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
@@ -22,6 +24,9 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.AutoGG;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.Block;
@@ -41,12 +46,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-
-import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
-
 /**
  * @Author TechAle
  * Ported and modified from PistonCrystal
@@ -55,6 +54,25 @@ import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 @Module.Declaration(name = "CevBreaker", category = Category.Combat, priority = 999)
 public class CevBreaker extends Module {
 
+    public static int cur_item = -1;
+    public static boolean isPossible = false;
+    private final int[][] model = new int[][]{
+            {1, 1, 0},
+            {-1, 1, 0},
+            {0, 1, 1},
+            {0, 1, -1}
+    };
+    @EventHandler
+    private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
+
+        if (event.getPacket() instanceof SPacketSoundEffect) {
+            final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
+            if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
+                if ((int) packet.getX() == enemyCoordsInt[0] && (int) packet.getZ() == enemyCoordsInt[2])
+                    stage = 1;
+            }
+        }
+    });
     ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
     ModeSetting breakCrystal = registerMode("Break Crystal", Arrays.asList("Vanilla", "Packet", "None"), "Packet");
     ModeSetting breakBlock = registerMode("Break Block", Arrays.asList("Normal", "Packet"), "Packet");
@@ -81,9 +99,15 @@ public class CevBreaker extends Module {
     BooleanSetting placeCrystal = registerBoolean("Place Crystal", true);
     BooleanSetting preRotation = registerBoolean("Pre Rotation", false);
     BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
-
-    public static int cur_item = -1;
-
+    Double[][] sur_block = new Double[4][3];
+    Vec3d lastHitVec;
+    @EventHandler
+    private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
+        Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
+        PlayerPacket packet = new PlayerPacket(this, rotation);
+        PlayerPacketManager.INSTANCE.addPacket(packet);
+    });
     private boolean noMaterials = false,
             hasMoved = false,
             isSneaking = false,
@@ -95,7 +119,6 @@ public class CevBreaker extends Module {
             rotationPlayerMoved,
             prevBreak,
             preRotationBol;
-
     private int oldSlot = -1,
             stage,
             delayTimeTicks,
@@ -103,28 +126,9 @@ public class CevBreaker extends Module {
             tickPick,
             afterRotationTick,
             preRotationTick;
-    private final int[][] model = new int[][]{
-            {1, 1, 0},
-            {-1, 1, 0},
-            {0, 1, 1},
-            {0, 1, -1}
-    };
-
-    public static boolean isPossible = false;
-
     private int[] slot_mat,
             delayTable,
             enemyCoordsInt;
-
-    private double[] enemyCoordsDouble;
-
-    private structureTemp toPlace;
-
-
-    Double[][] sur_block = new Double[4][3];
-
-    private EntityPlayer aimTarget;
-
     @EventHandler
     private final Listener<DestroyBlockEvent> listener2 = new Listener<>(event -> {
 
@@ -132,28 +136,9 @@ public class CevBreaker extends Module {
             destroyCrystalAlgo();
         }
     });
-
-    @EventHandler
-    private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
-
-        if (event.getPacket() instanceof SPacketSoundEffect) {
-            final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
-            if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
-                if ((int) packet.getX() == enemyCoordsInt[0] && (int) packet.getZ() == enemyCoordsInt[2])
-                    stage = 1;
-            }
-        }
-    });
-
-    Vec3d lastHitVec;
-
-    @EventHandler
-    private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
-        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
-        Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
-        PlayerPacket packet = new PlayerPacket(this, rotation);
-        PlayerPacketManager.INSTANCE.addPacket(packet);
-    });
+    private double[] enemyCoordsDouble;
+    private structureTemp toPlace;
+    private EntityPlayer aimTarget;
 
     // Everytime you enable
     public void onEnable() {
@@ -188,8 +173,7 @@ public class CevBreaker extends Module {
             if (!target.getValue().equals("Looking") && aimTarget == null)
                 disable();
             // If not found a target
-            if (aimTarget == null)
-                return true;
+          return aimTarget == null;
         }
         return false;
     }
@@ -775,22 +759,6 @@ public class CevBreaker extends Module {
         return false;
     }
 
-    // Class for the structure
-    private static class structureTemp {
-        public double distance;
-        public int supportBlock;
-        public ArrayList<Vec3d> to_place;
-        public int direction;
-
-        public structureTemp(double distance, int supportBlock, ArrayList<Vec3d> to_place) {
-            this.distance = distance;
-            this.supportBlock = supportBlock;
-            this.to_place = to_place;
-            this.direction = -1;
-        }
-
-    }
-
     // Create the skeleton of the structure
     private boolean createStructure() {
 
@@ -905,6 +873,22 @@ public class CevBreaker extends Module {
 
         // Check if the guy is in a hole
         return HoleUtil.isHole(EntityUtil.getPosition(aimTarget), true, true).getType() != HoleUtil.HoleType.NONE;
+    }
+
+    // Class for the structure
+    private static class structureTemp {
+        public double distance;
+        public int supportBlock;
+        public ArrayList<Vec3d> to_place;
+        public int direction;
+
+        public structureTemp(double distance, int supportBlock, ArrayList<Vec3d> to_place) {
+            this.distance = distance;
+            this.supportBlock = supportBlock;
+            this.to_place = to_place;
+            this.direction = -1;
+        }
+
     }
 
 }

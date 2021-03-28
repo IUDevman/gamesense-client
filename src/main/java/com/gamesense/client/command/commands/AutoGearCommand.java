@@ -5,13 +5,12 @@ import com.gamesense.client.command.Command;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.item.ItemStack;
-
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import net.minecraft.item.ItemStack;
 
 @Command.Declaration(name = "AutoGear", syntax = "gear set/save/del/list [name]", alias = {"gear", "gr", "kit"})
 public class AutoGearCommand extends Command {
@@ -26,6 +25,42 @@ public class AutoGearCommand extends Command {
             put("NoEx", "Kit not found");
         }
     };
+
+    private static void errorMessage(String e) {
+        PistonCrystal.printDebug("Error: " + errorMessage.get(e), true);
+    }
+
+    public static String getCurrentSet() {
+
+        JsonObject completeJson = new JsonObject();
+        try {
+            // Read json
+            completeJson = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject();
+            if (!completeJson.get("pointer").getAsString().equals("none"))
+                return completeJson.get("pointer").getAsString();
+
+
+        } catch (IOException e) {
+            // Case not found, reset
+        }
+        errorMessage("NoEx");
+        return "";
+    }
+
+    public static String getInventoryKit(String kit) {
+        JsonObject completeJson = new JsonObject();
+        try {
+            // Read json
+            completeJson = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject();
+            return completeJson.get(kit).getAsString();
+
+
+        } catch (IOException e) {
+            // Case not found, reset
+        }
+        errorMessage("NoEx");
+        return "";
+    }
 
     public void onCommand(String command, String[] message) throws Exception {
 
@@ -160,41 +195,5 @@ public class AutoGearCommand extends Command {
         } catch (IOException e) {
             errorMessage("Saving");
         }
-    }
-
-    private static void errorMessage(String e) {
-        PistonCrystal.printDebug("Error: " + errorMessage.get(e), true);
-    }
-
-    public static String getCurrentSet() {
-
-        JsonObject completeJson = new JsonObject();
-        try {
-            // Read json
-            completeJson = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject();
-            if (!completeJson.get("pointer").getAsString().equals("none"))
-                return completeJson.get("pointer").getAsString();
-
-
-        } catch (IOException e) {
-            // Case not found, reset
-        }
-        errorMessage("NoEx");
-        return "";
-    }
-
-    public static String getInventoryKit(String kit) {
-        JsonObject completeJson = new JsonObject();
-        try {
-            // Read json
-            completeJson = new JsonParser().parse(new FileReader(pathSave)).getAsJsonObject();
-            return completeJson.get(kit).getAsString();
-
-
-        } catch (IOException e) {
-            // Case not found, reset
-        }
-        errorMessage("NoEx");
-        return "";
     }
 }

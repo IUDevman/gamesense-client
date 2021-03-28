@@ -5,12 +5,11 @@ import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import java.util.Collection;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-
-import java.util.Collection;
 
 /**
  * @author Hoosiers on 11/05/2020

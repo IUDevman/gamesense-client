@@ -3,10 +3,9 @@ package com.gamesense.client.module.modules.render;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.Arrays;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-
-import java.util.Arrays;
 
 @Module.Declaration(name = "Fullbright", category = Category.Render)
 public class Fullbright extends Module {

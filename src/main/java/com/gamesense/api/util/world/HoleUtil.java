@@ -1,12 +1,11 @@
 package com.gamesense.api.util.world;
 
+import java.util.HashMap;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.HashMap;
 
 public class HoleUtil {
 
@@ -140,46 +139,6 @@ public class HoleUtil {
         NONE
     }
 
-    public static class HoleInfo {
-        private HoleType type;
-        private BlockSafety safety;
-
-        private AxisAlignedBB centre;
-
-        public HoleInfo() {
-            this(BlockSafety.UNBREAKABLE, HoleType.NONE);
-        }
-
-        public HoleInfo(BlockSafety safety, HoleType type) {
-            this.type = type;
-            this.safety = safety;
-        }
-
-        public void setType(HoleType type) {
-            this.type = type;
-        }
-
-        public void setSafety(BlockSafety safety) {
-            this.safety = safety;
-        }
-
-        public void setCentre(AxisAlignedBB centre) {
-            this.centre = centre;
-        }
-
-        public HoleType getType() {
-            return type;
-        }
-
-        public BlockSafety getSafety() {
-            return safety;
-        }
-
-        public AxisAlignedBB getCentre() {
-            return centre;
-        }
-    }
-
     public enum BlockOffset {
         DOWN(0, -1, 0),
         UP(0, 1, 0),
@@ -218,6 +177,46 @@ public class HoleUtil {
 
         public BlockPos right(BlockPos pos, int scale) {
             return pos.add(-z * scale, 0, x * scale);
+        }
+    }
+
+    public static class HoleInfo {
+        private HoleType type;
+        private BlockSafety safety;
+
+        private AxisAlignedBB centre;
+
+        public HoleInfo() {
+            this(BlockSafety.UNBREAKABLE, HoleType.NONE);
+        }
+
+        public HoleInfo(BlockSafety safety, HoleType type) {
+            this.type = type;
+            this.safety = safety;
+        }
+
+        public HoleType getType() {
+            return type;
+        }
+
+        public void setType(HoleType type) {
+            this.type = type;
+        }
+
+        public BlockSafety getSafety() {
+            return safety;
+        }
+
+        public void setSafety(BlockSafety safety) {
+            this.safety = safety;
+        }
+
+        public AxisAlignedBB getCentre() {
+            return centre;
+        }
+
+        public void setCentre(AxisAlignedBB centre) {
+            this.centre = centre;
         }
     }
 }

@@ -11,9 +11,8 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.Announcer;
-import org.lwjgl.input.Keyboard;
-
 import java.util.Arrays;
+import org.lwjgl.input.Keyboard;
 
 @Module.Declaration(name = "ClickGUI", category = Category.GUI, bind = Keyboard.KEY_O, drawn = false)
 public class ClickGuiModule extends Module {

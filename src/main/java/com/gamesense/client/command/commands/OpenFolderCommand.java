@@ -3,8 +3,7 @@ package com.gamesense.client.command.commands;
 import com.gamesense.api.config.SaveConfig;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
-
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 
 /**

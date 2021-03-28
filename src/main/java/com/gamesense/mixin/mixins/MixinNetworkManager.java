@@ -5,14 +5,13 @@ import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.misc.NoKick;
 import io.netty.channel.ChannelHandlerContext;
+import java.io.IOException;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.io.IOException;
 
 @Mixin(NetworkManager.class)
 public class MixinNetworkManager {

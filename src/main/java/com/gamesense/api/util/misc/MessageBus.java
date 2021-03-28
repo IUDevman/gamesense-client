@@ -14,10 +14,9 @@ import net.minecraft.util.text.TextComponentString;
 
 public class MessageBus {
 
+    protected static final Minecraft mc = Minecraft.getMinecraft();
     public static String watermark = ChatFormatting.GRAY + "[" + ChatFormatting.WHITE + "Game" + ChatFormatting.GREEN + "Sense" + ChatFormatting.GRAY + "] " + ChatFormatting.RESET;
     public static ChatFormatting messageFormatting = ChatFormatting.GRAY;
-
-    protected static final Minecraft mc = Minecraft.getMinecraft();
 
     /**
      * Sends a client-sided message WITH the client prefix

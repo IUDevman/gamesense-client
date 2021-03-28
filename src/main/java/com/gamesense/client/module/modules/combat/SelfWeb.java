@@ -7,13 +7,12 @@ import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.Arrays;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.Arrays;
 
 /**
  * @Author Hoosiers on 09/23/20

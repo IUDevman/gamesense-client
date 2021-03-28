@@ -6,9 +6,8 @@ import com.gamesense.api.util.misc.ColorUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import net.minecraft.util.text.TextFormatting;
-
 import java.util.Arrays;
+import net.minecraft.util.text.TextFormatting;
 
 @Module.Declaration(name = "Colors", category = Category.GUI, drawn = false)
 public class ColorMain extends Module {

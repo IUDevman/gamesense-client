@@ -16,7 +16,7 @@ import net.minecraft.network.play.client.CPacketCloseWindow;
 public class XCarry extends Module {
 
     @EventHandler
-    private Listener<PacketEvent.Send> listener = new Listener<>(event -> {
+    private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
         if (event.getPacket() instanceof CPacketCloseWindow) {
             if (((CPacketCloseWindow) event.getPacket()).windowId == mc.player.inventoryContainer.windowId) {
                 event.cancel();

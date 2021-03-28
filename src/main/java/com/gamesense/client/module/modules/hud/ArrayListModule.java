@@ -12,8 +12,7 @@ import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
 import com.mojang.realmsclient.gui.ChatFormatting;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -26,7 +25,7 @@ public class ArrayListModule extends HUDModule {
     BooleanSetting sortRight = registerBoolean("Sort Right", false);
     ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
 
-    private ModuleList list = new ModuleList();
+    private final ModuleList list = new ModuleList();
 
     @Override
     public void populate(Theme theme) {

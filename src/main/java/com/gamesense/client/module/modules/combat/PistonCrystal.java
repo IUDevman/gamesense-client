@@ -1,5 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
+import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
+
 import com.gamesense.api.event.Phase;
 import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
@@ -22,6 +24,9 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.misc.AutoGG;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.*;
@@ -43,12 +48,6 @@ import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
-
 /**
  * @Author TechAle on (17/01/21)
  * Ported and modified from AutoAnvil.java that is modified from Surround.java
@@ -58,6 +57,17 @@ import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 @Module.Declaration(name = "PistonCrystal", category = Category.Combat, priority = 999)
 public class PistonCrystal extends Module {
 
+    @EventHandler
+    private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
+
+        if (event.getPacket() instanceof SPacketSoundEffect) {
+            final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
+            if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
+                if ((int) packet.getX() == enemyCoordsInt[0] && (int) packet.getZ() == enemyCoordsInt[2])
+                    stage = 1;
+            }
+        }
+    });
     ModeSetting breakType = registerMode("Type", Arrays.asList("Swing", "Packet"), "Swing");
     ModeSetting placeMode = registerMode("Place", Arrays.asList("Torch", "Block", "Both"), "Torch");
     ModeSetting target = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
@@ -91,7 +101,22 @@ public class PistonCrystal extends Module {
     BooleanSetting preRotation = registerBoolean("Pre Rotation", false);
     BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
     BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
-
+    int[][] disp_surblock = {
+            {1, 0, 0},
+            {-1, 0, 0},
+            {0, 0, 1},
+            {0, 0, -1}
+    };
+    Double[][] sur_block = new Double[4][3];
+    Vec3d lastHitVec;
+    @EventHandler
+    private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
+        Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
+        PlayerPacket packet = new PlayerPacket(this, rotation);
+        PlayerPacketManager.INSTANCE.addPacket(packet);
+    });
+    boolean redstoneAbovePiston;
     private boolean noMaterials = false,
             hasMoved = false,
             isSneaking = false,
@@ -109,7 +134,6 @@ public class PistonCrystal extends Module {
             preRotationBol = false,
             minHp,
             itemCrystal;
-
     private int oldSlot = -1,
             stage,
             delayTimeTicks,
@@ -122,26 +146,34 @@ public class PistonCrystal extends Module {
             afterRotationTick,
             placeTry;
     private long startTime, endTime;
-
     private int[] slot_mat,
             delayTable,
             meCoordsInt,
             enemyCoordsInt;
-
     private double[] enemyCoordsDouble;
-
     private structureTemp toPlace;
-
-    int[][] disp_surblock = {
-            {1, 0, 0},
-            {-1, 0, 0},
-            {0, 0, 1},
-            {0, 0, -1}
-    };
-
-    Double[][] sur_block = new Double[4][3];
-
     private EntityPlayer aimTarget;
+
+    public static boolean someoneInCoords(double x, double z) {
+        int xCheck = (int) x;
+        int zCheck = (int) z;
+        // Get player's list
+        List<EntityPlayer> playerList = mc.world.playerEntities;
+        // Iterate
+        for (EntityPlayer player : playerList) {
+            // I dont think you need to check also the yLevel
+            if ((int) player.posX == xCheck && (int) player.posZ == zCheck)
+                return true;
+        }
+
+        return false;
+    }
+
+    // PrintChat
+    public static void printDebug(String text, Boolean error) {
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
+        MessageBus.sendClientPrefixMessage((error ? colorMain.getDisabledColor() : colorMain.getEnabledColor()) + text);
+    }
 
     // Everytime you enable
     public void onEnable() {
@@ -171,8 +203,7 @@ public class PistonCrystal extends Module {
             if (!target.getValue().equals("Looking") && aimTarget == null)
                 disable();
             // If not found a target
-            if (aimTarget == null)
-                return true;
+          return aimTarget == null;
         }
         return false;
     }
@@ -205,18 +236,6 @@ public class PistonCrystal extends Module {
         if (redstoneBlockMode || rotate.getValue())
             betterPlacement.setValue(false);
     }
-
-    @EventHandler
-    private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
-
-        if (event.getPacket() instanceof SPacketSoundEffect) {
-            final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
-            if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
-                if ((int) packet.getX() == enemyCoordsInt[0] && (int) packet.getZ() == enemyCoordsInt[2])
-                    stage = 1;
-            }
-        }
-    });
 
     // Init some values
     private void initValues() {
@@ -358,16 +377,6 @@ public class PistonCrystal extends Module {
 
         return output.toString();
     }
-
-    Vec3d lastHitVec;
-
-    @EventHandler
-    private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
-        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
-        Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
-        PlayerPacket packet = new PlayerPacket(this, rotation);
-        PlayerPacketManager.INSTANCE.addPacket(packet);
-    });
 
     // Every updates
     public void onUpdate() {
@@ -582,9 +591,8 @@ public class PistonCrystal extends Module {
 
     private boolean checkRedstonePlace() {
         BlockPos targetPosPist = compactBlockPos(3);
-        if (BlockUtil.getBlock(targetPosPist.getX(), targetPosPist.getY(), targetPosPist.getZ()).getRegistryName().toString().contains("redstone") ) {
-            return false;
-        } else return true;
+      return !BlockUtil.getBlock(targetPosPist.getX(), targetPosPist.getY(), targetPosPist.getZ())
+          .getRegistryName().toString().contains("redstone");
     }
 
     // Algo for destroying the crystal
@@ -1152,36 +1160,6 @@ public class PistonCrystal extends Module {
         return false;
     }
 
-    // Class for the structure
-    private static class structureTemp {
-        public double distance;
-        public int supportBlock;
-        public List<Vec3d> to_place;
-        public int direction;
-        public float offsetX;
-        public float offsetY;
-        public float offsetZ;
-
-        public structureTemp(double distance, int supportBlock, List<Vec3d> to_place) {
-            this.distance = distance;
-            this.supportBlock = supportBlock;
-            this.to_place = to_place;
-            this.direction = -1;
-        }
-
-        public void replaceValues(double distance, int supportBlock, List<Vec3d> to_place, int direction, float offsetX, float offsetZ, float offsetY) {
-            this.distance = distance;
-            this.supportBlock = supportBlock;
-            this.to_place = to_place;
-            this.direction = direction;
-            this.offsetX = offsetX;
-            this.offsetZ = offsetZ;
-            this.offsetY = offsetY;
-        }
-    }
-
-    boolean redstoneAbovePiston;
-
     // Create the skeleton of the structure
     private boolean createStructure() {
         /*
@@ -1575,21 +1553,6 @@ public class PistonCrystal extends Module {
         return addedStructure.to_place != null;
     }
 
-    public static boolean someoneInCoords(double x, double z) {
-        int xCheck = (int) x;
-        int zCheck = (int) z;
-        // Get player's list
-        List<EntityPlayer> playerList = mc.world.playerEntities;
-        // Iterate
-        for (EntityPlayer player : playerList) {
-            // I dont think you need to check also the yLevel
-            if ((int) player.posX == xCheck && (int) player.posZ == zCheck)
-                return true;
-        }
-
-        return false;
-    }
-
     // Get all the materials
     private boolean getMaterialsSlot() {
 		/*
@@ -1680,9 +1643,31 @@ public class PistonCrystal extends Module {
         return HoleUtil.isHole(EntityUtil.getPosition(aimTarget), true, true).getType() != HoleUtil.HoleType.NONE;
     }
 
-    // PrintChat
-    public static void printDebug(String text, Boolean error) {
-        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
-        MessageBus.sendClientPrefixMessage((error ? colorMain.getDisabledColor() : colorMain.getEnabledColor()) + text);
+    // Class for the structure
+    private static class structureTemp {
+        public double distance;
+        public int supportBlock;
+        public List<Vec3d> to_place;
+        public int direction;
+        public float offsetX;
+        public float offsetY;
+        public float offsetZ;
+
+        public structureTemp(double distance, int supportBlock, List<Vec3d> to_place) {
+            this.distance = distance;
+            this.supportBlock = supportBlock;
+            this.to_place = to_place;
+            this.direction = -1;
+        }
+
+        public void replaceValues(double distance, int supportBlock, List<Vec3d> to_place, int direction, float offsetX, float offsetZ, float offsetY) {
+            this.distance = distance;
+            this.supportBlock = supportBlock;
+            this.to_place = to_place;
+            this.direction = direction;
+            this.offsetX = offsetX;
+            this.offsetZ = offsetZ;
+            this.offsetY = offsetY;
+        }
     }
 }

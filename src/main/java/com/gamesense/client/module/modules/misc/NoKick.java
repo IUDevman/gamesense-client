@@ -20,6 +20,16 @@ public class NoKick extends Module {
     public BooleanSetting noPacketKick = registerBoolean("Packet", true);
     BooleanSetting noSlimeCrash = registerBoolean("Slime", false);
     BooleanSetting noOffhandCrash = registerBoolean("Offhand", false);
+    @EventHandler
+    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
+        if (noOffhandCrash.getValue()) {
+            if (event.getPacket() instanceof SPacketSoundEffect) {
+                if (((SPacketSoundEffect) event.getPacket()).getSound() == SoundEvents.ITEM_ARMOR_EQUIP_GENERIC) {
+                    event.cancel();
+                }
+            }
+        }
+    });
 
     public void onUpdate() {
         if (mc.world != null && noSlimeCrash.getValue()) {
@@ -33,15 +43,4 @@ public class NoKick extends Module {
             });
         }
     }
-
-    @EventHandler
-    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
-        if (noOffhandCrash.getValue()) {
-            if (event.getPacket() instanceof SPacketSoundEffect) {
-                if (((SPacketSoundEffect) event.getPacket()).getSound() == SoundEvents.ITEM_ARMOR_EQUIP_GENERIC) {
-                    event.cancel();
-                }
-            }
-        }
-    });
 }

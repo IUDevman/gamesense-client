@@ -13,6 +13,10 @@ import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
 import com.lukflug.panelstudio.theme.Theme;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.monster.EntityMob;
@@ -21,8 +25,6 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
-
-import java.awt.*;
 
 /**
  * @author Hoosiers
@@ -66,11 +68,11 @@ public class Radar extends HUDModule {
 
     private class RadarComponent extends HUDComponent {
 
+        private final int maxRange = 50;
+
         public RadarComponent(Theme theme) {
             super(getName(), theme.getPanelRenderer(), Radar.this.position);
         }
-
-        private int maxRange = 50;
 
         @Override
         public void render(Context context) {

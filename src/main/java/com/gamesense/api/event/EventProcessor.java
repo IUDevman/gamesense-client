@@ -12,6 +12,9 @@ import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.google.common.collect.Maps;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
@@ -37,14 +40,45 @@ import org.json.simple.parser.ParseException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
-
 public class EventProcessor {
 
     public static EventProcessor INSTANCE;
+    private final Map<String, String> uuidNameCache = Maps.newConcurrentMap();
     Minecraft mc = Minecraft.getMinecraft();
+    @EventHandler
+    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
+        if (event.getPacket() instanceof SPacketPlayerListItem) {
+            SPacketPlayerListItem packet = (SPacketPlayerListItem) event.getPacket();
+            if (packet.getAction() == SPacketPlayerListItem.Action.ADD_PLAYER) {
+                for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
+                    if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
+                        new Thread(() -> {
+                            String name = resolveName(playerData.getProfile().getId().toString());
+                            if (name != null) {
+                                if (mc.player != null && mc.player.ticksExisted >= 1000) {
+                                    GameSense.EVENT_BUS.post(new PlayerJoinEvent(name));
+                                }
+                            }
+                        }).start();
+                    }
+                }
+            }
+            if (packet.getAction() == SPacketPlayerListItem.Action.REMOVE_PLAYER) {
+                for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
+                    if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
+                        new Thread(() -> {
+                            final String name = resolveName(playerData.getProfile().getId().toString());
+                            if (name != null) {
+                                if (mc.player != null && mc.player.ticksExisted >= 1000) {
+                                    GameSense.EVENT_BUS.post(new PlayerLeaveEvent(name));
+                                }
+                            }
+                        }).start();
+                    }
+                }
+            }
+        }
+    });
     CommandManager commandManager = new CommandManager();
 
     public EventProcessor() {
@@ -115,41 +149,6 @@ public class EventProcessor {
     public void onTick(TickEvent.ClientTickEvent event) {
         GameSense.EVENT_BUS.post(event);
     }
-
-    @EventHandler
-    private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
-        if (event.getPacket() instanceof SPacketPlayerListItem) {
-            SPacketPlayerListItem packet = (SPacketPlayerListItem) event.getPacket();
-            if (packet.getAction() == SPacketPlayerListItem.Action.ADD_PLAYER) {
-                for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
-                    if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
-                        new Thread(() -> {
-                            String name = resolveName(playerData.getProfile().getId().toString());
-                            if (name != null) {
-                                if (mc.player != null && mc.player.ticksExisted >= 1000) {
-                                    GameSense.EVENT_BUS.post(new PlayerJoinEvent(name));
-                                }
-                            }
-                        }).start();
-                    }
-                }
-            }
-            if (packet.getAction() == SPacketPlayerListItem.Action.REMOVE_PLAYER) {
-                for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
-                    if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
-                        new Thread(() -> {
-                            final String name = resolveName(playerData.getProfile().getId().toString());
-                            if (name != null) {
-                                if (mc.player != null && mc.player.ticksExisted >= 1000) {
-                                    GameSense.EVENT_BUS.post(new PlayerLeaveEvent(name));
-                                }
-                            }
-                        }).start();
-                    }
-                }
-            }
-        }
-    });
 
     @SubscribeEvent
     public void onUpdate(LivingEvent.LivingUpdateEvent event) {
@@ -246,8 +245,6 @@ public class EventProcessor {
             }
         }
     }
-
-    private final Map<String, String> uuidNameCache = Maps.newConcurrentMap();
 
     public String resolveName(String uuid) {
         uuid = uuid.replace("-", "");

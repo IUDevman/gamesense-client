@@ -1,8 +1,27 @@
 package com.gamesense.client.command;
 
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.command.commands.*;
-
+import com.gamesense.client.command.commands.AutoGGCommand;
+import com.gamesense.client.command.commands.AutoGearCommand;
+import com.gamesense.client.command.commands.AutoReplyCommand;
+import com.gamesense.client.command.commands.AutoRespawnCommand;
+import com.gamesense.client.command.commands.BackupConfigCommand;
+import com.gamesense.client.command.commands.BindCommand;
+import com.gamesense.client.command.commands.CmdListCommand;
+import com.gamesense.client.command.commands.DisableAllCommand;
+import com.gamesense.client.command.commands.DrawnCommand;
+import com.gamesense.client.command.commands.EnemyCommand;
+import com.gamesense.client.command.commands.FixGUICommand;
+import com.gamesense.client.command.commands.FixHUDCommand;
+import com.gamesense.client.command.commands.FontCommand;
+import com.gamesense.client.command.commands.FriendCommand;
+import com.gamesense.client.command.commands.ModulesCommand;
+import com.gamesense.client.command.commands.MsgsCommand;
+import com.gamesense.client.command.commands.OpenFolderCommand;
+import com.gamesense.client.command.commands.PrefixCommand;
+import com.gamesense.client.command.commands.SaveConfigCommand;
+import com.gamesense.client.command.commands.SetCommand;
+import com.gamesense.client.command.commands.ToggleCommand;
 import java.util.ArrayList;
 
 /**
@@ -11,8 +30,9 @@ import java.util.ArrayList;
 
 public class CommandManager {
 
-    private static String commandPrefix = "-";
     public static ArrayList<Command> commands = new ArrayList<>();
+    private static String commandPrefix = "-";
+    boolean isValidCommand = false;
 
     public static void init() {
         addCommand(new AutoGearCommand());
@@ -53,8 +73,6 @@ public class CommandManager {
     public static void setCommandPrefix(String prefix) {
         commandPrefix = prefix;
     }
-
-    boolean isValidCommand = false;
 
     /**
      * @Author 086 for KAMI, regex

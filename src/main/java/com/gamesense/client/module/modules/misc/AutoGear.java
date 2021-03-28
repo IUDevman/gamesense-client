@@ -6,12 +6,15 @@ import com.gamesense.client.command.commands.AutoGearCommand;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerShulkerBox;
 import net.minecraft.item.ItemStack;
-
-import java.util.*;
 
 /*
     @Author TechAle
@@ -29,7 +32,7 @@ public class AutoGear extends Module {
     BooleanSetting debugMode = registerBoolean("Debug Mode", false);
 
     private HashMap<Integer, String> planInventory = new HashMap<>();
-    private HashMap<Integer, String> containerInv = new HashMap<>();
+    private final HashMap<Integer, String> containerInv = new HashMap<>();
     private ArrayList<Integer> sortItems = new ArrayList<>();
 
     private int delayTimeTicks;

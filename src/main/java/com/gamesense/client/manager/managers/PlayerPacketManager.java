@@ -7,6 +7,8 @@ import com.gamesense.api.event.events.RenderEntityEvent;
 import com.gamesense.api.util.misc.CollectionUtils;
 import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.client.manager.Manager;
+import java.util.ArrayList;
+import java.util.List;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import me.zero.alpine.type.EventPriority;
@@ -17,9 +19,6 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 // Sponsored by KAMI Blue
 // https://github.com/kami-blue/client/blob/master/src/main/kotlin/org/kamiblue/client/manager/managers/PlayerPacketManager.kt
 public enum PlayerPacketManager implements Manager {
@@ -27,14 +26,6 @@ public enum PlayerPacketManager implements Manager {
     INSTANCE;
 
     private final List<PlayerPacket> packets = new ArrayList<>();
-
-    private Vec3d prevServerSidePosition = Vec3d.ZERO;
-    private Vec3d serverSidePosition = Vec3d.ZERO;
-
-    private Vec2f prevServerSideRotation = Vec2f.ZERO;
-    private Vec2f serverSideRotation = Vec2f.ZERO;
-    private Vec2f clientSidePitch = Vec2f.ZERO;
-
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
@@ -49,7 +40,10 @@ public enum PlayerPacketManager implements Manager {
 
         packets.clear();
     });
-
+    private Vec3d prevServerSidePosition = Vec3d.ZERO;
+    private Vec3d serverSidePosition = Vec3d.ZERO;
+    private Vec2f prevServerSideRotation = Vec2f.ZERO;
+    private Vec2f serverSideRotation = Vec2f.ZERO;
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.PostSend> postSendListener = new Listener<>(event -> {
@@ -71,7 +65,6 @@ public enum PlayerPacketManager implements Manager {
             }
         }
     }, EventPriority.LOWEST);
-
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TickEvent.ClientTickEvent> tickEventListener = new Listener<>(event -> {
@@ -80,7 +73,7 @@ public enum PlayerPacketManager implements Manager {
         prevServerSidePosition = serverSidePosition;
         prevServerSideRotation = serverSideRotation;
     });
-
+    private Vec2f clientSidePitch = Vec2f.ZERO;
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<RenderEntityEvent.Head> renderEntityEventHeadListener = new Listener<>(event -> {

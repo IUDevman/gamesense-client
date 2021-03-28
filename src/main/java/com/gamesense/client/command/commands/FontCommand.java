@@ -4,8 +4,7 @@ import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.command.Command;
-
-import java.awt.*;
+import java.awt.Font;
 
 /**
  * @Author Hoosiers on 11/05/2020

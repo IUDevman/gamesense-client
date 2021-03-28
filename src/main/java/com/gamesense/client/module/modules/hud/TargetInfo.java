@@ -14,11 +14,13 @@ import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
 import com.lukflug.panelstudio.theme.Theme;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Comparator;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-
-import java.awt.*;
-import java.util.Comparator;
 
 /**
  * @author Hoosiers
@@ -29,9 +31,27 @@ import java.util.Comparator;
 @HUDModule.Declaration(posX = 0, posZ = 150)
 public class TargetInfo extends HUDModule {
 
+    public static EntityPlayer targetPlayer;
     IntegerSetting range = registerInteger("Range", 100, 10, 260);
     ColorSetting backgroundColor = registerColor("Background", new GSColor(0, 0, 0, 255));
     ColorSetting outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
+
+    private static Color getDistanceColor(EntityPlayer entityPlayer) {
+        int distance = (int) entityPlayer.getDistance(mc.player);
+
+        if (distance > 50) {
+            distance = 50;
+        }
+
+        int red = (int) (255 - (distance * 5.1));
+        int green = 255 - red;
+
+        return new Color(red, green, 0, 100);
+    }
+
+    public static boolean isRenderingEntity(EntityPlayer entityPlayer) {
+        return targetPlayer == entityPlayer;
+    }
 
     public void populate(Theme theme) {
         component = new TargetInfoComponent(theme);
@@ -61,25 +81,6 @@ public class TargetInfo extends HUDModule {
         int green = 255 - red;
 
         return new Color(red, green, 0, 100);
-    }
-
-    private static Color getDistanceColor(EntityPlayer entityPlayer) {
-        int distance = (int) entityPlayer.getDistance(mc.player);
-
-        if (distance > 50) {
-            distance = 50;
-        }
-
-        int red = (int) (255 - (distance * 5.1));
-        int green = 255 - red;
-
-        return new Color(red, green, 0, 100);
-    }
-
-    public static EntityPlayer targetPlayer;
-
-    public static boolean isRenderingEntity(EntityPlayer entityPlayer) {
-        return targetPlayer == entityPlayer;
     }
 
     private class TargetInfoComponent extends HUDComponent {

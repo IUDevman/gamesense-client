@@ -12,13 +12,12 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.TextFormatting;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.TextFormatting;
 
 @Module.Declaration(name = "TextRadar", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 50)
@@ -29,7 +28,7 @@ public class TextRadar extends HUDModule {
     BooleanSetting sortRight = registerBoolean("Sort Right", false);
     IntegerSetting range = registerInteger("Range", 100, 1, 260);
 
-    private PlayerList list = new PlayerList();
+    private final PlayerList list = new PlayerList();
 
     @Override
     public void populate(Theme theme) {

@@ -18,17 +18,17 @@ public class RenderEntityEvent extends GameSenseEvent {
         this.type = type;
     }
 
-    public enum Type {
-        TEXTURE,
-        COLOR
-    }
-
     public Entity getEntity() {
         return this.entity;
     }
 
     public Type getType() {
         return this.type;
+    }
+
+    public enum Type {
+        TEXTURE,
+        COLOR
     }
 
     public static class Head extends RenderEntityEvent {

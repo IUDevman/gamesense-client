@@ -11,6 +11,13 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -19,10 +26,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * @author Hoosiers
@@ -37,6 +40,11 @@ import java.util.stream.Collectors;
 @Module.Declaration(name = "HoleFill", category = Category.Combat)
 public class HoleFill extends Module {
 
+    /*
+     * Stops us from spam placing same closest position while
+     * we wait for the block to be placed by the game
+     */
+    private final HashMap<BlockPos, Integer> recentPlacements = new HashMap<>();
     ModeSetting mode = registerMode("Type", Arrays.asList("Obby", "Echest", "Both", "Web", "PressurePlate"), "Obby");
     IntegerSetting placeDelay = registerInteger("Delay", 2, 0, 10);
     IntegerSetting retryDelay = registerInteger("Retry Delay", 10, 0, 50);
@@ -48,17 +56,10 @@ public class HoleFill extends Module {
     BooleanSetting autoSwitch = registerBoolean("Switch", true);
     BooleanSetting offHandObby = registerBoolean("Off Hand Obby", false);
     BooleanSetting disableOnFinish = registerBoolean("Disable on Finish", true);
-
     private int delayTicks = 0;
     private int oldHandEnable = -1;
     private boolean activedOff;
     private int obbySlot;
-
-    /*
-     * Stops us from spam placing same closest position while
-     * we wait for the block to be placed by the game
-     */
-    private final HashMap<BlockPos, Integer> recentPlacements = new HashMap<>();
 
     public void onEnable() {
         activedOff = false;

@@ -10,11 +10,13 @@ import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
 import com.lukflug.panelstudio.theme.Theme;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
-import java.awt.*;
 
 @Module.Declaration(name = "InventoryViewer", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 10)

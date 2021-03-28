@@ -1,15 +1,17 @@
 package com.gamesense.api.util.misc;
 
 import com.gamesense.client.GameSense;
-
-import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-import java.awt.*;
+import java.awt.Desktop;
+import java.awt.Font;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 /**
  * @author Hoosiers

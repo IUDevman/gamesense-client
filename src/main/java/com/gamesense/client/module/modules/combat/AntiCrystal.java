@@ -9,6 +9,7 @@ import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockPressurePlate;
@@ -16,7 +17,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
@@ -24,8 +24,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.Arrays;
 
 /**
  * @Author TechAle
@@ -52,6 +50,47 @@ public class AntiCrystal extends Module {
 
     private int delayTimeTicks;
     private boolean isSneaking = false;
+
+    // This function check if the offHand has "Plates" as value
+    public static boolean isOffHandPressure(String itemMode) {
+        OffHand offHand = ModuleManager.getModule(OffHand.class);
+        return offHand.nonDefaultItem.getValue().equals(itemMode) || offHand.defaultItem.getValue().equals(itemMode);
+    }
+
+    // Check if a ItemStack is a Pressure Plate
+    public static boolean isPressure(ItemStack stack) {
+        // If it's not what we want
+        if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
+            return false;
+        }
+        // If it's a block and it's a pressure plate
+        return ((ItemBlock) stack.getItem()).getBlock() instanceof BlockPressurePlate;
+    }
+
+    // Check if a ItemStack is a Pressure Plate
+    public static boolean isString(ItemStack stack) {
+        // If it's not what we want
+        if (stack == ItemStack.EMPTY || (stack.getItem() instanceof ItemBlock)) {
+            return false;
+        }
+        // If it's a block and it's a pressure plate
+        return stack.getItem() == Items.STRING;
+    }
+
+    // Get the index of the Pressure Plate on the hotBar
+    public static int getHotBarPressure(String mode) {
+        // Iterate for the entire inventory
+        for (int i = 0; i < 9; i++) {
+            // Check if it's a piece of pressure plate
+            if (mode.equals("Pressure")) {
+                if (isPressure(mc.player.inventory.getStackInSlot(i)))
+                    return i;
+            } else if (isString(mc.player.inventory.getStackInSlot(i)))
+                return i;
+        }
+
+        return -1;
+    }
 
     @Override
     public void onEnable() {
@@ -149,12 +188,6 @@ public class AntiCrystal extends Module {
         return AutoCrystalGS.PlacedCrystals.contains(new BlockPos((int) crystal.posX, crystal.posY - 1, (int) crystal.posZ));
     }
 
-    // This function check if the offHand has "Plates" as value
-    public static boolean isOffHandPressure(String itemMode) {
-        OffHand offHand = ModuleManager.getModule(OffHand.class);
-        return offHand.nonDefaultItem.getValue().equals(itemMode) || offHand.defaultItem.getValue().equals(itemMode);
-    }
-
     // Place block
     private void placeBlock(BlockPos pos, int slotPressure) {
 
@@ -220,41 +253,6 @@ public class AntiCrystal extends Module {
             stoppedAC = false;
         }
 
-    }
-
-    // Check if a ItemStack is a Pressure Plate
-    public static boolean isPressure(ItemStack stack) {
-        // If it's not what we want
-        if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock)) {
-            return false;
-        }
-        // If it's a block and it's a pressure plate
-        return ((ItemBlock) stack.getItem()).getBlock() instanceof BlockPressurePlate;
-    }
-
-    // Check if a ItemStack is a Pressure Plate
-    public static boolean isString(ItemStack stack) {
-        // If it's not what we want
-        if (stack == ItemStack.EMPTY || (stack.getItem() instanceof ItemBlock)) {
-            return false;
-        }
-        // If it's a block and it's a pressure plate
-        return stack.getItem() == Items.STRING;
-    }
-
-    // Get the index of the Pressure Plate on the hotBar
-    public static int getHotBarPressure(String mode) {
-        // Iterate for the entire inventory
-        for (int i = 0; i < 9; i++) {
-            // Check if it's a piece of pressure plate
-            if (mode.equals("Pressure")) {
-                if (isPressure(mc.player.inventory.getStackInSlot(i)))
-                    return i;
-            } else if (isString(mc.player.inventory.getStackInSlot(i)))
-                return i;
-        }
-
-        return -1;
     }
 
 }

@@ -2,13 +2,16 @@ package com.gamesense.client.clickgui;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.setting.SettingsManager;
+import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
-import com.gamesense.api.setting.values.*;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.clickgui.components.GameSenseColor;
 import com.gamesense.client.clickgui.components.GameSenseKeybind;
 import com.gamesense.client.clickgui.components.GameSenseToggleMessage;
-import com.gamesense.client.clickgui.components.GameSenseColor;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
@@ -23,8 +26,19 @@ import com.lukflug.panelstudio.hud.HUDClickGUI;
 import com.lukflug.panelstudio.hud.HUDPanel;
 import com.lukflug.panelstudio.mc12.GLInterface;
 import com.lukflug.panelstudio.mc12.MinecraftHUDGUI;
-import com.lukflug.panelstudio.settings.*;
-import com.lukflug.panelstudio.theme.*;
+import com.lukflug.panelstudio.settings.BooleanComponent;
+import com.lukflug.panelstudio.settings.EnumComponent;
+import com.lukflug.panelstudio.settings.NumberComponent;
+import com.lukflug.panelstudio.settings.SimpleToggleable;
+import com.lukflug.panelstudio.settings.Toggleable;
+import com.lukflug.panelstudio.theme.ClearTheme;
+import com.lukflug.panelstudio.theme.ColorScheme;
+import com.lukflug.panelstudio.theme.GameSenseTheme;
+import com.lukflug.panelstudio.theme.SettingsColorScheme;
+import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.theme.ThemeMultiplexer;
+import java.awt.Color;
+import java.awt.Point;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,14 +47,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-
 public class GameSenseGUI extends MinecraftHUDGUI {
 
     public static final int WIDTH = 100, HEIGHT = 12, DISTANCE = 10, HUD_BORDER = 2;
-    private final Toggleable colorToggle;
     public final GUIInterface guiInterface;
     public final HUDClickGUI gui;
+    private final Toggleable colorToggle;
     private final Theme theme, gameSenseTheme, clearTheme, clearGradientTheme;
 
     public GameSenseGUI() {
@@ -149,27 +161,6 @@ public class GameSenseGUI extends MinecraftHUDGUI {
         }
     }
 
-    private void addModule(CollapsibleContainer panel, Module module) {
-        ClickGuiModule clickGuiModule = ModuleManager.getModule(ClickGuiModule.class);
-        CollapsibleContainer container = new CollapsibleContainer(module.getName(), null, theme.getContainerRenderer(), new SimpleToggleable(false), new SettingsAnimation(clickGuiModule.animationSpeed), module);
-        panel.addComponent(container);
-        for (Setting property : SettingsManager.getSettingsForModule(module)) {
-            if (property instanceof BooleanSetting) {
-                container.addComponent(new BooleanComponent(property.getName(), null, theme.getComponentRenderer(), (BooleanSetting) property));
-            } else if (property instanceof IntegerSetting) {
-                container.addComponent(new NumberComponent(property.getName(), null, theme.getComponentRenderer(), (IntegerSetting) property, ((IntegerSetting) property).getMin(), ((IntegerSetting) property).getMax()));
-            } else if (property instanceof DoubleSetting) {
-                container.addComponent(new NumberComponent(property.getName(), null, theme.getComponentRenderer(), (DoubleSetting) property, ((DoubleSetting) property).getMin(), ((DoubleSetting) property).getMax()));
-            } else if (property instanceof ModeSetting) {
-                container.addComponent(new EnumComponent(property.getName(), null, theme.getComponentRenderer(), (ModeSetting) property));
-            } else if (property instanceof ColorSetting) {
-                container.addComponent(new GameSenseColor(theme, (ColorSetting) property, colorToggle, new SettingsAnimation(clickGuiModule.animationSpeed)));
-            }
-        }
-        container.addComponent(new GameSenseToggleMessage(theme.getComponentRenderer(), module));
-        container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(), module));
-    }
-
     public static void renderItem(ItemStack item, Point pos) {
         GlStateManager.enableTexture2D();
         GlStateManager.depthMask(true);
@@ -208,6 +199,27 @@ public class GameSenseGUI extends MinecraftHUDGUI {
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);
         GLInterface.begin();
+    }
+
+    private void addModule(CollapsibleContainer panel, Module module) {
+        ClickGuiModule clickGuiModule = ModuleManager.getModule(ClickGuiModule.class);
+        CollapsibleContainer container = new CollapsibleContainer(module.getName(), null, theme.getContainerRenderer(), new SimpleToggleable(false), new SettingsAnimation(clickGuiModule.animationSpeed), module);
+        panel.addComponent(container);
+        for (Setting property : SettingsManager.getSettingsForModule(module)) {
+            if (property instanceof BooleanSetting) {
+                container.addComponent(new BooleanComponent(property.getName(), null, theme.getComponentRenderer(), (BooleanSetting) property));
+            } else if (property instanceof IntegerSetting) {
+                container.addComponent(new NumberComponent(property.getName(), null, theme.getComponentRenderer(), (IntegerSetting) property, ((IntegerSetting) property).getMin(), ((IntegerSetting) property).getMax()));
+            } else if (property instanceof DoubleSetting) {
+                container.addComponent(new NumberComponent(property.getName(), null, theme.getComponentRenderer(), (DoubleSetting) property, ((DoubleSetting) property).getMin(), ((DoubleSetting) property).getMax()));
+            } else if (property instanceof ModeSetting) {
+                container.addComponent(new EnumComponent(property.getName(), null, theme.getComponentRenderer(), (ModeSetting) property));
+            } else if (property instanceof ColorSetting) {
+                container.addComponent(new GameSenseColor(theme, (ColorSetting) property, colorToggle, new SettingsAnimation(clickGuiModule.animationSpeed)));
+            }
+        }
+        container.addComponent(new GameSenseToggleMessage(theme.getComponentRenderer(), module));
+        container.addComponent(new GameSenseKeybind(theme.getComponentRenderer(), module));
     }
 
     @Override

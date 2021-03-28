@@ -1,5 +1,8 @@
 package com.gamesense.api.util.render;
 
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glHint;
+
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
@@ -19,9 +22,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
-
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glHint;
 
 /**
  * @author 086
@@ -166,38 +166,6 @@ public class RenderUtil {
         bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
         doVerticies(axisAlignedBB, color, alpha, bufferbuilder, sides, true);
         tessellator.draw();
-    }
-
-    private static class Points {
-        double[][] point = new double[10][2];
-        private int count = 0;
-        private final double xCenter;
-        private final double zCenter;
-        public final double yMin;
-        public final double yMax;
-        private final float rotation;
-
-        public Points(double yMin, double yMax, double xCenter, double zCenter, float rotation) {
-            this.yMin = yMin;
-            this.yMax = yMax;
-            this.xCenter = xCenter;
-            this.zCenter = zCenter;
-            this.rotation = rotation;
-        }
-
-        public void addPoints(double x, double z) {
-            x -= xCenter;
-            z -= zCenter;
-            double rotateX = x * Math.cos(rotation) - z * Math.sin(rotation);
-            double rotateZ = x * Math.sin(rotation) + z * Math.cos(rotation);
-            rotateX += xCenter;
-            rotateZ += zCenter;
-            point[count++] = new double[]{rotateX, rotateZ};
-        }
-
-        public double[] getPoint(int index) {
-            return point[index];
-        }
     }
 
     public static void drawBoxWithDirection(AxisAlignedBB bb, GSColor color, float rotation, float width, int mode) {
@@ -408,5 +376,37 @@ public class RenderUtil {
         GlStateManager.glLineWidth(1.0f);
         GlStateManager.shadeModel(GL11.GL_FLAT);
         glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
+    }
+
+    private static class Points {
+        public final double yMin;
+        public final double yMax;
+        private final double xCenter;
+        private final double zCenter;
+        private final float rotation;
+        double[][] point = new double[10][2];
+        private int count = 0;
+
+        public Points(double yMin, double yMax, double xCenter, double zCenter, float rotation) {
+            this.yMin = yMin;
+            this.yMax = yMax;
+            this.xCenter = xCenter;
+            this.zCenter = zCenter;
+            this.rotation = rotation;
+        }
+
+        public void addPoints(double x, double z) {
+            x -= xCenter;
+            z -= zCenter;
+            double rotateX = x * Math.cos(rotation) - z * Math.sin(rotation);
+            double rotateZ = x * Math.sin(rotation) + z * Math.cos(rotation);
+            rotateX += xCenter;
+            rotateZ += zCenter;
+            point[count++] = new double[]{rotateX, rotateZ};
+        }
+
+        public double[] getPoint(int index) {
+            return point[index];
+        }
     }
 }

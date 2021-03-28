@@ -12,15 +12,24 @@ import net.minecraft.network.play.client.CPacketPlayer;
 
 public class SpoofRotationUtil {
 
-    private static final Minecraft mc = Minecraft.getMinecraft();
     public static final SpoofRotationUtil ROTATION_UTIL = new SpoofRotationUtil();
-
+    private static final Minecraft mc = Minecraft.getMinecraft();
     private int rotationConnections = 0;
 
     private boolean shouldSpoofAngles;
     private boolean isSpoofingAngles;
     private double yaw;
     private double pitch;
+    @EventHandler
+    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
+        Packet packet = event.getPacket();
+        if (packet instanceof CPacketPlayer && shouldSpoofAngles) {
+            if (isSpoofingAngles) {
+                ((CPacketPlayer) packet).yaw = (float) yaw;
+                ((CPacketPlayer) packet).pitch = (float) pitch;
+            }
+        }
+    });
 
     // Forces only ever one
     private SpoofRotationUtil() {
@@ -65,15 +74,4 @@ public class SpoofRotationUtil {
     public boolean isSpoofingAngles() {
         return isSpoofingAngles;
     }
-
-    @EventHandler
-    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
-        Packet packet = event.getPacket();
-        if (packet instanceof CPacketPlayer && shouldSpoofAngles) {
-            if (isSpoofingAngles) {
-                ((CPacketPlayer) packet).yaw = (float) yaw;
-                ((CPacketPlayer) packet).pitch = (float) pitch;
-            }
-        }
-    });
 }

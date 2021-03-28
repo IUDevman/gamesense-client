@@ -1,8 +1,7 @@
 package com.gamesense.api.util.world;
 
-import net.minecraft.util.EnumFacing;
-
 import java.util.HashMap;
+import net.minecraft.util.EnumFacing;
 
 public final class GeometryMasks {
 

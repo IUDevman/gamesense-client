@@ -3,6 +3,8 @@ package com.gamesense.mixin.mixins;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.render.CapesModule;
+import java.util.UUID;
+import javax.annotation.Nullable;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.ResourceLocation;
@@ -11,9 +13,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import javax.annotation.Nullable;
-import java.util.UUID;
 
 @Mixin(AbstractClientPlayer.class)
 public abstract class MixinAbstractClientPlayer {

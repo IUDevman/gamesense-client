@@ -12,6 +12,7 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import java.util.Arrays;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.item.*;
@@ -21,8 +22,6 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.*;
-
-import java.util.Arrays;
 
 /**
  * @author Hoosiers on 09/22/2020

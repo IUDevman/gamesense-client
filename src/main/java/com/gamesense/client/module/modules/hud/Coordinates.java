@@ -8,24 +8,21 @@ import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
 import com.lukflug.panelstudio.theme.Theme;
+import java.awt.Color;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.*;
-
 @Module.Declaration(name = "Coordinates", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 0)
 public class Coordinates extends HUDModule {
 
+    private final String[] coordinateString = {"", ""};
     BooleanSetting showNetherOverworld = registerBoolean("Show Nether", true);
     BooleanSetting thousandsSeparator = registerBoolean("Thousands Separator", true);
     IntegerSetting decimalPlaces = registerInteger("Decimal Places", 1, 0, 5);
-
-    private final String[] coordinateString = {"", ""};
-
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TickEvent.ClientTickEvent> listener = new Listener<>(event -> {

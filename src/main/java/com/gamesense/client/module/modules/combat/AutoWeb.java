@@ -8,17 +8,16 @@ import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 @Module.Declaration(name = "AutoWeb", category = Category.Combat)
 public class AutoWeb extends Module {

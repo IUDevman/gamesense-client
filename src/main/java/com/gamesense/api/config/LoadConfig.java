@@ -2,7 +2,11 @@ package com.gamesense.api.config;
 
 import com.gamesense.api.setting.Setting;
 import com.gamesense.api.setting.SettingsManager;
-import com.gamesense.api.setting.values.*;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.client.GameSense;
@@ -17,8 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import java.awt.*;
+import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,6 +35,10 @@ import java.nio.file.Paths;
 
 public class LoadConfig {
 
+    String fileName = "GameSense/";
+    String moduleName = "Modules/";
+    String mainName = "Main/";
+    String miscName = "Misc/";
     public LoadConfig() {
         try {
             loadConfig();
@@ -39,11 +46,6 @@ public class LoadConfig {
             e.printStackTrace();
         }
     }
-
-    String fileName = "GameSense/";
-    String moduleName = "Modules/";
-    String mainName = "Main/";
-    String miscName = "Misc/";
 
     public void loadConfig() throws IOException {
         loadModules();

@@ -1,7 +1,6 @@
 package com.gamesense.api.setting;
 
 import com.gamesense.client.module.Module;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

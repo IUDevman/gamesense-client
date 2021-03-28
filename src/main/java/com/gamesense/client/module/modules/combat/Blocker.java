@@ -1,5 +1,7 @@
 package com.gamesense.client.module.modules.combat;
 
+import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
+
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
@@ -12,6 +14,7 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
+import java.util.Arrays;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -22,10 +25,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.Arrays;
-
-import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
  * @Author TechAle
