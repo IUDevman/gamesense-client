@@ -394,6 +394,9 @@ public class CevBreaker extends Module {
                 // Place obsidian
                 case 1:
 
+                    if (getCrystal() != null)
+                        stage = 3;
+
                     if (afterRotationTick != afterRotationDelay.getValue()) {
                         afterRotationTick++;
                         return;
@@ -514,7 +517,7 @@ public class CevBreaker extends Module {
     private void switchPick(int switchValue) {
         if (cur_item != slot_mat[switchValue]) {
             mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[switchValue])));
-            mc.player.inventory.currentItem = slot_mat[switchValue];
+            mc.player.inventory.currentItem = cur_item;
         }
     }
 
@@ -672,6 +675,7 @@ public class CevBreaker extends Module {
             // Is it is correct
             if (cur_item != slot_mat[step]) {
                 mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[step])));
+                mc.player.inventory.currentItem = cur_item;
             }
         } else {
             noMaterials = true;
