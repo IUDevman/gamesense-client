@@ -83,6 +83,7 @@ public class CevBreaker extends Module {
     BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
 
     public static int cur_item = -1;
+    public static boolean isActive = false;
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -230,7 +231,7 @@ public class CevBreaker extends Module {
         };
         // Default values reset
         toPlace = new structureTemp(0, 0, new ArrayList<>());
-        isHole = true;
+        isHole = isActive = true;
         hasMoved = rotationPlayerMoved = deadPl = broken = false;
         slot_mat = new int[]{-1, -1, -1, -1};
         stage = delayTimeTicks = 0;
@@ -303,7 +304,7 @@ public class CevBreaker extends Module {
             oldSlot = -1;
         }
 
-        noMaterials = isPossible = AutoCrystalGS.stopAC = false;
+        noMaterials = isPossible = AutoCrystalGS.stopAC = isActive = false;
     }
 
     private String getMissingMaterials() {
