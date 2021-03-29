@@ -84,9 +84,10 @@ public class AutoSkull extends Module {
             }
 
             if (onShift.getValue() && mc.gameSettings.keyBindSneak.isKeyDown() && mc.player.onGround) {
-                placeBlock();
+                if (!firstShift)
+                    placeBlock();
                 return;
-            } else if (firstShift) firstShift = false;
+            } else if(firstShift && !mc.gameSettings.keyBindSneak.isKeyDown()) firstShift = false;
 
             if (playerDistance.getValue() != 0) {
                 if ( PlayerUtil.findClosestTarget(playerDistance.getValue(), null) != null) {
