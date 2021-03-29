@@ -32,8 +32,8 @@ public class CrystalUtil {
         }
 
         AxisAlignedBB box = new AxisAlignedBB(
-                posUp.getX(), posUp.getY(), posUp.getZ(),
-                posUp.getX() + 1.0, posUp.getY() + 2.0, posUp.getZ() + 1.0
+            posUp.getX(), posUp.getY(), posUp.getZ(),
+            posUp.getX() + 1.0, posUp.getY() + 2.0, posUp.getZ() + 1.0
         );
 
         return mc.world.getEntitiesWithinAABB(Entity.class, box, Entity::isEntityAlive).isEmpty();
