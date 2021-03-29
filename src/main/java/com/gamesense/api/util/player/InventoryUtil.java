@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -39,6 +40,25 @@ public class InventoryUtil {
                 slot = i;
                 break;
             }
+        }
+        return slot;
+    }
+
+    public static int findSkullSlot(boolean offHandActived, boolean activeBefore) {
+        int slot = -1;
+        List<ItemStack> mainInventory = mc.player.inventory.mainInventory;
+
+        if (offHandActived) {
+            if (!activeBefore)
+                OffHand.requestSkull();
+            return 9;
+        }
+
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = mainInventory.get(i);
+
+            if (stack != ItemStack.EMPTY && stack.getItem() instanceof ItemSkull)
+                return i;
         }
         return slot;
     }
