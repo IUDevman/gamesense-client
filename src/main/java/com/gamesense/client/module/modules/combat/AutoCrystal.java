@@ -66,6 +66,7 @@ public class AutoCrystal extends Module {
     BooleanSetting autoSwitch = registerBoolean("Switch", true);
     BooleanSetting noGapSwitch = registerBoolean("No Gap Switch", false);
     BooleanSetting endCrystalMode = registerBoolean("1.13 Place", false);
+    BooleanSetting cancelCrystal = registerBoolean("Cancel Crystal", false);
     DoubleSetting minDmg = registerDouble("Min Damage", 5, 0, 36);
     DoubleSetting minBreakDmg = registerDouble("Min Break Dmg", 5, 0, 36.0);
     DoubleSetting maxSelfDmg = registerDouble("Max Self Dmg", 10, 1.0, 36.0);
@@ -186,12 +187,17 @@ public class AutoCrystal extends Module {
                         rotating = rotate.getValue();
                         lastHitVec = crystal.getPositionVector();
 
+                        swingArm();
                         if (breakType.getValue().equalsIgnoreCase("Swing")) {
-                            swingArm();
                             mc.playerController.attackEntity(mc.player, crystal);
                         } else {
-                            swingArm();
                             mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
+                        }
+
+                        if (cancelCrystal.getValue()) {
+                            crystal.setDead();
+                            mc.world.removeAllEntities();
+                            mc.world.getLoadedEntityList();
                         }
                     }
                     return true;
@@ -280,7 +286,7 @@ public class AutoCrystal extends Module {
             rotating = rotate.getValue();
             lastHitVec = new Vec3d(crystal.crystal).add(0.5, 0.5, 0.5);
 
-            mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
+            mc.player.connection.sendPacket(new CPacketAnimation(offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND));
             if (raytrace.getValue() && enumFacing != null) {
                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(crystal.crystal, enumFacing, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
             } else if (crystal.crystal.getY() == 255) {
@@ -290,7 +296,7 @@ public class AutoCrystal extends Module {
                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(crystal.crystal, EnumFacing.UP, offhand ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND, 0, 0, 0));
             }
 
-            if (ModuleManager.isModuleEnabled("AutoGG")) {
+            if (ModuleManager.isModuleEnabled(AutoGG.class)) {
                 AutoGG.INSTANCE.addTargetedPlayer(renderEntity.getName());
             }
 
@@ -331,13 +337,20 @@ public class AutoCrystal extends Module {
     }
 
     private void swingArm() {
-        if (handBreak.getValue().equalsIgnoreCase("Both")) {
-            mc.player.swingArm(EnumHand.MAIN_HAND);
-            mc.player.swingArm(EnumHand.OFF_HAND);
-        } else if (handBreak.getValue().equalsIgnoreCase("Offhand")) {
-            mc.player.swingArm(EnumHand.OFF_HAND);
-        } else {
-            mc.player.swingArm(EnumHand.MAIN_HAND);
+        switch (handBreak.getValue()) {
+            case "Both" : {
+                mc.player.swingArm(EnumHand.MAIN_HAND);
+                mc.player.swingArm(EnumHand.OFF_HAND);
+                break;
+            }
+            case "Offhand" : {
+                mc.player.swingArm(EnumHand.OFF_HAND);
+                break;
+            }
+            default: {
+                mc.player.swingArm(EnumHand.MAIN_HAND);
+                break;
+            }
         }
     }
 
@@ -381,30 +394,18 @@ public class AutoCrystal extends Module {
         ACHelper.INSTANCE.onDisable();
     }
 
-    private static final String stringAll = "[" + ChatFormatting.WHITE + "All" + ChatFormatting.GRAY + "]";
-    private static final String stringSmart = "[" + ChatFormatting.WHITE + "Smart" + ChatFormatting.GRAY + "]";
-    private static final String stringOwn = "[" + ChatFormatting.WHITE + "Own" + ChatFormatting.GRAY + "]";
-    private static final String stringNone = "[" + ChatFormatting.WHITE + "None" + ChatFormatting.GRAY + "]";
-
     public String getHudInfo() {
         String t = "";
         if (hudDisplay.getValue().equalsIgnoreCase("Mode")){
-            if (breakMode.getValue().equalsIgnoreCase("All")) {
-                t = stringAll;
-            }
-            if (breakMode.getValue().equalsIgnoreCase("Smart")) {
-                t = stringSmart;
-            }
-            if (breakMode.getValue().equalsIgnoreCase("Own")) {
-                t = stringOwn;
-            }
+            t = "[" + ChatFormatting.WHITE + breakMode.getValue() + ChatFormatting.GRAY + "]";
         } else if (hudDisplay.getValue().equalsIgnoreCase("Target")) {
             if (renderEntity == null) {
-                t = stringNone;
+                t = "[" + ChatFormatting.WHITE + "None" + ChatFormatting.GRAY + "]";
             } else {
                 t = "[" + ChatFormatting.WHITE + renderEntity.getName() + ChatFormatting.GRAY + "]";
             }
         }
+
         return t;
     }
 }
