@@ -683,22 +683,24 @@ public class CevBreaker extends Module {
             if (cur_item != slot_mat[step]) {
                 if (slot_mat[step] == -1) {
                     noMaterials = true;
-                    return false;
+                    return true;
                 }
-                mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[step])));
-                mc.player.inventory.currentItem = cur_item;
+                if (slot_mat[step] != 11) {
+                    mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[step])));
+                    mc.player.inventory.currentItem = cur_item;
+                }
             }
         } else {
             noMaterials = true;
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     // Place a block
     private boolean placeBlock(BlockPos pos, int step, boolean onlyRotate) {
 
-        if (!changeItem(step))
+        if (changeItem(step))
             return false;
 
         if (onlyRotate) {
@@ -742,7 +744,7 @@ public class CevBreaker extends Module {
             if (!isCrystal)
                 placeBlock(targetPos, step, onlyRotate);
             else {
-                if (!changeItem(step))
+                if (changeItem(step))
                     return;
                 EnumHand handSwing = EnumHand.MAIN_HAND;
                 if (slot_mat[step] == 11)
