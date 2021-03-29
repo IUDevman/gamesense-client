@@ -45,7 +45,7 @@ public class OffHand extends Module {
     Setting.Double  biasDamage,
                     playerDistance;
     Setting.Boolean pickObby,
-                    leftGap,
+                    rightGap,
                     shiftPot,
                     swordCheck,
                     fallDistanceBol,
@@ -146,7 +146,7 @@ public class OffHand extends Module {
         // If you want crystal to offHand
         crystObby = registerBoolean("Cryst Shift Obby", false);
         // Gapple
-        leftGap = registerBoolean("Left Click Gap", false);
+        rightGap = registerBoolean("Right Click Gap", false);
         // Potion
         shiftPot = registerBoolean("Shift Pot", false);
         // Sword check
@@ -314,7 +314,7 @@ public class OffHand extends Module {
                     normalOffHand = false;
                 }
             }else
-            if (leftGap.getValue() && !ignoreNoSword.contains(mainHandItem) ) {
+            if (rightGap.getValue() && !ignoreNoSword.contains(mainHandItem) ) {
                 itemCheck = "Gapple";
                 normalOffHand = false;
             }
