@@ -245,6 +245,7 @@ public class AutoCrystal extends Module {
 
             CrystalInfo.PlaceInfo crystal = possiblePlacements.last();
             this.render = crystal.crystal;
+            this.renderEntity = crystal.target.entity;
 
             // autoSwitch stuff
             if (!offhand && mc.player.inventory.currentItem != crystalSlot) {
