@@ -395,8 +395,10 @@ public class CevBreaker extends Module {
                 // Place obsidian
                 case 1:
 
-                    if (getCrystal() != null)
+                    if (getCrystal() != null) {
                         stage = 3;
+                        return;
+                    }
 
                     if (afterRotationTick != afterRotationDelay.getValue()) {
                         afterRotationTick++;
@@ -457,7 +459,7 @@ public class CevBreaker extends Module {
                     // Confirm Place
                     if (confirmPlace.getValue())
                         if (getCrystal() == null) {
-                            stage--;
+                            stage = 0;
                             return;
                         }
 
