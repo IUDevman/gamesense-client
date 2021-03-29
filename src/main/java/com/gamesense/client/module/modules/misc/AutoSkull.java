@@ -6,9 +6,11 @@ import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.OffHand;
+import net.minecraft.block.BlockAir;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -42,7 +44,7 @@ public class AutoSkull extends Module {
             disable();
             return;
         }
-        noObby = false;
+        noObby = firstShift = false;
     }
 
     public void onDisable() {
@@ -57,7 +59,7 @@ public class AutoSkull extends Module {
         if (offHandSkull.getValue()) OffHand.removeSkull();
     }
 
-
+    private boolean firstShift;
 
     public void onUpdate() {
         if (mc.player == null) {
@@ -81,10 +83,10 @@ public class AutoSkull extends Module {
                 return;
             }
 
-            if (onShift.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()) {
+            if (onShift.getValue() && mc.gameSettings.keyBindSneak.isKeyDown() && mc.player.onGround) {
                 placeBlock();
                 return;
-            }
+            } else if (firstShift) firstShift = false;
 
             if (playerDistance.getValue() != 0) {
                 if ( PlayerUtil.findClosestTarget(playerDistance.getValue(), null) != null) {
@@ -101,39 +103,42 @@ public class AutoSkull extends Module {
 
     private void placeBlock() {
         BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ);
-        EnumHand handSwing = EnumHand.MAIN_HAND;
+        if (BlockUtil.getBlock(pos) instanceof BlockAir) {
+            EnumHand handSwing = EnumHand.MAIN_HAND;
 
-        int skullSlot = InventoryUtil.findSkullSlot(offHandSkull.getValue(), activedBefore);
+            int skullSlot = InventoryUtil.findSkullSlot(offHandSkull.getValue(), activedBefore);
 
-        if (skullSlot == -1) {
-            noObby = true;
-            return;
-        }
-
-        if (skullSlot == 9) {
-            activedBefore = true;
-            if (mc.player.getHeldItemOffhand().getItem() instanceof ItemSkull) {
-                // We can continue
-                handSwing = EnumHand.OFF_HAND;
-            } else return;
-        }
-
-        if (mc.player.inventory.currentItem != skullSlot && skullSlot != 9) {
-            oldSlot = mc.player.inventory.currentItem;
-            mc.player.inventory.currentItem = skullSlot;
-        }
-
-        if (PlacementUtil.place(pos, handSwing, rotate.getValue(), true)) {
-            if (oldSlot != -1) {
-                mc.player.inventory.currentItem = oldSlot;
-                oldSlot = -1;
+            if (skullSlot == -1) {
+                noObby = true;
+                return;
             }
-            activedBefore = false;
-            if (offHandSkull.getValue())
-                OffHand.removeSkull();
 
-            if (disableAfter.getValue()) {
-                disable();
+            if (skullSlot == 9) {
+                activedBefore = true;
+                if (mc.player.getHeldItemOffhand().getItem() instanceof ItemSkull) {
+                    // We can continue
+                    handSwing = EnumHand.OFF_HAND;
+                } else return;
+            }
+
+            if (mc.player.inventory.currentItem != skullSlot && skullSlot != 9) {
+                oldSlot = mc.player.inventory.currentItem;
+                mc.player.inventory.currentItem = skullSlot;
+            }
+
+            if (PlacementUtil.place(pos, handSwing, rotate.getValue(), true)) {
+                if (oldSlot != -1) {
+                    mc.player.inventory.currentItem = oldSlot;
+                    oldSlot = -1;
+                }
+                firstShift = true;
+                activedBefore = false;
+                if (offHandSkull.getValue())
+                    OffHand.removeSkull();
+
+                if (disableAfter.getValue()) {
+                    disable();
+                }
             }
         }
 

@@ -320,6 +320,7 @@ public class PistonCrystal extends Module {
         }
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
+
             mc.player.inventory.currentItem = oldSlot;
             oldSlot = -1;
         }
@@ -954,6 +955,10 @@ public class PistonCrystal extends Module {
             if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
                 // Is it is correct
                 if (mc.player.inventory.currentItem != slot_mat[step]) {
+                    if (slot_mat[step] == -1) {
+                        noMaterials = true;
+                        return false;
+                    }
                     // Change the hand's item (è qui l'errore)
                     mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
                 }
@@ -1061,6 +1066,10 @@ public class PistonCrystal extends Module {
             if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
                 // Is it is correct
                 if (mc.player.inventory.currentItem != slot_mat[step]) {
+                    if (slot_mat[step] == -1) {
+                        noMaterials = true;
+                        return false;
+                    }
                     // Change the hand's item (è qui l'errore)
                     mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
                 }

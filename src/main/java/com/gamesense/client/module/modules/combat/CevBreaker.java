@@ -519,6 +519,10 @@ public class CevBreaker extends Module {
 
     private void switchPick(int switchValue) {
         if (cur_item != slot_mat[switchValue]) {
+            if (slot_mat[switchValue] == -1) {
+                noMaterials = true;
+                return;
+            }
             mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[switchValue])));
             mc.player.inventory.currentItem = cur_item;
         }
@@ -677,6 +681,10 @@ public class CevBreaker extends Module {
         if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
             // Is it is correct
             if (cur_item != slot_mat[step]) {
+                if (slot_mat[step] == -1) {
+                    noMaterials = true;
+                    return false;
+                }
                 mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[step])));
                 mc.player.inventory.currentItem = cur_item;
             }
