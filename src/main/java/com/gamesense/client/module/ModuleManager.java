@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 
 public class ModuleManager {
-
     private static LinkedHashMap<Class<? extends Module>, Module> modulesClassMap;
     private static LinkedHashMap<String, Module> modulesNameMap;
 
@@ -29,6 +28,7 @@ public class ModuleManager {
         addMod(new AutoAnvil());
         addMod(new AutoArmor());
         addMod(new AutoCrystalGS());
+        addMod(new AutoCrystal());
         addMod(new AutoTrap());
         addMod(new AutoWeb());
         addMod(new BedAura());
