@@ -1,24 +1,28 @@
 package com.gamesense.client.module;
 
-import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.SettingsManager;
-import com.gamesense.api.setting.values.*;
-import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSense;
-import com.gamesense.client.module.modules.gui.ColorMain;
-import com.lukflug.panelstudio.settings.KeybindSetting;
-import com.lukflug.panelstudio.settings.Toggleable;
-import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
-public abstract class Module implements Toggleable, KeybindSetting {
+import org.lwjgl.input.Keyboard;
+
+import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.setting.SettingsManager;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.GameSense;
+import com.gamesense.client.module.modules.gui.ColorMain;
+
+import net.minecraft.client.Minecraft;
+
+public abstract class Module /*implements Toggleable, KeybindSetting*/ {
 
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
@@ -185,7 +189,7 @@ public abstract class Module implements Toggleable, KeybindSetting {
         return registerColor(name, new GSColor(90, 145, 240));
     }
 
-    @Override
+    /*@Override
     public boolean isOn() {
         return this.enabled;
     }
@@ -207,5 +211,5 @@ public abstract class Module implements Toggleable, KeybindSetting {
         } else {
             return Keyboard.getKeyName(this.bind);
         }
-    }
+    }*/
 }

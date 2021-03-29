@@ -113,7 +113,7 @@ public class ModuleManager {
         addMod(new PotionEffects());
         addMod(new Radar());
         addMod(new Speedometer());
-        addMod(new TabGUIModule());
+        //addMod(new TabGUIModule());
         addMod(new TargetHUD());
         addMod(new TargetInfo());
         addMod(new TextRadar());

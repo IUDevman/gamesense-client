@@ -21,6 +21,11 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
+configurations.all {
+    // Check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 version project.modVersion
 group project.modGroup
 
@@ -53,10 +58,13 @@ repositories {
 		name = 'jitpack.io'
 		url = "https://jitpack.io"
 	}
-	maven {
+	/*maven {
 		name = 'lukflug'
 		url = 'https://lukflug.github.io/maven'
-	}
+	}*/
+    maven {
+    	url = 'http://localhost:8080/maven/'
+    }
 	mavenCentral()
 }
 
@@ -71,8 +79,8 @@ dependencies {
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
 	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
-	compile('com.lukflug:panelstudio:0.1.8')
-	compile('com.lukflug:panelstudio-mc12:0.1.8')
+	compile('com.lukflug:panelstudio:0.2.0-SNAPSHOT') {changing=true}
+	compile('com.lukflug:panelstudio-mc12:0.2.0-SNAPSHOT') {changing=true}
 }
 
 processResources {

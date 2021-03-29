@@ -96,7 +96,7 @@ public class SaveConfig {
             } else if (setting instanceof DoubleSetting) {
                 settingObject.add(setting.getConfigName(), new JsonPrimitive(((DoubleSetting) setting).getValue()));
             } else if (setting instanceof ColorSetting) {
-                settingObject.add(setting.getConfigName(), new JsonPrimitive(((ColorSetting) setting).toInteger()));
+                settingObject.add(setting.getConfigName(), new JsonPrimitive(((ColorSetting) setting).toLong()));
             } else if (setting instanceof ModeSetting) {
                 settingObject.add(setting.getConfigName(), new JsonPrimitive(((ModeSetting) setting).getValue()));
             }
