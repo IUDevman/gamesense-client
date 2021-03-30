@@ -50,7 +50,7 @@ public class OffHand extends Module {
     BooleanSetting pickObby = registerBoolean("Pick Obby", false);
     BooleanSetting pickObbyShift = registerBoolean("Pick Obby On Shift", false);
     BooleanSetting crystObby = registerBoolean("Cryst Shift Obby", false);
-    BooleanSetting leftGap = registerBoolean("Left Click Gap", false);
+    BooleanSetting rightGap = registerBoolean("Right Click Gap", false);
     BooleanSetting shiftPot = registerBoolean("Shift Pot", false);
     BooleanSetting swordCheck = registerBoolean("Only Sword", true);
     BooleanSetting fallDistanceBol = registerBoolean("Fall Distance", true);
@@ -243,7 +243,7 @@ public class OffHand extends Module {
                     itemCheck = "Pot";
                     normalOffHand = false;
                 }
-            } else if (leftGap.getValue() && !ignoreNoSword.contains(mainHandItem)) {
+            } else if (rightGap.getValue() && !ignoreNoSword.contains(mainHandItem)) {
                 itemCheck = "Gapple";
                 normalOffHand = false;
             }
