@@ -1,19 +1,24 @@
 package com.gamesense.client.module.modules.misc;
 
+import com.gamesense.api.event.Phase;
+import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
-import com.gamesense.api.util.player.InventoryUtil;
-import com.gamesense.api.util.player.PlacementUtil;
-import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.api.util.player.*;
 import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.OffHand;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.block.BlockAir;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
@@ -30,13 +35,20 @@ public class AutoSkull extends Module {
     BooleanSetting onShift = registerBoolean("On Shift", false);
     BooleanSetting instaActive = registerBoolean("Insta Active", true);
     BooleanSetting disableAfter = registerBoolean("Disable After", true);
+    BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    IntegerSetting preSwitch = registerInteger("Pre Switch", 0, 0, 20);
+    IntegerSetting afterSwitch = registerInteger("After Switch", 0, 0, 20);
     DoubleSetting playerDistance = registerDouble("Player Distance", 0, 0, 6);
 
     private int delayTimeTicks = 0;
     private boolean noObby;
     private boolean activedBefore;
     private int oldSlot;
+    private Vec3d lastHitVec = new Vec3d(-1, -1, -1);
+    private int preRotationTick;
+    private int afterRotationTick;
+    private boolean alrPlaced;
     public void onEnable() {
         ROTATION_UTIL.onEnable();
         PlacementUtil.onEnable();
@@ -44,8 +56,18 @@ public class AutoSkull extends Module {
             disable();
             return;
         }
-        noObby = firstShift = false;
+        noObby = firstShift = alrPlaced = false;
+        lastHitVec = null;
+        preRotationTick = afterRotationTick = 0;
     }
+
+    @EventHandler
+    private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
+        Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
+        PlayerPacket packet = new PlayerPacket(this, rotation);
+        PlayerPacketManager.INSTANCE.addPacket(packet);
+    });
 
     public void onDisable() {
         ROTATION_UTIL.onDisable();
@@ -127,19 +149,34 @@ public class AutoSkull extends Module {
                 mc.player.inventory.currentItem = skullSlot;
             }
 
-            if (PlacementUtil.place(pos, handSwing, rotate.getValue(), true)) {
+
+            if (preRotationTick++ == preSwitch.getValue()) {
+                lastHitVec = new Vec3d(pos.x, pos.y, pos.z);
+                return;
+            }
+
+
+            if (alrPlaced || PlacementUtil.place(pos, handSwing, rotate.getValue(), true)) {
+                alrPlaced = true;
+                if (afterRotationTick++ == afterSwitch.getValue()) {
+                    lastHitVec = new Vec3d(pos.x, pos.y, pos.z);
+                    return;
+                }
+
                 if (oldSlot != -1) {
                     mc.player.inventory.currentItem = oldSlot;
                     oldSlot = -1;
                 }
                 firstShift = true;
-                activedBefore = false;
+                activedBefore = alrPlaced = false;
                 if (offHandSkull.getValue())
                     OffHand.removeSkull();
 
                 if (disableAfter.getValue()) {
                     disable();
                 }
+                preRotationTick = afterRotationTick = 0;
+                lastHitVec = null;
             }
         }
 
