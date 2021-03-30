@@ -26,7 +26,7 @@ public class ColorSetting extends Setting<GSColor> {
 
     @Override
     public GSColor getValue() {
-        if (rainbow) return GSColor.fromHSB((System.currentTimeMillis() % (360 * 32)) / (360f * 32), 1, 1);
+        if (rainbow) return new GSColor(GSColor.fromHSB((System.currentTimeMillis() % (360 * 32)) / (360f * 32), 1, 1),getColor().getAlpha());
         else return super.getValue();
     }
     

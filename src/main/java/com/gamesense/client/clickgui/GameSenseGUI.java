@@ -17,6 +17,7 @@ import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Category;
@@ -30,7 +31,10 @@ import com.lukflug.panelstudio.base.Context;
 import com.lukflug.panelstudio.base.IBoolean;
 import com.lukflug.panelstudio.base.IToggleable;
 import com.lukflug.panelstudio.base.SimpleToggleable;
+import com.lukflug.panelstudio.component.IFixedComponent;
+import com.lukflug.panelstudio.component.IFixedComponentProxy;
 import com.lukflug.panelstudio.component.IScrollSize;
+import com.lukflug.panelstudio.container.IContainer;
 import com.lukflug.panelstudio.hud.HUDGUI;
 import com.lukflug.panelstudio.layout.ChildUtil.ChildMode;
 import com.lukflug.panelstudio.layout.IComponentAdder;
@@ -74,30 +78,27 @@ public class GameSenseGUI extends MinecraftHUDGUI {
     public GameSenseGUI() {
     	// Get some module instances ...
         ClickGuiModule clickGuiModule = ModuleManager.getModule(ClickGuiModule.class);
+        ColorMain colorMain = ModuleManager.getModule(ColorMain.class);
 
         // Define interface and themes ..
         guiInterface = new GUIInterface(true) {
-            /*@Override
-            public void drawString(Point pos, String s, Color c) {
-                GLInterface.end();
-                int x = pos.x + 2, y = pos.y + 1;
-                if (!colorMain.customFont.getValue()) {
-                    x += 1;
-                    y += 1;
-                }
-                FontUtil.drawStringWithShadow(colorMain.customFont.getValue(), s, x, y, new GSColor(c));
-                GLInterface.begin();
-            }
+        	@Override
+			public void drawString(Point pos, int height, String s, Color c) {
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(pos.x,pos.y,0);
+				double scale=height/(double)(FontUtil.getFontHeight(colorMain.customFont.getValue())+(colorMain.customFont.getValue()?1:0));
+				GlStateManager.scale(scale,scale,1);
+				end(false);
+				FontUtil.drawStringWithShadow(colorMain.customFont.getValue(),s,0,0,new GSColor(c));
+				begin(false);
+				GlStateManager.popMatrix();
+			}
 
-            @Override
-            public int getFontWidth(String s) {
-                return Math.round(FontUtil.getStringWidth(colorMain.customFont.getValue(), s)) + 4;
-            }
-
-            @Override
-            public int getFontHeight() {
-                return Math.round(FontUtil.getFontHeight(colorMain.customFont.getValue())) + 2;
-            }*/
+			@Override
+			public int getFontWidth(int height, String s) {
+				double scale=height/(double)(FontUtil.getFontHeight(colorMain.customFont.getValue())+(colorMain.customFont.getValue()?1:0));
+				return (int)Math.round(FontUtil.getStringWidth(colorMain.customFont.getValue(),s)*scale);
+			}
 
             @Override
             public String getResourcePrefix() {
@@ -199,22 +200,11 @@ public class GameSenseGUI extends MinecraftHUDGUI {
         		return super.isOn();
         	}
         };
-        gui = new HUDGUI(guiInterface,theme.getDescriptionRenderer(),new MousePositioner(new Point(10,10)),guiToggle,hudToggle) {
-            /*@Override
-            public void handleScroll(int diff) {
-                super.handleScroll(diff);
-                if (clickGuiModule.scrolling.getValue().equals("Screen")) {
-                    for (IFixedComponent component : components) {
-                        if (!hudComponents.contains(component)) {
-                            Point p = component.getPosition(guiInterface);
-                            p.translate(0, -diff);
-                            component.setPosition(guiInterface, p);
-                        }
-                    }
-                }
-            }*/
+        gui = new HUDGUI(guiInterface,theme.getDescriptionRenderer(),new MousePositioner(new Point(10,10)),guiToggle,hudToggle);
+        BiFunction<Context,Integer,Integer> scrollHeight=(context,componentHeight)->{
+        	if (clickGuiModule.scrolling.getValue().equals("Screen")) return componentHeight;
+        	else return Math.min(componentHeight,Math.max(HEIGHT*4,GameSenseGUI.this.height-context.getPos().y-HEIGHT));
         };
-        BiFunction<Context,Integer,Integer> scrollHeight=(context,componentHeight)->Math.min(componentHeight,Math.max(HEIGHT*4,GameSenseGUI.this.height-context.getPos().y-HEIGHT));
         Supplier<Animation> animation=()->new SettingsAnimation(()->clickGuiModule.animationSpeed.getValue(),()->guiInterface.getTime());
 		PopupTuple popupType=new PopupTuple(new PanelPositioner(new Point(0,0)),false,new IScrollSize() {
 			@Override
@@ -240,8 +230,53 @@ public class GameSenseGUI extends MinecraftHUDGUI {
             }
         }
         // Populate GUI
-        IComponentAdder classicPanelAdder=new PanelAdder(gui,false,()->true,title->title) {
+        IComponentAdder classicPanelAdder=new PanelAdder(new IContainer<IFixedComponent>() {
 			@Override
+			public boolean addComponent(IFixedComponent component) {
+				return gui.addComponent(new IFixedComponentProxy() {
+					@Override
+		            public void handleScroll (Context context, int diff) {
+			            IFixedComponentProxy.super.handleScroll(context,diff);
+			            if (clickGuiModule.scrolling.getValue().equals("Screen")) {
+	                        Point p = getPosition(guiInterface);
+	                        p.translate(0, -diff);
+	                        setPosition(guiInterface, p);
+			            }
+			        }
+
+					@Override
+					public IFixedComponent getComponent() {
+						return component;
+					}
+				});
+			}
+
+			@Override
+			public boolean addComponent(IFixedComponent component, IBoolean visible) {
+				return gui.addComponent(new IFixedComponentProxy() {
+					@Override
+		            public void handleScroll (Context context, int diff) {
+			            IFixedComponentProxy.super.handleScroll(context,diff);
+			            if (clickGuiModule.scrolling.getValue().equals("Screen")) {
+	                        Point p = getPosition(guiInterface);
+	                        p.translate(0, -diff);
+	                        setPosition(guiInterface, p);
+			            }
+			        }
+
+					@Override
+					public IFixedComponent getComponent() {
+						return component;
+					}
+				},visible);
+			}
+
+			@Override
+			public boolean removeComponent(IFixedComponent component) {
+				return gui.removeComponent(component);
+			}
+        },false,()->true,title->title) {
+        	@Override
 			public int getScrollHeight (Context context, int componentHeight) {
 				return scrollHeight.apply(context,componentHeight);
 			}
@@ -447,7 +482,6 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				
 				@Override
 				public Stream<ISetting<?>> getSubSettings() {
-					if (setting.getSubSettings().count()==0) return null;
 					Stream<ISetting<?>> temp=setting.getSubSettings().map(subSetting->createSetting(subSetting));
 					return Stream.concat(temp,Stream.of(new IBooleanSetting() {
 						@Override
@@ -504,6 +538,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
     }
 
     public static void renderItem(ItemStack item, Point pos) {
+    	GameSense.INSTANCE.gameSenseGUI.getInterface().end(false);
         GlStateManager.enableTexture2D();
         GlStateManager.depthMask(true);
         GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
@@ -526,6 +561,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
     }
 
     public static void renderEntity(EntityLivingBase entity, Point pos, int scale) {
+    	GameSense.INSTANCE.gameSenseGUI.getInterface().end(false);
         GlStateManager.enableTexture2D();
         GlStateManager.depthMask(true);
         GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
