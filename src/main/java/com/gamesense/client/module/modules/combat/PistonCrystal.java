@@ -916,7 +916,7 @@ public class PistonCrystal extends Module {
         // Get all sides
         EnumFacing side;
         if (redstone && redstoneAbovePiston) {
-            side = BlockUtil.getPlaceableSideExlude(pos, EnumFacing.DOWN);
+            side = BlockUtil.getPlaceableSideExlude(pos, exd);
         } else side = BlockUtil.getPlaceableSide(pos);
 
         // If there is a solid block
@@ -1016,7 +1016,11 @@ public class PistonCrystal extends Module {
 
         return true;
     }
-
+    private final ArrayList<EnumFacing> exd = new ArrayList<EnumFacing>() {
+        {
+            add(EnumFacing.DOWN);
+        }
+    };
     // Place a block
     private boolean placeBlockConfirm(BlockPos pos, int step, double offsetX, double offsetZ, double offsetY, boolean redstone, boolean onlyRotation, boolean support) {
         // Get the block
@@ -1024,7 +1028,7 @@ public class PistonCrystal extends Module {
         // Get all sides
         EnumFacing side;
         if (redstone && redstoneAbovePiston) {
-            side = BlockUtil.getPlaceableSideExlude(pos, EnumFacing.DOWN);
+            side = BlockUtil.getPlaceableSideExlude(pos, exd);
         } else side = BlockUtil.getPlaceableSide(pos); // 430 71 422
 
         // If there is a solid block

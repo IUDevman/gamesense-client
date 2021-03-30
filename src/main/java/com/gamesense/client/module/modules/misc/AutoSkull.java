@@ -15,10 +15,13 @@ import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.BlockAir;
 import net.minecraft.item.ItemSkull;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.ArrayList;
 
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
@@ -36,6 +39,7 @@ public class AutoSkull extends Module {
     BooleanSetting instaActive = registerBoolean("Insta Active", true);
     BooleanSetting disableAfter = registerBoolean("Disable After", true);
     BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
+    BooleanSetting noUp = registerBoolean("No Up", false);
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
     IntegerSetting preSwitch = registerInteger("Pre Switch", 0, 0, 20);
     IntegerSetting afterSwitch = registerInteger("After Switch", 0, 0, 20);
@@ -122,7 +126,12 @@ public class AutoSkull extends Module {
 
     }
 
-
+    private final ArrayList<EnumFacing> exd = new ArrayList<EnumFacing>() {
+        {
+            add(EnumFacing.DOWN);
+            add(EnumFacing.UP);
+        }
+    };
 
     private void placeBlock() {
         BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ);
@@ -156,7 +165,7 @@ public class AutoSkull extends Module {
             }
 
 
-            if (alrPlaced || PlacementUtil.place(pos, handSwing, rotate.getValue(), true)) {
+            if (alrPlaced || (noUp.getValue() ? PlacementUtil.place(pos, handSwing, rotate.getValue(), exd) : PlacementUtil.place(pos, handSwing, rotate.getValue()))) {
                 alrPlaced = true;
                 if (afterRotationTick++ == afterSwitch.getValue()) {
                     lastHitVec = new Vec3d(pos.x, pos.y, pos.z);
