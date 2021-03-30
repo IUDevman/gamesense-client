@@ -70,7 +70,7 @@ public class SelfTrap extends Module {
         PlacementUtil.onDisable();
         if (mc.player == null | mc.world == null) return;
 
-        if (outOfTargetBlock) setDisabledMessage("No obsidian detected... Surround turned OFF!");
+        if (outOfTargetBlock) setDisabledMessage("No obsidian detected... SelfTrap turned OFF!");
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1 && oldSlot != 9) {
             mc.player.inventory.currentItem = oldSlot;
