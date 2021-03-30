@@ -23,6 +23,7 @@ public class NoRender extends Module {
     public BooleanSetting hurtCam = registerBoolean("HurtCam", false);
     public BooleanSetting noSkylight = registerBoolean("Skylight", false);
     public BooleanSetting noOverlay = registerBoolean("No Overlay", false);
+    public BooleanSetting noWeather = registerBoolean("No Weather", false);
     BooleanSetting noBossBar = registerBoolean("No Boss Bar", false);
     public BooleanSetting noCluster = registerBoolean("No Cluster", false);
     IntegerSetting maxNoClusterRender = registerInteger("No Cluster Max", 5, 1, 25);
@@ -34,6 +35,8 @@ public class NoRender extends Module {
             mc.player.removePotionEffect(MobEffects.BLINDNESS);
         if (nausea.getValue() && mc.player.isPotionActive(MobEffects.NAUSEA))
             mc.player.removePotionEffect(MobEffects.NAUSEA);
+        if (noWeather.getValue() && mc.world.isRaining());
+            mc.world.setRainStrength(0.0F);
     }
 
     public void onRender() {
