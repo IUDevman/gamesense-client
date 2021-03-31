@@ -28,6 +28,7 @@ public abstract class HUDModule extends Module {
         return getClass().getAnnotation(Declaration.class);
     }
 
+    public static final int LIST_BORDER=1;
     protected IFixedComponent component;
     protected Point position = new Point(getDeclaration().posX(), getDeclaration().posZ());
 

@@ -310,8 +310,9 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				
 				@Override
 				public Stream<ISetting<?>> getSubSettings() {
-					if (setting.getSubSettings().count()==0) return null;
-					return setting.getSubSettings().map(subSetting->createSetting(subSetting));
+					return null;
+					/*if (setting.getSubSettings().count()==0) return null;
+					return setting.getSubSettings().map(subSetting->createSetting(subSetting));*/
 				}
     		};
     	} else if (setting instanceof IntegerSetting) {
@@ -353,8 +354,9 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				
 				@Override
 				public Stream<ISetting<?>> getSubSettings() {
-					if (setting.getSubSettings().count()==0) return null;
-					return setting.getSubSettings().map(subSetting->createSetting(subSetting));
+					return null;
+					/*if (setting.getSubSettings().count()==0) return null;
+					return setting.getSubSettings().map(subSetting->createSetting(subSetting));*/
 				}
     		};
     	} else if (setting instanceof DoubleSetting) {
@@ -396,8 +398,9 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				
 				@Override
 				public Stream<ISetting<?>> getSubSettings() {
-					if (setting.getSubSettings().count()==0) return null;
-					return setting.getSubSettings().map(subSetting->createSetting(subSetting));
+					return null;
+					/*if (setting.getSubSettings().count()==0) return null;
+					return setting.getSubSettings().map(subSetting->createSetting(subSetting));*/
 				}
     		};
     	} else if (setting instanceof ModeSetting) {
@@ -429,8 +432,9 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				
 				@Override
 				public Stream<ISetting<?>> getSubSettings() {
-					if (setting.getSubSettings().count()==0) return null;
-					return setting.getSubSettings().map(subSetting->createSetting(subSetting));
+					return null;
+					/*if (setting.getSubSettings().count()==0) return null;
+					return setting.getSubSettings().map(subSetting->createSetting(subSetting));*/
 				}
     		};
     	} else if (setting instanceof ColorSetting) {
@@ -482,8 +486,8 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				
 				@Override
 				public Stream<ISetting<?>> getSubSettings() {
-					Stream<ISetting<?>> temp=setting.getSubSettings().map(subSetting->createSetting(subSetting));
-					return Stream.concat(temp,Stream.of(new IBooleanSetting() {
+					//Stream<ISetting<?>> temp=setting.getSubSettings().map(subSetting->createSetting(subSetting));
+					return /*Stream.concat(temp,*/Stream.of(new IBooleanSetting() {
 						@Override
 						public String getDisplayName() {
 							return "Sync Color";
@@ -504,7 +508,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 						public boolean isOn() {
 							return ModuleManager.getModule(ColorMain.class).enabledColor.getColor().equals(((ColorSetting)setting).getColor());
 						}
-					}));
+					})/*)*/;
 				}
     		};
     	}
@@ -531,8 +535,9 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			
 			@Override
 			public Stream<ISetting<?>> getSubSettings() {
-				if (setting.getSubSettings().count()==0) return null;
-				return setting.getSubSettings().map(subSetting->createSetting(subSetting));
+				return null;
+				/*if (setting.getSubSettings().count()==0) return null;
+				return setting.getSubSettings().map(subSetting->createSetting(subSetting));*/
 			}
     	};
     }
@@ -606,13 +611,12 @@ public class GameSenseGUI extends MinecraftHUDGUI {
     	
 		@Override
 		public void createSetting(ITheme theme, String name, String description, boolean hasAlpha, boolean allowsRainbow, Color color, boolean rainbow) {
-			ClickGuiModule clickGuiModule=ModuleManager.getModule(ClickGuiModule.class);
-			clickGuiModule.theme.addSubSetting(new ColorSetting(name,configName+"_"+name.replace(" ",""),clickGuiModule,isVisible,rainbow,allowsRainbow,hasAlpha,new GSColor(color)));
+			ModuleManager.getModule(ClickGuiModule.class).registerColor(name,configName+"_"+name.replace(" ",""),isVisible,rainbow,allowsRainbow,hasAlpha,new GSColor(color));
 		}
 
 		@Override
 		public Color getColor(String name) {
-			return ((ColorSetting)ModuleManager.getModule(ClickGuiModule.class).theme.getSubSettings().filter(setting->setting.getConfigName().equals(configName+"_"+name.replace(" ",""))).findFirst().orElse(null)).getValue();
+			return ((ColorSetting)SettingsManager.getSettingsForModule(ModuleManager.getModule(ClickGuiModule.class)).stream().filter(setting->setting.getConfigName().equals(configName+"_"+name.replace(" ",""))).findFirst().orElse(null)).getValue();
 		}
     }
 }

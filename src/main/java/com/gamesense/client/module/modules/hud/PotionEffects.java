@@ -31,7 +31,7 @@ public class PotionEffects extends HUDModule {
 
     @Override
     public void populate(ITheme theme) {
-    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), list, GameSenseGUI.FONT_HEIGHT, 2);
+    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), list, GameSenseGUI.FONT_HEIGHT, HUDModule.LIST_BORDER);
     }
 
 

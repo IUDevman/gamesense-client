@@ -22,7 +22,7 @@ public class Watermark extends HUDModule {
 
     @Override
     public void populate(ITheme theme) {
-    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), new WatermarkList(), GameSenseGUI.FONT_HEIGHT, 2);
+    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), new WatermarkList(), GameSenseGUI.FONT_HEIGHT, HUDModule.LIST_BORDER);
     }
 
     private class WatermarkList implements HUDList {

@@ -1,13 +1,17 @@
 package com.gamesense.client.module.modules.gui;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import org.lwjgl.input.Keyboard;
 
+import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
@@ -40,5 +44,11 @@ public class ClickGuiModule extends Module {
             }
         }
         disable();
+    }
+    
+    public ColorSetting registerColor (String name, String configName, Supplier<Boolean> isVisible, boolean rainbow, boolean rainbowEnabled, boolean alphaEnabled, GSColor value) {
+    	ColorSetting setting=new ColorSetting(name,configName,this,isVisible,rainbow,rainbowEnabled,alphaEnabled,value);
+    	SettingsManager.addSetting(setting);
+    	return setting;
     }
 }
