@@ -7,6 +7,8 @@ import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.player.*;
 import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.api.util.world.EntityUtil;
+import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
@@ -40,6 +42,7 @@ public class AutoSkull extends Module {
     BooleanSetting disableAfter = registerBoolean("Disable After", true);
     BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
     BooleanSetting noUp = registerBoolean("No Up", false);
+    BooleanSetting onlyHoles = registerBoolean("Only Holes", false);
     IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
     IntegerSetting preSwitch = registerInteger("Pre Switch", 0, 0, 20);
     IntegerSetting afterSwitch = registerInteger("After Switch", 0, 0, 20);
@@ -101,15 +104,19 @@ public class AutoSkull extends Module {
         if (delayTimeTicks < tickDelay.getValue()) {
             delayTimeTicks++;
         } else {
-            ROTATION_UTIL.shouldSpoofAngles(true);
             delayTimeTicks = 0;
+
+            if (onlyHoles.getValue() && HoleUtil.isHole(EntityUtil.getPosition(mc.player), true, true).getType() == HoleUtil.HoleType.NONE)
+                return;
+
+            ROTATION_UTIL.shouldSpoofAngles(true);
 
             if (instaActive.getValue()) {
                 placeBlock();
                 return;
             }
 
-            if (onShift.getValue() && mc.gameSettings.keyBindSneak.isKeyDown() && mc.player.onGround) {
+            if (onShift.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()) {
                 if (!firstShift)
                     placeBlock();
                 return;
@@ -134,62 +141,66 @@ public class AutoSkull extends Module {
     };
 
     private void placeBlock() {
-        BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ);
-        if (BlockUtil.getBlock(pos) instanceof BlockAir) {
-            EnumHand handSwing = EnumHand.MAIN_HAND;
 
-            int skullSlot = InventoryUtil.findSkullSlot(offHandSkull.getValue(), activedBefore);
+        if (mc.player.onGround) {
+            BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ);
+            if (BlockUtil.getBlock(pos) instanceof BlockAir) {
+                EnumHand handSwing = EnumHand.MAIN_HAND;
 
-            if (skullSlot == -1) {
-                noObby = true;
-                return;
-            }
+                int skullSlot = InventoryUtil.findSkullSlot(offHandSkull.getValue(), activedBefore);
 
-            if (skullSlot == 9) {
-                activedBefore = true;
-                if (mc.player.getHeldItemOffhand().getItem() instanceof ItemSkull) {
-                    // We can continue
-                    handSwing = EnumHand.OFF_HAND;
-                } else return;
-            }
+                if (skullSlot == -1) {
+                    noObby = true;
+                    return;
+                }
 
-            if (mc.player.inventory.currentItem != skullSlot && skullSlot != 9) {
-                oldSlot = mc.player.inventory.currentItem;
-                mc.player.inventory.currentItem = skullSlot;
-            }
+                if (skullSlot == 9) {
+                    activedBefore = true;
+                    if (mc.player.getHeldItemOffhand().getItem() instanceof ItemSkull) {
+                        // We can continue
+                        handSwing = EnumHand.OFF_HAND;
+                    } else return;
+                }
 
-
-            if (preRotationTick++ == preSwitch.getValue()) {
-                lastHitVec = new Vec3d(pos.x, pos.y, pos.z);
-                return;
-            }
+                if (mc.player.inventory.currentItem != skullSlot && skullSlot != 9) {
+                    oldSlot = mc.player.inventory.currentItem;
+                    mc.player.inventory.currentItem = skullSlot;
+                }
 
 
-            if (alrPlaced || (noUp.getValue() ? PlacementUtil.place(pos, handSwing, rotate.getValue(), exd) : PlacementUtil.place(pos, handSwing, rotate.getValue()))) {
-                alrPlaced = true;
-                if (afterRotationTick++ == afterSwitch.getValue()) {
+                if (preSwitch.getValue() > 0 && preRotationTick++ == preSwitch.getValue()) {
                     lastHitVec = new Vec3d(pos.x, pos.y, pos.z);
                     return;
                 }
 
-                if (oldSlot != -1) {
-                    mc.player.inventory.currentItem = oldSlot;
-                    oldSlot = -1;
-                }
-                firstShift = true;
-                activedBefore = alrPlaced = false;
-                if (offHandSkull.getValue())
-                    OffHand.removeSkull();
 
-                if (disableAfter.getValue()) {
-                    disable();
-                }
-                preRotationTick = afterRotationTick = 0;
-                lastHitVec = null;
+                if (alrPlaced || (noUp.getValue() ? (PlacementUtil.place(pos, handSwing, rotate.getValue(), exd) || PlacementUtil.place(pos, handSwing, rotate.getValue()))
+                        : PlacementUtil.place(pos, handSwing, rotate.getValue()))) {
+                    alrPlaced = true;
+                    if (afterSwitch.getValue() > 0 && afterRotationTick++ == afterSwitch.getValue()) {
+                        lastHitVec = new Vec3d(pos.x, pos.y, pos.z);
+                        return;
+                    }
+
+                    if (oldSlot != -1) {
+                        mc.player.inventory.currentItem = oldSlot;
+                        oldSlot = -1;
+                    }
+                    firstShift = true;
+                    activedBefore = alrPlaced = false;
+                    if (offHandSkull.getValue())
+                        OffHand.removeSkull();
+
+                    if (disableAfter.getValue()) {
+                        disable();
+                    }
+                    preRotationTick = afterRotationTick = 0;
+                    lastHitVec = null;
+                } else lastHitVec = null;
             }
+
+
         }
-
-
     }
 
 }
