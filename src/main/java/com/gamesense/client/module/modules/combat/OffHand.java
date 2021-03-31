@@ -5,6 +5,7 @@ import com.gamesense.api.setting.values.DoubleSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.InventoryUtil;
+import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
@@ -37,7 +38,7 @@ import java.util.Map;
 public class OffHand extends Module {
 
     ModeSetting defaultItem = registerMode("Default", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Totem");
-    ModeSetting nonDefaultItem = registerMode("Non Default", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Crystal");
+    ModeSetting nonDefaultItem = registerMode("Non Default", Arrays.asList("Totem", "Crystal", "Gapple", "Obby", "Pot", "Exp", "Plates", "String"), "Crystal");
     ModeSetting noPlayerItem = registerMode("No Player", Arrays.asList("Totem", "Crystal", "Gapple", "Plates", "Obby", "Pot", "Exp"), "Gapple");
     ModeSetting potionChoose = registerMode("Potion", Arrays.asList("first", "strength", "swiftness"), "first");
     IntegerSetting healthSwitch = registerInteger("Health Switch", 14, 0, 36);
@@ -49,7 +50,7 @@ public class OffHand extends Module {
     BooleanSetting pickObby = registerBoolean("Pick Obby", false);
     BooleanSetting pickObbyShift = registerBoolean("Pick Obby On Shift", false);
     BooleanSetting crystObby = registerBoolean("Cryst Shift Obby", false);
-    BooleanSetting leftGap = registerBoolean("Left Click Gap", false);
+    BooleanSetting rightGap = registerBoolean("Right Click Gap", false);
     BooleanSetting shiftPot = registerBoolean("Shift Pot", false);
     BooleanSetting swordCheck = registerBoolean("Only Sword", true);
     BooleanSetting fallDistanceBol = registerBoolean("Fall Distance", true);
@@ -63,7 +64,8 @@ public class OffHand extends Module {
             tickWaited,
             totems;
     boolean returnBack,
-            stepChanging;
+            stepChanging,
+            firstChange;
     private static boolean activeT = false;
     private static int forceObby;
     private ArrayList<Long> switchDone = new ArrayList<>();
@@ -95,6 +97,7 @@ public class OffHand extends Module {
         put("Gapple", Items.GOLDEN_APPLE);
         put("Pot", Items.POTIONITEM);
         put("Exp", Items.EXPERIENCE_BOTTLE);
+        put("String", Items.STRING);
     }};
     // Create maps of allowed blocks
     Map<String, net.minecraft.block.Block> allowedItemsBlock = new HashMap<String, net.minecraft.block.Block>() {
@@ -107,7 +110,7 @@ public class OffHand extends Module {
     @Override
     public void onEnable() {
         // Enable it
-        activeT = true;
+        activeT = firstChange = true;
         // If they are gonna force us obby
         forceObby = 0;
 
@@ -168,7 +171,7 @@ public class OffHand extends Module {
     private void changeBack() {
         /// Change
         // Check if the slot is not air
-        if (!mc.player.inventory.getStackInSlot(prevSlot).isEmpty() || prevSlot == -1)
+        if (prevSlot == -1 || !mc.player.inventory.getStackInSlot(prevSlot).isEmpty())
             prevSlot = findEmptySlot();
         // If it's air
         if (prevSlot != -1) {
@@ -240,7 +243,7 @@ public class OffHand extends Module {
                     itemCheck = "Pot";
                     normalOffHand = false;
                 }
-            } else if (leftGap.getValue() && !ignoreNoSword.contains(mainHandItem)) {
+            } else if (rightGap.getValue() && !ignoreNoSword.contains(mainHandItem)) {
                 itemCheck = "Gapple";
                 normalOffHand = false;
             }
@@ -265,7 +268,6 @@ public class OffHand extends Module {
     }
 
     private boolean canSwitch() {
-        boolean result = false;
         long now = System.currentTimeMillis();
 
         // Lets remove every old one
@@ -295,12 +297,11 @@ public class OffHand extends Module {
     }
 
     private boolean crystalDamage() {
-        double ris2 = 0;
         // Check if the crystal exist
         for (Entity t : mc.world.loadedEntityList) {
             // If it's a crystal
             if (t instanceof EntityEnderCrystal && mc.player.getDistance(t) <= 12) {
-                if ((ris2 = DamageUtil.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue()) >= mc.player.getHealth()) {
+                if (DamageUtil.calculateDamage(t.posX, t.posY, t.posZ, mc.player) * biasDamage.getValue() >= mc.player.getHealth()) {
                     return true;
                 }
             }
@@ -337,7 +338,7 @@ public class OffHand extends Module {
     private String getItemToCheck(String str) {
 
 
-        return (mc.player.getHealth() + mc.player.getAbsorptionAmount() > healthSwitch.getValue())
+        return ( PlayerUtil.getHealth() > healthSwitch.getValue())
                 ? (str.equals("")
                 ? nonDefaultItem.getValue()
                 : str
@@ -356,44 +357,62 @@ public class OffHand extends Module {
             item = allowedItemsBlock.get(itemName);
             blockBool = true;
         }
-        // Temporany variable
-        Item temp;
+        int res;
+        // Check if the item return is what we want
+        if (!firstChange) {
+            if (prevSlot != -1) {
+                res = isCorrect(prevSlot, blockBool, item, itemName);
+                if (res != -1)
+                    return res;
+            }
+        }
         // Iterate
         for (int i = (onlyHotBar.getValue() ? 8 : 35); i > (noHotBar.getValue() ? 9 : -1); i--) {
-            // Get item
-            temp = mc.player.inventory.getStackInSlot(i).getItem();
 
-            // If we have to check if it's a block
-            if (blockBool) {
-                // Check if it's what we want
-                if (temp instanceof ItemBlock) {
-                    if (((ItemBlock) temp).getBlock() == item)
-                        return i;
-                }
-
-                // If we have to check if it's an item
-            } else {
-                // Check if it's what we want
-                if (item == temp) {
-                    // If it's a potion
-                    if (itemName.equals("Pot") && !(potionChoose.getValue().equalsIgnoreCase("first") || mc.player.inventory.getStackInSlot(i).stackTagCompound.toString().split(":")[2].contains(potionChoose.getValue())))
-                        continue;
-                    return i;
-                }
-            }
+            res = isCorrect(i, blockBool, item, itemName);
+            if (res != -1)
+                return res;
 
         }
         return -1;
 
     }
 
+    private int isCorrect(int i, boolean blockBool, Object item, String itemName) {
+        // Get item
+        Item temp = mc.player.inventory.getStackInSlot(i).getItem();
+        // If we have to check if it's a block
+        if (blockBool) {
+            // Check if it's what we want
+            if (temp instanceof ItemBlock) {
+                if (((ItemBlock) temp).getBlock() == item)
+                    return i;
+            }
+
+            // If we have to check if it's an item
+        } else {
+            // Check if it's what we want
+            if (item == temp) {
+                // If it's a potion
+                if (itemName.equals("Pot") && !(potionChoose.getValue().equalsIgnoreCase("first") || mc.player.inventory.getStackInSlot(i).stackTagCompound.toString().split(":")[2].contains(potionChoose.getValue())))
+                    return -1;
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+
     private void toOffHand(int t) {
 
         // Lets check if we have arleady an item
         if (!mc.player.getHeldItemOffhand().isEmpty()) {
             // After we have to return this
-            prevSlot = t;
+            if (firstChange)
+                prevSlot = t;
             returnBack = true;
+            firstChange = !firstChange;
         } else prevSlot = -1;
 
         // Move the item

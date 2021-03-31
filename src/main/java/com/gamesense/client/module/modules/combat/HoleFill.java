@@ -127,10 +127,8 @@ public class HoleFill extends Module {
         AtomicInteger placements = new AtomicInteger();
         holePos = holePos.stream().sorted(Comparator.comparing(blockPos -> blockPos.distanceSq((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ))).collect(Collectors.toList());
         // Get every players
-        List<EntityPlayer> listPlayer = mc.world.playerEntities;
-        listPlayer.removeIf(player -> {
-            return EntityUtil.basicChecksEntity(player) || (!onlyPlayer.getValue() || mc.player.getDistance(player) > 6 + playerRange.getValue());
-        });
+        List<EntityPlayer> listPlayer = new ArrayList<>(mc.world.playerEntities);
+        listPlayer.removeIf(player -> EntityUtil.basicChecksEntity(player) || (!onlyPlayer.getValue() || mc.player.getDistance(player) > 6 + playerRange.getValue()));
         holePos.removeIf(placePos -> {
             if (placements.get() >= bpc.getValue()) {
                 return false;
@@ -190,18 +188,14 @@ public class HoleFill extends Module {
             }
         }
 
-        //if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
-           // mc.player.inventory.currentItem = obsidianSlot;
-        //}
-
-        return PlacementUtil.place(pos, handSwing, rotate.getValue());
+        return PlacementUtil.place(pos, handSwing, rotate.getValue(), true);
     }
 
     private List<BlockPos> findHoles() {
         NonNullList<BlockPos> holes = NonNullList.create();
 
         //from old HoleFill module, really good way to do this
-        List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), 5, 5, false, true, 0);
+        List<BlockPos> blockPosList = EntityUtil.getSphere(PlayerUtil.getPlayerPos(), range.getValue().floatValue(), range.getValue().intValue(), false, true, 0);
 
         for (BlockPos blockPos : blockPosList) {
             if (HoleUtil.isHole(blockPos, true, true).getType() == HoleUtil.HoleType.SINGLE) {

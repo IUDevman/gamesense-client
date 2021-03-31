@@ -66,6 +66,8 @@ public enum TotemPopManager implements Manager {
     private final Listener<TotemPopEvent> totemPopEventListener = new Listener<>(event -> {
         if (mc.player == null || mc.world == null) return;
 
+        if (event.getEntity() == null) return;
+
         String entityName = event.getEntity().getName();
 
         if (playerPopCount.get(entityName) == null) {

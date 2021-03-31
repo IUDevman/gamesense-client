@@ -96,7 +96,7 @@ public class EntityUtil {
     }
 
     public static List<BlockPos> getSphere(BlockPos loc, float r, int h, boolean hollow, boolean sphere, int plus_y) {
-        List<BlockPos> circleblocks = new ArrayList<>();
+        List<BlockPos> circleBlocks = new ArrayList<>();
         int cx = loc.getX();
         int cy = loc.getY();
         int cz = loc.getZ();
@@ -106,12 +106,12 @@ public class EntityUtil {
                     double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
                     if (dist < r * r && !(hollow && dist < (r - 1) * (r - 1))) {
                         BlockPos l = new BlockPos(x, y + plus_y, z);
-                        circleblocks.add(l);
+                        circleBlocks.add(l);
                     }
                 }
             }
         }
-        return circleblocks;
+        return circleBlocks;
     }
 
     public static List<BlockPos> getSquare(BlockPos pos1, BlockPos pos2) {

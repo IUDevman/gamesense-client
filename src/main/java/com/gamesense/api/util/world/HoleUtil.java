@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class HoleUtil {
 
-    public static final Minecraft mc = Minecraft.getMinecraft();
+    private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static BlockSafety isBlockSafe(Block block) {
         if (block == Blocks.BEDROCK) {

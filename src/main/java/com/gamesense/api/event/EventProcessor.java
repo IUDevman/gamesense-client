@@ -22,6 +22,7 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -110,6 +111,11 @@ public class EventProcessor {
         GameSense.EVENT_BUS.post(event);
     }
 
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        GameSense.EVENT_BUS.post(event);
+    }
+
     @EventHandler
     private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (event.getPacket() instanceof SPacketPlayerListItem) {
@@ -146,15 +152,17 @@ public class EventProcessor {
     });
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
-        if (mc.player != null) {
+    public void onUpdate(LivingEvent.LivingUpdateEvent event) {
+        if (mc.player == null || mc.world == null) return;
+
+        if (event.getEntity().getEntityWorld().isRemote && event.getEntityLiving() == mc.player) {
             for (Module module : ModuleManager.getModules()) {
                 if (!module.isEnabled()) continue;
                 module.onUpdate();
             }
-        }
 
-        GameSense.EVENT_BUS.post(event);
+            GameSense.EVENT_BUS.post(event);
+        }
     }
 
     @SubscribeEvent
