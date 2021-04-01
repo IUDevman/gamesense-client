@@ -63,7 +63,7 @@ repositories {
 		url = 'https://lukflug.github.io/maven'
 	}*/
     maven {
-    	url = 'http://localhost:8080/maven/'
+    	url = 'https://localhost:8080/maven/'
     }
 	mavenCentral()
 }
