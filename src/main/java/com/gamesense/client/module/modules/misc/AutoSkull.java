@@ -141,7 +141,7 @@ public class AutoSkull extends Module {
                     int offsetSteps = 0;
                     while (blocksPlaced <= BlocksPerTick.getValue() && offsetSteps < 10) {
                         BlockPos offsetPos = new BlockPos(AIR[offsetSteps]);
-                        BlockPos targetPos = new BlockPos(closest.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                        BlockPos targetPos = new BlockPos(mc.player.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
                         if (placeBlock(targetPos))
                             blocksPlaced++;
                         offsetSteps++;
