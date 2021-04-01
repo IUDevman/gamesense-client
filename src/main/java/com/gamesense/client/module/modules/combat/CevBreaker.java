@@ -79,7 +79,6 @@ public class CevBreaker extends Module {
     BooleanSetting trapPlayer = registerBoolean("Trap Player", false);
     BooleanSetting antiStep = registerBoolean("Anti Step", false);
     BooleanSetting placeCrystal = registerBoolean("Place Crystal", true);
-    BooleanSetting preRotation = registerBoolean("Pre Rotation", false);
     BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
 
     public static int cur_item = -1;
@@ -400,12 +399,12 @@ public class CevBreaker extends Module {
                         return;
                     }
 
-                    if (afterRotationTick != afterRotationDelay.getValue()) {
+                    if (afterRotationDelay.getValue() != 0 && afterRotationTick != afterRotationDelay.getValue()) {
                         afterRotationTick++;
                         return;
                     }
 
-                    if (preRotation.getValue() && !preRotationBol) {
+                    if (preRotationDelay.getValue() != 0 && !preRotationBol) {
                         placeBlockThings(stage, true, false);
                         if (preRotationTick == preRotationDelay.getValue()) {
                             preRotationBol = true;
@@ -427,12 +426,12 @@ public class CevBreaker extends Module {
 
                 // Place crystal
                 case 2:
-                    if (afterRotationTick != afterRotationDelay.getValue()) {
+                    if (afterRotationDelay.getValue() != 0 && afterRotationTick != afterRotationDelay.getValue()) {
                         afterRotationTick++;
                         return;
                     }
 
-                    if (preRotation.getValue() && !preRotationBol) {
+                    if (preRotationDelay.getValue() != 0 && !preRotationBol) {
                         placeCrystal(true);
                         if (preRotationTick == preRotationDelay.getValue()) {
                             preRotationBol = true;
@@ -641,7 +640,7 @@ public class CevBreaker extends Module {
                 BlockPos targetPos = getTargetPos(checksDone);
                 if (BlockUtil.getBlock(targetPos) instanceof BlockAir) {
                     // Rotate
-                    if (preRotation.getValue() && !preRotationBol) {
+                    if (preRotationDelay.getValue() != 0 && !preRotationBol) {
                         if (preRotationTick == 0)
                             placeBlock(targetPos, 0, true);
                         if (preRotationTick == preRotationDelay.getValue()) {
