@@ -13,9 +13,14 @@ import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.OffHand;
+import com.gamesense.client.module.modules.combat.PistonCrystal;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.BlockAir;
+import net.minecraft.block.BlockObsidian;
+import net.minecraft.block.BlockSkull;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -47,6 +52,24 @@ public class AutoSkull extends Module {
     IntegerSetting preSwitch = registerInteger("Pre Switch", 0, 0, 20);
     IntegerSetting afterSwitch = registerInteger("After Switch", 0, 0, 20);
     DoubleSetting playerDistance = registerDouble("Player Distance", 0, 0, 6);
+    BooleanSetting autoTrap = registerBoolean("AutoTrap", false);
+    IntegerSetting BlocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 10);
+
+    private static final Vec3d[] AIR = {
+            // Supports
+            new Vec3d(-1, -1, -1),
+            new Vec3d(-1, 0, -1),
+            new Vec3d(-1, 1, -1),
+            // Start circle
+            new Vec3d(-1, 2, -1),
+            new Vec3d(-1, 2, 0),
+            new Vec3d(0, 2, -1),
+            new Vec3d(1, 2, -1),
+            new Vec3d(1, 2, 0),
+            new Vec3d(1, 2, 1),
+            new Vec3d(0, 2, 1),
+
+    };
 
     private int delayTimeTicks = 0;
     private boolean noObby;
@@ -111,6 +134,21 @@ public class AutoSkull extends Module {
 
             ROTATION_UTIL.shouldSpoofAngles(true);
 
+            if (autoTrap.getValue() && BlockUtil.getBlock(EntityUtil.getPosition(mc.player)) instanceof BlockSkull) {
+                EntityPlayer closest = PlayerUtil.findClosestTarget(2, null);
+                if (closest != null && (int) closest.posX == (int) mc.player.posX && (int) closest.posZ == (int) mc.player.posZ && closest.posY > mc.player.posY && closest.posY < mc.player.posY + 2) {
+                    int blocksPlaced = 0;
+                    int offsetSteps = 0;
+                    while (blocksPlaced <= BlocksPerTick.getValue() && offsetSteps < 10) {
+                        BlockPos offsetPos = new BlockPos(AIR[offsetSteps]);
+                        BlockPos targetPos = new BlockPos(closest.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                        if (placeBlock(targetPos))
+                            blocksPlaced++;
+                        offsetSteps++;
+                    }
+                }
+            }
+
             if (instaActive.getValue()) {
                 placeBlock();
                 return;
@@ -125,12 +163,26 @@ public class AutoSkull extends Module {
             if (playerDistance.getValue() != 0) {
                 if ( PlayerUtil.findClosestTarget(playerDistance.getValue(), null) != null) {
                     placeBlock();
+                    return;
                 }
             }
 
 
         }
 
+    }
+
+    private boolean placeBlock(BlockPos pos) {
+
+        EnumHand handSwing = EnumHand.MAIN_HAND;
+
+        int obsidianSlot = InventoryUtil.findObsidianSlot(false, false);
+
+        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
+            mc.player.inventory.currentItem = obsidianSlot;
+        }
+
+        return PlacementUtil.place(pos, handSwing, rotate.getValue(), true);
     }
 
     private final ArrayList<EnumFacing> exd = new ArrayList<EnumFacing>() {
