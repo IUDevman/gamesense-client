@@ -320,6 +320,7 @@ public class PistonCrystal extends Module {
         }
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
+
             mc.player.inventory.currentItem = oldSlot;
             oldSlot = -1;
         }
@@ -915,7 +916,7 @@ public class PistonCrystal extends Module {
         // Get all sides
         EnumFacing side;
         if (redstone && redstoneAbovePiston) {
-            side = BlockUtil.getPlaceableSideExlude(pos, EnumFacing.DOWN);
+            side = BlockUtil.getPlaceableSideExlude(pos, exd);
         } else side = BlockUtil.getPlaceableSide(pos);
 
         // If there is a solid block
@@ -954,6 +955,10 @@ public class PistonCrystal extends Module {
             if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
                 // Is it is correct
                 if (mc.player.inventory.currentItem != slot_mat[step]) {
+                    if (slot_mat[step] == -1) {
+                        noMaterials = true;
+                        return false;
+                    }
                     // Change the hand's item (è qui l'errore)
                     mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
                 }
@@ -1011,7 +1016,11 @@ public class PistonCrystal extends Module {
 
         return true;
     }
-
+    private final ArrayList<EnumFacing> exd = new ArrayList<EnumFacing>() {
+        {
+            add(EnumFacing.DOWN);
+        }
+    };
     // Place a block
     private boolean placeBlockConfirm(BlockPos pos, int step, double offsetX, double offsetZ, double offsetY, boolean redstone, boolean onlyRotation, boolean support) {
         // Get the block
@@ -1019,7 +1028,7 @@ public class PistonCrystal extends Module {
         // Get all sides
         EnumFacing side;
         if (redstone && redstoneAbovePiston) {
-            side = BlockUtil.getPlaceableSideExlude(pos, EnumFacing.DOWN);
+            side = BlockUtil.getPlaceableSideExlude(pos, exd);
         } else side = BlockUtil.getPlaceableSide(pos); // 430 71 422
 
         // If there is a solid block
@@ -1061,6 +1070,10 @@ public class PistonCrystal extends Module {
             if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
                 // Is it is correct
                 if (mc.player.inventory.currentItem != slot_mat[step]) {
+                    if (slot_mat[step] == -1) {
+                        noMaterials = true;
+                        return false;
+                    }
                     // Change the hand's item (è qui l'errore)
                     mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
                 }

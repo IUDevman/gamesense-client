@@ -81,7 +81,13 @@ public class LoadConfig {
         }
 
         InputStream inputStream = Files.newInputStream(Paths.get(moduleLocation + module.getName() + ".json"));
-        JsonObject moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+        JsonObject moduleObject = new JsonObject();
+        try {
+            moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
+        }catch (java.lang.IllegalStateException e) {
+            return;
+        }
+
 
         if (moduleObject.get("Module") == null) {
             return;
