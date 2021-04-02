@@ -51,6 +51,7 @@ public class KillAura extends Module {
     BooleanSetting hostileMobs = registerBoolean("Monsters", false);
     BooleanSetting passiveMobs = registerBoolean("Animals", false);
     ModeSetting itemUsed = registerMode("Item used", Arrays.asList("Sword", "Axe", "Both", "All"), "Sword");
+    ModeSetting enemyPriority = registerMode("Enemy Priority", Arrays.asList("Closest", "Health"), "Closest");
     BooleanSetting swordPriority = registerBoolean("Prioritise Sword", true);
     BooleanSetting caCheck = registerBoolean("AC Check", false);
     BooleanSetting criticals = registerBoolean("Criticals", true);
@@ -70,7 +71,7 @@ public class KillAura extends Module {
                 .filter(entity -> !EntityUtil.basicChecksEntity(entity))
                 .filter(entity -> mc.player.getDistanceSq(entity) <= rangeSq)
                 .filter(this::attackCheck)
-                .min(Comparator.comparing(e -> mc.player.getDistanceSq(e)));
+                .min(Comparator.comparing(e -> (enemyPriority.getValue().equals("Closest") ? mc.player.getDistanceSq(e) : ((EntityLivingBase) e).getHealth())));
 
         boolean sword = itemUsed.getValue().equalsIgnoreCase("Sword");
         boolean axe = itemUsed.getValue().equalsIgnoreCase("Axe");

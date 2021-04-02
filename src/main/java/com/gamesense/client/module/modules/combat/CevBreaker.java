@@ -80,9 +80,11 @@ public class CevBreaker extends Module {
     BooleanSetting antiStep = registerBoolean("Anti Step", false);
     BooleanSetting placeCrystal = registerBoolean("Place Crystal", true);
     BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
+    BooleanSetting forceBreaker = registerBoolean("Force Breaker", false);
 
     public static int cur_item = -1;
     public static boolean isActive = false;
+    public static boolean forceBrk = false;
 
     private boolean noMaterials = false,
             hasMoved = false,
@@ -251,6 +253,8 @@ public class CevBreaker extends Module {
             stoppedCa = true;
         }
 
+        forceBrk = forceBreaker.getValue();
+
     }
 
     // On disable of the module
@@ -303,7 +307,7 @@ public class CevBreaker extends Module {
             oldSlot = -1;
         }
 
-        noMaterials = isPossible = AutoCrystalGS.stopAC = isActive = false;
+        noMaterials = isPossible = AutoCrystalGS.stopAC = isActive = forceBrk = false;
     }
 
     private String getMissingMaterials() {
