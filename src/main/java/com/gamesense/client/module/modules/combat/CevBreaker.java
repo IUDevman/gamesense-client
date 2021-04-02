@@ -65,7 +65,7 @@ public class CevBreaker extends Module {
     IntegerSetting crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 2, 6);
     IntegerSetting hitDelay = registerInteger("Hit Delay", 2, 0, 20);
-    IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 1, 0, 5);
+    IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 1, 0, 20);
     IntegerSetting endDelay = registerInteger("End Delay", 1, 0, 4);
     IntegerSetting pickSwitchTick = registerInteger("Pick Switch Tick", 100, 0, 500);
     BooleanSetting rotate = registerBoolean("Rotate", false);
