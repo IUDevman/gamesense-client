@@ -2,6 +2,7 @@ package com.gamesense.client.clickgui;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -56,10 +57,10 @@ import com.lukflug.panelstudio.setting.INumberSetting;
 import com.lukflug.panelstudio.setting.ISetting;
 import com.lukflug.panelstudio.setting.SettingsAnimation;
 import com.lukflug.panelstudio.theme.ClearTheme;
-import com.lukflug.panelstudio.theme.GameSenseTheme;
 import com.lukflug.panelstudio.theme.IColorScheme;
 import com.lukflug.panelstudio.theme.ITheme;
 import com.lukflug.panelstudio.theme.IThemeMultiplexer;
+import com.lukflug.panelstudio.theme.Windows31Theme;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -106,7 +107,8 @@ public class GameSenseGUI extends MinecraftHUDGUI {
             }
         };
         Supplier<Boolean> themePredicate=()->clickGuiModule.theme.getValue().equals("2.0") || clickGuiModule.theme.getValue().equals("2.1.2");
-        gameSenseTheme = new GameSenseTheme(new GSColorScheme("gamesense",()->!themePredicate.get()),FONT_HEIGHT,4,5,": "+TextFormatting.GRAY);
+        //gameSenseTheme = new GameSenseTheme(new GSColorScheme("gamesense",()->!themePredicate.get()),FONT_HEIGHT,4,5,": "+TextFormatting.GRAY);
+        gameSenseTheme = new Windows31Theme(new GSColorScheme("windows",()->!themePredicate.get()),FONT_HEIGHT,2,5,": "+TextFormatting.GRAY);
         clearTheme = new ClearTheme(new GSColorScheme("clear",themePredicate),()->clickGuiModule.theme.getValue().equals("2.1.2"),FONT_HEIGHT,3,1,": "+TextFormatting.GRAY);
         theme = new IThemeMultiplexer() {
             @Override
@@ -191,6 +193,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
         	
         });
 
+        int image=guiInterface.loadImage("logo_small.png");
         // Define GUI object
         IToggleable guiToggle=new SimpleToggleable(false);
         IToggleable hudToggle=new SimpleToggleable(false) {
@@ -200,7 +203,14 @@ public class GameSenseGUI extends MinecraftHUDGUI {
         		return super.isOn();
         	}
         };
-        gui = new HUDGUI(guiInterface,theme.getDescriptionRenderer(),new MousePositioner(new Point(10,10)),guiToggle,hudToggle);
+        gui = new HUDGUI(guiInterface,theme.getDescriptionRenderer(),new MousePositioner(new Point(10,10)),guiToggle,hudToggle) {
+        	@Override
+        	public void render() {
+        		guiInterface.drawImage(new Rectangle(100,100,128,128),0,false,image,new Color(255,255,255,128));
+        		guiInterface.drawString(new Point(100,400),9,"UNREGISTERED COPY DETECTED! - Please buy for $20.69!",new Color(255,0,0));
+        		super.render();
+        	}
+        };
         BiFunction<Context,Integer,Integer> scrollHeight=(context,componentHeight)->{
         	if (clickGuiModule.scrolling.getValue().equals("Screen")) return componentHeight;
         	else return Math.min(componentHeight,Math.max(HEIGHT*4,GameSenseGUI.this.height-context.getPos().y-HEIGHT));
