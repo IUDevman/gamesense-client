@@ -132,6 +132,8 @@ public class AutoCrystal extends Module {
             if (!placeCrystal(settings)) {
                 rotating = false;
                 isAttacking = false;
+                render = null;
+                renderEntity = null;
             }
         }
     });
