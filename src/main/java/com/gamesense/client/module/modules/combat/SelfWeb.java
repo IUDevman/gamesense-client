@@ -28,7 +28,7 @@ import java.util.Arrays;
 public class SelfWeb extends Module {
 
     ModeSetting jumpMode = registerMode("Jump", Arrays.asList("Continue", "Pause", "Disable"), "Continue");
-    ModeSetting offsetMode = registerMode("Pattern", Arrays.asList("Single", "Double"), "Normal");
+    ModeSetting offsetMode = registerMode("Pattern", Arrays.asList("Single", "Double"), "Single");
     IntegerSetting delayTicks = registerInteger("Tick Delay", 3, 0, 10);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
     BooleanSetting rotate = registerBoolean("Rotate", true);
