@@ -217,7 +217,7 @@ public class PistonCrystal extends Module {
             }
         }
     });
-
+    int lenTable;
     // Init some values
     private void initValues() {
         preRotationBol = false;
@@ -233,6 +233,7 @@ public class PistonCrystal extends Module {
                 crystalDelay.getValue(),
                 hitDelay.getValue()
         };
+        lenTable = delayTable.length;
         // Default values reset
         toPlace = new structureTemp(0, 0, null);
         isHole = minHp = true;
@@ -377,7 +378,8 @@ public class PistonCrystal extends Module {
             disable();
             return;
         }
-
+        if (stage >= lenTable)
+            stage = 0;
         // Wait
         if (delayTimeTicks < delayTable[stage]) {
             delayTimeTicks++;
