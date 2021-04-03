@@ -16,6 +16,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayList;
+
 public class PlacementUtil {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
@@ -46,7 +48,7 @@ public class PlacementUtil {
         }
 
         mc.player.inventory.currentItem = newSlot;
-        boolean output = place(blockPos, hand, rotate, true);
+        boolean output = place(blockPos, hand, rotate);
         mc.player.inventory.currentItem = oldSlot;
 
         return output;
@@ -60,13 +62,25 @@ public class PlacementUtil {
         }
 
         mc.player.inventory.currentItem = newSlot;
-        boolean output = place(blockPos, hand, rotate, true);
+        boolean output = place(blockPos, hand, rotate);
         mc.player.inventory.currentItem = oldSlot;
 
         return output;
     }
 
+    public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate) {
+        return placeBlock(blockPos, hand, rotate, true, null);
+    }
+
+    public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate, ArrayList<EnumFacing> forceSide) {
+        return placeBlock(blockPos, hand, rotate, true, forceSide);
+    }
+
     public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate, boolean checkAction) {
+        return placeBlock(blockPos, hand, rotate, checkAction, null);
+    }
+
+    public static boolean placeBlock(BlockPos blockPos, EnumHand hand, boolean rotate, boolean checkAction,  ArrayList<EnumFacing> forceSide) {
         EntityPlayerSP player = mc.player;
         WorldClient world = mc.world;
         PlayerControllerMP playerController = mc.playerController;
@@ -77,7 +91,7 @@ public class PlacementUtil {
             return false;
         }
 
-        EnumFacing side = BlockUtil.getPlaceableSide(blockPos);
+        EnumFacing side = forceSide != null ? BlockUtil.getPlaceableSideExlude(blockPos, forceSide) : BlockUtil.getPlaceableSide(blockPos);
 
         if (side == null) {
             return false;
