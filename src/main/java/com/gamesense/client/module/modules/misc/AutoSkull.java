@@ -20,6 +20,7 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.block.BlockSkull;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.util.EnumFacing;
@@ -134,14 +135,14 @@ public class AutoSkull extends Module {
 
             ROTATION_UTIL.shouldSpoofAngles(true);
 
-            if (autoTrap.getValue() && BlockUtil.getBlock(EntityUtil.getPosition(mc.player)) instanceof BlockSkull) {
+            if (autoTrap.getValue() && BlockUtil.getBlock(new BlockPos(mc.player.getPosition().add(0, .4, 0))) instanceof BlockSkull) {
                 EntityPlayer closest = PlayerUtil.findClosestTarget(2, null);
                 if (closest != null && (int) closest.posX == (int) mc.player.posX && (int) closest.posZ == (int) mc.player.posZ && closest.posY > mc.player.posY && closest.posY < mc.player.posY + 2) {
                     int blocksPlaced = 0;
                     int offsetSteps = 0;
                     while (blocksPlaced <= BlocksPerTick.getValue() && offsetSteps < 10) {
                         BlockPos offsetPos = new BlockPos(AIR[offsetSteps]);
-                        BlockPos targetPos = new BlockPos(mc.player.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                        BlockPos targetPos = mc.player.getPosition().add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
                         if (placeBlock(targetPos))
                             blocksPlaced++;
                         offsetSteps++;
@@ -195,7 +196,7 @@ public class AutoSkull extends Module {
     private void placeBlock() {
 
         if (mc.player.onGround) {
-            BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ);
+            BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY + .4, mc.player.posZ);
             if (BlockUtil.getBlock(pos) instanceof BlockAir) {
                 EnumHand handSwing = EnumHand.MAIN_HAND;
 
