@@ -465,10 +465,10 @@ public class CevBreaker extends Module {
                             stage = 0;
                             return;
                         }
-
+                    /*
                     if (forceRotation.getValue()) {
                         placeBlockThings(1, true, false);
-                    }
+                    }*/
 
                     // Switch to pick / sword
                     int switchValue = 3;
@@ -601,18 +601,27 @@ public class CevBreaker extends Module {
         // If weaknes
         if (antiWeakness.getValue())
             mc.player.inventory.currentItem = slot_mat[3];
-        // If rotate
-        if (rotate.getValue()) {
-            ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
-        }
         /// Break type
         // Swing
+        Vec3d vecCrystal = crystal.getPositionVector().add(0.5, 0.5, 0.5);;
         switch (breakCrystal.getValue()) {
             case "Vanilla":
+                // If rotate
+                if (rotate.getValue()) {
+                    ROTATION_UTIL.lookAtPacket(vecCrystal.x, vecCrystal.y, vecCrystal.z, mc.player);
+                    if (forceRotation.getValue())
+                        lastHitVec = vecCrystal;
+                }
                 CrystalUtil.breakCrystal(crystal);
                 // Packet
                 break;
             case "Packet":
+                // If rotate
+                if (rotate.getValue()) {
+                    ROTATION_UTIL.lookAtPacket(vecCrystal.x, vecCrystal.y, vecCrystal.z, mc.player);
+                    if (forceRotation.getValue())
+                        lastHitVec = vecCrystal;
+                }
                 try {
                     mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
                     mc.player.swingArm(EnumHand.MAIN_HAND);
