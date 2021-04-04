@@ -69,7 +69,6 @@ public class AutoSkull extends Module {
             new Vec3d(1, 2, 0),
             new Vec3d(1, 2, 1),
             new Vec3d(0, 2, 1),
-
     };
 
     private int delayTimeTicks = 0;
@@ -92,6 +91,7 @@ public class AutoSkull extends Module {
         preRotationTick = afterRotationTick = 0;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
@@ -167,10 +167,7 @@ public class AutoSkull extends Module {
                     return;
                 }
             }
-
-
         }
-
     }
 
     private boolean placeBlock(BlockPos pos) {
@@ -251,9 +248,6 @@ public class AutoSkull extends Module {
                     lastHitVec = null;
                 } else lastHitVec = null;
             }
-
-
         }
     }
-
 }

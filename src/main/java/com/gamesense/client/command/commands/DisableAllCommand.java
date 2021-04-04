@@ -12,7 +12,7 @@ import com.gamesense.client.module.ModuleManager;
 @Command.Declaration(name = "DisableAll", syntax = "disableall", alias = {"disableall", "stop"})
 public class DisableAllCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         int count = 0;
 
         for (Module module : ModuleManager.getModules()) {

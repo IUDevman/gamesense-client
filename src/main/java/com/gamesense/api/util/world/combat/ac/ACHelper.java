@@ -143,11 +143,11 @@ public enum ACHelper {
     }
 
     public void onEnable() {
-        GameSense.EVENT_BUS.subscribe(entitySpawnListener);
+        GameSense.EVENT_BUS.subscribe(this);
     }
 
     public void onDisable() {
-        GameSense.EVENT_BUS.unsubscribe(entitySpawnListener);
+        GameSense.EVENT_BUS.unsubscribe(this);
 
         placedCrystals.clear();
 
@@ -156,6 +156,7 @@ public enum ACHelper {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<EntityJoinWorldEvent> entitySpawnListener = new Listener<>(event -> {
         Entity entity = event.getEntity();

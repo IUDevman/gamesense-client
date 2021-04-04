@@ -112,10 +112,16 @@ public class EventProcessor {
     }
 
     @SubscribeEvent
+    public void onFov(EntityViewRenderEvent.FOVModifier event) {
+        GameSense.EVENT_BUS.post(event);
+    }
+
+    @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         GameSense.EVENT_BUS.post(event);
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (event.getPacket() instanceof SPacketPlayerListItem) {

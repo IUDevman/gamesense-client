@@ -34,6 +34,7 @@ public class ViewModel extends Module {
     DoubleSetting zRight = registerDouble("Right Z", -1.2, -2.0, 2.0);
     DoubleSetting fov = registerDouble("Item FOV", 130, 70, 200);
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TransformSideFirstPersonEvent> eventListener = new Listener<>(event -> {
         if (type.getValue().equalsIgnoreCase("Value") || type.getValue().equalsIgnoreCase("Both")) {
@@ -45,18 +46,11 @@ public class ViewModel extends Module {
         }
     });
 
-    @SubscribeEvent
-    public void onFov(EntityViewRenderEvent.FOVModifier event) {
+    @SuppressWarnings("unused")
+    @EventHandler
+    private final Listener<EntityViewRenderEvent.FOVModifier> fovModifierListener = new Listener<>(event -> {
         if (type.getValue().equalsIgnoreCase("FOV") || type.getValue().equalsIgnoreCase("Both")) {
             event.setFOV(fov.getValue().floatValue());
         }
-    }
-
-    public void onEnable() {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    public void onDisable() {
-        MinecraftForge.EVENT_BUS.unregister(this);
-    }
+    });
 }

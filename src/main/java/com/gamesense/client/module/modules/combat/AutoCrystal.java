@@ -97,6 +97,7 @@ public class AutoCrystal extends Module {
     private List<CrystalInfo.PlaceInfo> targets = new ArrayList<>();
     private boolean finished = false;
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TickEvent.ClientTickEvent> onUpdate = new Listener<>(event -> {
         if (mc.player == null || mc.world == null || mc.player.isDead) {
@@ -356,6 +357,7 @@ public class AutoCrystal extends Module {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotating) return;
@@ -365,6 +367,7 @@ public class AutoCrystal extends Module {
         PlayerPacketManager.INSTANCE.addPacket(packet);
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
         Packet<?> packet = event.getPacket();

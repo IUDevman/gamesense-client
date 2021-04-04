@@ -11,7 +11,7 @@ import com.gamesense.client.module.modules.misc.AutoReply;
 @Command.Declaration(name = "AutoReply", syntax = "autoreply set [message] (use _ for spaces)", alias = {"autoreply", "reply"})
 public class AutoReplyCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
         String value = message[1].replace("_", " ");
 

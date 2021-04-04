@@ -206,6 +206,7 @@ public class PistonCrystal extends Module {
             betterPlacement.setValue(false);
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
 
@@ -363,6 +364,7 @@ public class PistonCrystal extends Module {
 
     Vec3d lastHitVec;
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;

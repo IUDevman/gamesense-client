@@ -34,6 +34,7 @@ public class NoKick extends Module {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (noOffhandCrash.getValue()) {

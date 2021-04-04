@@ -432,6 +432,7 @@ public class AutoCrystalGS extends Module {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
         if (!predict.getValue()) return;

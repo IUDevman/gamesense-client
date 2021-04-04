@@ -11,7 +11,7 @@ import com.gamesense.client.module.modules.misc.AutoGG;
 @Command.Declaration(name = "AutoGG", syntax = "autogg add/del [message] (use _ for spaces)", alias = {"autogg", "gg"})
 public class AutoGGCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
         String value = message[1].replace("_", " ");
 

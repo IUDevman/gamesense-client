@@ -29,9 +29,9 @@ public class ChatModifier extends Module {
     ModeSetting color = registerMode("Color", ColorUtil.colors, ChatFormatting.GRAY.getName());
     BooleanSetting space = registerBoolean("Space", false);
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<ClientChatReceivedEvent> chatReceivedEventListener = new Listener<>(event -> {
-        //Chat Time Stamps
         if (chatTimeStamps.getValue()) {
             String decoLeft = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[0];
             String decoRight = decoration.getValue().equalsIgnoreCase(" ") ? "" : decoration.getValue().split(" ")[1];
@@ -43,6 +43,7 @@ public class ChatModifier extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
         if (greenText.getValue()) {

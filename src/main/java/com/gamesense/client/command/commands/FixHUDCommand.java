@@ -10,7 +10,7 @@ import com.gamesense.client.module.ModuleManager;
 public class FixHUDCommand extends Command {
 
     @Override
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         for (Module module : ModuleManager.getModules()) {
             if (module instanceof HUDModule) {
                 ((HUDModule) module).resetPosition();

@@ -48,7 +48,7 @@ import java.util.Objects;
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
- * @Author TechAle
+ * @author TechAle
  * Ported and modified from PistonCrystal
  */
 
@@ -127,6 +127,7 @@ public class CevBreaker extends Module {
 
     private EntityPlayer aimTarget;
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<DestroyBlockEvent> listener2 = new Listener<>(event -> {
 
@@ -135,6 +136,7 @@ public class CevBreaker extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
 
@@ -149,6 +151,7 @@ public class CevBreaker extends Module {
 
     Vec3d lastHitVec;
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;

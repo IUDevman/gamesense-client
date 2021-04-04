@@ -21,6 +21,7 @@ public class AutoTool extends Module {
     int lastSlot = 0;
     long lastChange = 0L;
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<DamageBlockEvent> leftClickListener = new Listener<>(event -> {
         equipBestTool(mc.world.getBlockState(event.getBlockPos()));

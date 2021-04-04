@@ -16,8 +16,7 @@ public class ReverseStep extends Module {
             return;
         }
 
-        if (ModuleManager.isModuleEnabled(Speed.class))
-            return;
+        if (ModuleManager.isModuleEnabled(Speed.class)) return;
 
         if (mc.player != null && mc.player.onGround && !mc.player.isInWater() && !mc.player.isOnLadder()) {
             for (double y = 0.0; y < this.height.getValue() + 0.5; y += 0.01) {

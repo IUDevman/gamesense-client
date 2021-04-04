@@ -7,7 +7,7 @@ import com.gamesense.client.module.modules.misc.AutoRespawn;
 @Command.Declaration(name = "AutoRespawn", syntax = "autorespawn get/set [message] (do NOT use _ for spaces)", alias = {"autorespawn", "respawn"})
 public class AutoRespawnCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
 
         if (main.equalsIgnoreCase("get")) {

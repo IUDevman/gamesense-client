@@ -11,7 +11,7 @@ import com.gamesense.client.command.CommandManager;
 @Command.Declaration(name = "Commands", syntax = "commands", alias = {"commands", "cmd", "command", "commandlist", "help"})
 public class CmdListCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         for (Command command1 : CommandManager.getCommands()) {
             MessageBus.sendCommandMessage(command1.getName() + ": " + "\"" + command1.getSyntax() + "\"!", true);
         }

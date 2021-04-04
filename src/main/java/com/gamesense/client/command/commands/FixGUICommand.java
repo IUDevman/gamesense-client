@@ -12,7 +12,7 @@ import com.gamesense.client.command.Command;
 @Command.Declaration(name = "FixGUI", syntax = "fixgui", alias = {"fixgui", "gui", "resetgui"})
 public class FixGUICommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         GameSense.INSTANCE.gameSenseGUI = new GameSenseGUI();
         MessageBus.sendCommandMessage("ClickGUI positions reset!", true);
     }

@@ -33,6 +33,7 @@ public enum TotemPopManager implements Manager {
     public ChatFormatting chatFormatting = ChatFormatting.WHITE;
     private final HashMap<String, Integer> playerPopCount = new HashMap<>();
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TickEvent.ClientTickEvent> clientTickEventListener = new Listener<>(event -> {
         if (mc.player == null || mc.world == null) {
@@ -48,6 +49,7 @@ public enum TotemPopManager implements Manager {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> packetEventListener = new Listener<>(event -> {
         if (mc.player == null || mc.world == null) return;
@@ -62,6 +64,7 @@ public enum TotemPopManager implements Manager {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TotemPopEvent> totemPopEventListener = new Listener<>(event -> {
         if (mc.player == null || mc.world == null) return;

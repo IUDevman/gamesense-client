@@ -66,6 +66,7 @@ public class SpoofRotationUtil {
         return isSpoofingAngles;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
         Packet packet = event.getPacket();

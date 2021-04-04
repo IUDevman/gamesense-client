@@ -40,6 +40,7 @@ public class Chams extends Module {
     ColorSetting mobColor = registerColor("Mob Color", new GSColor(255, 255, 0, 255));
     ColorSetting crystalColor = registerColor("Crystal Color", new GSColor(0, 255, 0, 255));
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<RenderEntityEvent.Head> renderEntityHeadEventListener = new Listener<>(event -> {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
@@ -71,6 +72,7 @@ public class Chams extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<RenderEntityEvent.Return> renderEntityReturnEventListener = new Listener<>(event -> {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
