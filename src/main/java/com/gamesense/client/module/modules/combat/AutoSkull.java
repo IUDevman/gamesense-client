@@ -1,4 +1,4 @@
-package com.gamesense.client.module.modules.misc;
+package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.event.Phase;
 import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
