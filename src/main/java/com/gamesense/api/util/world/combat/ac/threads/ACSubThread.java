@@ -1,6 +1,5 @@
 package com.gamesense.api.util.world.combat.ac.threads;
 
-import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.world.combat.ac.ACSettings;
 import com.gamesense.api.util.world.combat.ac.ACUtil;
 import com.gamesense.api.util.world.combat.ac.CrystalInfo;

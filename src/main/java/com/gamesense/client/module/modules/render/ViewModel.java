@@ -11,14 +11,12 @@ import me.zero.alpine.listener.Listener;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Arrays;
 
 /**
- * @Author GL_DONT_CARE (Viewmodel Transformations)
- * @Author NekoPvP (Item FOV)
+ * @author GL_DONT_CARE (Viewmodel Transformations)
+ * @author NekoPvP (Item FOV)
  */
 
 @Module.Declaration(name = "ViewModel", category = Category.Render)
