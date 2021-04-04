@@ -55,8 +55,8 @@ public class AutoCrystal extends Module {
     BooleanSetting breakCrystal = registerBoolean("Break", true);
     BooleanSetting placeCrystal = registerBoolean("Place", true);
     IntegerSetting attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
-    DoubleSetting breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
-    DoubleSetting placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
+    public DoubleSetting breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
+    public DoubleSetting placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
     DoubleSetting wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
     DoubleSetting enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
     BooleanSetting antiWeakness = registerBoolean("Anti Weakness", true);
@@ -65,7 +65,7 @@ public class AutoCrystal extends Module {
     IntegerSetting antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
     BooleanSetting autoSwitch = registerBoolean("Switch", true);
     BooleanSetting noGapSwitch = registerBoolean("No Gap Switch", false);
-    BooleanSetting endCrystalMode = registerBoolean("1.13 Place", false);
+    public BooleanSetting endCrystalMode = registerBoolean("1.13 Place", false);
     BooleanSetting cancelCrystal = registerBoolean("Cancel Crystal", false);
     DoubleSetting minDmg = registerDouble("Min Damage", 5, 0, 36);
     DoubleSetting minBreakDmg = registerDouble("Min Break Dmg", 5, 0, 36.0);
@@ -84,7 +84,7 @@ public class AutoCrystal extends Module {
     IntegerSetting maxTargets = registerInteger("Max Targets", 2, 1, 5);
 
     private boolean switchCooldown = false;
-    private boolean isAttacking = false;
+    public boolean isAttacking = false;
     public static boolean stopAC = false;
     private Entity renderEntity;
     private BlockPos render;
@@ -94,7 +94,7 @@ public class AutoCrystal extends Module {
     private boolean rotating = false;
 
     // Threading Stuff
-    private List<CrystalInfo.PlaceInfo> targets = new ArrayList<>();
+    public List<CrystalInfo.PlaceInfo> targets = new ArrayList<>();
     private boolean finished = false;
 
     @SuppressWarnings("unused")

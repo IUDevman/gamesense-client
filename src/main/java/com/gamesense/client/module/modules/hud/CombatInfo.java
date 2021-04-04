@@ -9,7 +9,7 @@ import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.combat.AutoCrystalGS;
+import com.gamesense.client.module.modules.combat.AutoCrystal;
 import com.gamesense.client.module.modules.combat.OffHand;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
@@ -38,7 +38,7 @@ public class CombatInfo extends HUDModule {
 
     private InfoList list = new InfoList();
     private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};
-    private static final String[] hoosiersModules = {"AutoCrystalGS", "KillAura", "Surround", "AutoTrap", "SelfTrap"};
+    private static final String[] hoosiersModules = {"AutoCrystal", "KillAura", "Surround", "AutoTrap", "SelfTrap"};
     private static final String[] hoosiersNames = {"AC", "KA", "SU", "AT", "ST"};
 
     @Override
@@ -47,12 +47,12 @@ public class CombatInfo extends HUDModule {
     }
 
     public void onRender() {
-        AutoCrystalGS autoCrystalGS = ModuleManager.getModule(AutoCrystalGS.class);
+        AutoCrystal autoCrystal = ModuleManager.getModule(AutoCrystal.class);
         list.totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum() + ((mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) ? 1 : 0);
         list.players = mc.world.loadedEntityList.stream()
                 .filter(entity -> entity instanceof EntityOtherPlayerMP)
                 .filter(entity -> !SocialManager.isFriend(entity.getName()))
-                .filter(e -> mc.player.getDistance(e) <= autoCrystalGS.placeRange.getValue())
+                .filter(e -> mc.player.getDistance(e) <= autoCrystal.placeRange.getValue())
                 .map(entity -> (EntityOtherPlayerMP) entity)
                 .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
                 .orElse(null);
@@ -64,16 +64,16 @@ public class CombatInfo extends HUDModule {
                 ++i;
                 BlockPos o = new BlockPos(e.getPositionVector().x, e.getPositionVector().y, e.getPositionVector().z).add(add.getX(), add.getY(), add.getZ());
                 if (mc.world.getBlockState(o).getBlock() == Blocks.OBSIDIAN) {
-                    if (i == 1 && CrystalUtil.canPlaceCrystal(o.north(1).down(), autoCrystalGS.endCrystalMode.getValue())) {
+                    if (i == 1 && CrystalUtil.canPlaceCrystal(o.north(1).down(), autoCrystal.endCrystalMode.getValue())) {
                         list.lby = true;
                         list.renderLby = true;
-                    } else if (i == 2 && CrystalUtil.canPlaceCrystal(o.east(1).down(), autoCrystalGS.endCrystalMode.getValue())) {
+                    } else if (i == 2 && CrystalUtil.canPlaceCrystal(o.east(1).down(), autoCrystal.endCrystalMode.getValue())) {
                         list.lby = true;
                         list.renderLby = true;
-                    } else if (i == 3 && CrystalUtil.canPlaceCrystal(o.south(1).down(), autoCrystalGS.endCrystalMode.getValue())) {
+                    } else if (i == 3 && CrystalUtil.canPlaceCrystal(o.south(1).down(), autoCrystal.endCrystalMode.getValue())) {
                         list.lby = true;
                         list.renderLby = true;
-                    } else if (i == 4 && CrystalUtil.canPlaceCrystal(o.west(1).down(), autoCrystalGS.endCrystalMode.getValue())) {
+                    } else if (i == 4 && CrystalUtil.canPlaceCrystal(o.west(1).down(), autoCrystal.endCrystalMode.getValue())) {
                         list.lby = true;
                         list.renderLby = true;
                     }
@@ -133,7 +133,7 @@ public class CombatInfo extends HUDModule {
 
         @Override
         public Color getItemColor(int index) {
-            AutoCrystalGS autoCrystalGS = ModuleManager.getModule(AutoCrystalGS.class);
+            AutoCrystal autoCrystal = ModuleManager.getModule(AutoCrystal.class);
 
             if (infoType.getValue().equals("Hoosiers")) {
                 if (ModuleManager.isModuleEnabled(hoosiersModules[index])) return color1.getValue();
@@ -144,11 +144,11 @@ public class CombatInfo extends HUDModule {
                     on = true;
                 } else if (index == 1) {
                     if (players != null) {
-                        on = mc.player.getDistance(players) <= autoCrystalGS.breakRange.getValue();
+                        on = mc.player.getDistance(players) <= autoCrystal.breakRange.getValue();
                     }
                 } else if (index == 2) {
                     if (players != null) {
-                        on = mc.player.getDistance(players) <= autoCrystalGS.placeRange.getValue();
+                        on = mc.player.getDistance(players) <= autoCrystal.placeRange.getValue();
                     }
                 } else if (index == 3) {
                     on = totems > 0 && ModuleManager.isModuleEnabled(OffHand.class);

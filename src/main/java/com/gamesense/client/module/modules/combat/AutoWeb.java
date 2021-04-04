@@ -70,7 +70,7 @@ public class AutoWeb extends Module {
             isSneaking = false;
         }
 
-        AutoCrystalGS.stopAC = false;
+        AutoCrystal.stopAC = false;
 
         outOfTargetBlock = false;
         targetPlayer = null;

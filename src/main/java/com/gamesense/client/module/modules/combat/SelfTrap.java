@@ -82,7 +82,7 @@ public class SelfTrap extends Module {
             isSneaking = false;
         }
 
-        AutoCrystalGS.stopAC = false;
+        AutoCrystal.stopAC = false;
 
         if (offhandObby.getValue() && OffHand.isActive()) {
             OffHand.removeObsidian();

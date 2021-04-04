@@ -180,7 +180,7 @@ public class KillAura extends Module {
         return (all
                 || (sword || both) && item instanceof ItemSword
                 || (axe || both) && item instanceof ItemAxe)
-                && (!caCheck.getValue() || !ModuleManager.getModule(AutoCrystalGS.class).isActive);
+                && (!caCheck.getValue() || !ModuleManager.getModule(AutoCrystal.class).isAttacking);
     }
 
     private void attack(Entity e) {

@@ -27,7 +27,6 @@ public class ModuleManager {
         addMod(new AntiCrystal());
         addMod(new AutoAnvil());
         addMod(new AutoArmor());
-        addMod(new AutoCrystalGS());
         addMod(new AutoCrystal());
         addMod(new AutoTrap());
         addMod(new AutoWeb());

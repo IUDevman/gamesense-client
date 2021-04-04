@@ -256,8 +256,8 @@ public class PistonCrystal extends Module {
         // Stop CA
         stoppedCa = false;
 
-        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
-            AutoCrystalGS.stopAC = true;
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            AutoCrystal.stopAC = true;
             stoppedCa = true;
         }
         // Debug mode
@@ -312,7 +312,7 @@ public class PistonCrystal extends Module {
             setDisabledMessage("Materials missing:" + materialsNeeded);
 
         if (stoppedCa) {
-            AutoCrystalGS.stopAC = false;
+            AutoCrystal.stopAC = false;
             stoppedCa = false;
         }
 
@@ -328,7 +328,7 @@ public class PistonCrystal extends Module {
         }
 
         noMaterials = false;
-        AutoCrystalGS.stopAC = false;
+        AutoCrystal.stopAC = false;
         // Debug mode
         if (debugMode.getValue() || speedMeter.getValue())
             printDebug("Ended pistonCrystal n^" + round, false);
