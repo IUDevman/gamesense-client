@@ -15,12 +15,7 @@ import java.io.IOException;
 public class SaveConfigCommand extends Command {
 
     public void onCommand(String command, String[] message) {
-        try {
-            SaveConfig.init();
-            MessageBus.sendCommandMessage("Config saved!", true);
-        } catch (IOException e) {
-            MessageBus.sendCommandMessage("Failed to save config!", true);
-            e.printStackTrace();
-        }
+        SaveConfig.init();
+        MessageBus.sendCommandMessage("Config saved!", true);
     }
 }

@@ -37,24 +37,28 @@ public class LoadConfig {
     private static final String mainName = "Main/";
     private static final String miscName = "Misc/";
 
-    public static void init() throws IOException {
-        loadModules();
-        loadEnabledModules();
-        loadModuleKeybinds();
-        loadDrawnModules();
-        loadToggleMessageModules();
-        loadCommandPrefix();
-        loadCustomFont();
-        loadFriendsList();
-        loadEnemiesList();
-        loadClickGUIPositions();
-        loadAutoGG();
-        loadAutoReply();
-        loadAutoRespawn();
+    public static void init() {
+        try {
+            loadModules();
+            loadEnabledModules();
+            loadModuleKeybinds();
+            loadDrawnModules();
+            loadToggleMessageModules();
+            loadCommandPrefix();
+            loadCustomFont();
+            loadFriendsList();
+            loadEnemiesList();
+            loadClickGUIPositions();
+            loadAutoGG();
+            loadAutoReply();
+            loadAutoRespawn();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //big shoutout to lukflug for helping/fixing this
-    private static void loadModules() {
+    private static void loadModules() throws IOException {
         String moduleLocation = fileName + moduleName;
 
         for (Module module : ModuleManager.getModules()) {
@@ -318,7 +322,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    private static void loadClickGUIPositions() {
+    private static void loadClickGUIPositions() throws IOException {
         GameSense.INSTANCE.gameSenseGUI.gui.loadConfig(new GuiConfig(fileName + mainName));
     }
 

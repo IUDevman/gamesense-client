@@ -61,19 +61,11 @@ public class MixinMinecraft {
 
     @Inject(method = "crashed", at = @At("HEAD"))
     public void crashed(CrashReport crash, CallbackInfo callbackInfo) {
-        try {
-            SaveConfig.init();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SaveConfig.init();
     }
 
     @Inject(method = "shutdown", at = @At("HEAD"))
     public void shutdown(CallbackInfo callbackInfo) {
-        try {
-            SaveConfig.init();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SaveConfig.init();
     }
 }

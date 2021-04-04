@@ -81,11 +81,7 @@ public class GameSense {
         CapeUtil.init();
         LOGGER.info("Capes initialized!");
 
-        try {
-            LoadConfig.init();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        LoadConfig.init();
         LOGGER.info("Config initialized!");
     }
 }

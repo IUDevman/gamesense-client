@@ -36,21 +36,25 @@ public class SaveConfig {
     private static final String mainName = "Main/";
     private static final String miscName = "Misc/";
 
-    public static void init() throws IOException {
-        saveConfig();
-        saveModules();
-        saveEnabledModules();
-        saveModuleKeybinds();
-        saveDrawnModules();
-        saveToggleMessagesModules();
-        saveCommandPrefix();
-        saveCustomFont();
-        saveFriendsList();
-        saveEnemiesList();
-        saveClickGUIPositions();
-        saveAutoGG();
-        saveAutoReply();
-        saveAutoRespawn();
+    public static void init() {
+        try {
+            saveConfig();
+            saveModules();
+            saveEnabledModules();
+            saveModuleKeybinds();
+            saveDrawnModules();
+            saveToggleMessagesModules();
+            saveCommandPrefix();
+            saveCustomFont();
+            saveFriendsList();
+            saveEnemiesList();
+            saveClickGUIPositions();
+            saveAutoGG();
+            saveAutoReply();
+            saveAutoRespawn();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         GameSense.LOGGER.info("Saved Config!");
     }
 
@@ -79,7 +83,7 @@ public class SaveConfig {
         Files.createFile(Paths.get(fileName + location + name + ".json"));
     }
 
-    private static void saveModules() {
+    private static void saveModules() throws IOException {
         for (Module module : ModuleManager.getModules()) {
             try {
                 saveModuleDirect(module);
