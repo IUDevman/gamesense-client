@@ -1,9 +1,6 @@
 package com.gamesense.client;
 
-import com.gamesense.api.config.ConfigStopper;
 import com.gamesense.api.config.LoadConfig;
-import com.gamesense.api.config.SaveConfig;
-import com.gamesense.api.event.EventProcessor;
 import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.misc.VersionChecker;
@@ -22,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
+import java.io.IOException;
 
 @Mod(modid = GameSense.MODID, name = GameSense.MODNAME, version = GameSense.MODVER)
 public class GameSense {
@@ -52,20 +50,12 @@ public class GameSense {
         LOGGER.info("Finished initialization for " + MODNAME + " " + MODVER + "!");
     }
 
-    public EventProcessor eventProcessor;
     public CFontRenderer cFontRenderer;
     public GameSenseGUI gameSenseGUI;
-    public SaveConfig saveConfig;
-    public LoadConfig loadConfig;
-    public CapeUtil capeUtil;
 
     private void startClient() {
         VersionChecker.init();
         LOGGER.info("Version checked!");
-
-        eventProcessor = new EventProcessor();
-        eventProcessor.init();
-        LOGGER.info("Events initialized!");
 
         cFontRenderer = new CFontRenderer(new Font("Verdana", Font.PLAIN, 18), true, true);
         LOGGER.info("Custom font initialized!");
@@ -88,12 +78,14 @@ public class GameSense {
         gameSenseGUI = new GameSenseGUI();
         LOGGER.info("GameSenseGUI initialized!");
 
-        saveConfig = new SaveConfig();
-        loadConfig = new LoadConfig();
-        Runtime.getRuntime().addShutdownHook(new ConfigStopper());
-        LOGGER.info("Config initialized!");
-
-        capeUtil = new CapeUtil();
+        CapeUtil.init();
         LOGGER.info("Capes initialized!");
+
+        try {
+            LoadConfig.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        LOGGER.info("Config initialized!");
     }
 }

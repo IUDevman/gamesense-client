@@ -32,20 +32,12 @@ import java.nio.file.Paths;
 
 public class LoadConfig {
 
-    public LoadConfig() {
-        try {
-            loadConfig();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    private static final String fileName = "GameSense/";
+    private static final String moduleName = "Modules/";
+    private static final String mainName = "Main/";
+    private static final String miscName = "Misc/";
 
-    String fileName = "GameSense/";
-    String moduleName = "Modules/";
-    String mainName = "Main/";
-    String miscName = "Misc/";
-
-    public void loadConfig() throws IOException {
+    public static void init() throws IOException {
         loadModules();
         loadEnabledModules();
         loadModuleKeybinds();
@@ -62,7 +54,7 @@ public class LoadConfig {
     }
 
     //big shoutout to lukflug for helping/fixing this
-    public void loadModules() {
+    private static void loadModules() {
         String moduleLocation = fileName + moduleName;
 
         for (Module module : ModuleManager.getModules()) {
@@ -75,19 +67,18 @@ public class LoadConfig {
         }
     }
 
-    public void loadModuleDirect(String moduleLocation, Module module) throws IOException {
+    private static void loadModuleDirect(String moduleLocation, Module module) throws IOException {
         if (!Files.exists(Paths.get(moduleLocation + module.getName() + ".json"))) {
             return;
         }
 
         InputStream inputStream = Files.newInputStream(Paths.get(moduleLocation + module.getName() + ".json"));
-        JsonObject moduleObject = new JsonObject();
+        JsonObject moduleObject;
         try {
             moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
         }catch (java.lang.IllegalStateException e) {
             return;
         }
-
 
         if (moduleObject.get("Module") == null) {
             return;
@@ -118,7 +109,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadEnabledModules() throws IOException {
+    private static void loadEnabledModules() throws IOException {
         String enabledLocation = fileName + mainName;
 
         if (!Files.exists(Paths.get(enabledLocation + "Toggle" + ".json"))) {
@@ -149,7 +140,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadModuleKeybinds() throws IOException {
+    private static void loadModuleKeybinds() throws IOException {
         String bindLocation = fileName + mainName;
 
         if (!Files.exists(Paths.get(bindLocation + "Bind" + ".json"))) {
@@ -174,7 +165,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadDrawnModules() throws IOException {
+    private static void loadDrawnModules() throws IOException {
         String drawnLocation = fileName + mainName;
 
         if (!Files.exists(Paths.get(drawnLocation + "Drawn" + ".json"))) {
@@ -199,7 +190,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadToggleMessageModules() throws IOException {
+    private static void loadToggleMessageModules() throws IOException {
         String toggleMessageLocation = fileName + mainName;
 
         if (!Files.exists(Paths.get(toggleMessageLocation + "ToggleMessages" + ".json"))) {
@@ -224,7 +215,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadCommandPrefix() throws IOException {
+    private static void loadCommandPrefix() throws IOException {
         String prefixLocation = fileName + mainName;
 
         if (!Files.exists(Paths.get(prefixLocation + "CommandPrefix" + ".json"))) {
@@ -246,7 +237,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadCustomFont() throws IOException {
+    private static void loadCustomFont() throws IOException {
         String fontLocation = fileName + miscName;
 
         if (!Files.exists(Paths.get(fontLocation + "CustomFont" + ".json"))) {
@@ -287,7 +278,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadFriendsList() throws IOException {
+    private static void loadFriendsList() throws IOException {
         String friendLocation = fileName + miscName;
 
         if (!Files.exists(Paths.get(friendLocation + "Friends" + ".json"))) {
@@ -307,7 +298,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadEnemiesList() throws IOException {
+    private static void loadEnemiesList() throws IOException {
         String enemyLocation = fileName + miscName;
 
         if (!Files.exists(Paths.get(enemyLocation + "Enemies" + ".json"))) {
@@ -327,11 +318,11 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadClickGUIPositions() {
+    private static void loadClickGUIPositions() {
         GameSense.INSTANCE.gameSenseGUI.gui.loadConfig(new GuiConfig(fileName + mainName));
     }
 
-    public void loadAutoGG() throws IOException {
+    private static void loadAutoGG() throws IOException {
         String fileLocation = fileName + miscName;
 
         if (!Files.exists(Paths.get(fileLocation + "AutoGG" + ".json"))) {
@@ -351,7 +342,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadAutoReply() throws IOException {
+    private static void loadAutoReply() throws IOException {
         String fileLocation = fileName + miscName;
 
         if (!Files.exists(Paths.get(fileLocation + "AutoReply" + ".json"))) {
@@ -373,7 +364,7 @@ public class LoadConfig {
         inputStream.close();
     }
 
-    public void loadAutoRespawn() throws IOException {
+    private static void loadAutoRespawn() throws IOException {
         String fileLocation = fileName + miscName;
 
         if (!Files.exists(Paths.get(fileLocation + "AutoRespawn" + ".json"))) {
