@@ -19,7 +19,6 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
-import java.io.IOException;
 
 @Mod(modid = GameSense.MODID, name = GameSense.MODNAME, version = GameSense.MODVER)
 public class GameSense {
@@ -64,7 +63,7 @@ public class GameSense {
         LOGGER.info("Settings initialized!");
 
         SocialManager.init();
-        LOGGER.info("Friends and enemies initialized!");
+        LOGGER.info("Friends/Enemies initialized!");
 
         ModuleManager.init();
         LOGGER.info("Modules initialized!");
@@ -76,7 +75,7 @@ public class GameSense {
         LOGGER.info("Managers initialized!");
 
         gameSenseGUI = new GameSenseGUI();
-        LOGGER.info("GameSenseGUI initialized!");
+        LOGGER.info("GUI initialized!");
 
         CapeUtil.init();
         LOGGER.info("Capes initialized!");
