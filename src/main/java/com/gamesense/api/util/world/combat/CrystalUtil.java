@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.init.Blocks;
+import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -77,6 +78,11 @@ public class CrystalUtil {
 
     public static void breakCrystal(Entity crystal) {
         mc.playerController.attackEntity(mc.player, crystal);
+        mc.player.swingArm(EnumHand.MAIN_HAND);
+    }
+
+    public static void breakCrystalPacket(Entity crystal) {
+        mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
         mc.player.swingArm(EnumHand.MAIN_HAND);
     }
 
