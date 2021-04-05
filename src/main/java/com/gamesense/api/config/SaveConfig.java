@@ -31,20 +31,34 @@ import java.nio.file.Paths;
 
 public class SaveConfig {
 
-    public SaveConfig() {
+    public static final String fileName = "GameSense/";
+    private static final String moduleName = "Modules/";
+    private static final String mainName = "Main/";
+    private static final String miscName = "Misc/";
+
+    public static void init() {
         try {
             saveConfig();
+            saveModules();
+            saveEnabledModules();
+            saveModuleKeybinds();
+            saveDrawnModules();
+            saveToggleMessagesModules();
+            saveCommandPrefix();
+            saveCustomFont();
+            saveFriendsList();
+            saveEnemiesList();
+            saveClickGUIPositions();
+            saveAutoGG();
+            saveAutoReply();
+            saveAutoRespawn();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        GameSense.LOGGER.info("Saved Config!");
     }
 
-    public static final String fileName = "GameSense/";
-    String moduleName = "Modules/";
-    String mainName = "Main/";
-    String miscName = "Misc/";
-
-    public void saveConfig() throws IOException {
+    private static void saveConfig() throws IOException {
         if (!Files.exists(Paths.get(fileName))) {
             Files.createDirectories(Paths.get(fileName));
         }
@@ -59,7 +73,7 @@ public class SaveConfig {
         }
     }
 
-    public void registerFiles(String location, String name) throws IOException {
+    private static void registerFiles(String location, String name) throws IOException {
         if (Files.exists(Paths.get(fileName + location + name + ".json"))) {
             File file = new File(fileName + location + name + ".json");
 
@@ -69,7 +83,7 @@ public class SaveConfig {
         Files.createFile(Paths.get(fileName + location + name + ".json"));
     }
 
-    public void saveModules() {
+    private static void saveModules() throws IOException {
         for (Module module : ModuleManager.getModules()) {
             try {
                 saveModuleDirect(module);
@@ -79,7 +93,7 @@ public class SaveConfig {
         }
     }
 
-    public void saveModuleDirect(Module module) throws IOException {
+    private static void saveModuleDirect(Module module) throws IOException {
         registerFiles(moduleName, module.getName());
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -107,7 +121,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveEnabledModules() throws IOException {
+    private static void saveEnabledModules() throws IOException {
 
         registerFiles(mainName, "Toggle");
 
@@ -126,7 +140,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveModuleKeybinds() throws IOException {
+    private static void saveModuleKeybinds() throws IOException {
 
         registerFiles(mainName, "Bind");
 
@@ -145,7 +159,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveDrawnModules() throws IOException {
+    private static void saveDrawnModules() throws IOException {
 
         registerFiles(mainName, "Drawn");
 
@@ -164,7 +178,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveToggleMessagesModules() throws IOException {
+    private static void saveToggleMessagesModules() throws IOException {
 
         registerFiles(mainName, "ToggleMessages");
 
@@ -183,7 +197,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveCommandPrefix() throws IOException {
+    private static void saveCommandPrefix() throws IOException {
 
         registerFiles(mainName, "CommandPrefix");
 
@@ -197,7 +211,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveCustomFont() throws IOException {
+    private static void saveCustomFont() throws IOException {
 
         registerFiles(miscName, "CustomFont");
 
@@ -212,7 +226,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveFriendsList() throws IOException {
+    private static void saveFriendsList() throws IOException {
 
         registerFiles(miscName, "Friends");
 
@@ -230,7 +244,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveEnemiesList() throws IOException {
+    private static void saveEnemiesList() throws IOException {
 
         registerFiles(miscName, "Enemies");
 
@@ -248,12 +262,12 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveClickGUIPositions() throws IOException {
+    private static void saveClickGUIPositions() throws IOException {
         registerFiles(mainName, "ClickGUI");
         GameSense.INSTANCE.gameSenseGUI.gui.saveConfig(new GuiConfig(fileName + mainName));
     }
 
-    public void saveAutoGG() throws IOException {
+    private static void saveAutoGG() throws IOException {
 
         registerFiles(miscName, "AutoGG");
 
@@ -271,7 +285,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveAutoReply() throws IOException {
+    private static void saveAutoReply() throws IOException {
 
         registerFiles(miscName, "AutoReply");
 
@@ -287,7 +301,7 @@ public class SaveConfig {
         fileOutputStreamWriter.close();
     }
 
-    public void saveAutoRespawn() throws IOException {
+    private static void saveAutoRespawn() throws IOException {
 
         registerFiles(miscName, "AutoRespawn");
 
