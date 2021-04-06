@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
- * @Author TechAle
+ * @author TechAle last edit 06/04/21
  * Ported and modified from Blocker.java
  */
 

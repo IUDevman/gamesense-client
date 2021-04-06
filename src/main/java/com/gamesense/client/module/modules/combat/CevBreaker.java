@@ -50,6 +50,7 @@ import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 /**
  * @author TechAle
  * Ported and modified from PistonCrystal
+ * last edit 06/04/21
  */
 
 @Module.Declaration(name = "CevBreaker", category = Category.Combat, priority = 999)
@@ -66,14 +67,13 @@ public class CevBreaker extends Module {
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 2, 6);
     IntegerSetting hitDelay = registerInteger("Hit Delay", 2, 0, 20);
     IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 1, 0, 20);
-    IntegerSetting endDelay = registerInteger("End Delay", 1, 0, 4);
+    IntegerSetting endDelay = registerInteger("End Delay", 1, 0, 20);
     IntegerSetting pickSwitchTick = registerInteger("Pick Switch Tick", 100, 0, 500);
     BooleanSetting rotate = registerBoolean("Rotate", false);
     BooleanSetting confirmBreak = registerBoolean("No Glitch Break", true);
     BooleanSetting confirmPlace = registerBoolean("No Glitch Place", true);
     BooleanSetting antiWeakness = registerBoolean("Anti Weakness", false);
     BooleanSetting switchSword = registerBoolean("Switch Sword", false);
-    BooleanSetting predictBreak = registerBoolean("Predict Break", false);
     BooleanSetting fastPlace = registerBoolean("Fast Place", false);
     BooleanSetting fastBreak = registerBoolean("Fast Break", true);
     BooleanSetting trapPlayer = registerBoolean("Trap Player", false);
@@ -127,22 +127,24 @@ public class CevBreaker extends Module {
 
     private EntityPlayer aimTarget;
 
-    @SuppressWarnings("unused")
+    // Predict Break
     @EventHandler
     private final Listener<DestroyBlockEvent> listener2 = new Listener<>(event -> {
-
+        // If the destruction is on the enemy's idea
         if (enemyCoordsInt != null && event.getBlockPos().x + (event.getBlockPos().x < 0 ? 1 : 0) == enemyCoordsInt[0] && event.getBlockPos().z + (event.getBlockPos().z < 0 ? 1 : 0) == enemyCoordsInt[2]) {
+            // Destroy
             destroyCrystalAlgo();
         }
     });
 
-    @SuppressWarnings("unused")
+    // Fast Reset, this is on by default since well, it has no cons
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
-
+        // If the explosion is on the enemy's idea
         if (event.getPacket() instanceof SPacketSoundEffect) {
             final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
             if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
+                // Reset
                 if ((int) packet.getX() == enemyCoordsInt[0] && (int) packet.getZ() == enemyCoordsInt[2])
                     stage = 1;
             }
@@ -151,7 +153,7 @@ public class CevBreaker extends Module {
 
     Vec3d lastHitVec;
 
-    @SuppressWarnings("unused")
+    // This is for the force rotation, strict servers
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
@@ -162,10 +164,6 @@ public class CevBreaker extends Module {
 
     // Everytime you enable
     public void onEnable() {
-
-        if (predictBreak.getValue())
-            GameSense.EVENT_BUS.subscribe(this);
-
         ROTATION_UTIL.onEnable();
         // Init values
         initValues();
@@ -400,17 +398,18 @@ public class CevBreaker extends Module {
             switch (stage) {
                 // Place obsidian
                 case 1:
-
+                    // In case we already have the crystal
                     if (getCrystal() != null) {
                         stage = 3;
                         return;
                     }
-
+                    // After rotation for strict servers
                     if (afterRotationDelay.getValue() != 0 && afterRotationTick != afterRotationDelay.getValue()) {
                         afterRotationTick++;
                         return;
                     }
 
+                    // Pre rotation for strict servers
                     if (preRotationDelay.getValue() != 0 && !preRotationBol) {
                         placeBlockThings(stage, true, false);
                         if (preRotationTick == preRotationDelay.getValue()) {
@@ -422,6 +421,7 @@ public class CevBreaker extends Module {
                         }
                     }
 
+                    // Place block
                     placeBlockThings(stage, false, false);
                     if (fastPlace.getValue()) {
                         placeCrystal(false);
@@ -433,11 +433,13 @@ public class CevBreaker extends Module {
 
                 // Place crystal
                 case 2:
+                    // After rotation for strict servers
                     if (afterRotationDelay.getValue() != 0 && afterRotationTick != afterRotationDelay.getValue()) {
                         afterRotationTick++;
                         return;
                     }
 
+                    // Pre rotation for strict servers
                     if (preRotationDelay.getValue() != 0 && !preRotationBol) {
                         placeCrystal(true);
                         if (preRotationTick == preRotationDelay.getValue()) {
@@ -454,7 +456,7 @@ public class CevBreaker extends Module {
                             stage--;
                             return;
                         }
-
+                    // Place
                     placeCrystal(false);
 
                     break;
@@ -465,13 +467,9 @@ public class CevBreaker extends Module {
                     // Confirm Place
                     if (confirmPlace.getValue())
                         if (getCrystal() == null) {
-                            stage = 0;
+                            stage = 1;
                             return;
                         }
-
-                    if (forceRotation.getValue()) {
-                        placeBlockThings(1, true, false);
-                    }
 
                     // Switch to pick / sword
                     int switchValue = 3;
@@ -529,6 +527,7 @@ public class CevBreaker extends Module {
                 noMaterials = true;
                 return;
             }
+            // We change it, first we send the silent switch so it's faster, and then we sync it client side
             mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[switchValue])));
             mc.player.inventory.currentItem = cur_item;
         }
@@ -544,7 +543,9 @@ public class CevBreaker extends Module {
     }
 
     private void fastBreakFun() {
+        // Switch pick
         switchPick(2);
+        // Send packet digging
         mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
                 new BlockPos(enemyCoordsInt[0], enemyCoordsInt[1] + 2, enemyCoordsInt[2]), EnumFacing.UP));
         isPossible = true;
@@ -576,7 +577,7 @@ public class CevBreaker extends Module {
         if (confirmBreak.getValue() && broken && crystal == null) {
             /// That means the crystal was broken 100%
             // Reset
-            stage = 0;
+            stage = 1;
             broken = false;
 
         }
@@ -589,9 +590,9 @@ public class CevBreaker extends Module {
                 broken = true;
                 // If not, left
             else {
-                stage = 0;
+                stage = 1;
             }
-        } else stage = 0;
+        } else stage = 1;
     }
 
     // Actual break crystal
@@ -604,28 +605,36 @@ public class CevBreaker extends Module {
         // If weaknes
         if (antiWeakness.getValue())
             mc.player.inventory.currentItem = slot_mat[3];
-        // If rotate
-        if (rotate.getValue()) {
-            ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
-        }
         /// Break type
         // Swing
-        switch (breakCrystal.getValue()) {
-            case "Vanilla":
-                CrystalUtil.breakCrystal(crystal);
-                // Packet
-                break;
-            case "Packet":
-                try {
-                    mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-                    mc.player.swingArm(EnumHand.MAIN_HAND);
-                } catch (NullPointerException e) {
+        Vec3d vecCrystal = crystal.getPositionVector().add(0.5, 0.5, 0.5);;
 
-                }
-                break;
-            case "None":
+        // If it's not none, then allow the rotation
+        if (!breakCrystal.getValue().equalsIgnoreCase("None")) {
+            if (rotate.getValue()) {
+                // Look at that packet
+                ROTATION_UTIL.lookAtPacket(vecCrystal.x, vecCrystal.y, vecCrystal.z, mc.player);
+                // If force rotation, lets start straight looking into it
+                if (forceRotation.getValue())
+                    lastHitVec = vecCrystal;
+            }
+        }
+        try {
+            switch (breakCrystal.getValue()) {
+                case "Vanilla":
+                    CrystalUtil.breakCrystal(crystal);
+                    // Packet
+                    break;
+                case "Packet":
+                        CrystalUtil.breakCrystalPacket(crystal);
+                    break;
+                case "None":
 
-                break;
+                    break;
+            }
+        } catch (NullPointerException e) {
+            // For some reasons, sometimes it gives a nullPointerException because, the crystal get broken before (?) I dunno
+            // This is for preventing a crash
         }
         // Rotate
         if (rotate.getValue())
@@ -643,13 +652,17 @@ public class CevBreaker extends Module {
             // Lets iterate and check
             // Lets finish
             do {
-
+                // Get the target
                 BlockPos targetPos = getTargetPos(checksDone);
+                // If it's air
                 if (BlockUtil.getBlock(targetPos) instanceof BlockAir) {
-                    // Rotate
+                    // First rotation, the pre one for strict servers
                     if (preRotationDelay.getValue() != 0 && !preRotationBol) {
+                        // If first
                         if (preRotationTick == 0)
+                            // Look
                             placeBlock(targetPos, 0, true);
+                        // After, just wait
                         if (preRotationTick == preRotationDelay.getValue()) {
                             preRotationBol = true;
                             preRotationTick = 0;
@@ -659,7 +672,7 @@ public class CevBreaker extends Module {
                         }
 
                     }
-
+                    // Place it
                     if (placeBlock(targetPos, 0, false)) {
                         preRotationBol = false;
                         // If we reached the limit
@@ -692,6 +705,7 @@ public class CevBreaker extends Module {
                     return true;
                 }
                 if (slot_mat[step] != 11) {
+                    // As before, first packet, and then sync client side
                     mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[step])));
                     mc.player.inventory.currentItem = cur_item;
                 }
@@ -709,6 +723,7 @@ public class CevBreaker extends Module {
         if (changeItem(step))
             return false;
 
+        // This is for only rotate
         if (onlyRotate) {
             EnumFacing side = BlockUtil.getPlaceableSide(pos);
 
@@ -722,6 +737,7 @@ public class CevBreaker extends Module {
             if (!BlockUtil.canBeClicked(neighbour)) {
                 return false;
             }
+            // This is for where to aim when there is an obby block
             double add = step == 1 && (int) mc.player.posY == enemyCoordsInt[1] ? -.5 : 0;
             lastHitVec = new Vec3d(neighbour).add(0.5, 0.5 + add, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
             return false;
@@ -749,12 +765,16 @@ public class CevBreaker extends Module {
             // Place 93 4 -29
             if (!isCrystal)
                 placeBlock(targetPos, step, onlyRotate);
+            // If crystal
             else {
+                // Change
                 if (changeItem(step))
                     return;
+                // Hnd
                 EnumHand handSwing = EnumHand.MAIN_HAND;
                 if (slot_mat[step] == 11)
                     handSwing = EnumHand.OFF_HAND;
+                // Send packet place, we ahve to use packets because, with the normal place, we cannot click under the block
                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(targetPos.add(.5, .5, .5), EnumFacing.getDirectionFromEntityLiving(targetPos, mc.player), handSwing, 0, 0, 0));
                 mc.player.swingArm(handSwing);
 
@@ -813,6 +833,7 @@ public class CevBreaker extends Module {
     // Create the skeleton of the structure
     private boolean createStructure() {
 
+        // Check position of the crystal
         if ((Objects.requireNonNull(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 2, enemyCoordsDouble[2]).getRegistryName()).toString().toLowerCase().contains("bedrock"))
                 || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 3, enemyCoordsDouble[2]) instanceof BlockAir)
                 || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 4, enemyCoordsDouble[2]) instanceof BlockAir))
@@ -820,20 +841,21 @@ public class CevBreaker extends Module {
 
         // Iterate for every blocks around, find the closest
         double distance_now;
-        double min_found = Double.MAX_VALUE;
+        double max_found = Double.MIN_VALUE;
         int cor = 0;
         int i = 0;
+        // Find closest
         for (Double[] cord_b : sur_block) {
-            if ((distance_now = mc.player.getDistanceSq(new BlockPos(cord_b[0], cord_b[1], cord_b[2]))) < min_found) {
-                min_found = distance_now;
+            if ((distance_now = mc.player.getDistanceSq(new BlockPos(cord_b[0], cord_b[1], cord_b[2]))) > max_found) {
+                max_found = distance_now;
                 cor = i;
             }
             i++;
         }
 
         // Create support blocks
-        toPlace.to_place.add(new Vec3d(model[cor][0] * -1, 1, model[cor][2] * -1));
-        toPlace.to_place.add(new Vec3d(model[cor][0] * -1, 2, model[cor][2] * -1));
+        toPlace.to_place.add(new Vec3d(model[cor][0], 1, model[cor][2]));
+        toPlace.to_place.add(new Vec3d(model[cor][0], 2, model[cor][2]));
         toPlace.supportBlock = 2;
 
         // Create antitrap + antiStep
