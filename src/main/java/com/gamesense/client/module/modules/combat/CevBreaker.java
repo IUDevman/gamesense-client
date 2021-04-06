@@ -66,14 +66,13 @@ public class CevBreaker extends Module {
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 2, 6);
     IntegerSetting hitDelay = registerInteger("Hit Delay", 2, 0, 20);
     IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 1, 0, 20);
-    IntegerSetting endDelay = registerInteger("End Delay", 1, 0, 4);
+    IntegerSetting endDelay = registerInteger("End Delay", 1, 0, 20);
     IntegerSetting pickSwitchTick = registerInteger("Pick Switch Tick", 100, 0, 500);
     BooleanSetting rotate = registerBoolean("Rotate", false);
     BooleanSetting confirmBreak = registerBoolean("No Glitch Break", true);
     BooleanSetting confirmPlace = registerBoolean("No Glitch Place", true);
     BooleanSetting antiWeakness = registerBoolean("Anti Weakness", false);
     BooleanSetting switchSword = registerBoolean("Switch Sword", false);
-    BooleanSetting predictBreak = registerBoolean("Predict Break", false);
     BooleanSetting fastPlace = registerBoolean("Fast Place", false);
     BooleanSetting fastBreak = registerBoolean("Fast Break", true);
     BooleanSetting trapPlayer = registerBoolean("Trap Player", false);
