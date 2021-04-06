@@ -50,6 +50,7 @@ import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 /**
  * @Author TechAle
  * Ported and modified from PistonCrystal
+ * last edit 06/04/21
  */
 
 @Module.Declaration(name = "CevBreaker", category = Category.Combat, priority = 999)

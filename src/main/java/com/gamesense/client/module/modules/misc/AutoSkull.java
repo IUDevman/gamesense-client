@@ -13,15 +13,11 @@ import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.OffHand;
-import com.gamesense.client.module.modules.combat.PistonCrystal;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockObsidian;
 import net.minecraft.block.BlockSkull;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -34,7 +30,7 @@ import java.util.ArrayList;
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
- * @Author TechAle
+ * @Author TechAle last edit 06/04/21
  * Ported and modified from Blocker.java
  */
 
