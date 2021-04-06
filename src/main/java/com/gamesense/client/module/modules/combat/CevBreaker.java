@@ -48,7 +48,7 @@ import java.util.Objects;
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
- * @Author TechAle
+ * @author TechAle
  * Ported and modified from PistonCrystal
  * last edit 06/04/21
  */
@@ -249,8 +249,8 @@ public class CevBreaker extends Module {
 
         cur_item = -1;
 
-        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
-            AutoCrystalGS.stopAC = true;
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            AutoCrystal.stopAC = true;
             stoppedCa = true;
         }
 
@@ -294,7 +294,7 @@ public class CevBreaker extends Module {
                 setDisabledMessage("Materials missing:" + materialsNeeded);
 
         if (stoppedCa) {
-            AutoCrystalGS.stopAC = false;
+            AutoCrystal.stopAC = false;
             stoppedCa = false;
         }
 
@@ -308,7 +308,7 @@ public class CevBreaker extends Module {
             oldSlot = -1;
         }
 
-        noMaterials = isPossible = AutoCrystalGS.stopAC = isActive = forceBrk = false;
+        noMaterials = isPossible = AutoCrystal.stopAC = isActive = forceBrk = false;
     }
 
     private String getMissingMaterials() {
