@@ -54,6 +54,7 @@ public class OffHand extends Module {
     BooleanSetting rightGap = registerBoolean("Right Click Gap", false);
     BooleanSetting shiftPot = registerBoolean("Shift Pot", false);
     BooleanSetting swordCheck = registerBoolean("Only Sword", true);
+    BooleanSetting swordCrystal = registerBoolean("Sword Crystal", false);
     BooleanSetting fallDistanceBol = registerBoolean("Fall Distance", true);
     BooleanSetting crystalCheck = registerBoolean("Crystal Check", false);
     BooleanSetting noHotBar = registerBoolean("No HotBar", false);
@@ -244,6 +245,11 @@ public class OffHand extends Module {
                         && mainHandItem == Items.END_CRYSTAL)
                         || (pickObby.getValue() && mainHandItem == Items.DIAMOND_PICKAXE && (!pickObbyShift.getValue() || mc.gameSettings.keyBindSneak.isKeyDown()))))) {
             itemCheck = "Obby";
+            normalOffHand = false;
+        }
+        // Sword Crystal
+        if (swordCrystal.getValue() && mainHandItem == Items.DIAMOND_SWORD) {
+            itemCheck = "Crystal";
             normalOffHand = false;
         }
 
