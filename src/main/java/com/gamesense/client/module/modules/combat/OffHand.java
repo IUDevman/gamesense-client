@@ -55,6 +55,7 @@ public class OffHand extends Module {
     BooleanSetting shiftPot = registerBoolean("Shift Pot", false);
     BooleanSetting swordCheck = registerBoolean("Only Sword", true);
     BooleanSetting swordCrystal = registerBoolean("Sword Crystal", false);
+    BooleanSetting pickCrystal = registerBoolean("Pick Crystal", false);
     BooleanSetting fallDistanceBol = registerBoolean("Fall Distance", true);
     BooleanSetting crystalCheck = registerBoolean("Crystal Check", false);
     BooleanSetting noHotBar = registerBoolean("No HotBar", false);
@@ -248,7 +249,12 @@ public class OffHand extends Module {
             normalOffHand = false;
         }
         // Sword Crystal
-        if (swordCrystal.getValue() && mainHandItem == Items.DIAMOND_SWORD) {
+        if (swordCrystal.getValue() && (mainHandItem == Items.DIAMOND_SWORD)) {
+            itemCheck = "Crystal";
+            normalOffHand = false;
+        }
+        // Pick Crystal
+        if (pickCrystal.getValue() && (mainHandItem == Items.DIAMOND_PICKAXE)) {
             itemCheck = "Crystal";
             normalOffHand = false;
         }
