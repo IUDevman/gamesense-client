@@ -17,6 +17,7 @@ public class ChatSuffix extends Module {
 
     ModeSetting Separator = registerMode("Separator", Arrays.asList(">>", "<<", "|"), "|");
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
         if (event.getPacket() instanceof CPacketChatMessage) {
@@ -39,7 +40,7 @@ public class ChatSuffix extends Module {
         }
     });
 
-    public String toUnicode(String s) {
+    private String toUnicode(String s) {
         return s.toLowerCase()
                 .replace("a", "\u1d00")
                 .replace("b", "\u0299")

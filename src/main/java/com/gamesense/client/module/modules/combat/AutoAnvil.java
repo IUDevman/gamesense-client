@@ -125,7 +125,7 @@ public class AutoAnvil extends Module {
 
         noMaterials = false;
         firstRun = true;
-        AutoCrystalGS.stopAC = false;
+        AutoCrystal.stopAC = false;
         // If offHand was enabled
         if (slot_mat[0] == -2) {
             OffHand.removeObsidian();
@@ -337,8 +337,8 @@ public class AutoAnvil extends Module {
         // Stop CA
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
-            AutoCrystalGS.stopAC = true;
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            AutoCrystal.stopAC = true;
             stoppedAC = true;
         }
 
@@ -376,7 +376,7 @@ public class AutoAnvil extends Module {
 
         // Re-Active ca
         if (stoppedAC) {
-            AutoCrystalGS.stopAC = false;
+            AutoCrystal.stopAC = false;
             stoppedAC = false;
         }
 

@@ -24,23 +24,6 @@ public class PlayerTweaks extends Module {
     public BooleanSetting noSlow = registerBoolean("No Slow", false);
     BooleanSetting antiKnockBack = registerBoolean("Velocity", false);
 
-    @EventHandler
-    private final Listener<InputUpdateEvent> eventListener = new Listener<>(event -> {
-        if (noSlow.getValue()) {
-            if (mc.player.isHandActive() && !mc.player.isRiding()) {
-                event.getMovementInput().moveStrafe *= 5;
-                event.getMovementInput().moveForward *= 5;
-            }
-        }
-    });
-
-    @EventHandler
-    private final Listener<EntityCollisionEvent> entityCollisionEventListener = new Listener<>(event -> {
-        if (noPush.getValue()) {
-            event.cancel();
-        }
-    });
-
     public void onUpdate() {
         if (guiMove.getValue() && mc.currentScreen != null) {
             if (!(mc.currentScreen instanceof GuiChat)) {
@@ -66,6 +49,26 @@ public class PlayerTweaks extends Module {
         }
     }
 
+    @SuppressWarnings("unused")
+    @EventHandler
+    private final Listener<InputUpdateEvent> eventListener = new Listener<>(event -> {
+        if (noSlow.getValue()) {
+            if (mc.player.isHandActive() && !mc.player.isRiding()) {
+                event.getMovementInput().moveStrafe *= 5;
+                event.getMovementInput().moveForward *= 5;
+            }
+        }
+    });
+
+    @SuppressWarnings("unused")
+    @EventHandler
+    private final Listener<EntityCollisionEvent> entityCollisionEventListener = new Listener<>(event -> {
+        if (noPush.getValue()) {
+            event.cancel();
+        }
+    });
+
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (antiKnockBack.getValue()) {
@@ -80,6 +83,7 @@ public class PlayerTweaks extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
         if (noFall.getValue() && event.getPacket() instanceof CPacketPlayer && mc.player.fallDistance >= 3.0) {
@@ -88,7 +92,7 @@ public class PlayerTweaks extends Module {
         }
     });
 
-
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<WaterPushEvent> waterPushEventListener = new Listener<>(event -> {
         if (noPush.getValue()) {

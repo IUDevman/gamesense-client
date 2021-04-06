@@ -54,13 +54,13 @@ public class CommandManager {
         commandPrefix = prefix;
     }
 
-    boolean isValidCommand = false;
+    public static boolean isValidCommand = false;
 
     /**
      * @Author 086 for KAMI, regex
      **/
 
-    public void callCommand(String input) {
+    public static void callCommand(String input) {
         String[] split = input.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
         String command1 = split[0];
         String args = input.substring(command1.length()).trim();

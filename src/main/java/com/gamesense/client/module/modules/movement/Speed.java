@@ -69,6 +69,7 @@ public class Speed extends Module {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PlayerMoveEvent> playerMoveEventListener = new Listener<>(event -> {
         if (mc.player.isInLava() || mc.player.isInWater() || mc.player.isOnLadder() || mc.player.isInWeb) {

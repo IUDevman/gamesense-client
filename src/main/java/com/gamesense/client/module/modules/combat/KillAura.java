@@ -118,6 +118,7 @@ public class KillAura extends Module {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
         if (event.getPacket() instanceof CPacketUseEntity) {
@@ -179,7 +180,7 @@ public class KillAura extends Module {
         return (all
                 || (sword || both) && item instanceof ItemSword
                 || (axe || both) && item instanceof ItemAxe)
-                && (!caCheck.getValue() || !ModuleManager.getModule(AutoCrystalGS.class).isActive);
+                && (!caCheck.getValue() || !ModuleManager.getModule(AutoCrystal.class).isAttacking);
     }
 
     private void attack(Entity e) {

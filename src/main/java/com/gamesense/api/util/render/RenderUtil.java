@@ -245,13 +245,14 @@ public class RenderUtil {
         }
     }
 
-    public static void drawSphere(double x, double y, double z, float size, int slices, int stacks) {
-        final Sphere s = new Sphere();
-        GlStateManager.glLineWidth(1.2f);
-        s.setDrawStyle(GLU.GLU_SILHOUETTE);
+    public static void drawSphere(double x, double y, double z, float size, int slices, int stacks, float lineWidth, GSColor color) {
+        Sphere sphere = new Sphere();
+        GlStateManager.glLineWidth(lineWidth);
+        color.glColor();
+        sphere.setDrawStyle(GLU.GLU_SILHOUETTE);
         GlStateManager.pushMatrix();
         GlStateManager.translate(x - mc.getRenderManager().viewerPosX, y - mc.getRenderManager().viewerPosY, z - mc.getRenderManager().viewerPosZ);
-        s.draw(size, slices, stacks);
+        sphere.draw(size, slices, stacks);
         GlStateManager.popMatrix();
     }
 

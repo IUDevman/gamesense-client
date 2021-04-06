@@ -13,7 +13,7 @@ import org.lwjgl.input.Keyboard;
 @Command.Declaration(name = "Bind", syntax = "bind [module] key", alias = {"bind", "b", "setbind", "key"})
 public class BindCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
         String value = message[1].toUpperCase();
 

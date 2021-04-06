@@ -27,8 +27,8 @@ public class ModuleManager {
         addMod(new AntiCrystal());
         addMod(new AutoAnvil());
         addMod(new AutoArmor());
-        addMod(new AutoCrystalGS());
         addMod(new AutoCrystal());
+        addMod(new AutoSkull());
         addMod(new AutoTrap());
         addMod(new AutoWeb());
         addMod(new BedAura());
@@ -66,7 +66,6 @@ public class ModuleManager {
         addMod(new AutoGG());
         addMod(new AutoReply());
         addMod(new AutoRespawn());
-        addMod(new AutoSkull());
         addMod(new AutoTool());
         addMod(new ChatModifier());
         addMod(new ChatSuffix());

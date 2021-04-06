@@ -20,7 +20,7 @@ import java.util.Collection;
 @Command.Declaration(name = "Modules", syntax = "modules (click to toggle)", alias = {"modules", "module", "modulelist", "mod", "mods"})
 public class ModulesCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         TextComponentString msg = new TextComponentString("\2477Modules: " + "\247f ");
 
         Collection<Module> modules = ModuleManager.getModules();
