@@ -33,7 +33,7 @@ public class Burrow extends Module {
     @Override
     public void setup() {
       chatMsg = registerBoolean("Chat Msgs", true);
-      height = registerInteger("height", 40, 1, 100);
+      height = registerInteger("height", 1, 1.4, 1.13);
  
     }
 
