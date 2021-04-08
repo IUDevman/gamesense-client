@@ -11,7 +11,7 @@ import com.gamesense.client.command.Command;
 @Command.Declaration(name = "Friend", syntax = "friend list/add/del [player]", alias = {"friend", "friends", "f"})
 public class FriendCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
 
         if (main.equalsIgnoreCase("list")) {

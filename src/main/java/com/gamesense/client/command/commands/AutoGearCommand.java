@@ -27,7 +27,7 @@ public class AutoGearCommand extends Command {
         }
     };
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
 
         switch (message[0].toLowerCase()) {
             case "list":

@@ -105,10 +105,7 @@ public class LogoutSpots extends Module {
         GlStateManager.popMatrix();
     }
 
-    /**
-     * event handlers below:
-     **/
-
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PlayerJoinEvent> playerJoinEventListener = new Listener<>(event -> {
         if (mc.world != null) {
@@ -124,6 +121,7 @@ public class LogoutSpots extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PlayerLeaveEvent> playerLeaveEventListener = new Listener<>(event -> {
         if (mc.world != null) {
@@ -144,6 +142,7 @@ public class LogoutSpots extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<WorldEvent.Unload> unloadListener = new Listener<>(event -> {
         worldPlayers.clear();
@@ -152,6 +151,7 @@ public class LogoutSpots extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<WorldEvent.Load> loadListener = new Listener<>(event -> {
         worldPlayers.clear();

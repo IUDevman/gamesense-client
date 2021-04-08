@@ -206,6 +206,7 @@ public class PistonCrystal extends Module {
             betterPlacement.setValue(false);
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
 
@@ -217,7 +218,7 @@ public class PistonCrystal extends Module {
             }
         }
     });
-
+    int lenTable;
     // Init some values
     private void initValues() {
         preRotationBol = false;
@@ -233,6 +234,7 @@ public class PistonCrystal extends Module {
                 crystalDelay.getValue(),
                 hitDelay.getValue()
         };
+        lenTable = delayTable.length;
         // Default values reset
         toPlace = new structureTemp(0, 0, null);
         isHole = minHp = true;
@@ -254,8 +256,8 @@ public class PistonCrystal extends Module {
         // Stop CA
         stoppedCa = false;
 
-        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
-            AutoCrystalGS.stopAC = true;
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            AutoCrystal.stopAC = true;
             stoppedCa = true;
         }
         // Debug mode
@@ -310,7 +312,7 @@ public class PistonCrystal extends Module {
             setDisabledMessage("Materials missing:" + materialsNeeded);
 
         if (stoppedCa) {
-            AutoCrystalGS.stopAC = false;
+            AutoCrystal.stopAC = false;
             stoppedCa = false;
         }
 
@@ -326,7 +328,7 @@ public class PistonCrystal extends Module {
         }
 
         noMaterials = false;
-        AutoCrystalGS.stopAC = false;
+        AutoCrystal.stopAC = false;
         // Debug mode
         if (debugMode.getValue() || speedMeter.getValue())
             printDebug("Ended pistonCrystal n^" + round, false);
@@ -362,6 +364,7 @@ public class PistonCrystal extends Module {
 
     Vec3d lastHitVec;
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
@@ -377,7 +380,8 @@ public class PistonCrystal extends Module {
             disable();
             return;
         }
-
+        if (stage >= lenTable)
+            stage = 0;
         // Wait
         if (delayTimeTicks < delayTable[stage]) {
             delayTimeTicks++;

@@ -16,7 +16,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketEntityAction;
@@ -143,10 +142,13 @@ public class AntiCrystal extends Module {
 
     }
 
-    // This function check if a determinated crystal was placed by us
     public boolean usCrystal(Entity crystal) {
-        // Check if the autoCrystal has placed that block
-        return AutoCrystalGS.PlacedCrystals.contains(new BlockPos((int) crystal.posX, crystal.posY - 1, (int) crystal.posZ));
+        AutoCrystal autoCrystal = ModuleManager.getModule(AutoCrystal.class);
+
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            return autoCrystal.targets.stream().filter(placeInfo -> placeInfo.crystal.equals(new BlockPos((int) crystal.posX, crystal.posY - 1, (int) crystal.posZ))).findFirst().orElse(null) != null;
+        }
+        else return false;
     }
 
     // This function check if the offHand has "Plates" as value
@@ -185,8 +187,8 @@ public class AntiCrystal extends Module {
 
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
-            AutoCrystalGS.stopAC = true;
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            AutoCrystal.stopAC = true;
             stoppedAC = true;
         }
 
@@ -216,7 +218,7 @@ public class AntiCrystal extends Module {
         }
 
         if (stoppedAC) {
-            AutoCrystalGS.stopAC = false;
+            AutoCrystal.stopAC = false;
             stoppedAC = false;
         }
 

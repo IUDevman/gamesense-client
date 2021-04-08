@@ -1,4 +1,4 @@
-package com.gamesense.client.module.modules.misc;
+package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.event.Phase;
 import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
@@ -13,14 +13,11 @@ import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.OffHand;
-import com.gamesense.client.module.modules.combat.PistonCrystal;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockObsidian;
 import net.minecraft.block.BlockSkull;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -33,11 +30,11 @@ import java.util.ArrayList;
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
- * @Author TechAle
+ * @author TechAle last edit 06/04/21
  * Ported and modified from Blocker.java
  */
 
-@Module.Declaration(name = "AutoSkull", category = Category.Misc)
+@Module.Declaration(name = "AutoSkull", category = Category.Combat)
 public class AutoSkull extends Module {
 
     BooleanSetting rotate = registerBoolean("Rotate", true);
@@ -68,7 +65,6 @@ public class AutoSkull extends Module {
             new Vec3d(1, 2, 0),
             new Vec3d(1, 2, 1),
             new Vec3d(0, 2, 1),
-
     };
 
     private int delayTimeTicks = 0;
@@ -91,6 +87,7 @@ public class AutoSkull extends Module {
         preRotationTick = afterRotationTick = 0;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
@@ -134,14 +131,14 @@ public class AutoSkull extends Module {
 
             ROTATION_UTIL.shouldSpoofAngles(true);
 
-            if (autoTrap.getValue() && BlockUtil.getBlock(EntityUtil.getPosition(mc.player)) instanceof BlockSkull) {
+            if (autoTrap.getValue() && BlockUtil.getBlock(new BlockPos(mc.player.getPosition().add(0, .4, 0))) instanceof BlockSkull) {
                 EntityPlayer closest = PlayerUtil.findClosestTarget(2, null);
                 if (closest != null && (int) closest.posX == (int) mc.player.posX && (int) closest.posZ == (int) mc.player.posZ && closest.posY > mc.player.posY && closest.posY < mc.player.posY + 2) {
                     int blocksPlaced = 0;
                     int offsetSteps = 0;
                     while (blocksPlaced <= BlocksPerTick.getValue() && offsetSteps < 10) {
                         BlockPos offsetPos = new BlockPos(AIR[offsetSteps]);
-                        BlockPos targetPos = new BlockPos(mc.player.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                        BlockPos targetPos = mc.player.getPosition().add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
                         if (placeBlock(targetPos))
                             blocksPlaced++;
                         offsetSteps++;
@@ -166,10 +163,7 @@ public class AutoSkull extends Module {
                     return;
                 }
             }
-
-
         }
-
     }
 
     private boolean placeBlock(BlockPos pos) {
@@ -195,7 +189,7 @@ public class AutoSkull extends Module {
     private void placeBlock() {
 
         if (mc.player.onGround) {
-            BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ);
+            BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY + .4, mc.player.posZ);
             if (BlockUtil.getBlock(pos) instanceof BlockAir) {
                 EnumHand handSwing = EnumHand.MAIN_HAND;
 
@@ -250,9 +244,6 @@ public class AutoSkull extends Module {
                     lastHitVec = null;
                 } else lastHitVec = null;
             }
-
-
         }
     }
-
 }

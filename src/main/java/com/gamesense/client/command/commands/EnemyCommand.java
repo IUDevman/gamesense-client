@@ -11,7 +11,7 @@ import com.gamesense.client.command.Command;
 @Command.Declaration(name = "Enemy", syntax = "enemy list/add/del [player]", alias = {"enemy", "enemies", "e"})
 public class EnemyCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
 
         if (main.equalsIgnoreCase("list")) {

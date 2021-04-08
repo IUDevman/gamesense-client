@@ -16,19 +16,16 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 
 public class ModuleManager {
-    private static LinkedHashMap<Class<? extends Module>, Module> modulesClassMap;
-    private static LinkedHashMap<String, Module> modulesNameMap;
+    private static final LinkedHashMap<Class<? extends Module>, Module> modulesClassMap = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, Module> modulesNameMap = new LinkedHashMap<>();
 
     public static void init() {
-        modulesClassMap = new LinkedHashMap<>();
-        modulesNameMap = new LinkedHashMap<>();
-
         //Combat
         addMod(new AntiCrystal());
         addMod(new AutoAnvil());
         addMod(new AutoArmor());
-        addMod(new AutoCrystalGS());
         addMod(new AutoCrystal());
+        addMod(new AutoSkull());
         addMod(new AutoTrap());
         addMod(new AutoWeb());
         addMod(new BedAura());
@@ -44,6 +41,7 @@ public class ModuleManager {
         addMod(new Surround());
         //Exploits
         addMod(new FastBreak());
+        addMod(new HoosiersDupe());
         addMod(new LiquidInteract());
         addMod(new NoInteract());
         addMod(new NoSwing());
@@ -66,16 +64,15 @@ public class ModuleManager {
         addMod(new AutoGG());
         addMod(new AutoReply());
         addMod(new AutoRespawn());
-        addMod(new AutoSkull());
         addMod(new AutoTool());
         addMod(new ChatModifier());
         addMod(new ChatSuffix());
         addMod(new DiscordRPCModule());
         addMod(new FastPlace());
         addMod(new FakePlayer());
-        addMod(new HoosiersDupe());
         addMod(new HotbarRefill());
         addMod(new MCF());
+        addMod(new MCP());
         addMod(new MultiTask());
         addMod(new NoEntityTrace());
         addMod(new NoKick());

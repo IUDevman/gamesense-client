@@ -16,6 +16,7 @@ import org.lwjgl.input.Mouse;
 @Module.Declaration(name = "MCF", category = Category.Misc)
 public class MCF extends Module {
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<InputEvent.MouseInputEvent> listener = new Listener<>(event -> {
         if (mc.objectMouseOver.typeOfHit.equals(RayTraceResult.Type.ENTITY) && mc.objectMouseOver.entityHit instanceof EntityPlayer && Mouse.isButtonDown(2)) {

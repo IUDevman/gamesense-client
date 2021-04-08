@@ -1,25 +1,24 @@
-package com.gamesense.api.event;
+package com.gamesense.client.manager.managers;
 
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.player.NameUtil;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.command.CommandManager;
+import com.gamesense.client.manager.Manager;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
-import com.google.common.collect.Maps;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -29,27 +28,12 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.apache.commons.io.IOUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.ParseException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
+public enum ClientEventManager implements Manager {
 
-public class EventProcessor {
-
-    public static EventProcessor INSTANCE;
-    Minecraft mc = Minecraft.getMinecraft();
-    CommandManager commandManager = new CommandManager();
-
-    public EventProcessor() {
-        INSTANCE = this;
-    }
+    INSTANCE;
 
     @SubscribeEvent
     public void onRenderScreen(RenderGameOverlayEvent.Text event) {
@@ -112,21 +96,27 @@ public class EventProcessor {
     }
 
     @SubscribeEvent
+    public void onFov(EntityViewRenderEvent.FOVModifier event) {
+        GameSense.EVENT_BUS.post(event);
+    }
+
+    @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         GameSense.EVENT_BUS.post(event);
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> receiveListener = new Listener<>(event -> {
         if (event.getPacket() instanceof SPacketPlayerListItem) {
             SPacketPlayerListItem packet = (SPacketPlayerListItem) event.getPacket();
             if (packet.getAction() == SPacketPlayerListItem.Action.ADD_PLAYER) {
                 for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
-                    if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
+                    if (playerData.getProfile().getId() != getMinecraft().session.getProfile().getId()) {
                         new Thread(() -> {
-                            String name = resolveName(playerData.getProfile().getId().toString());
+                            String name = NameUtil.resolveName(playerData.getProfile().getId().toString());
                             if (name != null) {
-                                if (mc.player != null && mc.player.ticksExisted >= 1000) {
+                                if (getPlayer() != null && getPlayer().ticksExisted >= 1000) {
                                     GameSense.EVENT_BUS.post(new PlayerJoinEvent(name));
                                 }
                             }
@@ -136,11 +126,11 @@ public class EventProcessor {
             }
             if (packet.getAction() == SPacketPlayerListItem.Action.REMOVE_PLAYER) {
                 for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
-                    if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
+                    if (playerData.getProfile().getId() != getMinecraft().session.getProfile().getId()) {
                         new Thread(() -> {
-                            final String name = resolveName(playerData.getProfile().getId().toString());
+                            final String name = NameUtil.resolveName(playerData.getProfile().getId().toString());
                             if (name != null) {
-                                if (mc.player != null && mc.player.ticksExisted >= 1000) {
+                                if (getPlayer() != null && getPlayer().ticksExisted >= 1000) {
                                     GameSense.EVENT_BUS.post(new PlayerLeaveEvent(name));
                                 }
                             }
@@ -153,9 +143,9 @@ public class EventProcessor {
 
     @SubscribeEvent
     public void onUpdate(LivingEvent.LivingUpdateEvent event) {
-        if (mc.player == null || mc.world == null) return;
+        if (getMinecraft().player == null || getMinecraft().world == null) return;
 
-        if (event.getEntity().getEntityWorld().isRemote && event.getEntityLiving() == mc.player) {
+        if (event.getEntity().getEntityWorld().isRemote && event.getEntityLiving() == getPlayer()) {
             for (Module module : ModuleManager.getModules()) {
                 if (!module.isEnabled()) continue;
                 module.onUpdate();
@@ -168,28 +158,31 @@ public class EventProcessor {
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
         if (event.isCanceled()) return;
+        if (getMinecraft().player == null || getMinecraft().world == null) return;
 
-        mc.profiler.startSection("gamesense");
-        mc.profiler.startSection("setup");
+        getProfiler().startSection("gamesense");
+        getProfiler().startSection("setup");
         RenderUtil.prepare();
         RenderEvent event1 = new RenderEvent(event.getPartialTicks());
-        Minecraft.getMinecraft().profiler.endSection();
+        getProfiler().endSection();
 
         for (Module module : ModuleManager.getModules()) {
             if (!module.isEnabled()) continue;
-            mc.profiler.startSection(module.getName());
+            getProfiler().startSection(module.getName());
             module.onWorldRender(event1);
-            mc.profiler.endSection();
+            getProfiler().endSection();
         }
 
-        mc.profiler.startSection("release");
+        getProfiler().startSection("release");
         RenderUtil.release();
-        mc.profiler.endSection();
-        mc.profiler.endSection();
+        getProfiler().endSection();
+        getProfiler().endSection();
     }
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
+        if (getMinecraft().player == null || getMinecraft().world == null) return;
+
         if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
             for (Module module : ModuleManager.getModules()) {
                 if (!module.isEnabled()) continue;
@@ -205,12 +198,12 @@ public class EventProcessor {
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (!Keyboard.getEventKeyState() || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
 
-        EntityPlayerSP player = mc.player;
+        EntityPlayerSP player = getPlayer();
         if (player != null && !player.isSneaking()) {
             String prefix = CommandManager.getCommandPrefix();
             char typedChar = Keyboard.getEventCharacter();
             if (prefix.length() == 1 && prefix.charAt(0) == typedChar) {
-                mc.displayGuiScreen(new GuiChat(prefix));
+                getMinecraft().displayGuiScreen(new GuiChat(prefix));
             }
         }
 
@@ -238,44 +231,12 @@ public class EventProcessor {
         if (event.getMessage().startsWith(CommandManager.getCommandPrefix())) {
             event.setCanceled(true);
             try {
-                mc.ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
-                commandManager.callCommand(event.getMessage().substring(1));
+                getMinecraft().ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
+                CommandManager.callCommand(event.getMessage().substring(1));
             } catch (Exception e) {
                 e.printStackTrace();
                 MessageBus.sendCommandMessage(ChatFormatting.DARK_RED + "Error: " + e.getMessage(), true);
             }
         }
-    }
-
-    private final Map<String, String> uuidNameCache = Maps.newConcurrentMap();
-
-    public String resolveName(String uuid) {
-        uuid = uuid.replace("-", "");
-        if (uuidNameCache.containsKey(uuid)) {
-            return uuidNameCache.get(uuid);
-        }
-
-        final String url = "https://api.mojang.com/user/profiles/" + uuid + "/names";
-        try {
-            final String nameJson = IOUtils.toString(new URL(url));
-            if (nameJson != null && nameJson.length() > 0) {
-                final JSONArray jsonArray = (JSONArray) JSONValue.parseWithException(nameJson);
-                if (jsonArray != null) {
-                    final JSONObject latestName = (JSONObject) jsonArray.get(jsonArray.size() - 1);
-                    if (latestName != null) {
-                        return latestName.get("name").toString();
-                    }
-                }
-            }
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public void init() {
-        GameSense.EVENT_BUS.subscribe(this);
-        MinecraftForge.EVENT_BUS.register(this);
     }
 }

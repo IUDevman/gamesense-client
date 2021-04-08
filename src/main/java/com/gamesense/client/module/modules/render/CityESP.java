@@ -1,20 +1,16 @@
 package com.gamesense.client.module.modules.render;
 
-import com.gamesense.api.event.events.DamageBlockEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
-import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -27,7 +23,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.client.event.MouseEvent;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -64,6 +59,7 @@ public class CityESP extends Module {
     private int oldSlot;
     private boolean packetMined = false;
     private BlockPos coordsPacketMined = new BlockPos(-1, -1, -1);
+
     public void onUpdate() {
         if (mc.player == null || mc.world == null)
             return;
@@ -148,19 +144,14 @@ public class CityESP extends Module {
                                     mc.playerController.onPlayerDamageBlock(block, EnumFacing.UP);
                                 }
                                 default: {
-
+                                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                                    mc.playerController.onPlayerDamageBlock(block, EnumFacing.UP);
                                 }
                             }
-
                             break;
-
                         }
-
-
-
                     }
-                    if (found)
-                        break;
+                    if (found) break;
                 }
             }
         }
@@ -179,7 +170,6 @@ public class CityESP extends Module {
             }
         });
     }
-
 
     private List<BlockPos> cityableSides(BlockPos centre, Set<HoleUtil.BlockOffset> weakSides, EntityPlayer player) {
         List<BlockPos> cityableSides = new ArrayList<>();

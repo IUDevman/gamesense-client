@@ -8,7 +8,6 @@ import com.gamesense.client.manager.Manager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.server.SPacketEntityStatus;
@@ -27,20 +26,21 @@ public enum TotemPopManager implements Manager {
 
     INSTANCE;
 
-    private final Minecraft mc = Minecraft.getMinecraft();
-
     public boolean sendMsgs = false;
     public ChatFormatting chatFormatting = ChatFormatting.WHITE;
     private final HashMap<String, Integer> playerPopCount = new HashMap<>();
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TickEvent.ClientTickEvent> clientTickEventListener = new Listener<>(event -> {
-        if (mc.player == null || mc.world == null) {
+        if (event.phase != TickEvent.Phase.START) return;
+
+        if (getPlayer() == null || getWorld() == null) {
             playerPopCount.clear();
             return;
         }
 
-        for (EntityPlayer entityPlayer : mc.world.playerEntities) {
+        for (EntityPlayer entityPlayer : getWorld().playerEntities) {
             if (entityPlayer.getHealth() <= 0 && playerPopCount.containsKey(entityPlayer.getName())) {
                 if (sendMsgs) MessageBus.sendClientPrefixMessage(chatFormatting + entityPlayer.getName() + " died after popping " + ChatFormatting.GREEN + getPlayerPopCount(entityPlayer.getName()) + chatFormatting + " totems!");
                 playerPopCount.remove(entityPlayer.getName());
@@ -48,13 +48,14 @@ public enum TotemPopManager implements Manager {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> packetEventListener = new Listener<>(event -> {
-        if (mc.player == null || mc.world == null) return;
+        if (getPlayer() == null || getWorld() == null) return;
 
         if (event.getPacket() instanceof SPacketEntityStatus) {
             SPacketEntityStatus packet = (SPacketEntityStatus) event.getPacket();
-            Entity entity = packet.getEntity(mc.world);
+            Entity entity = packet.getEntity(getWorld());
 
             if (packet.getOpCode() == 35) {
                 GameSense.EVENT_BUS.post(new TotemPopEvent(entity));
@@ -62,9 +63,10 @@ public enum TotemPopManager implements Manager {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TotemPopEvent> totemPopEventListener = new Listener<>(event -> {
-        if (mc.player == null || mc.world == null) return;
+        if (getPlayer() == null || getWorld() == null) return;
 
         if (event.getEntity() == null) return;
 
