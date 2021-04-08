@@ -15,7 +15,6 @@ import com.gamesense.client.module.ModuleManager;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
@@ -35,8 +34,6 @@ import org.lwjgl.input.Mouse;
 public enum ClientEventManager implements Manager {
 
     INSTANCE;
-
-    private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
     public void onRenderScreen(RenderGameOverlayEvent.Text event) {
@@ -115,11 +112,11 @@ public enum ClientEventManager implements Manager {
             SPacketPlayerListItem packet = (SPacketPlayerListItem) event.getPacket();
             if (packet.getAction() == SPacketPlayerListItem.Action.ADD_PLAYER) {
                 for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
-                    if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
+                    if (playerData.getProfile().getId() != getMinecraft().session.getProfile().getId()) {
                         new Thread(() -> {
                             String name = NameUtil.resolveName(playerData.getProfile().getId().toString());
                             if (name != null) {
-                                if (mc.player != null && mc.player.ticksExisted >= 1000) {
+                                if (getPlayer() != null && getPlayer().ticksExisted >= 1000) {
                                     GameSense.EVENT_BUS.post(new PlayerJoinEvent(name));
                                 }
                             }
@@ -129,11 +126,11 @@ public enum ClientEventManager implements Manager {
             }
             if (packet.getAction() == SPacketPlayerListItem.Action.REMOVE_PLAYER) {
                 for (SPacketPlayerListItem.AddPlayerData playerData : packet.getEntries()) {
-                    if (playerData.getProfile().getId() != mc.session.getProfile().getId()) {
+                    if (playerData.getProfile().getId() != getMinecraft().session.getProfile().getId()) {
                         new Thread(() -> {
                             final String name = NameUtil.resolveName(playerData.getProfile().getId().toString());
                             if (name != null) {
-                                if (mc.player != null && mc.player.ticksExisted >= 1000) {
+                                if (getPlayer() != null && getPlayer().ticksExisted >= 1000) {
                                     GameSense.EVENT_BUS.post(new PlayerLeaveEvent(name));
                                 }
                             }
@@ -146,9 +143,9 @@ public enum ClientEventManager implements Manager {
 
     @SubscribeEvent
     public void onUpdate(LivingEvent.LivingUpdateEvent event) {
-        if (mc.player == null || mc.world == null) return;
+        if (getMinecraft().player == null || getMinecraft().world == null) return;
 
-        if (event.getEntity().getEntityWorld().isRemote && event.getEntityLiving() == mc.player) {
+        if (event.getEntity().getEntityWorld().isRemote && event.getEntityLiving() == getPlayer()) {
             for (Module module : ModuleManager.getModules()) {
                 if (!module.isEnabled()) continue;
                 module.onUpdate();
@@ -161,28 +158,31 @@ public enum ClientEventManager implements Manager {
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
         if (event.isCanceled()) return;
+        if (getMinecraft().player == null || getMinecraft().world == null) return;
 
-        mc.profiler.startSection("gamesense");
-        mc.profiler.startSection("setup");
+        getProfiler().startSection("gamesense");
+        getProfiler().startSection("setup");
         RenderUtil.prepare();
         RenderEvent event1 = new RenderEvent(event.getPartialTicks());
-        Minecraft.getMinecraft().profiler.endSection();
+        getProfiler().endSection();
 
         for (Module module : ModuleManager.getModules()) {
             if (!module.isEnabled()) continue;
-            mc.profiler.startSection(module.getName());
+            getProfiler().startSection(module.getName());
             module.onWorldRender(event1);
-            mc.profiler.endSection();
+            getProfiler().endSection();
         }
 
-        mc.profiler.startSection("release");
+        getProfiler().startSection("release");
         RenderUtil.release();
-        mc.profiler.endSection();
-        mc.profiler.endSection();
+        getProfiler().endSection();
+        getProfiler().endSection();
     }
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
+        if (getMinecraft().player == null || getMinecraft().world == null) return;
+
         if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
             for (Module module : ModuleManager.getModules()) {
                 if (!module.isEnabled()) continue;
@@ -198,12 +198,12 @@ public enum ClientEventManager implements Manager {
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (!Keyboard.getEventKeyState() || Keyboard.getEventKey() == Keyboard.KEY_NONE) return;
 
-        EntityPlayerSP player = mc.player;
+        EntityPlayerSP player = getPlayer();
         if (player != null && !player.isSneaking()) {
             String prefix = CommandManager.getCommandPrefix();
             char typedChar = Keyboard.getEventCharacter();
             if (prefix.length() == 1 && prefix.charAt(0) == typedChar) {
-                mc.displayGuiScreen(new GuiChat(prefix));
+                getMinecraft().displayGuiScreen(new GuiChat(prefix));
             }
         }
 
@@ -231,7 +231,7 @@ public enum ClientEventManager implements Manager {
         if (event.getMessage().startsWith(CommandManager.getCommandPrefix())) {
             event.setCanceled(true);
             try {
-                mc.ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
+                getMinecraft().ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
                 CommandManager.callCommand(event.getMessage().substring(1));
             } catch (Exception e) {
                 e.printStackTrace();
