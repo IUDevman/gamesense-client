@@ -99,9 +99,9 @@ public enum ACHelper {
 
         final boolean own = settings.breakMode.equalsIgnoreCase("Own");
         if (own) {
-            // remove own crystals that have been destroyed
-            targetableCrystals.removeIf(crystal -> !placedCrystals.containsKey(EntityUtil.getPosition(crystal)));
             synchronized (placedCrystals) {
+                // remove own crystals that have been destroyed
+                targetableCrystals.removeIf(crystal -> !placedCrystals.containsKey(EntityUtil.getPosition(crystal)));
                 // GENERIC_CRYSTAL will always be false here
                 placedCrystals.values().removeIf(crystal -> crystal.isDead);
             }
@@ -138,7 +138,9 @@ public enum ACHelper {
     public void onPlaceCrystal(BlockPos target) {
         if (settings.breakMode.equalsIgnoreCase("Own")) {
             BlockPos up = target.up();
-            placedCrystals.put(up, GENERIC_CRYSTAL);
+            synchronized (placedCrystals) {
+                placedCrystals.put(up, GENERIC_CRYSTAL);
+            }
         }
     }
 
@@ -149,7 +151,9 @@ public enum ACHelper {
     public void onDisable() {
         GameSense.EVENT_BUS.unsubscribe(this);
 
-        placedCrystals.clear();
+        synchronized (placedCrystals) {
+            placedCrystals.clear();
+        }
 
         if (mainThreadOutput != null) {
             mainThreadOutput.cancel(true);
@@ -164,7 +168,9 @@ public enum ACHelper {
             if (settings != null && settings.breakMode.equalsIgnoreCase("Own")) {
                 EntityEnderCrystal crystal = (EntityEnderCrystal) entity;
                 BlockPos crystalPos = EntityUtil.getPosition(crystal);
-                placedCrystals.computeIfPresent(crystalPos, ((i, j) -> crystal));
+                synchronized (placedCrystals) {
+                    placedCrystals.computeIfPresent(crystalPos, ((i, j) -> crystal));
+                }
             }
         }
     });
