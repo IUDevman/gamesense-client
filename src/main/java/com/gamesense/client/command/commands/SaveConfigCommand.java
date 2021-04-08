@@ -1,27 +1,21 @@
 package com.gamesense.client.command.commands;
 
-import com.gamesense.api.config.ConfigStopper;
+import com.gamesense.api.config.SaveConfig;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
+
+import java.io.IOException;
 
 /**
  * @author Hoosiers
  * @since 1/1/2020
  */
 
+@Command.Declaration(name = "SaveConfig", syntax = "saveconfig", alias = {"saveconfig", "reloadconfig", "config", "saveconfiguration"})
 public class SaveConfigCommand extends Command {
 
-    public SaveConfigCommand() {
-        super("SaveConfig");
-
-        setCommandSyntax(Command.getCommandPrefix() + "saveconfig");
-        setCommandAlias(new String[]{
-                "saveconfig", "reloadconfig", "config", "saveconfiguration"
-        });
-    }
-
     public void onCommand(String command, String[] message) {
-        ConfigStopper.saveConfig();
+        SaveConfig.init();
         MessageBus.sendCommandMessage("Config saved!", true);
     }
 }

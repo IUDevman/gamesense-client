@@ -1,14 +1,14 @@
 package com.gamesense.client.module.modules.render;
 
-import java.util.ArrayList;
-
 import com.gamesense.api.event.events.RenderEntityEvent;
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.render.ChamsUtil;
 import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSense;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
@@ -18,54 +18,34 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.Arrays;
+
 /**
  * @author Techale
  * @author Hoosiers
  */
 
+@Module.Declaration(name = "Chams", category = Category.Render)
 public class Chams extends Module {
 
-    public Chams() {
-        super("Chams", Category.Render);
-    }
+    ModeSetting chamsType = registerMode("Type", Arrays.asList("Texture", "Color", "WireFrame"), "Texture");
+    IntegerSetting range = registerInteger("Range", 100, 10, 260);
+    BooleanSetting player = registerBoolean("Player", true);
+    BooleanSetting mob = registerBoolean("Mob", false);
+    BooleanSetting crystal = registerBoolean("Crystal", false);
+    IntegerSetting lineWidth = registerInteger("Line Width", 1, 1, 5);
+    IntegerSetting colorOpacity = registerInteger("Color Opacity", 100, 0, 255);
+    IntegerSetting wireOpacity = registerInteger("Wire Opacity", 200, 0, 255);
+    ColorSetting playerColor = registerColor("Player Color", new GSColor(0, 255, 255, 255));
+    ColorSetting mobColor = registerColor("Mob Color", new GSColor(255, 255, 0, 255));
+    ColorSetting crystalColor = registerColor("Crystal Color", new GSColor(0, 255, 0, 255));
 
-    Setting.Mode chamsType;
-    Setting.ColorSetting playerColor;
-    Setting.ColorSetting mobColor;
-    Setting.ColorSetting crystalColor;
-    Setting.Integer colorOpacity;
-    Setting.Integer wireOpacity;
-    Setting.Integer lineWidth;
-    Setting.Integer range;
-    Setting.Boolean player;
-    Setting.Boolean mob;
-    Setting.Boolean crystal;
-
-    public void setup() {
-        ArrayList<String> chamsTypes = new ArrayList<>();
-        chamsTypes.add("Texture");
-        chamsTypes.add("Color");
-        chamsTypes.add("WireFrame");
-
-        chamsType = registerMode("Type", chamsTypes, "Texture");
-        range = registerInteger("Range", 100, 10, 260);
-        player = registerBoolean("Player", true);
-        mob = registerBoolean("Mob", false);
-        crystal = registerBoolean("Crystal", false);
-        lineWidth = registerInteger("Line Width", 1, 1, 5);
-        colorOpacity = registerInteger("Color Opacity", 100, 0, 255);
-        wireOpacity = registerInteger("Wire Opacity", 200, 0, 255);
-        playerColor = registerColor("Player Color", new GSColor(0, 255, 255, 255));
-        mobColor = registerColor("Mob Color", new GSColor(255, 255, 0, 255));
-        crystalColor = registerColor("Crystal Color", new GSColor(0, 255, 0, 255));
-    }
-
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<RenderEntityEvent.Head> renderEntityHeadEventListener = new Listener<>(event -> {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
             return;
-        }
-        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
+        } else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
             return;
         }
 
@@ -92,12 +72,12 @@ public class Chams extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<RenderEntityEvent.Return> renderEntityReturnEventListener = new Listener<>(event -> {
         if (event.getType() == RenderEntityEvent.Type.COLOR && chamsType.getValue().equalsIgnoreCase("Texture")) {
             return;
-        }
-        else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
+        } else if (event.getType() == RenderEntityEvent.Type.TEXTURE && (chamsType.getValue().equalsIgnoreCase("Color") || chamsType.getValue().equalsIgnoreCase("WireFrame"))) {
             return;
         }
 
@@ -127,11 +107,11 @@ public class Chams extends Module {
     private void renderChamsPre(GSColor color, boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Texture": {
-            	ChamsUtil.createChamsPre();
+                ChamsUtil.createChamsPre();
                 break;
             }
             case "Color": {
-            	ChamsUtil.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
+                ChamsUtil.createColorPre(new GSColor(color, colorOpacity.getValue()), isPlayer);
                 break;
             }
             case "WireFrame": {
@@ -144,15 +124,15 @@ public class Chams extends Module {
     private void renderChamsPost(boolean isPlayer) {
         switch (chamsType.getValue()) {
             case "Texture": {
-            	ChamsUtil.createChamsPost();
+                ChamsUtil.createChamsPost();
                 break;
             }
             case "Color": {
-            	ChamsUtil.createColorPost(isPlayer);
+                ChamsUtil.createColorPost(isPlayer);
                 break;
             }
             case "WireFrame": {
-            	ChamsUtil.createWirePost(isPlayer);
+                ChamsUtil.createWirePost(isPlayer);
                 break;
             }
         }

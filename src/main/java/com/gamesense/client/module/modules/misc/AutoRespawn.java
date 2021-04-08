@@ -1,7 +1,8 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.setting.Setting;
-import com.gamesense.client.GameSense;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
@@ -10,26 +11,19 @@ import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.network.play.client.CPacketClientStatus;
 import net.minecraftforge.client.event.GuiOpenEvent;
 
+@Module.Declaration(name = "AutoRespawn", category = Category.Misc)
 public class AutoRespawn extends Module {
-    private static String AutoRespawnMessage = "/kit";
 
-    Setting.Boolean respawnMessage;
-    Setting.Integer respawnMessageDelay;
+    BooleanSetting respawnMessage = registerBoolean("Respawn Message", false);
+    IntegerSetting respawnMessageDelay = registerInteger("Msg Delay(ms)", 0, 0, 5000);
+
+    private static String AutoRespawnMessage = "/kit";
 
     private boolean isDead;
     private boolean sentRespawnMessage = true;
     long timeSinceRespawn;
 
-    public AutoRespawn() {
-        super("AutoRespawn", Category.Misc);
-    }
-
-    @Override
-    public void setup() {
-        respawnMessage = registerBoolean("Respawn Message", false);
-        respawnMessageDelay = registerInteger("Msg Delay(ms)", 0, 0, 5000);
-    }
-
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<GuiOpenEvent> livingDeathEventListener = new Listener<>(event -> {
         if (event.getGui() instanceof GuiGameOver) {
@@ -40,7 +34,6 @@ public class AutoRespawn extends Module {
         }
     });
 
-    @Override
     public void onUpdate() {
         if (mc.player == null)
             return;

@@ -1,16 +1,20 @@
 package com.gamesense.client.module.modules.combat;
 
 import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.math.RotationUtils;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.Pair;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlayerPacket;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.util.player.RotationUtil;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -36,189 +40,169 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author GameSense client for original code (actual author unknown)
- * @source https://github.com/IUDevman/gamesense-client/blob/2.2.6/src/main/java/com/gamesense/client/module/modules/combat/KillAura.java
  * @author 0b00101010
  * @since 07/02/2021
  */
+
+@Module.Declaration(name = "KillAura", category = Category.Combat)
 public class KillAura extends Module {
 
-	public KillAura() {
-		super("KillAura", Category.Combat);
-	}
+    BooleanSetting players = registerBoolean("Players", true);
+    BooleanSetting hostileMobs = registerBoolean("Monsters", false);
+    BooleanSetting passiveMobs = registerBoolean("Animals", false);
+    ModeSetting itemUsed = registerMode("Item used", Arrays.asList("Sword", "Axe", "Both", "All"), "Sword");
+    ModeSetting enemyPriority = registerMode("Enemy Priority", Arrays.asList("Closest", "Health"), "Closest");
+    BooleanSetting swordPriority = registerBoolean("Prioritise Sword", true);
+    BooleanSetting caCheck = registerBoolean("AC Check", false);
+    BooleanSetting criticals = registerBoolean("Criticals", true);
+    BooleanSetting rotation = registerBoolean("Rotation", true);
+    BooleanSetting autoSwitch = registerBoolean("Switch", false);
+    DoubleSetting switchHealth = registerDouble("Min Switch Health", 0f, 0f, 20f);
+    DoubleSetting range = registerDouble("Range", 5, 0, 10);
 
-	Setting.Boolean players;
-	Setting.Boolean hostileMobs;
-	Setting.Boolean passiveMobs;
-	Setting.Mode itemUsed;
-	Setting.Boolean swordPriority;
-	Setting.Boolean caCheck;
-	Setting.Boolean criticals;
-	Setting.Boolean rotation;
-	Setting.Boolean autoSwitch;
-	Setting.Double switchHealth;
-	Setting.Double range;
+    private boolean isAttacking = false;
 
-	public void setup() {
-		List<String> weapons = Arrays.asList("Sword", "Axe", "Both", "All");
+    public void onUpdate() {
+        if (mc.player == null || !mc.player.isEntityAlive()) return;
 
-		players = registerBoolean("Players", true);
-		hostileMobs = registerBoolean("Monsters", false);
-		passiveMobs = registerBoolean("Animals", false);
-		itemUsed = registerMode("Item used", weapons, "Sword");
-		swordPriority = registerBoolean("Prioritise Sword", true);
-		caCheck = registerBoolean("AC Check",false);
-		criticals = registerBoolean("Criticals",true);
-		rotation = registerBoolean("Rotation",true);
-		autoSwitch = registerBoolean("Switch", false);
-		switchHealth = registerDouble("Min Switch Health", 0f, 0f, 20f);
-		range = registerDouble("Range", 5,0,10);
-	}
+        final double rangeSq = range.getValue() * range.getValue();
+        Optional<Entity> optionalTarget = mc.world.loadedEntityList.stream()
+                .filter(entity -> entity instanceof EntityLivingBase)
+                .filter(entity -> !EntityUtil.basicChecksEntity(entity))
+                .filter(entity -> mc.player.getDistanceSq(entity) <= rangeSq)
+                .filter(this::attackCheck)
+                .min(Comparator.comparing(e -> (enemyPriority.getValue().equals("Closest") ? mc.player.getDistanceSq(e) : ((EntityLivingBase) e).getHealth())));
 
-	private boolean isAttacking = false;
+        boolean sword = itemUsed.getValue().equalsIgnoreCase("Sword");
+        boolean axe = itemUsed.getValue().equalsIgnoreCase("Axe");
+        boolean both = itemUsed.getValue().equalsIgnoreCase("Both");
+        boolean all = itemUsed.getValue().equalsIgnoreCase("All");
 
-	public void onUpdate() {
-		if (mc.player == null || !mc.player.isEntityAlive()) return;
+        if (optionalTarget.isPresent()) {
+            Pair<Float, Integer> newSlot = new Pair<>(0.0f, -1);
 
-		final double rangeSq = range.getValue() * range.getValue();
-		Optional<Entity> optionalTarget = mc.world.loadedEntityList.stream()
-			.filter(entity -> entity instanceof EntityLivingBase)
-			.filter(entity -> !EntityUtil.basicChecksEntity(entity))
-			.filter(entity -> mc.player.getDistanceSq(entity) <= rangeSq)
-			.filter(this::attackCheck)
-			.min(Comparator.comparing(e -> mc.player.getDistanceSq(e)));
+            if (autoSwitch.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount() >= switchHealth.getValue())) {
+                if (sword || both || all) {
+                    newSlot = findSwordSlot();
+                }
+                if ((axe || both || all) && !(swordPriority.getValue() && newSlot.getValue() != -1)) {
+                    Pair<Float, Integer> possibleSlot = findAxeSlot();
+                    if (possibleSlot.getKey() > newSlot.getKey()) {
+                        newSlot = possibleSlot;
+                    }
+                }
+            }
 
-		boolean sword = itemUsed.getValue().equalsIgnoreCase("Sword");
-		boolean axe = itemUsed.getValue().equalsIgnoreCase("Axe");
-		boolean both = itemUsed.getValue().equalsIgnoreCase("Both");
-		boolean all = itemUsed.getValue().equalsIgnoreCase("All");
+            int temp = mc.player.inventory.currentItem;
+            if ((newSlot.getValue() != -1)) {
+                mc.player.inventory.currentItem = newSlot.getValue();
+            }
 
-		if (optionalTarget.isPresent()) {
-			Pair<Float, Integer> newSlot = new Pair<>(0.0f, -1);
+            if (shouldAttack(sword, axe, both, all)) {
+                Entity target = optionalTarget.get();
 
-			if (autoSwitch.getValue() && (mc.player.getHealth() + mc.player.getAbsorptionAmount() >= switchHealth.getValue())) {
-				// find the best weapon in out hotbar
-				if (sword || both || all) {
-					newSlot = findSwordSlot();
-				}
-				if ((axe || both || all) && !(swordPriority.getValue() && newSlot.getValue() != -1)) {
-					Pair<Float, Integer> possibleSlot = findAxeSlot();
-					if (possibleSlot.getKey() > newSlot.getKey()) {
-						newSlot = possibleSlot;
-					}
-				}
-			}
+                if (rotation.getValue()) {
+                    Vec2f rotation = RotationUtil.getRotationTo(target.getEntityBoundingBox());
+                    PlayerPacket packet = new PlayerPacket(this, rotation);
+                    PlayerPacketManager.INSTANCE.addPacket(packet);
+                }
 
-			// we have found a slot
-			int temp = mc.player.inventory.currentItem;
-			if ((newSlot.getValue() != -1)) {
-				mc.player.inventory.currentItem = newSlot.getValue();
-			}
+                if (ModuleManager.isModuleEnabled(AutoGG.class)) {
+                    AutoGG.INSTANCE.addTargetedPlayer(target.getName());
+                }
 
-			// we have to switch slots for this check to work
-			if (shouldAttack(sword, axe, both, all)) {
-				Entity target = optionalTarget.get();
+                attack(target);
+            } else {
+                mc.player.inventory.currentItem = temp;
+            }
+        }
+    }
 
-				if (rotation.getValue()) {
-					Vec2f rotation = RotationUtils.getRotationTo(target.getEntityBoundingBox());
-					PlayerPacket packet = new PlayerPacket(this, rotation);
-					PlayerPacketManager.INSTANCE.addPacket(packet);
-				}
+    @SuppressWarnings("unused")
+    @EventHandler
+    private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
+        if (event.getPacket() instanceof CPacketUseEntity) {
+            if (criticals.getValue() && ((CPacketUseEntity) event.getPacket()).getAction() == CPacketUseEntity.Action.ATTACK && mc.player.onGround && isAttacking) {
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.1f, mc.player.posZ, false));
+                mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY, mc.player.posZ, false));
+            }
+        }
+    });
 
-				attack(target);
-			} else {
-				// if check is false switch back
-				mc.player.inventory.currentItem = temp;
-			}
-		}
-	}
+    private Pair<Float, Integer> findSwordSlot() {
+        List<Integer> items = InventoryUtil.findAllItemSlots(ItemSword.class);
+        List<ItemStack> inventory = mc.player.inventory.mainInventory;
 
-	@EventHandler
-	private final Listener<PacketEvent.Send> listener = new Listener<>(event -> {
-		if (event.getPacket() instanceof CPacketUseEntity){
-			if (criticals.getValue() && ((CPacketUseEntity) event.getPacket()).getAction() == CPacketUseEntity.Action.ATTACK && mc.player.onGround && isAttacking) {
-				mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.1f, mc.player.posZ, false));
-				mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY, mc.player.posZ, false));
-			}
-		}
-	});
+        float bestModifier = 0f;
+        int correspondingSlot = -1;
+        for (Integer integer : items) {
+            if (integer > 8) {
+                continue;
+            }
 
-	private Pair<Float, Integer> findSwordSlot() {
-		List<Integer> items = InventoryUtil.findAllItemSlots(ItemSword.class);
-		List<ItemStack> inventory = mc.player.inventory.mainInventory;
+            ItemStack stack = inventory.get(integer);
+            float modifier = (EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED) + 1f) * ((ItemSword) stack.getItem()).getAttackDamage();
 
-		float bestModifier = 0f;
-		int correspondingSlot = -1;
-		for (Integer integer : items) {
-			if (integer > 8) {
-				continue;
-			}
+            if (modifier > bestModifier) {
+                bestModifier = modifier;
+                correspondingSlot = integer;
+            }
+        }
 
-			ItemStack stack = inventory.get(integer);
-			// generic best modifier
-			float modifier = (EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED) + 1f) * ((ItemSword)stack.getItem()).getAttackDamage();
-			// is it the new best
-			if (modifier > bestModifier) {
-				bestModifier = modifier;
-				correspondingSlot = integer;
-			}
-		}
+        return new Pair<>(bestModifier, correspondingSlot);
+    }
 
-		return new Pair<>(bestModifier, correspondingSlot);
-	}
+    private Pair<Float, Integer> findAxeSlot() {
+        List<Integer> items = InventoryUtil.findAllItemSlots(ItemAxe.class);
+        List<ItemStack> inventory = mc.player.inventory.mainInventory;
 
-	private Pair<Float, Integer> findAxeSlot() {
-		List<Integer> items = InventoryUtil.findAllItemSlots(ItemAxe.class);
-		List<ItemStack> inventory = mc.player.inventory.mainInventory;
+        float bestModifier = 0f;
+        int correspondingSlot = -1;
+        for (Integer integer : items) {
+            if (integer > 8) {
+                continue;
+            }
 
-		float bestModifier = 0f;
-		int correspondingSlot = -1;
-		for (Integer integer : items) {
-			if (integer > 8) {
-				continue;
-			}
+            ItemStack stack = inventory.get(integer);
+            float modifier = (EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED) + 1f) * ((ItemAxe) stack.getItem()).attackDamage;
 
-			ItemStack stack = inventory.get(integer);
-			// generic best modifier
-			float modifier = (EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED) + 1f) * ((ItemAxe)stack.getItem()).attackDamage;
-			// is it the new best
-			if (modifier > bestModifier) {
-				bestModifier = modifier;
-				correspondingSlot = integer;
-			}
-		}
+            if (modifier > bestModifier) {
+                bestModifier = modifier;
+                correspondingSlot = integer;
+            }
+        }
 
-		return new Pair<>(bestModifier, correspondingSlot);
-	}
+        return new Pair<>(bestModifier, correspondingSlot);
+    }
 
-	private boolean shouldAttack(boolean sword, boolean axe, boolean both, boolean all) {
-		Item item = mc.player.getHeldItemMainhand().getItem();
-			return (all
-				|| (sword || both) && item instanceof ItemSword
-				|| (axe || both) && item instanceof ItemAxe)
-				&& (!caCheck.getValue() || !ModuleManager.getModule(AutoCrystalGS.class).isActive);
-	}
+    private boolean shouldAttack(boolean sword, boolean axe, boolean both, boolean all) {
+        Item item = mc.player.getHeldItemMainhand().getItem();
+        return (all
+                || (sword || both) && item instanceof ItemSword
+                || (axe || both) && item instanceof ItemAxe)
+                && (!caCheck.getValue() || !ModuleManager.getModule(AutoCrystal.class).isAttacking);
+    }
 
-	private void attack(Entity e) {
-		if (mc.player.getCooledAttackStrength(0.0f) >= 1.0f) {
-			isAttacking = true;
-			mc.playerController.attackEntity(mc.player, e);
-			mc.player.swingArm(EnumHand.MAIN_HAND);
-			isAttacking = false;
-		}
-	}
+    private void attack(Entity e) {
+        if (mc.player.getCooledAttackStrength(0.0f) >= 1.0f) {
+            isAttacking = true;
+            mc.playerController.attackEntity(mc.player, e);
+            mc.player.swingArm(EnumHand.MAIN_HAND);
+            isAttacking = false;
+        }
+    }
 
-	private boolean attackCheck(Entity entity) {
-		if (players.getValue() && entity instanceof EntityPlayer && !Friends.isFriend(entity.getName())) {
-			if (((EntityPlayer) entity).getHealth() > 0) {
-				return true;
-			}
-		}
+    private boolean attackCheck(Entity entity) {
+        if (players.getValue() && entity instanceof EntityPlayer && !SocialManager.isFriend(entity.getName())) {
+            if (((EntityPlayer) entity).getHealth() > 0) {
+                return true;
+            }
+        }
 
-		if (passiveMobs.getValue() && entity instanceof EntityAnimal) {
-			return !(entity instanceof EntityTameable);
-		}
+        if (passiveMobs.getValue() && entity instanceof EntityAnimal) {
+            return !(entity instanceof EntityTameable);
+        }
 
-		return hostileMobs.getValue() && entity instanceof EntityMob;
-	}
+        return hostileMobs.getValue() && entity instanceof EntityMob;
+    }
 }

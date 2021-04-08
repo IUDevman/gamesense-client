@@ -1,12 +1,15 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.api.util.misc.Offsets;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,98 +20,54 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
 /**
- * @Author Hoosiers on 09/19/20
- * Ported and modified from Surround.java
- */
-/*
-    Added new mode: target. this allow to choose in which way he is going to choose the target
-    2 modes: nearest (who is cloosest), looking (who you are looking)
-    Now some modules are in common (closestTarget, lookingAt)
+ * @author Hoosiers
+ * @since 04/03/2021
  */
 
+@Module.Declaration(name = "AutoTrap", category = Category.Combat)
 public class AutoTrap extends Module {
 
-    public AutoTrap() {
-        super("AutoTrap", Category.Combat);
-    }
+    ModeSetting offsetMode = registerMode("Pattern", Arrays.asList("Normal", "No Step", "Simple"), "Normal");
+    ModeSetting targetMode = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
+    IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
+    IntegerSetting delayTicks = registerInteger("Tick Delay", 3, 0, 10);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting sneakOnly = registerBoolean("Sneak Only", false);
+    BooleanSetting disableNoBlock = registerBoolean("Disable No Obby", true);
+    BooleanSetting offhandObby = registerBoolean("Offhand Obby", false);
 
-    Setting.Mode    trapType,
-                    target;
-    Setting.Boolean chatMsg,
-                    rotate,
-                    offHandObby,
-                    disableNone;
-    Setting.Integer enemyRange,
-                    tickDelay,
-                    blocksPerTick;
+    private final Timer delayTimer = new Timer();
+    private EntityPlayer targetPlayer = null;
 
-    public void setup() {
-        ArrayList<String> trapTypes = new ArrayList<>();
-        trapTypes.add("Normal");
-        trapTypes.add("No Step");
-        trapTypes.add("Air");
-        ArrayList<String> targetChoose = new ArrayList<>();
-        targetChoose.add("Nearest");
-        targetChoose.add("Looking");
-
-        trapType = registerMode("Mode", trapTypes, "Normal");
-        target = registerMode("Target", targetChoose, "Nearest");
-        disableNone = registerBoolean("Disable No Obby", true);
-        rotate = registerBoolean("Rotate", true);
-        offHandObby = registerBoolean("Off Hand Obby", false);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        enemyRange = registerInteger("Range",4, 0, 6);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
-
-    private boolean noObby = false;
-    private boolean isSneaking = false;
-    private boolean firstRun = false;
-    private boolean activedOff;
     private int oldSlot = -1;
-
-    private int delayTimeTicks = 0;
     private int offsetSteps = 0;
-
-    private EntityPlayer aimTarget;
+    private boolean outOfTargetBlock = false;
+    private boolean activedOff = false;
+    private boolean isSneaking = false;
 
     public void onEnable() {
         PlacementUtil.onEnable();
-        activedOff = false;
-        if (mc.player == null) {
+        if (mc.player == null || mc.world == null) {
             disable();
             return;
         }
 
-        if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoTrap turned ON!");
-        }
-
+        oldSlot = mc.player.inventory.currentItem;
     }
 
     public void onDisable() {
         PlacementUtil.onDisable();
-        if (mc.player == null) {
-            return;
-        }
+        if (mc.player == null | mc.world == null) return;
 
-        if (chatMsg.getValue()) {
-            if (noObby) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No obsidian detected... AutoTrap turned OFF!");
-            }
-            else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoTrap turned OFF!");
-            }
-        }
+        if (outOfTargetBlock) setDisabledMessage("No obsidian detected... AutoTrap turned OFF!");
 
-        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1 && oldSlot != 9) {
             mc.player.inventory.currentItem = oldSlot;
+            oldSlot = -1;
         }
 
         if (isSneaking) {
@@ -116,194 +75,143 @@ public class AutoTrap extends Module {
             isSneaking = false;
         }
 
-        noObby = false;
-        firstRun = true;
-        AutoCrystalGS.stopAC = false;
-        if (offHandObby.getValue() && OffHand.isActive()) {
+        AutoCrystal.stopAC = false;
+
+        if (offhandObby.getValue() && OffHand.isActive()) {
             OffHand.removeObsidian();
             activedOff = false;
         }
+
+        outOfTargetBlock = false;
+        targetPlayer = null;
     }
 
     public void onUpdate() {
-        if (mc.player == null) {
+        if (mc.player == null || mc.world == null) {
             disable();
             return;
         }
 
-        if (target.getValue().equals("Nearest"))
-            aimTarget = PlayerUtil.findClosestTarget(enemyRange.getValue(), aimTarget);
-        else if(target.getValue().equals("Looking"))
-            aimTarget = PlayerUtil.findLookingPlayer(enemyRange.getValue());
-
-        if (aimTarget == null) {
+        if (sneakOnly.getValue() && !mc.player.isSneaking()) {
             return;
         }
 
-        if (firstRun || noObby) {
-            firstRun = false;
-            if (InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff) == -1) {
-                noObby = true;
-                return;
-            }else {
-                noObby = false;
-                activedOff = true;
-            }
-        }
-        else {
+        int targetBlockSlot = InventoryUtil.findObsidianSlot(offhandObby.getValue(), activedOff);
 
-            if (delayTimeTicks < tickDelay.getValue()) {
-                delayTimeTicks++;
-                return;
-            }
-            else {
-                delayTimeTicks = 0;
-            }
-        }
-
-        if (disableNone.getValue() && noObby) {
+        if ((outOfTargetBlock || targetBlockSlot == -1) && disableNoBlock.getValue()) {
+            outOfTargetBlock = true;
             disable();
             return;
         }
 
-        int blocksPlaced = 0;
-        if (!noObby)
-        while (blocksPlaced <= blocksPerTick.getValue()) {
+        activedOff = true;
 
-            List<Vec3d> placeTargets = new ArrayList<>();
-            int maxSteps;
-
-            if (trapType.getValue().equalsIgnoreCase("Normal")) {
-                Collections.addAll(placeTargets, Offsets.TRAP);
-                maxSteps = AutoTrap.Offsets.TRAP.length;
-            }
-            else if (trapType.getValue().equalsIgnoreCase("Air")) {
-                Collections.addAll(placeTargets, Offsets.AIR);
-                maxSteps = AutoTrap.Offsets.AIR.length;
-            }
-            else {
-                Collections.addAll(placeTargets, Offsets.TRAPFULLROOF);
-                maxSteps = AutoTrap.Offsets.TRAPFULLROOF.length;
-            }
-
-            if (offsetSteps >= maxSteps) {
-                offsetSteps = 0;
+        switch (targetMode.getValue()) {
+            case "Nearest" : {
+                targetPlayer = PlayerUtil.findClosestTarget(enemyRange.getValue(), targetPlayer);
                 break;
             }
-
-            BlockPos offsetPos = new BlockPos(placeTargets.get(offsetSteps));
-            BlockPos targetPos = new BlockPos(aimTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-
-            if (aimTarget.posY % 1 > .2) {
-                targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
+            case "Looking" : {
+                targetPlayer = PlayerUtil.findLookingPlayer(enemyRange.getValue());
+                break;
             }
-
-            boolean tryPlacing = true;
-
-            if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
-                tryPlacing = false;
+            default: {
+                targetPlayer = null;
+                break;
             }
+        }
 
-            for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetPos))) {
-                if (entity instanceof EntityPlayer) {
-                    tryPlacing = false;
+        if (targetPlayer == null) return;
+
+        Vec3d targetVec3d = targetPlayer.getPositionVector();
+
+        while (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
+            delayTimer.reset();
+
+            int blocksPlaced = 0;
+
+            while (blocksPlaced <= blocksPerTick.getValue()) {
+                int maxSteps;
+                Vec3d[] offsetPattern;
+
+                switch (offsetMode.getValue()) {
+                    case "No Step" : {
+                        offsetPattern = Offsets.TRAP_STEP;
+                        maxSteps = Offsets.TRAP_STEP.length;
+                        break;
+                    }
+                    case "Simple" : {
+                        offsetPattern = Offsets.TRAP_SIMPLE;
+                        maxSteps = Offsets.TRAP_SIMPLE.length;
+                        break;
+                    }
+                    default: {
+                        offsetPattern = Offsets.TRAP_FULL;
+                        maxSteps = Offsets.TRAP_FULL.length;
+                        break;
+                    }
+                }
+
+                if (offsetSteps >= maxSteps) {
+                    offsetSteps = 0;
                     break;
                 }
-            }
 
-            if (tryPlacing && placeBlock(targetPos, enemyRange.getValue())) {
-                blocksPlaced++;
-            }
+                BlockPos offsetPos = new BlockPos(offsetPattern[offsetSteps]);
+                BlockPos targetPos = new BlockPos(targetVec3d).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
-            offsetSteps++;
+                boolean tryPlacing = true;
 
-            if (isSneaking) {
-                mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-                isSneaking = false;
+                if (targetPlayer.posY % 1 > 0.2) {
+                    targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
+                }
+
+                if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
+                    tryPlacing = false;
+                }
+
+                for (Entity entity : mc.world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(targetPos))) {
+                    if (entity instanceof EntityPlayer) {
+                        tryPlacing = false;
+                        break;
+                    }
+                }
+
+                if (tryPlacing && placeBlock(targetPos)) {
+                    blocksPlaced++;
+                }
+
+                offsetSteps++;
+
+                if (isSneaking) {
+                    mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+                    isSneaking = false;
+                }
             }
         }
     }
 
-    private boolean placeBlock(BlockPos pos, int range) {
-        if (mc.player.getDistanceSq(pos) > range * range) {
-            return false;
-        }
-
+    private boolean placeBlock(BlockPos pos) {
         EnumHand handSwing = EnumHand.MAIN_HAND;
 
-        int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
+        int targetBlockSlot = InventoryUtil.findObsidianSlot(offhandObby.getValue(), activedOff);
 
-        if (obsidianSlot == -1) {
-            noObby = true;
+        if (targetBlockSlot == -1) {
+            outOfTargetBlock = true;
             return false;
         }
 
-        if (obsidianSlot == 9) {
+        if (targetBlockSlot == 9) {
             activedOff = true;
             if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
-                // We can continue
                 handSwing = EnumHand.OFF_HAND;
             } else return false;
         }
 
-        if (mc.player.inventory.currentItem != obsidianSlot && obsidianSlot != 9) {
-            mc.player.inventory.currentItem = obsidianSlot;
+        if (mc.player.inventory.currentItem != targetBlockSlot && targetBlockSlot != 9) {
+            mc.player.inventory.currentItem = targetBlockSlot;
         }
 
-        return PlacementUtil.place(pos, handSwing, rotate.getValue());
-    }
-
-    private static class Offsets {
-        private static final Vec3d[] TRAP = {
-                new Vec3d(0, -1, -1),
-                new Vec3d(1, -1, 0),
-                new Vec3d(0, -1, 1),
-                new Vec3d(-1, -1, 0),
-                new Vec3d(0, 0,-1),
-                new Vec3d(1, 0, 0),
-                new Vec3d(0, 0, 1),
-                new Vec3d(-1, 0, 0),
-                new Vec3d(0, 1, -1),
-                new Vec3d(1, 1, 0),
-                new Vec3d(0, 1, 1),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(0, 2, -1),
-                new Vec3d(0, 2, 0)
-        };
-
-        private static final Vec3d[] TRAPFULLROOF = {
-                new Vec3d(0, -1, -1),
-                new Vec3d(1, -1, 0),
-                new Vec3d(0, -1, 1),
-                new Vec3d(-1, -1, 0),
-                new Vec3d(0, 0, -1),
-                new Vec3d(1, 0, 0),
-                new Vec3d(0, 0, 1),
-                new Vec3d(-1, 0, 0),
-                new Vec3d(0, 1, -1),
-                new Vec3d(1, 1, 0),
-                new Vec3d(0, 1, 1),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(0, 2, -1),
-                new Vec3d(0, 2, 0),
-                new Vec3d(0, 3, 0)
-        };
-
-        private static final Vec3d[] AIR = {
-                new Vec3d(0, -1, -1),
-                new Vec3d(1, -1, 0),
-                new Vec3d(0, -1, 1),
-                new Vec3d(-1, -1, 0),
-                new Vec3d(0, 0,-1),
-                new Vec3d(0, 1, -1),
-                new Vec3d(0, 2, -1),
-                new Vec3d(0, 2, 0),
-                new Vec3d(1, 2, 0),
-                new Vec3d(1, 1, 0),
-                new Vec3d(-1, 2, 0),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(0, 2, 1),
-                new Vec3d(0, 1, 1)
-        };
+        return PlacementUtil.place(pos, handSwing, rotate.getValue(), true);
     }
 }

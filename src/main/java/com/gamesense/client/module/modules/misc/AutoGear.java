@@ -1,7 +1,9 @@
 package com.gamesense.client.module.modules.misc;
 
-import com.gamesense.api.setting.Setting;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.command.commands.AutoGearCommand;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import net.minecraft.inventory.ClickType;
@@ -9,58 +11,32 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerShulkerBox;
 import net.minecraft.item.ItemStack;
 
-/*
-    The algo is the same as AutoSort, just with few difference because of how inventory works
- */
-
 import java.util.*;
 
+/*
+    @Author TechAle
+ */
+
+@Module.Declaration(name = "AutoGear", category = Category.Misc)
 public class AutoGear extends Module {
 
-    public AutoGear() {
-        super("AutoGear", Category.Misc);
-    }
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+    BooleanSetting enderChest = registerBoolean("EnderChest", false);
+    BooleanSetting confirmSort = registerBoolean("Confirm Sort", true);
+    BooleanSetting invasive = registerBoolean("Invasive", false);
+    BooleanSetting closeAfter = registerBoolean("Close After", false);
+    BooleanSetting infoMsgs = registerBoolean("Info Msgs", true);
+    BooleanSetting debugMode = registerBoolean("Debug Mode", false);
 
-    Setting.Boolean chatMsg,
-                    debugMode,
-                    enderChest,
-                    confirmSort,
-                    invasive,
-                    closeAfter;
-    Setting.Integer tickDelay;
-
-    // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();
     private HashMap<Integer, String> containerInv = new HashMap<>();
-    // Sort item
     private ArrayList<Integer> sortItems = new ArrayList<>();
 
-    // Tickets
     private int delayTimeTicks;
     private int stepNow;
-    // If we had opened before a chest/inventory
-    private boolean openedBefore,
-            finishSort,
-            doneBefore;
+    private boolean openedBefore, finishSort, doneBefore;
 
-    @Override
-    public void setup() {
-
-        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
-        chatMsg = registerBoolean("Chat Msg", true);
-        enderChest = registerBoolean("EnderChest", false);
-        confirmSort = registerBoolean("Confirm Sort", true);
-        invasive = registerBoolean("Invasive", false);
-        closeAfter = registerBoolean("Close After", false);
-        debugMode = registerBoolean("Debug Mode", false);
-
-    }
-
-    @Override
     public void onEnable() {
-        // Msg
-        if (chatMsg.getValue())
-            PistonCrystal.printChat("AutoSort Turned On!", false);
         // Get name of the config
         // Config variables
         String curConfigName = AutoGearCommand.getCurrentSet();
@@ -70,8 +46,8 @@ public class AutoGear extends Module {
             return;
         }
         // Print the config
-        if (chatMsg.getValue())
-            PistonCrystal.printChat("Config " + curConfigName + " actived", false);
+        if (infoMsgs.getValue())
+            PistonCrystal.printDebug("Config " + curConfigName + " actived", false);
         // Get the inventory
         String inventoryConfig = AutoGearCommand.getInventoryKit(curConfigName);
         // If none, exit
@@ -85,7 +61,7 @@ public class AutoGear extends Module {
         planInventory = new HashMap<>();
         HashMap<String, Integer> nItems = new HashMap<>();
         // Iterate for creating planInventory and nItems
-        for(int i = 0; i < inventoryDivided.length; i++) {
+        for (int i = 0; i < inventoryDivided.length; i++) {
             // Add to planInventory if it's not air
             if (!inventoryDivided[i].contains("air")) {
                 // Add it
@@ -105,13 +81,12 @@ public class AutoGear extends Module {
         openedBefore = doneBefore = false;
     }
 
-    @Override
     public void onDisable() {
-        if (chatMsg.getValue() && planInventory.size() > 0)
-            PistonCrystal.printChat("AutoSort Turned Off!", true);
+        if (infoMsgs.getValue() && planInventory.size() > 0)
+            PistonCrystal.printDebug("AutoSort Turned Off!", true);
     }
 
-    @Override
+
     public void onUpdate() {
         // Wait
         if (delayTimeTicks < tickDelay.getValue()) {
@@ -127,19 +102,19 @@ public class AutoGear extends Module {
 
         // When you open an inventory
         if (((mc.player.openContainer instanceof ContainerChest && (enderChest.getValue() || !((ContainerChest) mc.player.openContainer).getLowerChestInventory().getDisplayName().getUnformattedText().equals("Ender Chest")))
-            || mc.player.openContainer instanceof ContainerShulkerBox)
-            ) {
+                || mc.player.openContainer instanceof ContainerShulkerBox)
+        ) {
             // Start sorting
             sortInventoryAlgo();
-        }else openedBefore = false;
+        } else openedBefore = false;
 
     }
 
     private void sortInventoryAlgo() {
         if (!openedBefore) {
             // Print
-            if (chatMsg.getValue() && !doneBefore)
-                PistonCrystal.printChat("Start sorting inventory...", false);
+            if (infoMsgs.getValue() && !doneBefore)
+                PistonCrystal.printDebug("Start sorting inventory...", false);
 
             int maxValue = mc.player.openContainer instanceof ContainerChest ? ((ContainerChest) mc.player.openContainer).getLowerChestInventory().getSizeInventory()
                     : 27;
@@ -160,11 +135,12 @@ public class AutoGear extends Module {
                 // If we 0 items to sort + we have done it before
                 finishSort = false;
                 // Print
-                if (chatMsg.getValue())
-                    PistonCrystal.printChat("Inventory arleady sorted...", true);
+                if (infoMsgs.getValue())
+                    PistonCrystal.printDebug("Inventory already sorted...", true);
+              
                 if (closeAfter.getValue())
                     mc.player.closeScreen();
-            }else {
+            } else {
                 // Else, start sorting
                 finishSort = true;
                 stepNow = 0;
@@ -196,8 +172,8 @@ public class AutoGear extends Module {
 
                 finishSort = false;
                 // Print
-                if (chatMsg.getValue()) {
-                    PistonCrystal.printChat("Inventory sorted", false);
+                if (infoMsgs.getValue()) {
+                    PistonCrystal.printDebug("Inventory sorted", false);
                 }
                 // Check if the last slot has been placed
                 checkLastItem();
@@ -232,10 +208,10 @@ public class AutoGear extends Module {
         // Lets get nItems
         HashMap<String, Integer> nItemsCopy = new HashMap<>();
         // Lets add everything to nItems
-        for(String value : planInventoryCopy.values()) {
+        for (String value : planInventoryCopy.values()) {
             if (nItemsCopy.containsKey(value)) {
                 nItemsCopy.put(value, nItemsCopy.get(value) + 1);
-            }else {
+            } else {
                 nItemsCopy.put(value, 1);
             }
         }
@@ -246,12 +222,12 @@ public class AutoGear extends Module {
         int[] listValue = new int[planInventoryCopy.size()];
         // Lets add everything
         int id = 0;
-        for(int idx : planInventoryCopy.keySet()) {
+        for (int idx : planInventoryCopy.keySet()) {
             listValue[id++] = idx;
         }
 
 
-        for(int item : listValue) {
+        for (int item : listValue) {
             if (copyInventory.get(item).equals(planInventoryCopy.get(item))) {
                 // Add a value to ignore later
                 ignoreValues.add(item);
@@ -304,7 +280,7 @@ public class AutoGear extends Module {
                         // If it's not air, in this case we'll have an item in our pick hand.
                         // We have to do not incr i
                         // And then, lets add this value to pickedItem
-                        if (i >=  startValues + copyInventory.size())
+                        if (i >= startValues + copyInventory.size())
                             // Somehow, sometimes i go over the size of our inventory. I dunno how since the for cicle should
                             // Stop it, but ok
                             continue;
@@ -338,7 +314,7 @@ public class AutoGear extends Module {
         Object[] keyList = containerInv.keySet().toArray();
 
         // Lets take items from chest
-        for(int values = 0; values < keyList.length; values++) {
+        for (int values = 0; values < keyList.length; values++) {
             // Which index we are referring
             int itemC = (int) keyList[values];
             // If nItems contains what we are looking
@@ -365,8 +341,8 @@ public class AutoGear extends Module {
         // Print all path
         if (debugMode.getValue()) {
             // Print every values
-            for(int valuePath : planMove) {
-                PistonCrystal.printChat(Integer.toString(valuePath),  false);
+            for (int valuePath : planMove) {
+                PistonCrystal.printDebug(Integer.toString(valuePath), false);
             }
         }
 
@@ -381,7 +357,7 @@ public class AutoGear extends Module {
         int sizeInventory = mc.player.inventory.mainInventory.size();
         int value;
         // Iterate
-        for(int i = 0; i < sizeInventory; i++) {
+        for (int i = 0; i < sizeInventory; i++) {
             // Get the starting value
             value = i + startPoint + (i < 9 ? sizeInventory - 9 : -9);
             // Get the item in that specific slot
@@ -399,7 +375,7 @@ public class AutoGear extends Module {
         HashMap<Integer, String> output = new HashMap<>();
         // Size of mainInventory
         int sizeInventory = mc.player.inventory.mainInventory.size();
-        for(int val : inventory.keySet()) {
+        for (int val : inventory.keySet()) {
             // Add it
             output.put(val + startPoint + (val < 9 ? sizeInventory - 9 : -9), inventory.get(val));
         }

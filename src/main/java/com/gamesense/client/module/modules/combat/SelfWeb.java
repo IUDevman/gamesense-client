@@ -1,95 +1,75 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
+import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.api.util.world.BlockUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.api.util.misc.Offsets;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- * @Author Hoosiers on 09/23/20
- * Ported and modified from Surround.java
+ * @author Hoosiers
+ * @since 03/29/2021
  */
 
+@Module.Declaration(name = "SelfWeb", category = Category.Combat)
 public class SelfWeb extends Module {
 
-    public SelfWeb() {
-        super("SelfWeb", Category.Combat);
-    }
+    ModeSetting jumpMode = registerMode("Jump", Arrays.asList("Continue", "Pause", "Disable"), "Continue");
+    ModeSetting offsetMode = registerMode("Pattern", Arrays.asList("Single", "Double"), "Single");
+    IntegerSetting delayTicks = registerInteger("Tick Delay", 3, 0, 10);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting centerPlayer = registerBoolean("Center Player", false);
+    BooleanSetting sneakOnly = registerBoolean("Sneak Only", false);
+    BooleanSetting disableNoBlock = registerBoolean("Disable No Web", true);
 
-    Setting.Boolean chatMsg;
-    Setting.Boolean shiftOnly;
-    Setting.Boolean singleWeb;
-    Setting.Boolean rotate;
-    Setting.Boolean disableNone;
-    Setting.Integer tickDelay;
-    Setting.Integer blocksPerTick;
-    Setting.Mode placeType;
+    private final Timer delayTimer = new Timer();
+    private Vec3d centeredBlock = Vec3d.ZERO;
 
-    public void setup() {
-        ArrayList<String> placeModes = new ArrayList<>();
-        placeModes.add("Single");
-        placeModes.add("Double");
-
-        placeType = registerMode("Place", placeModes, "Single");
-        shiftOnly = registerBoolean("Shift Only", false);
-        singleWeb = registerBoolean("One Place", false);
-        disableNone = registerBoolean("Disable No Web", true);
-        rotate = registerBoolean("Rotate", true);
-        tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-        blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-        chatMsg = registerBoolean("Chat Msgs", true);
-    }
-
-    private boolean noWeb = false;
-    private boolean isSneaking = false;
-    private boolean firstRun = false;
-
-    private int blocksPlaced;
-    private int delayTimeTicks = 0;
-    private int offsetSteps = 0;
     private int oldSlot = -1;
+    private int offsetSteps = 0;
+    private boolean outOfTargetBlock = false;
+    private boolean isSneaking = false;
 
     public void onEnable() {
         PlacementUtil.onEnable();
-        if (mc.player == null) {
+        if (mc.player == null || mc.world == null) {
             disable();
             return;
         }
 
-        if (chatMsg.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "SelfWeb turned ON!");
+        if (centerPlayer.getValue() && mc.player.onGround) {
+            mc.player.motionX = 0;
+            mc.player.motionZ = 0;
         }
+
+        centeredBlock = BlockUtil.getCenterOfBlock(mc.player.posX, mc.player.posY, mc.player.posY);
 
         oldSlot = mc.player.inventory.currentItem;
-
-        int newSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
-        if (newSlot != -1) {
-            mc.player.inventory.currentItem = newSlot;
-        }
     }
 
     public void onDisable() {
         PlacementUtil.onDisable();
-        if (mc.player == null) {
-            return;
-        }
+        if (mc.player == null | mc.world == null) return;
 
-        if (chatMsg.getValue()) {
-            if (noWeb) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... SelfWeb turned OFF!");
-            }
-            else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "SelfWeb turned OFF!");
-            }
+        if (outOfTargetBlock) setDisabledMessage("No web detected... SelfWeb turned OFF!");
+
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
+            mc.player.inventory.currentItem = oldSlot;
+            oldSlot = -1;
         }
 
         if (isSneaking) {
@@ -97,113 +77,117 @@ public class SelfWeb extends Module {
             isSneaking = false;
         }
 
-        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
-            mc.player.inventory.currentItem = oldSlot;
-            oldSlot = -1;
-        }
+        AutoCrystal.stopAC = false;
 
-        noWeb = false;
-        firstRun = true;
-        AutoCrystalGS.stopAC = false;
+        centeredBlock = Vec3d.ZERO;
+        outOfTargetBlock = false;
     }
 
     public void onUpdate() {
-        if (mc.player == null) {
+        if (mc.player == null || mc.world == null) {
             disable();
             return;
         }
 
-        if (disableNone.getValue() && noWeb) {
-            disable();
+        if (sneakOnly.getValue() && !mc.player.isSneaking()) {
             return;
         }
 
-        if (mc.player.posY <= 0) {
-            return;
-        }
-
-        if (singleWeb.getValue() && blocksPlaced >= 1) {
-            blocksPlaced = 0;
-            disable();
-            return;
-        }
-
-        if (firstRun) {
-            firstRun = false;
-            if (InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8) == -1) {
-                noWeb = true;
-                disable();
-            }
-        }
-        else {
-            if (delayTimeTicks < tickDelay.getValue()) {
-                delayTimeTicks++;
-                return;
-            }
-            else {
-                delayTimeTicks = 0;
-            }
-        }
-
-        if (shiftOnly.getValue() && !mc.player.isSneaking()) {
-            return;
-        }
-
-        blocksPlaced = 0;
-
-        while (blocksPlaced <= blocksPerTick.getValue()) {
-            Vec3d[] offsetPattern;
-            int maxSteps;
-
-            if (placeType.getValue().equalsIgnoreCase("Double")) {
-                offsetPattern = Offsets.DOUBLE;
-                maxSteps = Offsets.DOUBLE.length;
-            }
-            else {
-                offsetPattern = Offsets.SINGLE;
-                maxSteps = Offsets.SINGLE.length;
-            }
-
-            if (offsetSteps >= maxSteps) {
-                offsetSteps = 0;
-                break;
-            }
-
-            BlockPos offsetPos = new BlockPos(offsetPattern[offsetSteps]);
-            BlockPos targetPos = new BlockPos(mc.player.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-
-            boolean tryPlacing = true;
-
-            if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
-                tryPlacing = false;
-            }
-
-            if (tryPlacing && PlacementUtil.placeBlock(targetPos, EnumHand.MAIN_HAND, rotate.getValue(), BlockWeb.class)) {
-                blocksPlaced++;
-            } else {
-                if (InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8) == -1) {
-                    noWeb = true;
+        if (!(mc.player.onGround) && !(mc.player.isInWeb)) {
+            switch (jumpMode.getValue()) {
+                case "Pause" : {
+                    return;
+                }
+                case "Disable" : {
                     disable();
+                    return;
+                }
+                default: {
+                    break;
                 }
             }
+        }
 
-            offsetSteps++;
+        int targetBlockSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
 
-            if (isSneaking) {
-                mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-                isSneaking = false;
+        if ((outOfTargetBlock || targetBlockSlot == -1) && disableNoBlock.getValue()) {
+            outOfTargetBlock = true;
+            disable();
+            return;
+        }
+
+        if (centerPlayer.getValue() && centeredBlock != Vec3d.ZERO && mc.player.onGround) {
+            PlayerUtil.centerPlayer(centeredBlock);
+        }
+
+        while (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
+            delayTimer.reset();
+
+            int blocksPlaced = 0;
+
+            while (blocksPlaced <= blocksPerTick.getValue()) {
+                int maxSteps;
+                Vec3d[] offsetPattern;
+
+                switch (offsetMode.getValue()) {
+                    case "Double" : {
+                        offsetPattern = Offsets.BURROW_DOUBLE;
+                        maxSteps = Offsets.BURROW_DOUBLE.length;
+                        break;
+                    }
+                    default: {
+                        offsetPattern = Offsets.BURROW;
+                        maxSteps = Offsets.BURROW.length;
+                        break;
+                    }
+                }
+
+                if (offsetSteps >= maxSteps) {
+                    offsetSteps = 0;
+                    break;
+                }
+
+                BlockPos offsetPos = new BlockPos(offsetPattern[offsetSteps]);
+                BlockPos targetPos = new BlockPos(mc.player.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+
+                boolean tryPlacing = true;
+
+                if (mc.player.posY % 1 > 0.2) {
+                    targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
+                }
+
+                if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
+                    tryPlacing = false;
+                }
+
+                if (tryPlacing && placeBlock(targetPos)) {
+                    blocksPlaced++;
+                }
+
+                offsetSteps++;
+
+                if (isSneaking) {
+                    mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+                    isSneaking = false;
+                }
             }
         }
     }
 
-    private static class Offsets {
-        private static final Vec3d[] SINGLE = {
-                new Vec3d(0, 0, 0)
-        };
+    private boolean placeBlock(BlockPos pos) {
+        EnumHand handSwing = EnumHand.MAIN_HAND;
 
-        private static final Vec3d[] DOUBLE = {
-                new Vec3d(0, 0, 0),
-                new Vec3d(0, 1, 0)
-        };
+        int targetBlockSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
+
+        if (targetBlockSlot == -1) {
+            outOfTargetBlock = true;
+            return false;
+        }
+
+        if (mc.player.inventory.currentItem != targetBlockSlot) {
+            mc.player.inventory.currentItem = targetBlockSlot;
+        }
+
+        return PlacementUtil.place(pos, handSwing, rotate.getValue(), true);
     }
 }

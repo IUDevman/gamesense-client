@@ -1,19 +1,26 @@
 package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.combat.DamageUtil;
+import com.gamesense.api.setting.values.*;
+import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
+import com.gamesense.api.util.world.combat.DamageUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemPickaxe;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
@@ -25,56 +32,33 @@ import java.util.stream.Collectors;
  * @author Hoosiers
  * @since 10/20/2020
  * @author 0b00101010
- * @since 30/01/2021
+ * @since 01/30/2021
  */
+
+@Module.Declaration(name = "CityESP", category = Category.Render)
 public class CityESP extends Module {
 
-    public CityESP() {
-        super("CityESP", Category.Render);
-    }
-
-    Setting.Integer range;
-    Setting.Integer down;
-    Setting.Integer sides;
-    Setting.Integer depth;
-    Setting.Double minDamage;
-    Setting.Double maxDamage;
-    Setting.Boolean ignoreCrystals;
-    Setting.Mode targetMode;
-    Setting.Mode selectMode;
-    Setting.Mode renderMode;
-    Setting.Integer width;
-    Setting.ColorSetting color;
-
-    public void setup() {
-        ArrayList<String> targetModes = new ArrayList<>();
-        targetModes.add("Single");
-        targetModes.add("All");
-      
-        ArrayList<String> selectModes = new ArrayList<>();
-        selectModes.add("Closest");
-        selectModes.add("All");
-
-        ArrayList<String> renderModes = new ArrayList<>();
-        renderModes.add("Outline");
-        renderModes.add("Fill");
-        renderModes.add("Both");
-
-        range = registerInteger("Range", 20, 1, 30);
-        down = registerInteger("Down", 1, 0, 3);
-        sides = registerInteger("Sides", 1, 0, 4);
-        depth = registerInteger("Depth", 3, 0, 10);
-        minDamage = registerDouble("Min Damage", 5, 0, 10);
-        maxDamage = registerDouble("Max Self Damage", 7, 0, 20);
-        ignoreCrystals = registerBoolean("Ignore Crystals", true);
-        targetMode = registerMode("Target", targetModes, "Single");
-        selectMode = registerMode("Select", selectModes, "Closest");
-        renderMode = registerMode("Render", renderModes, "Both");
-        width = registerInteger("Width", 1, 1, 10);
-        color = registerColor("Color", new GSColor(102,51,153));
-    }
+    IntegerSetting range = registerInteger("Range", 20, 1, 30);
+    IntegerSetting down = registerInteger("Down", 1, 0, 3);
+    IntegerSetting sides = registerInteger("Sides", 1, 0, 4);
+    IntegerSetting depth = registerInteger("Depth", 3, 0, 10);
+    DoubleSetting minDamage = registerDouble("Min Damage", 5, 0, 10);
+    DoubleSetting maxDamage = registerDouble("Max Self Damage", 7, 0, 20);
+    BooleanSetting ignoreCrystals = registerBoolean("Ignore Crystals", true);
+    BooleanSetting mine = registerBoolean("Shift Mine", false);
+    BooleanSetting switchPick = registerBoolean("Switch Pick", true);
+    DoubleSetting distanceMine = registerDouble("Distance Mine", 5, 0, 10);
+    ModeSetting mineMode = registerMode("Mine Mode", Arrays.asList("Packet", "Vanilla"), "Packet");
+    ModeSetting targetMode = registerMode("Target", Arrays.asList("Single", "All"), "Single");
+    ModeSetting selectMode = registerMode("Select", Arrays.asList("Closest", "All"), "Closest");
+    ModeSetting renderMode = registerMode("Render", Arrays.asList("Outline", "Fill", "Both"), "Both");
+    IntegerSetting width = registerInteger("Width", 1, 1, 10);
+    ColorSetting color = registerColor("Color", new GSColor(102, 51, 153));
 
     private final HashMap<EntityPlayer, List<BlockPos>> cityable = new HashMap<>();
+    private int oldSlot;
+    private boolean packetMined = false;
+    private BlockPos coordsPacketMined = new BlockPos(-1, -1, -1);
 
     public void onUpdate() {
         if (mc.player == null || mc.world == null)
@@ -86,7 +70,7 @@ public class CityESP extends Module {
                 .filter(entityPlayer -> entityPlayer.getDistanceSq(mc.player) <= range.getValue() * range.getValue())
                 .filter(entityPlayer -> !EntityUtil.basicChecksEntity(entityPlayer)).collect(Collectors.toList());
 
-        for (EntityPlayer player: players) {
+        for (EntityPlayer player : players) {
             if (player == mc.player) {
                 continue;
             }
@@ -116,7 +100,6 @@ public class CityESP extends Module {
                 continue;
             }
 
-            // check if player is actually in a hole
             HoleUtil.HoleInfo holeInfo = HoleUtil.isHole(any.get(), false, true);
             if (holeInfo.getType() == HoleUtil.HoleType.NONE || holeInfo.getSafety() == HoleUtil.BlockSafety.UNBREAKABLE) {
                 continue;
@@ -129,6 +112,47 @@ public class CityESP extends Module {
 
             if (sides.size() > 0) {
                 cityable.put(player, sides);
+            }
+        }
+        if (mine.getValue()) {
+            if (mc.gameSettings.keyBindSneak.isPressed()) {
+                for(List<BlockPos> poss : cityable.values()) {
+                    boolean found = false;
+                    for(BlockPos block : poss) {
+                        if (mc.player.getDistance(block.x, block.y, block.z) <= distanceMine.getValue()) {
+                            found = true;
+                            if (packetMined && coordsPacketMined == block)
+                                break;
+
+                            if (mc.player.getHeldItemMainhand().getItem() != Items.DIAMOND_PICKAXE && switchPick.getValue()) {
+                                oldSlot = mc.player.inventory.currentItem;
+                                int slot = InventoryUtil.findFirstItemSlot(ItemPickaxe.class, 0, 9);
+                                if (slot != 1)
+                                    mc.player.inventory.currentItem = slot;
+                            }
+
+                            switch (mineMode.getValue()) {
+                                case "Packet" : {
+                                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                                    mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, block, EnumFacing.UP));
+                                    mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, block, EnumFacing.UP));
+                                    packetMined = true;
+                                    coordsPacketMined = block;
+                                }
+                                case "Vanilla" : {
+                                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                                    mc.playerController.onPlayerDamageBlock(block, EnumFacing.UP);
+                                }
+                                default: {
+                                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                                    mc.playerController.onPlayerDamageBlock(block, EnumFacing.UP);
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
             }
         }
     }
@@ -165,17 +189,16 @@ public class CityESP extends Module {
             BlockPos pos1 = blockOffset.left(blockPos.down(down.getValue()), sides.getValue());
             BlockPos pos2 = blockOffset.forward(blockOffset.right(blockPos, sides.getValue()), depth.getValue());
             List<BlockPos> square = EntityUtil.getSquare(pos1, pos2);
-            // store to put back after calculation
+
             IBlockState holder = mc.world.getBlockState(blockPos);
             mc.world.setBlockToAir(blockPos);
 
 
             for (BlockPos pos : square) {
                 if (this.canPlaceCrystal(pos.down(), ignoreCrystals.getValue())) {
-                    // believe i have the right location for the crystal
-                    // pos is the block one above the bedrock/obsidian
-                    if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ()+ 0.5d, player) >= minDamage.getValue()) {
-                        if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ()+ 0.5d, mc.player) <= maxDamage.getValue()) {
+
+                    if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ() + 0.5d, player) >= minDamage.getValue()) {
+                        if (DamageUtil.calculateDamage((double) pos.getX() + 0.5d, pos.getY(), (double) pos.getZ() + 0.5d, mc.player) <= maxDamage.getValue()) {
                             cityableSides.add(blockPos);
                         }
                         break;
@@ -183,7 +206,6 @@ public class CityESP extends Module {
                 }
             }
 
-            // put back
             mc.world.setBlockState(blockPos, holder);
         }));
 

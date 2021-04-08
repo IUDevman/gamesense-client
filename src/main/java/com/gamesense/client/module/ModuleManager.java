@@ -1,8 +1,5 @@
 package com.gamesense.client.module;
 
-import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.util.render.RenderUtil;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.modules.combat.*;
 import com.gamesense.client.module.modules.exploits.*;
 import com.gamesense.client.module.modules.gui.ClickGuiModule;
@@ -12,9 +9,6 @@ import com.gamesense.client.module.modules.hud.*;
 import com.gamesense.client.module.modules.misc.*;
 import com.gamesense.client.module.modules.movement.*;
 import com.gamesense.client.module.modules.render.*;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,19 +16,16 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 
 public class ModuleManager {
-
-    private static LinkedHashMap<Class<? extends Module>, Module> modulesClassMap;
-    private static LinkedHashMap<String, Module> modulesNameMap;
+    private static final LinkedHashMap<Class<? extends Module>, Module> modulesClassMap = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, Module> modulesNameMap = new LinkedHashMap<>();
 
     public static void init() {
-        modulesClassMap = new LinkedHashMap<>();
-        modulesNameMap = new LinkedHashMap<>();
-
         //Combat
         addMod(new AntiCrystal());
         addMod(new AutoAnvil());
         addMod(new AutoArmor());
-        addMod(new AutoCrystalGS());
+        addMod(new AutoCrystal());
+        addMod(new AutoSkull());
         addMod(new AutoTrap());
         addMod(new AutoWeb());
         addMod(new BedAura());
@@ -50,6 +41,7 @@ public class ModuleManager {
         addMod(new Surround());
         //Exploits
         addMod(new FastBreak());
+        addMod(new HoosiersDupe());
         addMod(new LiquidInteract());
         addMod(new NoInteract());
         addMod(new NoSwing());
@@ -78,18 +70,20 @@ public class ModuleManager {
         addMod(new DiscordRPCModule());
         addMod(new FastPlace());
         addMod(new FakePlayer());
-        addMod(new HoosiersDupe());
         addMod(new HotbarRefill());
         addMod(new MCF());
+        addMod(new MCP());
         addMod(new MultiTask());
         addMod(new NoEntityTrace());
         addMod(new NoKick());
         addMod(new PhysicsSpammer());
         addMod(new PvPInfo());
         addMod(new SortInventory());
+        addMod(new XCarry());
         //Render
         addMod(new BlockHighlight());
         addMod(new BreakESP());
+        addMod(new Bucked());
         addMod(new CapesModule());
         addMod(new Chams());
         addMod(new CityESP());
@@ -134,55 +128,11 @@ public class ModuleManager {
         modulesNameMap.put(module.getName().toLowerCase(Locale.ROOT), module);
     }
 
-    public static void onBind(int key) {
-        if (key == Keyboard.KEY_NONE) return;
-
-        for (Module module : getModules()) {
-            if (module.getBind() != key) continue;
-            module.toggle();
-        }
-    }
-
-    public static void onUpdate() {
-        for (Module module : getModules()) {
-            if (!module.isEnabled()) continue;
-            module.onUpdate();
-        }
-    }
-
-    public static void onRender() {
-        for (Module module : getModules()) {
-            if (!module.isEnabled()) continue;
-            module.onRender();
-        }
-        GameSense.getInstance().gameSenseGUI.render();
-    }
-
-    public static void onWorldRender(RenderWorldLastEvent event) {
-        Minecraft.getMinecraft().profiler.startSection("gamesense");
-        Minecraft.getMinecraft().profiler.startSection("setup");
-        RenderUtil.prepare();
-        RenderEvent e = new RenderEvent(event.getPartialTicks());
-        Minecraft.getMinecraft().profiler.endSection();
-
-        for (Module module : getModules()) {
-            if (!module.isEnabled()) continue;
-            Minecraft.getMinecraft().profiler.startSection(module.getName());
-            module.onWorldRender(e);
-            Minecraft.getMinecraft().profiler.endSection();
-        }
-
-        Minecraft.getMinecraft().profiler.startSection("release");
-        RenderUtil.release();
-        Minecraft.getMinecraft().profiler.endSection();
-        Minecraft.getMinecraft().profiler.endSection();
-    }
-
     public static Collection<Module> getModules() {
         return modulesClassMap.values();
     }
 
-    public static ArrayList<Module> getModulesInCategory(Module.Category category) {
+    public static ArrayList<Module> getModulesInCategory(Category category) {
         ArrayList<Module> list = new ArrayList<>();
 
         for (Module module : modulesClassMap.values()) {

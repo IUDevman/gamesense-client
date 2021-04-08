@@ -1,21 +1,18 @@
 package com.gamesense.client.module.modules.hud;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.player.enemy.Enemies;
-import com.gamesense.api.util.player.friend.Friends;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.lukflug.panelstudio.Context;
 import com.lukflug.panelstudio.Interface;
 import com.lukflug.panelstudio.hud.HUDComponent;
 import com.lukflug.panelstudio.theme.Theme;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.monster.EntityMob;
@@ -25,44 +22,34 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 
+import java.awt.*;
+
 /**
  * @author Hoosiers
  * @since 12/15/2020
  */
 
+@Module.Declaration(name = "Radar", category = Category.HUD)
+@HUDModule.Declaration(posX = 0, posZ = 200)
 public class Radar extends HUDModule {
 
-    private Setting.Boolean renderPlayer;
-    private Setting.Boolean renderMobs;
-    private Setting.ColorSetting playerColor;
-    private Setting.ColorSetting outlineColor;
-    private Setting.ColorSetting fillColor;
+    BooleanSetting renderPlayer = registerBoolean("Player", true);
+    BooleanSetting renderMobs = registerBoolean("Mobs", true);
+    ColorSetting playerColor = registerColor("Player Color", new GSColor(0, 0, 255, 255));
+    ColorSetting outlineColor = registerColor("Outline Color", new GSColor(255, 0, 0, 255));
+    ColorSetting fillColor = registerColor("Fill Color", new GSColor(0, 0, 0, 255));
 
-    public Radar() {
-        super("Radar", new Point(0, 300));
-    }
-
-    public void setup() {
-        renderPlayer = registerBoolean("Player", true);
-        renderMobs = registerBoolean("Mobs", true);
-        playerColor = registerColor("Player Color", new GSColor(0, 0, 255, 255));
-        outlineColor = registerColor("Outline Color", new GSColor(255, 0, 0, 255));
-        fillColor = registerColor("Fill Color", new GSColor(0, 0, 0, 255));
-    }
-    
     @Override
-    public void populate (Theme theme) {
-    	component = new RadarComponent(theme);
+    public void populate(Theme theme) {
+        component = new RadarComponent(theme);
     }
 
     private Color getPlayerColor(EntityPlayer entityPlayer) {
-        if (Friends.isFriend(entityPlayer.getName())) {
-            return new GSColor(ColorMain.getFriendGSColor(), 255);
-        }
-        else if (Enemies.isEnemy(entityPlayer.getName())) {
-            return new GSColor(ColorMain.getEnemyGSColor(), 255);
-        }
-        else {
+        if (SocialManager.isFriend(entityPlayer.getName())) {
+            return new GSColor(ModuleManager.getModule(ColorMain.class).getFriendGSColor(), 255);
+        } else if (SocialManager.isEnemy(entityPlayer.getName())) {
+            return new GSColor(ModuleManager.getModule(ColorMain.class).getEnemyGSColor(), 255);
+        } else {
             return new GSColor(playerColor.getValue(), 255);
         }
     }
@@ -70,18 +57,16 @@ public class Radar extends HUDModule {
     private Color getEntityColor(Entity entity) {
         if (entity instanceof EntityMob || entity instanceof EntitySlime) {
             return new GSColor(255, 0, 0, 255);
-        }
-        else if (entity instanceof EntityAnimal || entity instanceof EntitySquid) {
+        } else if (entity instanceof EntityAnimal || entity instanceof EntitySquid) {
             return new GSColor(0, 255, 0, 255);
-        }
-        else {
+        } else {
             return new GSColor(255, 165, 0, 255);
         }
     }
 
     private class RadarComponent extends HUDComponent {
 
-        public RadarComponent (Theme theme) {
+        public RadarComponent(Theme theme) {
             super(getName(), theme.getPanelRenderer(), Radar.this.position);
         }
 
@@ -121,10 +106,10 @@ public class Radar extends HUDModule {
 
                 //outline, credit to lukflug for this
                 Color outline = new GSColor(outlineColor.getValue(), 255);
-                context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(context.getSize().width,1)),outline,outline,outline,outline);
-                context.getInterface().fillRect(new Rectangle(context.getPos(),new Dimension(1,context.getSize().height)),outline,outline,outline,outline);
-                context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x+context.getSize().width-1,context.getPos().y),new Dimension(1,context.getSize().height)),outline,outline,outline,outline);
-                context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x,context.getPos().y+context.getSize().height-1),new Dimension(context.getSize().width,1)),outline,outline,outline,outline);
+                context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(context.getSize().width, 1)), outline, outline, outline, outline);
+                context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(1, context.getSize().height)), outline, outline, outline, outline);
+                context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x + context.getSize().width - 1, context.getPos().y), new Dimension(1, context.getSize().height)), outline, outline, outline, outline);
+                context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x, context.getPos().y + context.getSize().height - 1), new Dimension(context.getSize().width, 1)), outline, outline, outline, outline);
 
                 //self
                 boolean isNorth = isFacing(EnumFacing.NORTH);
@@ -137,7 +122,7 @@ public class Radar extends HUDModule {
                 context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter + 3, context.getPos().y + distanceToCenter), new Point(context.getPos().x + distanceToCenter + (isEast ? 1 : 0), context.getPos().y + distanceToCenter), isEast ? outline : selfColor, isEast ? outline : selfColor);
                 context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter + 3), new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter + (isSouth ? 1 : 0)), isSouth ? outline : selfColor, isSouth ? outline : selfColor);
                 context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter - (isWest ? 1 : 0), context.getPos().y + distanceToCenter), new Point(context.getPos().x + distanceToCenter - 3, context.getPos().y + distanceToCenter), isWest ? outline : selfColor, isWest ? outline : selfColor);
-                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter - (isNorth ? 1 : 0)), new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter -3), isNorth ? outline : selfColor, isNorth ? outline : selfColor);
+                context.getInterface().drawLine(new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter - (isNorth ? 1 : 0)), new Point(context.getPos().x + distanceToCenter, context.getPos().y + distanceToCenter - 3), isNorth ? outline : selfColor, isNorth ? outline : selfColor);
 
             }
         }

@@ -1,78 +1,100 @@
 package com.gamesense.api.util.player;
 
-import com.gamesense.api.event.events.PacketEvent;
-import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.client.GameSense;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 
+// Sponsored by KAMI Blue
+// https://github.com/kami-blue/client/blob/master/src/main/kotlin/org/kamiblue/client/util/math/RotationUtils.kt
 public class RotationUtil {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
-    public static final RotationUtil ROTATION_UTIL = new RotationUtil();
 
-    private int rotationConnections = 0;
-
-    private boolean shouldSpoofAngles;
-    private boolean isSpoofingAngles;
-    private double yaw;
-    private double pitch;
-
-    // Forces only ever one
-    private RotationUtil() {
-    }
-
-    public void onEnable() {
-        rotationConnections++;
-        if (rotationConnections == 1)
-            GameSense.EVENT_BUS.subscribe(this);
-    }
-
-    public void onDisable() {
-        rotationConnections--;
-        if (rotationConnections == 0)
-            GameSense.EVENT_BUS.unsubscribe(this);
-    }
-
-    public void lookAtPacket(double px, double py, double pz, EntityPlayer me) {
-        double[] v = EntityUtil.calculateLookAt(px, py, pz, me);
-        this.setYawAndPitch((float) v[0], (float) v[1]);
-    }
-
-    public void setYawAndPitch(float yaw1, float pitch1) {
-        yaw = yaw1;
-        pitch = pitch1;
-        isSpoofingAngles = true;
-    }
-
-    public void resetRotation() {
-        if (isSpoofingAngles) {
-            yaw = mc.player.rotationYaw;
-            pitch = mc.player.rotationPitch;
-            isSpoofingAngles = false;
+    /**
+     * Get rotation from player position to the closest hit vector in a `AxisAlignedBB`
+     *
+     * @param box Calculate rotation to this AABB
+     */
+    public static Vec2f getRotationTo(AxisAlignedBB box) {
+        EntityPlayerSP player = mc.player;
+        if (player == null) {
+            return Vec2f.ZERO;
         }
-    }
 
-    public void shouldSpoofAngles(boolean e) {
-        shouldSpoofAngles = e;
-    }
+        Vec3d eyePos = player.getPositionEyes(1.0f);
 
-    public boolean isSpoofingAngles() {
-        return isSpoofingAngles;
-    }
-
-    @EventHandler
-    private final Listener<PacketEvent.Send> packetSendListener = new Listener<>(event -> {
-        Packet packet = event.getPacket();
-        if (packet instanceof CPacketPlayer && shouldSpoofAngles) {
-            if (isSpoofingAngles) {
-                ((CPacketPlayer) packet).yaw = (float) yaw;
-                ((CPacketPlayer) packet).pitch = (float) pitch;
-            }
+        if (player.getEntityBoundingBox().intersects(box)) {
+            return getRotationTo(eyePos, box.getCenter());
         }
-    });
+
+        double x = MathHelper.clamp(eyePos.x, box.minX, box.maxX);
+        double y = MathHelper.clamp(eyePos.y, box.minY, box.maxY);
+        double z = MathHelper.clamp(eyePos.z, box.minZ, box.maxZ);
+
+        return getRotationTo(eyePos, new Vec3d(x, y, z));
+    }
+
+    /**
+     * Get rotation from player position to another position vector
+     *
+     * @param posTo Calculate rotation to this position vector
+     */
+    public static Vec2f getRotationTo(Vec3d posTo) {
+        EntityPlayerSP player = mc.player;
+        return player != null ? getRotationTo(player.getPositionEyes(1.0f), posTo) : Vec2f.ZERO;
+    }
+
+    /**
+     * Get rotation from a position vector to another position vector
+     *
+     * @param posFrom Calculate rotation from this position vector
+     * @param posTo   Calculate rotation to this position vector
+     */
+    public static Vec2f getRotationTo(Vec3d posFrom, Vec3d posTo) {
+        return getRotationFromVec(posTo.subtract(posFrom));
+    }
+
+    /**
+     * Get rotation from a vector
+     *
+     * @param vec Calculate rotation from this vector
+     */
+    public static Vec2f getRotationFromVec(Vec3d vec) {
+        double lengthXZ = Math.hypot(vec.x, vec.z);
+        double yaw = normalizeAngle(Math.toDegrees(Math.atan2(vec.z, vec.x)) - 90.0);
+        double pitch = normalizeAngle(Math.toDegrees(-Math.atan2(vec.y, lengthXZ)));
+
+        return new Vec2f((float) yaw, (float) pitch);
+    }
+
+    public static double normalizeAngle(double angle) {
+        angle %= 360.0;
+
+        if (angle >= 180.0) {
+            angle -= 360.0;
+        }
+
+        if (angle < -180.0) {
+            angle += 360.0;
+        }
+
+        return angle;
+    }
+
+    public static float normalizeAngle(float angle) {
+        angle %= 360.0f;
+
+        if (angle >= 180.0f) {
+            angle -= 360.0f;
+        }
+
+        if (angle < -180.0f) {
+            angle += 360.0f;
+        }
+
+        return angle;
+    }
 }

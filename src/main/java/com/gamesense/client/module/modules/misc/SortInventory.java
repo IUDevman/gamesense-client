@@ -1,25 +1,21 @@
 package com.gamesense.client.module.modules.misc;
-/*
-    TODO: Read perfectly your inventory
-    TODO: Create a json
-    TODO: Read the json
-    TODO: Create line-config
-    TODO: Read perfectly a shulker/chest
-    TODO: Take chest/shulker items to inventory
-    TODO: Sort inventory
- */
-import com.gamesense.api.setting.Setting;
+
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.client.command.commands.AutoGearCommand;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.modules.combat.PistonCrystal;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
+
 import java.util.*;
 
 /**
  * @Author TechAle
  */
+
 /*
     INVENTORY SORTING ALGORITHM
     Lets start from the beginning, the inventory on the json.
@@ -39,18 +35,15 @@ import java.util.*;
     I added double check because, so the end is going to be perfect in anyway
  */
 
+@Module.Declaration(name = "SortInventory", category = Category.Misc)
 public class SortInventory extends Module {
 
-    public SortInventory() {
-        super("SortInventory", Category.Misc);
-    }
-
-    Setting.Boolean chatMsg,
-                    debugMode,
-                    confirmSort,
-                    instaSort,
-                    closeAfter;
-    Setting.Integer tickDelay;
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+    BooleanSetting confirmSort = registerBoolean("Confirm Sort", true);
+    BooleanSetting instaSort = registerBoolean("Insta Sort", false);
+    BooleanSetting closeAfter = registerBoolean("Close After", false);
+    BooleanSetting infoMsgs = registerBoolean("Info Msgs", true);
+    BooleanSetting debugMode = registerBoolean("Debug Mode", false);
 
     // Our inventory variables
     private HashMap<Integer, String> planInventory = new HashMap<>();
@@ -60,27 +53,13 @@ public class SortInventory extends Module {
 
     // Tickets
     private int delayTimeTicks,
-                stepNow;
+            stepNow;
     // If we had opened before a chest/inventory
     private boolean openedBefore,
-                    finishSort,
-                    doneBefore;
+            finishSort,
+            doneBefore;
 
-    @Override
-    public void setup() {
-        tickDelay = registerInteger("Tick Delay", 0, 0, 20);
-        confirmSort = registerBoolean("Confirm Sort", true);
-        chatMsg = registerBoolean("Chat Msg", true);
-        instaSort = registerBoolean("Insta Sort", false);
-        closeAfter = registerBoolean("Close After", false);
-        debugMode = registerBoolean("Debug Mode", false);
-    }
-
-    @Override
     public void onEnable() {
-        // Msg
-        if (chatMsg.getValue())
-            PistonCrystal.printChat("AutoSort Turned On!", false);
         // Get name of the config
         // Config variables
         String curConfigName = AutoGearCommand.getCurrentSet();
@@ -90,8 +69,8 @@ public class SortInventory extends Module {
             return;
         }
         // Print the config
-        if (chatMsg.getValue())
-            PistonCrystal.printChat("Config " + curConfigName + " actived", false);
+        if (infoMsgs.getValue())
+            PistonCrystal.printDebug("Config " + curConfigName + " actived", false);
         // Get the inventory
         String inventoryConfig = AutoGearCommand.getInventoryKit(curConfigName);
         // If none, exit
@@ -105,7 +84,7 @@ public class SortInventory extends Module {
         planInventory = new HashMap<>();
         nItems = new HashMap<>();
         // Iterate for creating planInventory and nItems
-        for(int i = 0; i < inventoryDivided.length; i++) {
+        for (int i = 0; i < inventoryDivided.length; i++) {
             // Add to planInventory if it's not air
             if (!inventoryDivided[i].contains("air")) {
                 // Add it
@@ -128,21 +107,17 @@ public class SortInventory extends Module {
             mc.displayGuiScreen(new GuiInventory(mc.player));
     }
 
-    @Override
     public void onDisable() {
-        if (chatMsg.getValue() && planInventory.size() > 0)
-            PistonCrystal.printChat("AutoSort Turned Off!", true);
+        if (infoMsgs.getValue() && planInventory.size() > 0)
+            PistonCrystal.printDebug("AutoSort Turned Off!", true);
     }
 
-
-    @Override
     public void onUpdate() {
         // Wait
         if (delayTimeTicks < tickDelay.getValue()) {
             delayTimeTicks++;
             return;
-        }
-        else {
+        } else {
             delayTimeTicks = 0;
         }
 
@@ -150,11 +125,10 @@ public class SortInventory extends Module {
         if (planInventory.size() == 0)
             disable();
         // Check if your inventory is open
-        if ( mc.currentScreen instanceof GuiInventory) {
+        if (mc.currentScreen instanceof GuiInventory) {
             // In that case, sort the inventory
             sortInventoryAlgo();
-        }
-        else openedBefore = false;
+        } else openedBefore = false;
 
     }
 
@@ -163,16 +137,16 @@ public class SortInventory extends Module {
         // If we have just started
         if (!openedBefore) {
             // Print
-            if (chatMsg.getValue() && !doneBefore)
-                PistonCrystal.printChat("Start sorting inventory...", false);
+            if (infoMsgs.getValue() && !doneBefore)
+                PistonCrystal.printDebug("Start sorting inventory...", false);
             // Get the plan to create
             sortItems = getInventorySort();
             // Check some errors / doubleCheck
             if (sortItems.size() == 0 && !doneBefore) {
                 finishSort = false;
                 // Print
-                if (chatMsg.getValue())
-                    PistonCrystal.printChat("Inventory arleady sorted...", true);
+                if (infoMsgs.getValue())
+                    PistonCrystal.printDebug("Inventory arleady sorted...", true);
                 // If we are using instaSort, close
                 if (instaSort.getValue() || closeAfter.getValue()) {
                     mc.player.closeScreen();
@@ -180,12 +154,12 @@ public class SortInventory extends Module {
                         disable();
                 }
 
-            }else {
+            } else {
                 finishSort = true;
                 stepNow = 0;
             }
             openedBefore = true;
-        // if we have to start sorting
+            // if we have to start sorting
         } else if (finishSort) {
             int slotChange;
             // This is the sort area
@@ -212,8 +186,8 @@ public class SortInventory extends Module {
 
                 finishSort = false;
                 // Print
-                if (chatMsg.getValue()) {
-                    PistonCrystal.printChat("Inventory sorted", false);
+                if (infoMsgs.getValue()) {
+                    PistonCrystal.printDebug("Inventory sorted", false);
                 }
                 // Check if the last slot has been placed
                 checkLastItem();
@@ -332,19 +306,17 @@ public class SortInventory extends Module {
                     }
                 }
             }
-
         }
 
         if (planMove.size() != 0 && planMove.get(planMove.size() - 1).equals(planMove.get(planMove.size() - 2))) {
             planMove.remove(planMove.size() - 1);
         }
 
-
         // Print all path
         if (debugMode.getValue()) {
             // Print every values
-            for(int valuePath : planMove) {
-                PistonCrystal.printChat(Integer.toString(valuePath),  false);
+            for (int valuePath : planMove) {
+                PistonCrystal.printDebug(Integer.toString(valuePath), false);
             }
         }
 
@@ -354,10 +326,9 @@ public class SortInventory extends Module {
     // This give a copy of our inventory
     private ArrayList<String> getInventoryCopy() {
         ArrayList<String> output = new ArrayList<>();
-        for(ItemStack i : mc.player.inventory.mainInventory) {
+        for (ItemStack i : mc.player.inventory.mainInventory) {
             output.add(Objects.requireNonNull(i.getItem().getRegistryName()).toString() + i.getMetadata());
         }
         return output;
     }
-
 }

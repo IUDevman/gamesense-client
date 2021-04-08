@@ -1,14 +1,18 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.combat.DamageUtil;
-import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
-import com.gamesense.api.util.misc.Timer;
+import com.gamesense.api.util.world.combat.DamageUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.misc.AutoGG;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -27,6 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -35,43 +40,20 @@ import java.util.stream.Collectors;
  * @since 1/2/2020
  */
 
+@Module.Declaration(name = "BedAura", category = Category.Combat)
 public class BedAura extends Module {
 
-    public BedAura() {
-        super("BedAura", Category.Combat);
-    }
-
-    Setting.Mode attackMode;
-    Setting.Double attackRange;
-    Setting.Integer breakDelay;
-    Setting.Integer placeDelay;
-    Setting.Double targetRange;
-    Setting.Boolean antiSuicide;
-    Setting.Integer antiSuicideHealth;
-    Setting.Integer minDamage;
-    Setting.Boolean rotate;
-    Setting.Boolean chatMsgs;
-    Setting.Boolean disableNone;
-    Setting.Boolean autoSwitch;
-
-    public void setup() {
-        ArrayList<String> attackModes = new ArrayList<>();
-        attackModes.add("Normal");
-        attackModes.add("Own");
-
-        attackMode = registerMode("Mode", attackModes, "Own");
-        attackRange = registerDouble("Attack Range", 4, 0, 10);
-        breakDelay = registerInteger("Break Delay", 1, 0, 20);
-        placeDelay = registerInteger("Place Delay", 1, 0, 20);
-        targetRange = registerDouble("Target Range", 7, 0, 16);
-        rotate = registerBoolean("Rotate", true);
-        disableNone = registerBoolean("Disable No Bed", false);
-        autoSwitch = registerBoolean("Switch", true);
-        antiSuicide = registerBoolean("Anti Suicide", false);
-        antiSuicideHealth = registerInteger("Suicide Health", 14, 1, 36);
-        minDamage = registerInteger("Min Damage", 5, 1, 36);
-        chatMsgs = registerBoolean("Chat Msgs", true);
-    }
+    ModeSetting attackMode = registerMode("Mode", Arrays.asList("Normal", "Own"), "Own");
+    DoubleSetting attackRange = registerDouble("Attack Range", 4, 0, 10);
+    IntegerSetting breakDelay = registerInteger("Break Delay", 1, 0, 20);
+    IntegerSetting placeDelay = registerInteger("Place Delay", 1, 0, 20);
+    DoubleSetting targetRange = registerDouble("Target Range", 7, 0, 16);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting disableNone = registerBoolean("Disable No Bed", false);
+    BooleanSetting autoSwitch = registerBoolean("Switch", true);
+    BooleanSetting antiSuicide = registerBoolean("Anti Suicide", false);
+    IntegerSetting antiSuicideHealth = registerInteger("Suicide Health", 14, 1, 36);
+    IntegerSetting minDamage = registerInteger("Min Damage", 5, 1, 36);
 
     private boolean hasNone = false;
     private int oldSlot = -1;
@@ -93,13 +75,8 @@ public class BedAura extends Module {
         if (mc.player.inventory.currentItem != bedSlot && bedSlot != -1 && autoSwitch.getValue()) {
             oldSlot = mc.player.inventory.currentItem;
             mc.player.inventory.currentItem = bedSlot;
-        }
-        else if (bedSlot == -1) {
+        } else if (bedSlot == -1) {
             hasNone = true;
-        }
-
-        if (chatMsgs.getValue()) {
-            MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "BedAura turned ON!");
         }
     }
 
@@ -114,14 +91,7 @@ public class BedAura extends Module {
             mc.player.inventory.currentItem = oldSlot;
         }
 
-        if (chatMsgs.getValue()) {
-            if (hasNone && disableNone.getValue()) {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No beds detected... BedAura turned OFF!");
-            }
-            else {
-                MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "BedAura turned OFF!");
-            }
-        }
+        if (hasNone && disableNone.getValue()) setDisabledMessage("No beds detected... BedAura turned OFF!");
 
         hasNone = false;
         oldSlot = -1;
@@ -138,8 +108,7 @@ public class BedAura extends Module {
         if (mc.player.inventory.currentItem != bedSlot && bedSlot != -1 && autoSwitch.getValue()) {
             oldSlot = mc.player.inventory.currentItem;
             mc.player.inventory.currentItem = bedSlot;
-        }
-        else if (bedSlot == -1) {
+        } else if (bedSlot == -1) {
             hasNone = true;
         }
 
@@ -220,19 +189,20 @@ public class BedAura extends Module {
                     continue;
                 }
 
+                if (ModuleManager.isModuleEnabled(AutoGG.class)) {
+                    AutoGG.INSTANCE.addTargetedPlayer(entityPlayer.getName());
+                }
+
                 if (mc.world.getBlockState(targetPos1.east()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1, 90, EnumFacing.DOWN);
                     return;
-                }
-                else if (mc.world.getBlockState(targetPos1.west()).getBlock() == Blocks.AIR) {
+                } else if (mc.world.getBlockState(targetPos1.west()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1, -90, EnumFacing.DOWN);
                     return;
-                }
-                else if (mc.world.getBlockState(targetPos1.north()).getBlock() == Blocks.AIR) {
+                } else if (mc.world.getBlockState(targetPos1.north()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1, 0, EnumFacing.DOWN);
                     return;
-                }
-                else if (mc.world.getBlockState(targetPos1.south()).getBlock() == Blocks.AIR) {
+                } else if (mc.world.getBlockState(targetPos1.south()).getBlock() == Blocks.AIR) {
                     placeBedFinal(targetPos1, 180, EnumFacing.SOUTH);
                     return;
                 }
@@ -256,8 +226,7 @@ public class BedAura extends Module {
     private boolean isOwn(TileEntity tileEntity) {
         if (attackMode.getValue().equalsIgnoreCase("Normal")) {
             return true;
-        }
-        else if (attackMode.getValue().equalsIgnoreCase("Own")) {
+        } else if (attackMode.getValue().equalsIgnoreCase("Own")) {
             for (BlockPos blockPos : placedPos) {
                 if (blockPos.getDistance(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ()) <= 3) {
                     return true;
@@ -283,7 +252,7 @@ public class BedAura extends Module {
     private NonNullList<BlockPos> findTargetPlacePos(EntityPlayer entityPlayer) {
         NonNullList<BlockPos> targetPlacePos = NonNullList.create();
 
-        targetPlacePos.addAll(EntityUtil.getSphere(mc.player.getPosition(), (float) attackRange.getValue(), (int) attackRange.getValue(), false, true, 0)
+        targetPlacePos.addAll(EntityUtil.getSphere(mc.player.getPosition(), attackRange.getValue().floatValue(), attackRange.getValue().intValue(), false, true, 0)
                 .stream()
                 .filter(this::canPlaceBed)
                 .sorted(Comparator.comparing(blockPos -> 1 - (DamageUtil.calculateDamage(blockPos.up().getX(), blockPos.up().getY(), blockPos.up().getZ(), entityPlayer))))

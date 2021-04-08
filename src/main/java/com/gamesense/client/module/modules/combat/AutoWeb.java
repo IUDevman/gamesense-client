@@ -1,12 +1,15 @@
 package com.gamesense.client.module.modules.combat;
 
-import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
+import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.gui.ColorMain;
+import com.gamesense.api.util.misc.Offsets;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.CPacketEntityAction;
@@ -14,192 +17,170 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
+/**
+ * @author Hoosiers
+ * @since 03/29/2021
+ */
+
+@Module.Declaration(name = "AutoWeb", category = Category.Combat)
 public class AutoWeb extends Module {
 
-	public AutoWeb() {
-		super("AutoWeb", Category.Combat);
-	}
+    ModeSetting offsetMode = registerMode("Pattern", Arrays.asList("Single", "Double"), "Single");
+    ModeSetting targetMode = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
+    IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
+    IntegerSetting delayTicks = registerInteger("Tick Delay", 3, 0, 10);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    BooleanSetting rotate = registerBoolean("Rotate", true);
+    BooleanSetting sneakOnly = registerBoolean("Sneak Only", false);
+    BooleanSetting disableNoBlock = registerBoolean("Disable No Web", true);
 
-	Setting.Mode trapType;
-	Setting.Boolean chatMsg;
-	Setting.Boolean rotate;
-	Setting.Boolean disableNone;
-	Setting.Integer enemyRange;
-	Setting.Integer tickDelay;
-	Setting.Integer blocksPerTick;
+    private final Timer delayTimer = new Timer();
+    private EntityPlayer targetPlayer = null;
 
-	public void setup() {
-		ArrayList<String> trapTypes = new ArrayList<>();
-		trapTypes.add("Single");
-		trapTypes.add("Double");
+    private int oldSlot = -1;
+    private int offsetSteps = 0;
+    private boolean outOfTargetBlock = false;
+    private boolean isSneaking = false;
 
-		trapType = registerMode("Mode", trapTypes, "Double");
-		disableNone = registerBoolean("Disable No Web", true);
-		rotate = registerBoolean("Rotate", true);
-		tickDelay = registerInteger("Tick Delay", 5, 0, 10);
-		blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
-		enemyRange = registerInteger("Range",4, 0, 6);
-		chatMsg = registerBoolean("Chat Msgs", true);
-	}
+    public void onEnable() {
+        PlacementUtil.onEnable();
+        if (mc.player == null || mc.world == null) {
+            disable();
+            return;
+        }
 
-	private boolean noWeb = false;
-	private boolean isSneaking = false;
-	private boolean firstRun = false;
+        oldSlot = mc.player.inventory.currentItem;
+    }
 
-	private int delayTimeTicks = 0;
-	private int offsetSteps = 0;
-	private int oldSlot = -1;
+    public void onDisable() {
+        PlacementUtil.onDisable();
+        if (mc.player == null | mc.world == null) return;
 
-	public void onEnable() {
-		PlacementUtil.onEnable();
-		if (mc.player == null) {
-			disable();
-			return;
-		}
+        if (outOfTargetBlock) setDisabledMessage("No web detected... AutoWeb turned OFF!");
 
-		if (chatMsg.getValue()) {
-			MessageBus.sendClientPrefixMessage(ColorMain.getEnabledColor() + "AutoWeb turned ON!");
-		}
+        if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
+            mc.player.inventory.currentItem = oldSlot;
+            oldSlot = -1;
+        }
 
-		oldSlot = mc.player.inventory.currentItem;
+        if (isSneaking) {
+            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+            isSneaking = false;
+        }
 
-		int newSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
-		if (newSlot != -1) {
-			mc.player.inventory.currentItem = newSlot;
-		}
-	}
+        AutoCrystal.stopAC = false;
 
-	public void onDisable() {
-		PlacementUtil.onDisable();
-		if (mc.player == null) {
-			return;
-		}
+        outOfTargetBlock = false;
+        targetPlayer = null;
+    }
 
-		if (chatMsg.getValue()) {
-			if (noWeb) {
-				MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "No web detected... AutoWeb turned OFF!");
-			}
-			else {
-				MessageBus.sendClientPrefixMessage(ColorMain.getDisabledColor() + "AutoWeb turned OFF!");
-			}
-		}
+    public void onUpdate() {
+        if (mc.player == null || mc.world == null) {
+            disable();
+            return;
+        }
 
-		if (isSneaking) {
-			mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-			isSneaking = false;
-		}
+        if (sneakOnly.getValue() && !mc.player.isSneaking()) {
+            return;
+        }
 
-		if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
-			mc.player.inventory.currentItem = oldSlot;
-			oldSlot = -1;
-		}
+        int targetBlockSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
 
-		noWeb = false;
-		firstRun = true;
-		AutoCrystalGS.stopAC = false;
-	}
+        if ((outOfTargetBlock || targetBlockSlot == -1) && disableNoBlock.getValue()) {
+            outOfTargetBlock = true;
+            disable();
+            return;
+        }
 
-	public void onUpdate() {
-		if (mc.player == null) {
-			disable();
-			return;
-		}
+        switch (targetMode.getValue()) {
+            case "Nearest" : {
+                targetPlayer = PlayerUtil.findClosestTarget(enemyRange.getValue(), targetPlayer);
+                break;
+            }
+            case "Looking" : {
+                targetPlayer = PlayerUtil.findLookingPlayer(enemyRange.getValue());
+                break;
+            }
+            default: {
+                targetPlayer = null;
+                break;
+            }
+        }
 
-		if (disableNone.getValue() && noWeb) {
-			disable();
-			return;
-		}
+        if (targetPlayer == null) return;
 
-		EntityPlayer closestTarget = PlayerUtil.findClosestTarget();
+        Vec3d targetVec3d = targetPlayer.getPositionVector();
 
-		if (closestTarget == null) {
-			return;
-		}
+        while (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
+            delayTimer.reset();
 
-		if (firstRun) {
-			firstRun = false;
-			if (InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8) == -1) {
-				noWeb = true;
-			}
-		}
-		else {
-			if (delayTimeTicks < tickDelay.getValue()) {
-				delayTimeTicks++;
-				return;
-			}
-			else {
-				delayTimeTicks = 0;
-			}
-		}
+            int blocksPlaced = 0;
 
-		int blocksPlaced = 0;
+            while (blocksPlaced <= blocksPerTick.getValue()) {
+                int maxSteps;
+                Vec3d[] offsetPattern;
 
-		while (blocksPlaced <= blocksPerTick.getValue()) {
+                switch (offsetMode.getValue()) {
+                    case "Double" : {
+                        offsetPattern = Offsets.BURROW_DOUBLE;
+                        maxSteps = Offsets.BURROW_DOUBLE.length;
+                        break;
+                    }
+                    default: {
+                        offsetPattern = Offsets.BURROW;
+                        maxSteps = Offsets.BURROW.length;
+                        break;
+                    }
+                }
 
-			List<Vec3d> placeTargets = new ArrayList<>();
-			int maxSteps;
+                if (offsetSteps >= maxSteps) {
+                    offsetSteps = 0;
+                    break;
+                }
 
-			if (trapType.getValue().equalsIgnoreCase("Single")) {
-				Collections.addAll(placeTargets, AutoWeb.Offsets.SINGLE);
-				maxSteps = AutoWeb.Offsets.SINGLE.length;
-			}
-			else {
-				Collections.addAll(placeTargets, Offsets.DOUBLE);
-				maxSteps = Offsets.DOUBLE.length;
-			}
+                BlockPos offsetPos = new BlockPos(offsetPattern[offsetSteps]);
+                BlockPos targetPos = new BlockPos(targetVec3d).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
 
-			if (offsetSteps >= maxSteps) {
-				offsetSteps = 0;
-				break;
-			}
+                boolean tryPlacing = true;
 
-			BlockPos offsetPos = new BlockPos(placeTargets.get(offsetSteps));
-			BlockPos targetPos = new BlockPos(closestTarget.getPositionVector()).add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+                if (targetPlayer.posY % 1 > 0.2) {
+                    targetPos = new BlockPos(targetPos.getX(), targetPos.getY() + 1, targetPos.getZ());
+                }
 
-			boolean tryPlacing = true;
+                if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
+                    tryPlacing = false;
+                }
 
-			if (!mc.world.getBlockState(targetPos).getMaterial().isReplaceable()) {
-				tryPlacing = false;
-			}
+                if (tryPlacing && placeBlock(targetPos)) {
+                    blocksPlaced++;
+                }
 
-			if (tryPlacing && placeBlock(targetPos, enemyRange.getValue())) {
-				blocksPlaced++;
-			} else {
-				if (InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8) == -1) {
-					noWeb = true;
-					disable();
-				}
-			}
+                offsetSteps++;
 
-			offsetSteps++;
+                if (isSneaking) {
+                    mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+                    isSneaking = false;
+                }
+            }
+        }
+    }
 
-			if (isSneaking) {
-				mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-				isSneaking = false;
-			}
-		}
-	}
+    private boolean placeBlock(BlockPos pos) {
+        EnumHand handSwing = EnumHand.MAIN_HAND;
 
-	private boolean placeBlock(BlockPos pos, int range) {
-		if (mc.player.getDistanceSq(pos) > range * range) {
-			return false;
-		}
+        int targetBlockSlot = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
 
-		return PlacementUtil.placeBlock(pos, EnumHand.MAIN_HAND, rotate.getValue(), BlockWeb.class);
-	}
+        if (targetBlockSlot == -1) {
+            outOfTargetBlock = true;
+            return false;
+        }
 
-	private static class Offsets {
-		private static final Vec3d[] SINGLE = {
-				new Vec3d(0, 0, 0)
-		};
+        if (mc.player.inventory.currentItem != targetBlockSlot) {
+            mc.player.inventory.currentItem = targetBlockSlot;
+        }
 
-		private static final Vec3d[] DOUBLE = {
-				new Vec3d(0, 0, 0),
-				new Vec3d(0, 1, 0)
-		};
-	}
+        return PlacementUtil.place(pos, handSwing, rotate.getValue(), true);
+    }
 }

@@ -9,24 +9,16 @@ import com.gamesense.client.module.ModuleManager;
  * @Author Hoosiers on 11/05/2020
  */
 
+@Command.Declaration(name = "Drawn", syntax = "drawn [module]", alias = {"drawn", "shown"})
 public class DrawnCommand extends Command {
 
-    public DrawnCommand() {
-        super("Drawn");
-
-        setCommandSyntax(Command.getCommandPrefix() + "drawn [module]");
-        setCommandAlias(new String[]{
-                "drawn", "shown"
-        });
-    }
-
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
 
         Module module = ModuleManager.getModule(main);
 
         if (module == null) {
-            MessageBus.sendCommandMessage(this.getCommandSyntax(), true);
+            MessageBus.sendCommandMessage(this.getSyntax(), true);
             return;
         }
 
