@@ -88,8 +88,10 @@ public class InventoryUtil {
                 continue;
             }
 
-            slot = i;
-            break;
+            if (itemToFind.isInstance(stack.getItem())) {
+                slot = i;
+                break;
+            }
         }
         return slot;
     }

@@ -72,6 +72,7 @@ public class ModuleManager {
         addMod(new FakePlayer());
         addMod(new HotbarRefill());
         addMod(new MCF());
+        addMod(new MCP());
         addMod(new MultiTask());
         addMod(new NoEntityTrace());
         addMod(new NoKick());
