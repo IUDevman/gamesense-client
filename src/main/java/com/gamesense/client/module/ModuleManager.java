@@ -41,6 +41,7 @@ public class ModuleManager {
         addMod(new Surround());
         //Exploits
         addMod(new FastBreak());
+        addMod(new HoosiersDupe());
         addMod(new LiquidInteract());
         addMod(new NoInteract());
         addMod(new NoSwing());
@@ -69,7 +70,6 @@ public class ModuleManager {
         addMod(new DiscordRPCModule());
         addMod(new FastPlace());
         addMod(new FakePlayer());
-        addMod(new HoosiersDupe());
         addMod(new HotbarRefill());
         addMod(new MCF());
         addMod(new MultiTask());
