@@ -387,13 +387,13 @@ public class AutoCrystal extends Module {
     }
 
     public void onDisable() {
+        ACHelper.INSTANCE.onDisable();
+
         render = null;
         renderEntity = null;
         rotating = false;
 
         targets.clear();
-
-        ACHelper.INSTANCE.onDisable();
     }
 
     public String getHudInfo() {
