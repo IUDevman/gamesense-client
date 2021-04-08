@@ -1,9 +1,7 @@
 package com.gamesense.client.manager;
 
 import com.gamesense.client.GameSense;
-import com.gamesense.client.manager.managers.ClientEventManager;
-import com.gamesense.client.manager.managers.PlayerPacketManager;
-import com.gamesense.client.manager.managers.TotemPopManager;
+import com.gamesense.client.manager.managers.*;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;

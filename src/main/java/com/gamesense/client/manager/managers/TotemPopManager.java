@@ -36,6 +36,8 @@ public enum TotemPopManager implements Manager {
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TickEvent.ClientTickEvent> clientTickEventListener = new Listener<>(event -> {
+        if (event.phase != TickEvent.Phase.START) return;
+
         if (mc.player == null || mc.world == null) {
             playerPopCount.clear();
             return;

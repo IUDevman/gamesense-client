@@ -16,13 +16,10 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 
 public class ModuleManager {
-    private static LinkedHashMap<Class<? extends Module>, Module> modulesClassMap;
-    private static LinkedHashMap<String, Module> modulesNameMap;
+    private static final LinkedHashMap<Class<? extends Module>, Module> modulesClassMap = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, Module> modulesNameMap = new LinkedHashMap<>();
 
     public static void init() {
-        modulesClassMap = new LinkedHashMap<>();
-        modulesNameMap = new LinkedHashMap<>();
-
         //Combat
         addMod(new AntiCrystal());
         addMod(new AutoAnvil());

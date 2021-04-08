@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class CommandManager {
 
     private static String commandPrefix = "-";
-    public static ArrayList<Command> commands = new ArrayList<>();
+    public static final ArrayList<Command> commands = new ArrayList<>();
 
     public static void init() {
         addCommand(new AutoGearCommand());
