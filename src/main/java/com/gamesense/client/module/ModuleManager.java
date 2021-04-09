@@ -8,15 +8,12 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 
 public class ModuleManager {
-
+    
     private static final String modulePath = "com.gamesense.client.module.modules";
-    private static LinkedHashMap<Class<? extends Module>, Module> modulesClassMap;
-    private static LinkedHashMap<String, Module> modulesNameMap;
+    private static final LinkedHashMap<Class<? extends Module>, Module> modulesClassMap = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, Module> modulesNameMap = new LinkedHashMap<>();
 
     public static void init() {
-        modulesClassMap = new LinkedHashMap<>();
-        modulesNameMap = new LinkedHashMap<>();
-
         for (Category category : Category.values()) {
             for (Class<?> clazz : ReflectionUtil.findClassesInPath(modulePath + "." + category.toString().toLowerCase())) {
 
