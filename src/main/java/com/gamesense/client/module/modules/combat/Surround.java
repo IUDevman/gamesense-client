@@ -34,7 +34,7 @@ public class Surround extends Module {
     ModeSetting jumpMode = registerMode("Jump", Arrays.asList("Continue", "Pause", "Disable"), "Continue");
     ModeSetting offsetMode = registerMode("Pattern", Arrays.asList("Normal", "Anti City"), "Normal");
     IntegerSetting delayTicks = registerInteger("Tick Delay", 3, 0, 10);
-    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 1, 8);
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting centerPlayer = registerBoolean("Center Player", false);
     BooleanSetting sneakOnly = registerBoolean("Sneak Only", false);
@@ -133,7 +133,7 @@ public class Surround extends Module {
             PlayerUtil.centerPlayer(centeredBlock);
         }
 
-        while (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
+        if (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
             delayTimer.reset();
 
             int blocksPlaced = 0;
