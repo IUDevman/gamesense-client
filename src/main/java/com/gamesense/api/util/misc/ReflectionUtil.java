@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -18,7 +18,7 @@ import com.gamesense.client.GameSense;
  */
 
 public class ReflectionUtil {
-  
+
 	private static final boolean debug = false;
 
 	public static ArrayList<Class<?>> findClassesInPath(String classPath) {
@@ -68,7 +68,7 @@ public class ReflectionUtil {
 							for (String className : classNamesFound) {
 
 								if (className.endsWith(".class")) {
-									foundClasses.add(Class.forName(classPath + "." + className.replace(".class", "")));
+									foundClasses.add(Class.forName(classPath + "." + className.substring(0, className.length() - 6)));
 									if (debug) GameSense.LOGGER.info("Loaded " + className + "!");
 								}
 							}
@@ -80,6 +80,15 @@ public class ReflectionUtil {
 			}
 		}
 
+		foundClasses.sort(new NameSorter());
 		return foundClasses;
+	}
+
+	private static class NameSorter implements Comparator<Class<?>> {
+
+		@Override
+		public int compare(Class<?> o1, Class<?> o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
 	}
 }
