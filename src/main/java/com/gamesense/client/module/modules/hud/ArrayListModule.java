@@ -26,7 +26,7 @@ public class ArrayListModule extends HUDModule {
     BooleanSetting sortRight = registerBoolean("Sort Right", false);
     ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
 
-    private ModuleList list = new ModuleList();
+    private final ModuleList list = new ModuleList();
 
     @Override
     public void populate(Theme theme) {

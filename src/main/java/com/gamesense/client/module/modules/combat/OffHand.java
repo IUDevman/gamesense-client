@@ -64,15 +64,15 @@ public class OffHand extends Module {
     BooleanSetting hotBarTotem = registerBoolean("HotBar Totem", false);
 
     int prevSlot,
-            tickWaited,
-            totems;
+        tickWaited,
+        totems;
     boolean returnBack,
-            stepChanging,
-            firstChange;
+        stepChanging,
+        firstChange;
     private static boolean activeT = false;
     private static int forceObby;
     private static int forceSkull;
-    private ArrayList<Long> switchDone = new ArrayList<>();
+    private final ArrayList<Long> switchDone = new ArrayList<>();
     private final ArrayList<Item> ignoreNoSword = new ArrayList<Item>() {
         {
             add(Items.GOLDEN_APPLE);
@@ -90,9 +90,13 @@ public class OffHand extends Module {
         forceObby++;
     }
 
-    public static void requestSkull() { forceSkull = 1; }
+    public static void requestSkull() {
+        forceSkull = 1;
+    }
 
-    public static void removeSkull() { forceSkull = 0; }
+    public static void removeSkull() {
+        forceSkull = 0;
+    }
 
     public static void removeObsidian() {
         if (forceObby != 0) forceObby--;
@@ -229,7 +233,7 @@ public class OffHand extends Module {
             or crystalCheck
          */
         if ((fallDistanceBol.getValue() && mc.player.fallDistance >= fallDistance.getValue() && mc.player.prevPosY != mc.player.posY && !mc.player.isElytraFlying())
-                || (crystalCheck.getValue() && crystalDamage())) {
+            || (crystalCheck.getValue() && crystalDamage())) {
             normalOffHand = false;
             itemCheck = "Totem";
         }
@@ -241,10 +245,10 @@ public class OffHand extends Module {
         // If crystal obby
         Item mainHandItem = mc.player.getHeldItemMainhand().getItem();
         if (forceObby > 0
-                || (normalOffHand && (
-                (crystObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
-                        && mainHandItem == Items.END_CRYSTAL)
-                        || (pickObby.getValue() && mainHandItem == Items.DIAMOND_PICKAXE && (!pickObbyShift.getValue() || mc.gameSettings.keyBindSneak.isKeyDown()))))) {
+            || (normalOffHand && (
+            (crystObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
+                && mainHandItem == Items.END_CRYSTAL)
+                || (pickObby.getValue() && mainHandItem == Items.DIAMOND_PICKAXE && (!pickObbyShift.getValue() || mc.gameSettings.keyBindSneak.isKeyDown()))))) {
             itemCheck = "Obby";
             normalOffHand = false;
         }
@@ -351,7 +355,7 @@ public class OffHand extends Module {
             if (offHandItem instanceof ItemBlock)
                 // Check if it's the block we have
                 return ((ItemBlock) offHandItem).getBlock() != item;
-            else if(offHandItem instanceof ItemSkull && item == Blocks.SKULL)
+            else if (offHandItem instanceof ItemSkull && item == Blocks.SKULL)
                 return true;
         } else {
             Item item = allowedItemsItem.get(itemCheck);
@@ -363,12 +367,12 @@ public class OffHand extends Module {
     private String getItemToCheck(String str) {
 
 
-        return ( PlayerUtil.getHealth() > healthSwitch.getValue())
-                ? (str.equals("")
-                ? nonDefaultItem.getValue()
-                : str
+        return (PlayerUtil.getHealth() > healthSwitch.getValue())
+            ? (str.equals("")
+            ? nonDefaultItem.getValue()
+            : str
         )
-                : defaultItem.getValue();
+            : defaultItem.getValue();
 
     }
 
@@ -428,7 +432,6 @@ public class OffHand extends Module {
         }
         return -1;
     }
-
 
 
     private void toOffHand(int t) {

@@ -67,11 +67,11 @@ public class KillAura extends Module {
 
         final double rangeSq = range.getValue() * range.getValue();
         Optional<Entity> optionalTarget = mc.world.loadedEntityList.stream()
-                .filter(entity -> entity instanceof EntityLivingBase)
-                .filter(entity -> !EntityUtil.basicChecksEntity(entity))
-                .filter(entity -> mc.player.getDistanceSq(entity) <= rangeSq)
-                .filter(this::attackCheck)
-                .min(Comparator.comparing(e -> (enemyPriority.getValue().equals("Closest") ? mc.player.getDistanceSq(e) : ((EntityLivingBase) e).getHealth())));
+            .filter(entity -> entity instanceof EntityLivingBase)
+            .filter(entity -> !EntityUtil.basicChecksEntity(entity))
+            .filter(entity -> mc.player.getDistanceSq(entity) <= rangeSq)
+            .filter(this::attackCheck)
+            .min(Comparator.comparing(e -> (enemyPriority.getValue().equals("Closest") ? mc.player.getDistanceSq(e) : ((EntityLivingBase) e).getHealth())));
 
         boolean sword = itemUsed.getValue().equalsIgnoreCase("Sword");
         boolean axe = itemUsed.getValue().equalsIgnoreCase("Axe");
@@ -178,9 +178,9 @@ public class KillAura extends Module {
     private boolean shouldAttack(boolean sword, boolean axe, boolean both, boolean all) {
         Item item = mc.player.getHeldItemMainhand().getItem();
         return (all
-                || (sword || both) && item instanceof ItemSword
-                || (axe || both) && item instanceof ItemAxe)
-                && (!caCheck.getValue() || !ModuleManager.getModule(AutoCrystal.class).isAttacking);
+            || (sword || both) && item instanceof ItemSword
+            || (axe || both) && item instanceof ItemAxe)
+            && (!caCheck.getValue() || !ModuleManager.getModule(AutoCrystal.class).isAttacking);
     }
 
     private void attack(Entity e) {

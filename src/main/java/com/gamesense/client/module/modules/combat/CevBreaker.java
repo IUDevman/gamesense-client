@@ -32,7 +32,10 @@ import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.*;
-import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.client.CPacketHeldItemChange;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -87,36 +90,36 @@ public class CevBreaker extends Module {
     public static boolean forceBrk = false;
 
     private boolean noMaterials = false,
-            hasMoved = false,
-            isSneaking = false,
-            isHole = true,
-            enoughSpace = true,
-            broken,
-            stoppedCa,
-            deadPl,
-            rotationPlayerMoved,
-            prevBreak,
-            preRotationBol;
+        hasMoved = false,
+        isSneaking = false,
+        isHole = true,
+        enoughSpace = true,
+        broken,
+        stoppedCa,
+        deadPl,
+        rotationPlayerMoved,
+        prevBreak,
+        preRotationBol;
 
     private int oldSlot = -1,
-            stage,
-            delayTimeTicks,
-            hitTryTick,
-            tickPick,
-            afterRotationTick,
-            preRotationTick;
+        stage,
+        delayTimeTicks,
+        hitTryTick,
+        tickPick,
+        afterRotationTick,
+        preRotationTick;
     private final int[][] model = new int[][]{
-            {1, 1, 0},
-            {-1, 1, 0},
-            {0, 1, 1},
-            {0, 1, -1}
+        {1, 1, 0},
+        {-1, 1, 0},
+        {0, 1, 1},
+        {0, 1, -1}
     };
 
     public static boolean isPossible = false;
 
     private int[] slot_mat,
-            delayTable,
-            enemyCoordsInt;
+        delayTable,
+        enemyCoordsInt;
 
     private double[] enemyCoordsDouble;
 
@@ -156,7 +159,8 @@ public class CevBreaker extends Module {
     // This is for the force rotation, strict servers
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
-        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue())
+            return;
         Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
         PlayerPacket packet = new PlayerPacket(this, rotation);
         PlayerPacketManager.INSTANCE.addPacket(packet);
@@ -191,8 +195,7 @@ public class CevBreaker extends Module {
             if (!target.getValue().equals("Looking") && aimTarget == null)
                 disable();
             // If not found a target
-            if (aimTarget == null)
-                return true;
+            return aimTarget == null;
         }
         return false;
     }
@@ -226,10 +229,10 @@ public class CevBreaker extends Module {
         lastHitVec = null;
         // Create new delay table
         delayTable = new int[]{
-                supDelay.getValue(),
-                crystalDelay.getValue(),
-                hitDelay.getValue(),
-                endDelay.getValue()
+            supDelay.getValue(),
+            crystalDelay.getValue(),
+            hitDelay.getValue(),
+            endDelay.getValue()
         };
         // Default values reset
         toPlace = new structureTemp(0, 0, new ArrayList<>());
@@ -266,32 +269,32 @@ public class CevBreaker extends Module {
             return;
         }
 
-            String output = "";
-            String materialsNeeded = "";
-            // No target found
-            if (aimTarget == null) {
-                output = "No target found...";
-            } else
-                // H distance not avaible
-                if (noMaterials) {
-                    output = "No Materials Detected...";
-                    materialsNeeded = getMissingMaterials();
-                    // No Hole
-                } else if (!isHole) {
-                    output = "The enemy is not in a hole...";
-                    // No Space
-                } else if (!enoughSpace) {
-                    output = "Not enough space...";
-                    // Has Moved
-                } else if (hasMoved) {
-                    output = "Out of range...";
-                } else if (deadPl) {
-                    output = "Enemy is dead, gg! ";
-                }
-            // Output in chat
-            setDisabledMessage(output + "CevBreaker turned OFF!");
-            if (!materialsNeeded.equals(""))
-                setDisabledMessage("Materials missing:" + materialsNeeded);
+        String output = "";
+        String materialsNeeded = "";
+        // No target found
+        if (aimTarget == null) {
+            output = "No target found...";
+        } else
+            // H distance not avaible
+            if (noMaterials) {
+                output = "No Materials Detected...";
+                materialsNeeded = getMissingMaterials();
+                // No Hole
+            } else if (!isHole) {
+                output = "The enemy is not in a hole...";
+                // No Space
+            } else if (!enoughSpace) {
+                output = "Not enough space...";
+                // Has Moved
+            } else if (hasMoved) {
+                output = "Out of range...";
+            } else if (deadPl) {
+                output = "Enemy is dead, gg! ";
+            }
+        // Output in chat
+        setDisabledMessage(output + "CevBreaker turned OFF!");
+        if (!materialsNeeded.equals(""))
+            setDisabledMessage("Materials missing:" + materialsNeeded);
 
         if (stoppedCa) {
             AutoCrystal.stopAC = false;
@@ -476,7 +479,7 @@ public class CevBreaker extends Module {
                     if (!switchSword.getValue() || (tickPick == pickSwitchTick.getValue() || tickPick++ == 0))
                         switchValue = 2;
 
-                   switchPick(switchValue);
+                    switchPick(switchValue);
 
                     // Get block
                     BlockPos obbyBreak = new BlockPos(enemyCoordsDouble[0], enemyCoordsInt[1] + 2, enemyCoordsDouble[2]);
@@ -494,10 +497,10 @@ public class CevBreaker extends Module {
 
                                         mc.player.swingArm(EnumHand.MAIN_HAND);
                                         mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                                                CPacketPlayerDigging.Action.START_DESTROY_BLOCK, obbyBreak, sideBreak
+                                            CPacketPlayerDigging.Action.START_DESTROY_BLOCK, obbyBreak, sideBreak
                                         ));
                                         mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                                                CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, obbyBreak, sideBreak
+                                            CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, obbyBreak, sideBreak
                                         ));
 
                                         prevBreak = true;
@@ -547,7 +550,7 @@ public class CevBreaker extends Module {
         switchPick(2);
         // Send packet digging
         mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
-                new BlockPos(enemyCoordsInt[0], enemyCoordsInt[1] + 2, enemyCoordsInt[2]), EnumFacing.UP));
+            new BlockPos(enemyCoordsInt[0], enemyCoordsInt[1] + 2, enemyCoordsInt[2]), EnumFacing.UP));
         isPossible = true;
     }
 
@@ -607,7 +610,7 @@ public class CevBreaker extends Module {
             mc.player.inventory.currentItem = slot_mat[3];
         /// Break type
         // Swing
-        Vec3d vecCrystal = crystal.getPositionVector().add(0.5, 0.5, 0.5);;
+        Vec3d vecCrystal = crystal.getPositionVector().add(0.5, 0.5, 0.5);
 
         // If it's not none, then allow the rotation
         if (!breakCrystal.getValue().equalsIgnoreCase("None")) {
@@ -626,7 +629,7 @@ public class CevBreaker extends Module {
                     // Packet
                     break;
                 case "Packet":
-                        CrystalUtil.breakCrystalPacket(crystal);
+                    CrystalUtil.breakCrystalPacket(crystal);
                     break;
                 case "None":
 
@@ -765,7 +768,7 @@ public class CevBreaker extends Module {
             // Place 93 4 -29
             if (!isCrystal)
                 placeBlock(targetPos, step, onlyRotate);
-            // If crystal
+                // If crystal
             else {
                 // Change
                 if (changeItem(step))
@@ -835,8 +838,8 @@ public class CevBreaker extends Module {
 
         // Check position of the crystal
         if ((Objects.requireNonNull(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 2, enemyCoordsDouble[2]).getRegistryName()).toString().toLowerCase().contains("bedrock"))
-                || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 3, enemyCoordsDouble[2]) instanceof BlockAir)
-                || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 4, enemyCoordsDouble[2]) instanceof BlockAir))
+            || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 3, enemyCoordsDouble[2]) instanceof BlockAir)
+            || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 4, enemyCoordsDouble[2]) instanceof BlockAir))
             return false;
 
         // Iterate for every blocks around, find the closest
@@ -938,10 +941,10 @@ public class CevBreaker extends Module {
 
     private boolean is_in_hole() {
         sur_block = new Double[][]{
-                {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
+            {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
+            {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
+            {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
+            {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
         };
 
         // Check if the guy is in a hole

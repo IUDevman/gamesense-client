@@ -94,9 +94,9 @@ public class VoidESP extends Module {
 
     private static class Offsets {
         static final BlockPos[] center = {
-                new BlockPos(0, 0, 0),
-                new BlockPos(0, 1, 0),
-                new BlockPos(0, 2, 0)
+            new BlockPos(0, 0, 0),
+            new BlockPos(0, 1, 0),
+            new BlockPos(0, 2, 0)
         };
     }
 

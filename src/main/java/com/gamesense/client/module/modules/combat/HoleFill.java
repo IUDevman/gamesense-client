@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
  * @author Hoosiers
  * @author 0b00101010
  * @author TechAle
+ * @author Madmegsox1
  * @since 10/31/2020
  * @since 26/01/2021
- * @author Madmegsox1
  * @since 18/03/2021
  */
 
@@ -172,7 +172,7 @@ public class HoleFill extends Module {
 
     private boolean placeBlock(BlockPos pos) {
         EnumHand handSwing = EnumHand.MAIN_HAND;
-        if(offHandObby.getValue()) {
+        if (offHandObby.getValue()) {
             int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
 
             if (obsidianSlot == -1) {
@@ -207,22 +207,22 @@ public class HoleFill extends Module {
 
     private int findRightBlock() {
         switch (mode.getValue()) {
-            case "Both" : {
+            case "Both": {
                 int newHand = InventoryUtil.findFirstBlockSlot(BlockObsidian.class, 0, 8);
                 if (newHand == -1) return InventoryUtil.findFirstBlockSlot(BlockEnderChest.class, 0, 8);
                 else return newHand;
             }
-            case "Obby" : {
+            case "Obby": {
                 return InventoryUtil.findFirstBlockSlot(BlockObsidian.class, 0, 8);
             }
-            case "Echest" : {
+            case "Echest": {
                 return InventoryUtil.findFirstBlockSlot(BlockEnderChest.class, 0, 8);
             }
-            case "Web" : {
+            case "Web": {
                 return InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
             }
-            case "Plate" : {
-                return InventoryUtil.findFirstBlockSlot(BlockPressurePlate.class, 0 ,8);
+            case "Plate": {
+                return InventoryUtil.findFirstBlockSlot(BlockPressurePlate.class, 0, 8);
             }
             default: {
                 return -1;
@@ -237,19 +237,19 @@ public class HoleFill extends Module {
             Block block = ((ItemBlock) item).getBlock();
 
             switch (mode.getValue()) {
-                case "Both" : {
+                case "Both": {
                     return block instanceof BlockObsidian || block instanceof BlockEnderChest;
                 }
-                case "Obby" : {
+                case "Obby": {
                     return block instanceof BlockObsidian;
                 }
-                case "Echest" : {
+                case "Echest": {
                     return block instanceof BlockEnderChest;
                 }
-                case "Web" : {
+                case "Web": {
                     return block instanceof BlockWeb;
                 }
-                case "Plate" : {
+                case "Plate": {
                     return block instanceof BlockPressurePlate;
                 }
                 default: {

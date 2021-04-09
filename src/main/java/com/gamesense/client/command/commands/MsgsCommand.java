@@ -8,7 +8,7 @@ import com.gamesense.client.module.ModuleManager;
 /**
  * @author Hoosiers
  * @since 03/09/2021
- *
+ * <p>
  * Shout out to lyneez because I had to close his PR :C
  */
 

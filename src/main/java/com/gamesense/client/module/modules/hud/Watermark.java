@@ -16,7 +16,7 @@ import java.awt.*;
 @HUDModule.Declaration(posX = 0, posZ = 0)
 public class Watermark extends HUDModule {
 
-    private ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
+    private final ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
 
     @Override
     public void populate(Theme theme) {

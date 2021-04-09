@@ -147,8 +147,9 @@ public class AntiCrystal extends Module {
 
         if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
             return autoCrystal.targets.stream().filter(placeInfo -> placeInfo.crystal.equals(new BlockPos((int) crystal.posX, crystal.posY - 1, (int) crystal.posZ))).findFirst().orElse(null) != null;
+        } else {
+            return false;
         }
-        else return false;
     }
 
     // This function check if the offHand has "Plates" as value

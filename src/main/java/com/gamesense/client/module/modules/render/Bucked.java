@@ -60,9 +60,7 @@ public class Bucked extends Module {
 
         if (!self.getValue() && entityPlayer == mc.player) return false;
 
-        if (!friend.getValue() && SocialManager.isFriend(entityPlayer.getName())) return false;
-
-        return true;
+        return friend.getValue() || !SocialManager.isFriend(entityPlayer.getName());
     }
 
     private boolean isSurrounded(BlockPos blockPos) {
@@ -94,8 +92,10 @@ public class Bucked extends Module {
 
     private GSColor findGSColor(EntityPlayer entityPlayer) {
 
-        if (SocialManager.isFriend(entityPlayer.getName())) return ModuleManager.getModule(ColorMain.class).getFriendGSColor();
-        else if (SocialManager.isEnemy(entityPlayer.getName())) return ModuleManager.getModule(ColorMain.class).getEnemyGSColor();
+        if (SocialManager.isFriend(entityPlayer.getName()))
+            return ModuleManager.getModule(ColorMain.class).getFriendGSColor();
+        else if (SocialManager.isEnemy(entityPlayer.getName()))
+            return ModuleManager.getModule(ColorMain.class).getEnemyGSColor();
 
         return color.getValue();
     }

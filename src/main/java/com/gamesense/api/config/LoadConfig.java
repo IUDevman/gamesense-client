@@ -80,7 +80,7 @@ public class LoadConfig {
         JsonObject moduleObject;
         try {
             moduleObject = new JsonParser().parse(new InputStreamReader(inputStream)).getAsJsonObject();
-        }catch (java.lang.IllegalStateException e) {
+        } catch (java.lang.IllegalStateException e) {
             return;
         }
 

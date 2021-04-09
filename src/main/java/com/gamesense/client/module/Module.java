@@ -90,14 +90,16 @@ public abstract class Module implements Toggleable, KeybindSetting {
         setEnabled(true);
         GameSense.EVENT_BUS.subscribe(this);
         onEnable();
-        if (toggleMsg && mc.player != null) MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + name + " turned ON!");
+        if (toggleMsg && mc.player != null)
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + name + " turned ON!");
     }
 
     public void disable() {
         setEnabled(false);
         GameSense.EVENT_BUS.unsubscribe(this);
         onDisable();
-        if (toggleMsg && mc.player != null) MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + disabledMessage);
+        if (toggleMsg && mc.player != null)
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + disabledMessage);
         setDisabledMessage(name + " turned OFF!");
     }
 

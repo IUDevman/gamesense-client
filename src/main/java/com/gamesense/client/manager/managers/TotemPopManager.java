@@ -18,8 +18,8 @@ import java.util.HashMap;
 /**
  * @author Darki for popcounter
  * Originally made for PvPInfo
- * @src https://github.com/DarkiBoi/CliNet/blob/master/src/main/java/me/zeroeightsix/kami/module/modules/combat/TotemPopCounter.java
  * @author Hoosiers
+ * @src https://github.com/DarkiBoi/CliNet/blob/master/src/main/java/me/zeroeightsix/kami/module/modules/combat/TotemPopCounter.java
  **/
 
 public enum TotemPopManager implements Manager {
@@ -42,7 +42,8 @@ public enum TotemPopManager implements Manager {
 
         for (EntityPlayer entityPlayer : getWorld().playerEntities) {
             if (entityPlayer.getHealth() <= 0 && playerPopCount.containsKey(entityPlayer.getName())) {
-                if (sendMsgs) MessageBus.sendClientPrefixMessage(chatFormatting + entityPlayer.getName() + " died after popping " + ChatFormatting.GREEN + getPlayerPopCount(entityPlayer.getName()) + chatFormatting + " totems!");
+                if (sendMsgs)
+                    MessageBus.sendClientPrefixMessage(chatFormatting + entityPlayer.getName() + " died after popping " + ChatFormatting.GREEN + getPlayerPopCount(entityPlayer.getName()) + chatFormatting + " totems!");
                 playerPopCount.remove(entityPlayer.getName());
             }
         }
@@ -74,12 +75,14 @@ public enum TotemPopManager implements Manager {
 
         if (playerPopCount.get(entityName) == null) {
             playerPopCount.put(entityName, 1);
-            if(sendMsgs) MessageBus.sendClientPrefixMessage(chatFormatting + entityName + " popped " + ChatFormatting.RED + 1 + chatFormatting + " totem!");
+            if (sendMsgs)
+                MessageBus.sendClientPrefixMessage(chatFormatting + entityName + " popped " + ChatFormatting.RED + 1 + chatFormatting + " totem!");
         } else {
             int popCounter = playerPopCount.get(entityName) + 1;
 
             playerPopCount.put(entityName, popCounter);
-            if(sendMsgs) MessageBus.sendClientPrefixMessage(chatFormatting + entityName + " popped " + ChatFormatting.RED + popCounter + chatFormatting + " totems!");
+            if (sendMsgs)
+                MessageBus.sendClientPrefixMessage(chatFormatting + entityName + " popped " + ChatFormatting.RED + popCounter + chatFormatting + " totems!");
         }
     });
 

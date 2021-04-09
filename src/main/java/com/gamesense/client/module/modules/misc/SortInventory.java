@@ -53,11 +53,11 @@ public class SortInventory extends Module {
 
     // Tickets
     private int delayTimeTicks,
-            stepNow;
+        stepNow;
     // If we had opened before a chest/inventory
     private boolean openedBefore,
-            finishSort,
-            doneBefore;
+        finishSort,
+        doneBefore;
 
     public void onEnable() {
         // Get name of the config

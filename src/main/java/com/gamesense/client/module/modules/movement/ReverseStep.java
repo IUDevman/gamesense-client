@@ -12,7 +12,7 @@ public class ReverseStep extends Module {
 
     public void onUpdate() {
         if (mc.world == null || mc.player == null || mc.player.isInWater() || mc.player.isInLava() || mc.player.isOnLadder()
-                || mc.gameSettings.keyBindJump.isKeyDown()) {
+            || mc.gameSettings.keyBindJump.isKeyDown()) {
             return;
         }
 

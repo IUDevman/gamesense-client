@@ -30,7 +30,7 @@ public class DamageUtil {
             if (entity instanceof EntityLivingBase) {
                 finalDamage = getBlastReduction((EntityLivingBase) entity, getDamageMultiplied(damage), new Explosion(mc.world, null, posX, posY, posZ, 6F, false, true));
             }
-        } catch (NullPointerException ignored){
+        } catch (NullPointerException ignored) {
         }
 
         return finalDamage;
@@ -66,7 +66,7 @@ public class DamageUtil {
             float damage = (float) ((int) ((v * v + v) / 2.0D * 7.0D * (double) doubleExplosionSize + 1.0D));
 
             finalDamage = getBlastReductionThreaded(playerInfo, getDamageMultiplied(damage));
-        } catch (NullPointerException ignored){
+        } catch (NullPointerException ignored) {
         }
 
         return finalDamage;

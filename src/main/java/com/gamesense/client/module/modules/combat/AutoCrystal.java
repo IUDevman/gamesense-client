@@ -310,14 +310,14 @@ public class AutoCrystal extends Module {
 
     public void onWorldRender(RenderEvent event) {
         if (this.render != null) {
-            RenderUtil.drawBox(this.render,1, new GSColor(color.getValue(),50), 63);
-            RenderUtil.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(),255));
+            RenderUtil.drawBox(this.render, 1, new GSColor(color.getValue(), 50), 63);
+            RenderUtil.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(), 255));
         }
 
-        if(showDamage.getValue()) {
+        if (showDamage.getValue()) {
             if (this.render != null && this.renderEntity != null) {
                 String[] damageText = {String.format("%.1f", DamageUtil.calculateDamage((double) render.getX() + 0.5d, (double) render.getY() + 1.0d, (double) render.getZ() + 0.5d, renderEntity))};
-                RenderUtil.drawNametag((double) render.getX() + 0.5d,(double) render.getY() + 0.5d,(double) render.getZ() + 0.5d, damageText, new GSColor(255,255,255),1);
+                RenderUtil.drawNametag((double) render.getX() + 0.5d, (double) render.getY() + 0.5d, (double) render.getZ() + 0.5d, damageText, new GSColor(255, 255, 255), 1);
             }
         }
     }
@@ -341,12 +341,12 @@ public class AutoCrystal extends Module {
 
     private void swingArm() {
         switch (handBreak.getValue()) {
-            case "Both" : {
+            case "Both": {
                 mc.player.swingArm(EnumHand.MAIN_HAND);
                 mc.player.swingArm(EnumHand.OFF_HAND);
                 break;
             }
-            case "Offhand" : {
+            case "Offhand": {
                 mc.player.swingArm(EnumHand.OFF_HAND);
                 break;
             }
@@ -401,7 +401,7 @@ public class AutoCrystal extends Module {
 
     public String getHudInfo() {
         String t = "";
-        if (hudDisplay.getValue().equalsIgnoreCase("Mode")){
+        if (hudDisplay.getValue().equalsIgnoreCase("Mode")) {
             t = "[" + ChatFormatting.WHITE + breakMode.getValue() + ChatFormatting.GRAY + "]";
         } else if (hudDisplay.getValue().equalsIgnoreCase("Target")) {
             if (renderEntity == null) {

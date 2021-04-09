@@ -16,7 +16,7 @@ public final class ZipUtils {
             for (String file : list) {
                 ZipEntry ze = new ZipEntry(file);
                 FileInputStream in = new FileInputStream(file);
-                byte buffer[] = new byte[1024];
+                byte[] buffer = new byte[1024];
                 zos.putNextEntry(ze);
                 while (true) {
                     int len = in.read(buffer);

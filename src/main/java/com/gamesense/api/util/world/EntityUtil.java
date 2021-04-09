@@ -79,9 +79,9 @@ public class EntityUtil {
 
     public static Vec3d getInterpolatedAmount(Entity entity, double x, double y, double z) {
         return new Vec3d(
-                (entity.posX - entity.lastTickPosX) * x,
-                (entity.posY - entity.lastTickPosY) * y,
-                (entity.posZ - entity.lastTickPosZ) * z
+            (entity.posX - entity.lastTickPosX) * x,
+            (entity.posY - entity.lastTickPosY) * y,
+            (entity.posZ - entity.lastTickPosZ) * z
         );
     }
 

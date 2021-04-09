@@ -70,7 +70,7 @@ public class Radar extends HUDModule {
             super(getName(), theme.getPanelRenderer(), Radar.this.position);
         }
 
-        private int maxRange = 50;
+        private final int maxRange = 50;
 
         @Override
         public void render(Context context) {
@@ -81,23 +81,23 @@ public class Radar extends HUDModule {
                 //players
                 if (renderPlayer.getValue()) {
                     mc.world.playerEntities.stream()
-                            .filter(entityPlayer -> entityPlayer != mc.player)
-                            .forEach(entityPlayer -> {
+                        .filter(entityPlayer -> entityPlayer != mc.player)
+                        .forEach(entityPlayer -> {
 
-                                renderEntityPoint(entityPlayer, getPlayerColor(entityPlayer), context);
-                            });
+                            renderEntityPoint(entityPlayer, getPlayerColor(entityPlayer), context);
+                        });
                 }
 
                 //mobs
                 if (renderMobs.getValue()) {
                     mc.world.loadedEntityList.stream()
-                            .filter(entity -> !(entity instanceof EntityPlayer))
-                            .forEach(entity -> {
+                        .filter(entity -> !(entity instanceof EntityPlayer))
+                        .forEach(entity -> {
 
-                                if (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid) {
-                                    renderEntityPoint(entity, getEntityColor(entity), context);
-                                }
-                            });
+                            if (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid) {
+                                renderEntityPoint(entity, getEntityColor(entity), context);
+                            }
+                        });
                 }
 
                 //background

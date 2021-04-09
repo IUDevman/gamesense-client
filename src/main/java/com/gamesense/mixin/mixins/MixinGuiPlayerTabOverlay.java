@@ -21,8 +21,8 @@ public class MixinGuiPlayerTabOverlay {
 
     private String getPlayerNameGS(NetworkPlayerInfo networkPlayerInfoIn) {
         String displayName = networkPlayerInfoIn.getDisplayName() != null ?
-                networkPlayerInfoIn.getDisplayName().getFormattedText() :
-                ScorePlayerTeam.formatPlayerName(networkPlayerInfoIn.getPlayerTeam(), networkPlayerInfoIn.getGameProfile().getName());
+            networkPlayerInfoIn.getDisplayName().getFormattedText() :
+            ScorePlayerTeam.formatPlayerName(networkPlayerInfoIn.getPlayerTeam(), networkPlayerInfoIn.getGameProfile().getName());
 
         if (SocialManager.isFriend(displayName)) {
             return ModuleManager.getModule(ColorMain.class).getFriendColor() + displayName;

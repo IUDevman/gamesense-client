@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.Offsets;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
@@ -10,7 +11,6 @@ import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.api.util.misc.Offsets;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumHand;
@@ -95,10 +95,10 @@ public class SelfWeb extends Module {
 
         if (!(mc.player.onGround) && !(mc.player.isInWeb)) {
             switch (jumpMode.getValue()) {
-                case "Pause" : {
+                case "Pause": {
                     return;
                 }
-                case "Disable" : {
+                case "Disable": {
                     disable();
                     return;
                 }
@@ -130,7 +130,7 @@ public class SelfWeb extends Module {
                 Vec3d[] offsetPattern;
 
                 switch (offsetMode.getValue()) {
-                    case "Double" : {
+                    case "Double": {
                         offsetPattern = Offsets.BURROW_DOUBLE;
                         maxSteps = Offsets.BURROW_DOUBLE.length;
                         break;

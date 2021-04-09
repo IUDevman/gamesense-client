@@ -49,11 +49,11 @@ public class Coordinates extends HUDModule {
         switch (dimension) {
             case -1: // Nether
                 coordinateString[1] = "Overworld "
-                        + getFormattedCoords(viewEntity.posX * 8.0, viewEntity.posY, viewEntity.posZ * 8.0);
+                    + getFormattedCoords(viewEntity.posX * 8.0, viewEntity.posY, viewEntity.posZ * 8.0);
                 break;
             case 0: // Overworld
                 coordinateString[1] = "Nether "
-                        + getFormattedCoords(viewEntity.posX / 8.0, viewEntity.posY, viewEntity.posZ / 8.0);
+                    + getFormattedCoords(viewEntity.posX / 8.0, viewEntity.posY, viewEntity.posZ / 8.0);
                 break;
             default:
                 break;

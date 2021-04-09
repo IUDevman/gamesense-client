@@ -103,10 +103,10 @@ public class TargetHUD extends HUDModule {
             // Render content
             if (mc.world != null && mc.player.ticksExisted >= 10) {
                 EntityPlayer entityPlayer = (EntityPlayer) mc.world.loadedEntityList.stream()
-                        .filter(entity -> isValidEntity(entity))
-                        .map(entity -> (EntityLivingBase) entity)
-                        .min(Comparator.comparing(c -> mc.player.getDistance(c)))
-                        .orElse(null);
+                    .filter(entity -> isValidEntity(entity))
+                    .map(entity -> (EntityLivingBase) entity)
+                    .min(Comparator.comparing(c -> mc.player.getDistance(c)))
+                    .orElse(null);
                 if (entityPlayer != null && entityPlayer.getDistance(mc.player) <= range.getValue()) {
                     // Render background
                     Color bgcolor = new GSColor(background.getValue(), 100);

@@ -48,31 +48,31 @@ public class AutoAnvil extends Module {
     BooleanSetting rotate = registerBoolean("Rotate", true);
     DoubleSetting enemyRange = registerDouble("Range", 5.9, 0, 6);
     DoubleSetting decrease = registerDouble("Decrease", 2, 0, 6);
-    IntegerSetting  tickDelay = registerInteger("Tick Delay", 5, 0, 10);
+    IntegerSetting tickDelay = registerInteger("Tick Delay", 5, 0, 10);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
     IntegerSetting hDistance = registerInteger("H Distance", 7, 1, 10);
     IntegerSetting minH = registerInteger("Min H", 3, 1, 10);
     IntegerSetting failStop = registerInteger("Fail Stop", 2, 1, 10);
 
     private boolean isSneaking = false,
-            firstRun = false,
-            noMaterials = false,
-            hasMoved = false,
-            isHole = true,
-            enoughSpace = true,
-            blockUp = false;
+        firstRun = false,
+        noMaterials = false,
+        hasMoved = false,
+        isHole = true,
+        enoughSpace = true,
+        blockUp = false;
     private int oldSlot = -1,
-            noKick,
-            anvilBlock;
+        noKick,
+        anvilBlock;
     private ArrayList<Integer> anvilsPositions = new ArrayList<>();
     private int[] slot_mat = {-1, -1, -1, -1};
     private double[] enemyCoords;
     Double[][] sur_block;
     int[][] model = new int[][]{
-            {1, 1, 0},
-            {-1, 1, 0},
-            {0, 1, 1},
-            {0, 1, -1}
+        {1, 1, 0},
+        {-1, 1, 0},
+        {0, 1, 1},
+        {0, 1, -1}
     };
 
     private int blocksPlaced = 0;
@@ -84,9 +84,7 @@ public class AutoAnvil extends Module {
 
     public void onEnable() {
         // Setup
-        if (anvilMode.getValue().equalsIgnoreCase("Pick")) {
-            pick_d = true;
-        } else pick_d = false;
+        pick_d = anvilMode.getValue().equalsIgnoreCase("Pick");
         blocksPlaced = 0;
         isHole = true;
         hasMoved = blockUp = false;
@@ -301,9 +299,9 @@ public class AutoAnvil extends Module {
 
         // Get what slot we are going to select
         utilSlot =
-                (step == 0 && (anvilMode.getValue().equalsIgnoreCase("feet")))
-                        ? 2 :
-                        (step >= to_place.size() - anvilBlock) ? 1 : 0;
+            (step == 0 && (anvilMode.getValue().equalsIgnoreCase("feet")))
+                ? 2 :
+                (step >= to_place.size() - anvilBlock) ? 1 : 0;
 
         if (step == 1 && anvilsPositions.contains(pos.y))
             return false;
@@ -387,10 +385,10 @@ public class AutoAnvil extends Module {
                 mc.player.inventory.currentItem = slot_mat[3];
                 mc.player.swingArm(EnumHand.MAIN_HAND);
                 mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                        CPacketPlayerDigging.Action.START_DESTROY_BLOCK, new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]), prova
+                    CPacketPlayerDigging.Action.START_DESTROY_BLOCK, new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]), prova
                 ));
                 mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                        CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]), prova
+                    CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, new BlockPos(enemyCoords[0], enemyCoords[1], enemyCoords[2]), prova
                 ));
             }
         }
@@ -482,16 +480,16 @@ public class AutoAnvil extends Module {
 
     private boolean is_in_hole() {
         sur_block = new Double[][]{
-                {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
+            {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
+            {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
+            {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
+            {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
         };
 
         enemyCoords = new double[]{
-                aimTarget.posX,
-                aimTarget.posY,
-                aimTarget.posZ
+            aimTarget.posX,
+            aimTarget.posY,
+            aimTarget.posZ
         };
         // Check if the guy is in a hole
         return HoleUtil.isHole(EntityUtil.getPosition(aimTarget), true, true).getType() != HoleUtil.HoleType.NONE;
@@ -529,9 +527,9 @@ public class AutoAnvil extends Module {
         /// Get in what block the client is going to tower
         // Calculate for each blocks the distance and find the min
         double min_found = Double.MAX_VALUE,
-                distance_now;
+            distance_now;
         double[] coords_blocks_min = new double[]{-1, -1, -1},
-                coords_blocks_temp;
+            coords_blocks_temp;
         int cor = -1;
         int i = 0;
         // Iterate for every blocks around, find the closest
