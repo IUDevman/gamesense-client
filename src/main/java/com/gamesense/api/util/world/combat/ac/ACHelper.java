@@ -25,7 +25,7 @@ public enum ACHelper {
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final List<CrystalInfo.PlaceInfo> EMPTY_LIST = new ArrayList<>();
     // very big numbers
-    private static final EntityEnderCrystal GENERIC_CRYSTAL = new EntityEnderCrystal(null, 0b00101010 * 10^42, 0b00101010 * 10^42, 0b00101010 * 10^42);
+    private static final EntityEnderCrystal GENERIC_CRYSTAL = new EntityEnderCrystal(null, 0b00101010 * 10 ^ 42, 0b00101010 * 10 ^ 42, 0b00101010 * 10 ^ 42);
 
     // Threading Stuff
     public static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
@@ -88,14 +88,14 @@ public enum ACHelper {
         // and reduce searching time
         final double entityRangeSq = (enemyDistance) * (enemyDistance);
         List<EntityPlayer> targets = mc.world.playerEntities.stream()
-                .filter(entity -> self.entity.getDistanceSq(entity) <= entityRangeSq)
-                .filter(entity -> !EntityUtil.basicChecksEntity(entity))
-                .filter(entity -> entity.getHealth() > 0.0f)
-                .collect(Collectors.toList());
+            .filter(entity -> self.entity.getDistanceSq(entity) <= entityRangeSq)
+            .filter(entity -> !EntityUtil.basicChecksEntity(entity))
+            .filter(entity -> entity.getHealth() > 0.0f)
+            .collect(Collectors.toList());
 
         targetableCrystals = mc.world.loadedEntityList.stream()
-                .filter(entity -> entity instanceof EntityEnderCrystal)
-                .map(entity -> (EntityEnderCrystal) entity).collect(Collectors.toList());
+            .filter(entity -> entity instanceof EntityEnderCrystal)
+            .map(entity -> (EntityEnderCrystal) entity).collect(Collectors.toList());
 
         final boolean own = settings.breakMode.equalsIgnoreCase("Own");
         if (own) {
@@ -114,7 +114,9 @@ public enum ACHelper {
             float damage = DamageUtil.calculateDamageThreaded(crystal.posX, crystal.posY, crystal.posZ, self);
             if (damage > settings.maxSelfDamage) {
                 return true;
-            } else return (settings.antiSuicide && damage > self.health) || self.entity.getDistanceSq(crystal) >= settings.breakRangeSq;
+            } else {
+                return (settings.antiSuicide && damage > self.health) || self.entity.getDistanceSq(crystal) >= settings.breakRangeSq;
+            }
         });
 
         possiblePlacements = CrystalUtil.findCrystalBlocks(settings.placeRange, settings.endCrystalMode);

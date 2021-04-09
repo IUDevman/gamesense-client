@@ -12,7 +12,6 @@ import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.client.module.modules.combat.OffHand;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.block.BlockAir;
@@ -53,18 +52,18 @@ public class AutoSkull extends Module {
     IntegerSetting BlocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 10);
 
     private static final Vec3d[] AIR = {
-            // Supports
-            new Vec3d(-1, -1, -1),
-            new Vec3d(-1, 0, -1),
-            new Vec3d(-1, 1, -1),
-            // Start circle
-            new Vec3d(-1, 2, -1),
-            new Vec3d(-1, 2, 0),
-            new Vec3d(0, 2, -1),
-            new Vec3d(1, 2, -1),
-            new Vec3d(1, 2, 0),
-            new Vec3d(1, 2, 1),
-            new Vec3d(0, 2, 1),
+        // Supports
+        new Vec3d(-1, -1, -1),
+        new Vec3d(-1, 0, -1),
+        new Vec3d(-1, 1, -1),
+        // Start circle
+        new Vec3d(-1, 2, -1),
+        new Vec3d(-1, 2, 0),
+        new Vec3d(0, 2, -1),
+        new Vec3d(1, 2, -1),
+        new Vec3d(1, 2, 0),
+        new Vec3d(1, 2, 1),
+        new Vec3d(0, 2, 1),
     };
 
     private int delayTimeTicks = 0;
@@ -75,6 +74,7 @@ public class AutoSkull extends Module {
     private int preRotationTick;
     private int afterRotationTick;
     private boolean alrPlaced;
+
     public void onEnable() {
         ROTATION_UTIL.onEnable();
         PlacementUtil.onEnable();
@@ -90,7 +90,8 @@ public class AutoSkull extends Module {
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
-        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue())
+            return;
         Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
         PlayerPacket packet = new PlayerPacket(this, rotation);
         PlayerPacketManager.INSTANCE.addPacket(packet);
@@ -155,10 +156,10 @@ public class AutoSkull extends Module {
                 if (!firstShift)
                     placeBlock();
                 return;
-            } else if(firstShift && !mc.gameSettings.keyBindSneak.isKeyDown()) firstShift = false;
+            } else if (firstShift && !mc.gameSettings.keyBindSneak.isKeyDown()) firstShift = false;
 
             if (playerDistance.getValue() != 0) {
-                if ( PlayerUtil.findClosestTarget(playerDistance.getValue(), null) != null) {
+                if (PlayerUtil.findClosestTarget(playerDistance.getValue(), null) != null) {
                     placeBlock();
                     return;
                 }
@@ -221,7 +222,7 @@ public class AutoSkull extends Module {
 
 
                 if (alrPlaced || (noUp.getValue() ? (PlacementUtil.place(pos, handSwing, rotate.getValue(), exd) || PlacementUtil.place(pos, handSwing, rotate.getValue()))
-                        : PlacementUtil.place(pos, handSwing, rotate.getValue()))) {
+                    : PlacementUtil.place(pos, handSwing, rotate.getValue()))) {
                     alrPlaced = true;
                     if (afterSwitch.getValue() > 0 && afterRotationTick++ == afterSwitch.getValue()) {
                         lastHitVec = new Vec3d(pos.x, pos.y, pos.z);

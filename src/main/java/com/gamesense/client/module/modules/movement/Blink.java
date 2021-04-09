@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Module.Declaration(name = "Blink", category = Category.Movement)
 public class Blink extends Module {
 
-    private BooleanSetting ghostPlayer = registerBoolean("Ghost Player", true);
+    private final BooleanSetting ghostPlayer = registerBoolean("Ghost Player", true);
 
     private EntityOtherPlayerMP entity;
     private final ConcurrentLinkedQueue<Packet<?>> packets = new ConcurrentLinkedQueue<>();

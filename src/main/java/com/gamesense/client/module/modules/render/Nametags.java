@@ -102,17 +102,15 @@ public class Nametags extends Module {
         if (showGameMode.getValue()) {
             if (entityPlayer.isCreative()) {
                 name = name + " [C]";
-            }
-            else if (entityPlayer.isSpectator()) {
+            } else if (entityPlayer.isSpectator()) {
                 name = name + " [I]";
-            }
-            else {
+            } else {
                 name = name + " [S]";
             }
         }
 
         if (showTotem.getValue()) {
-            name = name + " [" + TotemPopManager.INSTANCE.getPlayerPopCount(entityPlayer.getName()) +"]";
+            name = name + " [" + TotemPopManager.INSTANCE.getPlayerPopCount(entityPlayer.getName()) + "]";
         }
 
         if (showPing.getValue()) {
@@ -185,7 +183,7 @@ public class Nametags extends Module {
                     posY = size;
                 }
             }
-            armorCount --;
+            armorCount--;
         }
 
         if (!mainHandItem.isEmpty() && (showItems.getValue() || showDurability.getValue() && offHandItem.isItemStackDamageable())) {

@@ -8,7 +8,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 @Module.Declaration(name = "Sprint", category = Category.Movement)
 public class Sprint extends Module {
 
-    private BooleanSetting multiDirection = registerBoolean("Multi Direction", true);
+    private final BooleanSetting multiDirection = registerBoolean("Multi Direction", true);
 
     public void onUpdate() {
         EntityPlayerSP player = mc.player;
@@ -20,10 +20,10 @@ public class Sprint extends Module {
 
     public boolean shouldSprint(EntityPlayerSP player) {
         return !mc.gameSettings.keyBindSneak.isKeyDown()
-                && player.getFoodStats().getFoodLevel() > 6
-                && !player.isElytraFlying()
-                && !mc.player.capabilities.isFlying
-                && checkMovementInput(player);
+            && player.getFoodStats().getFoodLevel() > 6
+            && !player.isElytraFlying()
+            && !mc.player.capabilities.isFlying
+            && checkMovementInput(player);
     }
 
     private boolean checkMovementInput(EntityPlayerSP player) {

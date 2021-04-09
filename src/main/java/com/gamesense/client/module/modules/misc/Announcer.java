@@ -157,8 +157,8 @@ public class Announcer extends Module {
             if (breaking.getValue() && blocksBroken > randomNum) {
                 Random random = new Random();
                 String msg = breakMessages[random.nextInt(breakMessages.length)]
-                        .replace("{amount}", " " + blocksBroken)
-                        .replace("{name}", " " + mc.world.getBlockState(event.getBlockPos()).getBlock().getLocalizedName());
+                    .replace("{amount}", " " + blocksBroken)
+                    .replace("{name}", " " + mc.world.getBlockState(event.getBlockPos()).getBlock().getLocalizedName());
                 if (clientSide.getValue()) {
                     MessageBus.sendClientPrefixMessage(msg);
                 } else {

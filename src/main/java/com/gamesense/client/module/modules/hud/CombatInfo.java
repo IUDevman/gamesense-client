@@ -36,7 +36,7 @@ public class CombatInfo extends HUDModule {
     ColorSetting color1 = registerColor("On", new GSColor(0, 255, 0, 255));
     ColorSetting color2 = registerColor("Off", new GSColor(255, 0, 0, 255));
 
-    private InfoList list = new InfoList();
+    private final InfoList list = new InfoList();
     private static final BlockPos[] surroundOffset = new BlockPos[]{new BlockPos(0, 0, -1), new BlockPos(1, 0, 0), new BlockPos(0, 0, 1), new BlockPos(-1, 0, 0)};
     private static final String[] hoosiersModules = {"AutoCrystal", "KillAura", "Surround", "AutoTrap", "SelfTrap"};
     private static final String[] hoosiersNames = {"AC", "KA", "SU", "AT", "ST"};
@@ -50,12 +50,12 @@ public class CombatInfo extends HUDModule {
         AutoCrystal autoCrystal = ModuleManager.getModule(AutoCrystal.class);
         list.totems = mc.player.inventory.mainInventory.stream().filter(itemStack -> itemStack.getItem() == Items.TOTEM_OF_UNDYING).mapToInt(ItemStack::getCount).sum() + ((mc.player.getHeldItemOffhand().getItem() == Items.TOTEM_OF_UNDYING) ? 1 : 0);
         list.players = mc.world.loadedEntityList.stream()
-                .filter(entity -> entity instanceof EntityOtherPlayerMP)
-                .filter(entity -> !SocialManager.isFriend(entity.getName()))
-                .filter(e -> mc.player.getDistance(e) <= autoCrystal.placeRange.getValue())
-                .map(entity -> (EntityOtherPlayerMP) entity)
-                .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
-                .orElse(null);
+            .filter(entity -> entity instanceof EntityOtherPlayerMP)
+            .filter(entity -> !SocialManager.isFriend(entity.getName()))
+            .filter(e -> mc.player.getDistance(e) <= autoCrystal.placeRange.getValue())
+            .map(entity -> (EntityOtherPlayerMP) entity)
+            .min(Comparator.comparing(cl -> mc.player.getDistance(cl)))
+            .orElse(null);
         list.renderLby = false;
         List<EntityPlayer> entities = new ArrayList<EntityPlayer>(mc.world.playerEntities.stream().filter(entityPlayer -> !SocialManager.isFriend(entityPlayer.getName())).collect(Collectors.toList()));
         for (EntityPlayer e : entities) {

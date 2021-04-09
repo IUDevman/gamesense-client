@@ -29,7 +29,7 @@ public class AutoGear extends Module {
     BooleanSetting debugMode = registerBoolean("Debug Mode", false);
 
     private HashMap<Integer, String> planInventory = new HashMap<>();
-    private HashMap<Integer, String> containerInv = new HashMap<>();
+    private final HashMap<Integer, String> containerInv = new HashMap<>();
     private ArrayList<Integer> sortItems = new ArrayList<>();
 
     private int delayTimeTicks;
@@ -102,7 +102,7 @@ public class AutoGear extends Module {
 
         // When you open an inventory
         if (((mc.player.openContainer instanceof ContainerChest && (enderChest.getValue() || !((ContainerChest) mc.player.openContainer).getLowerChestInventory().getDisplayName().getUnformattedText().equals("Ender Chest")))
-                || mc.player.openContainer instanceof ContainerShulkerBox)
+            || mc.player.openContainer instanceof ContainerShulkerBox)
         ) {
             // Start sorting
             sortInventoryAlgo();
@@ -117,7 +117,7 @@ public class AutoGear extends Module {
                 PistonCrystal.printDebug("Start sorting inventory...", false);
 
             int maxValue = mc.player.openContainer instanceof ContainerChest ? ((ContainerChest) mc.player.openContainer).getLowerChestInventory().getSizeInventory()
-                    : 27;
+                : 27;
             // Iterate for every value
             for (int i = 0; i < maxValue; i++) {
                 ItemStack item = mc.player.openContainer.getInventory().get(i);
@@ -137,7 +137,7 @@ public class AutoGear extends Module {
                 // Print
                 if (infoMsgs.getValue())
                     PistonCrystal.printDebug("Inventory already sorted...", true);
-              
+
                 if (closeAfter.getValue())
                     mc.player.closeScreen();
             } else {

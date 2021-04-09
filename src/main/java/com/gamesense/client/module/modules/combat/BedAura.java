@@ -214,10 +214,10 @@ public class BedAura extends Module {
         NonNullList<TileEntity> bedEntities = NonNullList.create();
 
         mc.world.loadedTileEntityList.stream()
-                .filter(tileEntity -> tileEntity instanceof TileEntityBed)
-                .filter(tileEntity -> tileEntity.getDistanceSq(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ) <= (attackRange.getValue() * attackRange.getValue()))
-                .filter(this::isOwn)
-                .forEach(bedEntities::add);
+            .filter(tileEntity -> tileEntity instanceof TileEntityBed)
+            .filter(tileEntity -> tileEntity.getDistanceSq(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ) <= (attackRange.getValue() * attackRange.getValue()))
+            .filter(this::isOwn)
+            .forEach(bedEntities::add);
 
         bedEntities.sort(Comparator.comparing(tileEntity -> tileEntity.getDistanceSq(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ)));
         return bedEntities;
@@ -241,10 +241,10 @@ public class BedAura extends Module {
         NonNullList<EntityPlayer> targetEntities = NonNullList.create();
 
         mc.world.playerEntities.stream()
-                .filter(entityPlayer1 -> !EntityUtil.basicChecksEntity(entityPlayer1))
-                .filter(entityPlayer1 -> entityPlayer1.getDistance(entityPlayer) <= targetRange.getValue())
-                .sorted(Comparator.comparing(entityPlayer1 -> entityPlayer1.getDistance(entityPlayer)))
-                .forEach(targetEntities::add);
+            .filter(entityPlayer1 -> !EntityUtil.basicChecksEntity(entityPlayer1))
+            .filter(entityPlayer1 -> entityPlayer1.getDistance(entityPlayer) <= targetRange.getValue())
+            .sorted(Comparator.comparing(entityPlayer1 -> entityPlayer1.getDistance(entityPlayer)))
+            .forEach(targetEntities::add);
 
         return targetEntities;
     }
@@ -253,10 +253,10 @@ public class BedAura extends Module {
         NonNullList<BlockPos> targetPlacePos = NonNullList.create();
 
         targetPlacePos.addAll(EntityUtil.getSphere(mc.player.getPosition(), attackRange.getValue().floatValue(), attackRange.getValue().intValue(), false, true, 0)
-                .stream()
-                .filter(this::canPlaceBed)
-                .sorted(Comparator.comparing(blockPos -> 1 - (DamageUtil.calculateDamage(blockPos.up().getX(), blockPos.up().getY(), blockPos.up().getZ(), entityPlayer))))
-                .collect(Collectors.toList()));
+            .stream()
+            .filter(this::canPlaceBed)
+            .sorted(Comparator.comparing(blockPos -> 1 - (DamageUtil.calculateDamage(blockPos.up().getX(), blockPos.up().getY(), blockPos.up().getZ(), entityPlayer))))
+            .collect(Collectors.toList()));
 
         return targetPlacePos;
     }

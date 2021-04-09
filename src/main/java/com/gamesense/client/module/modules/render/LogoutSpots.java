@@ -48,9 +48,9 @@ public class LogoutSpots extends Module {
 
     public void onUpdate() {
         mc.world.playerEntities.stream()
-                .filter(entityPlayer -> entityPlayer != mc.player)
-                .filter(entityPlayer -> entityPlayer.getDistance(mc.player) <= range.getValue())
-                .forEach(entityPlayer -> worldPlayers.add(entityPlayer));
+            .filter(entityPlayer -> entityPlayer != mc.player)
+            .filter(entityPlayer -> entityPlayer.getDistance(mc.player) <= range.getValue())
+            .forEach(entityPlayer -> worldPlayers.add(entityPlayer));
     }
 
     public void onWorldRender(RenderEvent event) {

@@ -24,7 +24,7 @@ public class PotionEffects extends HUDModule {
     BooleanSetting sortRight = registerBoolean("Sort Right", false);
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 255));
 
-    private PotionList list = new PotionList();
+    private final PotionList list = new PotionList();
 
     @Override
     public void populate(Theme theme) {

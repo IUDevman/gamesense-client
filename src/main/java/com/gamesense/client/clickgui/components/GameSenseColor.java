@@ -18,7 +18,8 @@ public class GameSenseColor extends ColorComponent {
     public GameSenseColor(Theme theme, ColorSetting setting, Toggleable colorToggle, Animation animation) {
         super(TextFormatting.BOLD + setting.getName(), null, theme.getContainerRenderer(), animation, theme.getComponentRenderer(), setting, false, true, colorToggle);
 
-        if (setting != ModuleManager.getModule(ClickGuiModule.class).enabledColor) addComponent(new SyncButton(theme.getComponentRenderer()));
+        if (setting != ModuleManager.getModule(ClickGuiModule.class).enabledColor)
+            addComponent(new SyncButton(theme.getComponentRenderer()));
     }
 
     private class SyncButton extends FocusableComponent {

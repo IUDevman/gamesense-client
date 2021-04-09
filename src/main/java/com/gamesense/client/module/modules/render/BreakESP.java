@@ -91,8 +91,8 @@ public class BreakESP extends Module {
     @SuppressWarnings("unused")
     @EventHandler
     private final Listener<DrawBlockDamageEvent> drawBlockDamageEventListener = new Listener<>(event -> {
-       if (cancelAnimation.getValue()) {
-           event.cancel();
-       }
+        if (cancelAnimation.getValue()) {
+            event.cancel();
+        }
     });
 }

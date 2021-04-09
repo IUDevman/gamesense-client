@@ -3,13 +3,13 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.Offsets;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.api.util.misc.Offsets;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.CPacketEntityAction;
@@ -95,11 +95,11 @@ public class AutoWeb extends Module {
         }
 
         switch (targetMode.getValue()) {
-            case "Nearest" : {
+            case "Nearest": {
                 targetPlayer = PlayerUtil.findClosestTarget(enemyRange.getValue(), targetPlayer);
                 break;
             }
-            case "Looking" : {
+            case "Looking": {
                 targetPlayer = PlayerUtil.findLookingPlayer(enemyRange.getValue());
                 break;
             }
@@ -123,7 +123,7 @@ public class AutoWeb extends Module {
                 Vec3d[] offsetPattern;
 
                 switch (offsetMode.getValue()) {
-                    case "Double" : {
+                    case "Double": {
                         offsetPattern = Offsets.BURROW_DOUBLE;
                         maxSteps = Offsets.BURROW_DOUBLE.length;
                         break;

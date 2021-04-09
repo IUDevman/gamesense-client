@@ -4,8 +4,6 @@ import com.gamesense.api.config.SaveConfig;
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.client.command.Command;
 
-import java.io.IOException;
-
 /**
  * @author Hoosiers
  * @since 1/1/2020

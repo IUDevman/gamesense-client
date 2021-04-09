@@ -80,8 +80,8 @@ public class BlockUtil {
         float pitch = (float) -Math.toDegrees(Math.atan2(diffY, diffXZ));
 
         return new float[]{
-                mc.player.rotationYaw + MathHelper.wrapDegrees(yaw - mc.player.rotationYaw),
-                mc.player.rotationPitch + MathHelper.wrapDegrees(pitch - mc.player.rotationPitch)
+            mc.player.rotationYaw + MathHelper.wrapDegrees(yaw - mc.player.rotationYaw),
+            mc.player.rotationPitch + MathHelper.wrapDegrees(pitch - mc.player.rotationPitch)
         };
     }
 

@@ -56,7 +56,7 @@ public class NoRender extends Module {
     private final Listener<EntityViewRenderEvent.FogDensity> fogDensityListener = new Listener<>(event -> {
         if (noOverlay.getValue()) {
             if (event.getState().getMaterial().equals(Material.WATER)
-                    || event.getState().getMaterial().equals(Material.LAVA)) {
+                || event.getState().getMaterial().equals(Material.LAVA)) {
                 event.setDensity(0);
                 event.setCanceled(true);
             }

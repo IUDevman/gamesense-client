@@ -26,7 +26,7 @@ public class AutoArmor extends Module {
         if (mc.player.ticksExisted % 2 == 0) return;
         // check screen
         if (mc.currentScreen instanceof GuiContainer
-                && !(mc.currentScreen instanceof InventoryEffectRenderer))
+            && !(mc.currentScreen instanceof InventoryEffectRenderer))
             return;
 
         List<ItemStack> armorInventory = mc.player.inventory.armorInventory;
