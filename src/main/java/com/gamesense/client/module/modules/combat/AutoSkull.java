@@ -34,7 +34,7 @@ import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
  * Ported and modified from Blocker.java
  */
 
-@Module.Declaration(name = "AutoSkull", category = Category.Misc)
+@Module.Declaration(name = "AutoSkull", category = Category.Combat)
 public class AutoSkull extends Module {
 
     BooleanSetting rotate = registerBoolean("Rotate", true);

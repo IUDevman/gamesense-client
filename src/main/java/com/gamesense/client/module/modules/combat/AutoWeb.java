@@ -31,7 +31,7 @@ public class AutoWeb extends Module {
     ModeSetting targetMode = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
     IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
     IntegerSetting delayTicks = registerInteger("Tick Delay", 3, 0, 10);
-    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 1, 8);
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting sneakOnly = registerBoolean("Sneak Only", false);
     BooleanSetting disableNoBlock = registerBoolean("Disable No Web", true);
@@ -113,7 +113,7 @@ public class AutoWeb extends Module {
 
         Vec3d targetVec3d = targetPlayer.getPositionVector();
 
-        while (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
+        if (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
             delayTimer.reset();
 
             int blocksPlaced = 0;
