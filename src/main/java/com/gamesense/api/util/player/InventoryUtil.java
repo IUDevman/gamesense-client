@@ -3,7 +3,10 @@ package com.gamesense.api.util.player;
 import com.gamesense.client.module.modules.combat.OffHand;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockObsidian;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -147,5 +150,32 @@ public class InventoryUtil {
             }
         }
         return slots;
+    }
+
+    public static int findToolForBlockState(IBlockState iBlockState, int lower, int upper) {
+        int slot = -1;
+        List<ItemStack> mainInventory = mc.player.inventory.mainInventory;
+
+        double foundMaxSpeed = 0;
+        for (int i = lower; i <= upper; i++) {
+            ItemStack itemStack = mainInventory.get(i);
+
+            if (itemStack == ItemStack.EMPTY) continue;
+
+            float breakSpeed = itemStack.getDestroySpeed(iBlockState);
+
+            int efficiencySpeed = EnchantmentHelper.getEnchantmentLevel(Enchantments.EFFICIENCY, itemStack);
+
+            if (breakSpeed > 1.0F) {
+                breakSpeed += efficiencySpeed > 0 ? Math.pow(efficiencySpeed, 2) + 1 : 0;
+
+                if (breakSpeed > foundMaxSpeed) {
+                    foundMaxSpeed = breakSpeed;
+                    slot = i;
+                }
+            }
+        }
+
+        return slot;
     }
 }
