@@ -16,7 +16,7 @@ public class CommandManager {
     public static ArrayList<Command> commands = new ArrayList<>();
 
     public static void init() {
-        for (Class clazz : ReflectionUtil.findClassesInPath(commandPath)) {
+        for (Class<?> clazz : ReflectionUtil.findClassesInPath(commandPath)) {
 
             if (clazz == null) continue;
 
