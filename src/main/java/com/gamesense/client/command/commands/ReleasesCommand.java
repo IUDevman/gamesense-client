@@ -22,11 +22,11 @@ public class ReleasesCommand extends Command {
                 MessageBus.sendCommandMessage("Opened a link to the releases page!", true);
             } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
-                MessageBus.sendCommandMessage("Failed to pen a link to the releases page!", true);
+                MessageBus.sendCommandMessage("Failed to open a link to the releases page!", true);
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            MessageBus.sendCommandMessage("Failed to pen a link to the releases page!", true);
+            MessageBus.sendCommandMessage("Failed to open a link to the releases page!", true);
         }
     }
 }
