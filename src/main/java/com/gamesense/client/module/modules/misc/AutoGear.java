@@ -21,6 +21,7 @@ import java.util.*;
 public class AutoGear extends Module {
 
     IntegerSetting tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+    IntegerSetting switchForTick = registerInteger("Switch Per Tick", 1, 1, 100);
     BooleanSetting enderChest = registerBoolean("EnderChest", false);
     BooleanSetting confirmSort = registerBoolean("Confirm Sort", true);
     BooleanSetting invasive = registerBoolean("Invasive", false);
@@ -147,40 +148,43 @@ public class AutoGear extends Module {
             }
             openedBefore = true;
         } else if (finishSort) {
-            int slotChange;
-            // This is the sort area
-            if (sortItems.size() != 0) {
-                // Get where we are now
-                slotChange = sortItems.get(stepNow++);
-                // Sort the inventory
-                mc.playerController.windowClick(mc.player.openContainer.windowId, slotChange, 0, ClickType.PICKUP, mc.player);
-            }
-            // If we have at the limit
-            if (stepNow == sortItems.size()) {
-                // If confirm sort but we have not done yet
-                if (confirmSort.getValue()) {
-                    if (!doneBefore) {
-                        // Reset
-                        openedBefore = false;
-                        finishSort = false;
-                        doneBefore = true;
-                        // The last item sometimes fuck up. This reduce the possibilites
-                        checkLastItem();
-                        return;
+            for (int i = 0; i < switchForTick.getValue(); i++) {
+                int slotChange;
+                // This is the sort area
+                if (sortItems.size() != 0) {
+                    // Get where we are now
+                    slotChange = sortItems.get(stepNow++);
+                    // Sort the inventory
+                    mc.playerController.windowClick(mc.player.openContainer.windowId, slotChange, 0, ClickType.PICKUP, mc.player);
+                }
+                // If we have at the limit
+                if (stepNow == sortItems.size()) {
+                    // If confirm sort but we have not done yet
+                    if (confirmSort.getValue()) {
+                        if (!doneBefore) {
+                            // Reset
+                            openedBefore = false;
+                            finishSort = false;
+                            doneBefore = true;
+                            // The last item sometimes fuck up. This reduce the possibilites
+                            checkLastItem();
+                            return;
+                        }
                     }
-                }
 
-                finishSort = false;
-                // Print
-                if (infoMsgs.getValue()) {
-                    PistonCrystal.printDebug("Inventory sorted", false);
+                    finishSort = false;
+                    // Print
+                    if (infoMsgs.getValue()) {
+                        PistonCrystal.printDebug("Inventory sorted", false);
+                    }
+                    // Check if the last slot has been placed
+                    checkLastItem();
+                    doneBefore = false;
+                    // If he want to close the inventory
+                    if (closeAfter.getValue())
+                        mc.player.closeScreen();
+                    return;
                 }
-                // Check if the last slot has been placed
-                checkLastItem();
-                doneBefore = false;
-                // If he want to close the inventory
-                if (closeAfter.getValue())
-                    mc.player.closeScreen();
             }
         }
     }

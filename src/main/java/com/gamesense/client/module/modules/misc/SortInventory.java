@@ -39,10 +39,12 @@ import java.util.*;
 public class SortInventory extends Module {
 
     IntegerSetting tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+    IntegerSetting switchForTick = registerInteger("Switch Per Tick", 1, 1, 100);
     BooleanSetting confirmSort = registerBoolean("Confirm Sort", true);
     BooleanSetting instaSort = registerBoolean("Insta Sort", false);
     BooleanSetting closeAfter = registerBoolean("Close After", false);
     BooleanSetting infoMsgs = registerBoolean("Info Msgs", true);
+    BooleanSetting finishCheck = registerBoolean("Finish Check", true);
     BooleanSetting debugMode = registerBoolean("Debug Mode", false);
 
     // Our inventory variables
@@ -57,7 +59,9 @@ public class SortInventory extends Module {
     // If we had opened before a chest/inventory
     private boolean openedBefore,
         finishSort,
-        doneBefore;
+        doneBefore,
+        lastCheck = false;
+    private int lastItem = -1;
 
     public void onEnable() {
         // Get name of the config
@@ -121,6 +125,17 @@ public class SortInventory extends Module {
             delayTimeTicks = 0;
         }
 
+        if (finishCheck.getValue() && lastCheck) {
+            if (lastItem != -1) {
+                // Check if it's empty
+                if (mc.player.inventory.getStackInSlot(lastItem).isEmpty()) {
+                    // If yes, change
+                    mc.playerController.windowClick(0, lastItem < 9 ? lastItem + 36 : lastItem, 0, ClickType.PICKUP, mc.player);
+                }
+            }
+            lastCheck = false;
+        }
+
         // Since this is in the misc category, it did not turn off. This can cause some problems, so i have to turn it off manually with this
         if (planInventory.size() == 0)
             disable();
@@ -161,44 +176,47 @@ public class SortInventory extends Module {
             openedBefore = true;
             // if we have to start sorting
         } else if (finishSort) {
-            int slotChange;
-            // This is the sort area
-            if (sortItems.size() != 0) {
-                // Get where we are now
-                slotChange = sortItems.get(stepNow++);
-                // Sort the inventory
-                mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
-            }
-            // If we have at the limit
-            if (stepNow == sortItems.size()) {
-                // If confirm sort but we have not done yet
-                if (confirmSort.getValue()) {
-                    if (!doneBefore) {
-                        // Reset
-                        openedBefore = false;
-                        finishSort = false;
-                        doneBefore = true;
-                        // The last item sometimes fuck up. This reduce the possibilites
-                        checkLastItem();
-                        return;
+            for (int i = 0; i < switchForTick.getValue(); i++) {
+                int slotChange;
+                // This is the sort area
+                if (sortItems.size() != 0) {
+                    // Get where we are now
+                    slotChange = sortItems.get(stepNow++);
+                    // Sort the inventory
+                    mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
+                }
+                // If we have at the limit
+                if (stepNow == sortItems.size()) {
+                    // If confirm sort but we have not done yet
+                    if (confirmSort.getValue()) {
+                        if (!doneBefore) {
+                            // Reset
+                            openedBefore = false;
+                            finishSort = false;
+                            doneBefore = true;
+                            // The last item sometimes fuck up. This reduce the possibilites
+                            checkLastItem();
+                            return;
+                        }
                     }
-                }
 
-                finishSort = false;
-                // Print
-                if (infoMsgs.getValue()) {
-                    PistonCrystal.printDebug("Inventory sorted", false);
-                }
-                // Check if the last slot has been placed
-                checkLastItem();
-                doneBefore = false;
-                // If we are using instaSort or closeAfter, close
-                if (instaSort.getValue() || closeAfter.getValue()) {
-                    mc.player.closeScreen();
-                    if (instaSort.getValue())
-                        disable();
-                }
+                    finishSort = false;
+                    // Print
+                    if (infoMsgs.getValue()) {
+                        PistonCrystal.printDebug("Inventory sorted", false);
+                    }
+                    // Check if the last slot has been placed
+                    checkLastItem();
+                    doneBefore = false;
+                    // If we are using instaSort or closeAfter, close
+                    if (instaSort.getValue() || closeAfter.getValue()) {
+                        mc.player.closeScreen();
+                        if (instaSort.getValue())
+                            disable();
+                    }
+                    return;
 
+                }
             }
         }
     }
@@ -213,6 +231,8 @@ public class SortInventory extends Module {
                 // If yes, change
                 mc.playerController.windowClick(0, slotChange < 9 ? slotChange + 36 : slotChange, 0, ClickType.PICKUP, mc.player);
             }
+            lastItem = slotChange;
+            lastCheck = true;
         }
     }
 
@@ -299,8 +319,10 @@ public class SortInventory extends Module {
                     // If we found nothing, lets check if we have something in the pick
                     if (pickedItem != null) {
                         // In this case, lets place this item in i
-                        planMove.add(i);
-                        copyInventory.set(i, pickedItem);
+                        if (planMove.get(planMove.size() - 1) != i) {
+                            planMove.add(i);
+                            copyInventory.set(i, pickedItem);
+                        }
                         // Reset pickedItem
                         pickedItem = null;
                     }
