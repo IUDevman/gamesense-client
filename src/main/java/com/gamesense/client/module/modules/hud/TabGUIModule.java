@@ -1,30 +1,47 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+
+import org.lwjgl.input.Keyboard;
+
+import com.gamesense.api.setting.SettingsManager;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.clickgui.GameSenseGUI;
+import com.gamesense.client.module.Category;
+import com.gamesense.client.module.HUDModule;
+import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.gui.ClickGuiModule;
+import com.lukflug.panelstudio.setting.SettingsAnimation;
+import com.lukflug.panelstudio.tabgui.StandardTheme;
+import com.lukflug.panelstudio.tabgui.TabGUI;
+import com.lukflug.panelstudio.theme.IColorScheme;
+import com.lukflug.panelstudio.theme.ITheme;
+
 /**
  * @author lukflug
  */
 
-/*@Module.Declaration(name = "TabGUI", category = Category.HUD)
+@Module.Declaration(name = "TabGUI", category = Category.HUD)
 @HUDModule.Declaration(posX = GameSenseGUI.DISTANCE, posZ = GameSenseGUI.DISTANCE)
 public class TabGUIModule extends HUDModule {
 
     @Override
     public void populate(ITheme theme) {
         ClickGuiModule clickGuiModule = ModuleManager.getModule(ClickGuiModule.class);
-        TabGUIRenderer renderer = new DefaultRenderer(new SettingsColorScheme(clickGuiModule.enabledColor, clickGuiModule.backgroundColor, clickGuiModule.settingBackgroundColor, clickGuiModule.backgroundColor, clickGuiModule.fontColor, clickGuiModule.opacity), GameSenseGUI.HEIGHT, 5, Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_RETURN);
-        TabGUI component = new TabGUI("TabGUI", renderer, new Animation() {
-            @Override
-            protected int getSpeed() {
-                return clickGuiModule.animationSpeed.getValue();
-            }
-        }, position, 75);
-        for (Category category : Category.values()) {
-            TabGUIContainer tab = new TabGUIContainer(category.name(), renderer, new SettingsAnimation(clickGuiModule.animationSpeed));
-            component.addComponent(tab);
-            for (Module module : ModuleManager.getModulesInCategory(category)) {
-                tab.addComponent(new TabGUIItem(module.getName(), module));
-            }
-        }
-        this.component = component;
+        TabGUI tabgui=new TabGUI(()->"TabGUI",GameSenseGUI.client,new StandardTheme(new IColorScheme() {
+			@Override
+			public void createSetting (ITheme theme, String name, String description, boolean hasAlpha, boolean allowsRainbow, Color color, boolean rainbow) {
+				ColorSetting setting=new ColorSetting(name,name.replace(" ",""),TabGUIModule.this,()->true,rainbow,allowsRainbow,hasAlpha,new GSColor(color));
+		    	SettingsManager.addSetting(setting);
+			}
+
+			@Override
+			public Color getColor (String name) {
+				return ((ColorSetting)SettingsManager.getSettingsForModule(TabGUIModule.this).stream().filter(setting->setting.getName()==name).findFirst().orElse(null)).getValue();
+			}
+        },75,GameSenseGUI.FONT_HEIGHT,2,GameSenseGUI.DISTANCE),GameSenseGUI.gui,()->new SettingsAnimation(()->clickGuiModule.animationSpeed.getValue(),()->GameSenseGUI.guiInterface.getTime()),key->key==Keyboard.KEY_UP,key->key==Keyboard.KEY_DOWN,key->key==Keyboard.KEY_RETURN||key==Keyboard.KEY_RIGHT,key->key==Keyboard.KEY_LEFT);
+        component=tabgui.getWrappedComponent(position);
     }
-}*/
+}

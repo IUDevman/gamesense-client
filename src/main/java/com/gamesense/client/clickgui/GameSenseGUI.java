@@ -71,8 +71,9 @@ import net.minecraft.util.text.TextFormatting;
 
 public class GameSenseGUI extends MinecraftHUDGUI {
     public static final int WIDTH = 100, HEIGHT = 12, FONT_HEIGHT = 9, DISTANCE = 10, HUD_BORDER = 2;
-    public final GUIInterface guiInterface;
-    public final HUDGUI gui;
+    public static IClient client;
+    public static GUIInterface guiInterface;
+    public static HUDGUI gui;
     private final ITheme theme, gameSenseTheme, clearTheme;
 
     public GameSenseGUI() {
@@ -117,7 +118,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
         };
         
         // Define client structure
-        IClient client=()->Arrays.stream(Category.values()).sorted((a,b)->a.toString().compareTo(b.toString())).map(category->new ICategory() {
+        client=()->Arrays.stream(Category.values()).sorted((a,b)->a.toString().compareTo(b.toString())).map(category->new ICategory() {
 			@Override
 			public String getDisplayName() {
 				return category.toString();
@@ -426,8 +427,8 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				}
 
 				@Override
-				public Stream<String> getAllowedValues() {
-					return ((ModeSetting)setting).getModes().stream();
+				public String[] getAllowedValues() {
+					return (String[])((ModeSetting)setting).getModes().toArray();
 				}
 				
 				@Override
