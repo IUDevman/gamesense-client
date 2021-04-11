@@ -33,7 +33,6 @@ public class ModuleManager {
         addMod(new AutoWeb());
         addMod(new BedAura());
         addMod(new Blocker());
-        addMod(new Burrow());
         addMod(new CevBreaker());
         addMod(new FastBow());
         addMod(new HoleFill());
@@ -55,7 +54,6 @@ public class ModuleManager {
         //Movement
         addMod(new Anchor());
         addMod(new Blink());
-        addMod(new ElytraFly());
         addMod(new HoleTP());
         addMod(new PlayerTweaks());
         addMod(new ReverseStep());
