@@ -8,11 +8,7 @@ import java.util.stream.Collectors;
 
 public class SettingsManager {
 
-    private static ArrayList<Setting> settings;
-
-    public static void init() {
-        settings = new ArrayList<>();
-    }
+    private static final ArrayList<Setting> settings = new ArrayList<>();
 
     public static void addSetting(Setting setting) {
         settings.add(setting);
