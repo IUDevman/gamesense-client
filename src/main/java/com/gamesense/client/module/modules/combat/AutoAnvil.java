@@ -126,7 +126,7 @@ public class AutoAnvil extends Module {
         AutoCrystal.stopAC = false;
         // If offHand was enabled
         if (slot_mat[0] == -2) {
-            OffHand.removeItem("Obby");
+            OffHand.removeItem(0);
         }
     }
 
@@ -464,7 +464,7 @@ public class AutoAnvil extends Module {
         // offHand obsidian
         if (offHandObby.getValue() && ModuleManager.isModuleEnabled(OffHand.class)) {
             slot_mat[0] = -2;
-            OffHand.requestItems("Obby");
+            OffHand.requestItems(0);
         }
         // Count what we found
         int count = 0;

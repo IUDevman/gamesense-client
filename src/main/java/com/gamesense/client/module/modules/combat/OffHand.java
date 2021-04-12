@@ -81,12 +81,28 @@ public class OffHand extends Module {
     };
 
 
-    public static void requestItems(String want) {
-        forceItem = want;
+    public static void requestItems(int want) {
+        switch (want) {
+            case 0:
+                forceItem = "Obby";
+                break;
+            case 1:
+                forceItem = "Skull";
+                break;
+        }
     }
 
-    public static void removeItem(String want) {
-        if (forceItem.equals(want))
+    public static void removeItem(int want) {
+        String check = "";
+        switch (want) {
+            case 0:
+                check = "Obby";
+                break;
+            case 1:
+                check = "Skull";
+                break;
+        }
+        if (forceItem.equals(check))
             forceItem = "";
     }
 

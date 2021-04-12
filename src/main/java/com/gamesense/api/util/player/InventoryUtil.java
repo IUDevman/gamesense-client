@@ -28,7 +28,7 @@ public class InventoryUtil {
 
         if (offHandActived && ModuleManager.isModuleEnabled(OffHand.class)) {
             if (!activeBefore) {
-                OffHand.requestItems("Obby");
+                OffHand.requestItems(0);
             }
             return 9;
         }
@@ -55,7 +55,7 @@ public class InventoryUtil {
 
         if (offHandActived) {
             if (!activeBefore)
-                OffHand.requestItems("Skull");
+                OffHand.requestItems(1);
             return 9;
         }
 

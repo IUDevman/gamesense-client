@@ -83,7 +83,7 @@ public class HoleFill extends Module {
         recentPlacements.clear();
 
         if (offHandObby.getValue() && ModuleManager.isModuleEnabled(OffHand.class)) {
-            OffHand.removeItem("Obby");
+            OffHand.removeItem(0);
             activedOff = false;
         }
     }

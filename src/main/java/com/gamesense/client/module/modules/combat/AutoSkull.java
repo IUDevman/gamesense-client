@@ -106,7 +106,7 @@ public class AutoSkull extends Module {
         }
 
         if (noObby) setDisabledMessage("Skull not found... Blocker turned OFF!");
-        if (offHandSkull.getValue()) OffHand.removeItem("Skull");
+        if (offHandSkull.getValue()) OffHand.removeItem(1);
     }
 
     private boolean firstShift;
@@ -235,7 +235,7 @@ public class AutoSkull extends Module {
                     firstShift = true;
                     activedBefore = alrPlaced = true;
                     if (offHandSkull.getValue())
-                        OffHand.removeItem("Skull");
+                        OffHand.removeItem(1);
 
                     if (disableAfter.getValue()) {
                         disable();

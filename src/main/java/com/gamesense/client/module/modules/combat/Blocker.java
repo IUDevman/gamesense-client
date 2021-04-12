@@ -156,7 +156,7 @@ public class Blocker extends Module {
         if (!found) {
             if (activedBefore) {
                 activedBefore = false;
-                OffHand.removeItem("Obby");
+                OffHand.removeItem(0);
             }
         }
     }

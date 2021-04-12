@@ -79,7 +79,7 @@ public class AutoTrap extends Module {
         AutoCrystal.stopAC = false;
 
         if (offhandObby.getValue() && ModuleManager.isModuleEnabled(OffHand.class)) {
-            OffHand.removeItem("Obby");
+            OffHand.removeItem(0);
             activedOff = false;
         }
 
