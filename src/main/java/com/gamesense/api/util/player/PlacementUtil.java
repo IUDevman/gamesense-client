@@ -190,9 +190,10 @@ public class PlacementUtil {
             if (stoppedAC) {
                 AutoCrystal.stopAC = false;
             }
+
             return action == EnumActionResult.SUCCESS;
         }
-        return true;
 
+        return true;
     }
 }

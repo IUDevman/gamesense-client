@@ -15,7 +15,6 @@ import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -47,7 +46,6 @@ public class SelfTrap extends Module {
     private int offsetSteps = 0;
     private boolean outOfTargetBlock = false;
     private boolean activedOff = false;
-    private boolean isSneaking = false;
 
     public void onEnable() {
         PlacementUtil.onEnable();
@@ -75,11 +73,6 @@ public class SelfTrap extends Module {
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1 && oldSlot != 9) {
             mc.player.inventory.currentItem = oldSlot;
             oldSlot = -1;
-        }
-
-        if (isSneaking) {
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-            isSneaking = false;
         }
 
         AutoCrystal.stopAC = false;
@@ -174,11 +167,6 @@ public class SelfTrap extends Module {
                 }
 
                 offsetSteps++;
-
-                if (isSneaking) {
-                    mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-                    isSneaking = false;
-                }
             }
         }
     }
