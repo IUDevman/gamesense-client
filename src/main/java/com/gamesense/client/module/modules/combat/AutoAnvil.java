@@ -126,7 +126,7 @@ public class AutoAnvil extends Module {
         AutoCrystal.stopAC = false;
         // If offHand was enabled
         if (slot_mat[0] == -2) {
-            OffHand.removeObsidian();
+            OffHand.removeItem("Obby");
         }
     }
 
@@ -307,7 +307,7 @@ public class AutoAnvil extends Module {
             return false;
 
         // If it's step of the obsidian and we have offHandMode
-        if (offHandObby.getValue() && OffHand.isActive() && slot_mat[utilSlot] == -2) {
+        if (offHandObby.getValue() && ModuleManager.isModuleEnabled(OffHand.class) && slot_mat[utilSlot] == -2) {
             // Check if we have the obby in our offhand
             if (mc.player.getHeldItemOffhand().getItem() instanceof ItemBlock && ((ItemBlock) mc.player.getHeldItemOffhand().getItem()).getBlock() instanceof BlockObsidian) {
                 // We can continue
@@ -462,9 +462,9 @@ public class AutoAnvil extends Module {
             }
         }
         // offHand obsidian
-        if (offHandObby.getValue() && OffHand.isActive()) {
+        if (offHandObby.getValue() && ModuleManager.isModuleEnabled(OffHand.class)) {
             slot_mat[0] = -2;
-            OffHand.requestObsidian();
+            OffHand.requestItems("Obby");
         }
         // Count what we found
         int count = 0;
