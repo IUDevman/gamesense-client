@@ -37,7 +37,7 @@ public class ColorSetting extends Setting<GSColor> {
     public long toLong() {
         long temp=getColor().getRGB() & 0xFFFFFF;
         if (rainbowEnabled) temp+=((rainbow ? 1 : 0)<<24);
-        if (alphaEnabled) temp+=getColor().getAlpha()<<32;
+        if (alphaEnabled) temp+=((long)getColor().getAlpha())<<32;
         return temp;
     }
 
