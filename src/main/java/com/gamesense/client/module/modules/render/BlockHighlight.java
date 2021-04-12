@@ -18,7 +18,8 @@ import net.minecraft.util.math.RayTraceResult;
 import java.util.Arrays;
 
 /**
- * @Author Hoosiers on 10/10/2020
+ * @author Hoosiers
+ * @since 10/10/2020
  */
 
 @Module.Declaration(name = "BlockHighlight", category = Category.Render)
@@ -29,56 +30,36 @@ public class BlockHighlight extends Module {
     IntegerSetting lineWidth = registerInteger("Width", 1, 1, 5);
     ColorSetting renderColor = registerColor("Color", new GSColor(255, 0, 0, 255));
 
-    private int lookInt;
-
     public void onWorldRender(RenderEvent event) {
         RayTraceResult rayTraceResult = mc.objectMouseOver;
 
-        if (rayTraceResult == null) {
-            return;
-        }
+        if (rayTraceResult == null) return;
 
         EnumFacing enumFacing = mc.objectMouseOver.sideHit;
 
-        if (enumFacing == null) {
-            return;
-        }
-
-        AxisAlignedBB axisAlignedBB;
-        BlockPos blockPos;
+        if (enumFacing == null) return;
 
         GSColor colorWithOpacity = new GSColor(renderColor.getValue(), 50);
 
-        switch (renderLook.getValue()) {
-            case "Block": {
-                lookInt = 0;
-                break;
-            }
+        if (rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
 
-            case "Side": {
-                lookInt = 1;
-                break;
-            }
-        }
+            BlockPos blockPos = rayTraceResult.getBlockPos();
+            AxisAlignedBB axisAlignedBB = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
+            int lookInt = renderLook.getValue().equalsIgnoreCase("Side") ? findRenderingSide(enumFacing) : GeometryMasks.Quad.ALL;
 
-        if (rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
-            blockPos = rayTraceResult.getBlockPos();
-            axisAlignedBB = mc.world.getBlockState(blockPos).getSelectedBoundingBox(mc.world, blockPos);
-
-            if (axisAlignedBB != null && blockPos != null && mc.world.getBlockState(blockPos).getMaterial() != Material.AIR) {
+            if (mc.world.getBlockState(blockPos).getMaterial() != Material.AIR) {
                 switch (renderType.getValue()) {
                     case "Outline": {
-                        renderOutline(axisAlignedBB, lineWidth.getValue(), renderColor.getValue(), enumFacing, lookInt);
+                        renderOutline(axisAlignedBB, lineWidth.getValue(), renderColor.getValue(), lookInt);
                         break;
                     }
                     case "Fill": {
-                        renderFill(axisAlignedBB, colorWithOpacity, enumFacing, lookInt);
+                        RenderUtil.drawBox(axisAlignedBB, true, 1, colorWithOpacity, lookInt);
                         break;
                     }
-
-                    case "Both": {
-                        renderOutline(axisAlignedBB, lineWidth.getValue(), renderColor.getValue(), enumFacing, lookInt);
-                        renderFill(axisAlignedBB, colorWithOpacity, enumFacing, lookInt);
+                    default: {
+                        renderOutline(axisAlignedBB, lineWidth.getValue(), renderColor.getValue(), lookInt);
+                        RenderUtil.drawBox(axisAlignedBB, true, 1, colorWithOpacity, lookInt);
                         break;
                     }
                 }
@@ -86,44 +67,35 @@ public class BlockHighlight extends Module {
         }
     }
 
-    public void renderOutline(AxisAlignedBB axisAlignedBB, int width, GSColor color, EnumFacing enumFacing, int lookInt) {
-
-        if (lookInt == 0) {
-            RenderUtil.drawBoundingBox(axisAlignedBB, width, color);
-        } else if (lookInt == 1) {
-            RenderUtil.drawBoundingBoxWithSides(axisAlignedBB, width, color, findRenderingSide(enumFacing));
+    private void renderOutline(AxisAlignedBB axisAlignedBB, int lineWidth, GSColor color, int lookInt) {
+        if (lookInt == GeometryMasks.Quad.ALL) {
+            RenderUtil.drawBoundingBox(axisAlignedBB, lineWidth, color);
+        } else {
+            RenderUtil.drawBoundingBoxWithSides(axisAlignedBB, lineWidth, color, lookInt);
         }
-    }
-
-    public void renderFill(AxisAlignedBB axisAlignedBB, GSColor color, EnumFacing enumFacing, int lookInt) {
-        int facing = 0;
-
-        if (lookInt == 0) {
-            facing = GeometryMasks.Quad.ALL;
-        } else if (lookInt == 1) {
-            facing = findRenderingSide(enumFacing);
-        }
-
-        RenderUtil.drawBox(axisAlignedBB, true, 1, color, facing);
     }
 
     private int findRenderingSide(EnumFacing enumFacing) {
-        int facing = 0;
 
-        if (enumFacing == EnumFacing.EAST) {
-            facing = GeometryMasks.Quad.EAST;
-        } else if (enumFacing == EnumFacing.WEST) {
-            facing = GeometryMasks.Quad.WEST;
-        } else if (enumFacing == EnumFacing.NORTH) {
-            facing = GeometryMasks.Quad.NORTH;
-        } else if (enumFacing == EnumFacing.SOUTH) {
-            facing = GeometryMasks.Quad.SOUTH;
-        } else if (enumFacing == EnumFacing.UP) {
-            facing = GeometryMasks.Quad.UP;
-        } else if (enumFacing == EnumFacing.DOWN) {
-            facing = GeometryMasks.Quad.DOWN;
+        switch (enumFacing) {
+            case EAST: {
+                return GeometryMasks.Quad.EAST;
+            }
+            case WEST: {
+                return GeometryMasks.Quad.WEST;
+            }
+            case NORTH: {
+                return GeometryMasks.Quad.NORTH;
+            }
+            case SOUTH: {
+                return GeometryMasks.Quad.SOUTH;
+            }
+            case UP: {
+                return GeometryMasks.Quad.UP;
+            }
+            default: {
+                return GeometryMasks.Quad.DOWN;
+            }
         }
-
-        return facing;
     }
 }

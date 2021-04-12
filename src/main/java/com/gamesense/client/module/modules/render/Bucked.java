@@ -37,10 +37,6 @@ public class Bucked extends Module {
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 255));
 
     public void onWorldRender(RenderEvent event) {
-        if (mc.player == null || mc.world == null) {
-            return;
-        }
-
         mc.world.playerEntities.stream().filter(this::isValidTarget).forEach(entityPlayer -> {
 
             BlockPos blockPos = new BlockPos(roundValueToCenter(entityPlayer.posX), roundValueToCenter(entityPlayer.posY), roundValueToCenter(entityPlayer.posZ));
@@ -83,7 +79,7 @@ public class Bucked extends Module {
                 RenderUtil.drawBoundingBox(blockPos, upValue, width.getValue(), gsColor1);
                 break;
             }
-            case "Fill": {
+            default: {
                 RenderUtil.drawBox(blockPos, upValue, gsColor2, GeometryMasks.Quad.ALL);
                 break;
             }

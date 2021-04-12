@@ -1,4 +1,4 @@
-package com.gamesense.api.util.misc;
+package com.gamesense.api.util.world;
 
 import net.minecraft.util.math.Vec3d;
 
@@ -117,5 +117,11 @@ public class Offsets {
     public static final Vec3d[] BURROW_DOUBLE = {
         new Vec3d(0, 0, 0),
         new Vec3d(0, 1, 0)
+    };
+
+    public static final Vec3d[] BURROW_TRIPLE = {
+            new Vec3d(0, 0, 0),
+            new Vec3d(0, 1, 0),
+            new Vec3d(0, 2, 0)
     };
 }

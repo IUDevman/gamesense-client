@@ -34,18 +34,12 @@ public class BreakESP extends Module {
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 255));
 
     public void onWorldRender(RenderEvent event) {
-        if (mc.player == null || mc.world == null) {
-            return;
-        }
-
         mc.renderGlobal.damagedBlocks.forEach((integer, destroyBlockProgress) -> {
             if (destroyBlockProgress != null) {
 
                 BlockPos blockPos = destroyBlockProgress.getPosition();
 
-                if (mc.world.getBlockState(blockPos).getBlock() == Blocks.AIR) {
-                    return;
-                }
+                if (mc.world.getBlockState(blockPos).getBlock() == Blocks.AIR) return;
 
                 if (blockPos.getDistance((int) mc.player.posX, (int) mc.player.posY, (int) mc.player.posZ) <= range.getValue()) {
 
@@ -80,7 +74,7 @@ public class BreakESP extends Module {
                 RenderUtil.drawBoundingBox(axisAlignedBB1, lineWidth.getValue(), outlineColor);
                 break;
             }
-            case "Both": {
+            default: {
                 RenderUtil.drawBox(axisAlignedBB1, true, 0, fillColor, GeometryMasks.Quad.ALL);
                 RenderUtil.drawBoundingBox(axisAlignedBB1, lineWidth.getValue(), outlineColor);
                 break;
