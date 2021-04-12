@@ -15,7 +15,7 @@ public class RenderTweaks extends Module {
     BooleanSetting lowOffhand = registerBoolean("Low Offhand", false);
     DoubleSetting lowOffhandSlider = registerDouble("Offhand Height", 1.0, 0.1, 1.0);
     BooleanSetting fovChanger = registerBoolean("FOV", false);
-    IntegerSetting fovChangerSlider = registerInteger("FOV Slider", 90, 70, 200);
+    IntegerSetting fovChangerSlider = registerInteger("FOV Slider", 90, 30, 200);
 
     private float oldFOV;
 
