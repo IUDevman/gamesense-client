@@ -89,6 +89,9 @@ public class OffHand extends Module {
             case 1:
                 forceItem = "Skull";
                 break;
+            case 2:
+                forceItem = "EChest";
+                break;
         }
     }
 
@@ -100,6 +103,9 @@ public class OffHand extends Module {
                 break;
             case 1:
                 check = "Skull";
+                break;
+            case 2:
+                check = "EChest";
                 break;
         }
         if (forceItem.equals(check))
@@ -122,6 +128,7 @@ public class OffHand extends Module {
             put("Skull", Blocks.SKULL);
             put("Obby", Blocks.OBSIDIAN);
             put("Anvil", Blocks.ANVIL);
+            put("EChest", Blocks.ENDER_CHEST);
         }
     };
 
