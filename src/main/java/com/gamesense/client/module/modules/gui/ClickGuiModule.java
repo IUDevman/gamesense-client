@@ -30,6 +30,7 @@ public class ClickGuiModule extends Module {
     public IntegerSetting animationSpeed = registerInteger("Animation Speed", 200, 0, 1000);
     public ModeSetting scrolling = registerMode("Scrolling", Arrays.asList("Screen", "Container"), "Screen");
     public BooleanSetting showHUD = registerBoolean("Show HUD Panels", false);
+    public BooleanSetting csgoLayout = registerBoolean("CSGO Layout", false);
     public ModeSetting theme = registerMode("Skin", Arrays.asList("2.2", "2.1.2", "2.0"), "2.2");
 
     public void onEnable() {

@@ -2,6 +2,7 @@ package com.gamesense.client.clickgui;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -30,18 +31,23 @@ import com.lukflug.panelstudio.base.Animation;
 import com.lukflug.panelstudio.base.Context;
 import com.lukflug.panelstudio.base.IBoolean;
 import com.lukflug.panelstudio.base.IToggleable;
+import com.lukflug.panelstudio.base.SettingsAnimation;
 import com.lukflug.panelstudio.base.SimpleToggleable;
 import com.lukflug.panelstudio.component.IFixedComponent;
 import com.lukflug.panelstudio.component.IFixedComponentProxy;
 import com.lukflug.panelstudio.component.IScrollSize;
 import com.lukflug.panelstudio.container.IContainer;
 import com.lukflug.panelstudio.hud.HUDGUI;
+import com.lukflug.panelstudio.layout.CSGOLayout;
 import com.lukflug.panelstudio.layout.ChildUtil.ChildMode;
+import com.lukflug.panelstudio.layout.ComponentGenerator;
 import com.lukflug.panelstudio.layout.IComponentAdder;
+import com.lukflug.panelstudio.layout.IComponentGenerator;
 import com.lukflug.panelstudio.layout.ILayout;
 import com.lukflug.panelstudio.layout.PanelAdder;
 import com.lukflug.panelstudio.layout.PanelLayout;
 import com.lukflug.panelstudio.mc12.MinecraftHUDGUI;
+import com.lukflug.panelstudio.popup.CenteredPositioner;
 import com.lukflug.panelstudio.popup.MousePositioner;
 import com.lukflug.panelstudio.popup.PanelPositioner;
 import com.lukflug.panelstudio.popup.PopupTuple;
@@ -51,10 +57,11 @@ import com.lukflug.panelstudio.setting.IClient;
 import com.lukflug.panelstudio.setting.IColorSetting;
 import com.lukflug.panelstudio.setting.IEnumSetting;
 import com.lukflug.panelstudio.setting.IKeybindSetting;
+import com.lukflug.panelstudio.setting.ILabeled;
 import com.lukflug.panelstudio.setting.IModule;
 import com.lukflug.panelstudio.setting.INumberSetting;
 import com.lukflug.panelstudio.setting.ISetting;
-import com.lukflug.panelstudio.setting.SettingsAnimation;
+import com.lukflug.panelstudio.setting.Labeled;
 import com.lukflug.panelstudio.theme.ClearTheme;
 import com.lukflug.panelstudio.theme.GameSenseTheme;
 import com.lukflug.panelstudio.theme.IColorScheme;
@@ -276,14 +283,25 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			public boolean removeComponent(IFixedComponent component) {
 				return gui.removeComponent(component);
 			}
-        },false,()->true,title->title) {
+        },false,()->!clickGuiModule.csgoLayout.getValue(),title->title) {
         	@Override
 			public int getScrollHeight (Context context, int componentHeight) {
 				return scrollHeight.apply(context,componentHeight);
 			}
 		};
-		ILayout classicPanelLayout=new PanelLayout(WIDTH,new Point(DISTANCE,DISTANCE),(WIDTH+DISTANCE)/2,HEIGHT+DISTANCE,animation,scancode->scancode==Keyboard.KEY_DELETE||scancode==Keyboard.KEY_BACK,level->ChildMode.DOWN,ChildMode.DOWN,popupType);
-		classicPanelLayout.populateGUI(classicPanelAdder,client,theme);
+		IComponentGenerator generator=new ComponentGenerator(scancode->scancode==Keyboard.KEY_DELETE);
+		ILayout classicPanelLayout=new PanelLayout(WIDTH,new Point(DISTANCE,DISTANCE),(WIDTH+DISTANCE)/2,HEIGHT+DISTANCE,animation,level->ChildMode.DOWN,level->ChildMode.DOWN,popupType);
+		classicPanelLayout.populateGUI(classicPanelAdder,generator,client,theme);
+		// CSGO Layout!
+		PopupTuple colorPopup=new PopupTuple(new CenteredPositioner(()->new Rectangle(new Point(0,0),guiInterface.getWindowSize())),true,new IScrollSize() {});
+		IComponentAdder horizontalCSGOAdder=new PanelAdder(gui,true,()->clickGuiModule.csgoLayout.getValue(),title->title);
+		ILayout horizontalCSGOLayout=new CSGOLayout(new Labeled("GameSense",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",true,true,2,ChildMode.POPUP,colorPopup) {
+			@Override
+			public int getScrollHeight (Context context, int componentHeight) {
+				return 320;
+			}
+		};
+		horizontalCSGOLayout.populateGUI(horizontalCSGOAdder,generator,client,theme);
     }
     
     private ISetting<?> createSetting (Setting<?> setting) {
@@ -406,6 +424,8 @@ public class GameSenseGUI extends MinecraftHUDGUI {
     		};
     	} else if (setting instanceof ModeSetting) {
     		return new IEnumSetting() {
+    			private final ILabeled[] states=((ModeSetting)setting).getModes().stream().map(mode->new Labeled(mode,null,()->true)).toArray(ILabeled[]::new);
+    			
 				@Override
 				public String getDisplayName() {
 					return setting.getName();
@@ -425,10 +445,20 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				public String getValueName() {
 					return ((ModeSetting)setting).getValue();
 				}
+				
+				@Override
+				public int getValueIndex() {
+					return ((ModeSetting)setting).getModes().indexOf(getValueName());
+				}
 
 				@Override
-				public String[] getAllowedValues() {
-					return (String[])((ModeSetting)setting).getModes().toArray();
+				public void setValueIndex(int index) {
+					((ModeSetting)setting).setValue(((ModeSetting)setting).getModes().get(index));
+				}
+
+				@Override
+				public ILabeled[] getAllowedValues() {
+					return states;
 				}
 				
 				@Override
