@@ -15,18 +15,20 @@ public class SkyColor extends Module {
     BooleanSetting fog = registerBoolean("Fog", true);
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 255));
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<EntityViewRenderEvent.FogColors> fogColorsListener = new Listener<>(event -> {
-       event.setRed(color.getValue().getRed() / 255.0F);
-       event.setGreen(color.getValue().getGreen() / 255.0F);
-       event.setBlue(color.getValue().getBlue() / 255.0F);
+        event.setRed(color.getValue().getRed() / 255.0F);
+        event.setGreen(color.getValue().getGreen() / 255.0F);
+        event.setBlue(color.getValue().getBlue() / 255.0F);
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<EntityViewRenderEvent.FogDensity> fogDensityListener = new Listener<>(event -> {
-       if (!fog.getValue()) {
-           event.setDensity(0);
-           event.setCanceled(true);
-       }
+        if (!fog.getValue()) {
+            event.setDensity(0);
+            event.setCanceled(true);
+        }
     });
 }

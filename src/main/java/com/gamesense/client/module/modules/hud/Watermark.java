@@ -18,7 +18,7 @@ import com.lukflug.panelstudio.theme.ITheme;
 @HUDModule.Declaration(posX = 0, posZ = 0)
 public class Watermark extends HUDModule {
 
-    private ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
+    ColorSetting color = registerColor("Color", new GSColor(255, 0, 0, 255));
 
     @Override
     public void populate(ITheme theme) {

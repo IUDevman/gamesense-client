@@ -25,7 +25,7 @@ public class Notifications extends HUDModule {
     public BooleanSetting sortRight = registerBoolean("Sort Right", false);
     public BooleanSetting disableChat = registerBoolean("No Chat Msg", true);
 
-    private static NotificationsList list = new NotificationsList();
+    private static final NotificationsList list = new NotificationsList();
 
     @Override
     public void populate(ITheme theme) {

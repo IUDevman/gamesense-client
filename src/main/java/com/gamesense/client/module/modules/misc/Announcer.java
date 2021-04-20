@@ -103,6 +103,7 @@ public class Announcer extends Module {
 
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<LivingEntityUseItemEvent.Finish> eatListener = new Listener<>(event -> {
         int randomNum = ThreadLocalRandom.current().nextInt(1, 10 + 1);
@@ -125,6 +126,7 @@ public class Announcer extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
         if (event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock && mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemBlock) {
@@ -146,6 +148,7 @@ public class Announcer extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<DestroyBlockEvent> destroyListener = new Listener<>(event -> {
         blocksBroken++;
@@ -154,8 +157,8 @@ public class Announcer extends Module {
             if (breaking.getValue() && blocksBroken > randomNum) {
                 Random random = new Random();
                 String msg = breakMessages[random.nextInt(breakMessages.length)]
-                        .replace("{amount}", " " + blocksBroken)
-                        .replace("{name}", " " + mc.world.getBlockState(event.getBlockPos()).getBlock().getLocalizedName());
+                    .replace("{amount}", " " + blocksBroken)
+                    .replace("{name}", " " + mc.world.getBlockState(event.getBlockPos()).getBlock().getLocalizedName());
                 if (clientSide.getValue()) {
                     MessageBus.sendClientPrefixMessage(msg);
                 } else {
@@ -167,6 +170,7 @@ public class Announcer extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<AttackEntityEvent> attackListener = new Listener<>(event -> {
         if (attack.getValue() && !(event.getTarget() instanceof EntityEnderCrystal)) {
@@ -182,6 +186,7 @@ public class Announcer extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PlayerJumpEvent> jumpListener = new Listener<>(event -> {
         if (jump.getValue()) {

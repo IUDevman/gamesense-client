@@ -100,11 +100,11 @@ public class TargetInfo extends HUDModule {
             if (mc.player != null && mc.player.ticksExisted >= 10) {
 
                 EntityPlayer entityPlayer = (EntityPlayer) mc.world.loadedEntityList.stream()
-                        .filter(entity -> entity instanceof EntityPlayer)
-                        .filter(entity -> entity != mc.player)
-                        .map(entity -> (EntityLivingBase) entity)
-                        .min(Comparator.comparing(c -> mc.player.getDistance(c)))
-                        .orElse(null);
+                    .filter(entity -> entity instanceof EntityPlayer)
+                    .filter(entity -> entity != mc.player)
+                    .map(entity -> (EntityLivingBase) entity)
+                    .min(Comparator.comparing(c -> mc.player.getDistance(c)))
+                    .orElse(null);
 
                 if (entityPlayer != null && entityPlayer.getDistance(mc.player) <= range.getValue()) {
 

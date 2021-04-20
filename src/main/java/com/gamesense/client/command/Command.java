@@ -45,5 +45,5 @@ public abstract class Command {
         return this.alias;
     }
 
-    public abstract void onCommand(String command, String[] message) throws Exception;
+    public abstract void onCommand(String command, String[] message);
 }

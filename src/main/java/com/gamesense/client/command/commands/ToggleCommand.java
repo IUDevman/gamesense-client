@@ -12,7 +12,7 @@ import com.gamesense.client.module.ModuleManager;
 @Command.Declaration(name = "Toggle", syntax = "toggle [module]", alias = {"toggle", "t", "enable", "disable"})
 public class ToggleCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
 
         Module module = ModuleManager.getModule(main);

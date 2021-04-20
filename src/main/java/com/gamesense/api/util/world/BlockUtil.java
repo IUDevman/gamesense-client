@@ -80,8 +80,8 @@ public class BlockUtil {
         float pitch = (float) -Math.toDegrees(Math.atan2(diffY, diffXZ));
 
         return new float[]{
-                mc.player.rotationYaw + MathHelper.wrapDegrees(yaw - mc.player.rotationYaw),
-                mc.player.rotationPitch + MathHelper.wrapDegrees(pitch - mc.player.rotationPitch)
+            mc.player.rotationYaw + MathHelper.wrapDegrees(yaw - mc.player.rotationYaw),
+            mc.player.rotationPitch + MathHelper.wrapDegrees(pitch - mc.player.rotationPitch)
         };
     }
 
@@ -129,11 +129,11 @@ public class BlockUtil {
         return null;
     }
 
-    public static EnumFacing getPlaceableSideExlude(BlockPos pos, EnumFacing excluding) {
+    public static EnumFacing getPlaceableSideExlude(BlockPos pos, ArrayList<EnumFacing> excluding) {
 
         for (EnumFacing side : EnumFacing.values()) {
 
-            if (side != excluding) {
+            if (!excluding.contains(side)) {
 
                 BlockPos neighbour = pos.offset(side);
 

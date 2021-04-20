@@ -18,7 +18,7 @@ import com.gamesense.client.module.ModuleManager;
 @Command.Declaration(name = "Set", syntax = "set [module] [setting] value (no color support)", alias = {"set", "setmodule", "changesetting", "setting"})
 public class SetCommand extends Command {
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
 
         Module module = ModuleManager.getModule(main);

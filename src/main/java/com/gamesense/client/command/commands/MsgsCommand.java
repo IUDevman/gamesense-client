@@ -8,7 +8,7 @@ import com.gamesense.client.module.ModuleManager;
 /**
  * @author Hoosiers
  * @since 03/09/2021
- *
+ * <p>
  * Shout out to lyneez because I had to close his PR :C
  */
 
@@ -16,7 +16,7 @@ import com.gamesense.client.module.ModuleManager;
 public class MsgsCommand extends Command {
 
 
-    public void onCommand(String command, String[] message) throws Exception {
+    public void onCommand(String command, String[] message) {
         String main = message[0];
 
         Module module = ModuleManager.getModule(main);

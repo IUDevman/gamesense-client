@@ -1,20 +1,16 @@
 package com.gamesense.client.module.modules.render;
 
-import com.gamesense.api.event.events.DamageBlockEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
-import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -27,7 +23,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.client.event.MouseEvent;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -35,8 +30,8 @@ import java.util.stream.Collectors;
 
 /**
  * @author Hoosiers
- * @since 10/20/2020
  * @author 0b00101010
+ * @since 10/20/2020
  * @since 01/30/2021
  */
 
@@ -64,6 +59,7 @@ public class CityESP extends Module {
     private int oldSlot;
     private boolean packetMined = false;
     private BlockPos coordsPacketMined = new BlockPos(-1, -1, -1);
+
     public void onUpdate() {
         if (mc.player == null || mc.world == null)
             return;
@@ -71,8 +67,8 @@ public class CityESP extends Module {
         cityable.clear();
 
         List<EntityPlayer> players = mc.world.playerEntities.stream()
-                .filter(entityPlayer -> entityPlayer.getDistanceSq(mc.player) <= range.getValue() * range.getValue())
-                .filter(entityPlayer -> !EntityUtil.basicChecksEntity(entityPlayer)).collect(Collectors.toList());
+            .filter(entityPlayer -> entityPlayer.getDistanceSq(mc.player) <= range.getValue() * range.getValue())
+            .filter(entityPlayer -> !EntityUtil.basicChecksEntity(entityPlayer)).collect(Collectors.toList());
 
         for (EntityPlayer player : players) {
             if (player == mc.player) {
@@ -120,9 +116,9 @@ public class CityESP extends Module {
         }
         if (mine.getValue()) {
             if (mc.gameSettings.keyBindSneak.isPressed()) {
-                for(List<BlockPos> poss : cityable.values()) {
+                for (List<BlockPos> poss : cityable.values()) {
                     boolean found = false;
-                    for(BlockPos block : poss) {
+                    for (BlockPos block : poss) {
                         if (mc.player.getDistance(block.x, block.y, block.z) <= distanceMine.getValue()) {
                             found = true;
                             if (packetMined && coordsPacketMined == block)
@@ -136,31 +132,26 @@ public class CityESP extends Module {
                             }
 
                             switch (mineMode.getValue()) {
-                                case "Packet" : {
+                                case "Packet": {
                                     mc.player.swingArm(EnumHand.MAIN_HAND);
                                     mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, block, EnumFacing.UP));
                                     mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, block, EnumFacing.UP));
                                     packetMined = true;
                                     coordsPacketMined = block;
                                 }
-                                case "Vanilla" : {
+                                case "Vanilla": {
                                     mc.player.swingArm(EnumHand.MAIN_HAND);
                                     mc.playerController.onPlayerDamageBlock(block, EnumFacing.UP);
                                 }
                                 default: {
-
+                                    mc.player.swingArm(EnumHand.MAIN_HAND);
+                                    mc.playerController.onPlayerDamageBlock(block, EnumFacing.UP);
                                 }
                             }
-
                             break;
-
                         }
-
-
-
                     }
-                    if (found)
-                        break;
+                    if (found) break;
                 }
             }
         }
@@ -179,7 +170,6 @@ public class CityESP extends Module {
             }
         });
     }
-
 
     private List<BlockPos> cityableSides(BlockPos centre, Set<HoleUtil.BlockOffset> weakSides, EntityPlayer player) {
         List<BlockPos> cityableSides = new ArrayList<>();
@@ -228,7 +218,7 @@ public class CityESP extends Module {
         AxisAlignedBB axisAlignedBB = new AxisAlignedBB(boost, boost2);
 
         if (!(mc.world.getBlockState(blockPos).getBlock() == Blocks.BEDROCK
-                || mc.world.getBlockState(blockPos).getBlock() == Blocks.OBSIDIAN)) {
+            || mc.world.getBlockState(blockPos).getBlock() == Blocks.OBSIDIAN)) {
             return false;
         }
 

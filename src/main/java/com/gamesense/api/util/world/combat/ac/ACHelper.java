@@ -25,7 +25,7 @@ public enum ACHelper {
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final List<CrystalInfo.PlaceInfo> EMPTY_LIST = new ArrayList<>();
     // very big numbers
-    private static final EntityEnderCrystal GENERIC_CRYSTAL = new EntityEnderCrystal(null, 0b00101010 * 10^42, 0b00101010 * 10^42, 0b00101010 * 10^42);
+    private static final EntityEnderCrystal GENERIC_CRYSTAL = new EntityEnderCrystal(null, 0b00101010 * 10 ^ 42, 0b00101010 * 10 ^ 42, 0b00101010 * 10 ^ 42);
 
     // Threading Stuff
     public static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
@@ -88,20 +88,20 @@ public enum ACHelper {
         // and reduce searching time
         final double entityRangeSq = (enemyDistance) * (enemyDistance);
         List<EntityPlayer> targets = mc.world.playerEntities.stream()
-                .filter(entity -> self.entity.getDistanceSq(entity) <= entityRangeSq)
-                .filter(entity -> !EntityUtil.basicChecksEntity(entity))
-                .filter(entity -> entity.getHealth() > 0.0f)
-                .collect(Collectors.toList());
+            .filter(entity -> self.entity.getDistanceSq(entity) <= entityRangeSq)
+            .filter(entity -> !EntityUtil.basicChecksEntity(entity))
+            .filter(entity -> entity.getHealth() > 0.0f)
+            .collect(Collectors.toList());
 
         targetableCrystals = mc.world.loadedEntityList.stream()
-                .filter(entity -> entity instanceof EntityEnderCrystal)
-                .map(entity -> (EntityEnderCrystal) entity).collect(Collectors.toList());
+            .filter(entity -> entity instanceof EntityEnderCrystal)
+            .map(entity -> (EntityEnderCrystal) entity).collect(Collectors.toList());
 
         final boolean own = settings.breakMode.equalsIgnoreCase("Own");
         if (own) {
-            // remove own crystals that have been destroyed
-            targetableCrystals.removeIf(crystal -> !placedCrystals.containsKey(EntityUtil.getPosition(crystal)));
             synchronized (placedCrystals) {
+                // remove own crystals that have been destroyed
+                targetableCrystals.removeIf(crystal -> !placedCrystals.containsKey(EntityUtil.getPosition(crystal)));
                 // GENERIC_CRYSTAL will always be false here
                 placedCrystals.values().removeIf(crystal -> crystal.isDead);
             }
@@ -114,7 +114,9 @@ public enum ACHelper {
             float damage = DamageUtil.calculateDamageThreaded(crystal.posX, crystal.posY, crystal.posZ, self);
             if (damage > settings.maxSelfDamage) {
                 return true;
-            } else return (settings.antiSuicide && damage > self.health) || self.entity.getDistanceSq(crystal) >= settings.breakRangeSq;
+            } else {
+                return (settings.antiSuicide && damage > self.health) || self.entity.getDistanceSq(crystal) >= settings.breakRangeSq;
+            }
         });
 
         possiblePlacements = CrystalUtil.findCrystalBlocks(settings.placeRange, settings.endCrystalMode);
@@ -138,24 +140,29 @@ public enum ACHelper {
     public void onPlaceCrystal(BlockPos target) {
         if (settings.breakMode.equalsIgnoreCase("Own")) {
             BlockPos up = target.up();
-            placedCrystals.put(up, GENERIC_CRYSTAL);
+            synchronized (placedCrystals) {
+                placedCrystals.put(up, GENERIC_CRYSTAL);
+            }
         }
     }
 
     public void onEnable() {
-        GameSense.EVENT_BUS.subscribe(entitySpawnListener);
+        GameSense.EVENT_BUS.subscribe(this);
     }
 
     public void onDisable() {
-        GameSense.EVENT_BUS.unsubscribe(entitySpawnListener);
+        GameSense.EVENT_BUS.unsubscribe(this);
 
-        placedCrystals.clear();
+        synchronized (placedCrystals) {
+            placedCrystals.clear();
+        }
 
         if (mainThreadOutput != null) {
             mainThreadOutput.cancel(true);
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<EntityJoinWorldEvent> entitySpawnListener = new Listener<>(event -> {
         Entity entity = event.getEntity();
@@ -163,7 +170,9 @@ public enum ACHelper {
             if (settings != null && settings.breakMode.equalsIgnoreCase("Own")) {
                 EntityEnderCrystal crystal = (EntityEnderCrystal) entity;
                 BlockPos crystalPos = EntityUtil.getPosition(crystal);
-                placedCrystals.computeIfPresent(crystalPos, ((i, j) -> crystal));
+                synchronized (placedCrystals) {
+                    placedCrystals.computeIfPresent(crystalPos, ((i, j) -> crystal));
+                }
             }
         }
     });

@@ -23,6 +23,7 @@ public class AutoRespawn extends Module {
     private boolean sentRespawnMessage = true;
     long timeSinceRespawn;
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<GuiOpenEvent> livingDeathEventListener = new Listener<>(event -> {
         if (event.getGui() instanceof GuiGameOver) {

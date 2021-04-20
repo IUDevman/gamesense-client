@@ -12,11 +12,11 @@ import com.gamesense.client.GameSense;
 
 public class Discord {
 
-    private static String discordID = "770790009397313596";
-    private static DiscordRichPresence discordRichPresence = new DiscordRichPresence();
-    private static DiscordRPC discordRPC = DiscordRPC.INSTANCE;
+    private static final String discordID = "770790009397313596";
+    private static final DiscordRichPresence discordRichPresence = new DiscordRichPresence();
+    private static final DiscordRPC discordRPC = DiscordRPC.INSTANCE;
 
-    private static String clientVersion = GameSense.MODVER;
+    private static final String clientVersion = GameSense.MODVER;
 
     public static void startRPC() {
         DiscordEventHandlers eventHandlers = new DiscordEventHandlers();

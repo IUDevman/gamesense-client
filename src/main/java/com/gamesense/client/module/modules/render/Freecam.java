@@ -82,16 +82,19 @@ public class Freecam extends Module {
         mc.player.fallDistance = 0;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PlayerMoveEvent> moveListener = new Listener<>(event -> {
         mc.player.noClip = true;
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PlayerSPPushOutOfBlocksEvent> pushListener = new Listener<>(event -> {
         event.setCanceled(true);
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Send> sendListener = new Listener<>(event -> {
         if ((event.getPacket() instanceof CPacketPlayer || event.getPacket() instanceof CPacketInput) && cancelPackets.getValue()) {

@@ -4,7 +4,7 @@ import com.gamesense.api.event.Phase;
 import com.gamesense.api.event.events.OnUpdateWalkingPlayerEvent;
 import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.event.events.RenderEntityEvent;
-import com.gamesense.api.util.misc.CollectionUtils;
+import com.gamesense.api.util.misc.CollectionUtil;
 import com.gamesense.api.util.player.PlayerPacket;
 import com.gamesense.client.manager.Manager;
 import me.zero.alpine.listener.EventHandler;
@@ -40,7 +40,7 @@ public enum PlayerPacketManager implements Manager {
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.BY || packets.isEmpty()) return;
 
-        PlayerPacket packet = CollectionUtils.maxOrNull(packets, PlayerPacket::getPriority);
+        PlayerPacket packet = CollectionUtil.maxOrNull(packets, PlayerPacket::getPriority);
 
         if (packet != null) {
             event.cancel();

@@ -1,6 +1,6 @@
 package com.gamesense.mixin.mixins;
 
-import com.gamesense.client.GameSense;
+import com.gamesense.api.util.render.CapeUtil;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.render.CapesModule;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -27,7 +27,7 @@ public abstract class MixinAbstractClientPlayer {
         UUID uuid = getPlayerInfo().getGameProfile().getId();
         CapesModule capesModule = ModuleManager.getModule(CapesModule.class);
 
-        if (capesModule.isEnabled() && GameSense.INSTANCE.capeUtil.hasCape(uuid)) {
+        if (capesModule.isEnabled() && CapeUtil.hasCape(uuid)) {
             if (capesModule.capeMode.getValue().equalsIgnoreCase("Black")) {
                 callbackInfoReturnable.setReturnValue(new ResourceLocation("gamesense:capeblack.png"));
             } else {

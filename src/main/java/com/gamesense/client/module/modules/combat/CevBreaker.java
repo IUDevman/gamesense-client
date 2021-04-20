@@ -32,7 +32,10 @@ import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.*;
-import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.client.CPacketHeldItemChange;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -48,8 +51,9 @@ import java.util.Objects;
 import static com.gamesense.api.util.player.SpoofRotationUtil.ROTATION_UTIL;
 
 /**
- * @Author TechAle
+ * @author TechAle
  * Ported and modified from PistonCrystal
+ * last edit 06/04/21
  */
 
 @Module.Declaration(name = "CevBreaker", category = Category.Combat, priority = 999)
@@ -65,57 +69,57 @@ public class CevBreaker extends Module {
     IntegerSetting crystalDelay = registerInteger("Crystal Delay", 2, 0, 20);
     IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 2, 6);
     IntegerSetting hitDelay = registerInteger("Hit Delay", 2, 0, 20);
-    IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 1, 0, 5);
-    IntegerSetting endDelay = registerInteger("End Delay", 1, 0, 4);
+    IntegerSetting midHitDelay = registerInteger("Mid Hit Delay", 1, 0, 20);
+    IntegerSetting endDelay = registerInteger("End Delay", 1, 0, 20);
     IntegerSetting pickSwitchTick = registerInteger("Pick Switch Tick", 100, 0, 500);
     BooleanSetting rotate = registerBoolean("Rotate", false);
     BooleanSetting confirmBreak = registerBoolean("No Glitch Break", true);
     BooleanSetting confirmPlace = registerBoolean("No Glitch Place", true);
     BooleanSetting antiWeakness = registerBoolean("Anti Weakness", false);
     BooleanSetting switchSword = registerBoolean("Switch Sword", false);
-    BooleanSetting predictBreak = registerBoolean("Predict Break", false);
     BooleanSetting fastPlace = registerBoolean("Fast Place", false);
     BooleanSetting fastBreak = registerBoolean("Fast Break", true);
     BooleanSetting trapPlayer = registerBoolean("Trap Player", false);
     BooleanSetting antiStep = registerBoolean("Anti Step", false);
     BooleanSetting placeCrystal = registerBoolean("Place Crystal", true);
-    BooleanSetting preRotation = registerBoolean("Pre Rotation", false);
     BooleanSetting forceRotation = registerBoolean("Force Rotation", false);
+    BooleanSetting forceBreaker = registerBoolean("Force Breaker", false);
 
     public static int cur_item = -1;
     public static boolean isActive = false;
+    public static boolean forceBrk = false;
 
     private boolean noMaterials = false,
-            hasMoved = false,
-            isSneaking = false,
-            isHole = true,
-            enoughSpace = true,
-            broken,
-            stoppedCa,
-            deadPl,
-            rotationPlayerMoved,
-            prevBreak,
-            preRotationBol;
+        hasMoved = false,
+        isSneaking = false,
+        isHole = true,
+        enoughSpace = true,
+        broken,
+        stoppedCa,
+        deadPl,
+        rotationPlayerMoved,
+        prevBreak,
+        preRotationBol;
 
     private int oldSlot = -1,
-            stage,
-            delayTimeTicks,
-            hitTryTick,
-            tickPick,
-            afterRotationTick,
-            preRotationTick;
+        stage,
+        delayTimeTicks,
+        hitTryTick,
+        tickPick,
+        afterRotationTick,
+        preRotationTick;
     private final int[][] model = new int[][]{
-            {1, 1, 0},
-            {-1, 1, 0},
-            {0, 1, 1},
-            {0, 1, -1}
+        {1, 1, 0},
+        {-1, 1, 0},
+        {0, 1, 1},
+        {0, 1, -1}
     };
 
     public static boolean isPossible = false;
 
     private int[] slot_mat,
-            delayTable,
-            enemyCoordsInt;
+        delayTable,
+        enemyCoordsInt;
 
     private double[] enemyCoordsDouble;
 
@@ -126,20 +130,24 @@ public class CevBreaker extends Module {
 
     private EntityPlayer aimTarget;
 
+    // Predict Break
     @EventHandler
     private final Listener<DestroyBlockEvent> listener2 = new Listener<>(event -> {
-
+        // If the destruction is on the enemy's idea
         if (enemyCoordsInt != null && event.getBlockPos().x + (event.getBlockPos().x < 0 ? 1 : 0) == enemyCoordsInt[0] && event.getBlockPos().z + (event.getBlockPos().z < 0 ? 1 : 0) == enemyCoordsInt[2]) {
+            // Destroy
             destroyCrystalAlgo();
         }
     });
 
+    // Fast Reset, this is on by default since well, it has no cons
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
-
+        // If the explosion is on the enemy's idea
         if (event.getPacket() instanceof SPacketSoundEffect) {
             final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
             if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
+                // Reset
                 if ((int) packet.getX() == enemyCoordsInt[0] && (int) packet.getZ() == enemyCoordsInt[2])
                     stage = 1;
             }
@@ -148,9 +156,11 @@ public class CevBreaker extends Module {
 
     Vec3d lastHitVec;
 
+    // This is for the force rotation, strict servers
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
-        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue())
+            return;
         Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
         PlayerPacket packet = new PlayerPacket(this, rotation);
         PlayerPacketManager.INSTANCE.addPacket(packet);
@@ -158,10 +168,6 @@ public class CevBreaker extends Module {
 
     // Everytime you enable
     public void onEnable() {
-
-        if (predictBreak.getValue())
-            GameSense.EVENT_BUS.subscribe(this);
-
         ROTATION_UTIL.onEnable();
         // Init values
         initValues();
@@ -189,8 +195,7 @@ public class CevBreaker extends Module {
             if (!target.getValue().equals("Looking") && aimTarget == null)
                 disable();
             // If not found a target
-            if (aimTarget == null)
-                return true;
+            return aimTarget == null;
         }
         return false;
     }
@@ -224,10 +229,10 @@ public class CevBreaker extends Module {
         lastHitVec = null;
         // Create new delay table
         delayTable = new int[]{
-                supDelay.getValue(),
-                crystalDelay.getValue(),
-                hitDelay.getValue(),
-                endDelay.getValue()
+            supDelay.getValue(),
+            crystalDelay.getValue(),
+            hitDelay.getValue(),
+            endDelay.getValue()
         };
         // Default values reset
         toPlace = new structureTemp(0, 0, new ArrayList<>());
@@ -247,10 +252,12 @@ public class CevBreaker extends Module {
 
         cur_item = -1;
 
-        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
-            AutoCrystalGS.stopAC = true;
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            AutoCrystal.stopAC = true;
             stoppedCa = true;
         }
+
+        forceBrk = forceBreaker.getValue();
 
     }
 
@@ -262,35 +269,35 @@ public class CevBreaker extends Module {
             return;
         }
 
-            String output = "";
-            String materialsNeeded = "";
-            // No target found
-            if (aimTarget == null) {
-                output = "No target found...";
-            } else
-                // H distance not avaible
-                if (noMaterials) {
-                    output = "No Materials Detected...";
-                    materialsNeeded = getMissingMaterials();
-                    // No Hole
-                } else if (!isHole) {
-                    output = "The enemy is not in a hole...";
-                    // No Space
-                } else if (!enoughSpace) {
-                    output = "Not enough space...";
-                    // Has Moved
-                } else if (hasMoved) {
-                    output = "Out of range...";
-                } else if (deadPl) {
-                    output = "Enemy is dead, gg! ";
-                }
-            // Output in chat
-            setDisabledMessage(output + "CevBreaker turned OFF!");
-            if (!materialsNeeded.equals(""))
-                setDisabledMessage("Materials missing:" + materialsNeeded);
+        String output = "";
+        String materialsNeeded = "";
+        // No target found
+        if (aimTarget == null) {
+            output = "No target found...";
+        } else
+            // H distance not avaible
+            if (noMaterials) {
+                output = "No Materials Detected...";
+                materialsNeeded = getMissingMaterials();
+                // No Hole
+            } else if (!isHole) {
+                output = "The enemy is not in a hole...";
+                // No Space
+            } else if (!enoughSpace) {
+                output = "Not enough space...";
+                // Has Moved
+            } else if (hasMoved) {
+                output = "Out of range...";
+            } else if (deadPl) {
+                output = "Enemy is dead, gg! ";
+            }
+        // Output in chat
+        setDisabledMessage(output + "CevBreaker turned OFF!");
+        if (!materialsNeeded.equals(""))
+            setDisabledMessage("Materials missing:" + materialsNeeded);
 
         if (stoppedCa) {
-            AutoCrystalGS.stopAC = false;
+            AutoCrystal.stopAC = false;
             stoppedCa = false;
         }
 
@@ -304,7 +311,7 @@ public class CevBreaker extends Module {
             oldSlot = -1;
         }
 
-        noMaterials = isPossible = AutoCrystalGS.stopAC = isActive = false;
+        noMaterials = isPossible = AutoCrystal.stopAC = isActive = forceBrk = false;
     }
 
     private String getMissingMaterials() {
@@ -394,18 +401,19 @@ public class CevBreaker extends Module {
             switch (stage) {
                 // Place obsidian
                 case 1:
-
+                    // In case we already have the crystal
                     if (getCrystal() != null) {
                         stage = 3;
                         return;
                     }
-
-                    if (afterRotationTick != afterRotationDelay.getValue()) {
+                    // After rotation for strict servers
+                    if (afterRotationDelay.getValue() != 0 && afterRotationTick != afterRotationDelay.getValue()) {
                         afterRotationTick++;
                         return;
                     }
 
-                    if (preRotation.getValue() && !preRotationBol) {
+                    // Pre rotation for strict servers
+                    if (preRotationDelay.getValue() != 0 && !preRotationBol) {
                         placeBlockThings(stage, true, false);
                         if (preRotationTick == preRotationDelay.getValue()) {
                             preRotationBol = true;
@@ -416,6 +424,7 @@ public class CevBreaker extends Module {
                         }
                     }
 
+                    // Place block
                     placeBlockThings(stage, false, false);
                     if (fastPlace.getValue()) {
                         placeCrystal(false);
@@ -427,12 +436,14 @@ public class CevBreaker extends Module {
 
                 // Place crystal
                 case 2:
-                    if (afterRotationTick != afterRotationDelay.getValue()) {
+                    // After rotation for strict servers
+                    if (afterRotationDelay.getValue() != 0 && afterRotationTick != afterRotationDelay.getValue()) {
                         afterRotationTick++;
                         return;
                     }
 
-                    if (preRotation.getValue() && !preRotationBol) {
+                    // Pre rotation for strict servers
+                    if (preRotationDelay.getValue() != 0 && !preRotationBol) {
                         placeCrystal(true);
                         if (preRotationTick == preRotationDelay.getValue()) {
                             preRotationBol = true;
@@ -448,7 +459,7 @@ public class CevBreaker extends Module {
                             stage--;
                             return;
                         }
-
+                    // Place
                     placeCrystal(false);
 
                     break;
@@ -459,20 +470,16 @@ public class CevBreaker extends Module {
                     // Confirm Place
                     if (confirmPlace.getValue())
                         if (getCrystal() == null) {
-                            stage = 0;
+                            stage = 1;
                             return;
                         }
-
-                    if (forceRotation.getValue()) {
-                        placeBlockThings(1, true, false);
-                    }
 
                     // Switch to pick / sword
                     int switchValue = 3;
                     if (!switchSword.getValue() || (tickPick == pickSwitchTick.getValue() || tickPick++ == 0))
                         switchValue = 2;
 
-                   switchPick(switchValue);
+                    switchPick(switchValue);
 
                     // Get block
                     BlockPos obbyBreak = new BlockPos(enemyCoordsDouble[0], enemyCoordsInt[1] + 2, enemyCoordsDouble[2]);
@@ -490,10 +497,10 @@ public class CevBreaker extends Module {
 
                                         mc.player.swingArm(EnumHand.MAIN_HAND);
                                         mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                                                CPacketPlayerDigging.Action.START_DESTROY_BLOCK, obbyBreak, sideBreak
+                                            CPacketPlayerDigging.Action.START_DESTROY_BLOCK, obbyBreak, sideBreak
                                         ));
                                         mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                                                CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, obbyBreak, sideBreak
+                                            CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, obbyBreak, sideBreak
                                         ));
 
                                         prevBreak = true;
@@ -519,6 +526,11 @@ public class CevBreaker extends Module {
 
     private void switchPick(int switchValue) {
         if (cur_item != slot_mat[switchValue]) {
+            if (slot_mat[switchValue] == -1) {
+                noMaterials = true;
+                return;
+            }
+            // We change it, first we send the silent switch so it's faster, and then we sync it client side
             mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[switchValue])));
             mc.player.inventory.currentItem = cur_item;
         }
@@ -534,9 +546,11 @@ public class CevBreaker extends Module {
     }
 
     private void fastBreakFun() {
+        // Switch pick
         switchPick(2);
+        // Send packet digging
         mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
-                new BlockPos(enemyCoordsInt[0], enemyCoordsInt[1] + 2, enemyCoordsInt[2]), EnumFacing.UP));
+            new BlockPos(enemyCoordsInt[0], enemyCoordsInt[1] + 2, enemyCoordsInt[2]), EnumFacing.UP));
         isPossible = true;
     }
 
@@ -566,7 +580,7 @@ public class CevBreaker extends Module {
         if (confirmBreak.getValue() && broken && crystal == null) {
             /// That means the crystal was broken 100%
             // Reset
-            stage = 0;
+            stage = 1;
             broken = false;
 
         }
@@ -579,9 +593,9 @@ public class CevBreaker extends Module {
                 broken = true;
                 // If not, left
             else {
-                stage = 0;
+                stage = 1;
             }
-        } else stage = 0;
+        } else stage = 1;
     }
 
     // Actual break crystal
@@ -594,28 +608,36 @@ public class CevBreaker extends Module {
         // If weaknes
         if (antiWeakness.getValue())
             mc.player.inventory.currentItem = slot_mat[3];
-        // If rotate
-        if (rotate.getValue()) {
-            ROTATION_UTIL.lookAtPacket(crystal.posX, crystal.posY, crystal.posZ, mc.player);
-        }
         /// Break type
         // Swing
-        switch (breakCrystal.getValue()) {
-            case "Vanilla":
-                CrystalUtil.breakCrystal(crystal);
-                // Packet
-                break;
-            case "Packet":
-                try {
-                    mc.player.connection.sendPacket(new CPacketUseEntity(crystal));
-                    mc.player.swingArm(EnumHand.MAIN_HAND);
-                } catch (NullPointerException e) {
+        Vec3d vecCrystal = crystal.getPositionVector().add(0.5, 0.5, 0.5);
 
-                }
-                break;
-            case "None":
+        // If it's not none, then allow the rotation
+        if (!breakCrystal.getValue().equalsIgnoreCase("None")) {
+            if (rotate.getValue()) {
+                // Look at that packet
+                ROTATION_UTIL.lookAtPacket(vecCrystal.x, vecCrystal.y, vecCrystal.z, mc.player);
+                // If force rotation, lets start straight looking into it
+                if (forceRotation.getValue())
+                    lastHitVec = vecCrystal;
+            }
+        }
+        try {
+            switch (breakCrystal.getValue()) {
+                case "Vanilla":
+                    CrystalUtil.breakCrystal(crystal);
+                    // Packet
+                    break;
+                case "Packet":
+                    CrystalUtil.breakCrystalPacket(crystal);
+                    break;
+                case "None":
 
-                break;
+                    break;
+            }
+        } catch (NullPointerException e) {
+            // For some reasons, sometimes it gives a nullPointerException because, the crystal get broken before (?) I dunno
+            // This is for preventing a crash
         }
         // Rotate
         if (rotate.getValue())
@@ -633,13 +655,17 @@ public class CevBreaker extends Module {
             // Lets iterate and check
             // Lets finish
             do {
-
+                // Get the target
                 BlockPos targetPos = getTargetPos(checksDone);
+                // If it's air
                 if (BlockUtil.getBlock(targetPos) instanceof BlockAir) {
-                    // Rotate
-                    if (preRotation.getValue() && !preRotationBol) {
+                    // First rotation, the pre one for strict servers
+                    if (preRotationDelay.getValue() != 0 && !preRotationBol) {
+                        // If first
                         if (preRotationTick == 0)
+                            // Look
                             placeBlock(targetPos, 0, true);
+                        // After, just wait
                         if (preRotationTick == preRotationDelay.getValue()) {
                             preRotationBol = true;
                             preRotationTick = 0;
@@ -649,7 +675,7 @@ public class CevBreaker extends Module {
                         }
 
                     }
-
+                    // Place it
                     if (placeBlock(targetPos, 0, false)) {
                         preRotationBol = false;
                         // If we reached the limit
@@ -677,22 +703,30 @@ public class CevBreaker extends Module {
         if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
             // Is it is correct
             if (cur_item != slot_mat[step]) {
-                mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[step])));
-                mc.player.inventory.currentItem = cur_item;
+                if (slot_mat[step] == -1) {
+                    noMaterials = true;
+                    return true;
+                }
+                if (slot_mat[step] != 11) {
+                    // As before, first packet, and then sync client side
+                    mc.player.connection.sendPacket(new CPacketHeldItemChange((cur_item = slot_mat[step])));
+                    mc.player.inventory.currentItem = cur_item;
+                }
             }
         } else {
             noMaterials = true;
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     // Place a block
     private boolean placeBlock(BlockPos pos, int step, boolean onlyRotate) {
 
-        if (!changeItem(step))
+        if (changeItem(step))
             return false;
 
+        // This is for only rotate
         if (onlyRotate) {
             EnumFacing side = BlockUtil.getPlaceableSide(pos);
 
@@ -706,6 +740,7 @@ public class CevBreaker extends Module {
             if (!BlockUtil.canBeClicked(neighbour)) {
                 return false;
             }
+            // This is for where to aim when there is an obby block
             double add = step == 1 && (int) mc.player.posY == enemyCoordsInt[1] ? -.5 : 0;
             lastHitVec = new Vec3d(neighbour).add(0.5, 0.5 + add, 0.5).add(new Vec3d(opposite.getDirectionVec()).scale(0.5));
             return false;
@@ -733,12 +768,16 @@ public class CevBreaker extends Module {
             // Place 93 4 -29
             if (!isCrystal)
                 placeBlock(targetPos, step, onlyRotate);
+                // If crystal
             else {
-                if (!changeItem(step))
+                // Change
+                if (changeItem(step))
                     return;
+                // Hnd
                 EnumHand handSwing = EnumHand.MAIN_HAND;
                 if (slot_mat[step] == 11)
                     handSwing = EnumHand.OFF_HAND;
+                // Send packet place, we ahve to use packets because, with the normal place, we cannot click under the block
                 mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(targetPos.add(.5, .5, .5), EnumFacing.getDirectionFromEntityLiving(targetPos, mc.player), handSwing, 0, 0, 0));
                 mc.player.swingArm(handSwing);
 
@@ -797,27 +836,29 @@ public class CevBreaker extends Module {
     // Create the skeleton of the structure
     private boolean createStructure() {
 
+        // Check position of the crystal
         if ((Objects.requireNonNull(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 2, enemyCoordsDouble[2]).getRegistryName()).toString().toLowerCase().contains("bedrock"))
-                || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 3, enemyCoordsDouble[2]) instanceof BlockAir)
-                || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 4, enemyCoordsDouble[2]) instanceof BlockAir))
+            || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 3, enemyCoordsDouble[2]) instanceof BlockAir)
+            || !(BlockUtil.getBlock(enemyCoordsDouble[0], enemyCoordsDouble[1] + 4, enemyCoordsDouble[2]) instanceof BlockAir))
             return false;
 
         // Iterate for every blocks around, find the closest
         double distance_now;
-        double min_found = Double.MAX_VALUE;
+        double max_found = Double.MIN_VALUE;
         int cor = 0;
         int i = 0;
+        // Find closest
         for (Double[] cord_b : sur_block) {
-            if ((distance_now = mc.player.getDistanceSq(new BlockPos(cord_b[0], cord_b[1], cord_b[2]))) < min_found) {
-                min_found = distance_now;
+            if ((distance_now = mc.player.getDistanceSq(new BlockPos(cord_b[0], cord_b[1], cord_b[2]))) > max_found) {
+                max_found = distance_now;
                 cor = i;
             }
             i++;
         }
 
         // Create support blocks
-        toPlace.to_place.add(new Vec3d(model[cor][0] * -1, 1, model[cor][2] * -1));
-        toPlace.to_place.add(new Vec3d(model[cor][0] * -1, 2, model[cor][2] * -1));
+        toPlace.to_place.add(new Vec3d(model[cor][0], 1, model[cor][2]));
+        toPlace.to_place.add(new Vec3d(model[cor][0], 2, model[cor][2]));
         toPlace.supportBlock = 2;
 
         // Create antitrap + antiStep
@@ -900,10 +941,10 @@ public class CevBreaker extends Module {
 
     private boolean is_in_hole() {
         sur_block = new Double[][]{
-                {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
+            {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
+            {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
+            {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
+            {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
         };
 
         // Check if the guy is in a hole

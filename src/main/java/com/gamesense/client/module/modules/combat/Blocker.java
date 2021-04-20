@@ -112,15 +112,15 @@ public class Blocker extends Module {
     private void antiFacePlace() {
         int blocksPlaced = 0;
         Block temp;
-        for(Vec3d surround : new Vec3d[] {
-                new Vec3d(1,1, 0),
-                new Vec3d(-1, 1, 0),
-                new Vec3d(0, 1, 1),
-                new Vec3d(0, 1, -1)
+        for (Vec3d surround : new Vec3d[]{
+            new Vec3d(1, 1, 0),
+            new Vec3d(-1, 1, 0),
+            new Vec3d(0, 1, 1),
+            new Vec3d(0, 1, -1)
         }) {
-            BlockPos pos = new BlockPos(mc.player.posX + surround.x, mc.player.posY , mc.player.posZ + surround.z);
+            BlockPos pos = new BlockPos(mc.player.posX + surround.x, mc.player.posY, mc.player.posZ + surround.z);
             if ((temp = BlockUtil.getBlock(pos)) instanceof BlockObsidian ||
-                    temp == Blocks.BEDROCK) {
+                temp == Blocks.BEDROCK) {
                 if (blocksPlaced++ == 0) {
                     AntiCrystal.getHotBarPressure(blockPlaced.getValue());
                 }
@@ -143,9 +143,9 @@ public class Blocker extends Module {
                 Block ex = ((EntityFallingBlock) t).fallTile.getBlock();
                 // If it's anvil
                 if (ex instanceof BlockAnvil
-                        // If coords are the same as us
-                        && (int) t.posX == (int) mc.player.posX && (int) t.posZ == (int) mc.player.posZ
-                        && BlockUtil.getBlock(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
+                    // If coords are the same as us
+                    && (int) t.posX == (int) mc.player.posX && (int) t.posZ == (int) mc.player.posZ
+                    && BlockUtil.getBlock(mc.player.posX, mc.player.posY + 2, mc.player.posZ) instanceof BlockAir) {
                     // Place the block
                     placeBlock(new BlockPos(mc.player.posX, mc.player.posY + 2, mc.player.posZ));
                     MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + "AutoAnvil detected... Anvil Blocked!");
@@ -166,8 +166,8 @@ public class Blocker extends Module {
         for (Entity t : mc.world.loadedEntityList) {
             // If it's an ecrystal and it's near us
             if (t instanceof EntityEnderCrystal
-                    && t.posX >= mc.player.posX - 1.5 && t.posX <= mc.player.posX + 1.5
-                    && t.posZ >= mc.player.posZ - 1.5 && t.posZ <= mc.player.posZ + 1.5) {
+                && t.posX >= mc.player.posX - 1.5 && t.posX <= mc.player.posX + 1.5
+                && t.posZ >= mc.player.posZ - 1.5 && t.posZ <= mc.player.posZ + 1.5) {
                 // Check if it's near
                 for (int i = -2; i < 3; i++) {
                     for (int j = -2; j < 3; j++) {

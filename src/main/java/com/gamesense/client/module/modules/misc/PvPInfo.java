@@ -30,6 +30,7 @@ public class PvPInfo extends Module {
     BooleanSetting pearlAlert = registerBoolean("Pearl Alert", false);
     BooleanSetting burrowAlert = registerBoolean("Burrow Alert", false);
     BooleanSetting strengthDetect = registerBoolean("Strength Detect", false);
+    BooleanSetting weaknessDetect = registerBoolean("Weakness Detect", false);
     BooleanSetting popCounter = registerBoolean("Pop Counter", false);
     ModeSetting chatColor = registerMode("Color", ColorUtil.colors, "Light Purple");
 
@@ -39,6 +40,7 @@ public class PvPInfo extends Module {
     List<Entity> pearls;
     List<Entity> burrowedPlayers = new ArrayList<>();
     List<Entity> strengthPlayers = new ArrayList<>();
+    List<Entity> weaknessPlayers = new ArrayList<>();
 
     public void onUpdate() {
         if (mc.player == null || mc.world == null) {
@@ -103,28 +105,33 @@ public class PvPInfo extends Module {
             } catch (Exception e) {
             }
         }
-        if (strengthDetect.getValue()) {
+        if (strengthDetect.getValue() || weaknessDetect.getValue()) {
             for (EntityPlayer player : mc.world.playerEntities) {
                 if (player.isPotionActive(MobEffects.STRENGTH) && !(strengthPlayers.contains(player))) {
                     MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(chatColor) + player.getName() + " has (drank) strength!");
                     strengthPlayers.add(player);
                 }
+                if (player.isPotionActive(MobEffects.WEAKNESS) && !(weaknessPlayers.contains(player))) {
+                    MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(chatColor) + player.getName() + " has (drank) wealness!");
+                    weaknessPlayers.add(player);
+                }
                 if (!(player.isPotionActive(MobEffects.STRENGTH)) && strengthPlayers.contains(player)) {
                     MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(chatColor) + player.getName() + " no longer has strength!");
                     strengthPlayers.remove(player);
                 }
+                if (!(player.isPotionActive(MobEffects.WEAKNESS)) && weaknessPlayers.contains(player)) {
+                    MessageBus.sendClientPrefixMessage(ColorUtil.textToChatFormatting(chatColor) + player.getName() + " no longer has weakness!");
+                    weaknessPlayers.remove(player);
+                }
             }
         }
+
     }
 
     private boolean isBurrowed(Entity entity) {
         BlockPos entityPos = new BlockPos(roundValueToCenter(entity.posX), entity.posY + .2, roundValueToCenter(entity.posZ));
 
-        if (mc.world.getBlockState(entityPos).getBlock() == Blocks.OBSIDIAN || mc.world.getBlockState(entityPos).getBlock() == Blocks.ENDER_CHEST) {
-            return true;
-        }
-
-        return false;
+        return mc.world.getBlockState(entityPos).getBlock() == Blocks.OBSIDIAN || mc.world.getBlockState(entityPos).getBlock() == Blocks.ENDER_CHEST;
     }
 
     private double roundValueToCenter(double inputVal) {

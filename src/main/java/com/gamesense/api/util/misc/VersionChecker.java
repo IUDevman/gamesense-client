@@ -1,13 +1,9 @@
 package com.gamesense.api.util.misc;
 
 import com.gamesense.client.GameSense;
+import com.gamesense.client.command.CommandManager;
 
-import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-import java.awt.*;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -17,6 +13,8 @@ import java.util.Scanner;
  */
 
 public class VersionChecker {
+
+    public static String joinMessage = "None";
 
     public static void init() {
         checkVersion(GameSense.MODVER);
@@ -46,38 +44,7 @@ public class VersionChecker {
         }
 
         if (!isLatest) {
-            generatePopUp(newVersion);
+            joinMessage = "Version (" + version + ") is outdated! Download the latest version (" + newVersion + ") by typing " + CommandManager.getCommandPrefix() + "releases!";
         }
-    }
-
-    //thank god for stack overflow... https://stackoverflow.com/questions/8348063/clickable-links-in-joptionpane
-    private static void generatePopUp(String newVersion) {
-        JLabel label = new JLabel();
-        Font font = label.getFont();
-
-        String style = "font-family:" + font.getFamily() + ";" + "font-weight:" + (font.isBold() ? "bold" : "normal") + ";" + "font-size:" + font.getSize() + "pt;";
-        JEditorPane editorPane = new JEditorPane("text/html", "<html><body style=\"" + style + "\">" + "Version outdated! Download the latest (" + newVersion + ") " + "<a href=\"https://github.com/IUDevman/gamesense-client/releases\">HERE</a>" + "!" + "</body></html>");
-
-        editorPane.addHyperlinkListener(new HyperlinkListener() {
-
-            @Override
-            public void hyperlinkUpdate(HyperlinkEvent event) {
-
-                if (event.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
-
-                    try {
-                        Desktop.getDesktop().browse(event.getURL().toURI());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        editorPane.setEditable(false);
-        editorPane.setBackground(label.getBackground());
-        JOptionPane.showMessageDialog(null, editorPane, GameSense.MODNAME + " " + GameSense.MODVER, JOptionPane.WARNING_MESSAGE);
     }
 }

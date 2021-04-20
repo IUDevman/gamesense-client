@@ -225,33 +225,34 @@ public class RenderUtil {
     public static void drawDirection(Points square, GSColor color, float width) {
         for (int i = 0; i < 4; i++) {
             drawLine(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
-                    square.getPoint((i + 1) % 4)[0], square.yMin, square.getPoint((i + 1) % 4)[1],
-                    color, width
+                square.getPoint((i + 1) % 4)[0], square.yMin, square.getPoint((i + 1) % 4)[1],
+                color, width
             );
         }
 
         for (int i = 0; i < 4; i++) {
             drawLine(square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
-                    square.getPoint((i + 1) % 4)[0], square.yMax, square.getPoint((i + 1) % 4)[1],
-                    color, width
+                square.getPoint((i + 1) % 4)[0], square.yMax, square.getPoint((i + 1) % 4)[1],
+                color, width
             );
         }
 
         for (int i = 0; i < 4; i++) {
             drawLine(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
-                    square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
-                    color, width
+                square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
+                color, width
             );
         }
     }
 
-    public static void drawSphere(double x, double y, double z, float size, int slices, int stacks) {
-        final Sphere s = new Sphere();
-        GlStateManager.glLineWidth(1.2f);
-        s.setDrawStyle(GLU.GLU_SILHOUETTE);
+    public static void drawSphere(double x, double y, double z, float size, int slices, int stacks, float lineWidth, GSColor color) {
+        Sphere sphere = new Sphere();
+        GlStateManager.glLineWidth(lineWidth);
+        color.glColor();
+        sphere.setDrawStyle(GLU.GLU_SILHOUETTE);
         GlStateManager.pushMatrix();
         GlStateManager.translate(x - mc.getRenderManager().viewerPosX, y - mc.getRenderManager().viewerPosY, z - mc.getRenderManager().viewerPosZ);
-        s.draw(size, slices, stacks);
+        sphere.draw(size, slices, stacks);
         GlStateManager.popMatrix();
     }
 

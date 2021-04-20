@@ -21,10 +21,10 @@ import java.util.UUID;
 public class FakePlayer extends Module {
 
     final private ItemStack[] armors = new ItemStack[]{
-            new ItemStack(Items.DIAMOND_BOOTS),
-            new ItemStack(Items.DIAMOND_LEGGINGS),
-            new ItemStack(Items.DIAMOND_CHESTPLATE),
-            new ItemStack(Items.DIAMOND_HELMET)
+        new ItemStack(Items.DIAMOND_BOOTS),
+        new ItemStack(Items.DIAMOND_LEGGINGS),
+        new ItemStack(Items.DIAMOND_CHESTPLATE),
+        new ItemStack(Items.DIAMOND_HELMET)
     };
 
     BooleanSetting playerStacked = registerBoolean("Player Stacked", false);
@@ -46,19 +46,20 @@ public class FakePlayer extends Module {
         // If enchants
         if (playerStacked.getValue()) {
             // ITerate
-            for(int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 // Create base
                 ItemStack item = armors[i];
                 // Add enchants
                 item.addEnchantment(
-                        i == 2 ? Enchantments.BLAST_PROTECTION : Enchantments.PROTECTION,
-                        4);
+                    i == 2 ? Enchantments.BLAST_PROTECTION : Enchantments.PROTECTION,
+                    4);
                 // Add it to the player
                 clonedPlayer.inventory.armorInventory.set(i, item);
             }
         }
         clonedPlayer.onLivingUpdate();
     }
+
     public void onDisable() {
         if (mc.world != null) {
             mc.world.removeEntityFromWorld(-1234);

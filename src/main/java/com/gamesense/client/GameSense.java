@@ -1,13 +1,8 @@
 package com.gamesense.client;
 
-import com.gamesense.api.config.ConfigStopper;
 import com.gamesense.api.config.LoadConfig;
-import com.gamesense.api.config.SaveConfig;
-import com.gamesense.api.event.EventProcessor;
-import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.misc.VersionChecker;
-import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.CapeUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
@@ -28,7 +23,7 @@ public class GameSense {
 
     public static final String MODNAME = "GameSense";
     public static final String MODID = "gamesense";
-    public static final String MODVER = "d2.3.0";
+    public static final String MODVER = "d2.3.1";
     /**
      * Official release starts with a "v", dev versions start with a "d" to bypass version check
      */
@@ -52,29 +47,15 @@ public class GameSense {
         LOGGER.info("Finished initialization for " + MODNAME + " " + MODVER + "!");
     }
 
-    public EventProcessor eventProcessor;
     public CFontRenderer cFontRenderer;
     public GameSenseGUI gameSenseGUI;
-    public SaveConfig saveConfig;
-    public LoadConfig loadConfig;
-    public CapeUtil capeUtil;
 
     private void startClient() {
         VersionChecker.init();
         LOGGER.info("Version checked!");
 
-        eventProcessor = new EventProcessor();
-        eventProcessor.init();
-        LOGGER.info("Events initialized!");
-
         cFontRenderer = new CFontRenderer(new Font("Verdana", Font.PLAIN, 18), true, true);
         LOGGER.info("Custom font initialized!");
-
-        SettingsManager.init();
-        LOGGER.info("Settings initialized!");
-
-        SocialManager.init();
-        LOGGER.info("Friends and enemies initialized!");
 
         ModuleManager.init();
         LOGGER.info("Modules initialized!");
@@ -86,14 +67,12 @@ public class GameSense {
         LOGGER.info("Managers initialized!");
 
         gameSenseGUI = new GameSenseGUI();
-        LOGGER.info("GameSenseGUI initialized!");
+        LOGGER.info("GUI initialized!");
 
-        saveConfig = new SaveConfig();
-        loadConfig = new LoadConfig();
-        Runtime.getRuntime().addShutdownHook(new ConfigStopper());
-        LOGGER.info("Config initialized!");
-
-        capeUtil = new CapeUtil();
+        CapeUtil.init();
         LOGGER.info("Capes initialized!");
+
+        LoadConfig.init();
+        LOGGER.info("Config initialized!");
     }
 }

@@ -23,9 +23,9 @@ public class PhysicsSpammer extends Module {
         updateTimes();
     }
 
-    private List<String> cache = new LinkedList<String>();
+    private final List<String> cache = new LinkedList<String>();
     private long lastTime, delay;
-    private Random random = new Random(System.currentTimeMillis());
+    private final Random random = new Random(System.currentTimeMillis());
 
     public void onUpdate() {
         if (delay > Math.max(minDelay.getValue(), maxDelay.getValue()))

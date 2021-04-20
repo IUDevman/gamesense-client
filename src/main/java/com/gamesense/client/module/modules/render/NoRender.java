@@ -40,6 +40,7 @@ public class NoRender extends Module {
         currentClusterAmount = 0;
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     public Listener<RenderBlockOverlayEvent> blockOverlayEventListener = new Listener<>(event -> {
         if (fire.getValue() && event.getOverlayType() == RenderBlockOverlayEvent.OverlayType.FIRE)
@@ -50,22 +51,25 @@ public class NoRender extends Module {
             event.setCanceled(true);
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<EntityViewRenderEvent.FogDensity> fogDensityListener = new Listener<>(event -> {
         if (noOverlay.getValue()) {
             if (event.getState().getMaterial().equals(Material.WATER)
-                    || event.getState().getMaterial().equals(Material.LAVA)) {
+                || event.getState().getMaterial().equals(Material.LAVA)) {
                 event.setDensity(0);
                 event.setCanceled(true);
             }
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<RenderBlockOverlayEvent> renderBlockOverlayEventListener = new Listener<>(event -> {
         if (noOverlay.getValue()) event.setCanceled(true);
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<RenderGameOverlayEvent> renderGameOverlayEventListener = new Listener<>(event -> {
         if (noOverlay.getValue()) {
@@ -78,6 +82,7 @@ public class NoRender extends Module {
         }
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<BossbarEvent> bossbarEventListener = new Listener<>(event -> {
         if (noBossBar.getValue()) {

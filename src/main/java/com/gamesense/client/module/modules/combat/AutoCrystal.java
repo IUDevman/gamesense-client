@@ -55,8 +55,8 @@ public class AutoCrystal extends Module {
     BooleanSetting breakCrystal = registerBoolean("Break", true);
     BooleanSetting placeCrystal = registerBoolean("Place", true);
     IntegerSetting attackSpeed = registerInteger("Attack Speed", 16, 0, 20);
-    DoubleSetting breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
-    DoubleSetting placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
+    public DoubleSetting breakRange = registerDouble("Hit Range", 4.4, 0.0, 10.0);
+    public DoubleSetting placeRange = registerDouble("Place Range", 4.4, 0.0, 6.0);
     DoubleSetting wallsRange = registerDouble("Walls Range", 3.5, 0.0, 10.0);
     DoubleSetting enemyRange = registerDouble("Enemy Range", 6.0, 0.0, 16.0);
     BooleanSetting antiWeakness = registerBoolean("Anti Weakness", true);
@@ -65,7 +65,7 @@ public class AutoCrystal extends Module {
     IntegerSetting antiSuicideValue = registerInteger("Min Health", 14, 1, 36);
     BooleanSetting autoSwitch = registerBoolean("Switch", true);
     BooleanSetting noGapSwitch = registerBoolean("No Gap Switch", false);
-    BooleanSetting endCrystalMode = registerBoolean("1.13 Place", false);
+    public BooleanSetting endCrystalMode = registerBoolean("1.13 Place", false);
     BooleanSetting cancelCrystal = registerBoolean("Cancel Crystal", false);
     DoubleSetting minDmg = registerDouble("Min Damage", 5, 0, 36);
     DoubleSetting minBreakDmg = registerDouble("Min Break Dmg", 5, 0, 36.0);
@@ -84,7 +84,7 @@ public class AutoCrystal extends Module {
     IntegerSetting maxTargets = registerInteger("Max Targets", 2, 1, 5);
 
     private boolean switchCooldown = false;
-    private boolean isAttacking = false;
+    public boolean isAttacking = false;
     public static boolean stopAC = false;
     private Entity renderEntity;
     private BlockPos render;
@@ -94,9 +94,10 @@ public class AutoCrystal extends Module {
     private boolean rotating = false;
 
     // Threading Stuff
-    private List<CrystalInfo.PlaceInfo> targets = new ArrayList<>();
+    public List<CrystalInfo.PlaceInfo> targets = new ArrayList<>();
     private boolean finished = false;
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<TickEvent.ClientTickEvent> onUpdate = new Listener<>(event -> {
         if (mc.player == null || mc.world == null || mc.player.isDead) {
@@ -132,6 +133,8 @@ public class AutoCrystal extends Module {
             if (!placeCrystal(settings)) {
                 rotating = false;
                 isAttacking = false;
+                render = null;
+                renderEntity = null;
             }
         }
     });
@@ -307,14 +310,14 @@ public class AutoCrystal extends Module {
 
     public void onWorldRender(RenderEvent event) {
         if (this.render != null) {
-            RenderUtil.drawBox(this.render,1, new GSColor(color.getValue(),50), 63);
-            RenderUtil.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(),255));
+            RenderUtil.drawBox(this.render, 1, new GSColor(color.getValue(), 50), 63);
+            RenderUtil.drawBoundingBox(this.render, 1, 1.00f, new GSColor(color.getValue(), 255));
         }
 
-        if(showDamage.getValue()) {
+        if (showDamage.getValue()) {
             if (this.render != null && this.renderEntity != null) {
                 String[] damageText = {String.format("%.1f", DamageUtil.calculateDamage((double) render.getX() + 0.5d, (double) render.getY() + 1.0d, (double) render.getZ() + 0.5d, renderEntity))};
-                RenderUtil.drawNametag((double) render.getX() + 0.5d,(double) render.getY() + 0.5d,(double) render.getZ() + 0.5d, damageText, new GSColor(255,255,255),1);
+                RenderUtil.drawNametag((double) render.getX() + 0.5d, (double) render.getY() + 0.5d, (double) render.getZ() + 0.5d, damageText, new GSColor(255, 255, 255), 1);
             }
         }
     }
@@ -338,12 +341,12 @@ public class AutoCrystal extends Module {
 
     private void swingArm() {
         switch (handBreak.getValue()) {
-            case "Both" : {
+            case "Both": {
                 mc.player.swingArm(EnumHand.MAIN_HAND);
                 mc.player.swingArm(EnumHand.OFF_HAND);
                 break;
             }
-            case "Offhand" : {
+            case "Offhand": {
                 mc.player.swingArm(EnumHand.OFF_HAND);
                 break;
             }
@@ -354,6 +357,7 @@ public class AutoCrystal extends Module {
         }
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
         if (event.getPhase() != Phase.PRE || !rotating) return;
@@ -363,6 +367,7 @@ public class AutoCrystal extends Module {
         PlayerPacketManager.INSTANCE.addPacket(packet);
     });
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
         Packet<?> packet = event.getPacket();
@@ -385,18 +390,18 @@ public class AutoCrystal extends Module {
     }
 
     public void onDisable() {
+        ACHelper.INSTANCE.onDisable();
+
         render = null;
         renderEntity = null;
         rotating = false;
 
         targets.clear();
-
-        ACHelper.INSTANCE.onDisable();
     }
 
     public String getHudInfo() {
         String t = "";
-        if (hudDisplay.getValue().equalsIgnoreCase("Mode")){
+        if (hudDisplay.getValue().equalsIgnoreCase("Mode")) {
             t = "[" + ChatFormatting.WHITE + breakMode.getValue() + ChatFormatting.GRAY + "]";
         } else if (hudDisplay.getValue().equalsIgnoreCase("Target")) {
             if (renderEntity == null) {

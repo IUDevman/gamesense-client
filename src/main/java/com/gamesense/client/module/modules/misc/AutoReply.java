@@ -12,6 +12,7 @@ public class AutoReply extends Module {
 
     private static String reply = "I don't speak to newfags!";
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<ClientChatReceivedEvent> listener = new Listener<>(event -> {
         if (event.getMessage().getUnformattedText().contains("whispers: ") && !event.getMessage().getUnformattedText().startsWith(mc.player.getName())) {

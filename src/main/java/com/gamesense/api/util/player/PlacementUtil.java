@@ -2,7 +2,7 @@ package com.gamesense.api.util.player;
 
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.ModuleManager;
-import com.gamesense.client.module.modules.combat.AutoCrystalGS;
+import com.gamesense.client.module.modules.combat.AutoCrystal;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -15,6 +15,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.ArrayList;
 
 public class PlacementUtil {
 
@@ -46,11 +48,12 @@ public class PlacementUtil {
         }
 
         mc.player.inventory.currentItem = newSlot;
-        boolean output = place(blockPos, hand, rotate, true);
+        boolean output = place(blockPos, hand, rotate);
         mc.player.inventory.currentItem = oldSlot;
 
         return output;
     }
+
     public static boolean placeItem(BlockPos blockPos, EnumHand hand, boolean rotate, Class<? extends Item> itemToPlace) {
         int oldSlot = mc.player.inventory.currentItem;
         int newSlot = InventoryUtil.findFirstItemSlot(itemToPlace, 0, 8);
@@ -60,13 +63,25 @@ public class PlacementUtil {
         }
 
         mc.player.inventory.currentItem = newSlot;
-        boolean output = place(blockPos, hand, rotate, true);
+        boolean output = place(blockPos, hand, rotate);
         mc.player.inventory.currentItem = oldSlot;
 
         return output;
     }
 
+    public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate) {
+        return placeBlock(blockPos, hand, rotate, true, null);
+    }
+
+    public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate, ArrayList<EnumFacing> forceSide) {
+        return placeBlock(blockPos, hand, rotate, true, forceSide);
+    }
+
     public static boolean place(BlockPos blockPos, EnumHand hand, boolean rotate, boolean checkAction) {
+        return placeBlock(blockPos, hand, rotate, checkAction, null);
+    }
+
+    public static boolean placeBlock(BlockPos blockPos, EnumHand hand, boolean rotate, boolean checkAction, ArrayList<EnumFacing> forceSide) {
         EntityPlayerSP player = mc.player;
         WorldClient world = mc.world;
         PlayerControllerMP playerController = mc.playerController;
@@ -77,7 +92,7 @@ public class PlacementUtil {
             return false;
         }
 
-        EnumFacing side = BlockUtil.getPlaceableSide(blockPos);
+        EnumFacing side = forceSide != null ? BlockUtil.getPlaceableSideExlude(blockPos, forceSide) : BlockUtil.getPlaceableSide(blockPos);
 
         if (side == null) {
             return false;
@@ -100,8 +115,8 @@ public class PlacementUtil {
 
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
-            AutoCrystalGS.stopAC = true;
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            AutoCrystal.stopAC = true;
             stoppedAC = true;
         }
 
@@ -116,7 +131,7 @@ public class PlacementUtil {
         }
 
         if (stoppedAC) {
-            AutoCrystalGS.stopAC = false;
+            AutoCrystal.stopAC = false;
         }
 
         return action == EnumActionResult.SUCCESS;
@@ -156,8 +171,8 @@ public class PlacementUtil {
 
         boolean stoppedAC = false;
 
-        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
-            AutoCrystalGS.stopAC = true;
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            AutoCrystal.stopAC = true;
             stoppedAC = true;
         }
 
@@ -173,10 +188,12 @@ public class PlacementUtil {
             }
 
             if (stoppedAC) {
-                AutoCrystalGS.stopAC = false;
+                AutoCrystal.stopAC = false;
             }
-            return action == EnumActionResult.SUCCESS;
-        } return true;
 
+            return action == EnumActionResult.SUCCESS;
+        }
+
+        return true;
     }
 }

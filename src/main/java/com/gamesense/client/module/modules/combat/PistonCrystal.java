@@ -93,50 +93,50 @@ public class PistonCrystal extends Module {
     BooleanSetting chatMsg = registerBoolean("Chat Msgs", true);
 
     private boolean noMaterials = false,
-            hasMoved = false,
-            isSneaking = false,
-            yUnder = false,
-            isHole = true,
-            enoughSpace = true,
-            redstoneBlockMode = false,
-            fastModeActive = false,
-            broken,
-            brokenCrystalBug,
-            brokenRedstoneTorch,
-            stoppedCa,
-            deadPl,
-            rotationPlayerMoved,
-            preRotationBol = false,
-            minHp,
-            itemCrystal;
+        hasMoved = false,
+        isSneaking = false,
+        yUnder = false,
+        isHole = true,
+        enoughSpace = true,
+        redstoneBlockMode = false,
+        fastModeActive = false,
+        broken,
+        brokenCrystalBug,
+        brokenRedstoneTorch,
+        stoppedCa,
+        deadPl,
+        rotationPlayerMoved,
+        preRotationBol = false,
+        minHp,
+        itemCrystal;
 
     private int oldSlot = -1,
-            stage,
-            delayTimeTicks,
-            stuck = 0,
-            hitTryTick,
-            round = 0,
-            nCrystal,
-            redstoneTickDelay,
-            preRotationTick,
-            afterRotationTick,
-            placeTry;
+        stage,
+        delayTimeTicks,
+        stuck = 0,
+        hitTryTick,
+        round = 0,
+        nCrystal,
+        redstoneTickDelay,
+        preRotationTick,
+        afterRotationTick,
+        placeTry;
     private long startTime, endTime;
 
     private int[] slot_mat,
-            delayTable,
-            meCoordsInt,
-            enemyCoordsInt;
+        delayTable,
+        meCoordsInt,
+        enemyCoordsInt;
 
     private double[] enemyCoordsDouble;
 
     private structureTemp toPlace;
 
     int[][] disp_surblock = {
-            {1, 0, 0},
-            {-1, 0, 0},
-            {0, 0, 1},
-            {0, 0, -1}
+        {1, 0, 0},
+        {-1, 0, 0},
+        {0, 0, 1},
+        {0, 0, -1}
     };
 
     Double[][] sur_block = new Double[4][3];
@@ -171,8 +171,7 @@ public class PistonCrystal extends Module {
             if (!target.getValue().equals("Looking") && aimTarget == null)
                 disable();
             // If not found a target
-            if (aimTarget == null)
-                return true;
+            return aimTarget == null;
         }
         return false;
     }
@@ -206,6 +205,7 @@ public class PistonCrystal extends Module {
             betterPlacement.setValue(false);
     }
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<PacketEvent.Receive> packetReceiveListener = new Listener<>(event -> {
 
@@ -217,6 +217,7 @@ public class PistonCrystal extends Module {
             }
         }
     });
+    int lenTable;
 
     // Init some values
     private void initValues() {
@@ -227,12 +228,13 @@ public class PistonCrystal extends Module {
         aimTarget = null;
         // Create new delay table
         delayTable = new int[]{
-                startDelay.getValue(),
-                supBlocksDelay.getValue(),
-                pistonDelay.getValue(),
-                crystalDelay.getValue(),
-                hitDelay.getValue()
+            startDelay.getValue(),
+            supBlocksDelay.getValue(),
+            pistonDelay.getValue(),
+            crystalDelay.getValue(),
+            hitDelay.getValue()
         };
+        lenTable = delayTable.length;
         // Default values reset
         toPlace = new structureTemp(0, 0, null);
         isHole = minHp = true;
@@ -254,8 +256,8 @@ public class PistonCrystal extends Module {
         // Stop CA
         stoppedCa = false;
 
-        if (ModuleManager.isModuleEnabled(AutoCrystalGS.class)) {
-            AutoCrystalGS.stopAC = true;
+        if (ModuleManager.isModuleEnabled(AutoCrystal.class)) {
+            AutoCrystal.stopAC = true;
             stoppedCa = true;
         }
         // Debug mode
@@ -299,9 +301,9 @@ public class PistonCrystal extends Module {
                 output = "Enemy is dead, gg! ";
             } else if (rotationPlayerMoved) {
                 output = "You cannot move from your hole if you have rotation on. ";
-            } else if(!minHp) {
+            } else if (!minHp) {
                 output = "Your hp is low";
-            } else if(itemCrystal) {
+            } else if (itemCrystal) {
                 output = "An item is where the crystal should be placed";
             }
         // Output in chat
@@ -310,7 +312,7 @@ public class PistonCrystal extends Module {
             setDisabledMessage("Materials missing:" + materialsNeeded);
 
         if (stoppedCa) {
-            AutoCrystalGS.stopAC = false;
+            AutoCrystal.stopAC = false;
             stoppedCa = false;
         }
 
@@ -320,12 +322,13 @@ public class PistonCrystal extends Module {
         }
 
         if (oldSlot != mc.player.inventory.currentItem && oldSlot != -1) {
+
             mc.player.inventory.currentItem = oldSlot;
             oldSlot = -1;
         }
 
         noMaterials = false;
-        AutoCrystalGS.stopAC = false;
+        AutoCrystal.stopAC = false;
         // Debug mode
         if (debugMode.getValue() || speedMeter.getValue())
             printDebug("Ended pistonCrystal n^" + round, false);
@@ -361,9 +364,11 @@ public class PistonCrystal extends Module {
 
     Vec3d lastHitVec;
 
+    @SuppressWarnings("unused")
     @EventHandler
     private final Listener<OnUpdateWalkingPlayerEvent> onUpdateWalkingPlayerEventListener = new Listener<>(event -> {
-        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue()) return;
+        if (event.getPhase() != Phase.PRE || !rotate.getValue() || lastHitVec == null || !forceRotation.getValue())
+            return;
         Vec2f rotation = RotationUtil.getRotationTo(lastHitVec);
         PlayerPacket packet = new PlayerPacket(this, rotation);
         PlayerPacketManager.INSTANCE.addPacket(packet);
@@ -376,7 +381,8 @@ public class PistonCrystal extends Module {
             disable();
             return;
         }
-
+        if (stage >= lenTable)
+            stage = 0;
         // Wait
         if (delayTimeTicks < delayTable[stage]) {
             delayTimeTicks++;
@@ -582,9 +588,7 @@ public class PistonCrystal extends Module {
 
     private boolean checkRedstonePlace() {
         BlockPos targetPosPist = compactBlockPos(3);
-        if (BlockUtil.getBlock(targetPosPist.getX(), targetPosPist.getY(), targetPosPist.getZ()).getRegistryName().toString().contains("redstone") ) {
-            return false;
-        } else return true;
+        return !BlockUtil.getBlock(targetPosPist.getX(), targetPosPist.getY(), targetPosPist.getZ()).getRegistryName().toString().contains("redstone");
     }
 
     // Algo for destroying the crystal
@@ -651,9 +655,9 @@ public class PistonCrystal extends Module {
                 for (Entity t : mc.world.loadedEntityList) {
                     // If crystal
                     if (t instanceof EntityEnderCrystal
-                            // If coordinates the same as where is the crystal
-                            && (int) t.posX == (int) toPlace.to_place.get(toPlace.supportBlock + 1).x &&
-                            (int) t.posZ == (int) toPlace.to_place.get(toPlace.supportBlock + 1).z) {
+                        // If coordinates the same as where is the crystal
+                        && (int) t.posX == (int) toPlace.to_place.get(toPlace.supportBlock + 1).x &&
+                        (int) t.posZ == (int) toPlace.to_place.get(toPlace.supportBlock + 1).z) {
                         // Found
                         found = true;
                         break;
@@ -698,8 +702,8 @@ public class PistonCrystal extends Module {
                     // Find the crystal
                     for (Entity t : mc.world.loadedEntityList) {
                         if (t instanceof EntityEnderCrystal
-                                && (int) t.posX == (int) toPlace.to_place.get(toPlace.supportBlock + 1).x &&
-                                (int) t.posZ == (int) toPlace.to_place.get(toPlace.supportBlock + 1).z) {
+                            && (int) t.posX == (int) toPlace.to_place.get(toPlace.supportBlock + 1).x &&
+                            (int) t.posZ == (int) toPlace.to_place.get(toPlace.supportBlock + 1).z) {
                             ext = true;
                             break;
                         }
@@ -803,10 +807,10 @@ public class PistonCrystal extends Module {
             // Destroy it
             mc.player.swingArm(EnumHand.MAIN_HAND);
             mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                    CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, side
+                CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, side
             ));
             mc.player.connection.sendPacket(new CPacketPlayerDigging(
-                    CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, side
+                CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, side
             ));
         }
     }
@@ -829,9 +833,9 @@ public class PistonCrystal extends Module {
         for (Entity t : mc.world.loadedEntityList) {
             // If is an endcrystal
             if (t instanceof EntityEnderCrystal
-                    // If the position is right
-                    && (int) t.posX == (int) (aimTarget.posX + toPlace.to_place.get(toPlace.supportBlock + 1).x) &&
-                    (int) t.posZ == (int) (aimTarget.posZ + toPlace.to_place.get(toPlace.supportBlock + 1).z)) {
+                // If the position is right
+                && (int) t.posX == (int) (aimTarget.posX + toPlace.to_place.get(toPlace.supportBlock + 1).x) &&
+                (int) t.posZ == (int) (aimTarget.posZ + toPlace.to_place.get(toPlace.supportBlock + 1).z)) {
                 return true;
             }
         }
@@ -850,9 +854,9 @@ public class PistonCrystal extends Module {
                 // We have to check if that coordinate is the same as the enemy. Ww add "crystalDeltaBreak" so we can break the crystal before
                 // It go to the hole, for a better speed (we find the frame perfect for every servers)
                 if ((int) t.posX == enemyCoordsInt[0] &&
-                        ((int) (t.posZ - crystalDeltaBreak.getValue()) == enemyCoordsInt[2] || (int) (t.posZ + crystalDeltaBreak.getValue()) == enemyCoordsInt[2])
-                        || (int) t.posZ == enemyCoordsInt[2] &&
-                        ((int) (t.posX - crystalDeltaBreak.getValue()) == enemyCoordsInt[0] || (int) (t.posX + crystalDeltaBreak.getValue()) == enemyCoordsInt[0]))
+                    ((int) (t.posZ - crystalDeltaBreak.getValue()) == enemyCoordsInt[2] || (int) (t.posZ + crystalDeltaBreak.getValue()) == enemyCoordsInt[2])
+                    || (int) t.posZ == enemyCoordsInt[2] &&
+                    ((int) (t.posX - crystalDeltaBreak.getValue()) == enemyCoordsInt[0] || (int) (t.posX + crystalDeltaBreak.getValue()) == enemyCoordsInt[0]))
                     // If found, yoink
                     return t;
             }
@@ -915,7 +919,7 @@ public class PistonCrystal extends Module {
         // Get all sides
         EnumFacing side;
         if (redstone && redstoneAbovePiston) {
-            side = BlockUtil.getPlaceableSideExlude(pos, EnumFacing.DOWN);
+            side = BlockUtil.getPlaceableSideExlude(pos, exd);
         } else side = BlockUtil.getPlaceableSide(pos);
 
         // If there is a solid block
@@ -954,6 +958,10 @@ public class PistonCrystal extends Module {
             if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
                 // Is it is correct
                 if (mc.player.inventory.currentItem != slot_mat[step]) {
+                    if (slot_mat[step] == -1) {
+                        noMaterials = true;
+                        return false;
+                    }
                     // Change the hand's item (è qui l'errore)
                     mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
                 }
@@ -1012,6 +1020,12 @@ public class PistonCrystal extends Module {
         return true;
     }
 
+    private final ArrayList<EnumFacing> exd = new ArrayList<EnumFacing>() {
+        {
+            add(EnumFacing.DOWN);
+        }
+    };
+
     // Place a block
     private boolean placeBlockConfirm(BlockPos pos, int step, double offsetX, double offsetZ, double offsetY, boolean redstone, boolean onlyRotation, boolean support) {
         // Get the block
@@ -1019,7 +1033,7 @@ public class PistonCrystal extends Module {
         // Get all sides
         EnumFacing side;
         if (redstone && redstoneAbovePiston) {
-            side = BlockUtil.getPlaceableSideExlude(pos, EnumFacing.DOWN);
+            side = BlockUtil.getPlaceableSideExlude(pos, exd);
         } else side = BlockUtil.getPlaceableSide(pos); // 430 71 422
 
         // If there is a solid block
@@ -1061,6 +1075,10 @@ public class PistonCrystal extends Module {
             if (slot_mat[step] == 11 || mc.player.inventory.getStackInSlot(slot_mat[step]) != ItemStack.EMPTY) {
                 // Is it is correct
                 if (mc.player.inventory.currentItem != slot_mat[step]) {
+                    if (slot_mat[step] == -1) {
+                        noMaterials = true;
+                        return false;
+                    }
                     // Change the hand's item (è qui l'errore)
                     mc.player.inventory.currentItem = slot_mat[step] == 11 ? mc.player.inventory.currentItem : slot_mat[step];
                 }
@@ -1068,8 +1086,7 @@ public class PistonCrystal extends Module {
                 noMaterials = true;
                 return false;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             printDebug("Fatal Error during the creation of the structure. Please, report this bug in the discor's server", true);
             final Logger LOGGER = LogManager.getLogger("GameSense");
             LOGGER.error("[PistonCrystal] error during the creation of the structure.");
@@ -1198,7 +1215,7 @@ public class PistonCrystal extends Module {
         try {
             // First check, h check.
             if (meCoordsInt[1] - enemyCoordsInt[1] > -1
-                    && meCoordsInt[1] - enemyCoordsInt[1] <= maxYincr.getValue()) {
+                && meCoordsInt[1] - enemyCoordsInt[1] <= maxYincr.getValue()) {
                 // Because we have 2 option for the place (1 block higher or same h)
                 // We have to iterete between these 2 options. The first one, is the higher
                 for (int startH = 1; startH >= 0; startH--) {
@@ -1244,14 +1261,14 @@ public class PistonCrystal extends Module {
                                 continue;
                             // Check if there is enough space
                             if ((!((BlockUtil.getBlock(crystalCordsAbs[0], crystalCordsAbs[1], crystalCordsAbs[2])) instanceof BlockAir)
-                                    || !((BlockUtil.getBlock(crystalCordsAbs[0], crystalCordsAbs[1] + 1, crystalCordsAbs[2])) instanceof BlockAir)))
+                                || !((BlockUtil.getBlock(crystalCordsAbs[0], crystalCordsAbs[1] + 1, crystalCordsAbs[2])) instanceof BlockAir)))
                                 continue;
                             // Check if someone is in that block
                             if (someoneInCoords(crystalCordsAbs[0], crystalCordsAbs[2]))
                                 continue;
                             // Check if that block is a piece of obsidian or bedrock
                             if (!(BlockUtil.getBlock(crystalCordsAbs[0], crystalCordsAbs[1] - 1, crystalCordsAbs[2]) instanceof BlockObsidian
-                                    || BlockUtil.getBlock(crystalCordsAbs[0], crystalCordsAbs[1] - 1, crystalCordsAbs[2]).getRegistryName().getPath().equals("bedrock")))
+                                || BlockUtil.getBlock(crystalCordsAbs[0], crystalCordsAbs[1] - 1, crystalCordsAbs[2]).getRegistryName().getPath().equals("bedrock")))
                                 continue;
                             /// Piston Coordinates ///
                             // Init
@@ -1266,8 +1283,8 @@ public class PistonCrystal extends Module {
                                 /// If statements ///
                                 // If it's not air or piston and if someone is here
                                 if ((tempBlock = BlockUtil.getBlock(pistonCordAbs[0], pistonCordAbs[1], pistonCordAbs[2])) instanceof BlockPistonBase
-                                        == tempBlock instanceof BlockAir
-                                        || someoneInCoords(pistonCordAbs[0], pistonCordAbs[2]))
+                                    == tempBlock instanceof BlockAir
+                                    || someoneInCoords(pistonCordAbs[0], pistonCordAbs[2]))
                                     // Exit
                                     continue;
                                 // Get relative coords
@@ -1288,8 +1305,8 @@ public class PistonCrystal extends Module {
                                         continue;
                                     // If it's not air or piston and if someone is here
                                     if (!(BlockUtil.getBlock(blockPiston.getX(), blockPiston.getY(), blockPiston.getZ()) instanceof BlockPistonBase
-                                            || BlockUtil.getBlock(blockPiston.getX(), blockPiston.getY(), blockPiston.getZ()) instanceof BlockAir)
-                                            || someoneInCoords(crystalCordsAbs[0] + disp[0], crystalCordsAbs[2] + disp[2]))
+                                        || BlockUtil.getBlock(blockPiston.getX(), blockPiston.getY(), blockPiston.getZ()) instanceof BlockAir)
+                                        || someoneInCoords(crystalCordsAbs[0] + disp[0], crystalCordsAbs[2] + disp[2]))
                                         continue;
                                     // The block in front of the piston should be air
                                     if (!(BlockUtil.getBlock(blockPiston.getX() - crystalCordsRel[0], blockPiston.getY(), blockPiston.getZ() - crystalCordsRel[2]) instanceof BlockAir))
@@ -1327,12 +1344,12 @@ public class PistonCrystal extends Module {
                                 if (!behindBol && Math.abs(meCoordsInt[0] - enemyCoordsInt[0]) == 2 && Math.abs(meCoordsInt[2] - enemyCoordsInt[2]) == 2) {
                                     // If one of the two coords are the same and the distance is >= 2
                                     if ((meCoordsInt[0] == pistonCordInt[0] && (Math.abs(meCoordsInt[2] - pistonCordInt[2]) >= 2)
-                                            || (meCoordsInt[2] == pistonCordInt[2] && (Math.abs(meCoordsInt[0] - pistonCordInt[0]) >= 2))))
+                                        || (meCoordsInt[2] == pistonCordInt[2] && (Math.abs(meCoordsInt[0] - pistonCordInt[0]) >= 2))))
                                         behindBol = true;
                                 }
                                 // If our distance is more then 3 blocks (and one coordinate is different), exit
                                 if (!behindBol && (Math.abs(meCoordsInt[0] - enemyCoordsInt[0]) > 2 && meCoordsInt[2] != enemyCoordsInt[2])
-                                        || (Math.abs(meCoordsInt[2] - enemyCoordsInt[2]) > 2 && meCoordsInt[0] != enemyCoordsInt[0]))
+                                    || (Math.abs(meCoordsInt[2] - enemyCoordsInt[2]) > 2 && meCoordsInt[0] != enemyCoordsInt[0]))
                                     behindBol = true;
                                 // Exit
                                 if (behindBol)
@@ -1363,9 +1380,9 @@ public class PistonCrystal extends Module {
                                  */
                                 // Check if: Someone is here, if it's air, if it's the position of the crystal
                                 if (someoneInCoords(torchCoords[0], torchCoords[2])
-                                        || !(BlockUtil.getBlock(torchCoords[0], torchCoords[1], torchCoords[2]) instanceof BlockRedstoneTorch
-                                        || BlockUtil.getBlock(torchCoords[0], torchCoords[1], torchCoords[2]) instanceof BlockAir)
-                                        || (int) torchCoords[0] == (int) crystalCordsAbs[0] && (int) torchCoords[2] == (int) crystalCordsAbs[2]) {
+                                    || !(BlockUtil.getBlock(torchCoords[0], torchCoords[1], torchCoords[2]) instanceof BlockRedstoneTorch
+                                    || BlockUtil.getBlock(torchCoords[0], torchCoords[1], torchCoords[2]) instanceof BlockAir)
+                                    || (int) torchCoords[0] == (int) crystalCordsAbs[0] && (int) torchCoords[2] == (int) crystalCordsAbs[2]) {
                                     continue;
                                 }
                                 // If the redstone torchs is in front of the piston
@@ -1399,7 +1416,7 @@ public class PistonCrystal extends Module {
                                 /// Check if it's possible
                                 // First, lets if there is space for the redstone block
                                 if (BlockUtil.getBlock(redstoneCoordsAbs[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2]) instanceof BlockAir
-                                        || BlockUtil.getBlock(redstoneCoordsAbs[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2]).translationKey.equals("blockRedstone")) {
+                                    || BlockUtil.getBlock(redstoneCoordsAbs[0], redstoneCoordsAbs[1] - 1, redstoneCoordsAbs[2]).translationKey.equals("blockRedstone")) {
                                     /// We can change everything
                                     // Piston
                                     pistonCordAbs = new double[]{redstoneCoordsAbs[0], redstoneCoordsAbs[1], redstoneCoordsAbs[2]};
@@ -1670,10 +1687,10 @@ public class PistonCrystal extends Module {
 
     private boolean is_in_hole() {
         sur_block = new Double[][]{
-                {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
-                {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
+            {aimTarget.posX + 1, aimTarget.posY, aimTarget.posZ},
+            {aimTarget.posX - 1, aimTarget.posY, aimTarget.posZ},
+            {aimTarget.posX, aimTarget.posY, aimTarget.posZ + 1},
+            {aimTarget.posX, aimTarget.posY, aimTarget.posZ - 1}
         };
 
         // Check if the guy is in a hole

@@ -21,6 +21,7 @@ import java.util.*;
 public class AutoGear extends Module {
 
     IntegerSetting tickDelay = registerInteger("Tick Delay", 0, 0, 20);
+    IntegerSetting switchForTick = registerInteger("Switch Per Tick", 1, 1, 100);
     BooleanSetting enderChest = registerBoolean("EnderChest", false);
     BooleanSetting confirmSort = registerBoolean("Confirm Sort", true);
     BooleanSetting invasive = registerBoolean("Invasive", false);
@@ -29,7 +30,7 @@ public class AutoGear extends Module {
     BooleanSetting debugMode = registerBoolean("Debug Mode", false);
 
     private HashMap<Integer, String> planInventory = new HashMap<>();
-    private HashMap<Integer, String> containerInv = new HashMap<>();
+    private final HashMap<Integer, String> containerInv = new HashMap<>();
     private ArrayList<Integer> sortItems = new ArrayList<>();
 
     private int delayTimeTicks;
@@ -102,7 +103,7 @@ public class AutoGear extends Module {
 
         // When you open an inventory
         if (((mc.player.openContainer instanceof ContainerChest && (enderChest.getValue() || !((ContainerChest) mc.player.openContainer).getLowerChestInventory().getDisplayName().getUnformattedText().equals("Ender Chest")))
-                || mc.player.openContainer instanceof ContainerShulkerBox)
+            || mc.player.openContainer instanceof ContainerShulkerBox)
         ) {
             // Start sorting
             sortInventoryAlgo();
@@ -117,7 +118,7 @@ public class AutoGear extends Module {
                 PistonCrystal.printDebug("Start sorting inventory...", false);
 
             int maxValue = mc.player.openContainer instanceof ContainerChest ? ((ContainerChest) mc.player.openContainer).getLowerChestInventory().getSizeInventory()
-                    : 27;
+                : 27;
             // Iterate for every value
             for (int i = 0; i < maxValue; i++) {
                 ItemStack item = mc.player.openContainer.getInventory().get(i);
@@ -137,7 +138,7 @@ public class AutoGear extends Module {
                 // Print
                 if (infoMsgs.getValue())
                     PistonCrystal.printDebug("Inventory already sorted...", true);
-              
+
                 if (closeAfter.getValue())
                     mc.player.closeScreen();
             } else {
@@ -147,40 +148,43 @@ public class AutoGear extends Module {
             }
             openedBefore = true;
         } else if (finishSort) {
-            int slotChange;
-            // This is the sort area
-            if (sortItems.size() != 0) {
-                // Get where we are now
-                slotChange = sortItems.get(stepNow++);
-                // Sort the inventory
-                mc.playerController.windowClick(mc.player.openContainer.windowId, slotChange, 0, ClickType.PICKUP, mc.player);
-            }
-            // If we have at the limit
-            if (stepNow == sortItems.size()) {
-                // If confirm sort but we have not done yet
-                if (confirmSort.getValue()) {
-                    if (!doneBefore) {
-                        // Reset
-                        openedBefore = false;
-                        finishSort = false;
-                        doneBefore = true;
-                        // The last item sometimes fuck up. This reduce the possibilites
-                        checkLastItem();
-                        return;
+            for (int i = 0; i < switchForTick.getValue(); i++) {
+                int slotChange;
+                // This is the sort area
+                if (sortItems.size() != 0) {
+                    // Get where we are now
+                    slotChange = sortItems.get(stepNow++);
+                    // Sort the inventory
+                    mc.playerController.windowClick(mc.player.openContainer.windowId, slotChange, 0, ClickType.PICKUP, mc.player);
+                }
+                // If we have at the limit
+                if (stepNow == sortItems.size()) {
+                    // If confirm sort but we have not done yet
+                    if (confirmSort.getValue()) {
+                        if (!doneBefore) {
+                            // Reset
+                            openedBefore = false;
+                            finishSort = false;
+                            doneBefore = true;
+                            // The last item sometimes fuck up. This reduce the possibilites
+                            checkLastItem();
+                            return;
+                        }
                     }
-                }
 
-                finishSort = false;
-                // Print
-                if (infoMsgs.getValue()) {
-                    PistonCrystal.printDebug("Inventory sorted", false);
+                    finishSort = false;
+                    // Print
+                    if (infoMsgs.getValue()) {
+                        PistonCrystal.printDebug("Inventory sorted", false);
+                    }
+                    // Check if the last slot has been placed
+                    checkLastItem();
+                    doneBefore = false;
+                    // If he want to close the inventory
+                    if (closeAfter.getValue())
+                        mc.player.closeScreen();
+                    return;
                 }
-                // Check if the last slot has been placed
-                checkLastItem();
-                doneBefore = false;
-                // If he want to close the inventory
-                if (closeAfter.getValue())
-                    mc.player.closeScreen();
             }
         }
     }

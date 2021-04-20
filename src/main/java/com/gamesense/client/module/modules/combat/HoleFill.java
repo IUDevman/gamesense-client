@@ -28,16 +28,16 @@ import java.util.stream.Collectors;
  * @author Hoosiers
  * @author 0b00101010
  * @author TechAle
+ * @author Madmegsox1
  * @since 10/31/2020
  * @since 26/01/2021
- * @author Madmegsox1
  * @since 18/03/2021
  */
 
 @Module.Declaration(name = "HoleFill", category = Category.Combat)
 public class HoleFill extends Module {
 
-    ModeSetting mode = registerMode("Type", Arrays.asList("Obby", "Echest", "Both", "Web", "PressurePlate"), "Obby");
+    ModeSetting mode = registerMode("Type", Arrays.asList("Obby", "Echest", "Both", "Web", "Plate"), "Obby");
     IntegerSetting placeDelay = registerInteger("Delay", 2, 0, 10);
     IntegerSetting retryDelay = registerInteger("Retry Delay", 10, 0, 50);
     IntegerSetting bpc = registerInteger("Block pre Cycle", 2, 1, 5);
@@ -172,7 +172,7 @@ public class HoleFill extends Module {
 
     private boolean placeBlock(BlockPos pos) {
         EnumHand handSwing = EnumHand.MAIN_HAND;
-        if(offHandObby.getValue()) {
+        if (offHandObby.getValue()) {
             int obsidianSlot = InventoryUtil.findObsidianSlot(offHandObby.getValue(), activedOff);
 
             if (obsidianSlot == -1) {
@@ -206,44 +206,56 @@ public class HoleFill extends Module {
     }
 
     private int findRightBlock() {
-        int newHand = -1;
-
-        if (mode.getValue().equalsIgnoreCase("Both")) {
-            newHand = InventoryUtil.findFirstBlockSlot(BlockObsidian.class, 0, 8);
-            if (newHand == -1) {
-                newHand = InventoryUtil.findFirstBlockSlot(BlockEnderChest.class, 0, 8);
+        switch (mode.getValue()) {
+            case "Both": {
+                int newHand = InventoryUtil.findFirstBlockSlot(BlockObsidian.class, 0, 8);
+                if (newHand == -1) return InventoryUtil.findFirstBlockSlot(BlockEnderChest.class, 0, 8);
+                else return newHand;
             }
-        } else if (mode.getValue().equalsIgnoreCase("Obby")) {
-            newHand = InventoryUtil.findFirstBlockSlot(BlockObsidian.class, 0, 8);
-        } else if (mode.getValue().equalsIgnoreCase("Echest")) {
-            newHand = InventoryUtil.findFirstBlockSlot(BlockEnderChest.class, 0, 8);
-        } else if (mode.getValue().equalsIgnoreCase("Web")) {
-            newHand = InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
-        } else if(mode.getValue().equalsIgnoreCase("PressurePlate")){
-            newHand = InventoryUtil.findFirstBlockSlot(BlockPressurePlate.class, 0 ,8);
+            case "Obby": {
+                return InventoryUtil.findFirstBlockSlot(BlockObsidian.class, 0, 8);
+            }
+            case "Echest": {
+                return InventoryUtil.findFirstBlockSlot(BlockEnderChest.class, 0, 8);
+            }
+            case "Web": {
+                return InventoryUtil.findFirstBlockSlot(BlockWeb.class, 0, 8);
+            }
+            case "Plate": {
+                return InventoryUtil.findFirstBlockSlot(BlockPressurePlate.class, 0, 8);
+            }
+            default: {
+                return -1;
+            }
         }
-
-
-        return newHand;
     }
 
     private Boolean isHoldingRightBlock(int hand, Item item) {
-        if (hand == -1) {
-            return false;
-        }
+        if (hand == -1) return false;
 
         if (item instanceof ItemBlock) {
             Block block = ((ItemBlock) item).getBlock();
 
-            if (mode.getValue().equalsIgnoreCase("Obby") && block instanceof BlockObsidian) {
-                return true;
-            } else if (mode.getValue().equalsIgnoreCase("Echest") && block instanceof BlockEnderChest) {
-                return true;
-            } else if (mode.getValue().equalsIgnoreCase("Both") && (block instanceof BlockObsidian || block instanceof BlockEnderChest)) {
-                return true;
-            }else if(mode.getValue().equalsIgnoreCase("PressurePlate") && block instanceof BlockPressurePlate){
-                return true;
-            } else return mode.getValue().equalsIgnoreCase("Web") && block instanceof BlockWeb;
+            switch (mode.getValue()) {
+                case "Both": {
+                    return block instanceof BlockObsidian || block instanceof BlockEnderChest;
+                }
+                case "Obby": {
+                    return block instanceof BlockObsidian;
+                }
+                case "Echest": {
+                    return block instanceof BlockEnderChest;
+                }
+                case "Web": {
+                    return block instanceof BlockWeb;
+                }
+                case "Plate": {
+                    return block instanceof BlockPressurePlate;
+                }
+                default: {
+                    return false;
+                }
+            }
         }
 
         return false;

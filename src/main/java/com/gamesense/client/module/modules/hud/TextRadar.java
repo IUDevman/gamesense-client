@@ -32,7 +32,7 @@ public class TextRadar extends HUDModule {
     BooleanSetting sortRight = registerBoolean("Sort Right", false);
     IntegerSetting range = registerInteger("Range", 100, 1, 260);
 
-    private PlayerList list = new PlayerList();
+    private final PlayerList list = new PlayerList();
 
     @Override
     public void populate(ITheme theme) {
@@ -42,20 +42,20 @@ public class TextRadar extends HUDModule {
     public void onRender() {
         list.players.clear();
         mc.world.loadedEntityList.stream()
-                .filter(e -> e instanceof EntityPlayer)
-                .filter(e -> e != mc.player)
-                .forEach(e -> {
-                    if (mc.player.getDistance(e) > range.getValue()) {
-                        return;
-                    }
-                    if (display.getValue().equalsIgnoreCase("Friend") && !(SocialManager.isFriend(e.getName()))) {
-                        return;
-                    }
-                    if (display.getValue().equalsIgnoreCase("Enemy") && !(SocialManager.isEnemy(e.getName()))) {
-                        return;
-                    }
-                    list.players.add((EntityPlayer) e);
-                });
+            .filter(e -> e instanceof EntityPlayer)
+            .filter(e -> e != mc.player)
+            .forEach(e -> {
+                if (mc.player.getDistance(e) > range.getValue()) {
+                    return;
+                }
+                if (display.getValue().equalsIgnoreCase("Friend") && !(SocialManager.isFriend(e.getName()))) {
+                    return;
+                }
+                if (display.getValue().equalsIgnoreCase("Enemy") && !(SocialManager.isEnemy(e.getName()))) {
+                    return;
+                }
+                list.players.add((EntityPlayer) e);
+            });
     }
 
 
