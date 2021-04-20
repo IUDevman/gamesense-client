@@ -1,22 +1,24 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.GameSense;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
-import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
 import com.mojang.realmsclient.gui.ChatFormatting;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 @Module.Declaration(name = "ArrayList", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 200)
@@ -29,8 +31,8 @@ public class ArrayListModule extends HUDModule {
     private final ModuleList list = new ModuleList();
 
     @Override
-    public void populate(Theme theme) {
-        component = new ListComponent(getName(), theme.getPanelRenderer(), position, list);
+    public void populate(ITheme theme) {
+    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), list, GameSenseGUI.FONT_HEIGHT, HUDModule.LIST_BORDER);
     }
 
     public void onRender() {
@@ -38,7 +40,7 @@ public class ArrayListModule extends HUDModule {
         for (Module module : ModuleManager.getModules()) {
             if (module.isEnabled() && module.isDrawn()) list.activeModules.add(module);
         }
-        list.activeModules.sort(Comparator.comparing(module -> -GameSense.INSTANCE.gameSenseGUI.guiInterface.getFontWidth(module.getName() + ChatFormatting.GRAY + " " + module.getHudInfo())));
+        list.activeModules.sort(Comparator.comparing(module -> -GameSense.INSTANCE.gameSenseGUI.guiInterface.getFontWidth(GameSenseGUI.FONT_HEIGHT, ((Module)module).getName() + ChatFormatting.GRAY + " " + ((Module)module).getHudInfo())));
     }
 
     private class ModuleList implements HUDList {
@@ -64,12 +66,12 @@ public class ArrayListModule extends HUDModule {
 
         @Override
         public boolean sortUp() {
-            return sortUp.isOn();
+            return sortUp.getValue();
         }
 
         @Override
         public boolean sortRight() {
-            return sortRight.isOn();
+            return sortRight.getValue();
         }
     }
 }

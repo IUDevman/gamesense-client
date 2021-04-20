@@ -1,10 +1,18 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.api.util.world.combat.CrystalUtil;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
@@ -13,20 +21,15 @@ import com.gamesense.client.module.modules.combat.AutoCrystal;
 import com.gamesense.client.module.modules.combat.OffHand;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
-import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
+
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Module.Declaration(name = "CombatInfo", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 150)
@@ -42,8 +45,8 @@ public class CombatInfo extends HUDModule {
     private static final String[] hoosiersNames = {"AC", "KA", "SU", "AT", "ST"};
 
     @Override
-    public void populate(Theme theme) {
-        component = new ListComponent(getName(), theme.getPanelRenderer(), position, list);
+    public void populate(ITheme theme) {
+    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), list, GameSenseGUI.FONT_HEIGHT, HUDModule.LIST_BORDER);
     }
 
     public void onRender() {

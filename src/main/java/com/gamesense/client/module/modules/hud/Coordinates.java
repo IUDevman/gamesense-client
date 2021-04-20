@@ -1,20 +1,23 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
-import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
+
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.awt.*;
 
 @Module.Declaration(name = "Coordinates", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 0)
@@ -77,8 +80,8 @@ public class Coordinates extends HUDModule {
     }
 
     @Override
-    public void populate(Theme theme) {
-        component = new ListComponent(getName(), theme.getPanelRenderer(), position, new CoordinateLabel());
+    public void populate(ITheme theme) {
+    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), new CoordinateLabel(), GameSenseGUI.FONT_HEIGHT, HUDModule.LIST_BORDER);
     }
 
     private class CoordinateLabel implements HUDList {

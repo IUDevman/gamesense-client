@@ -1,13 +1,14 @@
 package com.gamesense.client.manager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.gamesense.client.GameSense;
 import com.gamesense.client.manager.managers.ClientEventManager;
 import com.gamesense.client.manager.managers.PlayerPacketManager;
 import com.gamesense.client.manager.managers.TotemPopManager;
-import net.minecraftforge.common.MinecraftForge;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraftforge.common.MinecraftForge;
 
 public class ManagerLoader {
 

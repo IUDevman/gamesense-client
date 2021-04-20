@@ -1,11 +1,11 @@
 package com.gamesense.client.module;
 
-import com.gamesense.api.util.misc.ReflectionUtil;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+
+import com.gamesense.api.util.misc.ReflectionUtil;
 
 public class ModuleManager {
     

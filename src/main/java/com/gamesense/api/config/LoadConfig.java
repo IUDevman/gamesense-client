@@ -100,7 +100,7 @@ public class LoadConfig {
                     } else if (setting instanceof DoubleSetting) {
                         setting.setValue(dataObject.getAsDouble());
                     } else if (setting instanceof ColorSetting) {
-                        ((ColorSetting) setting).fromInteger(dataObject.getAsInt());
+                        ((ColorSetting) setting).fromLong(dataObject.getAsLong());
                     } else if (setting instanceof ModeSetting) {
                         setting.setValue(dataObject.getAsString());
                     }

@@ -1,16 +1,25 @@
 package com.gamesense.client.clickgui;
 
-import com.google.gson.*;
-import com.lukflug.panelstudio.ConfigList;
-import com.lukflug.panelstudio.PanelConfig;
-
-import java.awt.*;
-import java.io.*;
+import java.awt.Point;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class GuiConfig implements ConfigList {
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.lukflug.panelstudio.config.IConfigList;
+import com.lukflug.panelstudio.config.IPanelConfig;
+
+public class GuiConfig implements IConfigList {
 
     private final String fileLocation;
     private JsonObject panelObject = null;
@@ -62,7 +71,7 @@ public class GuiConfig implements ConfigList {
     }
 
     @Override
-    public PanelConfig addPanel(String title) {
+    public IPanelConfig addPanel(String title) {
         if (panelObject == null) return null;
         JsonObject valueObject = new JsonObject();
         panelObject.add(title, valueObject);
@@ -70,7 +79,7 @@ public class GuiConfig implements ConfigList {
     }
 
     @Override
-    public PanelConfig getPanel(String title) {
+    public IPanelConfig getPanel(String title) {
         if (panelObject == null) return null;
         JsonElement configObject = panelObject.get(title);
         if (configObject != null && configObject.isJsonObject())
@@ -79,7 +88,7 @@ public class GuiConfig implements ConfigList {
     }
 
 
-    private static class GSPanelConfig implements PanelConfig {
+    private static class GSPanelConfig implements IPanelConfig {
 
         private final JsonObject configObject;
 

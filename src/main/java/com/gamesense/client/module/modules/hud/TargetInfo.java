@@ -1,5 +1,11 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Comparator;
+
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.player.social.SocialManager;
@@ -10,15 +16,14 @@ import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import com.lukflug.panelstudio.Context;
-import com.lukflug.panelstudio.Interface;
+import com.lukflug.panelstudio.base.Context;
+import com.lukflug.panelstudio.base.IInterface;
 import com.lukflug.panelstudio.hud.HUDComponent;
-import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-
-import java.awt.*;
-import java.util.Comparator;
 
 /**
  * @author Hoosiers
@@ -33,7 +38,7 @@ public class TargetInfo extends HUDModule {
     ColorSetting backgroundColor = registerColor("Background", new GSColor(0, 0, 0, 255));
     ColorSetting outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
 
-    public void populate(Theme theme) {
+    public void populate(ITheme theme) {
         component = new TargetInfoComponent(theme);
     }
 
@@ -84,8 +89,8 @@ public class TargetInfo extends HUDModule {
 
     private class TargetInfoComponent extends HUDComponent {
 
-        public TargetInfoComponent(Theme theme) {
-            super(getName(), theme.getPanelRenderer(), TargetInfo.this.position);
+        public TargetInfoComponent(ITheme theme) {
+            super(new Labeled(getName(),null,()->true), TargetInfo.this.position, getName());
         }
 
         @Override
@@ -117,7 +122,7 @@ public class TargetInfo extends HUDModule {
                     //name
                     String name = entityPlayer.getName();
                     Color nameColor = getNameColor(entityPlayer);
-                    context.getInterface().drawString(new Point(context.getPos().x + 2, context.getPos().y + 2), name, nameColor);
+                    context.getInterface().drawString(new Point(context.getPos().x + 2, context.getPos().y + 2), GameSenseGUI.FONT_HEIGHT, name, nameColor);
 
                     //health box
                     int healthVal = (int) (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount());
@@ -140,24 +145,19 @@ public class TargetInfo extends HUDModule {
                     //health string
                     String health = "Health: " + healthVal;
                     Color healthColor = new Color(255, 255, 255, 255);
-                    context.getInterface().drawString(new Point(context.getPos().x + 33, context.getPos().y + 14), health, healthColor);
+                    context.getInterface().drawString(new Point(context.getPos().x + 33, context.getPos().y + 14), GameSenseGUI.FONT_HEIGHT, health, healthColor);
 
                     //distance string
                     String distance = "Distance: " + distanceVal;
                     Color distanceColor = new Color(255, 255, 255, 255);
-                    context.getInterface().drawString(new Point(context.getPos().x + 33, context.getPos().y + 29), distance, distanceColor);
+                    context.getInterface().drawString(new Point(context.getPos().x + 33, context.getPos().y + 29), GameSenseGUI.FONT_HEIGHT, distance, distanceColor);
                 }
             }
         }
 
-        @Override
-        public int getWidth(Interface inter) {
-            return 102;
-        }
-
-        @Override
-        public void getHeight(Context context) {
-            context.setHeight(43);
-        }
+		@Override
+		public Dimension getSize(IInterface inter) {
+			return new Dimension(102,43);
+		}
     }
 }

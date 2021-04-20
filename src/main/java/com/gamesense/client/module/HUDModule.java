@@ -1,14 +1,14 @@
 package com.gamesense.client.module;
 
-import com.gamesense.client.GameSense;
-import com.lukflug.panelstudio.FixedComponent;
-import com.lukflug.panelstudio.theme.Theme;
-
-import java.awt.*;
+import java.awt.Point;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.gamesense.client.GameSense;
+import com.lukflug.panelstudio.component.IFixedComponent;
+import com.lukflug.panelstudio.theme.ITheme;
 
 /**
  * @author lukflug
@@ -28,12 +28,13 @@ public abstract class HUDModule extends Module {
         return getClass().getAnnotation(Declaration.class);
     }
 
-    protected FixedComponent component;
+    public static final int LIST_BORDER=1;
+    protected IFixedComponent component;
     protected Point position = new Point(getDeclaration().posX(), getDeclaration().posZ());
 
-    public abstract void populate(Theme theme);
+    public abstract void populate(ITheme theme);
 
-    public FixedComponent getComponent() {
+    public IFixedComponent getComponent() {
         return component;
     }
 

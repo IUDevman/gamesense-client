@@ -1,20 +1,23 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
-import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
 import com.mojang.realmsclient.gui.ChatFormatting;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-
-import java.awt.*;
 
 @Module.Declaration(name = "PotionEffects", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 300)
@@ -27,8 +30,8 @@ public class PotionEffects extends HUDModule {
     private final PotionList list = new PotionList();
 
     @Override
-    public void populate(Theme theme) {
-        component = new ListComponent(getName(), theme.getPanelRenderer(), position, list);
+    public void populate(ITheme theme) {
+    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), list, GameSenseGUI.FONT_HEIGHT, HUDModule.LIST_BORDER);
     }
 
 
@@ -54,12 +57,12 @@ public class PotionEffects extends HUDModule {
 
         @Override
         public boolean sortUp() {
-            return sortUp.isOn();
+            return sortUp.getValue();
         }
 
         @Override
         public boolean sortRight() {
-            return sortRight.isOn();
+            return sortRight.getValue();
         }
     }
 }

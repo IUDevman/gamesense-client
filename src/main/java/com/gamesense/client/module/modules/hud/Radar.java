@@ -1,5 +1,10 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.player.social.SocialManager;
@@ -9,10 +14,12 @@ import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import com.lukflug.panelstudio.Context;
-import com.lukflug.panelstudio.Interface;
+import com.lukflug.panelstudio.base.Context;
+import com.lukflug.panelstudio.base.IInterface;
 import com.lukflug.panelstudio.hud.HUDComponent;
-import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.monster.EntityMob;
@@ -21,8 +28,6 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
-
-import java.awt.*;
 
 /**
  * @author Hoosiers
@@ -40,7 +45,7 @@ public class Radar extends HUDModule {
     ColorSetting fillColor = registerColor("Fill Color", new GSColor(0, 0, 0, 255));
 
     @Override
-    public void populate(Theme theme) {
+    public void populate(ITheme theme) {
         component = new RadarComponent(theme);
     }
 
@@ -66,8 +71,8 @@ public class Radar extends HUDModule {
 
     private class RadarComponent extends HUDComponent {
 
-        public RadarComponent(Theme theme) {
-            super(getName(), theme.getPanelRenderer(), Radar.this.position);
+        public RadarComponent(ITheme theme) {
+        	super(new Labeled(getName(),null,()->true), Radar.this.position, getName());
         }
 
         private final int maxRange = 50;
@@ -174,13 +179,8 @@ public class Radar extends HUDModule {
         }
 
         @Override
-        public int getWidth(Interface anInterface) {
-            return 103;
-        }
-
-        @Override
-        public void getHeight(Context context) {
-            context.setHeight(103);
+        public Dimension getSize(IInterface anInterface) {
+            return new Dimension(103,103);
         }
     }
 }

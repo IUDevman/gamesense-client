@@ -1,9 +1,9 @@
 package com.gamesense.client.command;
 
+import java.util.ArrayList;
+
 import com.gamesense.api.util.misc.MessageBus;
 import com.gamesense.api.util.misc.ReflectionUtil;
-
-import java.util.ArrayList;
 
 /**
  * @Author Hoosiers on 11/04/2020

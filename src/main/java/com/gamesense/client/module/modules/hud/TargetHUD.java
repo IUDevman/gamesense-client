@@ -1,5 +1,12 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Comparator;
+import java.util.Objects;
+
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.player.social.SocialManager;
@@ -11,10 +18,12 @@ import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
-import com.lukflug.panelstudio.Context;
-import com.lukflug.panelstudio.Interface;
+import com.lukflug.panelstudio.base.Context;
+import com.lukflug.panelstudio.base.IInterface;
 import com.lukflug.panelstudio.hud.HUDComponent;
-import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,10 +32,6 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextFormatting;
-
-import java.awt.*;
-import java.util.Comparator;
-import java.util.Objects;
 
 /**
  * @Author Hoosiers on 10/19/2020,
@@ -45,7 +50,7 @@ public class TargetHUD extends HUDModule {
     private static EntityPlayer targetPlayer;
 
     @Override
-    public void populate(Theme theme) {
+    public void populate(ITheme theme) {
         component = new TargetHUDComponent(theme);
     }
 
@@ -93,8 +98,8 @@ public class TargetHUD extends HUDModule {
 
     private class TargetHUDComponent extends HUDComponent {
 
-        public TargetHUDComponent(Theme theme) {
-            super(getName(), theme.getPanelRenderer(), TargetHUD.this.position);
+        public TargetHUDComponent(ITheme theme) {
+        	super(new Labeled(getName(),null,()->true), TargetHUD.this.position, getName());
         }
 
         @Override
@@ -124,13 +129,13 @@ public class TargetHUD extends HUDModule {
                     // Render name
                     String playerName = entityPlayer.getName();
                     Color nameColor = getNameColor(playerName);
-                    context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 11), TextFormatting.BOLD + playerName, nameColor);
+                    context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 11), GameSenseGUI.FONT_HEIGHT, TextFormatting.BOLD + playerName, nameColor);
                     // Render health
                     int playerHealth = (int) (entityPlayer.getHealth() + entityPlayer.getAbsorptionAmount());
                     Color healthColor = getHealthColor(playerHealth);
-                    context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 23), TextFormatting.WHITE + "Health: " + TextFormatting.RESET + playerHealth, healthColor);
+                    context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 23), GameSenseGUI.FONT_HEIGHT, TextFormatting.WHITE + "Health: " + TextFormatting.RESET + playerHealth, healthColor);
                     // Render distance
-                    context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 33), "Distance: " + ((int) entityPlayer.getDistance(mc.player)), new Color(255, 255, 255));
+                    context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 33), GameSenseGUI.FONT_HEIGHT, "Distance: " + ((int) entityPlayer.getDistance(mc.player)), new Color(255, 255, 255));
                     // Render ping and info
                     String info;
                     if (entityPlayer.inventory.armorItemInSlot(2).getItem().equals(Items.ELYTRA)) {
@@ -142,7 +147,7 @@ public class TargetHUD extends HUDModule {
                     } else {
                         info = TextFormatting.WHITE + "None";
                     }
-                    context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 43), info + TextFormatting.WHITE + " | " + getPing(entityPlayer) + " ms", new Color(255, 255, 255));
+                    context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 43), GameSenseGUI.FONT_HEIGHT, info + TextFormatting.WHITE + " | " + getPing(entityPlayer) + " ms", new Color(255, 255, 255));
                     // Render status effects
                     String status = null;
                     Color statusColor = null;
@@ -159,7 +164,7 @@ public class TargetHUD extends HUDModule {
                         }
                     }
                     if (status != null)
-                        context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 55), TextFormatting.WHITE + "Status: " + TextFormatting.RESET + status, statusColor);
+                        context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 55), GameSenseGUI.FONT_HEIGHT, TextFormatting.WHITE + "Status: " + TextFormatting.RESET + status, statusColor);
                     // Render items
                     int xPos = context.getPos().x + 150;
                     for (ItemStack itemStack : entityPlayer.getArmorInventoryList()) {
@@ -171,13 +176,8 @@ public class TargetHUD extends HUDModule {
         }
 
         @Override
-        public int getWidth(Interface inter) {
-            return 162;
-        }
-
-        @Override
-        public void getHeight(Context context) {
-            context.setHeight(94);
-        }
+		public Dimension getSize(IInterface inter) {
+			return new Dimension(162,94);
+		}
     }
 }

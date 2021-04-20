@@ -1,18 +1,21 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
-import com.lukflug.panelstudio.theme.Theme;
-import net.minecraft.util.text.TextComponentString;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.util.text.TextComponentString;
 
 @Module.Declaration(name = "Notifications", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 50)
@@ -25,8 +28,8 @@ public class Notifications extends HUDModule {
     private static final NotificationsList list = new NotificationsList();
 
     @Override
-    public void populate(Theme theme) {
-        component = new ListComponent(getName(), theme.getPanelRenderer(), position, list);
+    public void populate(ITheme theme) {
+    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), list, GameSenseGUI.FONT_HEIGHT, HUDModule.LIST_BORDER);
     }
 
     private static int waitCounter;
@@ -74,12 +77,12 @@ public class Notifications extends HUDModule {
 
         @Override
         public boolean sortUp() {
-            return ModuleManager.getModule(Notifications.class).sortUp.isOn();
+            return ModuleManager.getModule(Notifications.class).sortUp.getValue();
         }
 
         @Override
         public boolean sortRight() {
-            return ModuleManager.getModule(Notifications.class).sortRight.isOn();
+            return ModuleManager.getModule(Notifications.class).sortRight.getValue();
         }
     }
 }
