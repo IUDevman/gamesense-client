@@ -8,7 +8,7 @@ import java.util.Locale;
 import com.gamesense.api.util.misc.ReflectionUtil;
 
 public class ModuleManager {
-    
+
     private static final String modulePath = "com.gamesense.client.module.modules";
     private static final LinkedHashMap<Class<? extends Module>, Module> modulesClassMap = new LinkedHashMap<>();
     private static final LinkedHashMap<String, Module> modulesNameMap = new LinkedHashMap<>();
@@ -31,7 +31,7 @@ public class ModuleManager {
         }
     }
 
-    public static void addMod(Module module) {
+    private static void addMod(Module module) {
         modulesClassMap.put(module.getClass(), module);
         modulesNameMap.put(module.getName().toLowerCase(Locale.ROOT), module);
     }
