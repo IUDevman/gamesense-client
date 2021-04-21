@@ -472,7 +472,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
     		return new IColorSetting() {
 				@Override
 				public String getDisplayName() {
-					return setting.getName();
+					return TextFormatting.BOLD+setting.getName();
 				}
 				
 				@Override
