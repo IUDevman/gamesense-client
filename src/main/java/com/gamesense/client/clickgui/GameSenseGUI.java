@@ -107,6 +107,16 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				double scale=height/(double)(FontUtil.getFontHeight(colorMain.customFont.getValue())+(colorMain.customFont.getValue()?1:0));
 				return (int)Math.round(FontUtil.getStringWidth(colorMain.customFont.getValue(),s)*scale);
 			}
+			
+			@Override
+			public double getScreenWidth() {
+				return super.getScreenWidth();
+			}
+			
+			@Override
+			public double getScreenHeight() {
+				return super.getScreenHeight();
+			}
 
             @Override
             public String getResourcePrefix() {
@@ -114,7 +124,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
             }
         };
         Supplier<Boolean> themePredicate=()->clickGuiModule.theme.getValue().equals("2.0") || clickGuiModule.theme.getValue().equals("2.1.2");
-        gameSenseTheme = new GameSenseTheme(new GSColorScheme("gamesense",()->!themePredicate.get()),FONT_HEIGHT,4,5,": "+TextFormatting.GRAY);
+        gameSenseTheme = new GameSenseTheme(new GSColorScheme("gamesense",()->!themePredicate.get()),FONT_HEIGHT,3,5,": "+TextFormatting.GRAY);
         clearTheme = new ClearTheme(new GSColorScheme("clear",themePredicate),()->clickGuiModule.theme.getValue().equals("2.1.2"),FONT_HEIGHT,3,1,": "+TextFormatting.GRAY);
         theme = new IThemeMultiplexer() {
             @Override
