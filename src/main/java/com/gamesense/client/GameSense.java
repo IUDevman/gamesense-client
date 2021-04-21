@@ -55,6 +55,7 @@ public class GameSense {
         LOGGER.info("Version checked!");
 
         cFontRenderer = new CFontRenderer(new Font("Verdana", Font.PLAIN, 18), true, true);
+        cFontRenderer.setFontSize(18);
         LOGGER.info("Custom font initialized!");
 
         ModuleManager.init();
