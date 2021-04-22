@@ -21,11 +21,6 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-configurations.all {
-    // Check for updates every build
-    //resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 version project.modVersion
 group project.modGroup
 
@@ -62,9 +57,6 @@ repositories {
 		name = 'lukflug'
 		url = 'https://lukflug.github.io/maven'
 	}
-    /*maven {
-    	url = 'http://localhost:8080/maven/'
-    }*/
 	mavenCentral()
 }
 

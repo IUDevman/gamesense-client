@@ -95,10 +95,10 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(pos.x,pos.y,0);
 				double scale=height/(double)(FontUtil.getFontHeight(colorMain.customFont.getValue())+(colorMain.customFont.getValue()?1:0));
-				GlStateManager.scale(scale,scale,1);
 				end(false);
 				FontUtil.drawStringWithShadow(colorMain.customFont.getValue(),s,0,0,new GSColor(c));
 				begin(false);
+				GlStateManager.scale(scale,scale,1);
 				GlStateManager.popMatrix();
 			}
 
