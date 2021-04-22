@@ -305,7 +305,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 		// CSGO Layout!
 		PopupTuple colorPopup=new PopupTuple(new CenteredPositioner(()->new Rectangle(new Point(0,0),guiInterface.getWindowSize())),true,new IScrollSize() {});
 		IComponentAdder horizontalCSGOAdder=new PanelAdder(gui,true,()->clickGuiModule.csgoLayout.getValue(),title->title);
-		ILayout horizontalCSGOLayout=new CSGOLayout(new Labeled("GameSense",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",true,true,2,ChildMode.POPUP,colorPopup) {
+		ILayout horizontalCSGOLayout=new CSGOLayout(new Labeled("GameSense",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",true,true,2,ChildMode.DOWN,colorPopup) {
 			@Override
 			public int getScrollHeight (Context context, int componentHeight) {
 				return 320;
