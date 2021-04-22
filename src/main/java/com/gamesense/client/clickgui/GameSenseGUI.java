@@ -524,6 +524,11 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				public boolean allowsRainbow() {
 					return ((ColorSetting)setting).rainbowEnabled();
 				}
+
+				@Override
+				public boolean hasHSBModel() {
+					return ModuleManager.getModule(ColorMain.class).colorModel.getValue().equalsIgnoreCase("HSB");
+				}
 				
 				@Override
 				public Stream<ISetting<?>> getSubSettings() {
