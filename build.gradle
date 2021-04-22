@@ -71,8 +71,8 @@ dependencies {
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
 	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
-	compile('com.lukflug:panelstudio:0.2.0-SNAPSHOT')// {changing=true}
-	compile('com.lukflug:panelstudio-mc12:0.2.0-SNAPSHOT')// {changing=true}
+	compile 'com.lukflug:panelstudio:0.2.0-SNAPSHOT'
+	compile 'com.lukflug:panelstudio-mc12:0.2.0-SNAPSHOT'
 }
 
 processResources {

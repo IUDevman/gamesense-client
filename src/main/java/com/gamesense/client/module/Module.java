@@ -22,7 +22,7 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 
 import net.minecraft.client.Minecraft;
 
-public abstract class Module /*implements Toggleable, KeybindSetting*/ {
+public abstract class Module {
 
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
@@ -190,28 +190,4 @@ public abstract class Module /*implements Toggleable, KeybindSetting*/ {
     protected ColorSetting registerColor(String name) {
         return registerColor(name, new GSColor(90, 145, 240));
     }
-
-    /*@Override
-    public boolean isOn() {
-        return this.enabled;
-    }
-
-    @Override
-    public int getKey() {
-        return this.getBind();
-    }
-
-    @Override
-    public void setKey(int key) {
-        setBind(key);
-    }
-
-    @Override
-    public String getKeyName() {
-        if (this.bind <= 0 || this.bind > 255) {
-            return "NONE";
-        } else {
-            return Keyboard.getKeyName(this.bind);
-        }
-    }*/
 }

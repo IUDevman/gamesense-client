@@ -14,6 +14,7 @@ import net.minecraft.util.text.TextFormatting;
 
 @Module.Declaration(name = "Colors", category = Category.GUI, drawn = false)
 public class ColorMain extends Module {
+
 	public ColorSetting enabledColor = registerColor("Main Color", new GSColor(255, 0, 0, 255));
     public BooleanSetting customFont = registerBoolean("Custom Font", true);
     public BooleanSetting textFont = registerBoolean("Custom Text", false);

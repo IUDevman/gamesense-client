@@ -7,7 +7,7 @@ import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Module;
 
 public class ColorSetting extends Setting<GSColor> {
-    private boolean rainbow=false;
+    private boolean rainbow = false;
     private final boolean rainbowEnabled,alphaEnabled;
 
     public ColorSetting(String name, Module module, boolean rainbow, GSColor value) {
