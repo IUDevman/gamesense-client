@@ -35,6 +35,7 @@ import com.lukflug.panelstudio.base.SettingsAnimation;
 import com.lukflug.panelstudio.base.SimpleToggleable;
 import com.lukflug.panelstudio.component.IFixedComponent;
 import com.lukflug.panelstudio.component.IFixedComponentProxy;
+import com.lukflug.panelstudio.component.IResizable;
 import com.lukflug.panelstudio.component.IScrollSize;
 import com.lukflug.panelstudio.container.IContainer;
 import com.lukflug.panelstudio.hud.HUDGUI;
@@ -251,7 +252,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
         IComponentAdder classicPanelAdder=new PanelAdder(new IContainer<IFixedComponent>() {
 			@Override
 			public boolean addComponent(IFixedComponent component) {
-				return gui.addComponent(new IFixedComponentProxy() {
+				return gui.addComponent(new IFixedComponentProxy<IFixedComponent>() {
 					@Override
 		            public void handleScroll (Context context, int diff) {
 			            IFixedComponentProxy.super.handleScroll(context,diff);
@@ -271,7 +272,7 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 
 			@Override
 			public boolean addComponent(IFixedComponent component, IBoolean visible) {
-				return gui.addComponent(new IFixedComponentProxy() {
+				return gui.addComponent(new IFixedComponentProxy<IFixedComponent>() {
 					@Override
 		            public void handleScroll (Context context, int diff) {
 			            IFixedComponentProxy.super.handleScroll(context,diff);
@@ -295,9 +296,14 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			}
         },false,()->!clickGuiModule.csgoLayout.getValue(),title->title) {
         	@Override
-			public int getScrollHeight (Context context, int componentHeight) {
-				return scrollHeight.apply(context,componentHeight);
-			}
+        	protected IScrollSize getScrollSize (IResizable size) {
+        		return new IScrollSize() {
+        			@Override
+        			public int getScrollHeight (Context context, int componentHeight) {
+        				return scrollHeight.apply(context,componentHeight);
+        			}
+        		};
+        	}
 		};
 		IComponentGenerator generator=new ComponentGenerator(scancode->scancode==Keyboard.KEY_DELETE);
 		ILayout classicPanelLayout=new PanelLayout(WIDTH,new Point(DISTANCE,DISTANCE),(WIDTH+DISTANCE)/2,HEIGHT+DISTANCE,animation,level->ChildMode.DOWN,level->ChildMode.DOWN,popupType);
@@ -309,6 +315,26 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 			@Override
 			public int getScrollHeight (Context context, int componentHeight) {
 				return 320;
+			}
+			
+			@Override
+			protected boolean isUpKey (int key) {
+				return key==Keyboard.KEY_UP;
+			}
+			
+			@Override
+			protected boolean isDownKey (int key) {
+				return key==Keyboard.KEY_DOWN;
+			}
+			
+			@Override
+			protected boolean isLeftKey (int key) {
+				return key==Keyboard.KEY_LEFT;
+			}
+			
+			@Override
+			protected boolean isRightKey (int key) {
+				return key==Keyboard.KEY_RIGHT;
 			}
 		};
 		horizontalCSGOLayout.populateGUI(horizontalCSGOAdder,generator,client,theme);
@@ -449,6 +475,11 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				@Override
 				public void increment() {
 					((ModeSetting)setting).increment();
+				}
+				
+				@Override
+				public void decrement() {
+					((ModeSetting)setting).decrement();
 				}
 
 				@Override

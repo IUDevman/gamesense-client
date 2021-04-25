@@ -28,4 +28,11 @@ public class ModeSetting extends Setting<String> {
         modeIndex = (modeIndex + 1) % modes.size();
         setValue(modes.get(modeIndex));
     }
+    
+    public void decrement() {
+        int modeIndex = modes.indexOf(getValue());
+        modeIndex-=1;
+        if (modeIndex<0) modeIndex=modes.size()-1;
+        setValue(modes.get(modeIndex));
+    }
 }
