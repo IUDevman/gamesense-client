@@ -3,7 +3,7 @@ package com.gamesense.client.command;
 import java.util.ArrayList;
 
 import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.misc.ReflectionUtil;
+import com.gamesense.api.util.misc.ClassUtil;
 
 /**
  * @Author Hoosiers on 11/04/2020
@@ -16,7 +16,7 @@ public class CommandManager {
     public static ArrayList<Command> commands = new ArrayList<>();
 
     public static void init() {
-        for (Class<?> clazz : ReflectionUtil.findClassesInPath(commandPath)) {
+        for (Class<?> clazz : ClassUtil.findClassesInPath(commandPath)) {
 
             if (clazz == null) continue;
 

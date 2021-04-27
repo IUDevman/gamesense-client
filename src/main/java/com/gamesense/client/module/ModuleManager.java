@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 
-import com.gamesense.api.util.misc.ReflectionUtil;
+import com.gamesense.api.util.misc.ClassUtil;
 
 public class ModuleManager {
 
@@ -15,7 +15,7 @@ public class ModuleManager {
 
     public static void init() {
         for (Category category : Category.values()) {
-            for (Class<?> clazz : ReflectionUtil.findClassesInPath(modulePath + "." + category.toString().toLowerCase())) {
+            for (Class<?> clazz : ClassUtil.findClassesInPath(modulePath + "." + category.toString().toLowerCase())) {
 
                 if (clazz == null) continue;
 

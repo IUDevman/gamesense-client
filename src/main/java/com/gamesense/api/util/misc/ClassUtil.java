@@ -18,7 +18,7 @@ import java.util.zip.ZipInputStream;
  * @since 04/06/2021
  */
 
-public class ReflectionUtil {
+public class ClassUtil {
 
     private static final boolean debug = false;
 
@@ -26,7 +26,7 @@ public class ReflectionUtil {
         if (debug) GameSense.LOGGER.info("Loading classes from " + classPath + " ...");
 
         final ArrayList<Class<?>> foundClasses = new ArrayList<>();
-        String resource = ReflectionUtil.class.getClassLoader().getResource(classPath.replace(".", "/")).getPath();
+        String resource = ClassUtil.class.getClassLoader().getResource(classPath.replace(".", "/")).getPath();
 
         if (resource.contains("!")) {
 
@@ -54,7 +54,7 @@ public class ReflectionUtil {
         } else {
             try {
 
-                URL classPathURL = ReflectionUtil.class.getClassLoader().getResource(classPath.replace(".", "/"));
+                URL classPathURL = ClassUtil.class.getClassLoader().getResource(classPath.replace(".", "/"));
 
                 if (classPathURL != null) {
 
