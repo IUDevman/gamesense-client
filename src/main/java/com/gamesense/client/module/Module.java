@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
+import me.zero.alpine.listener.Listenable;
 import org.lwjgl.input.Keyboard;
 
 import com.gamesense.api.event.events.RenderEvent;
@@ -22,7 +23,7 @@ import com.gamesense.client.module.modules.gui.ColorMain;
 
 import net.minecraft.client.Minecraft;
 
-public abstract class Module {
+public abstract class Module implements Listenable {
 
     protected static final Minecraft mc = Minecraft.getMinecraft();
 

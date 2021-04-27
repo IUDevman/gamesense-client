@@ -6,6 +6,7 @@ import com.gamesense.api.util.world.combat.DamageUtil;
 import com.gamesense.api.util.world.combat.ac.threads.ACCalculate;
 import com.gamesense.client.GameSense;
 import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listenable;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-public enum ACHelper {
+public enum ACHelper implements Listenable {
     INSTANCE;
 
     private static final Minecraft mc = Minecraft.getMinecraft();
