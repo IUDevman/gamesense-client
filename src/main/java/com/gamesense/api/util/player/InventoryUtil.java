@@ -1,5 +1,7 @@
 package com.gamesense.api.util.player;
 
+import com.gamesense.client.module.ModuleManager;
+import com.gamesense.client.module.modules.combat.AutoCrystal;
 import com.gamesense.client.module.modules.combat.OffHand;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockObsidian;
@@ -24,9 +26,9 @@ public class InventoryUtil {
         int slot = -1;
         List<ItemStack> mainInventory = mc.player.inventory.mainInventory;
 
-        if (offHandActived && OffHand.isActive()) {
+        if (offHandActived && ModuleManager.isModuleEnabled(OffHand.class)) {
             if (!activeBefore) {
-                OffHand.requestObsidian();
+                OffHand.requestItems(0);
             }
             return 9;
         }
@@ -53,7 +55,7 @@ public class InventoryUtil {
 
         if (offHandActived) {
             if (!activeBefore)
-                OffHand.requestSkull();
+                OffHand.requestItems(1);
             return 9;
         }
 

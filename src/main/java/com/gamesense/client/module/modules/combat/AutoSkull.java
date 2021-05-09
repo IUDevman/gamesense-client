@@ -82,7 +82,7 @@ public class AutoSkull extends Module {
             disable();
             return;
         }
-        noObby = firstShift = alrPlaced = false;
+        noObby = firstShift = alrPlaced = activedBefore = false;
         lastHitVec = null;
         preRotationTick = afterRotationTick = 0;
     }
@@ -106,7 +106,7 @@ public class AutoSkull extends Module {
         }
 
         if (noObby) setDisabledMessage("Skull not found... Blocker turned OFF!");
-        if (offHandSkull.getValue()) OffHand.removeSkull();
+        if (offHandSkull.getValue()) OffHand.removeItem(1);
     }
 
     private boolean firstShift;
@@ -202,7 +202,6 @@ public class AutoSkull extends Module {
                 }
 
                 if (skullSlot == 9) {
-                    activedBefore = true;
                     if (mc.player.getHeldItemOffhand().getItem() instanceof ItemSkull) {
                         // We can continue
                         handSwing = EnumHand.OFF_HAND;
@@ -234,9 +233,9 @@ public class AutoSkull extends Module {
                         oldSlot = -1;
                     }
                     firstShift = true;
-                    activedBefore = alrPlaced = false;
+                    activedBefore = alrPlaced = true;
                     if (offHandSkull.getValue())
-                        OffHand.removeSkull();
+                        OffHand.removeItem(1);
 
                     if (disableAfter.getValue()) {
                         disable();

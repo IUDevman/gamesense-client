@@ -11,6 +11,7 @@ import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.HoleUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -81,8 +82,8 @@ public class HoleFill extends Module {
         }
         recentPlacements.clear();
 
-        if (offHandObby.getValue() && OffHand.isActive()) {
-            OffHand.removeObsidian();
+        if (offHandObby.getValue() && ModuleManager.isModuleEnabled(OffHand.class)) {
+            OffHand.removeItem(0);
             activedOff = false;
         }
     }

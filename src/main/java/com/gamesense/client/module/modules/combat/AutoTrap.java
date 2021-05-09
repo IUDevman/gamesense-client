@@ -10,6 +10,7 @@ import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
+import com.gamesense.client.module.ModuleManager;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,8 +71,8 @@ public class AutoTrap extends Module {
 
         AutoCrystal.stopAC = false;
 
-        if (offhandObby.getValue() && OffHand.isActive()) {
-            OffHand.removeObsidian();
+        if (offhandObby.getValue() && ModuleManager.isModuleEnabled(OffHand.class)) {
+            OffHand.removeItem(0);
             activedOff = false;
         }
 
