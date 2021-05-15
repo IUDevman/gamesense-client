@@ -11,7 +11,13 @@
 [![license](https://img.shields.io/badge/License-GPL_v3.0-white.svg)](https://github.com/lukflug/gamesense-client/blob/master/LICENSE)
 ![minecraft](https://img.shields.io/badge/Minecraft-1.12.2-blue.svg)
 
+***GameSense is now discontinued, please read below...***
 
+> RIP 05-15-2021
+
+
+<details open>
+   <Summary> Old ReadMe </Summary>
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 * [Information](#Information)
@@ -94,3 +100,4 @@ Please try to explain in detail the feature/problem and also provide the names o
 If you have any questions regarding the usage of the client, check the wiki documentation and the pinned messages on the discord.
 
 For small bug reports, join the discord and ask your questions there.
+</details>
