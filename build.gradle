@@ -2,8 +2,7 @@ buildscript {
 	repositories {
 		jcenter()
 		maven {
-			name = 'forge'
-			url = 'https://maven.minecraftforge.net/'
+			url = "https://files.minecraftforge.net/maven"
 		}
 		maven {
 			name = 'spongepowered'
@@ -11,7 +10,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3.2'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3.4'
 		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
 		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
 	}
