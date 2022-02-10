@@ -225,22 +225,22 @@ public class RenderUtil {
     public static void drawDirection(Points square, GSColor color, float width) {
         for (int i = 0; i < 4; i++) {
             drawLine(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
-                    square.getPoint((i + 1) % 4)[0], square.yMin, square.getPoint((i + 1) % 4)[1],
-                    color, width
+                square.getPoint((i + 1) % 4)[0], square.yMin, square.getPoint((i + 1) % 4)[1],
+                color, width
             );
         }
 
         for (int i = 0; i < 4; i++) {
             drawLine(square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
-                    square.getPoint((i + 1) % 4)[0], square.yMax, square.getPoint((i + 1) % 4)[1],
-                    color, width
+                square.getPoint((i + 1) % 4)[0], square.yMax, square.getPoint((i + 1) % 4)[1],
+                color, width
             );
         }
 
         for (int i = 0; i < 4; i++) {
             drawLine(square.getPoint(i)[0], square.yMin, square.getPoint(i)[1],
-                    square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
-                    color, width
+                square.getPoint(i)[0], square.yMax, square.getPoint(i)[1],
+                color, width
             );
         }
     }

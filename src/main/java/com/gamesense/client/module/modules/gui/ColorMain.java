@@ -1,18 +1,21 @@
 package com.gamesense.client.module.modules.gui;
 
+import java.util.Arrays;
+
 import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.misc.ColorUtil;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import net.minecraft.util.text.TextFormatting;
 
-import java.util.Arrays;
+import net.minecraft.util.text.TextFormatting;
 
 @Module.Declaration(name = "Colors", category = Category.GUI, drawn = false)
 public class ColorMain extends Module {
 
+	public ColorSetting enabledColor = registerColor("Main Color", new GSColor(255, 0, 0, 255));
     public BooleanSetting customFont = registerBoolean("Custom Font", true);
     public BooleanSetting textFont = registerBoolean("Custom Text", false);
     public ModeSetting friendColor = registerMode("Friend Color", ColorUtil.colors, "Blue");

@@ -3,6 +3,7 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.world.Offsets;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
@@ -10,12 +11,11 @@ import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.api.util.world.BlockUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.api.util.misc.Offsets;
+import com.gamesense.client.module.ModuleManager;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -34,7 +34,7 @@ public class Surround extends Module {
     ModeSetting jumpMode = registerMode("Jump", Arrays.asList("Continue", "Pause", "Disable"), "Continue");
     ModeSetting offsetMode = registerMode("Pattern", Arrays.asList("Normal", "Anti City"), "Normal");
     IntegerSetting delayTicks = registerInteger("Tick Delay", 3, 0, 10);
-    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 1, 8);
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting centerPlayer = registerBoolean("Center Player", false);
     BooleanSetting sneakOnly = registerBoolean("Sneak Only", false);
@@ -48,7 +48,6 @@ public class Surround extends Module {
     private int offsetSteps = 0;
     private boolean outOfTargetBlock = false;
     private boolean activedOff = false;
-    private boolean isSneaking = false;
 
     public void onEnable() {
         PlacementUtil.onEnable();
@@ -78,15 +77,10 @@ public class Surround extends Module {
             oldSlot = -1;
         }
 
-        if (isSneaking) {
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-            isSneaking = false;
-        }
-
         AutoCrystal.stopAC = false;
 
-        if (offhandObby.getValue() && OffHand.isActive()) {
-            OffHand.removeObsidian();
+        if (offhandObby.getValue() && ModuleManager.isModuleEnabled(OffHand.class)) {
+            OffHand.removeItem(0);
             activedOff = false;
         }
 
@@ -106,10 +100,10 @@ public class Surround extends Module {
 
         if (!(mc.player.onGround) && !(mc.player.isInWeb)) {
             switch (jumpMode.getValue()) {
-                case "Pause" : {
+                case "Pause": {
                     return;
                 }
-                case "Disable" : {
+                case "Disable": {
                     disable();
                     return;
                 }
@@ -133,7 +127,7 @@ public class Surround extends Module {
             PlayerUtil.centerPlayer(centeredBlock);
         }
 
-        while (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
+        if (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
             delayTimer.reset();
 
             int blocksPlaced = 0;
@@ -143,7 +137,7 @@ public class Surround extends Module {
                 Vec3d[] offsetPattern;
 
                 switch (offsetMode.getValue()) {
-                    case "Anti City" : {
+                    case "Anti City": {
                         offsetPattern = Offsets.SURROUND_CITY;
                         maxSteps = Offsets.SURROUND_CITY.length;
                         break;
@@ -185,11 +179,6 @@ public class Surround extends Module {
                 }
 
                 offsetSteps++;
-
-                if (isSneaking) {
-                    mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-                    isSneaking = false;
-                }
             }
         }
     }

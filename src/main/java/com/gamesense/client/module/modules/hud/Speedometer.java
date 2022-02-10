@@ -1,23 +1,26 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Collection;
+
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
 import com.lukflug.panelstudio.hud.HUDList;
 import com.lukflug.panelstudio.hud.ListComponent;
-import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
+
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.awt.*;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Collection;
 
 @Module.Declaration(name = "Speedometer", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 70)
@@ -105,8 +108,8 @@ public class Speedometer extends HUDModule {
     }
 
     @Override
-    public void populate(Theme theme) {
-        component = new ListComponent(getName(), theme.getPanelRenderer(), position, new SpeedLabel());
+    public void populate(ITheme theme) {
+    	component = new ListComponent(new Labeled(getName(),null,()->true), position, getName(), new SpeedLabel(), GameSenseGUI.FONT_HEIGHT, HUDModule.LIST_BORDER);
     }
 
     private class SpeedLabel implements HUDList {

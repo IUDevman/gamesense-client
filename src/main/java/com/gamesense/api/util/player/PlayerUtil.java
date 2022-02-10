@@ -100,8 +100,8 @@ public class PlayerUtil {
                     double zArray = positionEyes.z + (rotationEyes.z * i) + rotationEyes.z / j;
                     // If it's inside
                     if (playerBox.maxY >= yArray && playerBox.minY <= yArray
-                            && playerBox.maxX >= xArray && playerBox.minX <= xArray
-                            && playerBox.maxZ >= zArray && playerBox.minZ <= zArray) {
+                        && playerBox.maxX >= xArray && playerBox.minX <= xArray
+                        && playerBox.maxZ >= zArray && playerBox.minZ <= zArray) {
                         // Get target
                         target = targetTemp;
                     }

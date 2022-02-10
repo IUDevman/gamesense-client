@@ -101,9 +101,9 @@ public class HotbarRefill extends Module {
         }
 
         potentialSlots = potentialSlots.stream()
-                .filter(integer -> integer > 8 && integer < 36)
-                .sorted(Comparator.comparingInt(interger -> -interger))
-                .collect(Collectors.toList());
+            .filter(integer -> integer > 8 && integer < 36)
+            .sorted(Comparator.comparingInt(interger -> -interger))
+            .collect(Collectors.toList());
 
         for (int slot : potentialSlots) {
             if (isCompatibleStacks(hotbarStack, mc.player.inventory.getStackInSlot(slot))) {

@@ -1,17 +1,15 @@
 package com.gamesense.client;
 
 import com.gamesense.api.config.LoadConfig;
-import com.gamesense.api.setting.SettingsManager;
 import com.gamesense.api.util.font.CFontRenderer;
 import com.gamesense.api.util.misc.VersionChecker;
-import com.gamesense.api.util.player.social.SocialManager;
 import com.gamesense.api.util.render.CapeUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.command.CommandManager;
 import com.gamesense.client.manager.ManagerLoader;
 import com.gamesense.client.module.ModuleManager;
-import me.zero.alpine.EventBus;
-import me.zero.alpine.EventManager;
+import me.zero.alpine.bus.EventBus;
+import me.zero.alpine.bus.EventManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +23,7 @@ public class GameSense {
 
     public static final String MODNAME = "GameSense";
     public static final String MODID = "gamesense";
-    public static final String MODVER = "v2.3.0";
+    public static final String MODVER = "d2.3.1";
     /**
      * Official release starts with a "v", dev versions start with a "d" to bypass version check
      */
@@ -58,12 +56,6 @@ public class GameSense {
 
         cFontRenderer = new CFontRenderer(new Font("Verdana", Font.PLAIN, 18), true, true);
         LOGGER.info("Custom font initialized!");
-
-        SettingsManager.init();
-        LOGGER.info("Settings initialized!");
-
-        SocialManager.init();
-        LOGGER.info("Friends/Enemies initialized!");
 
         ModuleManager.init();
         LOGGER.info("Modules initialized!");

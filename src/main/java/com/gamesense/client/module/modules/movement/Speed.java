@@ -32,7 +32,7 @@ public class Speed extends Module {
 
     private boolean slowDown;
     private double playerSpeed;
-    private Timer timer = new Timer();
+    private final Timer timer = new Timer();
 
     public void onEnable() {
         playerSpeed = MotionUtil.getBaseMoveSpeed();

@@ -1,11 +1,12 @@
 package com.gamesense.client.manager;
 
+import me.zero.alpine.listener.Listenable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.profiler.Profiler;
 
-public interface Manager {
+public interface Manager extends Listenable {
 
     default Minecraft getMinecraft() {
         return Minecraft.getMinecraft();

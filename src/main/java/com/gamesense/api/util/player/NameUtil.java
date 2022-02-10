@@ -33,7 +33,7 @@ public class NameUtil {
                     }
                 }
             }
-        } catch (IOException | ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

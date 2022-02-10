@@ -5,6 +5,7 @@ import com.gamesense.api.event.events.PlayerJoinEvent;
 import com.gamesense.api.event.events.PlayerLeaveEvent;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.misc.VersionChecker;
 import com.gamesense.api.util.player.NameUtil;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.GameSense;
@@ -19,6 +20,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -103,6 +105,13 @@ public enum ClientEventManager implements Manager {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         GameSense.EVENT_BUS.post(event);
+    }
+
+    @SubscribeEvent
+    public void onEntityJoin(EntityJoinWorldEvent event) {
+        if (event.getEntity() != null && event.getEntity().equals(getPlayer()) && !VersionChecker.joinMessage.equalsIgnoreCase("None")) {
+            MessageBus.sendClientPrefixMessage(VersionChecker.joinMessage);
+        }
     }
 
     @SuppressWarnings("unused")

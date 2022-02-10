@@ -4,13 +4,14 @@ import com.gamesense.api.event.events.PacketEvent;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.client.GameSense;
 import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listenable;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketPlayer;
 
-public class SpoofRotationUtil {
+public class SpoofRotationUtil implements Listenable {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     public static final SpoofRotationUtil ROTATION_UTIL = new SpoofRotationUtil();

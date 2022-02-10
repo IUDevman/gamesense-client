@@ -3,9 +3,9 @@ package com.gamesense.client.module;
 public enum Category {
     Combat,
     Exploits,
-    Movement,
-    Misc,
-    Render,
+    GUI,
     HUD,
-    GUI
+    Misc,
+    Movement,
+    Render,
 }

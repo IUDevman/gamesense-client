@@ -1,24 +1,29 @@
 package com.gamesense.client.module;
 
-import com.gamesense.api.event.events.RenderEvent;
-import com.gamesense.api.setting.SettingsManager;
-import com.gamesense.api.setting.values.*;
-import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.api.util.render.GSColor;
-import com.gamesense.client.GameSense;
-import com.gamesense.client.module.modules.gui.ColorMain;
-import com.lukflug.panelstudio.settings.KeybindSetting;
-import com.lukflug.panelstudio.settings.Toggleable;
-import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
-public abstract class Module implements Toggleable, KeybindSetting {
+import me.zero.alpine.listener.Listenable;
+import org.lwjgl.input.Keyboard;
+
+import com.gamesense.api.event.events.RenderEvent;
+import com.gamesense.api.setting.SettingsManager;
+import com.gamesense.api.setting.values.BooleanSetting;
+import com.gamesense.api.setting.values.ColorSetting;
+import com.gamesense.api.setting.values.DoubleSetting;
+import com.gamesense.api.setting.values.IntegerSetting;
+import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.render.GSColor;
+import com.gamesense.client.GameSense;
+import com.gamesense.client.module.modules.gui.ColorMain;
+
+import net.minecraft.client.Minecraft;
+
+public abstract class Module implements Listenable {
 
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
@@ -90,14 +95,16 @@ public abstract class Module implements Toggleable, KeybindSetting {
         setEnabled(true);
         GameSense.EVENT_BUS.subscribe(this);
         onEnable();
-        if (toggleMsg && mc.player != null) MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + name + " turned ON!");
+        if (toggleMsg && mc.player != null)
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getEnabledColor() + name + " turned ON!");
     }
 
     public void disable() {
         setEnabled(false);
         GameSense.EVENT_BUS.unsubscribe(this);
         onDisable();
-        if (toggleMsg && mc.player != null) MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + disabledMessage);
+        if (toggleMsg && mc.player != null)
+            MessageBus.sendClientPrefixMessage(ModuleManager.getModule(ColorMain.class).getDisabledColor() + disabledMessage);
         setDisabledMessage(name + " turned OFF!");
     }
 
@@ -183,29 +190,5 @@ public abstract class Module implements Toggleable, KeybindSetting {
 
     protected ColorSetting registerColor(String name) {
         return registerColor(name, new GSColor(90, 145, 240));
-    }
-
-    @Override
-    public boolean isOn() {
-        return this.enabled;
-    }
-
-    @Override
-    public int getKey() {
-        return this.getBind();
-    }
-
-    @Override
-    public void setKey(int key) {
-        setBind(key);
-    }
-
-    @Override
-    public String getKeyName() {
-        if (this.bind <= 0 || this.bind > 255) {
-            return "NONE";
-        } else {
-            return Keyboard.getKeyName(this.bind);
-        }
     }
 }

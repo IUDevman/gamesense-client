@@ -37,10 +37,6 @@ public class Bucked extends Module {
     ColorSetting color = registerColor("Color", new GSColor(0, 255, 0, 255));
 
     public void onWorldRender(RenderEvent event) {
-        if (mc.player == null || mc.world == null) {
-            return;
-        }
-
         mc.world.playerEntities.stream().filter(this::isValidTarget).forEach(entityPlayer -> {
 
             BlockPos blockPos = new BlockPos(roundValueToCenter(entityPlayer.posX), roundValueToCenter(entityPlayer.posY), roundValueToCenter(entityPlayer.posZ));
@@ -60,9 +56,7 @@ public class Bucked extends Module {
 
         if (!self.getValue() && entityPlayer == mc.player) return false;
 
-        if (!friend.getValue() && SocialManager.isFriend(entityPlayer.getName())) return false;
-
-        return true;
+        return friend.getValue() || !SocialManager.isFriend(entityPlayer.getName());
     }
 
     private boolean isSurrounded(BlockPos blockPos) {
@@ -85,7 +79,7 @@ public class Bucked extends Module {
                 RenderUtil.drawBoundingBox(blockPos, upValue, width.getValue(), gsColor1);
                 break;
             }
-            case "Fill": {
+            default: {
                 RenderUtil.drawBox(blockPos, upValue, gsColor2, GeometryMasks.Quad.ALL);
                 break;
             }
@@ -94,8 +88,10 @@ public class Bucked extends Module {
 
     private GSColor findGSColor(EntityPlayer entityPlayer) {
 
-        if (SocialManager.isFriend(entityPlayer.getName())) return ModuleManager.getModule(ColorMain.class).getFriendGSColor();
-        else if (SocialManager.isEnemy(entityPlayer.getName())) return ModuleManager.getModule(ColorMain.class).getEnemyGSColor();
+        if (SocialManager.isFriend(entityPlayer.getName()))
+            return ModuleManager.getModule(ColorMain.class).getFriendGSColor();
+        else if (SocialManager.isEnemy(entityPlayer.getName()))
+            return ModuleManager.getModule(ColorMain.class).getEnemyGSColor();
 
         return color.getValue();
     }

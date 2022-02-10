@@ -64,15 +64,13 @@ public class OffHand extends Module {
     BooleanSetting hotBarTotem = registerBoolean("HotBar Totem", false);
 
     int prevSlot,
-            tickWaited,
-            totems;
+        tickWaited,
+        totems;
     boolean returnBack,
-            stepChanging,
-            firstChange;
-    private static boolean activeT = false;
-    private static int forceObby;
-    private static int forceSkull;
-    private ArrayList<Long> switchDone = new ArrayList<>();
+        stepChanging,
+        firstChange;
+    private static String forceItem;
+    private final ArrayList<Long> switchDone = new ArrayList<>();
     private final ArrayList<Item> ignoreNoSword = new ArrayList<Item>() {
         {
             add(Items.GOLDEN_APPLE);
@@ -82,20 +80,36 @@ public class OffHand extends Module {
         }
     };
 
-    public static boolean isActive() {
-        return activeT;
+
+    public static void requestItems(int want) {
+        switch (want) {
+            case 0:
+                forceItem = "Obby";
+                break;
+            case 1:
+                forceItem = "Skull";
+                break;
+            case 2:
+                forceItem = "EChest";
+                break;
+        }
     }
 
-    public static void requestObsidian() {
-        forceObby++;
-    }
-
-    public static void requestSkull() { forceSkull = 1; }
-
-    public static void removeSkull() { forceSkull = 0; }
-
-    public static void removeObsidian() {
-        if (forceObby != 0) forceObby--;
+    public static void removeItem(int want) {
+        String check = "";
+        switch (want) {
+            case 0:
+                check = "Obby";
+                break;
+            case 1:
+                check = "Skull";
+                break;
+            case 2:
+                check = "EChest";
+                break;
+        }
+        if (forceItem.equals(check))
+            forceItem = "";
     }
 
     // Create maps of allowed items
@@ -113,23 +127,23 @@ public class OffHand extends Module {
             put("Plates", Blocks.WOODEN_PRESSURE_PLATE);
             put("Skull", Blocks.SKULL);
             put("Obby", Blocks.OBSIDIAN);
+            put("Anvil", Blocks.ANVIL);
+            put("EChest", Blocks.ENDER_CHEST);
         }
     };
 
     @Override
     public void onEnable() {
         // Enable it
-        activeT = firstChange = true;
+        firstChange = true;
         // If they are gonna force us obby
-        forceObby = 0;
-
+        forceItem = "";
         returnBack = false;
     }
 
     @Override
     public void onDisable() {
-        activeT = false;
-        forceObby = forceSkull = 0;
+        forceItem = "";
     }
 
     @Override
@@ -229,22 +243,21 @@ public class OffHand extends Module {
             or crystalCheck
          */
         if ((fallDistanceBol.getValue() && mc.player.fallDistance >= fallDistance.getValue() && mc.player.prevPosY != mc.player.posY && !mc.player.isElytraFlying())
-                || (crystalCheck.getValue() && crystalDamage())) {
+            || (crystalCheck.getValue() && crystalDamage())) {
             normalOffHand = false;
             itemCheck = "Totem";
         }
-        // If forceSkull
-        if (forceSkull == 1) {
-            itemCheck = "Skull";
+        // If force items
+        if (!forceItem.equals("")) {
+            itemCheck = forceItem;
             normalOffHand = false;
         }
         // If crystal obby
         Item mainHandItem = mc.player.getHeldItemMainhand().getItem();
-        if (forceObby > 0
-                || (normalOffHand && (
-                (crystObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
-                        && mainHandItem == Items.END_CRYSTAL)
-                        || (pickObby.getValue() && mainHandItem == Items.DIAMOND_PICKAXE && (!pickObbyShift.getValue() || mc.gameSettings.keyBindSneak.isKeyDown()))))) {
+        if ((normalOffHand && (
+            (crystObby.getValue() && mc.gameSettings.keyBindSneak.isKeyDown()
+                && mainHandItem == Items.END_CRYSTAL)
+                || (pickObby.getValue() && mainHandItem == Items.DIAMOND_PICKAXE && (!pickObbyShift.getValue() || mc.gameSettings.keyBindSneak.isKeyDown()))))) {
             itemCheck = "Obby";
             normalOffHand = false;
         }
@@ -351,7 +364,7 @@ public class OffHand extends Module {
             if (offHandItem instanceof ItemBlock)
                 // Check if it's the block we have
                 return ((ItemBlock) offHandItem).getBlock() != item;
-            else if(offHandItem instanceof ItemSkull && item == Blocks.SKULL)
+            else if (offHandItem instanceof ItemSkull && item == Blocks.SKULL)
                 return true;
         } else {
             Item item = allowedItemsItem.get(itemCheck);
@@ -363,12 +376,12 @@ public class OffHand extends Module {
     private String getItemToCheck(String str) {
 
 
-        return ( PlayerUtil.getHealth() > healthSwitch.getValue())
-                ? (str.equals("")
-                ? nonDefaultItem.getValue()
-                : str
+        return (PlayerUtil.getHealth() > healthSwitch.getValue())
+            ? (str.equals("")
+            ? nonDefaultItem.getValue()
+            : str
         )
-                : defaultItem.getValue();
+            : defaultItem.getValue();
 
     }
 
@@ -428,7 +441,6 @@ public class OffHand extends Module {
         }
         return -1;
     }
-
 
 
     private void toOffHand(int t) {

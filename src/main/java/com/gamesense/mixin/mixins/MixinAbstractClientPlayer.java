@@ -1,7 +1,6 @@
 package com.gamesense.mixin.mixins;
 
 import com.gamesense.api.util.render.CapeUtil;
-import com.gamesense.client.GameSense;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.render.CapesModule;
 import net.minecraft.client.entity.AbstractClientPlayer;

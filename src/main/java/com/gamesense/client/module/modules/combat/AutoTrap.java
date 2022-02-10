@@ -3,18 +3,18 @@ package com.gamesense.client.module.modules.combat;
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.setting.values.ModeSetting;
+import com.gamesense.api.util.world.Offsets;
 import com.gamesense.api.util.misc.Timer;
 import com.gamesense.api.util.player.InventoryUtil;
 import com.gamesense.api.util.player.PlacementUtil;
 import com.gamesense.api.util.player.PlayerUtil;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
-import com.gamesense.api.util.misc.Offsets;
+import com.gamesense.client.module.ModuleManager;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -34,7 +34,7 @@ public class AutoTrap extends Module {
     ModeSetting targetMode = registerMode("Target", Arrays.asList("Nearest", "Looking"), "Nearest");
     IntegerSetting enemyRange = registerInteger("Range", 4, 0, 6);
     IntegerSetting delayTicks = registerInteger("Tick Delay", 3, 0, 10);
-    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 0, 8);
+    IntegerSetting blocksPerTick = registerInteger("Blocks Per Tick", 4, 1, 8);
     BooleanSetting rotate = registerBoolean("Rotate", true);
     BooleanSetting sneakOnly = registerBoolean("Sneak Only", false);
     BooleanSetting disableNoBlock = registerBoolean("Disable No Obby", true);
@@ -47,7 +47,6 @@ public class AutoTrap extends Module {
     private int offsetSteps = 0;
     private boolean outOfTargetBlock = false;
     private boolean activedOff = false;
-    private boolean isSneaking = false;
 
     public void onEnable() {
         PlacementUtil.onEnable();
@@ -70,15 +69,10 @@ public class AutoTrap extends Module {
             oldSlot = -1;
         }
 
-        if (isSneaking) {
-            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-            isSneaking = false;
-        }
-
         AutoCrystal.stopAC = false;
 
-        if (offhandObby.getValue() && OffHand.isActive()) {
-            OffHand.removeObsidian();
+        if (offhandObby.getValue() && ModuleManager.isModuleEnabled(OffHand.class)) {
+            OffHand.removeItem(0);
             activedOff = false;
         }
 
@@ -107,11 +101,11 @@ public class AutoTrap extends Module {
         activedOff = true;
 
         switch (targetMode.getValue()) {
-            case "Nearest" : {
+            case "Nearest": {
                 targetPlayer = PlayerUtil.findClosestTarget(enemyRange.getValue(), targetPlayer);
                 break;
             }
-            case "Looking" : {
+            case "Looking": {
                 targetPlayer = PlayerUtil.findLookingPlayer(enemyRange.getValue());
                 break;
             }
@@ -125,7 +119,7 @@ public class AutoTrap extends Module {
 
         Vec3d targetVec3d = targetPlayer.getPositionVector();
 
-        while (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
+        if (delayTimer.getTimePassed() / 50L >= delayTicks.getValue()) {
             delayTimer.reset();
 
             int blocksPlaced = 0;
@@ -135,12 +129,12 @@ public class AutoTrap extends Module {
                 Vec3d[] offsetPattern;
 
                 switch (offsetMode.getValue()) {
-                    case "No Step" : {
+                    case "No Step": {
                         offsetPattern = Offsets.TRAP_STEP;
                         maxSteps = Offsets.TRAP_STEP.length;
                         break;
                     }
-                    case "Simple" : {
+                    case "Simple": {
                         offsetPattern = Offsets.TRAP_SIMPLE;
                         maxSteps = Offsets.TRAP_SIMPLE.length;
                         break;
@@ -182,11 +176,6 @@ public class AutoTrap extends Module {
                 }
 
                 offsetSteps++;
-
-                if (isSneaking) {
-                    mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
-                    isSneaking = false;
-                }
             }
         }
     }

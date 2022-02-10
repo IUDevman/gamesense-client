@@ -1,22 +1,17 @@
 package com.gamesense.api.setting.values;
 
+import java.util.function.Supplier;
+
 import com.gamesense.api.setting.Setting;
 import com.gamesense.client.module.Module;
-import com.lukflug.panelstudio.settings.Toggleable;
 
-public class BooleanSetting extends Setting<Boolean> implements Toggleable {
+public class BooleanSetting extends Setting<Boolean> {
 
     public BooleanSetting(String name, Module module, boolean value) {
         super(value, name, module);
     }
-
-    @Override
-    public void toggle() {
-        setValue(!getValue());
-    }
-
-    @Override
-    public boolean isOn() {
-        return getValue();
+    
+    public BooleanSetting(String name, String configName, Module module, Supplier<Boolean> isVisible, boolean value) {
+        super(value, name, configName, module, isVisible);
     }
 }

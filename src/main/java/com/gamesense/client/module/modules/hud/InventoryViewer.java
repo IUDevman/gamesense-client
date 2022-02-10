@@ -1,20 +1,25 @@
 package com.gamesense.client.module.modules.hud;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.render.GSColor;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
 import com.gamesense.client.module.Module;
-import com.lukflug.panelstudio.Context;
-import com.lukflug.panelstudio.Interface;
+import com.lukflug.panelstudio.base.Context;
+import com.lukflug.panelstudio.base.IInterface;
 import com.lukflug.panelstudio.hud.HUDComponent;
-import com.lukflug.panelstudio.theme.Theme;
+import com.lukflug.panelstudio.setting.Labeled;
+import com.lukflug.panelstudio.theme.ITheme;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
-import java.awt.*;
 
 @Module.Declaration(name = "InventoryViewer", category = Category.HUD)
 @HUDModule.Declaration(posX = 0, posZ = 10)
@@ -24,14 +29,14 @@ public class InventoryViewer extends HUDModule {
     ColorSetting outlineColor = registerColor("Outline", new GSColor(255, 0, 0, 255));
 
     @Override
-    public void populate(Theme theme) {
+    public void populate(ITheme theme) {
         component = new InventoryViewerComponent(theme);
     }
 
     private class InventoryViewerComponent extends HUDComponent {
 
-        public InventoryViewerComponent(Theme theme) {
-            super(getName(), theme.getPanelRenderer(), InventoryViewer.this.position);
+        public InventoryViewerComponent(ITheme theme) {
+            super(new Labeled(getName(),null,()->true), InventoryViewer.this.position, getName());
         }
 
         @Override
@@ -56,13 +61,8 @@ public class InventoryViewer extends HUDModule {
         }
 
         @Override
-        public int getWidth(Interface inter) {
-            return 162;
-        }
-
-        @Override
-        public void getHeight(Context context) {
-            context.setHeight(56);
+        public Dimension getSize(IInterface inter) {
+            return new Dimension(162,56);
         }
     }
 }

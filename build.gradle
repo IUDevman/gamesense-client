@@ -2,16 +2,16 @@ buildscript {
 	repositories {
 		jcenter()
 		maven {
-			name = 'lukflug'
-			url = 'https://lukflug.github.io/maven/'
+			name = 'forge'
+			url = 'https://maven.minecraftforge.net/'
 		}
 		maven {
-			name = 'SpongePowered'
+			name = 'spongepowered'
 			url = 'https://repo.spongepowered.org/repository/maven-public/'
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3.2'
 		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
 		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
 	}
@@ -67,12 +67,12 @@ dependencies {
 		exclude module: 'gson'
 		exclude module: 'commons-io'
 	}
-	compile 'com.github.ZeroMemes:Alpine:1.5'
+	compile 'com.github.ZeroMemes:Alpine:1.9'
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
 	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
-	compile('com.lukflug:panelstudio:0.1.8')
-	compile('com.lukflug:panelstudio-mc12:0.1.8')
+	compile 'com.lukflug:panelstudio:0.2.0-SNAPSHOT'
+	compile 'com.lukflug:panelstudio-mc12:0.2.0-SNAPSHOT'
 }
 
 processResources {

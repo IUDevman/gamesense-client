@@ -53,8 +53,8 @@ public abstract class MixinPlayerControllerMP {
 
         if (packetUse.isEnabled()) {
             if ((packetUse.food.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemFood)
-                    || (packetUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
-                    || packetUse.all.getValue()) {
+                || (packetUse.potion.getValue() && playerIn.getHeldItem(playerIn.getActiveHand()).getItem() instanceof ItemPotion)
+                || packetUse.all.getValue()) {
                 this.syncCurrentPlayItem();
                 playerIn.stopActiveHand();
                 ci.cancel();

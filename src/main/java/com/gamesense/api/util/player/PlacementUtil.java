@@ -53,6 +53,7 @@ public class PlacementUtil {
 
         return output;
     }
+
     public static boolean placeItem(BlockPos blockPos, EnumHand hand, boolean rotate, Class<? extends Item> itemToPlace) {
         int oldSlot = mc.player.inventory.currentItem;
         int newSlot = InventoryUtil.findFirstItemSlot(itemToPlace, 0, 8);
@@ -80,7 +81,7 @@ public class PlacementUtil {
         return placeBlock(blockPos, hand, rotate, checkAction, null);
     }
 
-    public static boolean placeBlock(BlockPos blockPos, EnumHand hand, boolean rotate, boolean checkAction,  ArrayList<EnumFacing> forceSide) {
+    public static boolean placeBlock(BlockPos blockPos, EnumHand hand, boolean rotate, boolean checkAction, ArrayList<EnumFacing> forceSide) {
         EntityPlayerSP player = mc.player;
         WorldClient world = mc.world;
         PlayerControllerMP playerController = mc.playerController;
@@ -189,8 +190,10 @@ public class PlacementUtil {
             if (stoppedAC) {
                 AutoCrystal.stopAC = false;
             }
-            return action == EnumActionResult.SUCCESS;
-        } return true;
 
+            return action == EnumActionResult.SUCCESS;
+        }
+
+        return true;
     }
 }

@@ -29,9 +29,9 @@ public class ModulesCommand extends Command {
 
         for (Module module : modules) {
             msg.appendSibling(new TextComponentString((module.isEnabled() ? ChatFormatting.GREEN : ChatFormatting.RED) + module.getName() + "\2477" + ((index == size - 1) ? "" : ", "))
-                    .setStyle(new Style()
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(module.getCategory().name())))
-                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, CommandManager.getCommandPrefix() + "toggle" + " " + module.getName()))));
+                .setStyle(new Style()
+                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(module.getCategory().name())))
+                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, CommandManager.getCommandPrefix() + "toggle" + " " + module.getName()))));
 
             index++;
         }

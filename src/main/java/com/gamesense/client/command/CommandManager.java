@@ -1,9 +1,9 @@
 package com.gamesense.client.command;
 
-import com.gamesense.api.util.misc.MessageBus;
-import com.gamesense.client.command.commands.*;
-
 import java.util.ArrayList;
+
+import com.gamesense.api.util.misc.MessageBus;
+import com.gamesense.api.util.misc.ClassUtil;
 
 /**
  * @Author Hoosiers on 11/04/2020
@@ -12,30 +12,23 @@ import java.util.ArrayList;
 public class CommandManager {
 
     private static String commandPrefix = "-";
-    public static final ArrayList<Command> commands = new ArrayList<>();
+    private static final String commandPath = "com.gamesense.client.command.commands";
+    public static ArrayList<Command> commands = new ArrayList<>();
 
     public static void init() {
-        addCommand(new AutoGearCommand());
-        addCommand(new AutoGGCommand());
-        addCommand(new AutoReplyCommand());
-        addCommand(new AutoRespawnCommand());
-        addCommand(new BackupConfigCommand());
-        addCommand(new BindCommand());
-        addCommand(new CmdListCommand());
-        addCommand(new DisableAllCommand());
-        addCommand(new DrawnCommand());
-        addCommand(new EnemyCommand());
-        addCommand(new FixGUICommand());
-        addCommand(new FixHUDCommand());
-        addCommand(new FontCommand());
-        addCommand(new FriendCommand());
-        addCommand(new ModulesCommand());
-        addCommand(new MsgsCommand());
-        addCommand(new OpenFolderCommand());
-        addCommand(new PrefixCommand());
-        addCommand(new SaveConfigCommand());
-        addCommand(new SetCommand());
-        addCommand(new ToggleCommand());
+        for (Class<?> clazz : ClassUtil.findClassesInPath(commandPath)) {
+
+            if (clazz == null) continue;
+
+            if (Command.class.isAssignableFrom(clazz)) {
+                try {
+                    Command command = (Command) clazz.newInstance();
+                    addCommand(command);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public static void addCommand(Command command) {
