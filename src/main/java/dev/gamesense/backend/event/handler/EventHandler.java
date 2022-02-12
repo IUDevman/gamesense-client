@@ -71,7 +71,9 @@ public final class EventHandler {
             }
         } else {
             this.REGISTRY_MAP.put(indexClass, new CopyOnWriteArrayList<MethodData>() {
-                private static final long serialVersionUID = 666L; {
+                private static final long serialVersionUID = 666L;
+
+                {
                     add(data);
                 }
             });
