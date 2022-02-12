@@ -18,7 +18,7 @@ import org.lwjgl.opengl.Display;
 
 import java.awt.*;
 
-@Mod(modid = GameSense.MODID, name = GameSense.MODNAME, version = GameSense.MODVER)
+//@Mod(modid = GameSense.MODID, name = GameSense.MODNAME, version = GameSense.MODVER)
 public class GameSense {
 
     public static final String MODNAME = "GameSense";
@@ -31,14 +31,14 @@ public class GameSense {
     public static final Logger LOGGER = LogManager.getLogger(MODNAME);
     public static final EventBus EVENT_BUS = new EventManager();
 
-    @Mod.Instance
+    //@Mod.Instance
     public static GameSense INSTANCE;
 
     public GameSense() {
         INSTANCE = this;
     }
 
-    @Mod.EventHandler
+    //@Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         Display.setTitle(MODNAME + " " + MODVER);
 
