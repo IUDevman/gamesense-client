@@ -1,5 +1,6 @@
 package dev.gamesense.client.manager.managers;
 
+import dev.gamesense.GameSense;
 import dev.gamesense.client.manager.Manager;
 
 /**
@@ -11,6 +12,6 @@ public final class CommandManager implements Manager {
 
     @Override
     public void load() {
-
+        GameSense.INSTANCE.LOGGER.info("CommandManager");
     }
 }
