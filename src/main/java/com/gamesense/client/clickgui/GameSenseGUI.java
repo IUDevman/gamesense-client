@@ -305,9 +305,9 @@ public class GameSenseGUI extends MinecraftHUDGUI {
         		};
         	}
 		};
-		IComponentGenerator generator=new ComponentGenerator(scancode->scancode==Keyboard.KEY_DELETE);
+		//IComponentGenerator generator=new ComponentGenerator(scancode->scancode==Keyboard.KEY_DELETE);
 		ILayout classicPanelLayout=new PanelLayout(WIDTH,new Point(DISTANCE,DISTANCE),(WIDTH+DISTANCE)/2,HEIGHT+DISTANCE,animation,level->ChildMode.DOWN,level->ChildMode.DOWN,popupType);
-		classicPanelLayout.populateGUI(classicPanelAdder,generator,client,theme);
+		//classicPanelLayout.populateGUI(classicPanelAdder,generator,client,theme);
 		// CSGO Layout!
 		PopupTuple colorPopup=new PopupTuple(new CenteredPositioner(()->new Rectangle(new Point(0,0),guiInterface.getWindowSize())),true,new IScrollSize() {});
 		IComponentAdder horizontalCSGOAdder=new PanelAdder(gui,true,()->clickGuiModule.csgoLayout.getValue(),title->title);
@@ -337,10 +337,15 @@ public class GameSenseGUI extends MinecraftHUDGUI {
 				return key==Keyboard.KEY_RIGHT;
 			}
 		};
-		horizontalCSGOLayout.populateGUI(horizontalCSGOAdder,generator,client,theme);
+		//horizontalCSGOLayout.populateGUI(horizontalCSGOAdder,generator,client,theme);
     }
-    
-    private ISetting<?> createSetting (Setting<?> setting) {
+
+	@Override
+	protected HUDGUI getGUI() {
+		return null;
+	}
+
+	private ISetting<?> createSetting (Setting<?> setting) {
     	if (setting instanceof BooleanSetting) {
     		return new IBooleanSetting() {
 				@Override
@@ -661,10 +666,10 @@ public class GameSenseGUI extends MinecraftHUDGUI {
         GameSense.INSTANCE.gameSenseGUI.getInterface().begin(false);
     }
 
-    @Override
-    protected HUDGUI getHUDGUI() {
-        return gui;
-    }
+    //@Override
+    //protected HUDGUI getHUDGUI() {
+   //     return gui;
+   // }
 
     @Override
     protected GUIInterface getInterface() {

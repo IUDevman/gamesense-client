@@ -1,6 +1,6 @@
 package com.gamesense.client.clickgui;
 
-import java.awt.Point;
+import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,6 +103,11 @@ public class GuiConfig implements IConfigList {
         }
 
         @Override
+        public void saveSize(Dimension size) {
+
+        }
+
+        @Override
         public Point loadPosition() {
             Point point = new Point();
             JsonElement panelPosXObject = configObject.get("PosX");
@@ -114,6 +119,11 @@ public class GuiConfig implements IConfigList {
                 point.y = panelPosYObject.getAsInt();
             } else return null;
             return point;
+        }
+
+        @Override
+        public Dimension loadSize() {
+            return null;
         }
 
         @Override
