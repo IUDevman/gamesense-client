@@ -1,5 +1,6 @@
 package dev.gamesense;
 
+import dev.gamesense.backend.event.handler.EventHandler;
 import dev.gamesense.client.manager.Manager;
 import dev.gamesense.client.manager.managers.CommandManager;
 import dev.gamesense.client.manager.managers.ModuleManager;
@@ -29,6 +30,8 @@ public final class GameSense {
 
     public final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
+    public EventHandler EVENT_HANDLER;
+
     public CommandManager COMMAND_MANAGER;
     public ModuleManager MODULE_MANAGER;
 
@@ -44,13 +47,15 @@ public final class GameSense {
     }
 
     private void initClient() {
+        this.EVENT_HANDLER = new EventHandler();
+
         this.COMMAND_MANAGER = returnLoadedManager(new CommandManager());
 
         this.MODULE_MANAGER = returnLoadedManager(new ModuleManager());
     }
 
     private <T extends Manager> T returnLoadedManager(T manager) {
-
+        this.EVENT_HANDLER.register(manager);
         manager.load();
 
         return manager;
