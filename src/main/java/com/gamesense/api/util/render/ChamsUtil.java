@@ -1,5 +1,6 @@
 package com.gamesense.api.util.render;
 
+import dev.gamesense.misc.GSColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;

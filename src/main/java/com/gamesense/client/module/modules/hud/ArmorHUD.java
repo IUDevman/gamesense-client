@@ -1,7 +1,7 @@
 package com.gamesense.client.module.modules.hud;
 
 import com.gamesense.api.util.font.FontUtil;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import com.gamesense.client.module.ModuleManager;

@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.util.font.FontUtil;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;

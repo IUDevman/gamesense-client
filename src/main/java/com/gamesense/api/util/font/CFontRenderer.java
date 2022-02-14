@@ -1,6 +1,6 @@
 package com.gamesense.api.util.font;
 
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import org.lwjgl.opengl.GL11;

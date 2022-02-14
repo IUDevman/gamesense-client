@@ -2,7 +2,7 @@ package com.gamesense.client.module.modules.render;
 
 import com.gamesense.api.setting.values.BooleanSetting;
 import com.gamesense.api.setting.values.ColorSetting;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.Module;
 import me.zero.alpine.listener.EventHandler;

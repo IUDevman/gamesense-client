@@ -6,6 +6,7 @@ import com.gamesense.api.util.world.GeometryMasks;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import com.gamesense.client.module.modules.render.Nametags;
+import dev.gamesense.misc.GSColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;

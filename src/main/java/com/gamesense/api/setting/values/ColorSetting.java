@@ -3,7 +3,7 @@ package com.gamesense.api.setting.values;
 import java.util.function.Supplier;
 
 import com.gamesense.api.setting.Setting;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.client.module.Module;
 
 public class ColorSetting extends Setting<GSColor> {

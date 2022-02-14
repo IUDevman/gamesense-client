@@ -8,7 +8,7 @@ import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.font.FontUtil;
 import com.gamesense.api.util.misc.ColorUtil;
 import com.gamesense.api.util.player.social.SocialManager;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.client.manager.managers.TotemPopManager;
 import com.gamesense.client.module.Category;

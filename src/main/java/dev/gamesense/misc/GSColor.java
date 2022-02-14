@@ -1,4 +1,4 @@
-package com.gamesense.api.util.render;
+package dev.gamesense.misc;
 
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -6,11 +6,16 @@ import java.awt.*;
 
 /**
  * @author lukflug
+ * @since 09-02-2020
  */
 
 public class GSColor extends Color {
 
     private static final long serialVersionUID = 1L;
+
+    public static GSColor fromHSB(float hue, float saturation, float brightness) {
+        return new GSColor(Color.getHSBColor(hue, saturation, brightness));
+    }
 
     public GSColor(int rgb) {
         super(rgb);
@@ -34,10 +39,6 @@ public class GSColor extends Color {
 
     public GSColor(GSColor color, int a) {
         super(color.getRed(), color.getGreen(), color.getBlue(), a);
-    }
-
-    public static GSColor fromHSB(float hue, float saturation, float brightness) {
-        return new GSColor(Color.getHSBColor(hue, saturation, brightness));
     }
 
     public float getHue() {

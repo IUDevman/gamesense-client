@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.ModeSetting;
 import com.gamesense.api.util.player.social.SocialManager;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.api.util.world.combat.CrystalUtil;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;

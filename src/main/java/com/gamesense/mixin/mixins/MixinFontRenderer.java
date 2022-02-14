@@ -1,7 +1,7 @@
 package com.gamesense.mixin.mixins;
 
 import com.gamesense.api.util.font.FontUtil;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.client.module.ModuleManager;
 import com.gamesense.client.module.modules.gui.ColorMain;
 import net.minecraft.client.gui.FontRenderer;

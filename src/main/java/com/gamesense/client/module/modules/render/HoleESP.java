@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.render;
 import com.gamesense.api.event.events.RenderEvent;
 import com.gamesense.api.setting.values.*;
 import com.gamesense.api.util.player.PlayerUtil;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.api.util.render.RenderUtil;
 import com.gamesense.api.util.world.EntityUtil;
 import com.gamesense.api.util.world.GeometryMasks;

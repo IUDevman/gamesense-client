@@ -3,7 +3,7 @@ package com.gamesense.client.module.modules.hud;
 import java.awt.Color;
 
 import com.gamesense.api.setting.values.ColorSetting;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.client.GameSense;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;

@@ -9,7 +9,7 @@ import java.util.Comparator;
 import com.gamesense.api.setting.values.ColorSetting;
 import com.gamesense.api.setting.values.IntegerSetting;
 import com.gamesense.api.util.player.social.SocialManager;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;

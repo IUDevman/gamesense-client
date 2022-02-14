@@ -6,7 +6,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 import com.gamesense.api.setting.values.ColorSetting;
-import com.gamesense.api.util.render.GSColor;
+import dev.gamesense.misc.GSColor;
 import com.gamesense.client.clickgui.GameSenseGUI;
 import com.gamesense.client.module.Category;
 import com.gamesense.client.module.HUDModule;
