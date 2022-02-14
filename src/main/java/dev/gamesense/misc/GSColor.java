@@ -11,8 +11,6 @@ import java.awt.*;
 
 public final class GSColor extends Color {
 
-    private static final long serialVersionUID = 1L;
-
     public static GSColor fromHSB(float hue, float saturation, float brightness) {
         return new GSColor(Color.getHSBColor(hue, saturation, brightness));
     }
