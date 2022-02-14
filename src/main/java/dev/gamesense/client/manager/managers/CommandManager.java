@@ -1,6 +1,7 @@
 package dev.gamesense.client.manager.managers;
 
 import dev.gamesense.GameSense;
+import dev.gamesense.client.Manifest;
 import dev.gamesense.client.command.Command;
 import dev.gamesense.client.manager.Manager;
 
@@ -23,15 +24,9 @@ public final class CommandManager implements Manager {
     public void load() {
         GameSense.INSTANCE.LOGGER.info("CommandManager");
 
-        getCommandsToLoad().forEach(this::addCommand);
+        Manifest.getCommandsToLoad().forEach(this::addCommand);
 
         postSortCommands();
-    }
-
-    private ArrayList<Command> getCommandsToLoad() {
-        ArrayList<Command> commands = new ArrayList<>();
-
-        return commands;
     }
 
     public void postSortCommands() {

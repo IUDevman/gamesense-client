@@ -1,6 +1,7 @@
 package dev.gamesense.client.manager.managers;
 
 import dev.gamesense.GameSense;
+import dev.gamesense.client.Manifest;
 import dev.gamesense.client.manager.Manager;
 import dev.gamesense.client.module.Category;
 import dev.gamesense.client.module.Module;
@@ -22,15 +23,9 @@ public final class ModuleManager implements Manager {
     public void load() {
         GameSense.INSTANCE.LOGGER.info("ModuleManager");
 
-        getModulesToLoad().forEach(this::addModule);
+        Manifest.getModulesToLoad().forEach(this::addModule);
 
         postSortModules();
-    }
-
-    private ArrayList<Module> getModulesToLoad() {
-        ArrayList<Module> modules = new ArrayList<>();
-
-        return modules;
     }
 
     public void postSortModules() {
