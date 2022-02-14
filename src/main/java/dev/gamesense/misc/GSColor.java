@@ -9,7 +9,7 @@ import java.awt.*;
  * @since 09-02-2020
  */
 
-public class GSColor extends Color {
+public final class GSColor extends Color {
 
     private static final long serialVersionUID = 1L;
 
